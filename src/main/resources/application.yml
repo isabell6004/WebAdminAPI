@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: FashionGo WebAdminAPI
+  boot:
+    admin:
+      username: admin
+      password: fg6301
+  profiles:
+    active: "local"
+  # Primary DB
+  datasource:
+    username: sa
+    password: msqLsa6301
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    # Connection pool for Primary DB
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximumPoolSize: 100
+      connectionTestQuery: Select top 1 * from sys.all_objects
+      connectionTimeout: 250
+  jpa:
+    show-sql: true
+    properties.hibernate.format_sql: true
+    properties.hibernate.generate_statistics: true
+    properties.javax.persistence.query.timeout: 10000
+    properties.hibernate.dialect: org.hibernate.dialect.SQLServer2008Dialect
+    hibernate.naming.physical-strategy: net.fashiongo.common.dal.MSSQLServerNamingStrategy
+security.ignored: /**
+server:
+  port: 29901 
+---
+
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2
+logging:
+  path: logs/
+---
+
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:sqlserver://10.10.10.3:1433;databaseName=FG_V2
+  jpa:
+    show-sql: false
+    properties.hibernate.format_sql: false
+    properties.hibernate.generate_statistics: false
+logging:
+  path: /var/www/logs/
+---
+
+spring:
+  profiles: stage
+
+---
+
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:sqlserver://10.10.10.3:1433;databaseName=FG_V2
+  jpa:
+    show-sql: false
+    properties.hibernate.format_sql: false
+    properties.hibernate.generate_statistics: false
+server:
+  port: 19901
+logging:
+  path: /var/www/logs/
