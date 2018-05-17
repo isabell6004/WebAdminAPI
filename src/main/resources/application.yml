@@ -18,6 +18,17 @@ spring:
       maximumPoolSize: 100
       connectionTestQuery: Select top 1 * from sys.all_objects
       connectionTimeout: 250
+  # FG Pay DB
+  datasource2:
+    username: sa
+    password: msqLsa6301
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    # Connection pool for FG Pay DB
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximumPoolSize: 100
+      connectionTestQuery: Select top 1 * from Stripe_Charges
+      connectionTimeout: 250
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
@@ -29,19 +40,23 @@ security.ignored: /**
 server:
   port: 29901 
 ---
-
+# Local
 spring:
   profiles: local
   datasource:
     url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2
+  datasource2:
+    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
 logging:
   path: logs/
 ---
-
+# Dev
 spring:
   profiles: dev
   datasource:
     url: jdbc:sqlserver://10.10.10.3:1433;databaseName=FG_V2
+  datasource2:
+    url: jdbc:sqlserver://10.10.10.3:1433;databaseName=FG_PAY
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
@@ -49,16 +64,18 @@ spring:
 logging:
   path: /var/www/logs/
 ---
-
+# Stage
 spring:
   profiles: stage
 
 ---
-
+# Prod
 spring:
   profiles: prod
   datasource:
     url: jdbc:sqlserver://10.10.10.3:1433;databaseName=FG_V2
+  datasource2:
+    url: jdbc:sqlserver://10.10.10.3:1433;databaseName=FG_PAY
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
