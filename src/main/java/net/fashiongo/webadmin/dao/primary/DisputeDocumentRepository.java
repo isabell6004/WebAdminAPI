@@ -1,11 +1,11 @@
 /**
  * 
  */
-package net.fashiongo.webadmin.dao.fgpay;
+package net.fashiongo.webadmin.dao.primary;
 
 import org.springframework.data.repository.CrudRepository;
 
-import net.fashiongo.webadmin.model.fgpay.DisputeDocument;
+import net.fashiongo.webadmin.model.primary.DisputeDocument;
 
 
 /**

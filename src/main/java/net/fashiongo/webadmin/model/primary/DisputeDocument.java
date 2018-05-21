@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.fashiongo.webadmin.model.fgpay;
+package net.fashiongo.webadmin.model.primary;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +10,7 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
@@ -206,6 +207,17 @@ public class DisputeDocument {
 		this.modifiedBy = modifiedBy;
 	}
 	
+	@Transient
+	private String userName;
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 	@Override
 	public String toString() {
 		try {

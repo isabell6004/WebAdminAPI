@@ -37,15 +37,15 @@ public class PaymentService {
 	
 	@SuppressWarnings("unchecked")
 	public PagedResult<Dispute> getDisputes(QueryParam q) {
-		String spName = "up_va_Get_DisputeList";
+		String spName = "up_wa_Get_DisputeList";
 		List<Object> params = new ArrayList<Object>();
 		params.add(q.getPn());
 		params.add(q.getPs());
-		params.add(q.getWid());
 		params.add(q.getReason());
 		params.add(q.getStatus());
-		params.add(q.getCompanyName());
+		params.add(q.getCn());
 		params.add(q.getPo());
+		params.add(q.getInvoceNumber());
 		params.add(q.getDf());
 		params.add(q.getDt());
 		params.add(q.getOrderBy());
@@ -63,7 +63,7 @@ public class PaymentService {
 	
 	@SuppressWarnings("unchecked")
 	public DisputeDetail getDispute(String disputeId, Integer orderType) {
-		String spName = "up_va_Get_DisputeDetail";
+		String spName = "up_wa_Get_DisputeDetail";
 		List<Object> params = new ArrayList<Object>();
 		params.add(disputeId);
 		params.add(orderType);

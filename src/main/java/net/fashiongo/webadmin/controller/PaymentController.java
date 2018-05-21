@@ -22,10 +22,10 @@ import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.common.PagedResult;
 import net.fashiongo.webadmin.common.QueryParam;
 import net.fashiongo.webadmin.common.Utility;
-import net.fashiongo.webadmin.dao.fgpay.DisputeDocumentRepository;
+import net.fashiongo.webadmin.dao.primary.DisputeDocumentRepository;
 import net.fashiongo.webadmin.model.fgpay.Dispute;
 import net.fashiongo.webadmin.model.fgpay.DisputeDetail;
-import net.fashiongo.webadmin.model.fgpay.DisputeDocument;
+import net.fashiongo.webadmin.model.primary.DisputeDocument;
 import net.fashiongo.webadmin.service.PaymentService;
 
 /**
@@ -85,7 +85,7 @@ public class PaymentController {
 		logger.info("saveDisputeDocuments(): {}", disputeDocument.toString());
 		JsonResponse<Object> response = new JsonResponse<>(false, null, null);
 		try {
-			String user = Utility.getUsername();
+			String user = disputeDocument.getUserName();
 			DisputeDocument doc = disputeDocumentRepository.findOneByDisputeId(disputeDocument.getDisputeId());
 			if(doc != null) {
 				doc.setModifiedBy(user);

@@ -161,4 +161,26 @@ public class Dispute {
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
+	
+	@Column(name = "WholeSalerID")
+	private Integer wholesalerId;
+
+	public Integer getWholesalerId() {
+		return wholesalerId;
+	}
+
+	public void setWholesalerId(Integer wholesalerId) {
+		this.wholesalerId = wholesalerId;
+	}
+	
+	@Column(name = "WholeCompanyName")
+	private String vendorName;
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
 }
