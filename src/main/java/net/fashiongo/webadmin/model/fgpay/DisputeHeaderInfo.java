@@ -159,4 +159,26 @@ public class DisputeHeaderInfo {
 	public void setVendorName(String vendorName) {
 		this.vendorName = vendorName;
 	}
+	
+	@Column(name = "RetailerID")
+	private Integer retailerId;
+
+	public Integer getRetailerId() {
+		return retailerId;
+	}
+
+	public void setRetailerId(Integer retailerId) {
+		this.retailerId = retailerId;
+	}
+	
+	@Column(name = "OrderSessionGUID")
+	private String orderGUID;
+
+	public String getOrderGUID() {
+		return orderGUID;
+	}
+
+	public void setOrderGUID(String orderGUID) {
+		this.orderGUID = orderGUID;
+	}
 }

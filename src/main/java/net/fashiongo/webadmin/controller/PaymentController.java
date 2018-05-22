@@ -60,19 +60,26 @@ public class PaymentController {
 		return response;
 	}
 	
-	@GetMapping("/dispute/{disputeId}/{orderType}")
-	public JsonResponse<?> getDisputeDetail(@PathVariable("disputeId") String disputeId, @PathVariable("orderType") Integer orderType) {
+	@GetMapping("/dispute/{disputeId}")
+	public JsonResponse<?> getDisputeDetail(@PathVariable("disputeId") String disputeId, @ModelAttribute QueryParam queryParam) {
 		logger.debug("getDisputeDetail() orderId: {}", disputeId);
-		
+		boolean success = false;
 		JsonResponse<Object> response = new JsonResponse<>(false, null, null);
 		DisputeDetail dispute = null;
+		Integer orderType = queryParam.getTypeId();
+		Integer wid = queryParam.getWid();
 		try {
 			dispute = paymentService.getDispute(disputeId, orderType);
-			response.setData(dispute);
-			response.setSuccess(true);
+			if(dispute.getHeader().getWholesalerId().equals(wid)) {
+				success = true;
+				response.setData(dispute);
+			} else {
+				response.setMessage("wholesalerId does not match with this dispute information");
+			}
+			response.setSuccess(success);
 		} catch (Exception e) {
 			response.setMessage(e.getMessage());
-			response.setSuccess(false);
+			response.setSuccess(success);
 			logger.error("Error: getDisputeDetail()", e);
 		}
 		
