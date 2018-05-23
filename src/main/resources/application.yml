@@ -44,7 +44,7 @@ server:
 spring:
   profiles: local
   datasource:
-    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_integration
+    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_CC
   datasource2:
     url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
 logging:
@@ -54,7 +54,7 @@ logging:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_integration
+    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_CC
   datasource2:
     url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   jpa:
