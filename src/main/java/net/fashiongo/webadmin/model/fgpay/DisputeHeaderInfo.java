@@ -171,14 +171,14 @@ public class DisputeHeaderInfo {
 		this.retailerId = retailerId;
 	}
 	
-	@Column(name = "OrderSessionGUID")
-	private String orderGUID;
+	@Column(name = "WholeSalerGUID")
+	private String wholesalerGUID;
 
-	public String getOrderGUID() {
-		return orderGUID;
+	public String getWholesalerGUID() {
+		return wholesalerGUID;
 	}
 
-	public void setOrderGUID(String orderGUID) {
-		this.orderGUID = orderGUID;
+	public void setWholesalerGUID(String wholesalerGUID) {
+		this.wholesalerGUID = wholesalerGUID;
 	}
 }
