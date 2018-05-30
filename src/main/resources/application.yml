@@ -73,9 +73,9 @@ spring:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:sqlserver://10.10.10.3:1433;databaseName=FG_V2
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
   datasource2:
-    url: jdbc:sqlserver://10.10.10.3:1433;databaseName=FG_PAY
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
