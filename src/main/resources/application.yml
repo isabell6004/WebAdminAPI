@@ -84,3 +84,25 @@ server:
   port: 19901
 logging:
   path: /var/www/logs/
+  
+---
+  
+# Prod ssl
+spring:
+  profiles: prodssl
+  datasource:
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
+  datasource2:
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
+  jpa:
+    show-sql: false
+    properties.hibernate.format_sql: false
+    properties.hibernate.generate_statistics: false
+server:
+  port: 19902
+  ssl.protocol: TLS
+  ssl.key-store: tomcat.keystore
+  ssl.key-store-password: payment6301
+  ssl.keyStoreType: JKS
+logging:
+  path: /var/www/logs/ 
