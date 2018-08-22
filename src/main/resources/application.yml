@@ -39,17 +39,44 @@ spring:
 security.ignored: /**
 server:
   port: 29901 
+
 ---
+
 # Local
 spring:
   profiles: local
   datasource:
-    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_CC
+    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_PhotoStudio
   datasource2:
     url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
+
 logging:
+  config: classpath:log4j2-local.xml
   path: logs/
+
 ---
+
+# photo-studio
+spring:
+  profiles: photo-studio
+  datasource:
+    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_PhotoStudio
+  datasource2:
+    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
+  jpa:
+    show-sql: false
+    properties.hibernate.format_sql: false
+    properties.hibernate.generate_statistics: false
+
+logging:
+  config: classpath:log4j2-photo-studio.xml
+  path: /var/www/logs/
+
+server:
+  port: 29911 
+
+---
+
 # Dev
 spring:
   profiles: dev
@@ -61,14 +88,19 @@ spring:
     show-sql: false
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
+
 logging:
+  config: classpath:log4j2-dev.xml
   path: /var/www/logs/
+
 ---
+
 # Stage
 spring:
   profiles: stage
 
 ---
+  
 # Prod
 spring:
   profiles: prod
@@ -82,23 +114,7 @@ spring:
     properties.hibernate.generate_statistics: false
 server:
   port: 19901
+
 logging:
+  config: classpath:log4j2-prod.xml
   path: /var/www/logs/
-  
----
-  
-# Prod
-spring:
-  profiles: prod
-  datasource:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
-  datasource2:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
-  jpa:
-    show-sql: false
-    properties.hibernate.format_sql: false
-    properties.hibernate.generate_statistics: false
-server:
-  port: 19901
-logging:
-  path: /var/www/logs/ 
