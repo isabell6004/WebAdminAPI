@@ -9,8 +9,8 @@ spring:
     active: "local"
   # Primary DB
   datasource:
-    username: sa
-    password: msqLsa6301
+    username: FGWebAdminAPIUser
+    password: APIUser6301
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     # Connection pool for Primary DB
     type: com.zaxxer.hikari.HikariDataSource
@@ -20,8 +20,8 @@ spring:
       connectionTimeout: 250
   # FG Pay DB
   datasource2:
-    username: sa
-    password: msqLsa6301
+    username: FGWebAdminAPIUser
+    password: APIUser6301
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     # Connection pool for FG Pay DB
     type: com.zaxxer.hikari.HikariDataSource
