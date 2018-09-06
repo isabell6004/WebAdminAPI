@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.fashiongo.webadmin.config.datasource;
 
 import javax.persistence.EntityManagerFactory;
@@ -19,35 +16,34 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * @author Brian
+ * @author Andy
  *
  */
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-		basePackages = "net.fashiongo.webadmin.dao.fgpay",
-		entityManagerFactoryRef = "fgpayEntityManager",
-		transactionManagerRef = "fgpayTransactionManager"
-)
-public class FgPay {
-	@Bean(name = "fgpayDataSource")
-	@ConfigurationProperties(prefix="spring.datasource2")
-	public DataSource fgpayDataSource() {
+		basePackages = "net.fashiongo.webadmin.dao.photostudio",
+		entityManagerFactoryRef = "photostudioEntityManager",
+		transactionManagerRef = "photostudioTransactionManager")
+public class FgPhotoStudio {
+	@Bean(name = "photostudioDataSource")
+	@ConfigurationProperties(prefix = "spring.datasource3")
+	public DataSource photostudioDataSource() {
 		return DataSourceBuilder.create().build();
 	}
-	
-	@Bean(name="fgpayEntityManager")
-	public LocalContainerEntityManagerFactoryBean fgpayEntityManager(EntityManagerFactoryBuilder builder, @Qualifier("fgpayDataSource") DataSource dataSource) {
-		return builder
-				.dataSource(dataSource)
-				.packages("net.fashiongo.webadmin.model.fgpay")
-				.build();
+
+	@Bean(name = "photostudioEntityManager")
+	public LocalContainerEntityManagerFactoryBean photostudioEntityManager(EntityManagerFactoryBuilder builder,
+			@Qualifier("photostudioDataSource") DataSource dataSource) {
+		return builder.dataSource(dataSource).packages("net.fashiongo.webadmin.model.photostudio").build();
 	}
-	
+
 	@Bean
-	public PlatformTransactionManager fgpayTransactionManager(@Qualifier("fgpayEntityManager") EntityManagerFactory fgpayEntityManager) {
+	public PlatformTransactionManager photostudioTransactionManager(
+			@Qualifier("photostudioEntityManager") EntityManagerFactory photostudioEntityManager) {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(fgpayEntityManager);
+		transactionManager.setEntityManagerFactory(photostudioEntityManager);
 		return transactionManager;
 	}
+
 }
