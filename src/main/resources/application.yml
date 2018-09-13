@@ -50,6 +50,20 @@ spring:
 logging:
   path: logs/
 ---
+# Migration
+spring:
+  profiles: migration
+  datasource:
+    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
+  datasource2:
+    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
+  jpa:
+    show-sql: false
+    properties.hibernate.format_sql: false
+    properties.hibernate.generate_statistics: false
+logging:
+  path: /var/www/logs/
+---
 # Dev
 spring:
   profiles: dev
@@ -69,24 +83,6 @@ spring:
   profiles: stage
 
 ---
-# Prod
-spring:
-  profiles: prod
-  datasource:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
-  datasource2:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
-  jpa:
-    show-sql: false
-    properties.hibernate.format_sql: false
-    properties.hibernate.generate_statistics: false
-server:
-  port: 19901
-logging:
-  path: /var/www/logs/
-  
----
-  
 # Prod
 spring:
   profiles: prod
