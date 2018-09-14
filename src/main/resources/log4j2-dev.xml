@@ -5,7 +5,7 @@
         <Property name="LOG_PATTERN">
             %highlight{%d{HH:mm:ss.SSS} %-5level %logger{36}.%M() @%L - %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=black, DEBUG=green, TRACE=blue}
         </Property>
-        <Property name="SERVER_PORT">28801</Property>
+        <Property name="SERVER_PORT">29901</Property>
         <Property name="LOG_PATH">/var/www/logs/webadmin_api/</Property>
     </Properties>
     
