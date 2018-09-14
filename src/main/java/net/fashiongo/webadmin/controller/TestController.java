@@ -16,9 +16,9 @@ public class TestController {
 	TestService testService;
 	
 	@GetMapping("/get")
-	public JsonResponse<String> getDisputes() {
+	public JsonResponse<String> getDisputes(String message) {
 		JsonResponse<String> response = new JsonResponse<String>(false, null, null);
-		response.setData(testService.getMethod());
+		response.setData(testService.getMethod(message));
 		response.setSuccess(true);
 		
 		return response;
