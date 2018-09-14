@@ -39,6 +39,7 @@ spring:
 security.ignored: /**
 server:
   port: 29901 
+
 ---
 # Local
 spring:
@@ -48,7 +49,8 @@ spring:
   datasource2:
     url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
 logging:
-  path: logs/
+  config: classpath:log4j2-local.xml
+  
 ---
 # Migration
 spring:
@@ -62,7 +64,8 @@ spring:
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
 logging:
-  path: /var/www/logs/
+  config: classpath:log4j2-dev.xml
+  
 ---
 # Dev
 spring:
@@ -76,7 +79,8 @@ spring:
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
 logging:
-  path: /var/www/logs/
+  config: classpath:log4j2-dev.xml
+  
 ---
 # Stage
 spring:
@@ -97,4 +101,5 @@ spring:
 server:
   port: 19901
 logging:
-  path: /var/www/logs/ 
+  config: classpath:log4j2-prod.xml
+
