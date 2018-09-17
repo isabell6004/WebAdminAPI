@@ -39,6 +39,10 @@ spring:
 security.ignored: /**
 server:
   port: 29901 
+  
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.32:19009
+  fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
 
 ---
 # Local
