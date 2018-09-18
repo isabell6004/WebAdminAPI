@@ -29,6 +29,17 @@ spring:
       maximumPoolSize: 100
       connectionTestQuery: Select top 1 * from Stripe_Charges
       connectionTimeout: 250
+  # FG EM DB
+  datasource3:
+    username: sa
+    password: msqLsa6301
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    # Connection pool for FG EM DB
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximumPoolSize: 100
+      connectionTestQuery: Select top 1 * from Stripe_Charges
+      connectionTimeout: 250
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
@@ -36,6 +47,8 @@ spring:
     properties.javax.persistence.query.timeout: 10000
     properties.hibernate.dialect: org.hibernate.dialect.SQLServer2008Dialect
     hibernate.naming.physical-strategy: net.fashiongo.common.dal.MSSQLServerNamingStrategy
+    
+    
 security.ignored: /**
 server:
   port: 29901 
@@ -56,6 +69,9 @@ spring:
     url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_CC
   datasource2:
     url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
+  datasource3:
+    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_EM
+    
 logging:
   config: classpath:log4j2-local.xml
   
@@ -67,10 +83,14 @@ spring:
     url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
   datasource2:
     url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
+  datasource3:
+    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
+    
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
+    
 logging:
   config: classpath:log4j2-dev.xml
   
@@ -82,10 +102,14 @@ spring:
     url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_CC
   datasource2:
     url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
+  datasource3:
+    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
+    
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
+    
 logging:
   config: classpath:log4j2-dev.xml
   
@@ -102,10 +126,14 @@ spring:
     url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
   datasource2:
     url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
+  datasource3:
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_EM
+  
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
+    
 server:
   port: 19901
 logging:
