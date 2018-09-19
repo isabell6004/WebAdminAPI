@@ -5,6 +5,7 @@ import java.util.List;
 import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
+import net.fashiongo.webadmin.model.photostudio.PhotoModel;
 import net.fashiongo.webadmin.service.PhotoStudioService;
 
 import org.slf4j.Logger;
@@ -112,4 +113,19 @@ public class PhotoStudioController {
 		return response;
 	}
 
+	@RequestMapping(value = "/model/save")
+	public JsonResponse<?> saveModel(@RequestBody PhotoModel photoModel) {
+		logger.debug("PhotoStudioController.addModel() called!!!");
+		JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
+
+		try {
+			Integer result = photoStudioService.saveModel(photoModel);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.addModel():", ex);
+		}
+
+		return response;
+	}
 }

@@ -48,7 +48,7 @@ public class FgPhotoStudio {
 	}
 
 	@Bean(name="photostudioJdbcTemplate")
-    public JdbcTemplate primaryJdbcTemplate (
+    public JdbcTemplate photostudioJdbcTemplate (
         @Qualifier("photostudioDataSource") DataSource dataSource ) {
         return new JdbcTemplate(dataSource);
     }
