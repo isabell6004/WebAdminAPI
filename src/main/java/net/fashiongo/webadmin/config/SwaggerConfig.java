@@ -47,7 +47,7 @@ public class SwaggerConfig {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.globalOperationParameters(listDocketParameters) //Your global required parameters and headers
 				.select()
-				.apis(RequestHandlerSelectors.any())
+				.apis(RequestHandlerSelectors.basePackage("net.fashiongo.webadmin.controller"))
 				.paths(PathSelectors.any())
 				.build();
 	}

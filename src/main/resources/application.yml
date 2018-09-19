@@ -52,6 +52,7 @@ spring:
 security.ignored: /**
 server:
   port: 29901 
+  context-path: /api
   
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.32:19009
@@ -59,7 +60,7 @@ webAdminapi:
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:
     develop:
-      check-token : true
+      check-token : false
 
 ---
 # Local
