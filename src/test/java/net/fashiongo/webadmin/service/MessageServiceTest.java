@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.model.pojo.MessageList;
+import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 
@@ -29,7 +29,7 @@ public class MessageServiceTest {
 		GetMessageResponse result = messageService.GetMessage(parameters);
 		
 		if(result != null) {
-			for(MessageList msg : result.getTable1()) {
+			for(Message msg : result.getMessagelist()) {
 				assertNotNull(msg.getTitle());
 			}
 		}

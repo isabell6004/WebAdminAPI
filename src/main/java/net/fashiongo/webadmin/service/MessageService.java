@@ -6,7 +6,7 @@ import java.util.List;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
-import net.fashiongo.webadmin.model.pojo.MessageList;
+import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
@@ -44,10 +44,10 @@ public class MessageService extends ApiService {
         params.add(parameters.getTodate());
         params.add(parameters.getStatus());
         
-        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, MessageList.class);
+        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, Message.class);
         
-		result.setTable(((List<Total>)_result.get(0)).get(0));
-		result.setTable1((List<MessageList>) _result.get(1));
+		result.setTotal(((List<Total>)_result.get(0)).get(0));
+		result.setMessagelist((List<Message>) _result.get(1));
 		
 		return result;
 	}

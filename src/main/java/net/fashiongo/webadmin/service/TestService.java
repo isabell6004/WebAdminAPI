@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.fgem.EmApplicationRepository;
-import net.fashiongo.webadmin.model.pojo.MessageList;
+import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
+import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
 
 /**
  * 
@@ -40,27 +42,32 @@ public class TestService extends ApiService{
 	}
 	
 	/**
-	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @return 
-	 * Desc :
+	 * @throws Exception 
 	 */
-	public String executeException() {
-		List<String> arr = new ArrayList<String>();
-		arr.add("test");
-		arr.get(10);
+	public String executeException() throws Exception {
+		try {
+			List<String> arr = new ArrayList<String>();
+			arr.add("test");
+			arr.get(10);
+		} catch(Exception ex) {
+			System.out.println(ex.getMessage());
+			throw new Exception();
+		}
+		
 		
 		return "testService -> executeException";
 	}
 	
 	/**
-	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @param message
 	 * @return 
-	 * Desc :
 	 */
 	public String callhttpNetwork(String message) {
 		JsonResponse result = httpClient.get("Account/Test");
@@ -70,12 +77,11 @@ public class TestService extends ApiService{
 	}
 	
 	/**
-	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @param parameters
 	 * @return 
-	 * Desc :
 	 */
 	public String callProc(GetMessageParameters parameters) {
 		GetMessageResponse result = new GetMessageResponse();
@@ -95,11 +101,23 @@ public class TestService extends ApiService{
         params.add(parameters.getTodate());
         params.add(parameters.getStatus());
         
-        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, MessageList.class);
+        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, Message.class);
         
-		result.setTable(((List<Total>)_result.get(0)).get(0));
-		result.setTable1((List<MessageList>) _result.get(1));
+        result.setTotal(((List<Total>)_result.get(0)).get(0));
+		result.setMessagelist((List<Message>) _result.get(1));
 		
 		return "testService -> callProc";
+	}
+	
+	/**
+	 * Description Example
+	 * @since 2018. 9. 19.
+	 * @author Incheol Jung
+	 * @return 
+	 */
+	public String getSession() {
+		WebAdminLoginUser user =  Utility.getUserInfo();
+		System.out.println("user.getFullname() == " + user.getFullname());
+		return "testService -> getSession";
 	}
 }

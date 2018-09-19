@@ -1,6 +1,6 @@
 package net.fashiongo.webadmin.model.pojo;
 
-public class MessageList {
+public class Message {
 	private Integer row;
 	private Integer MapID;
 	private Integer MessageID;
