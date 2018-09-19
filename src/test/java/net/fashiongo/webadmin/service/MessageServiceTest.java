@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.model.parameter.GetMessageParameters;
 import net.fashiongo.webadmin.model.pojo.MessageList;
-import net.fashiongo.webadmin.model.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

@@ -6,10 +6,10 @@ import java.util.List;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
-import net.fashiongo.webadmin.model.parameter.GetMessageParameters;
 import net.fashiongo.webadmin.model.pojo.MessageList;
 import net.fashiongo.webadmin.model.pojo.Total;
-import net.fashiongo.webadmin.model.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 
 /**
  * 

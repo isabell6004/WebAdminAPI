@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.common.JsonResponse;
-import net.fashiongo.webadmin.model.parameter.GetMessageParameters;
-import net.fashiongo.webadmin.model.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.service.MessageService;
 
 /**

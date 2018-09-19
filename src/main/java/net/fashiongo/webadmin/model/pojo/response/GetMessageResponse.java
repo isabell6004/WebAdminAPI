@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.fashiongo.webadmin.model.response;
+package net.fashiongo.webadmin.model.pojo.response;
 
 import java.util.List;
 

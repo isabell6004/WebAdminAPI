@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.fashiongo.webadmin.model.parameter;
+package net.fashiongo.webadmin.model.pojo.parameter;
 
 import io.swagger.annotations.ApiModelProperty;
 

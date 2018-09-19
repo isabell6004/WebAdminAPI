@@ -8,15 +8,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.fgem.EmApplicationRepository;
-import net.fashiongo.webadmin.model.fgem.EmApplication;
+import net.fashiongo.webadmin.model.pojo.MessageList;
+import net.fashiongo.webadmin.model.pojo.Total;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * 
  * @author Incheol Jung
  */
 @Service
-public class TestService {
+public class TestService extends ApiService{
 	
 	@Autowired
 	@Qualifier("webAdminJsonClient")
@@ -24,23 +28,78 @@ public class TestService {
 	
 	@Autowired
 	EmApplicationRepository emApplicationRepository;
-
-	public String getMethod(String message) {
-		if(message.equals("error")) {
-			List<String> arr = new ArrayList<String>();
-			arr.add("test");
-			arr.get(10);
-		}else {
-//			JSONObject obj = new JSONObject();
-//			obj.put("token", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJyb2xlaWQiOiJTIiwidXNlcklkIjoxMDksInVzZXJuYW1lIjoia3JkZXYiLCJmdWxsbmFtZSI6IktvcmVhIERldmVsb3BlciIsImlwYWRkciI6IjEwMy4yNDMuMjAwLjEyIiwidXNlcmFnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzY4LjAuMzQ0MC4xMDYgU2FmYXJpLzUzNy4zNiIsIm5iZiI6MTUzNzIyODE3Mi4wLCJpYXQiOjE1MzcyMjgxNzIuMCwiZXhwIjoxNTM3MjcxMzcyLjB9.RC4DJ-xa_MiWsuLxRqCDc6BdpxCW8Ok1EZ1yqW_IhI1K4_iGGdPGrVdA_pEGB08E_8SOkZxUFU2ho1YYWvfb-A");
-//			JsonResponse result = httpClient.postObject("Account/TokenCheck", obj);
-////			JsonResponse result = httpClient.get("Account/Test");
-//			System.out.println("result.getMessage()" + result.getMessage());
-			
-			EmApplication em = emApplicationRepository.findOne(1);
-			System.out.println("em.getName()" + em.getName());
-		}
+	
+	/**
+	 * Description Example
+	 * @since 2018. 9. 19.
+	 * @author Incheol Jung
+	 * @return 
+	 */
+	public String simpleTest() {
+		return "testService -> simpleTest";
+	}
+	
+	/**
+	 * 
+	 * @since 2018. 9. 19.
+	 * @author Incheol Jung
+	 * @return 
+	 * Desc :
+	 */
+	public String executeException() {
+		List<String> arr = new ArrayList<String>();
+		arr.add("test");
+		arr.get(10);
 		
-		return "testService response message";
+		return "testService -> executeException";
+	}
+	
+	/**
+	 * 
+	 * @since 2018. 9. 19.
+	 * @author Incheol Jung
+	 * @param message
+	 * @return 
+	 * Desc :
+	 */
+	public String callhttpNetwork(String message) {
+		JsonResponse result = httpClient.get("Account/Test");
+		System.out.println("result.getMessage()" + result.getMessage());
+		
+		return "testService -> callhttpNetwork";
+	}
+	
+	/**
+	 * 
+	 * @since 2018. 9. 19.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return 
+	 * Desc :
+	 */
+	public String callProc(GetMessageParameters parameters) {
+		GetMessageResponse result = new GetMessageResponse();
+		String spName = "up_wa_GetAdminMessage";
+        List<Object> params = new ArrayList<Object>();
+        
+        params.add(parameters.getPagenum());
+        params.add(parameters.getPagesize());
+        params.add(parameters.getParent());
+        params.add(parameters.getSendertypeid());
+        params.add(parameters.getRecipienttypeid());
+        params.add(parameters.getSender());
+        params.add(parameters.getTopic());
+        params.add(parameters.getSubject());
+        params.add(parameters.getPeriod());
+        params.add(parameters.getFromdate());
+        params.add(parameters.getTodate());
+        params.add(parameters.getStatus());
+        
+        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, MessageList.class);
+        
+		result.setTable(((List<Total>)_result.get(0)).get(0));
+		result.setTable1((List<MessageList>) _result.get(1));
+		
+		return "testService -> callProc";
 	}
 }
