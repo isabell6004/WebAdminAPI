@@ -20,11 +20,11 @@ public class MessageService extends ApiService {
 	
 	/**
 	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @param parameters
 	 * @return 
-	 * Desc :
 	 */
 	public GetMessageResponse GetMessage(GetMessageParameters parameters) {
 		GetMessageResponse result = new GetMessageResponse();

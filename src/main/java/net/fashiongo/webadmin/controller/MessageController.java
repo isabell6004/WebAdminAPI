@@ -24,6 +24,14 @@ public class MessageController {
 	@Autowired
 	MessageService messageService;
 	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 9. 19.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
 	@RequestMapping(value="getmessage", method=RequestMethod.POST)
 	public JsonResponse<GetMessageResponse> GetMessage(@RequestBody GetMessageParameters parameters) {
 		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(false, null, null);

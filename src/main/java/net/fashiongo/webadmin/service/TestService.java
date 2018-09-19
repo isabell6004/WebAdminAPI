@@ -32,21 +32,23 @@ public class TestService extends ApiService{
 	EmApplicationRepository emApplicationRepository;
 	
 	/**
+	 * 
 	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
-	 * @return 
+	 * @return
 	 */
 	public String simpleTest() {
 		return "testService -> simpleTest";
 	}
 	
 	/**
+	 * 
 	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
-	 * @return 
-	 * @throws Exception 
+	 * @return
+	 * @throws Exception
 	 */
 	public String executeException() throws Exception {
 		try {
@@ -63,11 +65,12 @@ public class TestService extends ApiService{
 	}
 	
 	/**
+	 * 
 	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @param message
-	 * @return 
+	 * @return
 	 */
 	public String callhttpNetwork(String message) {
 		JsonResponse result = httpClient.get("Account/Test");
@@ -77,11 +80,12 @@ public class TestService extends ApiService{
 	}
 	
 	/**
+	 * 
 	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @param parameters
-	 * @return 
+	 * @return
 	 */
 	public String callProc(GetMessageParameters parameters) {
 		GetMessageResponse result = new GetMessageResponse();
@@ -110,10 +114,11 @@ public class TestService extends ApiService{
 	}
 	
 	/**
+	 * 
 	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
-	 * @return 
+	 * @return
 	 */
 	public String getSession() {
 		WebAdminLoginUser user =  Utility.getUserInfo();

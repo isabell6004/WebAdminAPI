@@ -18,11 +18,10 @@ public class TestController {
 	TestService testService;
 	
 	/**
-	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @return 
-	 * Desc :
 	 */
 	@RequestMapping(value="/simple")
 	public JsonResponse<String> simpleTest() {
@@ -34,11 +33,10 @@ public class TestController {
 	}
 	
 	/**
-	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @return 
-	 * Desc :
 	 * @throws Exception 
 	 */
 	@RequestMapping(value="/exception")
@@ -51,12 +49,11 @@ public class TestController {
 	}
 	
 	/**
-	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @param message
 	 * @return 
-	 * Desc :
 	 */
 	@RequestMapping(value="/http")
 	public JsonResponse<String> callhttpNetwork(String message) {
@@ -68,12 +65,11 @@ public class TestController {
 	}
 	
 	/**
-	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @param parameters
 	 * @return 
-	 * Desc :
 	 */
 	@RequestMapping(value="/procedure", method=RequestMethod.POST)
 	public JsonResponse<String> callProc(@RequestBody GetMessageParameters parameters) {
@@ -85,11 +81,10 @@ public class TestController {
 	}
 	
 	/**
-	 * 
+	 * Description Example
 	 * @since 2018. 9. 19.
 	 * @author Incheol Jung
 	 * @return 
-	 * Desc :
 	 */
 	@RequestMapping(value="/session")
 	public JsonResponse<String> getSession() {

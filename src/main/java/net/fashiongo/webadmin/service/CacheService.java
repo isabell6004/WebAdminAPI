@@ -17,6 +17,15 @@ public class CacheService {
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
 	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 9. 19.
+	 * @author Incheol Jung
+	 * @param cacheName
+	 * @param key
+	 * @return
+	 */
 	public JsonResponse GetRedisCacheEvict(String cacheName, String key) {
 		String request = "cache/".concat(cacheName).concat("/").concat(key);
 		JsonResponse result = httpClient.get(request);
@@ -24,6 +33,15 @@ public class CacheService {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 9. 19.
+	 * @author Incheol Jung
+	 * @param oldDirName
+	 * @param newDirName
+	 * @return
+	 */
 	public JsonResponse GetRedisCacheEvict_ChangeDirName(String oldDirName, String newDirName) {
 		String request = "misc/shell/changeDirname/".concat(oldDirName).concat("/").concat(newDirName);
 		JsonResponse result = httpClient.get(request);
