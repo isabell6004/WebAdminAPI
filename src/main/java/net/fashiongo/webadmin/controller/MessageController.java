@@ -3,7 +3,6 @@
  */
 package net.fashiongo.webadmin.controller;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.model.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.response.GetMessageResponse;
 import net.fashiongo.webadmin.service.MessageService;
 
 /**
@@ -25,10 +25,10 @@ public class MessageController {
 	MessageService messageService;
 	
 	@RequestMapping(value="getmessage", method=RequestMethod.POST)
-	public JsonResponse<JSONObject> GetMessage(@RequestBody GetMessageParameters parameters) {
-		JsonResponse<JSONObject> results = new JsonResponse<JSONObject>(false, null, null);
+	public JsonResponse<GetMessageResponse> GetMessage(@RequestBody GetMessageParameters parameters) {
+		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(false, null, null);
 		
-		JSONObject result = messageService.GetMessage(parameters);
+		GetMessageResponse result = messageService.GetMessage(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 		
