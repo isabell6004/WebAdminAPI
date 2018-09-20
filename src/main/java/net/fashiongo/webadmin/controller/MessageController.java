@@ -18,7 +18,7 @@ import net.fashiongo.webadmin.service.MessageService;
  * @author Incheol Jung
  */
 @RestController
-@RequestMapping(value="/message", produces = "application/json")
+@RequestMapping(value="/message")
 public class MessageController {
 	
 	@Autowired
