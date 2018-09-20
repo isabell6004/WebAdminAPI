@@ -55,12 +55,12 @@ server:
   context-path: /api
   
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.32:19009
+  fgServiceAPI_EndPoint: http://10.10.0.145:19002
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:
     develop:
-      check-token : true
+      check-token : false
 
 ---
 # Local
@@ -135,6 +135,9 @@ spring:
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
     
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.150:19002
+  
 server:
   port: 19901
 logging:

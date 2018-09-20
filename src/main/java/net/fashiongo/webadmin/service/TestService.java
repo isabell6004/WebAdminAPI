@@ -59,8 +59,6 @@ public class TestService extends ApiService{
 			System.out.println(ex.getMessage());
 			throw new Exception();
 		}
-		
-		
 		return "testService -> executeException";
 	}
 	
