@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.model.photostudio;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
 import net.fashiongo.common.dal.IPersistent;
 
@@ -21,12 +24,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "Photo_Discount")
 public class PhotoDiscount implements IPersistent, Serializable {
+	
+	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
+	private static final String FROM_TIME = " 00:00:00";
+	private static final String TO_TIME = " 23:59:59";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "DiscountID")
 	private Integer discountID;
-
 	public Integer getDiscountID() {
 		return discountID;
 	}
@@ -37,7 +43,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "DiscountName")
 	private String discountName;
-
 	public String getDiscountName() {
 		return discountName;
 	}
@@ -48,7 +53,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "DiscountDescription")
 	private String discountDescription;
-
 	public String getDiscountDescription() {
 		return discountDescription;
 	}
@@ -57,55 +61,54 @@ public class PhotoDiscount implements IPersistent, Serializable {
 		this.discountDescription = discountDescription;
 	}
 
+	@JsonIgnore
 	@Column(name = "FromDate")
 	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime fromDateDB;
-
-	public LocalDateTime getFromDateDB() {
-		return fromDateDB;
+	private LocalDateTime _fromDate;
+	public LocalDateTime get_fromDate() {
+		return _fromDate;
 	}
 
-	public void setFromDateDB(LocalDateTime fromDateDB) {
-		this.fromDateDB = fromDateDB;
+	public void set_fromDate(LocalDateTime _fromDate) {
+		this._fromDate = _fromDate;
 	}
 
 	@Transient
 	private String fromDate;
-
 	public String getFromDate() {
-		return fromDate;
+		return _fromDate != null ? _fromDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
 	}
 
 	public void setFromDate(String fromDate) {
-		this.fromDate = fromDate;
+		this.fromDate = StringUtils.isNotEmpty(fromDate) ? fromDate + FROM_TIME : null;
+		this.set_fromDate(StringUtils.isNotEmpty(this.fromDate) ? LocalDateTime.parse(this.fromDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
+	@JsonIgnore
 	@Column(name = "ToDate")
 	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime toDateDB;
-
-	public LocalDateTime getToDateDB() {
-		return toDateDB;
+	private LocalDateTime _toDate;
+	public LocalDateTime get_toDate() {
+		return _toDate;
 	}
 
-	public void setToDateDB(LocalDateTime toDateDB) {
-		this.toDateDB = toDateDB;
+	public void set_toDate(LocalDateTime _toDate) {
+		this._toDate = _toDate;
 	}
 
 	@Transient
 	private String toDate;
-
 	public String getToDate() {
-		return toDate;
+		return _toDate != null ? _toDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
 	}
 
 	public void setToDate(String toDate) {
-		this.toDate = toDate;
+		this.toDate = StringUtils.isNotEmpty(toDate) ? toDate + TO_TIME : null;
+		this.set_toDate(StringUtils.isNotEmpty(this.toDate) ? LocalDateTime.parse(this.toDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
 	@Column(name = "DiscountCode")
 	private String discountCode;
-
 	public String getDiscountCode() {
 		return discountCode;
 	}
@@ -116,7 +119,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "IsRequiredPriceQty")
 	private Boolean isRequiredPriceQty;
-
 	public Boolean getIsRequiredPriceQty() {
 		return isRequiredPriceQty;
 	}
@@ -127,7 +129,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "RequiredPrice")
 	private BigDecimal requiredPrice;
-
 	public BigDecimal getRequiredPrice() {
 		return requiredPrice;
 	}
@@ -138,7 +139,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "RequiredQty")
 	private BigDecimal requiredQty;
-
 	public BigDecimal getRequiredQty() {
 		return requiredQty;
 	}
@@ -149,7 +149,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "DiscountRate")
 	private BigDecimal discountRate;
-
 	public BigDecimal getDiscountRate() {
 		return discountRate;
 	}
@@ -160,7 +159,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "DiscountAmount")
 	private BigDecimal discountAmount;
-
 	public BigDecimal getDiscountAmount() {
 		return discountAmount;
 	}
@@ -171,7 +169,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "Active")
 	private Boolean active;
-
 	public Boolean getActive() {
 		return active;
 	}
@@ -182,7 +179,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Column(name = "UsedTimes")
 	private Integer usedTimes;
-
 	public Integer getUsedTimes() {
 		return usedTimes;
 	}
@@ -195,7 +191,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime createdOnDate;
-
 	public LocalDateTime getCreatedOnDate() {
 		return createdOnDate;
 	}
@@ -206,14 +201,12 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Transient
 	private String createdOn;
-
 	public String getCreatedOn() {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
 	@Column(name = "CreatedBy")
 	private String createdBy;
-
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -226,7 +219,6 @@ public class PhotoDiscount implements IPersistent, Serializable {
 	@Column(name = "ModifiedOn")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime modifiedOnDate;
-
 	public LocalDateTime getModifiedOnDate() {
 		return modifiedOnDate;
 	}
@@ -237,14 +229,12 @@ public class PhotoDiscount implements IPersistent, Serializable {
 
 	@Transient
 	private String modifiedOn;
-
 	public String getModifiedOn() {
 		return modifiedOnDate != null ? modifiedOnDate.toString() : null;
 	}
 
 	@Column(name = "ModifiedBY")
 	private String modifiedBY;
-
 	public String getModifiedBY() {
 		return modifiedBY;
 	}

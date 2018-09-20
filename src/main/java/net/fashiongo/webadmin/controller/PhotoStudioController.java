@@ -1,13 +1,17 @@
 package net.fashiongo.webadmin.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import net.fashiongo.common.JsonResponse;
+import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
+import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.service.PhotoStudioService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +46,38 @@ public class PhotoStudioController {
 		} catch (Exception ex) {
 			logger.error("Exception Error: ", ex);
 			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@RequestMapping(value = "/prices/save")
+	public JsonResponse<?> savePrices(@RequestBody Map<String, List<PhotoPrice>> parmMap) {
+		logger.debug("PhotoStudioController.savePrices() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			String resultMsg = photoStudioService.savePrices(parmMap);
+			response.setSuccess(StringUtils.isEmpty(resultMsg));
+			response.setMessage(resultMsg);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.savePrices():", ex);
+		}
+
+		return response;
+	}
+	
+	@RequestMapping(value = "/cancellationfees/save")
+	public JsonResponse<?> saveCancellationfees(@RequestBody Map<String, List<PhotoCancellationFee>> parmMap) {
+		logger.debug("PhotoStudioController.saveCancellationfees() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			String resultMsg = photoStudioService.saveCancellationFees(parmMap);
+			response.setSuccess(StringUtils.isEmpty(resultMsg));
+			response.setMessage(resultMsg);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.saveCancellationfees():", ex);
 		}
 
 		return response;
