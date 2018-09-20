@@ -14,16 +14,16 @@ import net.fashiongo.webadmin.model.pojo.Total;
  * @author Incheol Jung
  */
 public class GetMessageResponse {
-	@JsonProperty("table")
-	private Total total;
+	@JsonProperty("Table")
+	private List<Total> total;
 	
-	@JsonProperty("table1")
+	@JsonProperty("Table1")
 	private List<Message> messagelist;
 	
-	public Total getTotal() {
+	public List<Total> getTotal() {
 		return total;
 	}
-	public void setTotal(Total total) {
+	public void setTotal(List<Total> total) {
 		this.total = total;
 	}
 	public List<Message> getMessagelist() {

@@ -46,7 +46,7 @@ public class MessageService extends ApiService {
         
         List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, Message.class);
         
-		result.setTotal(((List<Total>)_result.get(0)).get(0));
+		result.setTotal((List<Total>)_result.get(0));
 		result.setMessagelist((List<Message>) _result.get(1));
 		
 		return result;
