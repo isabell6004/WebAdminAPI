@@ -4,7 +4,7 @@
 package net.fashiongo.webadmin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +18,7 @@ import net.fashiongo.webadmin.service.MessageService;
  * @author Incheol Jung
  */
 @RestController
-@RequestMapping(value="/message")
+@RequestMapping(value="/message", produces = "application/json")
 public class MessageController {
 	
 	@Autowired
@@ -33,7 +33,7 @@ public class MessageController {
 	 * @return
 	 */
 	@RequestMapping(value="getmessage", method=RequestMethod.POST)
-	public JsonResponse<GetMessageResponse> GetMessage(@RequestBody GetMessageParameters parameters) {
+	public JsonResponse<GetMessageResponse> GetMessage(@ModelAttribute GetMessageParameters parameters) {
 		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(false, null, null);
 		
 		GetMessageResponse result = messageService.GetMessage(parameters);
