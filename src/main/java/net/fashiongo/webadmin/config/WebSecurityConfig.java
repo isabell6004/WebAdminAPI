@@ -51,10 +51,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 		} else {
 			http
+			.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class)
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/**").permitAll()
-			.anyRequest().authenticated();
+			.anyRequest().permitAll();
 		}
 	}
 	
