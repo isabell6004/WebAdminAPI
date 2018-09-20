@@ -3,6 +3,8 @@
  */
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -85,19 +87,19 @@ public class GetMessageParameters {
 		this.period = period;
 	}
 	public String getFromdate() {
-		return fromdate;
+		return StringUtils.isEmpty(fromdate) ? null : fromdate;
 	}
 	public void setFromdate(String fromdate) {
 		this.fromdate = fromdate;
 	}
 	public String getTodate() {
-		return todate;
+		return StringUtils.isEmpty(todate) ? null : todate;
 	}
 	public void setTodate(String todate) {
 		this.todate = todate;
 	}
 	public String getStatus() {
-		return status;
+		return StringUtils.isEmpty(status) ? null : status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
