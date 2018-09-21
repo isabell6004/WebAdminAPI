@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.fashiongo.common.JsonResponse;
+import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
 import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
@@ -160,6 +161,22 @@ public class PhotoStudioController {
 			response.setData(result);
 		} catch (Exception ex) {
 			logger.error("Error: PhotoStudioController.addModel():", ex);
+		}
+
+		return response;
+	}
+	
+	@RequestMapping(value = "/calendar/save")
+	public JsonResponse<?> saveCalendar(@RequestBody List<PhotoCalendar> photoCalendars) {
+		logger.debug("PhotoStudioController.saveCalendar() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			String resultMsg = photoStudioService.saveCalendar(photoCalendars);
+			response.setSuccess(StringUtils.isEmpty(resultMsg));
+			response.setMessage(resultMsg);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.saveCalendar():", ex);
 		}
 
 		return response;

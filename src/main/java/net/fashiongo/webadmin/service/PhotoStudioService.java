@@ -6,16 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 import net.fashiongo.webadmin.common.Utility;
+import net.fashiongo.webadmin.dao.photostudio.MapPhotoCalendarModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCategoryPriceRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoImageRepository;
+import net.fashiongo.webadmin.dao.photostudio.PhotoCalendarRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoCancellationFeeRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoCategoryRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoDiscountRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoPriceRepository;
+import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCategoryPrice;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoImage;
+import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
 import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
@@ -56,6 +60,12 @@ public class PhotoStudioService {
 	
 	@Autowired
 	private PhotoCancellationFeeRepository photoCancellationFeeRepository;
+	
+	@Autowired
+	private PhotoCalendarRepository photoCalendarRepository;
+	
+	@Autowired
+	private MapPhotoCalendarModelRepository mapPhotoCalendarModelRepository;
 	
 	@Autowired
 	@Qualifier("photostudioJdbcTemplate")
@@ -265,5 +275,38 @@ public class PhotoStudioService {
 		}
 
 		return photoModel.getModelID();
+	}
+	
+	@Transactional
+	public String saveCalendar(List<PhotoCalendar> photoCalendars) throws IllegalArgumentException, IllegalAccessException {
+		
+		String Msg = null;
+		
+		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
+		
+		List<MapPhotoCalendarModel> mapPhotoCalendarModels;
+		
+		for(PhotoCalendar photoCalendar : photoCalendars) {
+			if(photoCalendar.getCalendarID() == null) {
+				return "CalendarID does not exist!";
+			}else {
+				photoCalendar.setModifiedOnDate(now);
+				photoCalendar.setModifiedBY(username);
+				String sql = photoCalendar.toUpdateQuery("");
+				jdbcTemplate.update(sql);
+				mapPhotoCalendarModels = photoCalendar.getMapPhotoCalendarModels();
+				for(MapPhotoCalendarModel mapPhotoCalendarModel : mapPhotoCalendarModels) {
+					if(mapPhotoCalendarModel.getModelScheduleID() == null) {
+						mapPhotoCalendarModelRepository.save(mapPhotoCalendarModels);
+					}else {
+						sql = mapPhotoCalendarModel.toUpdateQuery("");
+						jdbcTemplate.update(sql);
+					}
+				}
+			}
+		}
+		
+		return Msg;
 	}
 }
