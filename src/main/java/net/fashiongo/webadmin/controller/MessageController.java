@@ -5,6 +5,7 @@ package net.fashiongo.webadmin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,7 @@ public class MessageController {
 	 * @return
 	 */
 	@RequestMapping(value="getmessage", method=RequestMethod.POST)
-	public GetMessageResponse GetMessage(@ModelAttribute GetMessageParameters parameters) {
+	public GetMessageResponse GetMessage(@RequestBody GetMessageParameters parameters) {
 		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(false, null, null);
 		
 		GetMessageResponse result = messageService.GetMessage(parameters);

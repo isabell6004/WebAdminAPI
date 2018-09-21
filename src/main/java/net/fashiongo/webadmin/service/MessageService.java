@@ -36,6 +36,8 @@ public class MessageService extends ApiService {
         params.add(parameters.getParent());
         params.add(parameters.getSendertypeid());
         params.add(parameters.getRecipienttypeid());
+        params.add(null);
+        params.add(null);
         params.add(parameters.getSender());
         params.add(parameters.getTopic());
         params.add(parameters.getSubject());

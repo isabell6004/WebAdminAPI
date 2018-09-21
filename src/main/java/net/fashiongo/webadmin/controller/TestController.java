@@ -23,7 +23,7 @@ public class TestController {
 	 * @author Incheol Jung
 	 * @return 
 	 */
-	@RequestMapping(value="/simple")
+	@RequestMapping(value="/simple", method=RequestMethod.GET)
 	public JsonResponse<String> simpleTest() {
 		JsonResponse<String> response = new JsonResponse<String>(false, null, null);
 		response.setData(testService.simpleTest());
@@ -39,7 +39,7 @@ public class TestController {
 	 * @return 
 	 * @throws Exception 
 	 */
-	@RequestMapping(value="/exception")
+	@RequestMapping(value="/exception", method=RequestMethod.GET)
 	public JsonResponse<String> executeException() throws Exception {
 		JsonResponse<String> response = new JsonResponse<String>(false, null, null);
 		response.setData(testService.executeException());
@@ -55,7 +55,7 @@ public class TestController {
 	 * @param message
 	 * @return 
 	 */
-	@RequestMapping(value="/http")
+	@RequestMapping(value="/http", method=RequestMethod.GET)
 	public JsonResponse<String> callhttpNetwork(String message) {
 		JsonResponse<String> response = new JsonResponse<String>(false, null, null);
 		response.setData(testService.callhttpNetwork(message));
@@ -86,7 +86,7 @@ public class TestController {
 	 * @author Incheol Jung
 	 * @return 
 	 */
-	@RequestMapping(value="/session")
+	@RequestMapping(value="/session", method=RequestMethod.GET)
 	public JsonResponse<String> getSession() {
 		JsonResponse<String> response = new JsonResponse<String>(false, null, null);
 		response.setData(testService.getSession());

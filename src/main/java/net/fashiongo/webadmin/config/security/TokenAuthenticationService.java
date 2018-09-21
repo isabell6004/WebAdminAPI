@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.config.security;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
@@ -23,7 +25,7 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 @Component
 public class TokenAuthenticationService {
 	static final long EXPIRATIONTIME = 60 * 60 * 24; // default, 24 hours
-	static final String SECRET = "FGWebAdminAPI6301";
+	static final String SECRET = "fgwav2^^9070";
 	static final String TOKEN_PREFIX = "Bearer";
 	static final String HEADER_STRING = "Authorization";
 	
@@ -43,12 +45,20 @@ public class TokenAuthenticationService {
 
 	}
 
-	public static Authentication getAuthentication(HttpServletRequest request) {
+	public static Authentication getAuthentication(HttpServletRequest request) throws IllegalArgumentException, UnsupportedEncodingException {
 		String token = request.getHeader(HEADER_STRING);
-		ObjectMapper mapper = new ObjectMapper();
 		JsonResponse result = new JsonResponse();
+		Algorithm algorithmHS = Algorithm.HMAC512(SECRET);
 		
 		if (token != null) {
+//			Claims claims = Jwts.parser()
+//			          .setSigningKey(SECRET)
+//			          .require(algorithmHS)
+//			          .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+//			          .getBody();
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
 			try {
 				JSONObject obj = new JSONObject();
 				obj.put("token", token);
