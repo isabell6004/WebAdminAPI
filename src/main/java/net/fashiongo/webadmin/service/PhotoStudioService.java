@@ -2,9 +2,14 @@ package net.fashiongo.webadmin.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import net.fashiongo.webadmin.common.PagedResult;
+import net.fashiongo.webadmin.common.PhotoStudioJdbcHelper;
+import net.fashiongo.webadmin.common.QueryParam;
+import net.fashiongo.webadmin.common.SingleValueResult;
 import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCalendarModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCategoryPriceRepository;
@@ -26,6 +31,7 @@ import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoImage;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
+import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +72,9 @@ public class PhotoStudioService {
 	
 	@Autowired
 	private MapPhotoCalendarModelRepository mapPhotoCalendarModelRepository;
+	
+	@Autowired
+	protected PhotoStudioJdbcHelper jdbcHelper;
 	
 	@Autowired
 	@Qualifier("photostudioJdbcTemplate")
@@ -309,4 +318,68 @@ public class PhotoStudioService {
 		
 		return Msg;
 	}
+	
+	public String calendarAvailable(PhotoCalendar photoCalendar) throws IllegalArgumentException, IllegalAccessException {
+		
+		String Msg = null;
+		
+		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
+		
+		photoCalendar.setModifiedOnDate(now);
+		photoCalendar.setModifiedBY(username);
+		String sql = photoCalendar.toUpdateQuery("");
+		jdbcTemplate.update(sql);
+		
+		return Msg;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public PagedResult<SimplePhotoOrder> getPhotoOrders(QueryParam queryParam) {
+		PagedResult<SimplePhotoOrder> result = new PagedResult<SimplePhotoOrder>();
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(queryParam.getPn());
+		params.add(queryParam.getPs());
+		params.add(queryParam.getOrderBy());
+		
+		String searchType = queryParam.getQt();	
+		String searchKeyword = queryParam.getQ();
+		
+		if(!StringUtils.isEmpty(searchType) && !StringUtils.isEmpty(searchKeyword) ) {
+			params.add(searchType);
+			params.add(searchKeyword);
+		}
+		else {
+			params.add(null);
+			params.add(null);
+		}
+		
+		String dType = queryParam.getDtype();
+		Date df = queryParam.getDf();
+		Date dt = queryParam.getDt();
+		if(!StringUtils.isEmpty(dType) && (df != null || dt != null)) {
+			params.add(dType);
+			params.add(df);
+			params.add(dt);
+		}else {
+			params.add(null);
+			params.add(null);
+			params.add(null);
+		}
+		
+		params.add(queryParam.getCatids());
+		params.add(queryParam.getOstsids());
+
+		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetOrderList", params, SimplePhotoOrder.class, SingleValueResult.class);
+		
+		List<SimplePhotoOrder> rs1 = (List<SimplePhotoOrder>)_results.get(0);
+		List<SingleValueResult> rs2 = (List<SingleValueResult>)_results.get(1);
+
+		result.setTotal(rs2.get(0));
+		result.setRecords(rs1);
+		
+		return result;
+	}
+	
 }

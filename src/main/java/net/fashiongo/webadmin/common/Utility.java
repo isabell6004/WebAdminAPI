@@ -76,6 +76,9 @@ private static final HashMap<String, Integer[]> psMap = new HashMap<String, Inte
 		
 		// vendor admin
 		psMap.put("getAdminLog", new Integer[]{36, 90, 126, 180});
+		
+		// photo order
+		psMap.put("getPhotoOrders", new Integer[]{5, 10, 15});
 	}
 	
 	

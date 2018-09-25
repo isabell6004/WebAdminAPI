@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.common;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
@@ -51,6 +52,15 @@ private static final long serialVersionUID = 1L;
 		this.osid = osid;
 	}
 	
+	/* Search Date Target "PhotoshootDate", "OrderDate", "DropOffDate" */
+	private String dtype;
+	public String getDtype() {
+		return dtype;
+	}
+	public void setDtype(String dtype) {
+		this.dtype = dtype;
+	}
+
 	/* Date From */
 	private Date df;
 	public Date getDf() {
@@ -875,6 +885,24 @@ private static final long serialVersionUID = 1L;
 			return ReflectionToStringBuilder.toString(this);
 		}
 	}
+	
+	/* category id list*/
+	private List<Integer> catids;
+	public List<Integer> getCatids() {
+		return catids;
+	}
+	public void setCatids(List<Integer> catids) {
+		this.catids = catids;
+	}
 
+	/* order status id list*/
+	private List<Integer> ostsids;
+	public List<Integer> getOstsids() {
+		return ostsids;
+	}
+	public void setOstsids(List<Integer> ostsids) {
+		this.ostsids = ostsids;
+	}
+	
 	//End
 }

@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import net.fashiongo.common.JsonResponse;
+import net.fashiongo.webadmin.common.PagedResult;
+import net.fashiongo.webadmin.common.QueryParam;
+import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
 import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
+import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 import net.fashiongo.webadmin.service.PhotoStudioService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,9 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -180,5 +186,49 @@ public class PhotoStudioController {
 		}
 
 		return response;
+	}
+	
+	@RequestMapping(value = "/calendar/available")
+	public JsonResponse<?> calendarAvailable(@RequestBody PhotoCalendar photoCalendar) {
+		logger.debug("PhotoStudioController.calendarAvailable() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			String resultMsg = photoStudioService.calendarAvailable(photoCalendar);
+			response.setSuccess(StringUtils.isEmpty(resultMsg));
+			response.setMessage(resultMsg);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.calendarAvailable():", ex);
+		}
+
+		return response;
+	}
+	
+	@RequestMapping(value = "/orders", method = RequestMethod.GET)
+	public JsonResponse getPhotoOrders(@ModelAttribute QueryParam queryParam) {
+		logger.debug("PhotoStudioController.getPhotoOrders() called!!!");
+		if (queryParam.getPn() == null) {
+			queryParam.setPn(1);
+		}
+		if (queryParam.getPs() == null){
+			queryParam.setPs(5);
+		}
+		if(queryParam.getOrderBy() == null) {
+			queryParam.setOrderBy("PhotoshootDateDesc");
+		}
+		
+		try {
+			if (Utility.checkValidPageSize("getPhotoOrders", queryParam.getPs())) {
+				logger.debug("getPhotoOrders() params: {}", queryParam.toString());
+				PagedResult<SimplePhotoOrder> photoOrders = photoStudioService.getPhotoOrders(queryParam);
+				return new JsonResponse(true, "", photoOrders);
+			} else {
+				return new JsonResponse(false, "PhotoOrder Page Size invalid.", null);
+			}
+		} catch (Exception e) {
+			logger.error("Error: PhotoStudioController.getPhotoOrders():", e);
+			logger.error("QueryParam: {}", queryParam.toString());
+			return new JsonResponse(false, "", null);
+		}
 	}
 }
