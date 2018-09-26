@@ -71,16 +71,6 @@ public class PhotoPrice implements IPersistent, Serializable {
 		this.unitPrice = unitPrice;
 	}
 
-	@Column(name = "Unit")
-	private String unit;
-	public String getUnit() {
-		return unit;
-	}
-
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
-
 	@JsonIgnore
 	@Column(name = "FromEffectiveDate")
 	@Convert(converter = LocalDateTimeConverter.class)
@@ -150,12 +140,14 @@ public class PhotoPrice implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 
@@ -180,6 +172,7 @@ public class PhotoPrice implements IPersistent, Serializable {
 		this.modifiedOnDate = modifiedOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String modifiedOn;
 
@@ -187,6 +180,7 @@ public class PhotoPrice implements IPersistent, Serializable {
 		return modifiedOnDate != null ? modifiedOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "ModifiedBY")
 	private String modifiedBY;
 
@@ -197,5 +191,30 @@ public class PhotoPrice implements IPersistent, Serializable {
 	public void setModifiedBY(String modifiedBY) {
 		this.modifiedBY = modifiedBY;
 	}
+	
+	@Transient
+	@Column(name = "PriceTypeName")
+	private String priceTypeName;
+	public String getPriceTypeName() {
+		return priceTypeName;
+	}
 
+	public void setPriceTypeName(String priceTypeName) {
+		this.priceTypeName = priceTypeName;
+	}
+	
+	@Transient
+	private String photoShootTypeName;
+	public String getPhotoShootTypeName() {
+		if(this.photoshootType == 1) {
+			return "Full Model Shot";
+		}else if(this.photoshootType == 2) {
+			return "Flat Product Shot";
+		}
+		return photoShootTypeName;
+	}
+
+	public void setPhotoShootTypeName(String photoShootTypeName) {
+		this.photoShootTypeName = photoShootTypeName;
+	}
 }

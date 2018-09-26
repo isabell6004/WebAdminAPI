@@ -19,8 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * @author kcha
- *  SimpleItem: Item info for Item Listing page
+ * @author XiaoChuan.Gao
+ *  SimplePhotoOrder: Order info for Order Listing page
  */
 
 public class SimplePhotoOrder {

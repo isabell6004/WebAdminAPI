@@ -22,12 +22,11 @@ import net.fashiongo.common.dal.IPersistent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "Photo_Price")
+@Table(name = "Photo_Order")
 public class PhotoOrder implements IPersistent, Serializable {
 	
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String EFFECTIVE_FROM_TIME = " 00:00:00";
-	private static final String EFFECTIVE_TO_TIME = " 23:59:59";
+	private static final String DEFAULT_TIME = " 00:00:00";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -180,7 +179,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	}
 
 	public void setCheckOutDate(String checkOutDate) {
-		this.checkOutDate = StringUtils.isNotEmpty(checkOutDate) ? checkOutDate + EFFECTIVE_FROM_TIME : null;
+		this.checkOutDate = StringUtils.isNotEmpty(checkOutDate) ? checkOutDate + DEFAULT_TIME : null;
 		this.set_checkOutDate(StringUtils.isNotEmpty(this.checkOutDate) ? LocalDateTime.parse(this.checkOutDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
@@ -203,7 +202,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	}
 
 	public void setPhotoshootDate(String photoshootDate) {
-		this.photoshootDate = StringUtils.isNotEmpty(photoshootDate) ? photoshootDate + EFFECTIVE_FROM_TIME : null;
+		this.photoshootDate = StringUtils.isNotEmpty(photoshootDate) ? photoshootDate + DEFAULT_TIME : null;
 		this.set_photoshootDate(StringUtils.isNotEmpty(this.photoshootDate) ? LocalDateTime.parse(this.photoshootDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
@@ -236,7 +235,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	}
 
 	public void setDropOffDate(String dropOffDate) {
-		this.dropOffDate = StringUtils.isNotEmpty(dropOffDate) ? dropOffDate + EFFECTIVE_FROM_TIME : null;
+		this.dropOffDate = StringUtils.isNotEmpty(dropOffDate) ? dropOffDate + DEFAULT_TIME : null;
 		this.set_dropOffDate(StringUtils.isNotEmpty(this.dropOffDate) ? LocalDateTime.parse(this.dropOffDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
@@ -319,7 +318,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	}
 
 	public void setCancelledOn(String cancelledOn) {
-		this.cancelledOn = StringUtils.isNotEmpty(cancelledOn) ? cancelledOn + EFFECTIVE_FROM_TIME : null;
+		this.cancelledOn = StringUtils.isNotEmpty(cancelledOn) ? cancelledOn + DEFAULT_TIME : null;
 		this.set_cancelledOn(StringUtils.isNotEmpty(this.cancelledOn) ? LocalDateTime.parse(this.cancelledOn, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 

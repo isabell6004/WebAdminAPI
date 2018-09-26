@@ -7,6 +7,7 @@ import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.common.PagedResult;
 import net.fashiongo.webadmin.common.QueryParam;
 import net.fashiongo.webadmin.common.Utility;
+import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
 import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
 import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -58,6 +60,23 @@ public class PhotoStudioController {
 		return response;
 	}
 	
+	@GetMapping("/prices")
+	public JsonResponse<?> getPhotoPrices() {
+		logger.debug("PhotoStudioController.getPhotoPrices() called!!!");
+		JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			Map<String, Object> result = photoStudioService.getPhotoPrices();
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getPhotoPrices()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
 	@RequestMapping(value = "/prices/save")
 	public JsonResponse<?> savePrices(@RequestBody Map<String, List<PhotoPrice>> parmMap) {
 		logger.debug("PhotoStudioController.savePrices() called!!!");
@@ -69,6 +88,23 @@ public class PhotoStudioController {
 			response.setMessage(resultMsg);
 		} catch (Exception ex) {
 			logger.error("Error: PhotoStudioController.savePrices():", ex);
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/cancellationfees")
+	public JsonResponse<?> getCancellationfees() {
+		logger.debug("PhotoStudioController.getCancellationfees() called!!!");
+		JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			Map<String, Object> result = photoStudioService.getCancellationfees();
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getCancellationfees()：", ex);
+			response.setMessage(ex.getMessage());
 		}
 
 		return response;
@@ -230,5 +266,56 @@ public class PhotoStudioController {
 			logger.error("QueryParam: {}", queryParam.toString());
 			return new JsonResponse(false, "", null);
 		}
+	}
+	
+	@GetMapping("/order/{orderNumber}")
+	public JsonResponse<?> getPhotoOrder(@PathVariable("orderNumber") String orderNumber) {
+		logger.debug("PhotoStudioController.getPhotoOrder() called!!!");
+		JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			Map<String, Object> result = photoStudioService.getPhotoOrder(orderNumber);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getPhotoOrder()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/calendar")
+	public JsonResponse<?> getPhotoCalendar(@RequestParam Map<String, String> parmMap) {
+		logger.debug("PhotoStudioController.getPhotoCalendar() called!!!");
+		JsonResponse<List<PhotoCalendar>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<PhotoCalendar> result = photoStudioService.getPhotoCalendar(parmMap);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getPhotoCalendar()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/order/{orderId}/log/{actionType}")
+	public JsonResponse<?> getActionLog(@PathVariable("orderId") Integer orderId, @PathVariable("actionType") Integer actionType) {
+		logger.debug("PhotoStudioController.getActionLog() called!!!");
+		JsonResponse<List<LogPhotoAction>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<LogPhotoAction> result = photoStudioService.getActionLog(orderId, actionType);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getActionLog()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
 	}
 }

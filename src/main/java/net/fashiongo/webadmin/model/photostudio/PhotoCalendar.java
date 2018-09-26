@@ -127,12 +127,14 @@ public class PhotoCalendar implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 
@@ -157,6 +159,7 @@ public class PhotoCalendar implements IPersistent, Serializable {
 		this.modifiedOnDate = modifiedOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String modifiedOn;
 
@@ -164,6 +167,7 @@ public class PhotoCalendar implements IPersistent, Serializable {
 		return modifiedOnDate != null ? modifiedOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "ModifiedBY")
 	private String modifiedBY;
 
@@ -183,5 +187,16 @@ public class PhotoCalendar implements IPersistent, Serializable {
 
 	public void setMapPhotoCalendarModels(List<MapPhotoCalendarModel> mapPhotoCalendarModels) {
 		this.mapPhotoCalendarModels = mapPhotoCalendarModels;
+	}
+	
+	@Transient
+	@Column(name = "ActualBookedUnit")
+	private Integer actualBookedUnit;
+	public Integer getActualBookedUnit() {
+		return actualBookedUnit;
+	}
+
+	public void setActualBookedUnit(Integer actualBookedUnit) {
+		this.actualBookedUnit = actualBookedUnit;
 	}
 }

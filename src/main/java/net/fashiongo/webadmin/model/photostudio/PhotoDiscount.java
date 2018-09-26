@@ -177,14 +177,14 @@ public class PhotoDiscount implements IPersistent, Serializable {
 		this.active = active;
 	}
 
-	@Column(name = "UsedTimes")
-	private Integer usedTimes;
-	public Integer getUsedTimes() {
-		return usedTimes;
+	@Column(name = "CouponUsageLimit")
+	private Integer couponUsageLimit;
+	public Integer getCouponUsageLimit() {
+		return couponUsageLimit;
 	}
 
-	public void setUsedTimes(Integer usedTimes) {
-		this.usedTimes = usedTimes;
+	public void setCouponUsageLimit(Integer couponUsageLimit) {
+		this.couponUsageLimit = couponUsageLimit;
 	}
 
 	@JsonIgnore

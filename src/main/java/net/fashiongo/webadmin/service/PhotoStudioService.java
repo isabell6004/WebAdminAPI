@@ -2,7 +2,9 @@ package net.fashiongo.webadmin.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ import net.fashiongo.webadmin.dao.photostudio.PhotoDiscountRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoPriceRepository;
+import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCategoryPrice;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoImage;
@@ -30,6 +33,8 @@ import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoImage;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
+import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
+import net.fashiongo.webadmin.model.photostudio.PhotoOrderDetail;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 
@@ -111,7 +116,7 @@ public class PhotoStudioService {
 	public PhotoDiscount getDiscount(Integer discountID) {
 		return photoDiscountRepository.findOne(discountID);
 	}
-
+	
 	public boolean deleteDiscount(Integer discountID) {
 
 		boolean bSuccess = false;
@@ -122,6 +127,21 @@ public class PhotoStudioService {
 		bSuccess = true;
 
 		return bSuccess;
+	}
+	
+	public Map<String, Object> getPhotoPrices() {
+		Map<String, Object> result = new HashMap<String, Object> ();
+		List<Object> params = new ArrayList<Object>();
+
+		List<Object> r = jdbcHelper.executeSP("up_va_Photo_GetPrices", params, PhotoPrice.class, PhotoPrice.class);
+
+		List<PhotoPrice> currentPhotoPrices = (List<PhotoPrice>) r.get(0);
+		List<PhotoPrice> newPhotoPrices = (List<PhotoPrice>) r.get(1);
+		
+		result.put("currentPrices", currentPhotoPrices);
+		result.put("newPrices", newPhotoPrices);
+
+		return result;
 	}
 	
 	@Transactional
@@ -166,7 +186,7 @@ public class PhotoStudioService {
 			List<MapPhotoCategoryPrice> mapPhotoCategoryPrices = new ArrayList<MapPhotoCategoryPrice>();
 			for(PhotoCategory photoCategory : photoCategorys) {
 				for(PhotoPrice newPhotoPrice : newPrices) {
-					if(StringUtils.equalsIgnoreCase(photoCategory.getTypeOfPhotoshoot(), getPhotoshootTypeName(newPhotoPrice.getPhotoshootType()))) {
+					if(StringUtils.equalsIgnoreCase(photoCategory.getTypeOfPhotoshoot(), newPhotoPrice.getPhotoShootTypeName())) {
 						MapPhotoCategoryPrice mapPhotoCategoryPrice = new MapPhotoCategoryPrice();
 						mapPhotoCategoryPrice.setCategoryID(photoCategory.getCategoryId());
 						mapPhotoCategoryPrice.setPriceID(newPhotoPrice.getPriceID());
@@ -187,15 +207,19 @@ public class PhotoStudioService {
 		return Msg;
 	}
 	
-	private String getPhotoshootTypeName(int photoshootType) {
+	public Map<String, Object> getCancellationfees() {
+		Map<String, Object> result = new HashMap<String, Object> ();
+		List<Object> params = new ArrayList<Object>();
+
+		List<Object> r = jdbcHelper.executeSP("up_va_Photo_GetCancellationFees", params, PhotoCancellationFee.class, PhotoCancellationFee.class);
+
+		List<PhotoCancellationFee> currentPhotoCancellationFees = (List<PhotoCancellationFee>) r.get(0);
+		List<PhotoCancellationFee> newPhotoCancellationFees = (List<PhotoCancellationFee>) r.get(1);
 		
-		if(photoshootType == 1) {
-			return "Full Model Shot";
-		}else if(photoshootType == 2) {
-			return "Flat Product Shot";
-		}else {
-			return null;
-		}
+		result.put("currentPhotoCancellationFees", currentPhotoCancellationFees);
+		result.put("newPhotoCancellationFees", newPhotoCancellationFees);
+
+		return result;
 	}
 	
 	@Transactional
@@ -368,8 +392,8 @@ public class PhotoStudioService {
 			params.add(null);
 		}
 		
-		params.add(queryParam.getCatids());
-		params.add(queryParam.getOstsids());
+		params.add(queryParam.getCatids()==null || queryParam.getCatids().size() == 0 ? null : queryParam.getCatids().toArray());
+		params.add(queryParam.getOstsids() ==null || queryParam.getOstsids().size() == 0 ? null : queryParam.getOstsids().toArray());
 
 		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetOrderList", params, SimplePhotoOrder.class, SingleValueResult.class);
 		
@@ -382,4 +406,49 @@ public class PhotoStudioService {
 		return result;
 	}
 	
+	public Map<String, Object> getPhotoOrder(String orderNumber) {
+		Map<String, Object> result = new HashMap<String, Object> ();
+		List<Object> params = new ArrayList<Object>();
+		params.add(orderNumber);
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetOrderDetail", params, PhotoOrder.class, PhotoOrderDetail.class);
+
+		List<PhotoOrder> photoOrders = (List<PhotoOrder>) r.get(0);
+		List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) r.get(1);
+		
+		result.put("photoOrder", photoOrders.get(0));
+		result.put("photoOrderDetails", photoOrderDetails);
+		
+		//get photoStudio Users Being confirmed
+		result.put("photoStudioUsers", Arrays.asList("Brooke","Maria","Brandon","Rosa"));
+
+		return result;
+	}
+	
+	public List<PhotoCalendar> getPhotoCalendar(Map<String, String> parmMap) {
+		List<Object> params = new ArrayList<Object>();
+		params.add(parmMap.get("year"));
+		params.add(parmMap.get("month"));
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetPhotoCalendar", params, PhotoCalendar.class);
+
+		List<PhotoCalendar> photoCalendars = (List<PhotoCalendar>) r.get(0);
+
+		return photoCalendars;
+	}
+	
+	public List<LogPhotoAction> getActionLog(Integer orderId, Integer actionType) {
+		List<Object> params = new ArrayList<Object>();
+		params.add(null);//ActionID
+		params.add(actionType);//ActionType
+		params.add(orderId);//OrderID
+		params.add(null);//CreatedOn
+		params.add(null);//CreatedBy
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetActionLog", params, LogPhotoAction.class);
+
+		List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(0);
+
+		return logPhotoActions;
+	}
 }

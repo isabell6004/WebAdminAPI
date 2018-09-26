@@ -120,6 +120,7 @@ public class PhotoCancellationFee implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String createdOn;
 
@@ -127,6 +128,7 @@ public class PhotoCancellationFee implements IPersistent, Serializable {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 
@@ -151,6 +153,7 @@ public class PhotoCancellationFee implements IPersistent, Serializable {
 		this.modifiedOnDate = modifiedOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String modifiedOn;
 
@@ -158,6 +161,7 @@ public class PhotoCancellationFee implements IPersistent, Serializable {
 		return modifiedOnDate != null ? modifiedOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "ModifiedBY")
 	private String modifiedBY;
 
