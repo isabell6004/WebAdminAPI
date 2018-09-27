@@ -3,6 +3,20 @@ package net.fashiongo.webadmin.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.common.PagedResult;
 import net.fashiongo.webadmin.common.QueryParam;
@@ -17,19 +31,6 @@ import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 import net.fashiongo.webadmin.service.PhotoStudioService;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Andy
@@ -78,7 +79,7 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/prices/save")
+	@PostMapping(value = "/prices/save")
 	public JsonResponse<?> savePrices(@RequestBody Map<String, List<PhotoPrice>> parmMap) {
 		logger.debug("PhotoStudioController.savePrices() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
@@ -111,7 +112,7 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/cancellationfees/save")
+	@PostMapping(value = "/cancellationfees/save")
 	public JsonResponse<?> saveCancellationfees(@RequestBody Map<String, List<PhotoCancellationFee>> parmMap) {
 		logger.debug("PhotoStudioController.saveCancellationfees() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
@@ -127,7 +128,7 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/unit/save")
+	@PostMapping(value = "/unit/save")
 	public JsonResponse<?> savePhotoUnit(@RequestBody Map<String, List<PhotoUnit>> parmMap) {
 		logger.debug("PhotoStudioController.savePhotoUnit() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
@@ -177,7 +178,7 @@ public class PhotoStudioController {
 		return response;
 	}
 
-	@RequestMapping(value = "/discount/save")
+	@PostMapping(value = "/discount/save")
 	public JsonResponse<?> saveDiscount(@RequestBody PhotoDiscount photoDiscount) {
 		logger.debug("PhotoStudioController.saveDiscount() called!!!");
 		JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
@@ -193,7 +194,7 @@ public class PhotoStudioController {
 		return response;
 	}
 
-	@RequestMapping(value = "/discount/{discountID}/delete")
+	@GetMapping(value = "/discount/{discountID}/delete")
 	public JsonResponse<?> deleteDiscount(@PathVariable("discountID") Integer discountID) {
 		logger.debug("PhotoStudioController.deleteDiscount() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
@@ -209,7 +210,7 @@ public class PhotoStudioController {
 		return response;
 	}
 
-	@RequestMapping(value = "/model/save")
+	@PostMapping(value = "/model/save")
 	public JsonResponse<?> saveModel(@RequestBody PhotoModel photoModel) {
 		logger.debug("PhotoStudioController.addModel() called!!!");
 		JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
@@ -225,7 +226,7 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/calendar/save")
+	@PostMapping(value = "/calendar/save")
 	public JsonResponse<?> saveCalendar(@RequestBody List<PhotoCalendar> photoCalendars) {
 		logger.debug("PhotoStudioController.saveCalendar() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
@@ -241,7 +242,7 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/calendar/available")
+	@PostMapping(value = "/calendar/available")
 	public JsonResponse<?> calendarAvailable(@RequestBody PhotoCalendar photoCalendar) {
 		logger.debug("PhotoStudioController.calendarAvailable() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
@@ -257,7 +258,7 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/orders", method = RequestMethod.GET)
+	@GetMapping(value = "/orders")
 	public JsonResponse getPhotoOrders(@ModelAttribute QueryParam queryParam) {
 		logger.debug("PhotoStudioController.getPhotoOrders() called!!!");
 		if (queryParam.getPn() == null) {
