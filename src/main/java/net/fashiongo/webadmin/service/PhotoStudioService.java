@@ -23,6 +23,7 @@ import net.fashiongo.webadmin.dao.photostudio.PhotoDiscountRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoPriceRepository;
+import net.fashiongo.webadmin.dao.photostudio.PhotoUnitRepository;
 import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCategoryPrice;
@@ -36,6 +37,7 @@ import net.fashiongo.webadmin.model.photostudio.PhotoModel;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrderDetail;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
+import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 
 import org.apache.commons.lang.StringUtils;
@@ -71,6 +73,9 @@ public class PhotoStudioService {
 	
 	@Autowired
 	private PhotoCancellationFeeRepository photoCancellationFeeRepository;
+	
+	@Autowired
+	private PhotoUnitRepository photoUnitRepository;
 	
 	@Autowired
 	private PhotoCalendarRepository photoCalendarRepository;
@@ -266,6 +271,57 @@ public class PhotoStudioService {
 				newPhotoCancellationFee.setModifiedOnDate(now);
 				newPhotoCancellationFee.setModifiedBY(username);
 				String sql = newPhotoCancellationFee.toUpdateQuery("");
+				jdbcTemplate.update(sql);
+			}
+		}
+
+		return Msg;
+	}
+	
+	@Transactional
+	public String savePhotoUnit(Map<String, List<PhotoUnit>> parmMap)
+			throws IllegalArgumentException, IllegalAccessException {
+
+		String Msg = null;
+
+		List<PhotoUnit> currentPhotoUnits = parmMap.get("currentPhotoUnits");
+		List<PhotoUnit> newPhotoUnits = parmMap.get("newPhotoUnits");
+
+		LocalDateTime currentFromEffectiveDate = currentPhotoUnits.get(0).get_fromEffectiveDate();
+		LocalDateTime newFromEffectiveDate = newPhotoUnits.get(0).get_fromEffectiveDate();
+
+		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
+
+		if (!newFromEffectiveDate.isAfter(now)) {
+			return "The new effective date must after today!";
+		}
+
+		LocalDateTime currentToEffectiveDate = newFromEffectiveDate.minusSeconds(1);
+		if (currentToEffectiveDate.isBefore(currentFromEffectiveDate)) {
+			return "The new effective date can not be equal or less than current effective date!";
+		}
+
+		for (PhotoUnit currentPhotoUnit : currentPhotoUnits) {
+			currentPhotoUnit.set_toEffectiveDate(currentToEffectiveDate);
+			currentPhotoUnit.setModifiedBY(username);
+			currentPhotoUnit.setModifiedOnDate(now);
+			String sql = currentPhotoUnit.toUpdateQuery("");
+			jdbcTemplate.update(sql);
+		}
+
+		if (newPhotoUnits.get(0).getUnitID() == null) {
+			for (PhotoUnit newPhotoUnit : newPhotoUnits) {
+				newPhotoUnit.setCreatedOnDate(now);
+				newPhotoUnit.setCreatedBy(username);
+			}
+			photoUnitRepository.save(newPhotoUnits);
+
+		} else {
+			for (PhotoUnit newPhotoUnit : newPhotoUnits) {
+				newPhotoUnit.setModifiedOnDate(now);
+				newPhotoUnit.setModifiedBY(username);
+				String sql = newPhotoUnit.toUpdateQuery("");
 				jdbcTemplate.update(sql);
 			}
 		}

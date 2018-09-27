@@ -14,6 +14,7 @@ import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
+import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 import net.fashiongo.webadmin.service.PhotoStudioService;
 
@@ -121,6 +122,22 @@ public class PhotoStudioController {
 			response.setMessage(resultMsg);
 		} catch (Exception ex) {
 			logger.error("Error: PhotoStudioController.saveCancellationfees():", ex);
+		}
+
+		return response;
+	}
+	
+	@RequestMapping(value = "/unit/save")
+	public JsonResponse<?> savePhotoUnit(@RequestBody Map<String, List<PhotoUnit>> parmMap) {
+		logger.debug("PhotoStudioController.savePhotoUnit() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			String resultMsg = photoStudioService.savePhotoUnit(parmMap);
+			response.setSuccess(StringUtils.isEmpty(resultMsg));
+			response.setMessage(resultMsg);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.savePhotoUnit():", ex);
 		}
 
 		return response;
