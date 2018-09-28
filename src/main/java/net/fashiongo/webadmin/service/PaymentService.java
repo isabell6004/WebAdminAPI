@@ -11,11 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import net.fashiongo.webadmin.common.jdbcHelper;
 import net.fashiongo.webadmin.common.PagedResult;
 import net.fashiongo.webadmin.common.QueryParam;
 import net.fashiongo.webadmin.common.SingleValueResult;
-import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.model.fgpay.Dispute;
 import net.fashiongo.webadmin.model.fgpay.DisputeDetail;
 import net.fashiongo.webadmin.model.fgpay.DisputeDetailInfo;
@@ -29,11 +27,8 @@ import net.fashiongo.webadmin.model.fgpay.DisputeMergeOrderInfo;
  *
  */
 @Component("paymentService")
-public class PaymentService {
+public class PaymentService extends ApiService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Autowired
-	protected jdbcHelper jdbcHelper;
 	
 	@SuppressWarnings("unchecked")
 	public PagedResult<Dispute> getDisputes(QueryParam q) {

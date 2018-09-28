@@ -11,7 +11,7 @@ import net.fashiongo.webadmin.dao.fgem.EmApplicationRepository;
 import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -85,7 +85,7 @@ public class TestService extends ApiService{
 	 * @param parameters
 	 * @return
 	 */
-	public String callProc(GetMessageParameters parameters) {
+	public String callProc(GetMessageParameter parameters) {
 		GetMessageResponse result = new GetMessageResponse();
 		String spName = "up_wa_GetAdminMessage";
         List<Object> params = new ArrayList<Object>();

@@ -3,12 +3,11 @@ package net.fashiongo.webadmin.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 
 /**
@@ -26,7 +25,7 @@ public class MessageService extends ApiService {
 	 * @param parameters
 	 * @return 
 	 */
-	public GetMessageResponse GetMessage(GetMessageParameters parameters) {
+	public GetMessageResponse GetMessage(GetMessageParameter parameters) {
 		GetMessageResponse result = new GetMessageResponse();
 		String spName = "up_wa_GetAdminMessage";
         List<Object> params = new ArrayList<Object>();

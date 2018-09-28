@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.common.JsonResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.service.MessageService;
 
@@ -33,7 +33,7 @@ public class MessageController {
 	 * @return
 	 */
 	@RequestMapping(value="getmessage", method=RequestMethod.POST)
-	public GetMessageResponse GetMessage(@RequestBody GetMessageParameters parameters) {
+	public GetMessageResponse GetMessage(@RequestBody GetMessageParameter parameters) {
 		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(false, null, null);
 		
 		GetMessageResponse result = messageService.GetMessage(parameters);
