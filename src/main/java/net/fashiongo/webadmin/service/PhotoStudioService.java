@@ -12,7 +12,6 @@ import net.fashiongo.webadmin.common.PagedResult;
 import net.fashiongo.webadmin.common.PhotoStudioJdbcHelper;
 import net.fashiongo.webadmin.common.QueryParam;
 import net.fashiongo.webadmin.common.SingleValueResult;
-import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCalendarModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCategoryPriceRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoImageRepository;
@@ -39,6 +38,7 @@ import net.fashiongo.webadmin.model.photostudio.PhotoOrderDetail;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
+import net.fashiongo.webadmin.utility.Utility;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +102,7 @@ public class PhotoStudioService {
 
 	public Integer saveDiscount(PhotoDiscount photoDiscount) throws IllegalArgumentException, IllegalAccessException {
 		LocalDateTime date = LocalDateTime.now();
-		String username = Utility.getUsername();
+		String username = Utility.getWebAdminUserName();
 
 		if (photoDiscount.getDiscountID() == null) {
 			photoDiscount.setCreatedBy(username);
@@ -161,7 +161,7 @@ public class PhotoStudioService {
 		LocalDateTime newFromEffectiveDate = newPrices.get(0).get_fromEffectiveDate();
 		
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getUsername();
+		String username = Utility.getWebAdminUserName();
 		
 		if(!newFromEffectiveDate.isAfter(now)) {
 			return "The new effective date must after today!";
@@ -240,7 +240,7 @@ public class PhotoStudioService {
 		LocalDateTime newFromEffectiveDate = newCancellationFees.get(0).get_fromEffectiveDate();
 
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getUsername();
+		String username = Utility.getWebAdminUserName();
 
 		if (!newFromEffectiveDate.isAfter(now)) {
 			return "The new effective date must after today!";
@@ -306,7 +306,7 @@ public class PhotoStudioService {
 		LocalDateTime newFromEffectiveDate = newPhotoUnits.get(0).get_fromEffectiveDate();
 
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getUsername();
+		String username = Utility.getWebAdminUserName();
 
 		if (!newFromEffectiveDate.isAfter(now)) {
 			return "The new effective date must after today!";
@@ -347,7 +347,7 @@ public class PhotoStudioService {
 	@Transactional
 	public Integer saveModel(PhotoModel photoModel) throws IllegalArgumentException, IllegalAccessException {
 		LocalDateTime date = LocalDateTime.now();
-		String username = Utility.getUsername();
+		String username = Utility.getWebAdminUserName();
 
 		List<PhotoImage> photoImages = photoModel.getPhotoImages();
 		if (photoModel.getModelID() == null) {
@@ -387,7 +387,7 @@ public class PhotoStudioService {
 		String Msg = null;
 		
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getUsername();
+		String username = Utility.getWebAdminUserName();
 		
 		List<MapPhotoCalendarModel> mapPhotoCalendarModels;
 		
@@ -419,7 +419,7 @@ public class PhotoStudioService {
 		String Msg = null;
 		
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getUsername();
+		String username = Utility.getWebAdminUserName();
 		
 		photoCalendar.setModifiedOnDate(now);
 		photoCalendar.setModifiedBY(username);

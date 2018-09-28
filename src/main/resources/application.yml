@@ -51,6 +51,9 @@ security.ignored: /**
 server:
   port: 29901 
 
+waapi:
+  disableAuthenticate: false
+
 ---
 
 # Local
@@ -66,6 +69,9 @@ spring:
 logging:
   config: classpath:log4j2-local.xml
   path: logs/
+
+waapi:
+  disableAuthenticate: true
 
 ---
 

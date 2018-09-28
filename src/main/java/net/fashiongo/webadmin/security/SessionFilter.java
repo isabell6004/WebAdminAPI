@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -31,8 +32,12 @@ import io.jsonwebtoken.SignatureException;
  */
 @Component
 public class SessionFilter implements Filter {
+	
 	static Logger logger = LoggerFactory.getLogger(SessionFilter.class);
 	
+	@Value("${waapi.disableAuthenticate}")
+	private Boolean disableAuthenticate;
+
 	private String secretKey = "fgwav2^^9070";
 	
 	@Override
@@ -49,74 +54,78 @@ public class SessionFilter implements Filter {
     		return;
     	}
     	
+    	if (disableAuthenticate.booleanValue()) {
+    		//
+    	} else {
+    		HttpServletResponse res = (HttpServletResponse) response;
+    		String authorization = req.getHeader("Authorization");
+    		if(StringUtils.isEmpty(authorization)) {
+//    			logger.info("SessionFilter: Empty Token");
+    			res.setStatus(499);
+    			return;
+    		}
+    		
+    		String[] tokens = authorization.split(" ");
+    		String accessToken = "";
+    		if (tokens.length > 1) accessToken = tokens[1];
+//    		logger.info("SessionFilter - access token: " + accessToken);
+    		
+    		if (StringUtils.isEmpty(accessToken)) {
+//    			logger.info("SessionFilter: Empty Access Token");
+    			res.setStatus(499);
+    			return;
+    		}
+    		
+    		try {
+    			Claims claims = Jwts.parser()
+    				.setSigningKey(secretKey.getBytes("UTF-8"))
+    				.parseClaimsJws(accessToken)
+    				.getBody();
+    			
+//    			logger.info("SessionFilter - claims: {}", claims);
+    			Integer userId = (Integer) claims.get("userId");
+    			String username = (String) claims.get("username");
+    			String fullName = (String) claims.get("fullname");
+    			String role = (String)claims.get("roleid");
+    			
+    			HttpSession s = ((HttpServletRequest) request).getSession(false);
+    			if (s == null) { // set session
+    				s = ((HttpServletRequest) request).getSession(true);
+    				s.setAttribute("token", accessToken);
+    				s.setAttribute("userId", userId);
+    				s.setAttribute("username", username);
+    				s.setAttribute("fullName", fullName);
+    				s.setAttribute("role", role);
+//    				logger.info("SessionFilter - sessionId: " + s.getId());
+//    				logger.info("SessionFilter - userId: " + s.getAttribute("userId"));
+    			} 
+//    			else { // check token
+//    				if (!accessToken.equals(s.getAttribute("token"))) {
+//    					logger.info("SessionFilter - sessionId: " + s.getId());
+//    					logger.info("SessionFilter - token in session:" + s.getAttribute("token"));
+//    					logger.info("SessionFilter: Token doesn't match");
+//    					res.setStatus(499);
+//    					return;
+//    				}
+//    			}
+    		} catch (SignatureException e) {
+//    			logger.info("SessionFilter - SignatureException: ", e.getMessage());
+    			res.setStatus(499);
+    			return;
+    		} catch (ExpiredJwtException e) {
+//    			logger.info("SessionFilter - ExpiredJwtException: ", e.getMessage());
+    			res.setStatus(499);
+    			return;
+    		} catch (Exception e) {
+//    			logger.info("SessionFilter - Exception: ", e.getMessage());
+    			res.setStatus(499);
+    			return;
+    		}
+    	}
    	
-		HttpServletResponse res = (HttpServletResponse) response;
-		String authorization = req.getHeader("Authorization");
-		if(StringUtils.isEmpty(authorization)) {
-//			logger.info("SessionFilter: Empty Token");
-			res.setStatus(499);
-			return;
-		}
-		
-		String[] tokens = authorization.split(" ");
-		String accessToken = "";
-		if (tokens.length > 1) accessToken = tokens[1];
-//		logger.info("SessionFilter - access token: " + accessToken);
-		
-		if (StringUtils.isEmpty(accessToken)) {
-//			logger.info("SessionFilter: Empty Access Token");
-			res.setStatus(499);
-			return;
-		}
-		
-		try {
-			Claims claims = Jwts.parser()
-				.setSigningKey(secretKey.getBytes("UTF-8"))
-				.parseClaimsJws(accessToken)
-				.getBody();
-			
-//			logger.info("SessionFilter - claims: {}", claims);
-			Integer userId = (Integer) claims.get("userId");
-			String username = (String) claims.get("username");
-			String fullName = (String) claims.get("fullname");
-			String role = (String)claims.get("roleid");
-			
-			HttpSession s = ((HttpServletRequest) request).getSession(false);
-			if (s == null) { // set session
-				s = ((HttpServletRequest) request).getSession(true);
-				s.setAttribute("token", accessToken);
-				s.setAttribute("userId", userId);
-				s.setAttribute("username", username);
-				s.setAttribute("fullName", fullName);
-				s.setAttribute("role", role);
-//				logger.info("SessionFilter - sessionId: " + s.getId());
-//				logger.info("SessionFilter - userId: " + s.getAttribute("userId"));
-			} 
-//			else { // check token
-//				if (!accessToken.equals(s.getAttribute("token"))) {
-//					logger.info("SessionFilter - sessionId: " + s.getId());
-//					logger.info("SessionFilter - token in session:" + s.getAttribute("token"));
-//					logger.info("SessionFilter: Token doesn't match");
-//					res.setStatus(499);
-//					return;
-//				}
-//			}
-			
-		} catch (SignatureException e) {
-//			logger.info("SessionFilter - SignatureException: ", e.getMessage());
-			res.setStatus(499);
-			return;
-		} catch (ExpiredJwtException e) {
-//			logger.info("SessionFilter - ExpiredJwtException: ", e.getMessage());
-			res.setStatus(499);
-			return;
-		} catch (Exception e) {
-//			logger.info("SessionFilter - Exception: ", e.getMessage());
-			res.setStatus(499);
-			return;
-		}
         chain.doFilter(request, response);
 	}
 	
 	public void destroy() {}
+
 }

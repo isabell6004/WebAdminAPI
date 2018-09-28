@@ -82,11 +82,11 @@ private static final HashMap<String, Integer[]> psMap = new HashMap<String, Inte
 	}
 	
 	
-	public static String getUsername() {
-		SecurityContext context = SecurityContextHolder.getContext();
-		Authentication auth = context.getAuthentication();
-		return auth.getName();
-	}
+//	public static String getUsername() {
+//		SecurityContext context = SecurityContextHolder.getContext();
+//		Authentication auth = context.getAuthentication();
+//		return auth.getName();
+//	}
 	
 	public static String getFileExtension(String fileName) {
 		return ".jpg";
