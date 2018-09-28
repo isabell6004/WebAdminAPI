@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.model.pojo.Message;
