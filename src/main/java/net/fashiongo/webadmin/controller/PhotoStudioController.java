@@ -128,13 +128,30 @@ public class PhotoStudioController {
 		return response;
 	}
 	
+	@GetMapping("/units")
+	public JsonResponse<?> getPhotoUnits() {
+		logger.debug("PhotoStudioController.getPhotoUnits() called!!!");
+		JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			Map<String, Object> result = photoStudioService.getPhotoUnits();
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getPhotoUnits()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
 	@PostMapping(value = "/unit/save")
-	public JsonResponse<?> savePhotoUnit(@RequestBody Map<String, List<PhotoUnit>> parmMap) {
+	public JsonResponse<?> savePhotoUnits(@RequestBody Map<String, List<PhotoUnit>> parmMap) {
 		logger.debug("PhotoStudioController.savePhotoUnit() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
 
 		try {
-			String resultMsg = photoStudioService.savePhotoUnit(parmMap);
+			String resultMsg = photoStudioService.savePhotoUnits(parmMap);
 			response.setSuccess(StringUtils.isEmpty(resultMsg));
 			response.setMessage(resultMsg);
 		} catch (Exception ex) {

@@ -138,7 +138,7 @@ public class PhotoStudioService {
 		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
 
-		List<Object> r = jdbcHelper.executeSP("up_va_Photo_GetPrices", params, PhotoPrice.class, PhotoPrice.class);
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetPrices", params, PhotoPrice.class, PhotoPrice.class);
 
 		List<PhotoPrice> currentPhotoPrices = (List<PhotoPrice>) r.get(0);
 		List<PhotoPrice> newPhotoPrices = (List<PhotoPrice>) r.get(1);
@@ -216,7 +216,7 @@ public class PhotoStudioService {
 		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
 
-		List<Object> r = jdbcHelper.executeSP("up_va_Photo_GetCancellationFees", params, PhotoCancellationFee.class, PhotoCancellationFee.class);
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetCancellationFees", params, PhotoCancellationFee.class, PhotoCancellationFee.class);
 
 		List<PhotoCancellationFee> currentPhotoCancellationFees = (List<PhotoCancellationFee>) r.get(0);
 		List<PhotoCancellationFee> newPhotoCancellationFees = (List<PhotoCancellationFee>) r.get(1);
@@ -278,8 +278,23 @@ public class PhotoStudioService {
 		return Msg;
 	}
 	
+	public Map<String, Object> getPhotoUnits() {
+		Map<String, Object> result = new HashMap<String, Object> ();
+		List<Object> params = new ArrayList<Object>();
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetUnits", params, PhotoUnit.class, PhotoUnit.class);
+
+		List<PhotoUnit> currentPhotoUnits = (List<PhotoUnit>) r.get(0);
+		List<PhotoUnit> newPhotoUnits = (List<PhotoUnit>) r.get(1);
+		
+		result.put("currentPhotoUnits", currentPhotoUnits);
+		result.put("newPhotoUnits", newPhotoUnits);
+
+		return result;
+	}
+	
 	@Transactional
-	public String savePhotoUnit(Map<String, List<PhotoUnit>> parmMap)
+	public String savePhotoUnits(Map<String, List<PhotoUnit>> parmMap)
 			throws IllegalArgumentException, IllegalAccessException {
 
 		String Msg = null;
