@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  *
  * @author sanghyup
@@ -45,82 +47,105 @@ public class CollectionCategory implements Serializable {
 	@Id
 	@Basic(optional = false)
 	@NotNull
+	@JsonProperty("CollectionCategoryID")
 	@Column(name = "CollectionCategoryID")
 	private Integer collectionCategoryID;
 
 	@Size(max = 50)
+	@JsonProperty("CollectionCategoryName")
 	@Column(name = "CollectionCategoryName")
 	private String collectionCategoryName;
 
+	@JsonProperty("ParentCollectionCategoryID")
 	@Column(name = "ParentCollectionCategoryID")
 	private Integer parentCollectionCategoryID;
 
+	@JsonProperty("SpotID")
 	@Column(name = "SpotID")
 	private Integer spotID;
 
+	@JsonProperty("Lvl")
 	@Column(name = "Lvl")
 	private Integer lvl;
 
+	@JsonProperty("ListOrder")
 	@Column(name = "ListOrder")
 	private Integer listOrder;
 
+	@JsonProperty("Active")
 	@Column(name = "Active")
 	private Boolean active;
 
 	@Size(max = 50)
+	@JsonProperty("ServiceInUse")
 	@Column(name = "ServiceInUse")
 	private String serviceInUse;
 
 	@Size(max = 50)
+	@JsonProperty("VendorType")
 	@Column(name = "VendorType")
 	private String vendorType;
 
 	@Size(max = 50)
+	@JsonProperty("VendorTierGroup")
 	@Column(name = "VendorTierGroup")
 	private String vendorTierGroup;
 
 	@Size(max = 50)
+	@JsonProperty("OrderBy")
 	@Column(name = "OrderBy")
 	private String orderBy;
 
 	@Size(max = 50)
+	@JsonProperty("ModifiedBy")
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
 
+	@JsonProperty("ModifiedOn")
 	@Column(name = "ModifiedOn")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date modifiedOn;
 
 	@Transient
+	@JsonProperty("CategoryID")
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 	@Transient
+	@JsonProperty("CategoryName")
 	@Column(name = "CategoryName")
 	private String categoryName;
 	@Transient
+	@JsonProperty("ParentCategoryID")
 	@Column(name = "ParentCategoryID")
 	private Integer parentCategoryID;
 	@Transient
+//	@JsonProperty("expended")
 	@Column(name = "Expended")
 	private Boolean expended;
 	@Transient
+	@JsonProperty("NodeCnt")
 	@Column(name = "NodeCnt")
 	private Integer nodeCnt;
 
 	// exec up_wa_GetCategoryList @CategoryID=0,@ExpandAll=1
 	@Transient
+	@JsonProperty("ParentParentCategoryID")
 	@Column(name = "ParentParentCategoryID")
 	private Integer parentParentCategoryID;
 	@Transient
+	@JsonProperty("CategoryDescription")
 	@Column(name = "CategoryDescription")
 	private String categoryDescription;
 	@Transient
+	@JsonProperty("TitleImage")
 	@Column(name = "TitleImage")
 	private String titleImage;
 	@Transient
+	@JsonProperty("IsLandingPage")
 	@Column(name = "IsLandingPage")
 	private Boolean isLandingPage;
 	@Transient
+	@JsonProperty("IsFeatured")
 	@Column(name = "IsFeatured")
 	private Boolean isFeatured;
 

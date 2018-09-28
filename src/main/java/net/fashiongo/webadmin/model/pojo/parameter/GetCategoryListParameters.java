@@ -3,6 +3,8 @@
  */
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -10,9 +12,11 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class GetCategoryListParameters {
 	@ApiModelProperty(required = true, example="0")
+	@JsonProperty("categoryid")
 	private Integer categoryId;
 	
 	@ApiModelProperty(required = true, example="1")
+	@JsonProperty("expandall")
 	private Integer expandAll;
 
 	public Integer getCategoryId() {
