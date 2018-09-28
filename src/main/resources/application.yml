@@ -96,7 +96,7 @@ server:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_CC
+    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
   datasource2:
     url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
