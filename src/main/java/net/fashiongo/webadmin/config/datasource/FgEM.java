@@ -38,7 +38,10 @@ public class FgEM {
 	}
 	
 	@Bean(name="fgemEntityManager")
-	public LocalContainerEntityManagerFactoryBean fgemEntityManager(EntityManagerFactoryBuilder builder, @Qualifier("fgemDataSource") DataSource dataSource) {
+	public LocalContainerEntityManagerFactoryBean fgemEntityManager(
+			EntityManagerFactoryBuilder builder, 
+			@Qualifier("fgemDataSource") DataSource dataSource) 
+	{
 		return builder
 				.dataSource(dataSource)
 				.packages("net.fashiongo.webadmin.model.fgem")

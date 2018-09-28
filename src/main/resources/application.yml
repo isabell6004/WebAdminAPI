@@ -48,11 +48,10 @@ spring:
     properties.hibernate.dialect: org.hibernate.dialect.SQLServer2008Dialect
     hibernate.naming.physical-strategy: net.fashiongo.common.dal.MSSQLServerNamingStrategy
     
-    
-security.ignored: /**
 server:
   port: 29901 
-  context-path: /api
+  servlet:
+    context-path: /api
   
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.145:19002
@@ -67,11 +66,11 @@ webAdminapi:
 spring:
   profiles: local
   datasource:
-    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_CC
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_CC
   datasource2:
-    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
   datasource3:
-    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_EM
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_EM
     
 logging:
   config: classpath:log4j2-local.xml

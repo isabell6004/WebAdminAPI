@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.common.JsonResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.service.TestService;
 
 @RestController
@@ -72,7 +72,7 @@ public class TestController {
 	 * @return 
 	 */
 	@RequestMapping(value="/procedure", method=RequestMethod.POST)
-	public JsonResponse<String> callProc(@RequestBody GetMessageParameters parameters) {
+	public JsonResponse<String> callProc(@RequestBody GetMessageParameter parameters) {
 		JsonResponse<String> response = new JsonResponse<String>(false, null, null);
 		response.setData(testService.callProc(parameters));
 		response.setSuccess(true);

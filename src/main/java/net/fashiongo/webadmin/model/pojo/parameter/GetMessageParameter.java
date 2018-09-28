@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @author Incheol Jung
  */
-public class GetMessageParameters {
+public class GetMessageParameter {
 	@ApiModelProperty(required = true, example="1")
 	private Integer pagenum;
 	
