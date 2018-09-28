@@ -1,12 +1,19 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class SetSecurityResourceParameter {
+	@ApiModelProperty(required = false, example="113")
 	private Integer ResourceID;
+	@ApiModelProperty(required = false, example="User")
 	private String ResourceName;
-	private String Manager;
+	@ApiModelProperty(required = false, example="1")
 	private Integer Applicationid;
+	@ApiModelProperty(required = false, example="Page")
 	private String ResourceType;
+	@ApiModelProperty(required = false, example="url")
 	private String ResourceUrl;
+	@ApiModelProperty(required = false, example="true")
 	private Boolean Active;
 	public Integer getResourceID() {
 		return ResourceID;
@@ -19,12 +26,6 @@ public class SetSecurityResourceParameter {
 	}
 	public void setResourceName(String resourceName) {
 		ResourceName = resourceName;
-	}
-	public String getManager() {
-		return Manager;
-	}
-	public void setManager(String manager) {
-		Manager = manager;
 	}
 	public Integer getApplicationid() {
 		return Applicationid;

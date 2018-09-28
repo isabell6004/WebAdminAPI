@@ -1,8 +1,13 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class GetSecurityResourcesParameter {
+	@ApiModelProperty(required = false, example="fashiongo")
 	private String resourceName;
+	@ApiModelProperty(required = false, example="All")
 	private String resourceParent;
+	@ApiModelProperty(required = false, example="page")
 	private String resourceType;
 	public String getResourceName() {
 		return resourceName;
