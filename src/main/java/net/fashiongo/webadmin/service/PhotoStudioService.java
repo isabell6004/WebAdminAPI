@@ -218,11 +218,11 @@ public class PhotoStudioService {
 
 		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetCancellationFees", params, PhotoCancellationFee.class, PhotoCancellationFee.class);
 
-		List<PhotoCancellationFee> currentPhotoCancellationFees = (List<PhotoCancellationFee>) r.get(0);
-		List<PhotoCancellationFee> newPhotoCancellationFees = (List<PhotoCancellationFee>) r.get(1);
+		List<PhotoCancellationFee> currentCancellationFees = (List<PhotoCancellationFee>) r.get(0);
+		List<PhotoCancellationFee> newCancellationFees = (List<PhotoCancellationFee>) r.get(1);
 		
-		result.put("currentPhotoCancellationFees", currentPhotoCancellationFees);
-		result.put("newPhotoCancellationFees", newPhotoCancellationFees);
+		result.put("currentCancellationFees", currentCancellationFees);
+		result.put("newCancellationFees", newCancellationFees);
 
 		return result;
 	}
