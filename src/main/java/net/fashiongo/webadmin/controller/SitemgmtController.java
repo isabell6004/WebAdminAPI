@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
+import net.fashiongo.webadmin.model.primary.CollectionCategory2;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.service.SitemgmtService;
@@ -37,14 +43,15 @@ public class SitemgmtController {
 	@RequestMapping(value = "getcollectioncategorylist", method = RequestMethod.POST)
 	public GetCollectionCategoryListResponse getCollectionCategoryList(
 			@RequestBody GetCollectionCategoryListParameters parameters) {
-		JsonResponse<GetCollectionCategoryListResponse> results = new JsonResponse<GetCollectionCategoryListResponse>(
-				false, null, null);
 
-		GetCollectionCategoryListResponse result = sitemgmtService.GetCollectionCategoryList(parameters);
-		results.setData(result);
-		results.setSuccess(true);
+//		JsonResponse<GetCollectionCategoryListResponse> results = new JsonResponse<GetCollectionCategoryListResponse>(
+//				false, null, null);
 
-		return results.getData();
+		GetCollectionCategoryListResponse result = sitemgmtService.getCollectionCategoryList(parameters);
+//		results.setData(result);
+//		results.setSuccess(true);
+//		return results.getData();
+		return result;
 	}
 
 	/**
@@ -58,13 +65,63 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getcategorylist", method = RequestMethod.POST)
 	public GetCategoryListResponse getCategoryList(@RequestBody GetCategoryListParameters parameters) {
-		JsonResponse<GetCategoryListResponse> results = new JsonResponse<GetCategoryListResponse>(false, null, null);
+		
+//		JsonResponse<GetCategoryListResponse> results = new JsonResponse<GetCategoryListResponse>(false, null, null);
 
-		GetCategoryListResponse result = sitemgmtService.GetCategoryList(parameters);
-		results.setData(result);
+		GetCategoryListResponse result = sitemgmtService.getCategoryList(parameters);
+//		results.setData(result);
+//		results.setSuccess(true);
+
+//		return results.getData();
+		return result;
+	}
+
+	/**
+	 * 
+	 * set collection category listorder
+	 * 
+	 * @since 2018. 10. 01.
+	 * @author Sanghyup Kim
+	 * @param SetCollectionCategoryListorderParameters {collectionCategoryID, parentCollectionCategoryID, lvl, listOrder}
+	 * @return JsonResponse<Object>
+	 */
+	@RequestMapping(value = "setcollectioncategorylistorder", method = RequestMethod.POST)
+	public JsonResponse<Object> setCollectionCategoryListorder(
+			@RequestBody SetCollectionCategoryListorderParameters parameters) {
+
+		JsonResponse<Object> results = new JsonResponse<Object>(false, null, null);
+
+		SetCollectionCategoryListorderResponse result = sitemgmtService.setCollectionCategoryListorder(parameters);
+		List<CollectionCategory2> collectionCategory2 = result.getCategoryCollectionlist();
+		
+		results.setData(collectionCategory2);
 		results.setSuccess(true);
 
-		return results.getData();
+		return results;
+	}
+	
+
+	/**
+	 * 
+	 * set collection category
+	 * 
+	 * @since 2018. 10. 01.
+	 * @author Sanghyup Kim
+	 * @param SetCollectionCategoryParameters
+	 * @return JsonResponse<Object>
+	 */
+	@RequestMapping(value = "setcollectioncategory", method = RequestMethod.POST)
+	public JsonResponse<Object> setCollectionCategory(
+			@RequestBody SetCollectionCategoryParameters parameters) {
+
+		JsonResponse<Object> results = new JsonResponse<Object>(false, null, null);
+
+//		int result = sitemgmtService.setCollectionCategory(parameters);
+		
+//		results.setMessage("Saved successfully");
+//		results.setSuccess(true);
+
+		return results;
 	}
 
 	// collection category setting
