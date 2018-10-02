@@ -19,7 +19,7 @@ public class AdController {
 	 * 
 	 * Get AD Setting
 	 * 
-	 * @since 2018. 10. 2.
+	 * @since 2018. 10. 02.
 	 * @author Nayeon Kim
 	 * @return GetADSettingResponse
 	 */

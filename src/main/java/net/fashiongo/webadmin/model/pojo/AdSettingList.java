@@ -4,26 +4,26 @@ package net.fashiongo.webadmin.model.pojo;
  * @author Nayeon Kim
  */
 public class AdSettingList {
-	private Integer PageID;
-	private String PageName;
-	private String PageUrl;
+	private Integer pageID;
+	private String pageName;
+	private String pageUrl;
 	
 	public Integer getPageID() {
-		return PageID;
+		return pageID;
 	}
 	public void setPageID(Integer pageID) {
-		PageID = pageID;
+		this.pageID = pageID;
 	}
 	public String getPageName() {
-		return PageName;
+		return pageName;
 	}
 	public void setPageName(String pageName) {
-		PageName = pageName;
+		this.pageName = pageName;
 	}
 	public String getPageUrl() {
-		return PageUrl;
+		return pageUrl;
 	}
 	public void setPageUrl(String pageUrl) {
-		PageUrl = pageUrl;
+		this.pageUrl = pageUrl;
 	}
 }

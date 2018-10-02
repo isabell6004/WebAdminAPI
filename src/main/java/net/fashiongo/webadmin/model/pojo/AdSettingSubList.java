@@ -4,180 +4,180 @@ package net.fashiongo.webadmin.model.pojo;
  * @author Nayeon Kim
  */
 public class AdSettingSubList {
-	private Integer SpotID;
-	private Integer PageID;
-	private String PageName;
-	private Integer CategoryID;
-	private Integer BodySizeID;
-	private String SpotName;
-	private String SpotDescription;
-	private Integer Price1;
-	private Integer Price2;
-	private Integer Price3;
-	private Integer Price4;
-	private Integer Price5;
-	private Integer Price6;
-	private Integer Price7;
-	private Boolean Active;
-	private Boolean IncludeVendorCategory;
-	private Integer SpotInstanceCount;
-	private String BannerImage;
-	private String CreatedOn;
-	private String CreatedBy;
-	private String ModifiedOn;
-	private String ModifiedBy;
-	private String BidEffectiveOn;
-	private Integer MaxPurchasable;
-	private Integer SpotItemCount;
+	private Integer spotID;
+	private Integer pageID;
+	private String pageName;
+	private Integer categoryID;
+	private Integer bodySizeID;
+	private String spotName;
+	private String spotDescription;
+	private Integer price1;
+	private Integer price2;
+	private Integer price3;
+	private Integer price4;
+	private Integer price5;
+	private Integer price6;
+	private Integer price7;
+	private Boolean active;
+	private Boolean includeVendorCategory;
+	private Integer spotInstanceCount;
+	private String bannerImage;
+	private String createdOn;
+	private String createdBy;
+	private String modifiedOn;
+	private String modifiedBy;
+	private String bidEffectiveOn;
+	private Integer maxPurchasable;
+	private Integer spotItemCount;
 	
 	public Integer getSpotID() {
-		return SpotID;
+		return spotID;
 	}
 	public void setSpotID(Integer spotID) {
-		SpotID = spotID;
+		this.spotID = spotID;
 	}
 	public Integer getPageID() {
-		return PageID;
+		return pageID;
 	}
 	public void setPageID(Integer pageID) {
-		PageID = pageID;
+		this.pageID = pageID;
 	}
 	public String getPageName() {
-		return PageName;
+		return pageName;
 	}
 	public void setPageName(String pageName) {
-		PageName = pageName;
+		this.pageName = pageName;
 	}
 	public Integer getCategoryID() {
-		return CategoryID;
+		return categoryID;
 	}
 	public void setCategoryID(Integer categoryID) {
-		CategoryID = categoryID;
+		this.categoryID = categoryID;
 	}
 	public Integer getBodySizeID() {
-		return BodySizeID;
+		return bodySizeID;
 	}
 	public void setBodySizeID(Integer bodySizeID) {
-		BodySizeID = bodySizeID;
+		this.bodySizeID = bodySizeID;
 	}
 	public String getSpotName() {
-		return SpotName;
+		return spotName;
 	}
 	public void setSpotName(String spotName) {
-		SpotName = spotName;
+		this.spotName = spotName;
 	}
 	public String getSpotDescription() {
-		return SpotDescription;
+		return spotDescription;
 	}
 	public void setSpotDescription(String spotDescription) {
-		SpotDescription = spotDescription;
+		this.spotDescription = spotDescription;
 	}
 	public Integer getPrice1() {
-		return Price1;
+		return price1;
 	}
 	public void setPrice1(Integer price1) {
-		Price1 = price1;
+		this.price1 = price1;
 	}
 	public Integer getPrice2() {
-		return Price2;
+		return price2;
 	}
 	public void setPrice2(Integer price2) {
-		Price2 = price2;
+		this.price2 = price2;
 	}
 	public Integer getPrice3() {
-		return Price3;
+		return price3;
 	}
 	public void setPrice3(Integer price3) {
-		Price3 = price3;
+		this.price3 = price3;
 	}
 	public Integer getPrice4() {
-		return Price4;
+		return price4;
 	}
 	public void setPrice4(Integer price4) {
-		Price4 = price4;
+		this.price4 = price4;
 	}
 	public Integer getPrice5() {
-		return Price5;
+		return price5;
 	}
 	public void setPrice5(Integer price5) {
-		Price5 = price5;
+		this.price5 = price5;
 	}
 	public Integer getPrice6() {
-		return Price6;
+		return price6;
 	}
 	public void setPrice6(Integer price6) {
-		Price6 = price6;
+		this.price6 = price6;
 	}
 	public Integer getPrice7() {
-		return Price7;
+		return price7;
 	}
 	public void setPrice7(Integer price7) {
-		Price7 = price7;
+		this.price7 = price7;
 	}
 	public Boolean getActive() {
-		return Active;
+		return active;
 	}
 	public void setActive(Boolean active) {
-		Active = active;
+		this.active = active;
 	}
 	public Boolean getIncludeVendorCategory() {
-		return IncludeVendorCategory;
+		return includeVendorCategory;
 	}
 	public void setIncludeVendorCategory(Boolean includeVendorCategory) {
-		IncludeVendorCategory = includeVendorCategory;
+		this.includeVendorCategory = includeVendorCategory;
 	}
 	public Integer getSpotInstanceCount() {
-		return SpotInstanceCount;
+		return spotInstanceCount;
 	}
 	public void setSpotInstanceCount(Integer spotInstanceCount) {
-		SpotInstanceCount = spotInstanceCount;
+		this.spotInstanceCount = spotInstanceCount;
 	}
 	public String getBannerImage() {
-		return BannerImage;
+		return bannerImage;
 	}
 	public void setBannerImage(String bannerImage) {
-		BannerImage = bannerImage;
+		this.bannerImage = bannerImage;
 	}
 	public String getCreatedOn() {
-		return CreatedOn;
+		return createdOn;
 	}
 	public void setCreatedOn(String createdOn) {
-		CreatedOn = createdOn;
+		this.createdOn = createdOn;
 	}
 	public String getCreatedBy() {
-		return CreatedBy;
+		return createdBy;
 	}
 	public void setCreatedBy(String createdBy) {
-		CreatedBy = createdBy;
+		this.createdBy = createdBy;
 	}
 	public String getModifiedOn() {
-		return ModifiedOn;
+		return modifiedOn;
 	}
 	public void setModifiedOn(String modifiedOn) {
-		ModifiedOn = modifiedOn;
+		this.modifiedOn = modifiedOn;
 	}
 	public String getModifiedBy() {
-		return ModifiedBy;
+		return modifiedBy;
 	}
 	public void setModifiedBy(String modifiedBy) {
-		ModifiedBy = modifiedBy;
+		this.modifiedBy = modifiedBy;
 	}
 	public String getBidEffectiveOn() {
-		return BidEffectiveOn;
+		return bidEffectiveOn;
 	}
 	public void setBidEffectiveOn(String bidEffectiveOn) {
-		BidEffectiveOn = bidEffectiveOn;
+		this.bidEffectiveOn = bidEffectiveOn;
 	}
 	public Integer getMaxPurchasable() {
-		return MaxPurchasable;
+		return maxPurchasable;
 	}
 	public void setMaxPurchasable(Integer maxPurchasable) {
-		MaxPurchasable = maxPurchasable;
+		this.maxPurchasable = maxPurchasable;
 	}
 	public Integer getSpotItemCount() {
-		return SpotItemCount;
+		return spotItemCount;
 	}
 	public void setSpotItemCount(Integer spotItemCount) {
-		SpotItemCount = spotItemCount;
+		this.spotItemCount = spotItemCount;
 	}
 }

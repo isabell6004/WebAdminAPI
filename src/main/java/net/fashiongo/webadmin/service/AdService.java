@@ -19,7 +19,7 @@ public class AdService extends ApiService {
 	 * 
 	 * Get AD Setting
 	 * 
-	 * @since 2018. 10. 2.
+	 * @since 2018. 10. 02.
 	 * @author Nayeon Kim
 	 * @return GetADSettingResponse
 	 */
@@ -32,11 +32,11 @@ public class AdService extends ApiService {
     	List<Object> params = new ArrayList<Object>();
 
     	List<Object> _result = jdbcHelper.executeSP(spName, params, AdSettingSubList.class, AdSettingList.class);
-		List<AdSettingSubList> adsettingsublist= (List<AdSettingSubList>) _result.get(0);
-		List<AdSettingList> adsettinglist= (List<AdSettingList>) _result.get(1);
+		List<AdSettingSubList> adSettingSubList= (List<AdSettingSubList>) _result.get(0);
+		List<AdSettingList> adSettingList= (List<AdSettingList>) _result.get(1);
 		
-		resultSet.setAdsettingsublist(adsettingsublist);
-		resultSet.setAdsettinglist(adsettinglist);
+		resultSet.setAdSettingSubList(adSettingSubList);
+		resultSet.setAdSettingList(adSettingList);
    
 		return resultSet;
     }

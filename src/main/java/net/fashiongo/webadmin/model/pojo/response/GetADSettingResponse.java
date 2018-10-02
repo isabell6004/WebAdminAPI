@@ -12,24 +12,24 @@ import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
  */
 public class GetADSettingResponse {
 	@JsonProperty("Table")
-	private List<AdSettingSubList> adsettingsublist;
+	private List<AdSettingSubList> adSettingSubList;
 
 	@JsonProperty("Table1")
-	private List<AdSettingList> adsettinglist;
+	private List<AdSettingList> adSettingList;
 
-	public List<AdSettingSubList> getAdsettingsublist() {
-		return adsettingsublist;
+	public List<AdSettingSubList> getAdSettingSubList() {
+		return adSettingSubList;
 	}
 
-	public void setAdsettingsublist(List<AdSettingSubList> adsettingsublist) {
-		this.adsettingsublist = adsettingsublist;
+	public void setAdSettingSubList(List<AdSettingSubList> adSettingSubList) {
+		this.adSettingSubList = adSettingSubList;
 	}
 
-	public List<AdSettingList> getAdsettinglist() {
-		return adsettinglist;
+	public List<AdSettingList> getAdSettingList() {
+		return adSettingList;
 	}
 
-	public void setAdsettinglist(List<AdSettingList> adsettinglist) {
-		this.adsettinglist = adsettinglist;
+	public void setAdSettingList(List<AdSettingList> adSettingList) {
+		this.adSettingList = adSettingList;
 	}
 }
