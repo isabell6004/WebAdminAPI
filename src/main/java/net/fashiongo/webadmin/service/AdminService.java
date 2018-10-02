@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
@@ -37,6 +38,7 @@ public class AdminService extends ApiService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
+	@Transactional
 	public GetSecurityAccessCodesResponse GetSecurityAccessCodes(GetSecurityAccessCodesParameters parameters) {
 		GetSecurityAccessCodesResponse result = new GetSecurityAccessCodesResponse();
 		String spName = "up_Security_GetAccessCode";
@@ -61,6 +63,7 @@ public class AdminService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional
 	public SetResultResponse SetSecurityAccessCode(SetSecurityAccessCodeParameters parameters) throws Exception {
 		SetResultResponse result = new SetResultResponse();
 		
