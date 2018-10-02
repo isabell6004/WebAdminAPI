@@ -202,7 +202,7 @@ public class SitemgmtService extends ApiService {
 				collectionCategory2.setActive(active);
 				collectionCategoryRepository.save(collectionCategory2);
 
-				result.setResultWrapper(true, 1, collectionCategoryID, "Changed successfully!", null);
+				result.setResultWrapper(true, 1, collectionCategoryID, MSG_CHANGE_SUCCESS, null);
 			}
 		} else { // inactive all of sub node items
 			String spName = "up_wa_SetCollectionCategoryInactive";
@@ -213,7 +213,7 @@ public class SitemgmtService extends ApiService {
 			List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class);
 			int affectedRows = (Integer) _result.get(0);
 
-			result.setResultWrapper(true, affectedRows, collectionCategoryID, "Changed successfully!", null);
+			result.setResultWrapper(true, affectedRows, collectionCategoryID, MSG_CHANGE_SUCCESS, null);
 		}
 
 		return result;
@@ -242,7 +242,7 @@ public class SitemgmtService extends ApiService {
 				collectionCategoryID);
 
 		ResultResponse<Object> result = new ResultResponse<Object>();
-		result.setResultWrapper(true, 1, collectionCategoryID, "Deleted successfully!", null);
+		result.setResultWrapper(true, 1, collectionCategoryID, MSG_DELETE_SUCCESS, null);
 
 		return result;
 	}
@@ -268,8 +268,7 @@ public class SitemgmtService extends ApiService {
 		case "Add":
 			CollectionCategory newCollectionCategory = collectionCategoryRepository.save(collectionCategory);
 
-			result.setResultWrapper(true, 1, newCollectionCategory.getCollectionCategoryID(), "Added successfully!",
-					null);
+			result.setResultWrapper(true, 1, newCollectionCategory.getCollectionCategoryID(), MSG_INSERT_SUCCESS, null);
 			break;
 
 		case "Upd":
@@ -293,7 +292,7 @@ public class SitemgmtService extends ApiService {
 
 				collectionCategoryRepository.save(collectionCategory2);
 
-				result.setResultWrapper(true, 1, collectionCategoryID, "Updated successfully!", null);
+				result.setResultWrapper(true, 1, collectionCategoryID, MSG_UPDATE_SUCCESS, null);
 			}
 			break;
 		default:
