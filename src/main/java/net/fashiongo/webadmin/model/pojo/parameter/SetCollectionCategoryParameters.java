@@ -21,7 +21,7 @@ public class SetCollectionCategoryParameters {
 	// Act/Del/Upd
 	@ApiModelProperty(required = true, example = "Act")
 	@JsonProperty("settype")
-	private Integer setType;
+	private String setType;
 	
 	@ApiModelProperty(required = false, example = "{MapID, CollectionCategoryID, CategoryID, CategoryName}")
 	@JsonProperty("collectioncategorymap")
@@ -35,11 +35,11 @@ public class SetCollectionCategoryParameters {
 		this.collectionCategory = collectionCategory;
 	}
 
-	public Integer getSetType() {
+	public String getSetType() {
 		return setType;
 	}
 
-	public void setSetType(Integer setType) {
+	public void setSetType(String setType) {
 		this.setType = setType;
 	}
 
