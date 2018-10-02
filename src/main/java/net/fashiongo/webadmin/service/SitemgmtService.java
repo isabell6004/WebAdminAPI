@@ -106,10 +106,10 @@ public class SitemgmtService extends ApiService {
 		String spName = "up_wa_GetCategoryList";
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class);
-		List<CollectionCategory> collectionCategorylist = (List<CollectionCategory>) _result.get(0);
+		List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
 
 		GetCategoryListResponse resultSet = new GetCategoryListResponse();
-		resultSet.setCategorylist(collectionCategorylist);
+		resultSet.setCategoryLst(collectionCategoryList);
 
 		return resultSet;
 	}
@@ -120,8 +120,8 @@ public class SitemgmtService extends ApiService {
 	 * 
 	 * @since 2018. 10. 01.
 	 * @author Sanghyup Kim
-	 * @param
-	 * @return
+	 * @param SetCollectionCategoryListorderParameters
+	 * @return SetCollectionCategoryListorderResponse
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, transactionManager = "primaryTransactionManager")
 	public SetCollectionCategoryListorderResponse setCollectionCategoryListorder(
@@ -182,8 +182,8 @@ public class SitemgmtService extends ApiService {
 	 * 
 	 * @since 2018. 10. 02.
 	 * @author Sanghyup Kim
-	 * @param
-	 * @return
+	 * @param SetCollectionCategoryParameters
+	 * @return ResultResponse<Object>
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, transactionManager = "primaryTransactionManager")
 	public ResultResponse<Object> setCollectionCategoryActive(SetCollectionCategoryParameters parameters) {
@@ -225,8 +225,8 @@ public class SitemgmtService extends ApiService {
 	 * 
 	 * @since 2018. 10. 02.
 	 * @author Sanghyup Kim
-	 * @param
-	 * @return
+	 * @param SetCollectionCategoryParameters
+	 * @return ResultResponse<Object>
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, transactionManager = "primaryTransactionManager")
 	public ResultResponse<Object> setCollectionCategoryDelete(SetCollectionCategoryParameters parameters) {
@@ -253,8 +253,8 @@ public class SitemgmtService extends ApiService {
 	 * 
 	 * @since 2018. 10. 02.
 	 * @author Sanghyup Kim
-	 * @param
-	 * @return
+	 * @param SetCollectionCategoryParameters, setType
+	 * @return ResultResponse<Object>
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, transactionManager = "primaryTransactionManager")
 	public ResultResponse<Object> setCollectionCategory(SetCollectionCategoryParameters parameters, String setType) {

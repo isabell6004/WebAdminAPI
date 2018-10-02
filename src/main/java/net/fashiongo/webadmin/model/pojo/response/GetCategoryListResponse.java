@@ -16,14 +16,15 @@ import net.fashiongo.webadmin.model.primary.CollectionCategory;
 @JsonSerialize
 public class GetCategoryListResponse {
 	@JsonProperty("Table")
-	private List<CollectionCategory> categorylist;
+	private List<CollectionCategory> categoryLst;
 
-	public List<CollectionCategory> getCategorylist() {
-		return categorylist;
+	public List<CollectionCategory> getCategoryLst() {
+		return categoryLst;
 	}
 
-	public void setCategorylist(List<CollectionCategory> categorylist) {
-		this.categorylist = categorylist;
+	public void setCategoryLst(List<CollectionCategory> categoryLst) {
+		this.categoryLst = categoryLst;
 	}
+
 
 }

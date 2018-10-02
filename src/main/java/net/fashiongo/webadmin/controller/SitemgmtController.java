@@ -2,6 +2,9 @@ package net.fashiongo.webadmin.controller;
 
 import java.util.List;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.core.MediaType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +28,7 @@ import net.fashiongo.webadmin.service.SitemgmtService;
  * @author Sanghyup Kim
  */
 @RestController
+@Consumes(MediaType.APPLICATION_JSON)
 @RequestMapping(value = "/sitemgmt", produces = "application/json")
 public class SitemgmtController {
 
@@ -107,7 +111,7 @@ public class SitemgmtController {
 	 * 
 	 * set collection category
 	 * 
-	 * @since 2018. 10. 01.
+	 * @since 2018. 10. 02.
 	 * @author Sanghyup Kim
 	 * @param SetCollectionCategoryParameters
 	 * @return JsonResponse<Object>
