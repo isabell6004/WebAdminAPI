@@ -91,7 +91,34 @@ public class AdminService extends ApiService {
 			throw new Exception();
 		}
 		
-		
+		return result;
+	}
+	
+	/**
+	 * Delete Security Access Code
+	 * 
+	 * @since 2018. 10. 02.
+	 * @author Junghwan Lee
+	 * @param idList
+	 * @return
+	 */
+	public SetResultResponse SetDeleteSecurityAccessCodes(List<Integer> idList) throws Exception {
+		SetResultResponse result = new SetResultResponse();
+		result.setSuccess(true);
+		result.setResultCode(0);
+		result.setResultMsg("Deleted successfully!");
+
+		try {
+			for (Integer id : idList) {
+				securityAccessCodeRepository.deleteById(id);
+			}
+		} catch (Exception ex) {
+			result.setSuccess(false);
+			result.setResultCode(-1);
+			result.setResultMsg(ex.getMessage());
+			throw new Exception();
+		}
+
 		return result;
 	}
 }
