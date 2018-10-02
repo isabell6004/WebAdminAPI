@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +51,22 @@ public class AdminController {
 	@RequestMapping(value = "setsecurityaccesscode", method = RequestMethod.POST)
 	public SetResultResponse SetSecurityAccessCode(@RequestBody SetSecurityAccessCodeParameters parameters) throws Exception {
 		SetResultResponse result = adminService.SetSecurityAccessCode(parameters);
+		
+		return result;
+	}
+	
+	/**
+	 * Delete Security Access Code
+	 * 
+	 * @since 2018. 10. 02.
+	 * @author Junghwan Lee
+	 * @param idList
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "setdeletesecurityaccesscodes", method = RequestMethod.POST)
+	public SetResultResponse SetDeleteSecurityAccessCodes(@RequestBody List<Integer> idList) throws Exception {
+		SetResultResponse result = adminService.SetDeleteSecurityAccessCodes(idList);
 		
 		return result;
 	}
