@@ -20,7 +20,7 @@ public class AdController {
 	 * Get AD Setting
 	 * 
 	 * @since 2018. 10. 2.
-	 * @author nayeon
+	 * @author Nayeon Kim
 	 * @return GetADSettingResponse
 	 */
 	@RequestMapping(value = "getAdsetting", method = RequestMethod.POST)

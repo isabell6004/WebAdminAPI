@@ -20,7 +20,7 @@ public class AdService extends ApiService {
 	 * Get AD Setting
 	 * 
 	 * @since 2018. 10. 2.
-	 * @author nayeon
+	 * @author Nayeon Kim
 	 * @return GetADSettingResponse
 	 */
     @SuppressWarnings("unchecked")

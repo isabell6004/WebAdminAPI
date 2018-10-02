@@ -8,7 +8,7 @@ import net.fashiongo.webadmin.model.pojo.AdSettingList;
 import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
 
 /**
- * @author nayeon
+ * @author Nayeon Kim
  */
 public class GetADSettingResponse {
 	@JsonProperty("Table")

@@ -1,7 +1,7 @@
 package net.fashiongo.webadmin.model.pojo;
 
 /**
- * @author nayeon
+ * @author Nayeon Kim
  */
 public class AdSettingList {
 	private Integer PageID;
