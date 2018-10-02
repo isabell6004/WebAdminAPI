@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.service.AdminService;
 
@@ -68,6 +70,22 @@ public class AdminController {
 	public SetResultResponse SetDeleteSecurityAccessCodes(@RequestBody List<Integer> idList) throws Exception {
 		SetResultResponse result = adminService.SetDeleteSecurityAccessCodes(idList);
 		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get Security Log
+	 * 
+	 * @since 2018. 10. 02.
+	 * @author nayeon
+	 * @param GetSecurityLogsParameter
+	 * @return GetSecurityLogsResponse
+	 */
+	@RequestMapping(value = "getsecuritylogs", method = RequestMethod.POST)
+	public GetSecurityLogsResponse getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {		
+		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
+
 		return result;
 	}
 }

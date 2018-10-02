@@ -13,9 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
+import net.fashiongo.webadmin.model.pojo.SecurityLogs;
+import net.fashiongo.webadmin.model.pojo.SecurityLogsColumn;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 
@@ -123,5 +127,40 @@ public class AdminService extends ApiService {
 		}
 
 		return result;
+	}
+	/**
+	 * 
+	 * Get Security Log
+	 * 
+	 * @since 2018. 10. 02.
+	 * @author nayeon
+	 * @param GetSecurityLogsParameter
+	 * @return GetSecurityLogsResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetSecurityLogsResponse getSecuritylogs(GetSecurityLogsParameter parameters) {
+
+		GetSecurityLogsResponse resultSet = new GetSecurityLogsResponse();
+		String spName = "up_Security_GetLoginLog";
+		List<Object> params = new ArrayList<Object>();
+
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		//params.add(parameters.getSortField());
+		//params.add(parameters.getSortDir());
+		params.add(parameters.getUsrId());
+		//params.add(parameters.getPeriodType());
+		params.add(parameters.getsDate());
+		params.add(parameters.geteDate());
+		params.add(parameters.getIp());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityLogs.class, SecurityLogsColumn.class);
+		List<SecurityLogs> securityLogs = (List<SecurityLogs>) _result.get(0);
+		List<SecurityLogsColumn> securityLogsColumn = (List<SecurityLogsColumn>) _result.get(1);
+
+		resultSet.setSecurityLogs(securityLogs);
+		resultSet.setSecurityLogsColumn(securityLogsColumn);
+		
+		return resultSet;
 	}
 }
