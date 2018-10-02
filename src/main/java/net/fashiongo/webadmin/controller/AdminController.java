@@ -1,5 +1,55 @@
 package net.fashiongo.webadmin.controller;
 
-public class AdminController {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
+import net.fashiongo.webadmin.service.AdminService;
+
+/**
+ * 
+ * @author JungHwan
+ */
+@RestController
+@RequestMapping(value = "/admin", produces = "application/json")
+public class AdminController {
+	@Autowired
+	AdminService adminService;
+
+	/**
+	 * Get Security Access Code
+	 * 
+	 * @since 2018. 10. 01.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getsecurityaccesscodes", method = RequestMethod.POST)
+	public GetSecurityAccessCodesResponse GetSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
+		GetSecurityAccessCodesResponse result = adminService.GetSecurityAccessCodes(parameters);
+		
+		return result;
+	}
+
+	/**
+	 * Set Security Access Code
+	 * 
+	 * @since 2018. 10. 02.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "setsecurityaccesscode", method = RequestMethod.POST)
+	public SetResultResponse SetSecurityAccessCode(@RequestBody SetSecurityAccessCodeParameters parameters) throws Exception {
+		SetResultResponse result = adminService.SetSecurityAccessCode(parameters);
+		
+		return result;
+	}
 }
