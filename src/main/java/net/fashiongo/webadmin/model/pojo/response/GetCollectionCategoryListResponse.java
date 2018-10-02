@@ -6,6 +6,7 @@ package net.fashiongo.webadmin.model.pojo.response;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.Category;
@@ -15,6 +16,7 @@ import net.fashiongo.webadmin.model.primary.MapCollectionCategory;
 /**
  * @author Sanghyup Kim
  */
+@JsonSerialize
 public class GetCollectionCategoryListResponse {
 	@JsonProperty("Table")
 	private List<CollectionCategory> collectionCategoryList;

@@ -2,9 +2,6 @@ package net.fashiongo.webadmin.model.pojo.response;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import net.fashiongo.webadmin.model.primary.CollectionCategory2;
