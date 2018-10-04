@@ -2,6 +2,10 @@ package net.fashiongo.webadmin.model.pojo.parameter;
 
 import io.swagger.annotations.ApiModelProperty;
 
+/**
+ * @author Dahye Jeong
+ */
+
 public class GetSecurityResourcesParameter {
 	@ApiModelProperty(required = false, example="fashiongo")
 	private String resourceName;

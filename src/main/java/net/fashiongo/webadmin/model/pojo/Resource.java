@@ -1,5 +1,9 @@
 package net.fashiongo.webadmin.model.pojo;
 
+/**
+ * @author Dahye Jeong
+ */
+
 public class Resource {
 	private Integer ResourceID;
 	private Integer ApplicationID;
