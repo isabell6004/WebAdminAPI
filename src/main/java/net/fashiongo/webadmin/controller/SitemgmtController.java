@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
@@ -47,6 +48,7 @@ public class SitemgmtController {
 	 * @return GetCollectionCategoryListResponse
 	 */
 	@RequestMapping(value = "getcollectioncategorylist", method = RequestMethod.POST)
+    @ApiOperation("site management > collection category setting - get CollectionCategory List")
 	public GetCollectionCategoryListResponse getCollectionCategoryList(
 			@RequestBody GetCollectionCategoryListParameters parameters) {
 
@@ -70,6 +72,7 @@ public class SitemgmtController {
 	 * @return GetCategoryListResponse
 	 */
 	@RequestMapping(value = "getcategorylist", method = RequestMethod.POST)
+    @ApiOperation("site management > collection category setting - get Category List")
 	public GetCategoryListResponse getCategoryList(@RequestBody GetCategoryListParameters parameters) {
 
 //		JsonResponse<GetCategoryListResponse> results = new JsonResponse<GetCategoryListResponse>(false, null, null);
@@ -94,6 +97,7 @@ public class SitemgmtController {
 	 * @return JsonResponse<Object>
 	 */
 	@RequestMapping(value = "setcollectioncategorylistorder", method = RequestMethod.POST)
+    @ApiOperation("site management > collection category setting - set CollectionCategory Listorder")
 	public JsonResponse<Object> setCollectionCategoryListorder(
 			@RequestBody SetCollectionCategoryListorderParameters parameters) {
 
@@ -117,6 +121,7 @@ public class SitemgmtController {
 	 * @return JsonResponse<Object>
 	 */
 	@RequestMapping(value = "setcollectioncategory", method = RequestMethod.POST)
+    @ApiOperation("site management > collection category setting - set CollectionCategory (active, delete, save")
 	public @ResponseBody ResultResponse<Object> setCollectionCategory(
 			@RequestBody SetCollectionCategoryParameters parameters) {
 
@@ -156,6 +161,7 @@ public class SitemgmtController {
 	 */
 	@Deprecated
 	@RequestMapping(value = "getcollectioncategorypolicy", method = RequestMethod.POST)
+    @ApiOperation("[n/a]site management > collection category setting - get CollectionCategory Policy")
 	public @ResponseBody ResultResponse<Object> getCollectionCategoryPolicy() {
 
 		return null;
@@ -172,6 +178,7 @@ public class SitemgmtController {
 	 */
 	@Deprecated
 	@RequestMapping(value = "setcollectioncategorypolicy", method = RequestMethod.POST)
+    @ApiOperation("[n/a]site management > collection category setting - set CollectionCategory Policy")
 	public @ResponseBody ResultResponse<Object> setCollectionCategoryPolicy() {
 
 		return null;

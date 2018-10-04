@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +109,7 @@ public class SitemgmtServiceTest {
 	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtService#getCategoryList(net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters)}.
 	 */
 	@Test
+//	@Ignore
 	public void testGetCategoryList() {
 //		fail("Not yet implemented");
 		System.out.println("SitemgmtServiceTest.testGetCategoryList");
