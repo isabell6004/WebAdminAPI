@@ -10,18 +10,21 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//import org.junit.runner.RunWith;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.response.*;
+import net.fashiongo.webadmin.model.primary.CollectionCategory;
 
 /**
  * @author sanghyup
  *
  */
-//@RunWith(SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class SitemgmtServiceTest {
 	
@@ -91,14 +94,14 @@ public class SitemgmtServiceTest {
 		parameters.setExpandAll(1);
 		GetCollectionCategoryListResponse result = sitemgmtService.getCollectionCategoryList(parameters);
 
-		assertNull(result.getCollectionCategoryList());
+		assertNotNull(result.getCollectionCategoryList());
 
 		// check collection category detail
 		parameters = new GetCollectionCategoryListParameters();
 		parameters.setCategoryId(8);
 		result = sitemgmtService.getCollectionCategoryList(parameters);
 
-//		assertNull(result.getCollectionCategoryList());
+		assertNotNull(result.getAdPageSpotList());
 }
 
 	/**
@@ -115,7 +118,7 @@ public class SitemgmtServiceTest {
 		parameters.setExpandAll(0);
 		GetCategoryListResponse result = sitemgmtService.getCategoryList(parameters);
 
-//		assertNull(result.getCategorylist());
+		assertNotNull(result.getCategoryLst());
 	}
 
 	/**
@@ -134,7 +137,62 @@ public class SitemgmtServiceTest {
 		parameters.setParentCategoryId(1);
 		SetCollectionCategoryListorderResponse result = sitemgmtService.setCollectionCategoryListorder(parameters);
 
-//		assertNull(result.getCategoryCollectionlist());
+		assertNotNull(result.getCategoryCollectionlist());
 	}
 
+	@Test
+	public void testSetCollectionCategoryActive() {
+
+		SetCollectionCategoryParameters parameters = new SetCollectionCategoryParameters();
+		// 1st test -active
+		parameters.setSetType("Act");
+		
+		CollectionCategory collectionCategory = new CollectionCategory();
+		collectionCategory.setCollectionCategoryID(8);
+		collectionCategory.setActive(true);
+		parameters.setCollectionCategory(collectionCategory);
+
+		ResultResponse<Object> result = sitemgmtService.setCollectionCategoryActive(parameters);
+		assertTrue(result.getCode() > 0);
+
+		// 2nd test -inactive
+		collectionCategory.setActive(false);
+		result = sitemgmtService.setCollectionCategoryActive(parameters);
+		assertTrue(result.getCode() > 0);
+	}
+
+	@Test
+	public void testSetCollectionCategoryDelete() {
+
+		SetCollectionCategoryParameters parameters = new SetCollectionCategoryParameters();
+		parameters.setSetType("Del");
+		
+		CollectionCategory collectionCategory = new CollectionCategory();
+		collectionCategory.setCollectionCategoryID(9999);
+		parameters.setCollectionCategory(collectionCategory);
+
+//		ResultResponse<Object> result = sitemgmtService.setCollectionCategoryDelete(parameters);
+//		assertNotNull(result.getData());
+		
+	}
+
+	@Test
+	public void testSetCollectionCategory() {
+
+		SetCollectionCategoryParameters parameters = new SetCollectionCategoryParameters();
+		// 1st test -insert
+		parameters.setSetType("Add");
+		
+		CollectionCategory collectionCategory = new CollectionCategory();
+		collectionCategory.setCollectionCategoryID(0);
+		parameters.setCollectionCategory(collectionCategory);
+
+//		ResultResponse<Object> result = sitemgmtService.setCollectionCategoryDelete(parameters);
+//		assertNotNull(result.getData());
+
+		// 2nd test -update
+		parameters.setSetType("Upd");
+		collectionCategory.setCollectionCategoryID(8);
+
+	}
 }

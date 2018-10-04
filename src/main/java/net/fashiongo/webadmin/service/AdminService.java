@@ -136,31 +136,30 @@ public class AdminService extends ApiService {
 	 * @author nayeon
 	 * @param GetSecurityLogsParameter
 	 * @return GetSecurityLogsResponse
+	 * @throws Exception 
 	 */
 	@SuppressWarnings("unchecked")
-	public GetSecurityLogsResponse getSecuritylogs(GetSecurityLogsParameter parameters) {
-
-		GetSecurityLogsResponse resultSet = new GetSecurityLogsResponse();
+	public GetSecurityLogsResponse getSecuritylogs(GetSecurityLogsParameter parameters) throws Exception {
+		GetSecurityLogsResponse result = new GetSecurityLogsResponse();
 		String spName = "up_Security_GetLoginLog";
 		List<Object> params = new ArrayList<Object>();
+				
+		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
 
 		params.add(parameters.getPageNum());
 		params.add(parameters.getPageSize());
-		//params.add(parameters.getSortField());
-		//params.add(parameters.getSortDir());
 		params.add(parameters.getUsrId());
-		//params.add(parameters.getPeriodType());
-		params.add(parameters.getsDate());
-		params.add(parameters.geteDate());
 		params.add(parameters.getIp());
-
+		params.add(dt.parse(parameters.getsDate()));
+		params.add(dt.parse(parameters.geteDate()));
+			
 		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityLogs.class, SecurityLogsColumn.class);
 		List<SecurityLogs> securityLogs = (List<SecurityLogs>) _result.get(0);
 		List<SecurityLogsColumn> securityLogsColumn = (List<SecurityLogsColumn>) _result.get(1);
 
-		resultSet.setSecurityLogs(securityLogs);
-		resultSet.setSecurityLogsColumn(securityLogsColumn);
+		result.setSecurityLogs(securityLogs);
+		result.setSecurityLogsColumn(securityLogsColumn);
 		
-		return resultSet;
+		return result;
 	}
 }
