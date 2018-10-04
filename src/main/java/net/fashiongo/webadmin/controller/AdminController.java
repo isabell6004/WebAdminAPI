@@ -83,7 +83,7 @@ public class AdminController {
 	 * @return GetSecurityLogsResponse
 	 */
 	@RequestMapping(value = "getsecuritylogs", method = RequestMethod.POST)
-	public GetSecurityLogsResponse getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {		
+	public GetSecurityLogsResponse getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) throws Exception {		
 		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
 
 		return result;

@@ -42,7 +42,7 @@ public class GetSecurityLogsParameter {
 	@JsonProperty("eDate")
 	private String eDate;	
 	
-	@ApiModelProperty(required = false, example="")
+	@ApiModelProperty(required = false, example="165.225.39.73")
 	@JsonProperty("ip")
 	private String ip;
 
