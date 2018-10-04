@@ -144,6 +144,39 @@ public class SitemgmtController {
 		return result;
 	}
 
+
+	/**
+	 * 
+	 * set collection category policy
+	 * 
+	 * @since 2018. 10. 03.
+	 * @author Sanghyup Kim
+	 * @param 
+	 * @return JsonResponse<Object>
+	 */
+	@Deprecated
+	@RequestMapping(value = "getcollectioncategorypolicy", method = RequestMethod.POST)
+	public @ResponseBody ResultResponse<Object> getCollectionCategoryPolicy() {
+
+		return null;
+	}
+	
+	/**
+	 * 
+	 * set collection category policy
+	 * 
+	 * @since 2018. 10. 03.
+	 * @author Sanghyup Kim
+	 * @param 
+	 * @return JsonResponse<Object>
+	 */
+	@Deprecated
+	@RequestMapping(value = "setcollectioncategorypolicy", method = RequestMethod.POST)
+	public @ResponseBody ResultResponse<Object> setCollectionCategoryPolicy() {
+
+		return null;
+	}
+	
 	// collection category setting
 	// ----------------------------------------------------
 

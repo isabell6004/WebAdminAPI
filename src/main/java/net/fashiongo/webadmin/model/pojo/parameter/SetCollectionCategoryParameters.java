@@ -3,6 +3,8 @@
  */
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -11,6 +13,7 @@ import net.fashiongo.webadmin.model.primary.MapCollectionCategory;
 
 /**
  * Set CollectionCategory Parameters
+ * 
  * @author Sanghyup Kim
  */
 public class SetCollectionCategoryParameters {
@@ -22,10 +25,10 @@ public class SetCollectionCategoryParameters {
 	@ApiModelProperty(required = true, example = "Act")
 	@JsonProperty("settype")
 	private String setType;
-	
+
 	@ApiModelProperty(required = false, example = "{MapID, CollectionCategoryID, CategoryID, CategoryName}")
 	@JsonProperty("collectioncategorymap")
-	private MapCollectionCategory mapCollectionCategory;
+	private List<MapCollectionCategory> mapCollectionCategoryList;
 
 	public CollectionCategory getCollectionCategory() {
 		return collectionCategory;
@@ -43,13 +46,12 @@ public class SetCollectionCategoryParameters {
 		this.setType = setType;
 	}
 
-	public MapCollectionCategory getMapCollectionCategory() {
-		return mapCollectionCategory;
+	public List<MapCollectionCategory> getMapCollectionCategoryList() {
+		return mapCollectionCategoryList;
 	}
 
-	public void setMapCollectionCategory(MapCollectionCategory mapCollectionCategory) {
-		this.mapCollectionCategory = mapCollectionCategory;
+	public void setMapCollectionCategoryList(List<MapCollectionCategory> mapCollectionCategoryList) {
+		this.mapCollectionCategoryList = mapCollectionCategoryList;
 	}
-	
-	
+
 }

@@ -5,9 +5,15 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,6 +31,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "CollectionCategory")
 @XmlRootElement
+@NamedStoredProcedureQueries({
+		// up_wa_SetCollectionCategoryInactive
+		@NamedStoredProcedureQuery(name = "CollectionCategory.upWaSetCollectionCategoryInactive", procedureName = "up_wa_SetCollectionCategoryInactive", parameters = {
+				@StoredProcedureParameter(mode = ParameterMode.IN, name = "CollectionCategoryID", type = Integer.class) }) })
 @NamedQueries({ @NamedQuery(name = "CollectionCategory.findAll", query = "SELECT c FROM CollectionCategory c"),
 		@NamedQuery(name = "CollectionCategory.findByCollectionCategoryID", query = "SELECT c FROM CollectionCategory c WHERE c.collectionCategoryID = :collectionCategoryID"),
 		@NamedQuery(name = "CollectionCategory.findByCollectionCategoryName", query = "SELECT c FROM CollectionCategory c WHERE c.collectionCategoryName = :collectionCategoryName"),
@@ -47,6 +57,7 @@ public class CollectionCategory implements Serializable {
 	@Id
 	@Basic(optional = false)
 	@NotNull
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@JsonProperty("CollectionCategoryID")
 	@Column(name = "CollectionCategoryID")
 	private Integer collectionCategoryID;

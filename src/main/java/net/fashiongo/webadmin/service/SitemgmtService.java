@@ -1,8 +1,10 @@
 package net.fashiongo.webadmin.service;
 
 import java.util.ArrayList;
+//import java.util.Date;
 import java.util.List;
 
+//import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +20,7 @@ import net.fashiongo.webadmin.dao.primary.CollectionCategory2Repository;
 import net.fashiongo.webadmin.dao.primary.CollectionCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapCollectionCategoryRepository;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.Total;
+//import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
@@ -53,7 +55,8 @@ public class SitemgmtService extends ApiService {
 	 * @return GetCollectionCategoryListResponse
 	 */
 	@SuppressWarnings("unchecked")
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED, transactionManager = "primaryTransactionManager")
+//	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED, transactionManager = "primaryTransactionManager")
+	@Transactional(readOnly = true, transactionManager = "primaryTransactionManager")
 	public GetCollectionCategoryListResponse getCollectionCategoryList(GetCollectionCategoryListParameters parameters) {
 
 		List<Object> params = new ArrayList<Object>();
@@ -96,7 +99,8 @@ public class SitemgmtService extends ApiService {
 	 * @return GetCategoryListResponse
 	 */
 	@SuppressWarnings("unchecked")
-	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED, transactionManager = "primaryTransactionManager")
+//	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED, transactionManager = "primaryTransactionManager")
+	@Transactional(readOnly = true, transactionManager = "primaryTransactionManager")
 	public GetCategoryListResponse getCategoryList(GetCategoryListParameters parameters) {
 
 		List<Object> params = new ArrayList<Object>();
@@ -128,10 +132,10 @@ public class SitemgmtService extends ApiService {
 			SetCollectionCategoryListorderParameters parameters) {
 
 		// set parameters
-		int collectionCategoryID = parameters.getCategoryId();
-		int parentCollectionCategoryID = parameters.getParentCategoryId();
-		int listOrder = parameters.getListOrder();
-		int lvl = parameters.getLvl();
+		final int collectionCategoryID = parameters.getCategoryId();
+		final int parentCollectionCategoryID = parameters.getParentCategoryId();
+		final int listOrder = parameters.getListOrder();
+		final int lvl = parameters.getLvl();
 		int newListOrder = listOrder;
 
 		CollectionCategory2 collectionCategory = collectionCategory2Repository
@@ -189,9 +193,9 @@ public class SitemgmtService extends ApiService {
 	public ResultResponse<Object> setCollectionCategoryActive(SetCollectionCategoryParameters parameters) {
 
 		// set parameters
-		CollectionCategory collectionCategory = parameters.getCollectionCategory();
-		int collectionCategoryID = collectionCategory.getCollectionCategoryID();
-		Boolean active = collectionCategory.getActive();
+		final CollectionCategory collectionCategory = parameters.getCollectionCategory();
+		final int collectionCategoryID = collectionCategory.getCollectionCategoryID();
+		final Boolean active = collectionCategory.getActive();
 
 		ResultResponse<Object> result = new ResultResponse<Object>();
 		if (active) {
@@ -205,14 +209,13 @@ public class SitemgmtService extends ApiService {
 				result.setResultWrapper(true, 1, collectionCategoryID, MSG_CHANGE_SUCCESS, null);
 			}
 		} else { // inactive all of sub node items
-			String spName = "up_wa_SetCollectionCategoryInactive";
-			List<Object> params = new ArrayList<Object>();
-
-			params.add(collectionCategoryID);
-
-			List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class);
-			int affectedRows = (Integer) _result.get(0);
-
+			/*
+			 * String spName = "up_wa_SetCollectionCategoryInactive"; List<Object> params =
+			 * new ArrayList<Object>(); params.add(collectionCategoryID); List<Object>
+			 * _result = jdbcHelper.executeSP(spName, params, Integer.class); // return []
+			 */
+			collectionCategoryRepository.upWaSetCollectionCategoryInactive(collectionCategoryID);
+			int affectedRows = 1;
 			result.setResultWrapper(true, affectedRows, collectionCategoryID, MSG_CHANGE_SUCCESS, null);
 		}
 
@@ -232,8 +235,8 @@ public class SitemgmtService extends ApiService {
 	public ResultResponse<Object> setCollectionCategoryDelete(SetCollectionCategoryParameters parameters) {
 
 		// set parameters
-		CollectionCategory collectionCategory = parameters.getCollectionCategory();
-		int collectionCategoryID = collectionCategory.getCollectionCategoryID();
+		final CollectionCategory collectionCategory = parameters.getCollectionCategory();
+		final int collectionCategoryID = collectionCategory.getCollectionCategoryID();
 
 		// deleteInBulkByCollectionCategoryID
 		mapCollectionCategoryRepository.deleteInBulkByCollectionCategoryID(collectionCategoryID);
@@ -249,7 +252,7 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 * 
-	 * set Collection Category
+	 * set Collection Category - insert/update
 	 * 
 	 * @since 2018. 10. 02.
 	 * @author Sanghyup Kim
@@ -260,33 +263,42 @@ public class SitemgmtService extends ApiService {
 	public ResultResponse<Object> setCollectionCategory(SetCollectionCategoryParameters parameters, String setType) {
 
 		// set parameters
-		CollectionCategory collectionCategory = parameters.getCollectionCategory();
+		final CollectionCategory collectionCategory = parameters.getCollectionCategory();
+//		Date modifiedOn = new Date();
+//		collectionCategory.setModifiedOn(modifiedOn);
+
+		int collectionCategoryID = collectionCategory.getCollectionCategoryID();
 
 		ResultResponse<Object> result = new ResultResponse<Object>();
 
 		switch (setType) {
 		case "Add":
 			CollectionCategory newCollectionCategory = collectionCategoryRepository.save(collectionCategory);
+			// collectionCategoryID update
+			collectionCategoryID = newCollectionCategory.getCollectionCategoryID();
 
-			result.setResultWrapper(true, 1, newCollectionCategory.getCollectionCategoryID(), MSG_INSERT_SUCCESS, null);
+			result.setResultWrapper(true, 1, collectionCategoryID, MSG_INSERT_SUCCESS, null);
 			break;
 
 		case "Upd":
-			int collectionCategoryID = collectionCategory.getCollectionCategoryID();
 			CollectionCategory collectionCategory2 = collectionCategoryRepository
 					.findOneByCollectionCategoryID(collectionCategoryID);
 
 			if (collectionCategory2 != null) {
+				// edit
 				collectionCategory2.setCollectionCategoryName(collectionCategory.getCollectionCategoryName());
 				collectionCategory2.setParentCollectionCategoryID(collectionCategory.getParentCollectionCategoryID());
 				collectionCategory2.setLvl(collectionCategory.getLvl());
 				collectionCategory2.setListOrder(collectionCategory.getListOrder());
 				collectionCategory2.setActive(collectionCategory.getActive());
 				collectionCategory2.setSpotID(collectionCategory.getSpotID());
+
+				// auto selection policy
 				collectionCategory2.setServiceInUse(collectionCategory.getServiceInUse());
 				collectionCategory2.setVendorType(collectionCategory.getVendorType());
 				collectionCategory2.setVendorTierGroup(collectionCategory.getVendorTierGroup());
 				collectionCategory2.setOrderBy(collectionCategory.getOrderBy());
+
 				collectionCategory2.setModifiedBy(collectionCategory.getModifiedBy());
 				collectionCategory2.setModifiedOn(collectionCategory.getModifiedOn());
 
@@ -299,6 +311,24 @@ public class SitemgmtService extends ApiService {
 			break;
 		}
 
+		// update map_collection category items
+		final List<MapCollectionCategory> mapCollectionCategory = parameters.getMapCollectionCategoryList();
+		if (mapCollectionCategory != null) {
+			mapCollectionCategoryRepository.deleteInBulkByCollectionCategoryID(collectionCategoryID);
+
+			for (MapCollectionCategory mapCollectionCategory2 : mapCollectionCategory) {
+				if (mapCollectionCategory2.getCollectionCategoryID() == 0) { // insert
+					mapCollectionCategory2.setCollectionCategoryID(collectionCategoryID);
+				}
+				mapCollectionCategoryRepository.save(mapCollectionCategory2);
+			}
+			/*
+			 * final int collectionCategoryID2 = collectionCategoryID;
+			 * mapCollectionCategory.stream().forEach(x -> { if (x.getCollectionCategoryID()
+			 * == 0) { // insert x.setCollectionCategoryID(collectionCategoryID2); }
+			 * mapCollectionCategoryRepository.save(x); });
+			 */
+		}
 		return result;
 	}
 
