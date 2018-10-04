@@ -2,6 +2,10 @@ package net.fashiongo.webadmin.model.pojo.parameter;
 
 import io.swagger.annotations.ApiModelProperty;
 
+/**
+ * @author Dahye Jeong
+ */
+
 public class SetSecurityAccessIpParameter {
 	@ApiModelProperty(required = false, example="18")
 	private Integer ipid;

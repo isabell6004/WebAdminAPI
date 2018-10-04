@@ -8,14 +8,13 @@ import net.fashiongo.webadmin.model.pojo.SecurityAccessIps;;
 
 public class GetSecurityAccessIpsResponse {
 	@JsonProperty("Table")
-	private List<SecurityAccessIps> total;
+	private List<SecurityAccessIps> ips;
 
-	public List<SecurityAccessIps> getTotal() {
-		return total;
+	public List<SecurityAccessIps> getIps() {
+		return ips;
 	}
 
-	public void setTotal(List<SecurityAccessIps> total) {
-		this.total = total;
+	public void setIps(List<SecurityAccessIps> ips) {
+		this.ips = ips;
 	}
-	
 }
