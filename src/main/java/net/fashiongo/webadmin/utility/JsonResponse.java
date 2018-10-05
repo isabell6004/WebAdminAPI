@@ -18,6 +18,7 @@ public class JsonResponse<T> {
 	
 	private boolean success;
 	private Integer code;
+	private Integer pk;
 	private String message;
 	private T data;
 	
@@ -26,6 +27,7 @@ public class JsonResponse<T> {
 		this.code = 0;
 		this.message = "";
 		this.data = null;
+		this.pk = null;
 	}
 	
 	public JsonResponse(boolean success, String message, Integer code, T data) {
@@ -33,6 +35,14 @@ public class JsonResponse<T> {
 		this.message = message;
 		this.code = code;
 		this.data = data;
+	}
+	
+	public JsonResponse(boolean success, String message, Integer code, Integer pk, T data) {
+		this.success = success;
+		this.message = message;
+		this.code = code;
+		this.data = data;
+		this.pk = pk;
 	}
 
 	public boolean isSuccess() {
@@ -63,6 +73,18 @@ public class JsonResponse<T> {
 		return code;
 	}
 	
+	public void setCode(Integer code) {
+		this.code = code;
+	}
+
+	public Integer getPk() {
+		return pk;
+	}
+
+	public void setPk(Integer pk) {
+		this.pk = pk;
+	}
+
 	@Override
 	public String toString() {
 		try {
