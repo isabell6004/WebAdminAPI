@@ -45,10 +45,9 @@ public class AdController {
 	 * @author Nayeon Kim
 	 * @param SetAddPageParameter
 	 * @return 
-	 * @throws Exception 
 	 */
 	@RequestMapping(value = "setaddpage", method = RequestMethod.POST)
-	public ResultResponse<Object> setAddPage(@RequestBody SetAddPageParameter parameters) throws Exception {
+	public ResultResponse<Object> setAddPage(@RequestBody SetAddPageParameter parameters) {
 		ResultResponse<Object> result = AdService.setAdPage(parameters);
 
 		return result;
@@ -61,10 +60,9 @@ public class AdController {
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
 	 * @return GetBodySizeCodeResponse
-	 * @throws Exception 
 	 */
 	@RequestMapping(value = "getbodysizelist", method = RequestMethod.POST)
-	public GetBodySizeCodeResponse getBodySizeList() throws Exception {
+	public GetBodySizeCodeResponse getBodySizeList() {
 		GetBodySizeCodeResponse result = AdService.getBodySizeList();
 
 		return result;
@@ -78,10 +76,9 @@ public class AdController {
 	 * @author Nayeon Kim
 	 * @param GetSpotCheckParameter
 	 * @return GetSpotCheckResponse
-	 * @throws Exception 
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
-	public GetSpotCheckResponse getSpotCheck(GetSpotCheckParameter parameters) throws Exception {
+	public GetSpotCheckResponse getSpotCheck(GetSpotCheckParameter parameters) {
 		GetSpotCheckResponse result = AdService.getSpotCheck(parameters);
 
 		return result;
@@ -95,10 +92,9 @@ public class AdController {
 	 * @author Nayeon Kim
 	 * @param DelSpotSettingParameter
 	 * @return 
-	 * @throws Exception 
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-	public ResultResponse<Object> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) throws Exception {
+	public ResultResponse<Object> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
 		ResultResponse<Object> result = AdService.delSpotSetting(parameters);
 
 		return result;

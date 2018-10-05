@@ -62,36 +62,31 @@ public class AdService extends ApiService {
 	 * @return
 	 */
 	//@Transactional
-	public ResultResponse<Object> setAdPage(SetAddPageParameter parameters) throws Exception {
+	public ResultResponse<Object> setAdPage(SetAddPageParameter parameters) {
 		AdPage adPage = new AdPage();
 		Integer pageID = parameters.getPageID();
 		String pageName = parameters.getPageName();
 		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"failure",null);
 
-		try {
-			if (pageID == null) { // new (insert)
-				AdPage adPage2 = adPageRepository.findTopByOrderByPageIDDesc();
-				if (adPage2 != null) {
-					pageID = adPage2.getPageID() + 1;
-					adPage.setPageID(pageID);
-					adPage.setPageName(pageName);
+		if (pageID == null) { // new (insert)
+			AdPage adPage2 = adPageRepository.findTopByOrderByPageIDDesc();
+			if (adPage2 != null) {
+				pageID = adPage2.getPageID() + 1;
+				adPage.setPageID(pageID);
+				adPage.setPageName(pageName);
 
-					adPageRepository.save(adPage);
-				}
-			} else { // not null // update
-				AdPage adPage2 = adPageRepository.findOneByPageID(pageID);
-				adPage2.setPageName(pageName);
-				// adPage2.setPageUrl(pageUrl);
-				adPageRepository.save(adPage2);
+				adPageRepository.save(adPage);
 			}
-
-			result.setSuccess(true);
-			result.setCode(1);
-			result.setMessage(MSG_SAVE_SUCCESS);
-
-		} catch (Exception ex) {
-
+		} else { // not null // update
+			AdPage adPage2 = adPageRepository.findOneByPageID(pageID);
+			adPage2.setPageName(pageName);
+			// adPage2.setPageUrl(pageUrl);
+			adPageRepository.save(adPage2);
 		}
+
+		result.setSuccess(true);
+		result.setCode(1);
+		result.setMessage(MSG_SAVE_SUCCESS);
 
 		return result;
 	}
@@ -103,7 +98,6 @@ public class AdService extends ApiService {
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
 	 * @return GetBodySizeCodeResponse
-	 * @throws Exception
 	 */
 	public GetBodySizeCodeResponse getBodySizeList() {
 		// TODO Auto-generated method stub
@@ -118,7 +112,6 @@ public class AdService extends ApiService {
 	 * @author Nayeon Kim
 	 * @param GetSpotCheckParameter
 	 * @return GetSpotCheckResponse
-	 * @throws Exception
 	 */
 	public GetSpotCheckResponse getSpotCheck(GetSpotCheckParameter parameters) {
 		// TODO Auto-generated method stub
@@ -133,24 +126,18 @@ public class AdService extends ApiService {
 	 * @author Nayeon Kim
 	 * @param DelSpotSettingParameter
 	 * @return
-	 * @throws Exception
 	 */
 	//@Transactional
-	public ResultResponse<Object> delSpotSetting(DelSpotSettingParameter parameters) throws Exception {
+	public ResultResponse<Object> delSpotSetting(DelSpotSettingParameter parameters) {
 		// AdPageSpot adPageSpot = new AdPageSpot();
 		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"deletefailure",null);
 
-		try {
-			Integer spotID = parameters.getSpotID();
-			adPageSpotRepository.deleteById(spotID);
-			
-			result.setSuccess(true);
-			result.setCode(1);
-			result.setMessage(MSG_DELETE_SUCCESS);
-
-		} catch (Exception ex) {
-			
-		}
+		Integer spotID = parameters.getSpotID();
+		adPageSpotRepository.deleteById(spotID);
+		
+		result.setSuccess(true);
+		result.setCode(1);
+		result.setMessage(MSG_DELETE_SUCCESS);
 
 		return result;
 	}
