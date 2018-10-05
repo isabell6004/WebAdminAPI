@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
