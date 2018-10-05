@@ -10,25 +10,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * @author kcha
+ * @author Incheol Jung
  *
  */
 @JsonSerialize
 public class JsonResponse<T> {
 	
 	private boolean success;
-	private Integer errorCode;
+	private Integer code;
 	private String message;
 	private T data;
 	
 	public JsonResponse() {
 		this.success = true;
+		this.code = 0;
 		this.message = "";
-		
+		this.data = null;
 	}
-	public JsonResponse(boolean success, String message, T data) {
+	
+	public JsonResponse(boolean success, String message, Integer code, T data) {
 		this.success = success;
 		this.message = message;
+		this.code = code;
 		this.data = data;
 	}
 
@@ -56,8 +59,8 @@ public class JsonResponse<T> {
 		this.data = data;
 	}
 	
-	public Integer getErrorCode() {
-		return errorCode;
+	public Integer getCode() {
+		return code;
 	}
 	
 	@Override
