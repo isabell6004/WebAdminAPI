@@ -33,13 +33,12 @@ public class MessageController {
 	 * @return
 	 */
 	@RequestMapping(value="getmessage", method=RequestMethod.POST)
-	public GetMessageResponse GetMessage(@RequestBody GetMessageParameter parameters) {
-		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(false, null, 0, null);
+	public JsonResponse<GetMessageResponse> GetMessage(@RequestBody GetMessageParameter parameters) {
+		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(true, null, 0, null);
 		
 		GetMessageResponse result = messageService.GetMessage(parameters);
 		results.setData(result);
-		results.setSuccess(true);
 		
-		return results.getData();
+		return results;
 	}
 }
