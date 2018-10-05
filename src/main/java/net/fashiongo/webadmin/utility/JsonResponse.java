@@ -35,6 +35,14 @@ public class JsonResponse<T> {
 		this.code = code;
 		this.data = data;
 	}
+	
+	public JsonResponse(boolean success, String message, Integer code, Integer pk, T data) {
+		this.success = success;
+		this.message = message;
+		this.code = code;
+		this.data = data;
+		this.pk = pk;
+	}
 
 	public boolean isSuccess() {
 		return success;
