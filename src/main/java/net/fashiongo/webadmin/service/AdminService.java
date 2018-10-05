@@ -143,15 +143,13 @@ public class AdminService extends ApiService {
 		GetSecurityLogsResponse result = new GetSecurityLogsResponse();
 		String spName = "up_Security_GetLoginLog";
 		List<Object> params = new ArrayList<Object>();
-				
-		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
 
 		params.add(parameters.getPageNum());
 		params.add(parameters.getPageSize());
 		params.add(parameters.getUsrId());
 		params.add(parameters.getIp());
-		params.add(dt.parse(parameters.getsDate()));
-		params.add(dt.parse(parameters.geteDate()));
+		params.add(parameters.getStartDate());
+		params.add(parameters.getEndDate());
 			
 		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityLogs.class, SecurityLogsColumn.class);
 		List<SecurityLogs> securityLogs = (List<SecurityLogs>) _result.get(0);
