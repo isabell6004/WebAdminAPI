@@ -56,29 +56,30 @@ public class SitemgmtService extends ApiService {
 	 */
 	@SuppressWarnings("unchecked")
 //	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED, transactionManager = "primaryTransactionManager")
-	@Transactional(readOnly = true, transactionManager = "primaryTransactionManager")
+//	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS, transactionManager = "primaryTransactionManager")
 	public GetCollectionCategoryListResponse getCollectionCategoryList(GetCollectionCategoryListParameters parameters) {
 
 		List<Object> params = new ArrayList<Object>();
 
 		// add parameters
-		params.add(parameters.getCategoryId());
+		final Integer categoryID = parameters.getCategoryId();
+		params.add(categoryID);
 		params.add(parameters.getExpandAll());
-		String spName = "up_wa_GetCollectionCategory";
+		final String spName = "up_wa_GetCollectionCategory";
 
 		GetCollectionCategoryListResponse resultSet = new GetCollectionCategoryListResponse();
-		if ((int) params.get(0) == 0) { // list
+		if (categoryID == 0) { // list
 			List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class);
 			List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
 			resultSet.setCollectionCategoryList(collectionCategoryList);
 		} else { // detail by categoryId
-			List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class,
+			final List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class,
 					MapCollectionCategory.class, AdPageSpot.class, Category.class);
 
-			List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
-			List<MapCollectionCategory> mapCollectionCategoryList = (List<MapCollectionCategory>) _result.get(1);
-			List<AdPageSpot> adPageSpotist = (List<AdPageSpot>) _result.get(2);
-			List<Category> categoryList = (List<Category>) _result.get(3);
+			final List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
+			final List<MapCollectionCategory> mapCollectionCategoryList = (List<MapCollectionCategory>) _result.get(1);
+			final List<AdPageSpot> adPageSpotist = (List<AdPageSpot>) _result.get(2);
+			final List<Category> categoryList = (List<Category>) _result.get(3);
 
 			resultSet.setCollectionCategoryList(collectionCategoryList);
 			resultSet.setMapCollectionCategoryList(mapCollectionCategoryList);
@@ -100,17 +101,17 @@ public class SitemgmtService extends ApiService {
 	 */
 	@SuppressWarnings("unchecked")
 //	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED, transactionManager = "primaryTransactionManager")
-	@Transactional(readOnly = true, transactionManager = "primaryTransactionManager")
+//	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS, transactionManager = "primaryTransactionManager")
 	public GetCategoryListResponse getCategoryList(GetCategoryListParameters parameters) {
 
 		List<Object> params = new ArrayList<Object>();
 
 		params.add(parameters.getCategoryId());
 		params.add(parameters.getExpandAll());
-		String spName = "up_wa_GetCategoryList";
+		final String spName = "up_wa_GetCategoryList";
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class);
-		List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
+		final List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class);
+		final List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
 
 		GetCategoryListResponse resultSet = new GetCategoryListResponse();
 		resultSet.setCategoryLst(collectionCategoryList);
@@ -138,10 +139,10 @@ public class SitemgmtService extends ApiService {
 		final int lvl = parameters.getLvl();
 		int newListOrder = listOrder;
 
-		CollectionCategory2 collectionCategory = collectionCategory2Repository
+		final CollectionCategory2 collectionCategory = collectionCategory2Repository
 				.findOneByCollectionCategoryID(collectionCategoryID);
 		if (collectionCategory != null) {
-			List<CollectionCategory2> collectionCategoryList = collectionCategory2Repository
+			final List<CollectionCategory2> collectionCategoryList = collectionCategory2Repository
 					.findByParentCollectionCategoryIDAndLvlAndCollectionCategoryIDNotOrderByListOrderAsc(
 							parentCollectionCategoryID, lvl, collectionCategoryID);
 
@@ -172,14 +173,14 @@ public class SitemgmtService extends ApiService {
 			collectionCategory2Repository.save(collectionCategory);
 		}
 
-		List<CollectionCategory2> collectionCategoryList2 = collectionCategory2Repository
+		final List<CollectionCategory2> collectionCategoryList2 = collectionCategory2Repository
 				.findByParentCollectionCategoryIDAndLvlOrderByListOrderAsc(parentCollectionCategoryID, lvl);
 
 		SetCollectionCategoryListorderResponse resultSet = new SetCollectionCategoryListorderResponse();
 		resultSet.setCategoryCollectionlist(collectionCategoryList2);
 		return resultSet;
 	}
-
+	
 	/**
 	 * 
 	 * set Collection Category Active
@@ -190,14 +191,14 @@ public class SitemgmtService extends ApiService {
 	 * @return ResultResponse<Object>
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, transactionManager = "primaryTransactionManager")
-	public ResultResponse<Object> setCollectionCategoryActive(SetCollectionCategoryParameters parameters) {
+	public ResultResponse<Integer> setCollectionCategoryActive(SetCollectionCategoryParameters parameters) {
 
 		// set parameters
 		final CollectionCategory collectionCategory = parameters.getCollectionCategory();
 		final int collectionCategoryID = collectionCategory.getCollectionCategoryID();
 		final Boolean active = collectionCategory.getActive();
 
-		ResultResponse<Object> result = new ResultResponse<Object>();
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
 		if (active) {
 			CollectionCategory collectionCategory2 = collectionCategoryRepository
 					.findOneByCollectionCategoryID(collectionCategoryID);
@@ -206,7 +207,7 @@ public class SitemgmtService extends ApiService {
 				collectionCategory2.setActive(active);
 				collectionCategoryRepository.save(collectionCategory2);
 
-				result.setResultWrapper(true, 1, collectionCategoryID, MSG_CHANGE_SUCCESS, null);
+				result.setResultWrapper(true, 1, collectionCategoryID, MSG_CHANGE_SUCCESS, 1);
 			}
 		} else { // inactive all of sub node items
 			/*
@@ -216,7 +217,7 @@ public class SitemgmtService extends ApiService {
 			 */
 			collectionCategoryRepository.upWaSetCollectionCategoryInactive(collectionCategoryID);
 			int affectedRows = 1;
-			result.setResultWrapper(true, affectedRows, collectionCategoryID, MSG_CHANGE_SUCCESS, null);
+			result.setResultWrapper(true, affectedRows, collectionCategoryID, MSG_CHANGE_SUCCESS, 1);
 		}
 
 		return result;
@@ -232,7 +233,7 @@ public class SitemgmtService extends ApiService {
 	 * @return ResultResponse<Object>
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, transactionManager = "primaryTransactionManager")
-	public ResultResponse<Object> setCollectionCategoryDelete(SetCollectionCategoryParameters parameters) {
+	public ResultResponse<Integer> setCollectionCategoryDelete(SetCollectionCategoryParameters parameters) {
 
 		// set parameters
 		final CollectionCategory collectionCategory = parameters.getCollectionCategory();
@@ -244,7 +245,7 @@ public class SitemgmtService extends ApiService {
 		collectionCategoryRepository.deleteByCollectionCategoryIDOrParentCollectionCategoryID(collectionCategoryID,
 				collectionCategoryID);
 
-		ResultResponse<Object> result = new ResultResponse<Object>();
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
 		result.setResultWrapper(true, 1, collectionCategoryID, MSG_DELETE_SUCCESS, null);
 
 		return result;
@@ -260,7 +261,7 @@ public class SitemgmtService extends ApiService {
 	 * @return ResultResponse<Object>
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, transactionManager = "primaryTransactionManager")
-	public ResultResponse<Object> setCollectionCategory(SetCollectionCategoryParameters parameters, String setType) {
+	public ResultResponse<Integer> setCollectionCategory(SetCollectionCategoryParameters parameters, String setType) {
 
 		// set parameters
 		final CollectionCategory collectionCategory = parameters.getCollectionCategory();
@@ -269,15 +270,15 @@ public class SitemgmtService extends ApiService {
 
 		int collectionCategoryID = collectionCategory.getCollectionCategoryID();
 
-		ResultResponse<Object> result = new ResultResponse<Object>();
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
 
 		switch (setType) {
 		case "Add":
-			CollectionCategory newCollectionCategory = collectionCategoryRepository.save(collectionCategory);
+			final CollectionCategory newCollectionCategory = collectionCategoryRepository.save(collectionCategory);
 			// collectionCategoryID update
 			collectionCategoryID = newCollectionCategory.getCollectionCategoryID();
 
-			result.setResultWrapper(true, 1, collectionCategoryID, MSG_INSERT_SUCCESS, null);
+			result.setResultWrapper(true, 1, collectionCategoryID, MSG_INSERT_SUCCESS, 1);
 			break;
 
 		case "Upd":
@@ -304,7 +305,7 @@ public class SitemgmtService extends ApiService {
 
 				collectionCategoryRepository.save(collectionCategory2);
 
-				result.setResultWrapper(true, 1, collectionCategoryID, MSG_UPDATE_SUCCESS, null);
+				result.setResultWrapper(true, 1, collectionCategoryID, MSG_UPDATE_SUCCESS, 1);
 			}
 			break;
 		default:

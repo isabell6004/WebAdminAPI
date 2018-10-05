@@ -1,11 +1,11 @@
 package net.fashiongo.webadmin.model.pojo;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+//import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /*
  * @author sanghyup
  */
-@JsonSerialize
+//@JsonSerialize
 public class ResultResponse<T> {
 	private Boolean success;
 	private T data;
