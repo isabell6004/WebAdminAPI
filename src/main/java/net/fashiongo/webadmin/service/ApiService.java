@@ -13,5 +13,12 @@ public class ApiService {
 	
 	@Autowired
 	protected JdbcHelper jdbcHelper;
-	
+
+	// message constant
+	final String MSG_SAVE_SUCCESS = "Saved successfully!";
+	final String MSG_UPDATE_SUCCESS = "Updated successfully!";
+	final String MSG_INSERT_SUCCESS = "Inserted successfully!";
+	final String MSG_DELETE_SUCCESS = "Deleted successfully!";
+	final String MSG_CHANGE_SUCCESS = "Changed successfully!";
+
 }
