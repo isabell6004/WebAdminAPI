@@ -17,7 +17,7 @@ import net.fashiongo.webadmin.model.primary.MapCollectionCategory;
  * @author Sanghyup Kim
  */
 public class SetCollectionCategoryParameters {
-	@ApiModelProperty(required = true, example = "{CollectionCategoryID, Active}")
+	@ApiModelProperty(required = true, example = "{'CollectionCategoryID':1, 'Active':true}")
 	@JsonProperty("obj")
 	private CollectionCategory collectionCategory;
 
@@ -26,7 +26,7 @@ public class SetCollectionCategoryParameters {
 	@JsonProperty("settype")
 	private String setType;
 
-	@ApiModelProperty(required = false, example = "{MapID, CollectionCategoryID, CategoryID, CategoryName}")
+	@ApiModelProperty(required = false, example = "{'MapID':1, 'CollectionCategoryID':1, 'CategoryID':1, 'CategoryName':''}")
 	@JsonProperty("collectioncategorymap")
 	private List<MapCollectionCategory> mapCollectionCategoryList;
 
