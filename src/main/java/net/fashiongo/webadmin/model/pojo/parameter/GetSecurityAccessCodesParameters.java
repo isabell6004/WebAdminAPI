@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author JungHwan
  */
 public class GetSecurityAccessCodesParameters {
-	@ApiModelProperty(required = false, example="")
+	@ApiModelProperty(required = false, example=" ")
 	private String accessCode;
 	@ApiModelProperty(required = false, example="2015-01-01")
 	private String sDate;

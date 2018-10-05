@@ -42,7 +42,6 @@ public class AdminService extends ApiService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@Transactional
 	public GetSecurityAccessCodesResponse GetSecurityAccessCodes(GetSecurityAccessCodesParameters parameters) {
 		GetSecurityAccessCodesResponse result = new GetSecurityAccessCodesResponse();
 		String spName = "up_Security_GetAccessCode";
@@ -67,7 +66,7 @@ public class AdminService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	@Transactional
+	@Transactional("primaryTransactionManager")
 	public SetResultResponse SetSecurityAccessCode(SetSecurityAccessCodeParameters parameters) throws Exception {
 		SetResultResponse result = new SetResultResponse();
 		
@@ -109,7 +108,8 @@ public class AdminService extends ApiService {
 	 * @param idList
 	 * @return
 	 */
-	public SetResultResponse SetDeleteSecurityAccessCodes(List<Integer> idList) throws Exception {
+	@Transactional("primaryTransactionManager")
+	public SetResultResponse SetDeleteSecurityAccessCodes(List<Integer> idList) {
 		SetResultResponse result = new SetResultResponse();
 		result.setSuccess(true);
 		result.setResultCode(0);
@@ -123,7 +123,7 @@ public class AdminService extends ApiService {
 			result.setSuccess(false);
 			result.setResultCode(-1);
 			result.setResultMsg(ex.getMessage());
-			throw new Exception();
+			//throw new Exception();
 		}
 
 		return result;
