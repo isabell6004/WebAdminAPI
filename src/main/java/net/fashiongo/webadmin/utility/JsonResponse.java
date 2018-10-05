@@ -18,6 +18,7 @@ public class JsonResponse<T> {
 	
 	private boolean success;
 	private Integer code;
+	private Integer pk;
 	private String message;
 	private T data;
 	
@@ -65,6 +66,14 @@ public class JsonResponse<T> {
 	
 	public void setCode(Integer code) {
 		this.code = code;
+	}
+
+	public Integer getPk() {
+		return pk;
+	}
+
+	public void setPk(Integer pk) {
+		this.pk = pk;
 	}
 
 	@Override
