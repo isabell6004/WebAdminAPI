@@ -1,13 +1,9 @@
 package net.fashiongo.webadmin.model.pojo;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 /**
  * @author Dahye Jeong
  */
-@Entity
-@Table(name="security.List_IP")
+
 public class SecurityAccessIps {
 	private Integer ipid;
 	private String ipAddress;
