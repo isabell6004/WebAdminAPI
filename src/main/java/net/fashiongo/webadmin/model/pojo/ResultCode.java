@@ -1,6 +1,17 @@
 package net.fashiongo.webadmin.model.pojo;
 
 public class ResultCode {
+	
+	public ResultCode() {
+		
+	}
+	
+	public ResultCode(Boolean success, Integer resultCode, String resultMsg) {
+		this.success = success;
+		this.resultCode = resultCode;
+		this.resultMsg = resultMsg;
+	}
+	
 	private Boolean success;
 	private Integer resultCode;
 	private String resultMsg;
