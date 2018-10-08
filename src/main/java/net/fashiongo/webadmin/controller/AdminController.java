@@ -17,7 +17,9 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
@@ -156,7 +158,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value="setSecurityGroup", method=RequestMethod.POST)
 	public JsonResponse<List<ResultCode>> SetSecurityGroup(@RequestBody SetsecuritygroupParameter parameters) {
-		JsonResponse<List<ResultCode>> results = new JsonResponse<List<ResultCode>>(false, null, 0, null);
+		JsonResponse<List<ResultCode>> results = new JsonResponse<List<ResultCode>>(true, null, 0, null);
 		List<ResultCode> data = new ArrayList<ResultCode>();
 		
 		data.add(securityGroupService.setSecurityGroup(parameters.getGid(), parameters.getGroupname(), parameters.getDescription(), parameters.getGroupactive()));
@@ -176,12 +178,55 @@ public class AdminController {
 		return results;
 	}
 	
+	/**
+	 * 
+	 * Set deletesecuritygroups
+	 * 
+	 * @since 2018. 10. 8.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
 	@RequestMapping(value="setdeletesecuritygroups", method=RequestMethod.POST)
-	public JsonResponse<List<ResultCode>> Setdeletesecuritygroups(@RequestBody List<Integer> data) {
+	public JsonResponse<Integer> setdeletesecuritygroups(@RequestBody SetdeletesecuritygroupsParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
 		
-		return null;
+		ResultCode result = securityGroupService.setdeletesecuritygroups(parameters.getData());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
 	}
 	
+	/**
+	 * 
+	 * Description Example
+	 * 
+	 * @since 2018. 10. 8.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="setactivegroup", method=RequestMethod.POST)
+	public JsonResponse<Integer> setActiveGroup(@RequestBody SetActiveGroupParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
+		
+		ResultCode result = securityGroupService.setActiveGroup(parameters.getGroupID(), parameters.getActive());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * GetSecurityUsers
+	 * 
+	 * @since 2018. 10. 8.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
 	@RequestMapping(value="getsecurityusers", method=RequestMethod.POST)
 	public GetSecurityUserResponse GetSecurityUsers(@RequestBody GetSecurityUserParameter parameters) {
 		JsonResponse<GetSecurityUserResponse> results = new JsonResponse<GetSecurityUserResponse>(false, null, 0, null);
@@ -193,6 +238,15 @@ public class AdminController {
 		return results.getData();
 	}
 	
+	/**
+	 * 
+	 * Get SecurityUserPermissions
+	 * 
+	 * @since 2018. 10. 8.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
 	@RequestMapping(value="getsecurityuserpermissions", method=RequestMethod.POST)
 	public GetSecurityGroupPermissionsResponse GetSecurityUserPermissions(@RequestBody GetSecurityUserPermissionsParameter parameters) {
 		JsonResponse<GetSecurityGroupPermissionsResponse> results = new JsonResponse<GetSecurityGroupPermissionsResponse>(false, null, 0, null);
