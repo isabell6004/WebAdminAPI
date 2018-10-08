@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -68,15 +69,15 @@ public class SetAddSpotSettingParameter {
 	@JsonProperty("spotinstancecount")
 	private Integer spotInstanceCount;
 	
-	@ApiModelProperty(required = false, example="0")
+	@ApiModelProperty(required = false, example="2018-05-01")
 	@JsonProperty("bideffectiveon")
 	private String bidEffectiveOn;
 	
-	@ApiModelProperty(required = false, example="3")
+	@ApiModelProperty(required = false, example="0")
 	@JsonProperty("maxpurchasable")
 	private Integer maxPurchasable;
 	
-	@ApiModelProperty(required = false, example="2018-05-01")
+	@ApiModelProperty(required = false, example="3")
 	@JsonProperty("spotitemcount")
 	private Integer spotItemCount;
 
@@ -120,60 +121,32 @@ public class SetAddSpotSettingParameter {
 		this.spotName = spotName;
 	}
 
-	public Integer getPrice1() {
-		return price1;
+	public BigDecimal getPrice1() {
+		return BigDecimal.valueOf(price1);
 	}
 
-	public void setPrice1(Integer price1) {
-		this.price1 = price1;
+	public BigDecimal getPrice2() {
+		return BigDecimal.valueOf(price2);
 	}
 
-	public Integer getPrice2() {
-		return price2;
+	public BigDecimal getPrice3() {
+		return BigDecimal.valueOf(price3);
 	}
 
-	public void setPrice2(Integer price2) {
-		this.price2 = price2;
+	public BigDecimal getPrice4() {
+		return BigDecimal.valueOf(price4);
 	}
 
-	public Integer getPrice3() {
-		return price3;
+	public BigDecimal getPrice5() {
+		return BigDecimal.valueOf(price5);
 	}
 
-	public void setPrice3(Integer price3) {
-		this.price3 = price3;
+	public BigDecimal getPrice6() {
+		return BigDecimal.valueOf(price6);
 	}
 
-	public Integer getPrice4() {
-		return price4;
-	}
-
-	public void setPrice4(Integer price4) {
-		this.price4 = price4;
-	}
-
-	public Integer getPrice5() {
-		return price5;
-	}
-
-	public void setPrice5(Integer price5) {
-		this.price5 = price5;
-	}
-
-	public Integer getPrice6() {
-		return price6;
-	}
-
-	public void setPrice6(Integer price6) {
-		this.price6 = price6;
-	}
-
-	public Integer getPrice7() {
-		return price7;
-	}
-
-	public void setPrice7(Integer price7) {
-		this.price7 = price7;
+	public BigDecimal getPrice7() {
+		return BigDecimal.valueOf(price7);
 	}
 
 	public Boolean getActive() {
