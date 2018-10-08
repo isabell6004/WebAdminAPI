@@ -50,5 +50,20 @@ public class CommonController {
 		results.setData(result);
 		return results;
 	}
-
+	
+	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.POST)
+	public void GetServerHeartBeat() {
+		
+	}
+	
+	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
+	public void GetCountryStates() {
+		
+	}
+	
+	@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
+	public void GetTopCategories() {
+		
+	}
+	
 }
