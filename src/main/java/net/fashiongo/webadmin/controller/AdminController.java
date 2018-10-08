@@ -267,14 +267,14 @@ public class AdminController {
 	 * @return GetSecurityResourcesResponse
 	 */
 	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
-	public GetSecurityResourcesResponse GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
+	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
 		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(false, null, 0, null);
 		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
 		
 		results.setData(result);
 		results.setSuccess(true);
 		
-		return results.getData();
+		return results;
 	}
 
 }
