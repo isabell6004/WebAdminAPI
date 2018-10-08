@@ -7,7 +7,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.fashiongo.webadmin.model.pojo.BidSettingLastRecords;
 
 public class GetBidSettingLastRecordsResponse {
-	
+	public GetBidSettingLastRecordsResponse() {
+	}
+
+	public GetBidSettingLastRecordsResponse(Boolean success, List<BidSettingLastRecords> bidSettingLastRecords) {
+		this.success = success;
+		this.bidSettingLastRecords = bidSettingLastRecords;
+	}
+
 	private Boolean success;
 
 	@JsonProperty("data")
@@ -28,6 +35,5 @@ public class GetBidSettingLastRecordsResponse {
 	public void setBidSettingLastRecords(List<BidSettingLastRecords> bidSettingLastRecords) {
 		this.bidSettingLastRecords = bidSettingLastRecords;
 	}
-	
-	
+
 }
