@@ -243,6 +243,21 @@ public class PhotoStudioController {
 		return response;
 	}
 	
+	@GetMapping(value = "/models")
+	public JsonResponse getModels(@ModelAttribute QueryParam queryParam) {
+		logger.debug("PhotoStudioController.getModels() called!!!");
+		
+		try {
+			logger.debug("getModels() params: {}", queryParam.toString());
+			List<PhotoModel> photoModels = photoStudioService.getModels(queryParam);
+			return new JsonResponse(true, "", photoModels);
+		} catch (Exception e) {
+			logger.error("Error: PhotoStudioController.getModels():", e);
+			logger.error("QueryParam: {}", queryParam.toString());
+			return new JsonResponse(false, "", null);
+		}
+	}
+	
 	@PostMapping(value = "/calendar/save")
 	public JsonResponse<?> saveCalendar(@RequestBody List<PhotoCalendar> photoCalendars) {
 		logger.debug("PhotoStudioController.saveCalendar() called!!!");

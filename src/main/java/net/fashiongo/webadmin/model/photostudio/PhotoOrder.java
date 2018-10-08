@@ -335,7 +335,6 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
-	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {

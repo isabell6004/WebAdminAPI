@@ -34,22 +34,23 @@ public class PhotoModel implements IPersistent, Serializable {
 		this.modelID = modelID;
 	}
 
-	@Column(name = "FirstName")
-	private String firstName;
-	public String getFirstName() {
-		return firstName;
+	@Column(name = "ModelName")
+	private String modelName;
+	public String getModelName() {
+		return modelName;
 	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
 	}
 
-	@Column(name = "LastName")
-	private String lastName;
-	public String getLastName() {
-		return lastName;
+	@Column(name = "AgencyName")
+	private String agencyName;
+
+	public String getAgencyName() {
+		return agencyName;
 	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setAgencyName(String agencyName) {
+		this.agencyName = agencyName;
 	}
 
 	@Column(name = "Type")
@@ -265,5 +266,23 @@ public class PhotoModel implements IPersistent, Serializable {
 
 	public void setPhotoImages(List<PhotoImage> photoImages) {
 		this.photoImages = photoImages;
+	}
+	
+	@Transient
+	@JsonIgnore
+	@Column(name = "CreatedOn", updatable = false)
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _nextPhotoshoot;
+	public LocalDateTime get_nextPhotoshoot() {
+		return _nextPhotoshoot;
+	}
+	public void set_nextPhotoshoot(LocalDateTime _nextPhotoshoot) {
+		this._nextPhotoshoot = _nextPhotoshoot;
+	}
+
+	@Transient
+	private String nextPhotoshoot;
+	public String getNextPhotoshoot() {
+		return _nextPhotoshoot != null ? _nextPhotoshoot.toString() : null;
 	}
 }

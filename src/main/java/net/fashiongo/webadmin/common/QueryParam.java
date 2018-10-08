@@ -905,4 +905,160 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	//End
+	
+	//for model search start 
+	/* Model Name  */
+	private String modelName;
+	public String getModelName() {
+		return modelName;
+	}
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
+	
+	private Boolean noteLeft;
+	public Boolean getNoteLeft() {
+		return noteLeft;
+	}
+	public void setNoteLeft(Boolean noteLeft) {
+		this.noteLeft = noteLeft;
+	}
+	
+	private String modelType;
+	public String getModelType() {
+		return modelType;
+	}
+	public void setModelType(String modelType) {
+		this.modelType = modelType;
+	}
+
+	private String size;
+	public String getSize() {
+		return size;
+	}
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	private String hairColor;
+	public String getHairColor() {
+		return hairColor;
+	}
+	public void setHairColor(String hairColor) {
+		this.hairColor = hairColor;
+	}
+
+	private String eyesColor;
+	public String getEyesColor() {
+		return eyesColor;
+	}
+	public void setEyesColor(String eyesColor) {
+		this.eyesColor = eyesColor;
+	}
+
+	private String heightType;
+	public String getHeightType() {
+		return heightType;
+	}
+	public void setHeightType(String heightType) {
+		this.heightType = heightType;
+	}
+
+	private Integer heightFt;
+	public Integer getHeightFt() {
+		return heightFt;
+	}
+	public void setHeightFt(Integer heightFt) {
+		this.heightFt = heightFt;
+	}
+
+	private Integer heightIn;
+	public Integer getHeightIn() {
+		return heightIn;
+	}
+	public void setHeightIn(Integer heightIn) {
+		this.heightIn = heightIn;
+	}
+
+	private Integer weightFrom;
+	public Integer getWeightFrom() {
+		return weightFrom;
+	}
+	public void setWeightFrom(Integer weightFrom) {
+		this.weightFrom = weightFrom;
+	}
+
+	private Integer weightTo;
+	public Integer getWeightTo() {
+		return weightTo;
+	}
+	public void setWeightTo(Integer weightTo) {
+		this.weightTo = weightTo;
+	}
+
+	private Integer waistFrom;
+	public Integer getWaistFrom() {
+		return waistFrom;
+	}
+	public void setWaistFrom(Integer waistFrom) {
+		this.waistFrom = waistFrom;
+	}
+
+	private Integer waistTo;
+	public Integer getWaistTo() {
+		return waistTo;
+	}
+	public void setWaistTo(Integer waistTo) {
+		this.waistTo = waistTo;
+	}
+
+	private Integer hipFrom;
+	public Integer getHipFrom() {
+		return hipFrom;
+	}
+	public void setHipFrom(Integer hipFrom) {
+		this.hipFrom = hipFrom;
+	}
+
+	private Integer hipTo;
+	public Integer getHipTo() {
+		return hipTo;
+	}
+	public void setHipTo(Integer hipTo) {
+		this.hipTo = hipTo;
+	}
+
+	private Integer bustFrom;
+	public Integer getBustFrom() {
+		return bustFrom;
+	}
+	public void setBustFrom(Integer bustFrom) {
+		this.bustFrom = bustFrom;
+	}
+
+	private Integer bustTo;
+	public Integer getBustTo() {
+		return bustTo;
+	}
+	public void setBustTo(Integer bustTo) {
+		this.bustTo = bustTo;
+	}
+
+	private BigDecimal shoeSizeFrom;
+	public BigDecimal getShoeSizeFrom() {
+		return shoeSizeFrom;
+	}
+	public void setShoeSizeFrom(BigDecimal shoeSizeFrom) {
+		this.shoeSizeFrom = shoeSizeFrom;
+	}
+
+	private BigDecimal shoeSizeTo;
+	public BigDecimal getShoeSizeTo() {
+		return shoeSizeTo;
+	}
+	public void setShoeSizeTo(BigDecimal shoeSizeTo) {
+		this.shoeSizeTo = shoeSizeTo;
+	}
+	
+	//for model search end 
 }

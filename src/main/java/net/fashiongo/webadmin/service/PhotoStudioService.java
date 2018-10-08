@@ -381,6 +381,50 @@ public class PhotoStudioService {
 		return photoModel.getModelID();
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<PhotoModel> getModels(QueryParam queryParam) {
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(queryParam.getModelName());
+		params.add(queryParam.getNoteLeft());
+		
+		/*String dType = queryParam.getDtype();
+		Date df = queryParam.getDf();
+		Date dt = queryParam.getDt();
+		if(!StringUtils.isEmpty(dType) && (df != null || dt != null)) {
+			params.add(dType);
+			params.add(df);
+			params.add(dt);
+		}else {
+			params.add(null);
+			params.add(null);
+			params.add(null);
+		}
+		
+		params.add(queryParam.getModelType());
+		params.add(queryParam.getSize());
+		params.add(queryParam.getHairColor());
+		params.add(queryParam.getEyesColor());
+		params.add(queryParam.getHeightType());
+		params.add(queryParam.getHeightFt());
+		params.add(queryParam.getHeightIn());
+		params.add(queryParam.getWeightFrom());
+		params.add(queryParam.getWeightTo());
+		params.add(queryParam.getWaistFrom());
+		params.add(queryParam.getWaistTo());
+		params.add(queryParam.getHipFrom());
+		params.add(queryParam.getHipTo());
+		params.add(queryParam.getBustFrom());
+		params.add(queryParam.getBustTo());
+		params.add(queryParam.getShoeSizeFrom());
+		params.add(queryParam.getShoeSizeTo());*/
+		
+		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetModelList", params, PhotoModel.class);
+		List<PhotoModel> result = (List<PhotoModel>)_results.get(0);
+		
+		return result;
+	}
+	
 	@Transactional
 	public String saveCalendar(List<PhotoCalendar> photoCalendars) throws IllegalArgumentException, IllegalAccessException {
 		
@@ -468,11 +512,11 @@ public class PhotoStudioService {
 
 		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetOrderList", params, SimplePhotoOrder.class, SingleValueResult.class);
 		
-		List<SimplePhotoOrder> rs1 = (List<SimplePhotoOrder>)_results.get(0);
-		List<SingleValueResult> rs2 = (List<SingleValueResult>)_results.get(1);
+		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
+		List<SimplePhotoOrder> rs2 = (List<SimplePhotoOrder>)_results.get(1);
 
-		result.setTotal(rs2.get(0));
-		result.setRecords(rs1);
+		result.setTotal(rs1.get(0));
+		result.setRecords(rs2);
 		
 		return result;
 	}
