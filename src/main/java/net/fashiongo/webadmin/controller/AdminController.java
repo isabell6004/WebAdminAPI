@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
@@ -143,4 +145,24 @@ public class AdminController {
 		
 		return results.getData();
 	}
+	
+	/**
+	 * 
+	 * Get Security Resources
+	 * @since 2018. 10. 8.
+	 * @author Dahye Jeong
+	 * @param GetSecurityResourcesParameter
+	 * @return GetSecurityResourcesResponse
+	 */
+	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
+	public GetSecurityResourcesResponse GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
+		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(false, null, 0, null);
+		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
+		
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results.getData();
+	}
+
 }

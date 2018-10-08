@@ -1,8 +1,6 @@
 package net.fashiongo.webadmin.service;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,14 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
+import net.fashiongo.webadmin.model.pojo.Resource;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
 import net.fashiongo.webadmin.model.pojo.SecurityLogs;
 import net.fashiongo.webadmin.model.pojo.SecurityLogsColumn;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 
@@ -160,4 +161,30 @@ public class AdminService extends ApiService {
 		
 		return result;
 	}
+	
+	/**
+	 * 
+	 * Get security resources
+	 * @since 2018. 10. 2.
+	 * @author Dahye Jeong
+	 * @param GetSecurityResourcesParameter
+	 * @return GetSecurityResourcesResponse
+	 */
+	
+	public GetSecurityResourcesResponse GetSecurityResources (GetSecurityResourcesParameter parameters) {
+		GetSecurityResourcesResponse result = new GetSecurityResourcesResponse();
+		String spName = "up_wa_Security_GetResource";
+        List<Object> params = new ArrayList<Object>();
+        
+        params.add(parameters.getResourceName());
+        params.add(parameters.getResourceParent());
+        params.add(parameters.getResourceType());
+        
+        List<Object> _result = jdbcHelper.executeSP(spName, params, Resource.class);
+        result.setResource((List<Resource>)_result.get(0));
+		return result;
+	}
+
+	
+	
 }
