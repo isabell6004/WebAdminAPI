@@ -17,6 +17,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListPara
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory2;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
@@ -195,4 +196,22 @@ public class SitemgmtController {
 	// collection category setting
 	// ----------------------------------------------------
 
+	/**
+	 * 
+	 * Get Paid Campaign
+	 * 
+	 * @since 2018. 10. 08.
+	 * @author Nayeon Kim
+	 * @return GetPaidCampaignResponse
+	 */
+	@RequestMapping(value = "getpaidcampaign", method = RequestMethod.POST)
+	public JsonResponse<GetPaidCampaignResponse> getPaidCampaign() {
+		JsonResponse<GetPaidCampaignResponse> results = new JsonResponse<GetPaidCampaignResponse>(false, null, 0, null, null);
+		
+		GetPaidCampaignResponse result = sitemgmtService.getPaidCampaign();
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
 }

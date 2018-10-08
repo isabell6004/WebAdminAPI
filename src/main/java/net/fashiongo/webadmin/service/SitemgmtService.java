@@ -15,6 +15,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListPara
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
 import net.fashiongo.webadmin.dao.primary.CollectionCategory2Repository;
 import net.fashiongo.webadmin.dao.primary.CollectionCategoryRepository;
@@ -333,4 +334,16 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 
+	/**
+	 * 
+	 * Get Paid Campaign
+	 * 
+	 * @since 2018. 10. 08.
+	 * @author Nayeon Kim
+	 * @return GetPaidCampaignResponse
+	 */
+	public GetPaidCampaignResponse getPaidCampaign() {
+		GetPaidCampaignResponse result = new GetPaidCampaignResponse();
+		return result;
+	}
 }
