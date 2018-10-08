@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.dao.primary.SecurityGroupRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityMapUserGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityPermissionGroupRepository;
 import net.fashiongo.webadmin.model.pojo.GroupData;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
@@ -22,6 +24,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsPar
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
+import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 import net.fashiongo.webadmin.model.primary.SecurityPermissionGroup;
 /**
  * 
@@ -35,6 +38,9 @@ public class SecurityGroupService extends ApiService {
 	
 	@Autowired
 	private SecurityPermissionGroupRepository securityPermissionGroupRepository;
+	
+	@Autowired
+	private SecurityMapUserGroupRepository securityMapUserGroupRepository;
 
 	/**
 	 * 
@@ -133,7 +139,7 @@ public class SecurityGroupService extends ApiService {
 	 * @return
 	 */
 	public ResultCode setSecurityGroup(Integer groupID, String groupName, String description, boolean active) {
-		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		boolean isDuplicated = false;
 		SecurityGroup securityGroup = null;
 		
@@ -185,7 +191,7 @@ public class SecurityGroupService extends ApiService {
 	 * @return
 	 */
 	public ResultCode setSecurityGroupPermissionsAllUsers(Integer groupID, List<GroupData> p) {
-		ResultCode result = new ResultCode(true, 1, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 		
 		if(groupID.equals(0) || CollectionUtils.isEmpty(p)) {
 			result.setSuccess(false);
@@ -254,6 +260,51 @@ public class SecurityGroupService extends ApiService {
 		if(!CollectionUtils.isEmpty(permissions)) {
 			securityPermissionGroupRepository.saveAll(permissions);
 		}
+	}
+	
+	/**
+	 * 
+	 * Set deletesecuritygroups
+	 * 
+	 * @since 2018. 10. 8.
+	 * @author Incheol Jung
+	 * @param groupIds
+	 * @return
+	 */
+	public ResultCode setdeletesecuritygroups(List<Integer> groupIds) {
+		ResultCode result = new ResultCode(true, 0, MSG_DELETE_SUCCESS);
+		
+		if(CollectionUtils.isEmpty(groupIds)) {
+			return result;
+		}
+		
+		List<SecurityMapUserGroup> mapList = securityMapUserGroupRepository.findByGroupIDIn(groupIds);
+		if(!CollectionUtils.isEmpty(mapList)) {
+			result.setResultMsg("Check the mapped user");
+		}
+
+		List<Integer> filteredGroupIds = mapList.stream().map(group -> group.getGroupID()).distinct().collect(Collectors.toList());
+		groupIds.removeAll(filteredGroupIds);
+		
+		securityPermissionGroupRepository.deleteByGroupIDIn(groupIds);
+		securityGroupRepository.deleteByGroupIDIn(groupIds);
+		
+		result.setResultCode(groupIds.size());
+		
+		return result;
+	}
+	
+	@Transactional
+	public ResultCode setActiveGroup(Integer GroupID, boolean Active) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		
+		SecurityGroup securityGroup = securityGroupRepository.findOneByGroupID(GroupID);
+		if(securityGroup != null) {
+			securityGroup.setActive(Active);
+			securityGroupRepository.save(securityGroup);
+		}
+		
+		return result;
 	}
 	
 	/**
