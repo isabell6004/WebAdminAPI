@@ -1,7 +1,6 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.math.BigDecimal;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -10,75 +9,57 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class SetAddSpotSettingParameter {
 	@ApiModelProperty(required = false, example="82")
-	@JsonProperty("spotid")
 	private Integer spotID;
 	
 	@ApiModelProperty(required = false, example="1")
-	@JsonProperty("pageid")
 	private Integer pageID;
 	
 	@ApiModelProperty(required = false, example="7")
-	@JsonProperty("categoryid")
 	private Integer categoryID;
 	
 	@ApiModelProperty(required = false, example="")
-	@JsonProperty("bodySizeid")
 	private Integer bodySizeID;
 	
 	@ApiModelProperty(required = false, example="")
-	@JsonProperty("spotname")
 	private String spotName;
 	
 	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("price1")
 	private Integer price1;
 	
 	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("price2")
 	private Integer price2;
 	
 	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("price3")
 	private Integer price3;
 	
 	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("price4")
 	private Integer price4;
 	
 	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("price5")
 	private Integer price5;
 	
 	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("price6")
 	private Integer price6;
 	
 	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("price7")
 	private Integer price7;
 	
 	@ApiModelProperty(required = false, example="true")
-	@JsonProperty("active")
 	private Boolean active;
 	
 	@ApiModelProperty(required = false, example="true")
-	@JsonProperty("includevendorcategory")
 	private Boolean includeVendorCategory;
 	
 	@ApiModelProperty(required = false, example="10")
-	@JsonProperty("spotinstancecount")
 	private Integer spotInstanceCount;
 	
 	@ApiModelProperty(required = false, example="2018-05-01")
-	@JsonProperty("bideffectiveon")
 	private String bidEffectiveOn;
 	
 	@ApiModelProperty(required = false, example="0")
-	@JsonProperty("maxpurchasable")
 	private Integer maxPurchasable;
 	
 	@ApiModelProperty(required = false, example="3")
-	@JsonProperty("spotitemcount")
 	private Integer spotItemCount;
 
 	public Integer getSpotID() {

@@ -4,8 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -13,39 +11,30 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class GetSecurityLogsParameter {
 	@ApiModelProperty(required = false, example="1")
-	@JsonProperty("pagenum")
 	private Integer pageNum;
 	
 	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("pagesize")
 	private Integer pageSize;
 	
 	@ApiModelProperty(required = false, example="ID")
-	@JsonProperty("sortfield")
 	private String sortField;
 	
 	@ApiModelProperty(required = false, example="desc")
-	@JsonProperty("sortdir")
 	private String sortDir;
 	
 	@ApiModelProperty(required = false, example="165")
-	@JsonProperty("usrid")
 	private Integer usrId;
 	
 	@ApiModelProperty(required = false, example="1")
-	@JsonProperty("periodtype")
 	private Integer periodType;
 	
 	@ApiModelProperty(required = false, example="08/01/2018")
-	@JsonProperty("sdate")
 	private String sDate;
 	
 	@ApiModelProperty(required = false, example="08/31/2018")
-	@JsonProperty("eDate")
 	private String eDate;	
 	
 	@ApiModelProperty(required = false, example="165.225.39.73")
-	@JsonProperty("ip")
 	private String ip;
 
 	@ApiModelProperty(hidden = true) 

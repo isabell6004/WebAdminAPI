@@ -1,7 +1,5 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -9,7 +7,6 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class GetSpotCheckParameter {
 	@ApiModelProperty(required = false, example="10")
-	@JsonProperty("spotid")
 	private Integer spotID;
 
 	public Integer getSpotID() {
