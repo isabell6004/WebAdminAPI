@@ -3,7 +3,7 @@ package net.fashiongo.webadmin.model.pojo;
  * 
  * @author Incheol Jung
  */
-public class avgPOOrderStatic {
+public class AvgPOOrderStatic {
 	private Double totalOrderAmount;
 	private Double rate;
 	public Double getTotalOrderAmount() {

@@ -5,7 +5,7 @@ package net.fashiongo.webadmin.model.pojo;
  */
 public class OrderStatic {
 	private PurchasedOrderStatic purchasedOrders;
-	private poOrderStatic poOrders;
-	private avgPOOrderStatic avgPOOrders;
+	private PoOrderStatic poOrders;
+	private AvgPOOrderStatic avgPOOrders;
 	private OrderMonthlyStatic orderMonthly;
 }
