@@ -43,7 +43,7 @@ spring:
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
-    properties.hibernate.generate_statistics: true
+    properties.hibernate.generate_statistics: false
     properties.javax.persistence.query.timeout: 10000
     properties.hibernate.dialect: org.hibernate.dialect.SQLServer2008Dialect
     hibernate.naming.physical-strategy: net.fashiongo.common.dal.MSSQLServerNamingStrategy
@@ -66,9 +66,7 @@ webAdminapi:
 spring:
   profiles: local
   datasource:
-    jdbc-url: jdbc:sqlserver://172.21.101.101;databaseName=FG_V2
-    username: sqladmin
-    password: msqLsa6301
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2
   datasource2:
     jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
   datasource3:
