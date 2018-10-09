@@ -44,6 +44,27 @@ public class SecurityGroupService extends ApiService {
 		return securityGroupList;
 	}
 	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 5.
+	 * @author Reo
+	 * @return
+	 */
+	public List<SecurityGroup> GetCommonSecurityGroup() {
+		List<SecurityGroup> securityGroupList = (List<SecurityGroup>) securityGroupRepository.findAllByOrderByGroupNameAsc();
+		
+		return securityGroupList;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 5.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
 	public GetSecurityGroupPermissionsResponse GetSecurityGroupPermissions(GetSecurityGroupPermissionsParameter parameters) {
 		GetSecurityGroupPermissionsResponse result = new GetSecurityGroupPermissionsResponse();
 		String spName = "up_wa_Security_GetPermissionGroup";
@@ -58,6 +79,14 @@ public class SecurityGroupService extends ApiService {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 5.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
 	public GetSecurityUserResponse GetSecurityUsers(GetSecurityUserParameter parameters) {
 		GetSecurityUserResponse result = new GetSecurityUserResponse();
 		String spName = "up_wa_GetSecurityUserList";
@@ -70,10 +99,18 @@ public class SecurityGroupService extends ApiService {
         List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityUsers.class);
         
         result.setSecurityUserList((List<SecurityUsers>) _result.get(0));
-		
+        
 		return result;
 	}
 	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 5.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
 	public GetSecurityGroupPermissionsResponse GetSecurityUserPermissions(GetSecurityUserPermissionsParameter parameters) {
 		GetSecurityGroupPermissionsResponse result = new GetSecurityGroupPermissionsResponse();
 		String spName = "up_wa_Security_GetPermissionGroup";

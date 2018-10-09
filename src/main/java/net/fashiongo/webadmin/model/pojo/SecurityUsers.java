@@ -1,18 +1,33 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SecurityUsers {
+	@JsonProperty("UserID")
 	private Integer userID;
+	@JsonProperty("UserName")
 	private String userName;
+	@JsonProperty("FullName")
 	private String fullName;
+	@JsonProperty("Role")
 	private String role;
+	@JsonProperty("GroupName")
 	private String groupName;
+	@JsonProperty("CreatedOn")
 	private String createdOn;
+	@JsonProperty("CreatedBy")
 	private String createdBy;
+	@JsonProperty("ModifiedOn")
 	private String modifiedOn;
+	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
+	@JsonProperty("AccessTime")
 	private String accessTime;
+	@JsonProperty("IpTimeExempt")
 	private Boolean ipTimeExempt;
+	@JsonProperty("Active")
 	private Boolean active;
+	@JsonProperty("AssignedVendors")
 	private String assignedVendors;
 	public Integer getUserID() {
 		return userID;

@@ -126,7 +126,6 @@ public class AdminController {
 	public GetSecurityUserResponse GetSecurityUsers(@RequestBody GetSecurityUserParameter parameters) {
 		JsonResponse<GetSecurityUserResponse> results = new JsonResponse<GetSecurityUserResponse>(false, "", null);
 		GetSecurityUserResponse result = securityGroupService.GetSecurityUsers(parameters);
-		
 		results.setData(result);
 		results.setSuccess(true);
 		

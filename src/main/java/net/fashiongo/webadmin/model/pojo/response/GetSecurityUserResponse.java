@@ -8,7 +8,7 @@ import net.fashiongo.webadmin.model.pojo.SecurityGroupPermissions;
 import net.fashiongo.webadmin.model.pojo.SecurityUsers;
 
 public class GetSecurityUserResponse {
-	@JsonProperty("Table")
+	@JsonProperty("data")
 	private List<SecurityUsers> securityUserList;
 
 	public List<SecurityUsers> getSecurityUserList() {
@@ -18,6 +18,5 @@ public class GetSecurityUserResponse {
 	public void setSecurityUserList(List<SecurityUsers> securityUserList) {
 		this.securityUserList = securityUserList;
 	}
-	
-	
+
 }
