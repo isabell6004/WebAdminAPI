@@ -208,8 +208,8 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="setactivegroup", method=RequestMethod.POST)
-	public JsonResponse<Integer> setActiveGroup(@RequestBody SetActiveGroupParameter parameters) {
-		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
+	public JsonResponse<String> setActiveGroup(@RequestBody SetActiveGroupParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, null);
 		
 		ResultCode result = securityGroupService.setActiveGroup(parameters.getGroupID(), parameters.getActive());
 		results.setCode(result.getResultCode());

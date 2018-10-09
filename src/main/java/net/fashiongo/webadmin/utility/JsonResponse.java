@@ -30,6 +30,14 @@ public class JsonResponse<T> {
 		this.pk = null;
 	}
 	
+	public JsonResponse(boolean success, String message, T data) {
+		this.success = success;
+		this.message = message;
+		this.data = data;
+		this.code = null;
+		this.pk = null;
+	}
+	
 	public JsonResponse(boolean success, String message, Integer code, T data) {
 		this.success = success;
 		this.message = message;
