@@ -1,7 +1,5 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -9,11 +7,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class SetAddPageParameter {
 	@ApiModelProperty(required = false, example="")
-	@JsonProperty("pageid")
 	private Integer pageID;
 	
 	@ApiModelProperty(required = false, example="Test")
-	@JsonProperty("pagename")
 	private String pageName;
 
 	public Integer getPageID() {

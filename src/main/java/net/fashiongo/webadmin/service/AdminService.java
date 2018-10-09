@@ -137,10 +137,9 @@ public class AdminService extends ApiService {
 	 * @author nayeon
 	 * @param GetSecurityLogsParameter
 	 * @return GetSecurityLogsResponse
-	 * @throws Exception 
 	 */
 	@SuppressWarnings("unchecked")
-	public GetSecurityLogsResponse getSecuritylogs(GetSecurityLogsParameter parameters) throws Exception {
+	public GetSecurityLogsResponse getSecuritylogs(GetSecurityLogsParameter parameters) {
 		GetSecurityLogsResponse result = new GetSecurityLogsResponse();
 		String spName = "up_Security_GetLoginLog";
 		List<Object> params = new ArrayList<Object>();
