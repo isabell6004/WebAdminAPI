@@ -23,6 +23,7 @@ import net.fashiongo.webadmin.dao.photostudio.PhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoPriceRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoUnitRepository;
+import net.fashiongo.webadmin.model.photostudio.DetailPhotoOrder;
 import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCategoryPrice;
@@ -143,6 +144,16 @@ public class PhotoStudioService {
 		List<PhotoPrice> currentPhotoPrices = (List<PhotoPrice>) r.get(0);
 		List<PhotoPrice> newPhotoPrices = (List<PhotoPrice>) r.get(1);
 		
+		if(newPhotoPrices == null || newPhotoPrices.size() == 0) {
+			for(PhotoPrice currentPhotoPrice : currentPhotoPrices) {
+				PhotoPrice newPhotoPrice = new PhotoPrice();
+				newPhotoPrice.setPriceTypeID(currentPhotoPrice.getPriceTypeID());
+				newPhotoPrice.setPriceTypeName(currentPhotoPrice.getPriceTypeName());
+				newPhotoPrice.setPhotoshootType(currentPhotoPrice.getPhotoshootType());
+				newPhotoPrice.setPhotoShootTypeName(currentPhotoPrice.getPhotoShootTypeName());
+			}
+		}
+		
 		result.put("currentPrices", currentPhotoPrices);
 		result.put("newPrices", newPhotoPrices);
 
@@ -221,6 +232,14 @@ public class PhotoStudioService {
 		List<PhotoCancellationFee> currentCancellationFees = (List<PhotoCancellationFee>) r.get(0);
 		List<PhotoCancellationFee> newCancellationFees = (List<PhotoCancellationFee>) r.get(1);
 		
+		if(newCancellationFees == null || newCancellationFees.size() == 0) {
+			for(PhotoCancellationFee currentCancellationFee : currentCancellationFees) {
+				PhotoCancellationFee newCancellationFee = new PhotoCancellationFee();
+				newCancellationFee.setCancelTypeName(currentCancellationFee.getCancelTypeName());
+				newCancellationFees.add(newCancellationFee);
+			}
+		}
+		
 		result.put("currentCancellationFees", currentCancellationFees);
 		result.put("newCancellationFees", newCancellationFees);
 
@@ -286,6 +305,16 @@ public class PhotoStudioService {
 
 		List<PhotoUnit> currentPhotoUnits = (List<PhotoUnit>) r.get(0);
 		List<PhotoUnit> newPhotoUnits = (List<PhotoUnit>) r.get(1);
+		
+		if(newPhotoUnits == null || newPhotoUnits.size() == 0) {
+			for(PhotoUnit currentPhotoUnit : currentPhotoUnits) {
+				PhotoUnit newPhotoUnit = new PhotoUnit();
+				newPhotoUnit.setPriceTypeID(currentPhotoUnit.getPriceTypeID());
+				newPhotoUnit.setPriceTypeName(currentPhotoUnit.getPriceTypeName());
+				newPhotoUnit.setPhotoshootType(currentPhotoUnit.getPhotoshootType());
+				newPhotoUnit.setPhotoShootTypeName(currentPhotoUnit.getPhotoShootTypeName());
+			}
+		}
 		
 		result.put("currentPhotoUnits", currentPhotoUnits);
 		result.put("newPhotoUnits", newPhotoUnits);
@@ -507,8 +536,8 @@ public class PhotoStudioService {
 			params.add(null);
 		}
 		
-		params.add(queryParam.getCatids()==null || queryParam.getCatids().size() == 0 ? null : queryParam.getCatids().toArray());
-		params.add(queryParam.getOstsids() ==null || queryParam.getOstsids().size() == 0 ? null : queryParam.getOstsids().toArray());
+		params.add(queryParam.getCatids());
+		params.add(queryParam.getOstsids());
 
 		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetOrderList", params, SingleValueResult.class, SimplePhotoOrder.class);
 		
@@ -526,9 +555,9 @@ public class PhotoStudioService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(orderNumber);
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetOrderDetail", params, PhotoOrder.class, PhotoOrderDetail.class);
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, PhotoOrderDetail.class);
 
-		List<PhotoOrder> photoOrders = (List<PhotoOrder>) r.get(0);
+		List<DetailPhotoOrder> photoOrders = (List<DetailPhotoOrder>) r.get(0);
 		List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) r.get(1);
 		
 		result.put("photoOrder", photoOrders.get(0));

@@ -98,13 +98,13 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	}
 
 	@Column(name = "StyleQty")
-	private Integer StyleQty;
+	private Integer styleQty;
 	public Integer getStyleQty() {
-		return StyleQty;
+		return styleQty;
 	}
 
 	public void setStyleQty(Integer styleQty) {
-		StyleQty = styleQty;
+		this.styleQty = styleQty;
 	}
 
 	@Column(name = "StyleAmount")

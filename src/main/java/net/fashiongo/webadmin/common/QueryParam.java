@@ -887,25 +887,25 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	/* category id list*/
-	private List<Integer> catids;
-	public List<Integer> getCatids() {
+	private String catids;
+	public String getCatids() {
 		return catids;
 	}
-	public void setCatids(List<Integer> catids) {
+	public void setCatids(String catids) {
 		this.catids = catids;
 	}
 
 	/* order status id list*/
-	private List<Integer> ostsids;
-	public List<Integer> getOstsids() {
+	private String ostsids;
+	public String getOstsids() {
 		return ostsids;
 	}
-	public void setOstsids(List<Integer> ostsids) {
+	public void setOstsids(String ostsids) {
 		this.ostsids = ostsids;
 	}
 	
 	//End
-	
+
 	//for model search start 
 	/* Model Name  */
 	private String modelName;
