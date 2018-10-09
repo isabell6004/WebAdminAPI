@@ -510,7 +510,7 @@ public class PhotoStudioService {
 		params.add(queryParam.getCatids()==null || queryParam.getCatids().size() == 0 ? null : queryParam.getCatids().toArray());
 		params.add(queryParam.getOstsids() ==null || queryParam.getOstsids().size() == 0 ? null : queryParam.getOstsids().toArray());
 
-		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetOrderList", params, SimplePhotoOrder.class, SingleValueResult.class);
+		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetOrderList", params, SingleValueResult.class, SimplePhotoOrder.class);
 		
 		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
 		List<SimplePhotoOrder> rs2 = (List<SimplePhotoOrder>)_results.get(1);

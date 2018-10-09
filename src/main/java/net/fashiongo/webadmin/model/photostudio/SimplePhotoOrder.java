@@ -62,6 +62,29 @@ public class SimplePhotoOrder {
 		this.set_photoshootDate(StringUtils.isNotEmpty(this.photoshootDate) ? LocalDateTime.parse(this.photoshootDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 	
+	@JsonIgnore
+	@Column(name = "OrderSubmit")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _orderSubmit;
+	public LocalDateTime get_orderSubmit() {
+		return _orderSubmit;
+	}
+
+	public void set_orderSubmit(LocalDateTime _orderSubmit) {
+		this._orderSubmit = _orderSubmit;
+	}
+
+	@Transient
+	private String orderSubmit;
+	public String getOrderSubmit() {
+		return _orderSubmit != null ? _orderSubmit.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+	}
+
+	public void setOrderSubmit(String orderSubmit) {
+		this.orderSubmit = StringUtils.isNotEmpty(orderSubmit) ? orderSubmit + DEFAULT_TIME : null;
+		this.set_photoshootDate(StringUtils.isNotEmpty(this.orderSubmit) ? LocalDateTime.parse(this.orderSubmit, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+	}
+	
 	@Column(name = "OrderNumber")
 	private String orderNumber;
 	public String getOrderNumber() {
@@ -214,4 +237,15 @@ public class SimplePhotoOrder {
 	public void setCancelNote(String cancelNote) {
 		this.cancelNote = cancelNote;
 	}
+	
+	@Column(name = "IsDelayed")
+	private Boolean isDelayed;
+	public Boolean getIsDelayed() {
+		return isDelayed;
+	}
+
+	public void setIsDelayed(Boolean isDelayed) {
+		this.isDelayed = isDelayed;
+	}
+	
 }
