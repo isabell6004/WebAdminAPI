@@ -7,8 +7,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
@@ -144,16 +146,16 @@ public class AdService extends ApiService {
 	 * @param DelSpotSettingParameter
 	 * @return
 	 */
-	//@Transactional
-	public ResultResponse<Object> delSpotSetting(DelSpotSettingParameter parameters) {
-		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"deletefailure",null);
-
-		Integer spotID = parameters.getSpotID();
-		adPageSpotRepository.deleteById(spotID);
+	@Transactional("primaryTransactionManager")
+	public ResultCode delSpotSetting(DelSpotSettingParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
 		
-		result.setSuccess(true);
-		result.setCode(1);
-		result.setMessage(MSG_DELETE_SUCCESS);
+		try {
+			Integer spotID = parameters.getSpotID();
+			adPageSpotRepository.deleteById(spotID);
+		} catch (Exception e) {
+			result = new ResultCode(false, -1, "deletefailure");
+		}
 
 		return result;
 	}
