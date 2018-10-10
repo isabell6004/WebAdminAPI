@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 
 /**
@@ -8,20 +10,20 @@ import javax.persistence.Column;
  */
 public class MonthlyVendorStatic{
 	@Column(name = "DateYM")
-	private Integer month;
+	private String month;
 	@Column(name = "PurchaseAmount")
-	private Double value;
+	private BigDecimal value;
 	
-	public Integer getMonth() {
+	public String getMonth() {
 		return month;
 	}
-	public void setMonth(Integer month) {
+	public void setMonth(String month) {
 		this.month = month;
 	}
-	public Double getValue() {
+	public BigDecimal getValue() {
 		return value;
 	}
-	public void setValue(Double value) {
+	public void setValue(BigDecimal value) {
 		this.value = value;
 	}
 	

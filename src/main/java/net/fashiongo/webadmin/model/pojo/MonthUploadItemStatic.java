@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 
 /**
@@ -12,7 +14,7 @@ public class MonthUploadItemStatic {
 	@Column(name = "LastItem")
 	private Integer lastMonth;
 	@Column(name = "ItemRate")
-	private Double rate;
+	private BigDecimal rate;
 	public Integer getThisMonth() {
 		return thisMonth;
 	}
@@ -25,10 +27,10 @@ public class MonthUploadItemStatic {
 	public void setLastMonth(Integer lastMonth) {
 		this.lastMonth = lastMonth;
 	}
-	public Double getRate() {
+	public BigDecimal getRate() {
 		return rate;
 	}
-	public void setRate(Double rate) {
+	public void setRate(BigDecimal rate) {
 		this.rate = rate;
 	}
 	

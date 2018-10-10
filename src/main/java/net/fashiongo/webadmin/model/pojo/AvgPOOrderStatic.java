@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 
 /**
@@ -8,19 +10,19 @@ import javax.persistence.Column;
  */
 public class AvgPOOrderStatic {
 	@Column(name = "ThisOrderAmount")
-	private Double totalOrderAmount;
+	private BigDecimal totalOrderAmount;
 	@Column(name = "OrderAmountRate")
-	private Double rate;
-	public Double getTotalOrderAmount() {
+	private BigDecimal rate;
+	public BigDecimal getTotalOrderAmount() {
 		return totalOrderAmount;
 	}
-	public void setTotalOrderAmount(Double totalOrderAmount) {
+	public void setTotalOrderAmount(BigDecimal totalOrderAmount) {
 		this.totalOrderAmount = totalOrderAmount;
 	}
-	public Double getRate() {
+	public BigDecimal getRate() {
 		return rate;
 	}
-	public void setRate(Double rate) {
+	public void setRate(BigDecimal rate) {
 		this.rate = rate;
 	}
 }
