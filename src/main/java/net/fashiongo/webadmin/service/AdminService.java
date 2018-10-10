@@ -114,7 +114,7 @@ public class AdminService extends ApiService {
 	 * Get Security Log
 	 * 
 	 * @since 2018. 10. 02.
-	 * @author nayeon
+	 * @author Nayeon Kim
 	 * @param GetSecurityLogsParameter
 	 * @return GetSecurityLogsResponse
 	 */

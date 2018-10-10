@@ -75,7 +75,7 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getpaidcampaign", method = RequestMethod.POST)
 	public JsonResponse<GetPaidCampaignResponse> getPaidCampaign() {
-		JsonResponse<GetPaidCampaignResponse> results = new JsonResponse<GetPaidCampaignResponse>(false, null, 0, null, null);
+		JsonResponse<GetPaidCampaignResponse> results = new JsonResponse<GetPaidCampaignResponse>(false, null, 0, null);
 
 		GetPaidCampaignResponse result = sitemgmtService.getPaidCampaign();
 		results.setData(result);

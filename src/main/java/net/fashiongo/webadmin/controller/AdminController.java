@@ -110,13 +110,13 @@ public class AdminController {
 	 * Get Security Log
 	 * 
 	 * @since 2018. 10. 02.
-	 * @author nayeon
+	 * @author Nayeon Kim
 	 * @param GetSecurityLogsParameter
 	 * @return GetSecurityLogsResponse
 	 */
 	@RequestMapping(value = "getsecuritylogs", method = RequestMethod.POST)
 	public JsonResponse<GetSecurityLogsResponse> getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {		
-		JsonResponse<GetSecurityLogsResponse> results = new JsonResponse<GetSecurityLogsResponse>(false, null, 0, null, null);
+		JsonResponse<GetSecurityLogsResponse> results = new JsonResponse<GetSecurityLogsResponse>(false, null, 0, null);
 		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
 		
 		results.setData(result);
