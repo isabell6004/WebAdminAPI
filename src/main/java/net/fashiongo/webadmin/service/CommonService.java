@@ -1,12 +1,14 @@
 package net.fashiongo.webadmin.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
+import net.fashiongo.webadmin.dao.primary.TopCategoriesRepository;
 import net.fashiongo.webadmin.model.primary.SecurityMenu;
+import net.fashiongo.webadmin.model.primary.TopCategories;
 
 /**
  * 
@@ -17,6 +19,9 @@ import net.fashiongo.webadmin.model.primary.SecurityMenu;
 public class CommonService extends ApiService {
 	@Autowired
 	SecurityMenuRepository securityMenuRepository;
+	
+	@Autowired
+	TopCategoriesRepository topCategoriesRepository;
 	
 	public Integer GetMenuID(String pageName) {
 		SecurityMenu result = new SecurityMenu();
@@ -32,8 +37,10 @@ public class CommonService extends ApiService {
 		
 	}
 	
-	public void GetTopCategories() {
+	public List<TopCategories> GetTopCategories() {
+		List<TopCategories> result = (List<TopCategories>) topCategoriesRepository.findByActiveAndLvlOrderByListOrder(true, 1);
 		
+		return result;
 	}
 
 }

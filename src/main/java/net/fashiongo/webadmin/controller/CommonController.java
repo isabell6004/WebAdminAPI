@@ -3,11 +3,14 @@ package net.fashiongo.webadmin.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.primary.SecurityGroup;
+import net.fashiongo.webadmin.model.primary.TopCategories;
 import net.fashiongo.webadmin.service.CommonService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -62,8 +65,9 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
 	public JsonResponse<Integer> GetMenuID(@RequestParam("PageName") String pageName) {
-		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, null, null);
+		JsonResponse<Integer> results = new JsonResponse<Integer>(false, null, null, null);
 		Integer result = commonService.GetMenuID(pageName);
+		results.setSuccess(true);
 		results.setData(result);
 		return results;
 	}
@@ -79,7 +83,11 @@ public class CommonController {
 	}
 	
 	@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
-	public void GetTopCategories() {
-		
+	public JsonResponse<List<TopCategories>> GetTopCategories() {
+		JsonResponse<List<TopCategories>> results = new JsonResponse<List<TopCategories>>(false, null, null, null);
+		List<TopCategories> result = commonService.GetTopCategories();
+		results.setSuccess(true);
+		results.setData(result);
+		return results;
 	}
 }
