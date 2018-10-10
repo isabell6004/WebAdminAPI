@@ -26,7 +26,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsRes
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.service.AdminService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
@@ -54,9 +53,13 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "getsecurityaccesscodes", method = RequestMethod.POST)
-	public GetSecurityAccessCodesResponse GetSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
-		GetSecurityAccessCodesResponse result = adminService.GetSecurityAccessCodes(parameters);
-		
+	public JsonResponse<GetSecurityAccessCodesResponse> GetSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
+		JsonResponse<GetSecurityAccessCodesResponse> result = new JsonResponse<GetSecurityAccessCodesResponse>(false, null, null);
+		GetSecurityAccessCodesResponse _result = adminService.GetSecurityAccessCodes(parameters);
+
+		result.setSuccess(true);
+		result.setData(_result);
+
 		return result;
 	}
 
@@ -70,8 +73,13 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "setsecurityaccesscode", method = RequestMethod.POST)
-	public SetResultResponse SetSecurityAccessCode(@RequestBody SetSecurityAccessCodeParameters parameters) throws Exception {
-		SetResultResponse result = adminService.SetSecurityAccessCode(parameters);
+	public JsonResponse<String> SetSecurityAccessCode(@RequestBody SetSecurityAccessCodeParameters parameters) throws Exception {
+		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
+		ResultCode _result = adminService.SetSecurityAccessCode(parameters);
+		
+		result.setSuccess(_result.getSuccess());
+		result.setCode(_result.getResultCode());
+		result.setMessage(_result.getResultMsg());
 		
 		return result;
 	}
@@ -86,8 +94,13 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "setdeletesecurityaccesscodes", method = RequestMethod.POST)
-	public SetResultResponse SetDeleteSecurityAccessCodes(@RequestBody List<Integer> idList) throws Exception {
-		SetResultResponse result = adminService.SetDeleteSecurityAccessCodes(idList);
+	public JsonResponse<String> SetDeleteSecurityAccessCodes(@RequestBody List<Integer> idList) throws Exception {
+		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
+		ResultCode _result = adminService.SetDeleteSecurityAccessCodes(idList);
+		
+		result.setSuccess(_result.getSuccess());
+		result.setCode(_result.getResultCode());
+		result.setMessage(_result.getResultMsg());
 		
 		return result;
 	}

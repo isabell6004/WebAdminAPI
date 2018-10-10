@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.model.pojo.Resource;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
 import net.fashiongo.webadmin.model.pojo.SecurityLogs;
 import net.fashiongo.webadmin.model.pojo.SecurityLogsColumn;
@@ -21,7 +22,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParamete
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 
 /**
@@ -66,36 +66,26 @@ public class AdminService extends ApiService {
 	 * @author Junghwan Lee
 	 * @param parameters
 	 * @return
+	 * @throws Exception 
 	 */
 	@Transactional("primaryTransactionManager")
-	public SetResultResponse SetSecurityAccessCode(SetSecurityAccessCodeParameters parameters) throws Exception {
-		SetResultResponse result = new SetResultResponse();
+	public ResultCode SetSecurityAccessCode(SetSecurityAccessCodeParameters parameters) throws Exception {
+		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
 		
-		result.setSuccess(true);
-		result.setResultCode(0);
-		result.setResultMsg("Saved successfully!");
-		
-		try {
-			SecurityAccessCode securityAccessCode = new SecurityAccessCode();
+		SecurityAccessCode securityAccessCode = new SecurityAccessCode();
 
-			if (parameters.getCodeID() != 0) {
-				securityAccessCode = securityAccessCodeRepository.findOneByCodeID(parameters.getCodeID());
-			}
+		if (parameters.getCodeID() != 0) {
+			securityAccessCode = securityAccessCodeRepository.findOneByCodeID(parameters.getCodeID());
+		}
 
-			if (securityAccessCode != null) {
-				securityAccessCode.setAccessCode(parameters.getAccessCode());
-				
-				SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
-				Date dtExpiredOn = dt.parse(parameters.getExpiredOn());
-				securityAccessCode.setExpiredOn(dtExpiredOn);
-				
-				securityAccessCodeRepository.save(securityAccessCode);
-			}
-		} catch (Exception ex) {
-			result.setSuccess(false);
-			result.setResultCode(-1);
-			result.setResultMsg(ex.getMessage());
-			throw new Exception();
+		if (securityAccessCode != null) {
+			securityAccessCode.setAccessCode(parameters.getAccessCode());
+			
+			SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
+			Date dtExpiredOn = dt.parse(parameters.getExpiredOn());
+			securityAccessCode.setExpiredOn(dtExpiredOn);
+			
+			securityAccessCodeRepository.save(securityAccessCode);
 		}
 		
 		return result;
@@ -110,21 +100,11 @@ public class AdminService extends ApiService {
 	 * @return
 	 */
 	@Transactional("primaryTransactionManager")
-	public SetResultResponse SetDeleteSecurityAccessCodes(List<Integer> idList) {
-		SetResultResponse result = new SetResultResponse();
-		result.setSuccess(true);
-		result.setResultCode(0);
-		result.setResultMsg("Deleted successfully!");
+	public ResultCode SetDeleteSecurityAccessCodes(List<Integer> idList) {
+		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
 
-		try {
-			for (Integer id : idList) {
-				securityAccessCodeRepository.deleteById(id);
-			}
-		} catch (Exception ex) {
-			result.setSuccess(false);
-			result.setResultCode(-1);
-			result.setResultMsg(ex.getMessage());
-			//throw new Exception();
+		for (Integer id : idList) {
+			securityAccessCodeRepository.deleteById(id);
 		}
 
 		return result;

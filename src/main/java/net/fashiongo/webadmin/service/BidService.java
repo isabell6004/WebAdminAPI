@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import net.fashiongo.webadmin.model.pojo.BidSetting;
 import net.fashiongo.webadmin.model.pojo.BidSettingLastRecords;
 import net.fashiongo.webadmin.model.pojo.BidSettingLastWeek;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBidSettingLastRecordsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBidSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetBidSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBidSettingLastRecordsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetBidSettingLastWeekResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetBidSettingResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 
 /**
  * 
@@ -33,7 +33,7 @@ public class BidService extends ApiService {
 	 */
 	@SuppressWarnings("unchecked")
 	public GetBidSettingLastRecordsResponse GetBidSettingLastRecords(GetBidSettingLastRecordsParameter parameters) {
-		GetBidSettingLastRecordsResponse result = new GetBidSettingLastRecordsResponse(false, null);
+		GetBidSettingLastRecordsResponse result = new GetBidSettingLastRecordsResponse();
 		String spName = "up_wa_Bid_Admin_SearchSettingRecords";
 		List<Object> params = new ArrayList<Object>();
 
@@ -43,7 +43,6 @@ public class BidService extends ApiService {
 		params.add(parameters.getWeekDay());
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, BidSettingLastRecords.class);
-		result.setSuccess(true);
 		result.setBidSettingLastRecords((List<BidSettingLastRecords>) _result.get(0));
 
 		return result;
@@ -57,8 +56,8 @@ public class BidService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	public SetResultResponse SetBidSetting(SetBidSettingParameter parameters) {
-		SetResultResponse result = new SetResultResponse(false, 0, null);
+	public ResultCode SetBidSetting(SetBidSettingParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
 
 		String spName = "up_GenerateAdBid";
 		List<Object> params = new ArrayList<Object>();
@@ -74,14 +73,10 @@ public class BidService extends ApiService {
 		List<Object> outputParams = new ArrayList<Object>();
 		outputParams.add(0);
 
-		try {
-			jdbcHelper.executeSP(spName, params, outputParams);
+		jdbcHelper.executeSP(spName, params, outputParams);
 
-			result.setSuccess(true);
-			result.setResultCode((Integer) outputParams.get(0));
-		} catch (Exception ex) {
-
-		}
+		result.setSuccess(true);
+		result.setResultCode((Integer) outputParams.get(0));
 
 		return result;
 	}
@@ -96,7 +91,7 @@ public class BidService extends ApiService {
 	 */
 	@SuppressWarnings("unchecked")
 	public GetBidSettingResponse GetBidSetting(GetBidSettingParameter parameters) {
-		GetBidSettingResponse result = new GetBidSettingResponse(false, null);
+		GetBidSettingResponse result = new GetBidSettingResponse();
 
 		String spName = "up_Bid_Admin_SettingList";
 		List<Object> params = new ArrayList<Object>();
@@ -107,7 +102,6 @@ public class BidService extends ApiService {
 		params.add(parameters.getWeekDay());
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, BidSetting.class);
-		result.setSuccess(true);
 		result.setBidSetting((List<BidSetting>) _result.get(0));
 
 		return result;

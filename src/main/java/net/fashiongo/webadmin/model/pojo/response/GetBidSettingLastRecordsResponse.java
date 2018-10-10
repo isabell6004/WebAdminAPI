@@ -7,26 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.fashiongo.webadmin.model.pojo.BidSettingLastRecords;
 
 public class GetBidSettingLastRecordsResponse {
-	public GetBidSettingLastRecordsResponse() {
-	}
-
-	public GetBidSettingLastRecordsResponse(Boolean success, List<BidSettingLastRecords> bidSettingLastRecords) {
-		this.success = success;
-		this.bidSettingLastRecords = bidSettingLastRecords;
-	}
-
-	private Boolean success;
-
-	@JsonProperty("data")
+	@JsonProperty("Table")
 	private List<BidSettingLastRecords> bidSettingLastRecords;
-
-	public Boolean getSuccess() {
-		return success;
-	}
-
-	public void setSuccess(Boolean success) {
-		this.success = success;
-	}
 
 	public List<BidSettingLastRecords> getBidSettingLastRecords() {
 		return bidSettingLastRecords;

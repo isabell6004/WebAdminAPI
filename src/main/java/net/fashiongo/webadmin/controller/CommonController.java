@@ -82,12 +82,12 @@ public class CommonController {
 		
 	}
 	
-	@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
+	/*@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
 	public JsonResponse<List<TopCategories>> GetTopCategories() {
 		JsonResponse<List<TopCategories>> results = new JsonResponse<List<TopCategories>>(false, null, null, null);
 		List<TopCategories> result = commonService.GetTopCategories();
 		results.setSuccess(true);
 		results.setData(result);
 		return results;
-	}
+	}*/
 }
