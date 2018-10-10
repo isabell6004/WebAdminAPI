@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
@@ -55,10 +56,15 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "setaddpage", method = RequestMethod.POST)
-	public ResultResponse<Object> setAddPage(@RequestBody SetAddPageParameter parameters) {
-		ResultResponse<Object> result = AdService.setAdPage(parameters);
+	public JsonResponse<String> setAddPage(@RequestBody SetAddPageParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.setAdPage(parameters);
 
-		return result;
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+
+		return results;
 	}
 	
 	/**
@@ -112,10 +118,15 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-	public ResultResponse<Object> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
-		ResultResponse<Object> result = AdService.delSpotSetting(parameters);
+	public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.delSpotSetting(parameters);
 
-		return result;
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+
+		return results;
 	}
 	
 	/**
