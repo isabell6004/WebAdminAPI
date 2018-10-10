@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author Nayeon Kim
  */
 public class SetAddPageParameter {
-	@ApiModelProperty(required = false, example="")
+	@ApiModelProperty(required = false, example="1")
 	private Integer pageID;
 	
 	@ApiModelProperty(required = false, example="Test")

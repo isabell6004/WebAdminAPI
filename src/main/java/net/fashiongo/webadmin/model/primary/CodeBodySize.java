@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -25,15 +26,15 @@ public class CodeBodySize {
 	@Column(name = "BodySizeName")
 	private String bodySizeName;
 	
-	@JsonProperty("TitleImage")
+	@JsonIgnore
 	@Column(name = "TitleImage")
 	private String titleImage;
 	
-	@JsonProperty("CategoryID")
+	@JsonIgnore
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 	
-	@JsonProperty("Active")
+	@JsonIgnore
 	@Column(name = "Active")
 	private Boolean active;
 
