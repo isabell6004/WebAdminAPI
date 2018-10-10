@@ -1,10 +1,15 @@
 package net.fashiongo.webadmin.model.pojo;
+
+import javax.persistence.Column;
+
 /**
  * 
  * @author Incheol Jung
  */
 public class PoOrderStatic {
+	@Column(name = "ThisOrderAmount")
 	private Double totalOrderAmount;
+	@Column(name = "OrderAmountRate")
 	private Double rate;
 	public Double getTotalOrderAmount() {
 		return totalOrderAmount;

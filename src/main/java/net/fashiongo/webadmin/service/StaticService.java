@@ -8,16 +8,23 @@ import org.springframework.stereotype.Service;
 import net.fashiongo.webadmin.model.pojo.ActiveBuyerStatic;
 import net.fashiongo.webadmin.model.pojo.Avg;
 import net.fashiongo.webadmin.model.pojo.AvgPOOrderStatic;
+import net.fashiongo.webadmin.model.pojo.BuyerFirtstTimeStatic;
 import net.fashiongo.webadmin.model.pojo.BuyerRegistrationStatic;
 import net.fashiongo.webadmin.model.pojo.Count;
+import net.fashiongo.webadmin.model.pojo.DailyBuyerStatic;
 import net.fashiongo.webadmin.model.pojo.DailyStatic;
-import net.fashiongo.webadmin.model.pojo.MonthVendorStatic;
+import net.fashiongo.webadmin.model.pojo.MonthClosedVendorStatic;
+import net.fashiongo.webadmin.model.pojo.MonthNewVendorStatic;
+import net.fashiongo.webadmin.model.pojo.MonthUploadItemStatic;
+import net.fashiongo.webadmin.model.pojo.MonthlyBuyerStatic;
 import net.fashiongo.webadmin.model.pojo.MonthlyStatic;
+import net.fashiongo.webadmin.model.pojo.MonthlyVendorStatic;
 import net.fashiongo.webadmin.model.pojo.OrderMonthlyStatic;
 import net.fashiongo.webadmin.model.pojo.PoOrderStatic;
 import net.fashiongo.webadmin.model.pojo.PurchasedOrderStatic;
 import net.fashiongo.webadmin.model.pojo.PurchasingBuyerStatic;
-import net.fashiongo.webadmin.model.pojo.TotalRate;
+import net.fashiongo.webadmin.model.pojo.TotalRateAvg;
+import net.fashiongo.webadmin.model.pojo.TotalRateTotal;
 import net.fashiongo.webadmin.model.pojo.YearlyStatic;
 import net.fashiongo.webadmin.model.pojo.response.GetDashboardResponse;
 
@@ -40,10 +47,11 @@ public class StaticService extends ApiService {
 		String spName = "up_GetDashboard_WebAdmin";
         List<Object> params = new ArrayList<Object>();
         
-        List<Object> _result = jdbcHelper.executeSP(spName, params, TotalRate.class, TotalRate.class, YearlyStatic.class, MonthlyStatic.class, DailyStatic.class
-        		, ActiveBuyerStatic.class, PurchasingBuyerStatic.class, BuyerRegistrationStatic.class, MonthlyStatic.class, DailyStatic.class
+        List<Object> _result = jdbcHelper.executeSP(spName, params
+        		, TotalRateTotal.class, TotalRateAvg.class, YearlyStatic.class, MonthlyStatic.class, DailyStatic.class
+        		, ActiveBuyerStatic.class, PurchasingBuyerStatic.class, MonthlyBuyerStatic.class, BuyerRegistrationStatic.class, BuyerFirtstTimeStatic.class, DailyBuyerStatic.class
         		, PurchasedOrderStatic.class, PoOrderStatic.class, AvgPOOrderStatic.class, OrderMonthlyStatic.class
-        		, MonthVendorStatic.class, MonthVendorStatic.class, MonthlyStatic.class, Count.class, MonthVendorStatic.class, Avg.class);
+        		, MonthNewVendorStatic.class, MonthUploadItemStatic.class, MonthlyVendorStatic.class, Count.class, MonthClosedVendorStatic.class, Avg.class);
         
 		return null;
 	}

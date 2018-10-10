@@ -6,17 +6,16 @@ import javax.persistence.Column;
  * 
  * @author Incheol Jung
  */
-public class MonthlyStatic{
-	@Column(name = "VisitorsYM")
-	private String month;
-	@Column(name = "VisitorsMonthCount")
+public class DailyBuyerStatic {
+	@Column(name = "Period")
+	private String period;
+	@Column(name = "PeriodCount")
 	private Integer value;
-	
-	public String getMonth() {
-		return month;
+	public String getPeriod() {
+		return period;
 	}
-	public void setMonth(String month) {
-		this.month = month;
+	public void setPeriod(String period) {
+		this.period = period;
 	}
 	public Integer getValue() {
 		return value;
@@ -24,5 +23,4 @@ public class MonthlyStatic{
 	public void setValue(Integer value) {
 		this.value = value;
 	}
-	
 }

@@ -1,20 +1,19 @@
 package net.fashiongo.webadmin.model.pojo;
+
+import javax.persistence.Column;
+
 /**
  * 
  * @author Incheol Jung
  */
 public class OrderMonthlyStatic {
-	private Integer year;
+	@Column(name = "DateYM")
 	private Integer month;
+	@Column(name = "NewAmount")
 	private Double newAmount;
+	@Column(name = "ReturnAmount")
 	private Double returnAmount;
 	
-	public Integer getYear() {
-		return year;
-	}
-	public void setYear(Integer year) {
-		this.year = year;
-	}
 	public Integer getMonth() {
 		return month;
 	}

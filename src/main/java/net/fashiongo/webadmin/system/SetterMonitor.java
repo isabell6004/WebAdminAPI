@@ -22,7 +22,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import net.fashiongo.common.JsonResponse;
+import net.fashiongo.webadmin.utility.JsonResponse;
+
 
 @Aspect
 @Component
@@ -105,6 +106,7 @@ public class SetterMonitor implements ThrowsAdvice {
 	    
 		JsonResponse<String> res = new JsonResponse<String>();
 		res.setSuccess(false);
+		res.setCode(-1);
 		res.setMessage(exceptionMsg);
 		res.setData(null);
 		

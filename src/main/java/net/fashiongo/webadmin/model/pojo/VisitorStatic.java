@@ -6,21 +6,22 @@ import java.util.List;
  * @author Incheol Jung
  */
 public class VisitorStatic {
-	private TotalRate totalVisitors;
-	private TotalRate avgVisitors;
+	private TotalRateTotal totalVisitors;
+	private TotalRateAvg avgVisitors;
 	private List<YearlyStatic> visitorsYearly;
 	private List<MonthlyStatic> visitorsMonthly;
 	private List<DailyStatic> visitorsDaily;
-	public TotalRate getTotalVisitors() {
+	
+	public TotalRateTotal getTotalVisitors() {
 		return totalVisitors;
 	}
-	public void setTotalVisitors(TotalRate totalVisitors) {
+	public void setTotalVisitors(TotalRateTotal totalVisitors) {
 		this.totalVisitors = totalVisitors;
 	}
-	public TotalRate getAvgVisitors() {
+	public TotalRateAvg getAvgVisitors() {
 		return avgVisitors;
 	}
-	public void setAvgVisitors(TotalRate avgVisitors) {
+	public void setAvgVisitors(TotalRateAvg avgVisitors) {
 		this.avgVisitors = avgVisitors;
 	}
 	public List<YearlyStatic> getVisitorsYearly() {

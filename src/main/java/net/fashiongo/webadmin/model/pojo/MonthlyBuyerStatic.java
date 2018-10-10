@@ -6,10 +6,10 @@ import javax.persistence.Column;
  * 
  * @author Incheol Jung
  */
-public class MonthlyStatic{
-	@Column(name = "VisitorsYM")
+public class MonthlyBuyerStatic{
+	@Column(name = "RegYM")
 	private String month;
-	@Column(name = "VisitorsMonthCount")
+	@Column(name = "BuyerRegCount")
 	private Integer value;
 	
 	public String getMonth() {
