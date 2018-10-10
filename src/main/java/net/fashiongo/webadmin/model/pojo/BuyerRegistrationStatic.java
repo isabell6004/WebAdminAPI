@@ -1,17 +1,38 @@
 package net.fashiongo.webadmin.model.pojo;
 
-import javax.persistence.Column;
+import java.math.BigDecimal;
 
 /**
  * 
  * @author Incheol Jung
  */
 public class BuyerRegistrationStatic {
-	@Column(name = "TodayBuyerRegCount")
-	private Integer todayBuyerRegistrationCount;
-	@Column(name = "YesterdayBuyerRegCount")
-	private Integer yesterdayBuyerRegistrationCount;
+	public BuyerRegistrationStatic() {}
 	
+	public BuyerRegistrationStatic(BuyerRegistrationDateStatic buyerRegistrationDateStatic, BuyerFirtstTimeStatic buyerFirtstTimeStatic) {
+		this.setTodayBuyerRegistrationCount(buyerRegistrationDateStatic.getTodayBuyerRegistrationCount());
+		this.setYesterdayBuyerRegistrationCount(buyerRegistrationDateStatic.getYesterdayBuyerRegistrationCount());
+		this.setFirstTimePurchaseCount(buyerFirtstTimeStatic.getFirstTimePurchaseCount());
+		this.setRate(buyerFirtstTimeStatic.getRate());
+	}
+	
+	private Integer todayBuyerRegistrationCount;
+	private Integer yesterdayBuyerRegistrationCount;
+	private Integer firstTimePurchaseCount;
+	private BigDecimal rate;
+	
+	public Integer getFirstTimePurchaseCount() {
+		return firstTimePurchaseCount;
+	}
+	public void setFirstTimePurchaseCount(Integer firstTimePurchaseCount) {
+		this.firstTimePurchaseCount = firstTimePurchaseCount;
+	}
+	public BigDecimal getRate() {
+		return rate;
+	}
+	public void setRate(BigDecimal rate) {
+		this.rate = rate;
+	}
 	public Integer getTodayBuyerRegistrationCount() {
 		return todayBuyerRegistrationCount;
 	}

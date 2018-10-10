@@ -9,15 +9,15 @@ import java.util.List;
 public class VendorStatic {
 	private MonthNewVendorStatic newVendors;
 	private MonthUploadItemStatic uploadedItems;
-	private List<MonthlyStatic> vendorsMonthly;
+	private List<MonthlyVendorStatic> vendorsMonthly;
 	private Count orderNumOfVendorCount;
 	private MonthClosedVendorStatic closedVendors;
 	private Avg avgVendorDuration;
 	
-	public List<MonthlyStatic> getVendorsMonthly() {
+	public List<MonthlyVendorStatic> getVendorsMonthly() {
 		return vendorsMonthly;
 	}
-	public void setVendorsMonthly(List<MonthlyStatic> vendorsMonthly) {
+	public void setVendorsMonthly(List<MonthlyVendorStatic> vendorsMonthly) {
 		this.vendorsMonthly = vendorsMonthly;
 	}
 	public Count getOrderNumOfVendorCount() {
