@@ -22,6 +22,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParamete
 import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
@@ -286,6 +287,25 @@ public class AdminController {
 	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
 		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(false, null, 0, null);
 		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
+		
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Get Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param null
+	 * @return GetSecurityAccessIpsResponse
+	 */
+	@RequestMapping(value="getsecurityaccessips", method=RequestMethod.POST)
+	public JsonResponse<GetSecurityAccessIpsResponse> GetSecurityAccessIps () {
+		JsonResponse<GetSecurityAccessIpsResponse> results = new JsonResponse<GetSecurityAccessIpsResponse>(false, null, 0, null);
+		GetSecurityAccessIpsResponse result = adminService.GetSecurityAccessIps();
 		
 		results.setData(result);
 		results.setSuccess(true);

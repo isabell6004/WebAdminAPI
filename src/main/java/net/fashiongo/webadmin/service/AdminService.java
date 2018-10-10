@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.model.pojo.Resource;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
+import net.fashiongo.webadmin.model.pojo.SecurityAccessIps;
 import net.fashiongo.webadmin.model.pojo.SecurityLogs;
 import net.fashiongo.webadmin.model.pojo.SecurityLogsColumn;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
@@ -20,6 +21,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
@@ -149,7 +151,6 @@ public class AdminService extends ApiService {
 	 * @param GetSecurityResourcesParameter
 	 * @return GetSecurityResourcesResponse
 	 */
-	
 	public GetSecurityResourcesResponse GetSecurityResources (GetSecurityResourcesParameter parameters) {
 		GetSecurityResourcesResponse result = new GetSecurityResourcesResponse();
 		String spName = "up_wa_Security_GetResource";
@@ -164,6 +165,23 @@ public class AdminService extends ApiService {
 		return result;
 	}
 
-	
+	/**
+	 * 
+	 * Get Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param null
+	 * @return GetSecurityAccessIpsResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetSecurityAccessIpsResponse GetSecurityAccessIps() {
+		GetSecurityAccessIpsResponse result = new GetSecurityAccessIpsResponse();
+		String spName = "up_wa_Security_GetListIP";
+		
+		List<Object> params = new ArrayList<Object>();
+		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityAccessIps.class);
+		result.setIps((List<SecurityAccessIps>) _result.get(0));
+		return result;
+	}
 	
 }
