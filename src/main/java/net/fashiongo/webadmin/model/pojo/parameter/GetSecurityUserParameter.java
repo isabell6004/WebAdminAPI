@@ -1,10 +1,17 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class GetSecurityUserParameter {
+    @ApiModelProperty(required = false, example="Vicky")
 	private String userName;
+    @ApiModelProperty(required = false, example="Call Center")
 	private String group;
+    @ApiModelProperty(required = false, example="S")
 	private String role;
+    @ApiModelProperty(required = false, example="2858")
 	private Integer vendorID;
+	
 	public String getUserName() {
 		return userName;
 	}

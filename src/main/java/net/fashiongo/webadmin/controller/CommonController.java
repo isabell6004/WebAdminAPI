@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.TopCategories;
 import net.fashiongo.webadmin.service.CommonService;
@@ -90,4 +92,24 @@ public class CommonController {
 		results.setData(result);
 		return results;
 	}*/
+	
+	/**
+	 * 
+	 * Get Security Users
+	 * 
+	 * @since 2018. 10. 10.
+	 * @author Nayeon Kim
+	 * @param GetSecurityUserParameter
+	 * @return GetSecurityUserResponse
+	 */
+	@RequestMapping(value="getsecurityusers", method=RequestMethod.POST)
+	public JsonResponse<GetSecurityUserResponse> GetSecurityUsers(@RequestBody GetSecurityUserParameter parameters) {
+		JsonResponse<GetSecurityUserResponse> results = new JsonResponse<GetSecurityUserResponse>(false, null, 0, null);
+		
+		GetSecurityUserResponse result = securityGroupService.GetSecurityUsers(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
 }
