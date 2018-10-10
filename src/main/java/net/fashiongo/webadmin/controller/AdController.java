@@ -56,10 +56,15 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "setaddpage", method = RequestMethod.POST)
-	public ResultResponse<Object> setAddPage(@RequestBody SetAddPageParameter parameters) {
-		ResultResponse<Object> result = AdService.setAdPage(parameters);
+	public JsonResponse<String> setAddPage(@RequestBody SetAddPageParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.setAdPage(parameters);
 
-		return result;
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+
+		return results;
 	}
 	
 	/**
@@ -112,18 +117,17 @@ public class AdController {
 	 * @param DelSpotSettingParameter
 	 * @return 
 	 */
-    @RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-    public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
-           JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-           ResultCode result = AdService.delSpotSetting(parameters);
-           
-           results.setSuccess(result.getSuccess());
-           results.setCode(result.getResultCode());
-           results.setMessage(result.getResultMsg());
-           
-    
-           return results;
-    }
+	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
+	public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.delSpotSetting(parameters);
+
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+
+		return results;
+	}
 	
 	/**
 	 * 

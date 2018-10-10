@@ -74,20 +74,19 @@ public class AdService extends ApiService {
 	 * @param SetAddPageParameter
 	 * @return
 	 */
-	//@Transactional
-	public ResultResponse<Object> setAdPage(SetAddPageParameter parameters) {
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setAdPage(SetAddPageParameter parameters) {
+		ResultCode result = new ResultCode(true, 1, "Saved successfully!");
+
 		AdPage adPage = new AdPage();
 		Integer pageID = parameters.getPageID();
 		String pageName = parameters.getPageName();
-		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"failure",null);
-
 		if (pageID == null) { // new (insert)
 			AdPage adPage2 = adPageRepository.findTopByOrderByPageIDDesc();
 			if (adPage2 != null) {
 				pageID = adPage2.getPageID() + 1;
 				adPage.setPageID(pageID);
 				adPage.setPageName(pageName);
-
 				adPageRepository.save(adPage);
 			}
 		} else { // not null (update)
@@ -96,11 +95,6 @@ public class AdService extends ApiService {
 			// adPage2.setPageUrl(pageUrl);
 			adPageRepository.save(adPage2);
 		}
-
-		result.setSuccess(true);
-		result.setCode(1);
-		result.setMessage(MSG_SAVE_SUCCESS);
-
 		return result;
 	}
 
@@ -146,16 +140,12 @@ public class AdService extends ApiService {
 	 * @param DelSpotSettingParameter
 	 * @return
 	 */
-	@Transactional("primaryTransactionManager")
+	@Transactional(value = "primaryTransactionManager")
 	public ResultCode delSpotSetting(DelSpotSettingParameter parameters) {
 		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
-		
-		try {
-			Integer spotID = parameters.getSpotID();
-			adPageSpotRepository.deleteById(spotID);
-		} catch (Exception e) {
-			result = new ResultCode(false, -1, "deletefailure");
-		}
+
+		Integer spotID = parameters.getSpotID();
+		adPageSpotRepository.deleteById(spotID);
 
 		return result;
 	}
@@ -169,7 +159,7 @@ public class AdService extends ApiService {
 	 * @param SetAddSpotSettingParameter
 	 * @return
 	 */
-	//@Transactional
+	@Transactional(value = "primaryTransactionManager")
 	public ResultResponse<Object> setAddSpotSetting(SetAddSpotSettingParameter parameters) {
 		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"failure",null);
 		AdPageSpot adPageSpot = new AdPageSpot();
