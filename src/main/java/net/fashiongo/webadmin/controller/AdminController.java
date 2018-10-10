@@ -19,6 +19,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
@@ -306,6 +307,25 @@ public class AdminController {
 	public JsonResponse<GetSecurityAccessIpsResponse> GetSecurityAccessIps () {
 		JsonResponse<GetSecurityAccessIpsResponse> results = new JsonResponse<GetSecurityAccessIpsResponse>(false, null, 0, null);
 		GetSecurityAccessIpsResponse result = adminService.GetSecurityAccessIps();
+		
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param SetSecurityAccessIpParameter
+	 * @return ResultCode
+	 */
+	@RequestMapping(value="setsecurityaccessip", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> SetSecurityAccessIp (@RequestBody SetSecurityAccessIpParameter parameters) throws Exception {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
+		ResultCode result = adminService.SetSecurityAccessIp(parameters);
 		
 		results.setData(result);
 		results.setSuccess(true);

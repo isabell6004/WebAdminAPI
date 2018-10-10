@@ -4,17 +4,17 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.fashiongo.webadmin.model.pojo.SecurityAccessIps;;
+import net.fashiongo.webadmin.model.primary.SecurityAccessIp;;
 
 public class GetSecurityAccessIpsResponse {
 	@JsonProperty("Table")
-	private List<SecurityAccessIps> ips;
+	private List<SecurityAccessIp> ips;
 
-	public List<SecurityAccessIps> getIps() {
+	public List<SecurityAccessIp> getIps() {
 		return ips;
 	}
 
-	public void setIps(List<SecurityAccessIps> ips) {
+	public void setIps(List<SecurityAccessIp> ips) {
 		this.ips = ips;
 	}
 }

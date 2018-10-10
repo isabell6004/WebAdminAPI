@@ -10,21 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityAccessIpsRepository;
 import net.fashiongo.webadmin.model.pojo.Resource;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
-import net.fashiongo.webadmin.model.pojo.SecurityAccessIps;
 import net.fashiongo.webadmin.model.pojo.SecurityLogs;
 import net.fashiongo.webadmin.model.pojo.SecurityLogsColumn;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
+import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
 
 /**
  * 
@@ -35,6 +37,9 @@ public class AdminService extends ApiService {
 	
 	@Autowired
 	private SecurityAccessCodeRepository securityAccessCodeRepository;
+	
+	@Autowired
+	private SecurityAccessIpsRepository securityAccessIpsRepository;
 
 	/**
 	 * Get Security Access Code
@@ -179,8 +184,36 @@ public class AdminService extends ApiService {
 		String spName = "up_wa_Security_GetListIP";
 		
 		List<Object> params = new ArrayList<Object>();
-		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityAccessIps.class);
-		result.setIps((List<SecurityAccessIps>) _result.get(0));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityAccessIp.class);
+		result.setIps((List<SecurityAccessIp>) _result.get(0));
+		return result;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param 
+	 * @return 
+	 */
+	@SuppressWarnings("unchecked")
+	public ResultCode SetSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {
+		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		
+		SecurityAccessIp securityAccessIps = new SecurityAccessIp();
+		
+		if (parameters.getIpid() != 0) {
+			securityAccessIps = securityAccessIpsRepository.findFirstByipid(parameters.getIpid());
+		}
+
+		if (securityAccessIps != null) {
+			securityAccessIps.setIpAddress(parameters.getIp());
+			securityAccessIps.setDescription(parameters.getDescription());
+		
+			securityAccessIpsRepository.save(securityAccessIps);
+		}
+		
 		return result;
 	}
 	
