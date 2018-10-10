@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
-import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory2;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.service.SitemgmtService;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /*
  * @author Sanghyup Kim
@@ -48,18 +49,17 @@ public class SitemgmtController {
 	 * @return GetCollectionCategoryListResponse
 	 */
 	@RequestMapping(value = "getcollectioncategorylist", method = RequestMethod.POST)
-    @ApiOperation("site management > collection category setting - get CollectionCategory List")
-	public GetCollectionCategoryListResponse getCollectionCategoryList(
+	@ApiOperation("site management > collection category setting - get CollectionCategory List")
+	public JsonResponse<GetCollectionCategoryListResponse> getCollectionCategoryList(
 			@RequestBody GetCollectionCategoryListParameters parameters) {
 
-//		JsonResponse<GetCollectionCategoryListResponse> results = new JsonResponse<GetCollectionCategoryListResponse>(
-//				false, null, null);
+		JsonResponse<GetCollectionCategoryListResponse> results = new JsonResponse<GetCollectionCategoryListResponse>();
 
 		GetCollectionCategoryListResponse result = sitemgmtService.getCollectionCategoryList(parameters);
-//		results.setData(result);
-//		results.setSuccess(true);
-//		return results.getData();
-		return result;
+		results.setData(result);
+		results.setSuccess(true);
+
+		return results;
 	}
 
 	/**
@@ -72,17 +72,16 @@ public class SitemgmtController {
 	 * @return GetCategoryListResponse
 	 */
 	@RequestMapping(value = "getcategorylist", method = RequestMethod.POST)
-    @ApiOperation("site management > collection category setting - get Category List")
-	public GetCategoryListResponse getCategoryList(@RequestBody GetCategoryListParameters parameters) {
+	@ApiOperation("site management > collection category setting - get Category List")
+	public JsonResponse<GetCategoryListResponse> getCategoryList(@RequestBody GetCategoryListParameters parameters) {
 
-//		JsonResponse<GetCategoryListResponse> results = new JsonResponse<GetCategoryListResponse>(false, null, null);
+		JsonResponse<GetCategoryListResponse> results = new JsonResponse<GetCategoryListResponse>();
 
 		GetCategoryListResponse result = sitemgmtService.getCategoryList(parameters);
-//		results.setData(result);
-//		results.setSuccess(true);
+		results.setData(result);
+		results.setSuccess(true);
 
-//		return results.getData();
-		return result;
+		return results;
 	}
 
 	/**
@@ -97,15 +96,17 @@ public class SitemgmtController {
 	 * @return JsonResponse<Object>
 	 */
 	@RequestMapping(value = "setcollectioncategorylistorder", method = RequestMethod.POST)
-    @ApiOperation("site management > collection category setting - set CollectionCategory Listorder")
-	public JsonResponse<Object> setCollectionCategoryListorder(
+	@ApiOperation("site management > collection category setting - set CollectionCategory Listorder")
+	public JsonResponse<SetCollectionCategoryListorderResponse> setCollectionCategoryListorder(
 			@RequestBody SetCollectionCategoryListorderParameters parameters) {
 
 		SetCollectionCategoryListorderResponse result = sitemgmtService.setCollectionCategoryListorder(parameters);
 		List<CollectionCategory2> collectionCategory2 = result.getCategoryCollectionlist();
 
-		JsonResponse<Object> results = new JsonResponse<Object>(false, null, null);
-		results.setData(collectionCategory2);
+		result.setCategoryCollectionlist(collectionCategory2);
+
+		JsonResponse<SetCollectionCategoryListorderResponse> results = new JsonResponse<SetCollectionCategoryListorderResponse>();
+		results.setData(result);
 		results.setSuccess(true);
 
 		return results;
@@ -121,13 +122,15 @@ public class SitemgmtController {
 	 * @return JsonResponse<Object>
 	 */
 	@RequestMapping(value = "setcollectioncategory", method = RequestMethod.POST)
-    @ApiOperation("site management > collection category setting - set CollectionCategory (active, delete, save")
-	public @ResponseBody ResultResponse<Object> setCollectionCategory(
+	@ApiOperation("site management > collection category setting - set CollectionCategory (active, delete, save")
+	public @ResponseBody JsonResponse<Integer> setCollectionCategory(
 			@RequestBody SetCollectionCategoryParameters parameters) {
+
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
 
 		String setType = parameters.getSetType();
 
-		ResultResponse<Object> result = new ResultResponse<Object>();
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
 		switch (setType) {
 		case "Act":// change active/inactive
 			result = sitemgmtService.setCollectionCategoryActive(parameters);
@@ -146,9 +149,13 @@ public class SitemgmtController {
 			break;
 		}
 
-		return result;
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getMessage());
+		results.setData(result.getPk());
+//		results.setCode(result.getCode());
+//		results.setPk(result.getPk());
+		return results;
 	}
-
 
 	/**
 	 * 
@@ -156,35 +163,55 @@ public class SitemgmtController {
 	 * 
 	 * @since 2018. 10. 03.
 	 * @author Sanghyup Kim
-	 * @param 
+	 * @param
 	 * @return JsonResponse<Object>
 	 */
 	@Deprecated
 	@RequestMapping(value = "getcollectioncategorypolicy", method = RequestMethod.POST)
-    @ApiOperation("[n/a]site management > collection category setting - get CollectionCategory Policy")
-	public @ResponseBody ResultResponse<Object> getCollectionCategoryPolicy() {
+	@ApiOperation("[n/a]site management > collection category setting - get CollectionCategory Policy")
+	public @ResponseBody JsonResponse<Integer> getCollectionCategoryPolicy() {
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
 
-		return null;
+		return results;
 	}
-	
+
 	/**
 	 * 
 	 * set collection category policy
 	 * 
 	 * @since 2018. 10. 03.
 	 * @author Sanghyup Kim
-	 * @param 
+	 * @param
 	 * @return JsonResponse<Object>
 	 */
 	@Deprecated
 	@RequestMapping(value = "setcollectioncategorypolicy", method = RequestMethod.POST)
-    @ApiOperation("[n/a]site management > collection category setting - set CollectionCategory Policy")
-	public @ResponseBody ResultResponse<Object> setCollectionCategoryPolicy() {
+	@ApiOperation("[n/a]site management > collection category setting - set CollectionCategory Policy")
+	public @ResponseBody JsonResponse<Integer> setCollectionCategoryPolicy() {
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
 
-		return null;
+		return results;
 	}
-	
+
 	// collection category setting
 	// ----------------------------------------------------
 
+	/**
+	 * 
+	 * Get Paid Campaign
+	 * 
+	 * @since 2018. 10. 08.
+	 * @author Nayeon Kim
+	 * @return GetPaidCampaignResponse
+	 */
+	@RequestMapping(value = "getpaidcampaign", method = RequestMethod.POST)
+	public JsonResponse<GetPaidCampaignResponse> getPaidCampaign() {
+		JsonResponse<GetPaidCampaignResponse> results = new JsonResponse<GetPaidCampaignResponse>(false, null, 0, null, null);
+		
+		GetPaidCampaignResponse result = sitemgmtService.getPaidCampaign();
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
 }

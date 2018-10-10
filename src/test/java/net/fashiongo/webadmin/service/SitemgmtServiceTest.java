@@ -154,7 +154,7 @@ public class SitemgmtServiceTest {
 		collectionCategory.setActive(true);
 		parameters.setCollectionCategory(collectionCategory);
 
-		ResultResponse<Object> result = sitemgmtService.setCollectionCategoryActive(parameters);
+		ResultResponse<Integer> result = sitemgmtService.setCollectionCategoryActive(parameters);
 		assertTrue(result.getCode() > 0);
 
 		// 2nd test -inactive
@@ -164,6 +164,7 @@ public class SitemgmtServiceTest {
 	}
 
 	@Test
+	@Ignore("Not yet implemented")
 	public void testSetCollectionCategoryDelete() {
 
 		SetCollectionCategoryParameters parameters = new SetCollectionCategoryParameters();
@@ -175,10 +176,12 @@ public class SitemgmtServiceTest {
 
 //		ResultResponse<Object> result = sitemgmtService.setCollectionCategoryDelete(parameters);
 //		assertNotNull(result.getData());
-		
+		fail("Not yet implemented");
+
 	}
 
 	@Test
+	@Ignore("Not yet implemented")
 	public void testSetCollectionCategory() {
 
 		SetCollectionCategoryParameters parameters = new SetCollectionCategoryParameters();
@@ -191,10 +194,12 @@ public class SitemgmtServiceTest {
 
 //		ResultResponse<Object> result = sitemgmtService.setCollectionCategoryDelete(parameters);
 //		assertNotNull(result.getData());
+		fail("Not yet implemented");
 
 		// 2nd test -update
 		parameters.setSetType("Upd");
 		collectionCategory.setCollectionCategoryID(8);
+		fail("Not yet implemented");
 
 	}
 }

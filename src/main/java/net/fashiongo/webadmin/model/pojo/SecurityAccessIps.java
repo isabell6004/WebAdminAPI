@@ -1,5 +1,9 @@
 package net.fashiongo.webadmin.model.pojo;
 
+/**
+ * @author Dahye Jeong
+ */
+
 public class SecurityAccessIps {
 	private Integer ipid;
 	private String ipAddress;
