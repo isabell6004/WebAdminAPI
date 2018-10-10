@@ -36,7 +36,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getadsetting", method = RequestMethod.POST)
 	public JsonResponse<GetADSettingResponse> getAdsetting() {
-		JsonResponse<GetADSettingResponse> results = new JsonResponse<GetADSettingResponse>(false, null, 0, null, null);
+		JsonResponse<GetADSettingResponse> results = new JsonResponse<GetADSettingResponse>(false, null, 0, null);
 		
 		GetADSettingResponse result = AdService.getAdsetting();
 		results.setData(result);
@@ -71,7 +71,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getbodysizecode", method = RequestMethod.POST)
 	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {
-		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null, null);
+		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null);
 		
 		List<CodeBodySize> result = AdService.getBodySizeCode();
 		results.setData(result);
@@ -91,7 +91,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
 	public JsonResponse<GetSpotCheckResponse> getSpotCheck(GetSpotCheckParameter parameters) {
-		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null, null);
+		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
 		
 		GetSpotCheckResponse result = AdService.getSpotCheck(parameters);
 		if(result.getSpotID() != null) {
