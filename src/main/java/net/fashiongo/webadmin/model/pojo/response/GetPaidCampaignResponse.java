@@ -4,20 +4,20 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.fashiongo.webadmin.model.pojo.PaidCampaignList;
+import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 
 /**
  * @author Nayeon Kim
  */
 public class GetPaidCampaignResponse {
 	@JsonProperty("PaidCampaignList")
-	private List<PaidCampaignList> paidCampaignList;
+	private List<EmConfiguration> configurationsList;
 
-	public List<PaidCampaignList> getPaidCampaignList() {
-		return paidCampaignList;
+	public List<EmConfiguration> getPaidCampaignList() {
+		return configurationsList;
 	}
 
-	public void setPaidCampaignList(List<PaidCampaignList> paidCampaignList) {
-		this.paidCampaignList = paidCampaignList;
+	public void setPaidCampaignList(List<EmConfiguration> configurationsList) {
+		this.configurationsList = configurationsList;
 	}
 }

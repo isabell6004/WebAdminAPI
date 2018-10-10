@@ -17,9 +17,9 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListPara
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory2;
+import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
@@ -205,10 +205,10 @@ public class SitemgmtController {
 	 * @return GetPaidCampaignResponse
 	 */
 	@RequestMapping(value = "getpaidcampaign", method = RequestMethod.POST)
-	public JsonResponse<GetPaidCampaignResponse> getPaidCampaign() {
-		JsonResponse<GetPaidCampaignResponse> results = new JsonResponse<GetPaidCampaignResponse>(false, null, 0, null, null);
+	public JsonResponse<List<EmConfiguration>> getPaidCampaign() {
+		JsonResponse<List<EmConfiguration>> results = new JsonResponse<List<EmConfiguration>>(false, null, 0, null, null);
 		
-		GetPaidCampaignResponse result = sitemgmtService.getPaidCampaign();
+		List<EmConfiguration> result = sitemgmtService.getPaidCampaign();
 		results.setData(result);
 		results.setSuccess(true);
 		
