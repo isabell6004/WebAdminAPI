@@ -33,6 +33,9 @@ public class SitemgmtServiceTest {
 	@Autowired
 	SitemgmtService sitemgmtService;
 	
+	@Autowired
+	CollectionCategoryService collectionCategorService;
+	
 	/**
 	 * @title Description Example
 	 * @since 2018. 10. 1.
@@ -93,14 +96,14 @@ public class SitemgmtServiceTest {
 		GetCollectionCategoryListParameters parameters = new GetCollectionCategoryListParameters();
 		parameters.setCategoryId(0);
 		parameters.setExpandAll(1);
-		GetCollectionCategoryListResponse result = sitemgmtService.getCollectionCategoryList(parameters);
+		GetCollectionCategoryListResponse result = collectionCategorService.getCollectionCategoryList(parameters);
 
 		assertNotNull(result.getCollectionCategoryList());
 
 		// check collection category detail
 		parameters = new GetCollectionCategoryListParameters();
 		parameters.setCategoryId(8);
-		result = sitemgmtService.getCollectionCategoryList(parameters);
+		result = collectionCategorService.getCollectionCategoryList(parameters);
 
 		assertNotNull(result.getAdPageSpotList());
 }
@@ -137,7 +140,7 @@ public class SitemgmtServiceTest {
 		parameters.setListOrder(1);;
 		parameters.setLvl(2);
 		parameters.setParentCategoryId(1);
-		SetCollectionCategoryListorderResponse result = sitemgmtService.setCollectionCategoryListorder(parameters);
+		SetCollectionCategoryListorderResponse result = collectionCategorService.setCollectionCategoryListorder(parameters);
 
 		assertNotNull(result.getCategoryCollectionlist());
 	}
@@ -154,12 +157,12 @@ public class SitemgmtServiceTest {
 		collectionCategory.setActive(true);
 		parameters.setCollectionCategory(collectionCategory);
 
-		ResultResponse<Integer> result = sitemgmtService.setCollectionCategoryActive(parameters);
+		ResultResponse<Integer> result = collectionCategorService.setCollectionCategoryActive(parameters);
 		assertTrue(result.getCode() > 0);
 
 		// 2nd test -inactive
 		collectionCategory.setActive(false);
-		result = sitemgmtService.setCollectionCategoryActive(parameters);
+		result = collectionCategorService.setCollectionCategoryActive(parameters);
 		assertTrue(result.getCode() > 0);
 	}
 
