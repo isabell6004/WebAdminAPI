@@ -20,7 +20,6 @@ import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
 import net.fashiongo.webadmin.dao.primary.CodeBodySizeRepository;
 import net.fashiongo.webadmin.model.pojo.AdSettingList;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetBodySizeCodeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
@@ -111,11 +110,9 @@ public class AdService extends ApiService {
 	 * @author Nayeon Kim
 	 * @return GetBodySizeCodeResponse
 	 */
-	public GetBodySizeCodeResponse getBodySizeCode() {
-		GetBodySizeCodeResponse result = new GetBodySizeCodeResponse();
-		//CodeBodySize codeBodySize = codeBodySizeRepository.findTopByBodySizeID(codeBodySize);
-		//CodeBodySize codeBodySizeName = codeBodySizeRepository.findTopByBodySizeName(null);
-		return result;
+	public List<CodeBodySize> getBodySizeCode() {
+		List<CodeBodySize> codeBodySizeList = codeBodySizeRepository.findAll();
+		return codeBodySizeList;
 	}
 
 	/**
@@ -194,9 +191,9 @@ public class AdService extends ApiService {
 		//LocalDateTime bidEffectiveOn = parameters.getBidEffectiveOn();	
 		
 		LocalDateTime createdOn = LocalDateTime.now();
-		String createdBy =  Utility.getUsername();
+		//String createdBy =  Utility.getUsername();
 		LocalDateTime modifiedOn = LocalDateTime.now();
-		String modifiedBy =  Utility.getUsername();
+		//String modifiedBy =  Utility.getUsername();
 		
 		if(spotID == 0) { // new (insert)
 			adPageSpot.setPageID(pageID);
@@ -217,7 +214,7 @@ public class AdService extends ApiService {
 			adPageSpot.setSpotItemCount(spotItemCount);
 			//adPageSpot.setBidEffectiveOn(bidEffectiveOn);
 			adPageSpot.setCreatedOn(createdOn);
-			adPageSpot.setCreatedBy(createdBy);
+			//adPageSpot.setCreatedBy(createdBy);
 			
 			adPageSpotRepository.save(adPageSpot);
 			
@@ -242,7 +239,7 @@ public class AdService extends ApiService {
 			adPageSpot.setSpotItemCount(spotItemCount);
 			//adPageSpot.setBidEffectiveOn(bidEffectiveOn);
 			adPageSpot.setModifiedOn(modifiedOn);
-			adPageSpot.setModifiedBy(modifiedBy);
+			//adPageSpot.setModifiedBy(modifiedBy);
 			
 			adPageSpotRepository.save(adPageSpot);
 		}

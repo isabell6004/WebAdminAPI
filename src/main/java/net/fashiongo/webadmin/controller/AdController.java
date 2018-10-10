@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +15,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetBodySizeCodeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
+import net.fashiongo.webadmin.model.primary.CodeBodySize;
 import net.fashiongo.webadmin.service.AdService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -68,10 +70,10 @@ public class AdController {
 	 * @return GetBodySizeCodeResponse
 	 */
 	@RequestMapping(value = "getbodysizecode", method = RequestMethod.POST)
-	public JsonResponse<GetBodySizeCodeResponse> getBodySizeCode() {
-		JsonResponse<GetBodySizeCodeResponse> results = new JsonResponse<GetBodySizeCodeResponse>(false, null, 0, null, null);
+	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {
+		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null, null);
 		
-		GetBodySizeCodeResponse result = AdService.getBodySizeCode();
+		List<CodeBodySize> result = AdService.getBodySizeCode();
 		results.setData(result);
 		results.setSuccess(true);
 		
