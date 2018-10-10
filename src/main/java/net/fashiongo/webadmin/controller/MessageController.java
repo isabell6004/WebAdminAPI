@@ -34,7 +34,7 @@ public class MessageController {
 	 */
 	@RequestMapping(value="getmessage", method=RequestMethod.POST)
 	public JsonResponse<GetMessageResponse> GetMessage(@RequestBody GetMessageParameter parameters) {
-		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(true, null, 0, null);
+		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(true, null, null);
 		
 		GetMessageResponse result = messageService.GetMessage(parameters);
 		results.setData(result);
