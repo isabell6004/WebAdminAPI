@@ -191,11 +191,11 @@ public class AdminService extends ApiService {
 	
 	/**
 	 * 
-	 * 
+	 * Set Security Access Ip
 	 * @since 2018. 10. 10.
 	 * @author Dahye Jeong
-	 * @param 
-	 * @return 
+	 * @param SetSecurityAccessIpParameter
+	 * @return ResultCode
 	 */
 	@SuppressWarnings("unchecked")
 	public ResultCode SetSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {
@@ -214,6 +214,25 @@ public class AdminService extends ApiService {
 			securityAccessIpsRepository.save(securityAccessIps);
 		}
 		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Set Delete Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param id list
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetDeleteSecurityAccessIps(List<Integer> idList) {
+		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
+
+		for (Integer id : idList) {
+			securityAccessIpsRepository.deleteByipid(id);
+		}
+
 		return result;
 	}
 	

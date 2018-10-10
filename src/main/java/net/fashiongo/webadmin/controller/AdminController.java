@@ -332,5 +332,25 @@ public class AdminController {
 		
 		return results;
 	}
+	
+	/**
+	 * 
+	 * Set Delete Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param SetSecurityAccessIpParameter
+	 * @return ResultCode
+	 */
+	@RequestMapping(value = "setdeletesecurityaccessips", method = RequestMethod.POST)
+	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestBody List<Integer> idList) throws Exception {
+		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
+		ResultCode _result = adminService.SetDeleteSecurityAccessIps(idList);
+		
+		result.setSuccess(_result.getSuccess());
+		result.setCode(_result.getResultCode());
+		result.setMessage(_result.getResultMsg());
+		
+		return result;
+	}
 
 }
