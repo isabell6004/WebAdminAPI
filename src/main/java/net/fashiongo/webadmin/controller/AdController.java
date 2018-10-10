@@ -139,9 +139,14 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "setaddspotsetting", method = RequestMethod.POST)
-	public ResultResponse<Object> setAddSpotSetting(@RequestBody SetAddSpotSettingParameter parameters) {
-		ResultResponse<Object> result = AdService.setAddSpotSetting(parameters);
-
-		return result;
+	public JsonResponse<String> setAddSpotSetting(@RequestBody SetAddSpotSettingParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.setAddSpotSetting(parameters);
+		
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
 	}
 }

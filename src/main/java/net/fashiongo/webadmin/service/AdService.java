@@ -160,8 +160,9 @@ public class AdService extends ApiService {
 	 * @return
 	 */
 	@Transactional(value = "primaryTransactionManager")
-	public ResultResponse<Object> setAddSpotSetting(SetAddSpotSettingParameter parameters) {
-		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"failure",null);
+	public ResultCode setAddSpotSetting(SetAddSpotSettingParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		
 		AdPageSpot adPageSpot = new AdPageSpot();
 		Integer spotID = parameters.getSpotID();
 		Integer pageID = parameters.getPageID();
@@ -236,9 +237,6 @@ public class AdService extends ApiService {
 			adPageSpotRepository.save(adPageSpot);
 		}
 		
-		result.setSuccess(true);
-		result.setCode(1);
-		result.setMessage("success");
 		return result;
 	}
 }
