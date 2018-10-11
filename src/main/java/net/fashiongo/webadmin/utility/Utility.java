@@ -1,10 +1,16 @@
 package net.fashiongo.webadmin.utility;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.OutputStream;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
 
@@ -21,5 +27,26 @@ public class Utility {
         if (ipAddress == null) ipAddress = request.getRemoteAddr();
         
 		return ipAddress;
+	}
+	
+	public static String getUserAgent(HttpServletRequest request) {
+		return request.getHeader("User-Agent");
+	}
+	
+	public static void HttpResponse(String exceptionMsg) throws Throwable {
+		HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getResponse();
+	    
+		JsonResponse<String> res = new JsonResponse<String>();
+		res.setSuccess(false);
+		res.setCode(-1);
+		res.setMessage(exceptionMsg);
+		res.setData(null);
+		
+	    ObjectMapper om = new ObjectMapper();
+		String returnStr = om.writeValueAsString(res);
+		OutputStream ostr = response.getOutputStream();
+		ostr.write(returnStr.getBytes());
+		ostr.flush();
+		ostr.close();
 	}
 }

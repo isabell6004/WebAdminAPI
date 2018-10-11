@@ -1,10 +1,8 @@
 package net.fashiongo.webadmin.system;
 
-import java.io.OutputStream;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,11 +16,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.aop.ThrowsAdvice;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
 
 
 @Aspect
@@ -90,31 +86,6 @@ public class SetterMonitor implements ThrowsAdvice {
 	    }
 	    
 	    logger.error(stuff + "\n method with arguments " + keyBuilder + " exception is: " + e.getMessage());
-	    HttpResponse(exceptionMsg);
-	}
-	
-	/**
-	 * 
-	 * @since 2018. 9. 13.
-	 * @author Incheol Jung
-	 * @param exceptionMsg
-	 * @throws Throwable 
-	 * Desc : return error response
-	 */
-	public void HttpResponse(String exceptionMsg) throws Throwable {
-		HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getResponse();
-	    
-		JsonResponse<String> res = new JsonResponse<String>();
-		res.setSuccess(false);
-		res.setCode(-1);
-		res.setMessage(exceptionMsg);
-		res.setData(null);
-		
-	    ObjectMapper om = new ObjectMapper();
-		String returnStr = om.writeValueAsString(res);
-		OutputStream ostr = response.getOutputStream();
-		ostr.write(returnStr.getBytes());
-		ostr.flush();
-		ostr.close();
+	    Utility.HttpResponse(exceptionMsg);
 	}
 }

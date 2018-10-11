@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,22 @@ public class LoginController {
 		boolean result  = loginService.CheckIP(ipAddress);
 		results.setSuccess(result);
 	
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Log out
+	 * 
+	 * @since 2018. 10. 8.
+	 * @author Incheol Jung
+	 * @return
+	 */
+	@RequestMapping(value="logout", method=RequestMethod.POST)
+	public JsonResponse<String> LogOut(HttpSession session) {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, 0, null);
+		
+		session.invalidate();
 		return results;
 	}
 }
