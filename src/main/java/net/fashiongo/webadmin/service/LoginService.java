@@ -15,7 +15,7 @@ public class LoginService {
 	@Autowired
 	SecurityListIPRepository securityListIPRepository;
 	
-	public boolean CheckIP(String ipAddress) {
+	public boolean checkIP(String ipAddress) {
 		boolean result = securityListIPRepository.existsByIpAddress(ipAddress);
 		return result;
 	}

@@ -11,4 +11,5 @@ import net.fashiongo.webadmin.model.primary.SecurityUser;
  */
 public interface SecurityUserRepository extends CrudRepository<SecurityUser, Integer> {
 	List<SecurityUser> findAllByOrderByActiveDesc();
+	SecurityUser findFirstByUserName(String userName);
 }
