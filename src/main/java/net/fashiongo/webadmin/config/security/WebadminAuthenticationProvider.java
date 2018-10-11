@@ -35,9 +35,9 @@ import net.fashiongo.webadmin.utility.Utility;
 @Component
 public class WebadminAuthenticationProvider implements AuthenticationProvider {
 	
-	@Autowired
-	@Qualifier("serviceJsonClient`")
-	private HttpClient client;
+//	@Autowired
+//	@Qualifier("serviceJsonClient`")
+//	private HttpClient client;
 	
 	@Autowired
 	private SecurityUserRepository securityUserRepository;
@@ -60,8 +60,9 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		HttpServletRequest request = (HttpServletRequest) authentication.getDetails();
 		Integer Loginable = 2;
 
-		JsonResponse response = client.post("/membership/authenticate/3",
-				"{\"userName\":\"" + username + "\", \"password\":\"" + password + "\"}");
+		JsonResponse response = new JsonResponse();
+//		JsonResponse response = client.post("/membership/authenticate/3",
+//				"{\"userName\":\"" + username + "\", \"password\":\"" + password + "\"}");
 		if (!response.isSuccess()) {
 			throw new BadCredentialsException(password);
 		}

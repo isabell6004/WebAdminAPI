@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.model.primary;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "[security.Login_Control]")
 public class SecurityLoginControl {
+	@Id
 	private Integer controlID;
 	private Integer userID;
 	private Integer weekDay;
