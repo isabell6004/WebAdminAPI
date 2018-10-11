@@ -28,7 +28,8 @@ public class PhotoDiscount implements IPersistent, Serializable {
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
 	private static final String FROM_TIME = " 00:00:00";
 	private static final String TO_TIME = " 23:59:59";
-
+	private static final String DATE_NULL = "1970";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "DiscountID")
@@ -103,7 +104,7 @@ public class PhotoDiscount implements IPersistent, Serializable {
 	}
 
 	public void setToDate(String toDate) {
-		this.toDate = StringUtils.isNotEmpty(toDate) ? toDate + TO_TIME : null;
+		this.toDate = StringUtils.isNotEmpty(toDate) ? (StringUtils.contains(toDate, DATE_NULL)?toDate + FROM_TIME : toDate + TO_TIME) : null;
 		this.set_toDate(StringUtils.isNotEmpty(this.toDate) ? LocalDateTime.parse(this.toDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 

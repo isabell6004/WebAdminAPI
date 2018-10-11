@@ -23,6 +23,7 @@ import net.fashiongo.webadmin.dao.photostudio.PhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoPriceRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoUnitRepository;
+import net.fashiongo.webadmin.model.photostudio.DailySummaryVo;
 import net.fashiongo.webadmin.model.photostudio.DetailPhotoOrder;
 import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
@@ -34,7 +35,6 @@ import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoImage;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
-import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrderDetail;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
@@ -567,6 +567,16 @@ public class PhotoStudioService {
 		result.put("photoStudioUsers", Arrays.asList("Brooke","Maria","Brandon","Rosa"));
 
 		return result;
+	}
+	
+	public DailySummaryVo getDailySummary(String photoshootDate) {
+		List<Object> params = new ArrayList<Object>();
+		params.add(photoshootDate);
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetDailySummary", params, DailySummaryVo.class);
+		List<DailySummaryVo> dailySummaryVos = (List<DailySummaryVo>) r.get(0);
+
+		return dailySummaryVos.get(0);
 	}
 	
 	public List<PhotoCalendar> getPhotoCalendar(Map<String, String> parmMap) {
