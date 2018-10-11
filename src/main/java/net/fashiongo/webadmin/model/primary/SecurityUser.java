@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -59,6 +60,9 @@ public class SecurityUser {
 	@JsonProperty("ModifiedBy")
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
+	
+	@Transient
+	private String DispName;
 
 	public Integer getUserID() {
 		return userID;
@@ -146,5 +150,14 @@ public class SecurityUser {
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	public String getDispName() {
+		DispName = (this.active) ? "" : "[x] " + this.userName;
+		return DispName;
+	}
+
+	public void setDispName(String dispName) {
+		DispName = dispName;
 	}
 }
