@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.dao.primary;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
@@ -16,4 +17,6 @@ public interface AdPageSpotRepository extends CrudRepository<AdPageSpot, Integer
 
 	void deleteByPageID(int pageID);
 
+	List<AdPageSpot> findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotName(
+			LocalDateTime bidEffectiveOn, Integer pageIdNot, Integer pageId);
 }
