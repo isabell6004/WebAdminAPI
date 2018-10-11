@@ -4,6 +4,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -124,9 +125,9 @@ public class SitemgmtShowController {
 	 * @param
 	 * @return
 	 */
-	@RequestMapping(value = "show/{0}", method = RequestMethod.POST)
+	@RequestMapping(value = "show/{showId}", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show")
-	public JsonResponse<Object> getShow() {
+	public JsonResponse<Object> getShow(@PathVariable("showId") Integer showId) {
 
 		JsonResponse<Object> results = new JsonResponse<Object>();
 
@@ -178,9 +179,9 @@ public class SitemgmtShowController {
 	 * @param
 	 * @return
 	 */
-	@RequestMapping(value = "show/promotion-plan/{0}", method = RequestMethod.POST)
+	@RequestMapping(value = "show/promotion-plan/{planId}", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show promotion-plan")
-	public JsonResponse<Object> getShowPromotionPlan() {
+	public JsonResponse<Object> getShowPromotionPlan(@PathVariable("planId") Integer planId) {
 
 		JsonResponse<Object> results = new JsonResponse<Object>();
 
@@ -214,9 +215,9 @@ public class SitemgmtShowController {
 	 * @param
 	 * @return
 	 */
-	@RequestMapping(value = "show/schedule/{0}", method = RequestMethod.POST)
+	@RequestMapping(value = "show/schedule/{showScheduleId}", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show schedule")
-	public JsonResponse<Object> getShowSchedule() {
+	public JsonResponse<Object> getShowSchedule(@PathVariable("showScheduleId") Integer showScheduleId) {
 
 		JsonResponse<Object> results = new JsonResponse<Object>();
 
@@ -250,9 +251,9 @@ public class SitemgmtShowController {
 	 * @param
 	 * @return
 	 */
-	@RequestMapping(value = "show/participating-vendor/{0}", method = RequestMethod.POST)
+	@RequestMapping(value = "show/participating-vendor/{mapId}", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show participating vendor")
-	public JsonResponse<Object> getShowParticipatingVendor() {
+	public JsonResponse<Object> getShowParticipatingVendor(@PathVariable("mapId") Integer mapId) {
 
 		JsonResponse<Object> results = new JsonResponse<Object>();
 
