@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.primary.AdPage;
+import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.TopCategories;
 import net.fashiongo.webadmin.service.CommonService;
@@ -39,19 +41,56 @@ public class CommonController {
 		return results;
 	}
 
+	/**
+	 * Get Bid AdPage
+	 * 
+	 * @since 2018. 10. 11.
+	 * @author Junghwan Lee
+	 * @return JsonResponse<List<AdPage>>
+	 */
 	@RequestMapping(value = "getbidadpages", method = RequestMethod.POST)
-	public void GetBidAdPages() {
-		
+	public JsonResponse<List<AdPage>> GetBidAdPages() {
+		JsonResponse<List<AdPage>> results = new JsonResponse<List<AdPage>>();
+		List<AdPage> result = commonService.GetBidAdPages();
+
+		results.setSuccess(true);
+		results.setData(result);
+
+		return results;
 	}
-	
+
+	/**
+	 * Get Bid AdPage Spots
+	 * 
+	 * @since 2018. 10. 11.
+	 * @author Junghwan Lee
+	 * @param pageId
+	 * @return JsonResponse<List<AdPageSpot>>
+	 */
 	@RequestMapping(value = "getbidadpagespots", method = RequestMethod.POST)
-	public void GetBidAdPageSpots() {
+	public JsonResponse<List<AdPageSpot>> GetBidAdPageSpots(@RequestBody Integer pageId) {
+		JsonResponse<List<AdPageSpot>> results = new JsonResponse<List<AdPageSpot>>();
+		List<AdPageSpot> result = commonService.GetBidAdPageSpots(pageId);
 		
+		results.setSuccess(true);
+		results.setData(result);
+		
+		return results;
 	}
 	
+	/**
+	 * Get Bid AdPage Spots Combined 
+	 * 
+	 * @since 2018. 10. 11.
+	 * @author Junghwan Lee
+	 * @return JsonResponse<String>
+	 */
+	@Deprecated
 	@RequestMapping(value = "getbidadpagespotscombined", method = RequestMethod.POST)
-	public void GetBidAdPageSpotsCombined() {
+	public JsonResponse<String> GetBidAdPageSpotsCombined() {
+		JsonResponse<String> results = new JsonResponse<String>();
 		
+		return results;
 	}
 	
 	/**
