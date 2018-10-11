@@ -30,4 +30,7 @@ public interface MapCollectionCategoryRepository extends CrudRepository<MapColle
 	@Query("delete from MapCollectionCategory mcc where collectionCategoryID = ?1")
 	void deleteInBulkByCollectionCategoryID(Integer collectionCategoryID);
 
+	// deleteByCollectionCategoryID
+	void deleteByCollectionCategoryID(Integer collectionCategoryID);
+
 }
