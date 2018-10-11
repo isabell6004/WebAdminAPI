@@ -22,6 +22,9 @@ public interface MapCollectionCategoryRepository extends CrudRepository<MapColle
 	// findByCollectionCategoryID
 	List<MapCollectionCategory> findByCollectionCategoryID(Integer collectionCategoryID);
 
+	// findByCategoryID
+	List<MapCollectionCategory> findByCategoryID(Integer categoryID);
+
 	// deleteByMapID
 	void deleteByMapID(Integer mapID);
 
@@ -32,5 +35,8 @@ public interface MapCollectionCategoryRepository extends CrudRepository<MapColle
 
 	// deleteByCollectionCategoryID
 	void deleteByCollectionCategoryID(Integer collectionCategoryID);
+
+	// deleteByCategoryID
+	void deleteByCategoryID(Integer categoryID);
 
 }

@@ -12,10 +12,11 @@ import net.fashiongo.webadmin.model.primary.AdPageSpot;
  */
 public interface AdPageSpotRepository extends CrudRepository<AdPageSpot, Integer> {
 	AdPageSpot findOneBySpotID(Integer spotID);
-
 	List<AdPageSpot> findByPageID(int pageID);
+	List<AdPageSpot> findByCategoryID(int categoryID);
 
 	void deleteByPageID(int pageID);
+	void deleteByCategoryID(int categoryID);
 
 	List<AdPageSpot> findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotName(
 			Date bidEffectiveOn, Integer pageIdNot, Integer pageId);
