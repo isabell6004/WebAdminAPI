@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
@@ -114,13 +112,13 @@ public class AdController {
 	 * 
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
-	 * @param DelSpotSettingParameter
+	 * @param spotID
 	 * @return 
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-	public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
+	public JsonResponse<String> delSpotSetting(@RequestBody Integer spotID) {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-		ResultCode result = AdService.delSpotSetting(parameters);
+		ResultCode result = AdService.delSpotSetting(spotID);
 
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());

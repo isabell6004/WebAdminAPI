@@ -1,9 +1,7 @@
 package net.fashiongo.webadmin.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -13,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
@@ -29,7 +25,6 @@ import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.AdVendor;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
-import net.fashiongo.webadmin.utility.Utility;
 
 @Service
 public class AdService extends ApiService {
@@ -139,14 +134,13 @@ public class AdService extends ApiService {
 	 * 
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
-	 * @param DelSpotSettingParameter
+	 * @param spotID
 	 * @return
 	 */
 	@Transactional(value = "primaryTransactionManager")
-	public ResultCode delSpotSetting(DelSpotSettingParameter parameters) {
+	public ResultCode delSpotSetting(int spotID) {
 		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
 
-		Integer spotID = parameters.getSpotID();
 		adPageSpotRepository.deleteById(spotID);
 
 		return result;
