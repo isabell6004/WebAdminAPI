@@ -1,12 +1,18 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import javax.persistence.Column;
+
 /**
  * @author Nayeon Kim
  */
 public class SecurityLogs {
+	@Column(name = "LogID")
 	private Integer logID;
+	@Column(name = "UserName")
 	private String userName;
+	@Column(name = "IP")
 	private String ip;
+	@Column(name = "LoginOn")
 	private String loginOn;
 	
 	public Integer getLogID() {
