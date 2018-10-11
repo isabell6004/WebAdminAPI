@@ -1,8 +1,7 @@
 package net.fashiongo.webadmin.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
 import net.fashiongo.webadmin.dao.primary.TopCategoriesRepository;
+import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityMenu;
@@ -66,11 +66,16 @@ public class CommonService extends ApiService {
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Junghwan Lee
-	 * @return List<AdPage>
+	 * @return GetBidAdPagesResponse
 	 */
-	public List<AdPage> GetBidAdPages() {
-		//List<AdPage> result=adPageRepository.findAll();
-		List<AdPage> result=(List<AdPage>) adPageRepository.findAll();
+	@SuppressWarnings("unchecked")
+	public GetBidAdPagesResponse GetBidAdPages() {
+		GetBidAdPagesResponse result = new GetBidAdPagesResponse();
+		String spName = "up_wa_GetBidAdPages";
+		List<Object> params = new ArrayList<Object>();
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, AdPage.class);
+		result.setAdPage(((List<AdPage>) _result.get(0)));
 		
 		return result;
 	}
@@ -84,8 +89,8 @@ public class CommonService extends ApiService {
 	 * @return List<AdPageSpot>
 	 */
 	public List<AdPageSpot> GetBidAdPageSpots(Integer pageId) {
-		LocalDateTime localDate = LocalDateTime.now();
-		List<AdPageSpot> result = adPageSpotRepository.findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotName(localDate, 0, pageId);
+		Date nowDate = new Date();
+		List<AdPageSpot> result = adPageSpotRepository.findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotName(nowDate, 0, pageId);
 		
 		return result;
 	}

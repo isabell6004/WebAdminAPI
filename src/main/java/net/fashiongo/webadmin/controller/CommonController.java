@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.TopCategories;
@@ -48,12 +49,12 @@ public class CommonController {
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Junghwan Lee
-	 * @return JsonResponse<List<AdPage>>
+	 * @return JsonResponse<GetBidAdPagesResponse>
 	 */
 	@RequestMapping(value = "getbidadpages", method = RequestMethod.POST)
-	public JsonResponse<List<AdPage>> GetBidAdPages() {
-		JsonResponse<List<AdPage>> results = new JsonResponse<List<AdPage>>();
-		List<AdPage> result = commonService.GetBidAdPages();
+	public JsonResponse<GetBidAdPagesResponse> GetBidAdPages() {
+		JsonResponse<GetBidAdPagesResponse> results = new JsonResponse<GetBidAdPagesResponse>();
+		GetBidAdPagesResponse result = commonService.GetBidAdPages();
 
 		results.setSuccess(true);
 		results.setData(result);
