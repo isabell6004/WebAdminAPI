@@ -7,12 +7,16 @@ import java.util.List;
 //import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import org.springframework.transaction.annotation.Transactional;
+
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 
 /**
@@ -68,5 +72,35 @@ public class SitemgmtService extends ApiService {
 		getPaidCampaignResponse.setConfigurationsList(configurationsList);
 
 		return getPaidCampaignResponse;
+	}
+	
+	/**
+	 * 
+	 * Set Paid Campaign
+	 * 
+	 * @since 2018. 10. 11.
+	 * @author Nayeon Kim
+	 * @param SetPaidCampaignParameter
+	 * @return 
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setPaidCampaign(SetPaidCampaignParameter parameters) {
+		ResultCode result = new ResultCode(true, 1, "Saved successfully!");
+		
+		EmConfiguration emConfiguration;
+		List<EmConfiguration> emConfigurationList = parameters.getObjList();
+		
+		for (EmConfiguration emConfiguration2 : emConfigurationList) {
+			emConfiguration = new EmConfiguration();
+			emConfiguration.setConfigID(emConfiguration2.getConfigID());
+			emConfiguration.setConfigType(emConfiguration2.getConfigType());
+			emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
+			
+			emConfigurationRepository.save(emConfiguration);
+		}
+		
+		//emConfigurationRepository.findOneByConfigID(configID);
+
+		return result;
 	}
 }

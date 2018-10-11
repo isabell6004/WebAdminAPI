@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.service.SitemgmtService;
@@ -73,6 +75,27 @@ public class SitemgmtController {
 		results.setData(result);
 		results.setSuccess(true);
 
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set Paid Campaign
+	 * 
+	 * @since 2018. 10. 11.
+	 * @author Nayeon Kim
+	 * @param SetPaidCampaignParameter
+	 * @return 
+	 */
+	@RequestMapping(value = "setpaidcampaign", method = RequestMethod.POST)
+	public JsonResponse<String> setPaidCampaign(@RequestBody SetPaidCampaignParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = sitemgmtService.setPaidCampaign(parameters);
+		
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
 		return results;
 	}
 }
