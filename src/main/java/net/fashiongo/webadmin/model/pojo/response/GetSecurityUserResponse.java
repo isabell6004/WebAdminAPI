@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.fashiongo.webadmin.model.pojo.SecurityGroupPermissions;
 import net.fashiongo.webadmin.model.pojo.SecurityUsers;
 
 public class GetSecurityUserResponse {

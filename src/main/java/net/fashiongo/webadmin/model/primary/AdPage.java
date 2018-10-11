@@ -22,7 +22,6 @@ public class AdPage implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("PageID")
 	@Column(name = "PageID")
 	private Integer pageID;

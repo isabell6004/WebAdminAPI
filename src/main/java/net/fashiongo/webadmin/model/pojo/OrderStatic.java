@@ -1,4 +1,7 @@
 package net.fashiongo.webadmin.model.pojo;
+
+import java.util.List;
+
 /**
  * 
  * @author Incheol Jung
@@ -7,7 +10,8 @@ public class OrderStatic {
 	private PurchasedOrderStatic purchasedOrders;
 	private PoOrderStatic poOrders;
 	private AvgPOOrderStatic avgPOOrders;
-	private OrderMonthlyStatic orderMonthly;
+	private List<OrderMonthlyStatic> orderMonthly;
+	
 	public PurchasedOrderStatic getPurchasedOrders() {
 		return purchasedOrders;
 	}
@@ -26,10 +30,10 @@ public class OrderStatic {
 	public void setAvgPOOrders(AvgPOOrderStatic avgPOOrders) {
 		this.avgPOOrders = avgPOOrders;
 	}
-	public OrderMonthlyStatic getOrderMonthly() {
+	public List<OrderMonthlyStatic> getOrderMonthly() {
 		return orderMonthly;
 	}
-	public void setOrderMonthly(OrderMonthlyStatic orderMonthly) {
+	public void setOrderMonthly(List<OrderMonthlyStatic> orderMonthly) {
 		this.orderMonthly = orderMonthly;
 	}
 }

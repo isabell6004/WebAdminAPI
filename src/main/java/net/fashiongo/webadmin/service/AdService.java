@@ -3,12 +3,16 @@ package net.fashiongo.webadmin.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
@@ -72,20 +76,19 @@ public class AdService extends ApiService {
 	 * @param SetAddPageParameter
 	 * @return
 	 */
-	//@Transactional
-	public ResultResponse<Object> setAdPage(SetAddPageParameter parameters) {
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setAdPage(SetAddPageParameter parameters) {
+		ResultCode result = new ResultCode(true, 1, "Saved successfully!");
+
 		AdPage adPage = new AdPage();
 		Integer pageID = parameters.getPageID();
 		String pageName = parameters.getPageName();
-		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"failure",null);
-
 		if (pageID == null) { // new (insert)
 			AdPage adPage2 = adPageRepository.findTopByOrderByPageIDDesc();
 			if (adPage2 != null) {
 				pageID = adPage2.getPageID() + 1;
 				adPage.setPageID(pageID);
 				adPage.setPageName(pageName);
-
 				adPageRepository.save(adPage);
 			}
 		} else { // not null (update)
@@ -94,11 +97,6 @@ public class AdService extends ApiService {
 			// adPage2.setPageUrl(pageUrl);
 			adPageRepository.save(adPage2);
 		}
-
-		result.setSuccess(true);
-		result.setCode(1);
-		result.setMessage(MSG_SAVE_SUCCESS);
-
 		return result;
 	}
 
@@ -144,16 +142,12 @@ public class AdService extends ApiService {
 	 * @param DelSpotSettingParameter
 	 * @return
 	 */
-	//@Transactional
-	public ResultResponse<Object> delSpotSetting(DelSpotSettingParameter parameters) {
-		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"deletefailure",null);
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode delSpotSetting(DelSpotSettingParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
 
 		Integer spotID = parameters.getSpotID();
 		adPageSpotRepository.deleteById(spotID);
-		
-		result.setSuccess(true);
-		result.setCode(1);
-		result.setMessage(MSG_DELETE_SUCCESS);
 
 		return result;
 	}
@@ -167,9 +161,10 @@ public class AdService extends ApiService {
 	 * @param SetAddSpotSettingParameter
 	 * @return
 	 */
-	//@Transactional
-	public ResultResponse<Object> setAddSpotSetting(SetAddSpotSettingParameter parameters) {
-		ResultResponse<Object> result = new ResultResponse<Object>(false,-1,0,"failure",null);
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setAddSpotSetting(SetAddSpotSettingParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		
 		AdPageSpot adPageSpot = new AdPageSpot();
 		Integer spotID = parameters.getSpotID();
 		Integer pageID = parameters.getPageID();
@@ -190,9 +185,14 @@ public class AdService extends ApiService {
 		Integer spotItemCount = parameters.getSpotItemCount();
 		//LocalDateTime bidEffectiveOn = parameters.getBidEffectiveOn();	
 		
-		LocalDateTime createdOn = LocalDateTime.now();
+//		Calendar createdOn = Calendar.getInstance();
+//		LocalDateTime createdOn = LocalDateTime.now();
+		Date createdOn = new Date();
+//		birthDateWithoutTime = DateUtils.truncate(birthDateWithTime, Calendar.DATE);
+
 		//String createdBy =  Utility.getUsername();
-		LocalDateTime modifiedOn = LocalDateTime.now();
+//		LocalDateTime modifiedOn = LocalDateTime.now();
+		Date modifiedOn = createdOn;
 		//String modifiedBy =  Utility.getUsername();
 		
 		if(spotID == 0) { // new (insert)
@@ -244,9 +244,6 @@ public class AdService extends ApiService {
 			adPageSpotRepository.save(adPageSpot);
 		}
 		
-		result.setSuccess(true);
-		result.setCode(1);
-		result.setMessage("success");
 		return result;
 	}
 }

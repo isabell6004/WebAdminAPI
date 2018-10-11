@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.TopCategories;
 import net.fashiongo.webadmin.service.CommonService;
@@ -121,12 +123,32 @@ public class CommonController {
 		
 	}
 	
-	/*@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
+	@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
 	public JsonResponse<List<TopCategories>> GetTopCategories() {
 		JsonResponse<List<TopCategories>> results = new JsonResponse<List<TopCategories>>(false, null, null, null);
 		List<TopCategories> result = commonService.GetTopCategories();
 		results.setSuccess(true);
 		results.setData(result);
 		return results;
-	}*/
+	}
+	
+	/**
+	 * 
+	 * Get Security Users
+	 * 
+	 * @since 2018. 10. 10.
+	 * @author Nayeon Kim
+	 * @param GetSecurityUserParameter
+	 * @return GetSecurityUserResponse
+	 */
+	@RequestMapping(value="getsecurityusers", method=RequestMethod.POST)
+	public JsonResponse<GetSecurityUserResponse> GetSecurityUsers(@RequestBody GetSecurityUserParameter parameters) {
+		JsonResponse<GetSecurityUserResponse> results = new JsonResponse<GetSecurityUserResponse>(false, null, 0, null);
+		
+		GetSecurityUserResponse result = securityGroupService.GetSecurityUsers(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
 }

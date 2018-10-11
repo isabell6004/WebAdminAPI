@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
@@ -36,7 +37,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getadsetting", method = RequestMethod.POST)
 	public JsonResponse<GetADSettingResponse> getAdsetting() {
-		JsonResponse<GetADSettingResponse> results = new JsonResponse<GetADSettingResponse>(false, null, 0, null, null);
+		JsonResponse<GetADSettingResponse> results = new JsonResponse<GetADSettingResponse>(false, null, 0, null);
 		
 		GetADSettingResponse result = AdService.getAdsetting();
 		results.setData(result);
@@ -55,10 +56,15 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "setaddpage", method = RequestMethod.POST)
-	public ResultResponse<Object> setAddPage(@RequestBody SetAddPageParameter parameters) {
-		ResultResponse<Object> result = AdService.setAdPage(parameters);
+	public JsonResponse<String> setAddPage(@RequestBody SetAddPageParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.setAdPage(parameters);
 
-		return result;
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+
+		return results;
 	}
 	
 	/**
@@ -71,7 +77,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getbodysizecode", method = RequestMethod.POST)
 	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {
-		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null, null);
+		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null);
 		
 		List<CodeBodySize> result = AdService.getBodySizeCode();
 		results.setData(result);
@@ -91,7 +97,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
 	public JsonResponse<GetSpotCheckResponse> getSpotCheck(GetSpotCheckParameter parameters) {
-		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null, null);
+		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
 		
 		GetSpotCheckResponse result = AdService.getSpotCheck(parameters);
 		if(result.getSpotID() != null) {
@@ -112,10 +118,15 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-	public ResultResponse<Object> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
-		ResultResponse<Object> result = AdService.delSpotSetting(parameters);
+	public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.delSpotSetting(parameters);
 
-		return result;
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+
+		return results;
 	}
 	
 	/**
@@ -128,9 +139,14 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "setaddspotsetting", method = RequestMethod.POST)
-	public ResultResponse<Object> setAddSpotSetting(@RequestBody SetAddSpotSettingParameter parameters) {
-		ResultResponse<Object> result = AdService.setAddSpotSetting(parameters);
-
-		return result;
+	public JsonResponse<String> setAddSpotSetting(@RequestBody SetAddSpotSettingParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.setAddSpotSetting(parameters);
+		
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
 	}
 }

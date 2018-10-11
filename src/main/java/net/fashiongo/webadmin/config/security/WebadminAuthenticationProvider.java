@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class WebadminAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		
 		return authentication;
 	}
 

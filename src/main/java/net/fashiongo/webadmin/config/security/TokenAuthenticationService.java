@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.json.simple.JSONObject;
@@ -19,6 +20,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
+import net.fashiongo.webadmin.utility.Utility;
 
 @Component
 public class TokenAuthenticationService {
@@ -31,7 +33,7 @@ public class TokenAuthenticationService {
 			throws JsonGenerationException, JsonMappingException, IOException {
 	}
 
-	public static Authentication getAuthentication(HttpServletRequest request) throws IllegalArgumentException, UnsupportedEncodingException {
+	public static Authentication getAuthentication(HttpServletRequest request) throws Exception {
 		String token = request.getHeader(HEADER_STRING);
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -42,11 +44,7 @@ public class TokenAuthenticationService {
 	                    .build()
 	                    .verify(token.replace(TOKEN_PREFIX, "").replaceAll("\\s+",""))
 	                    .getClaims();
-				
-//				claims.forEach((key, value) -> {
-//		            obj.put(key, value.asString());
-//		        });
-				
+
 				obj.put("roleid", claims.get("roleid").asString());
 				obj.put("userId", claims.get("userId").asInt());
 				obj.put("username", claims.get("username").asString());
@@ -58,13 +56,35 @@ public class TokenAuthenticationService {
 				obj.put("exp", claims.get("exp").asDouble());
 				
 				WebAdminLoginUser webAdminLoginUser = mapper.convertValue(obj, WebAdminLoginUser.class);
+				vailidateClientUser(webAdminLoginUser, request);
 				
 				return obj.size() != 0 ? new AuthenticatedUser(webAdminLoginUser.getUsername(), webAdminLoginUser) : null;
 				
 			} catch(Exception ex) {
-				return null;
+				throw ex;
 			}
 		}
 		return null;
 	}
+	
+	private static void vailidateClientUser(WebAdminLoginUser webAdminLoginUser, HttpServletRequest request) throws Exception {
+		// check client ip address
+		if(StringUtils.isEmpty(webAdminLoginUser.getIpaddr())) {
+			throw new Exception("Token is invalid! (No IPAddress)");
+		}else {
+			if(!webAdminLoginUser.getIpaddr().equals(Utility.getIpAddress(request))) {
+				throw new Exception("Token is invalid! (Invaild IpAddress)");
+			}
+		}
+		
+		// check client user agent
+		if(StringUtils.isEmpty(webAdminLoginUser.getUseragent())) {
+			throw new Exception("Token is invalid! (No UserAgent)");
+		}else {
+			if(!webAdminLoginUser.getUseragent().equals(Utility.getUserAgent(request))) {
+				throw new Exception("Token is invalid! (Invalid UserAgent)");
+			}
+		}
+	}
+	
 }

@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
 import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
 import net.fashiongo.webadmin.dao.primary.TopCategoriesRepository;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityMenu;
+import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
 
 /**
@@ -35,6 +37,9 @@ public class CommonService extends ApiService {
 	
 	@Autowired
 	AdPageSpotRepository adPageSpotRepository;
+	
+	@Autowired
+	SecurityUserRepository securityUserRepository;
 	
 	public Integer GetMenuID(String pageName) {
 		SecurityMenu result = new SecurityMenu();
@@ -96,4 +101,18 @@ public class CommonService extends ApiService {
 		
 	}
 
+	/**
+	 * 
+	 * Get Security Users
+	 * 
+	 * @since 2018. 10. 10.
+	 * @author Nayeon Kim
+	 * @param GetSecurityUserParameter
+	 * @return GetSecurityUserResponse
+	 */
+	public List<SecurityUser> getSecurityUser() {
+		List<SecurityUser> securityUser =  securityUserRepository.findAllByOrderByActiveDesc();
+		
+		return securityUser;
+	}
 }

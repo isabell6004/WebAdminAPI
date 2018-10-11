@@ -11,4 +11,6 @@ import net.fashiongo.webadmin.model.fgem.EmConfiguration;
  */
 public interface EmConfigurationRepository extends CrudRepository<EmConfiguration, Integer> {
 	List<EmConfiguration> findAll();
+	
+	//EmConfiguration findOneByConfigID(Integer configID);
 }

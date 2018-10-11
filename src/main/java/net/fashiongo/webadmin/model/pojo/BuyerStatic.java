@@ -11,7 +11,7 @@ public class BuyerStatic {
 	private PurchasingBuyerStatic purchasingBuyers;
 	private BuyerRegistrationStatic buyerRegistration;
 	private List<MonthlyBuyerStatic> buyerRegMonthly;
-	private DailyStatic buyerPOMonthly;
+	private List<DailyBuyerStatic> buyerPOMonthly;
 	
 	public ActiveBuyerStatic getActiveBuyes() {
 		return activeBuyes;
@@ -37,10 +37,10 @@ public class BuyerStatic {
 	public void setBuyerRegMonthly(List<MonthlyBuyerStatic> buyerRegMonthly) {
 		this.buyerRegMonthly = buyerRegMonthly;
 	}
-	public DailyStatic getBuyerPOMonthly() {
+	public List<DailyBuyerStatic> getBuyerPOMonthly() {
 		return buyerPOMonthly;
 	}
-	public void setBuyerPOMonthly(DailyStatic buyerPOMonthly) {
+	public void setBuyerPOMonthly(List<DailyBuyerStatic> buyerPOMonthly) {
 		this.buyerPOMonthly = buyerPOMonthly;
 	}
 }

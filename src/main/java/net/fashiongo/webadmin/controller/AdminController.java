@@ -19,9 +19,11 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
@@ -110,13 +112,13 @@ public class AdminController {
 	 * Get Security Log
 	 * 
 	 * @since 2018. 10. 02.
-	 * @author nayeon
+	 * @author Nayeon Kim
 	 * @param GetSecurityLogsParameter
 	 * @return GetSecurityLogsResponse
 	 */
 	@RequestMapping(value = "getsecuritylogs", method = RequestMethod.POST)
 	public JsonResponse<GetSecurityLogsResponse> getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {		
-		JsonResponse<GetSecurityLogsResponse> results = new JsonResponse<GetSecurityLogsResponse>(false, null, 0, null, null);
+		JsonResponse<GetSecurityLogsResponse> results = new JsonResponse<GetSecurityLogsResponse>(false, null, 0, null);
 		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
 		
 		results.setData(result);
@@ -154,14 +156,14 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecuritygrouppermissions", method=RequestMethod.POST)
-	public GetSecurityGroupPermissionsResponse GetSecurityGroupPermissions(@RequestBody GetSecurityGroupPermissionsParameter parameters) {
+	public JsonResponse<GetSecurityGroupPermissionsResponse> GetSecurityGroupPermissions(@RequestBody GetSecurityGroupPermissionsParameter parameters) {
 		JsonResponse<GetSecurityGroupPermissionsResponse> results = new JsonResponse<GetSecurityGroupPermissionsResponse>(false, null, 0, null);
 		GetSecurityGroupPermissionsResponse result = securityGroupService.GetSecurityGroupPermissions(parameters);
 		
 		results.setData(result);
 		results.setSuccess(true);
 		
-		return results.getData();
+		return results;
 	}
 	
 	/**
@@ -291,6 +293,64 @@ public class AdminController {
 		results.setSuccess(true);
 		
 		return results;
+	}
+	
+	/**
+	 * 
+	 * Get Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param null
+	 * @return GetSecurityAccessIpsResponse
+	 */
+	@RequestMapping(value="getsecurityaccessips", method=RequestMethod.POST)
+	public JsonResponse<GetSecurityAccessIpsResponse> GetSecurityAccessIps () {
+		JsonResponse<GetSecurityAccessIpsResponse> results = new JsonResponse<GetSecurityAccessIpsResponse>(false, null, 0, null);
+		GetSecurityAccessIpsResponse result = adminService.GetSecurityAccessIps();
+		
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param SetSecurityAccessIpParameter
+	 * @return ResultCode
+	 */
+	@RequestMapping(value="setsecurityaccessip", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> SetSecurityAccessIp (@RequestBody SetSecurityAccessIpParameter parameters) throws Exception {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
+		ResultCode result = adminService.SetSecurityAccessIp(parameters);
+		
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set Delete Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param SetSecurityAccessIpParameter
+	 * @return ResultCode
+	 */
+	@RequestMapping(value = "setdeletesecurityaccessips", method = RequestMethod.POST)
+	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestBody List<Integer> idList) throws Exception {
+		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
+		ResultCode _result = adminService.SetDeleteSecurityAccessIps(idList);
+		
+		result.setSuccess(_result.getSuccess());
+		result.setCode(_result.getResultCode());
+		result.setMessage(_result.getResultMsg());
+		
+		return result;
 	}
 
 }

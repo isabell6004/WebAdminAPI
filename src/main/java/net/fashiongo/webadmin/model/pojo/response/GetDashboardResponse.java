@@ -12,10 +12,19 @@ import net.fashiongo.webadmin.model.pojo.VisitorStatic;
  * @author Incheol Jung
  */
 public class GetDashboardResponse {
+	
+	public GetDashboardResponse(){
+		this.visitors = new VisitorStatic();
+		this.buyers = new BuyerStatic();
+		this.orders = new OrderStatic();
+		this.vendors = new VendorStatic();
+	}
+	
 	private VisitorStatic visitors;
 	private BuyerStatic buyers;
 	private OrderStatic orders;
 	private VendorStatic vendors;
+	
 	public VisitorStatic getVisitors() {
 		return visitors;
 	}

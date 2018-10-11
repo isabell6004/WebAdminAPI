@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityAccessIpsRepository;
 import net.fashiongo.webadmin.model.pojo.Resource;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
@@ -19,10 +20,13 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParamet
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
+import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
 
 /**
  * 
@@ -33,6 +37,9 @@ public class AdminService extends ApiService {
 	
 	@Autowired
 	private SecurityAccessCodeRepository securityAccessCodeRepository;
+	
+	@Autowired
+	private SecurityAccessIpsRepository securityAccessIpsRepository;
 
 	/**
 	 * Get Security Access Code
@@ -114,7 +121,7 @@ public class AdminService extends ApiService {
 	 * Get Security Log
 	 * 
 	 * @since 2018. 10. 02.
-	 * @author nayeon
+	 * @author Nayeon Kim
 	 * @param GetSecurityLogsParameter
 	 * @return GetSecurityLogsResponse
 	 */
@@ -149,7 +156,6 @@ public class AdminService extends ApiService {
 	 * @param GetSecurityResourcesParameter
 	 * @return GetSecurityResourcesResponse
 	 */
-	
 	public GetSecurityResourcesResponse GetSecurityResources (GetSecurityResourcesParameter parameters) {
 		GetSecurityResourcesResponse result = new GetSecurityResourcesResponse();
 		String spName = "up_wa_Security_GetResource";
@@ -164,6 +170,70 @@ public class AdminService extends ApiService {
 		return result;
 	}
 
+	/**
+	 * 
+	 * Get Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param null
+	 * @return GetSecurityAccessIpsResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetSecurityAccessIpsResponse GetSecurityAccessIps() {
+		GetSecurityAccessIpsResponse result = new GetSecurityAccessIpsResponse();
+		String spName = "up_wa_Security_GetListIP";
+		
+		List<Object> params = new ArrayList<Object>();
+		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityAccessIp.class);
+		result.setIps((List<SecurityAccessIp>) _result.get(0));
+		return result;
+	}
 	
+	/**
+	 * 
+	 * Set Security Access Ip
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param SetSecurityAccessIpParameter
+	 * @return ResultCode
+	 */
+	@SuppressWarnings("unchecked")
+	public ResultCode SetSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {
+		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		
+		SecurityAccessIp securityAccessIps = new SecurityAccessIp();
+		
+		if (parameters.getIpid() != 0) {
+			securityAccessIps = securityAccessIpsRepository.findFirstByipid(parameters.getIpid());
+		}
+
+		if (securityAccessIps != null) {
+			securityAccessIps.setIpAddress(parameters.getIp());
+			securityAccessIps.setDescription(parameters.getDescription());
+		
+			securityAccessIpsRepository.save(securityAccessIps);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Set Delete Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param id list
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetDeleteSecurityAccessIps(List<Integer> idList) {
+		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
+
+		for (Integer id : idList) {
+			securityAccessIpsRepository.deleteByipid(id);
+		}
+
+		return result;
+	}
 	
 }
