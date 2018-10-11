@@ -32,7 +32,7 @@ import net.fashiongo.webadmin.model.primary.Category;
  * @author Sanghyup Kim
  */
 @Service
-public class CollectionCategoryService extends ApiService {
+public class SitemgmtCollectionCategoryService extends ApiService {
 
 	@Autowired
 	private CollectionCategoryRepository collectionCategoryRepository;

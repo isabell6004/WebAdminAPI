@@ -21,7 +21,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListRespo
 import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory2;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.service.CollectionCategoryService;
+import net.fashiongo.webadmin.service.SitemgmtCollectionCategoryService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
 /*
@@ -34,7 +34,7 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 public class SitemgmtCollectionCategoryController {
 
 	@Autowired
-	CollectionCategoryService collectionCategoryService;
+	SitemgmtCollectionCategoryService siteMgmtCollectionCategoryService;
 
 	// ----------------------------------------------------
 	// collection category setting
@@ -54,7 +54,8 @@ public class SitemgmtCollectionCategoryController {
 
 		JsonResponse<GetCollectionCategoryListResponse> results = new JsonResponse<GetCollectionCategoryListResponse>();
 
-		GetCollectionCategoryListResponse result = collectionCategoryService.getCollectionCategoryList(parameters);
+		GetCollectionCategoryListResponse result = siteMgmtCollectionCategoryService
+				.getCollectionCategoryList(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 
@@ -77,7 +78,7 @@ public class SitemgmtCollectionCategoryController {
 	public JsonResponse<SetCollectionCategoryListorderResponse> setCollectionCategoryListorder(
 			@RequestBody SetCollectionCategoryListorderParameters parameters) {
 
-		SetCollectionCategoryListorderResponse result = collectionCategoryService
+		SetCollectionCategoryListorderResponse result = siteMgmtCollectionCategoryService
 				.setCollectionCategoryListorder(parameters);
 		List<CollectionCategory2> collectionCategory2 = result.getCategoryCollectionlist();
 
@@ -111,17 +112,17 @@ public class SitemgmtCollectionCategoryController {
 		ResultResponse<Integer> result = new ResultResponse<Integer>();
 		switch (setType) {
 		case "Act":// change active/inactive
-			result = collectionCategoryService.setCollectionCategoryActive(parameters);
+			result = siteMgmtCollectionCategoryService.setCollectionCategoryActive(parameters);
 
 			break;
 		case "Del":// delete
-			result = collectionCategoryService.setCollectionCategoryDelete(parameters);
+			result = siteMgmtCollectionCategoryService.setCollectionCategoryDelete(parameters);
 
 			break;
 
 		case "Add":// insert
 		case "Upd":// update
-			result = collectionCategoryService.setCollectionCategory(parameters, setType);
+			result = siteMgmtCollectionCategoryService.setCollectionCategory(parameters, setType);
 
 		default:
 			break;

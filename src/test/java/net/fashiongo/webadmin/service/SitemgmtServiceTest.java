@@ -34,7 +34,7 @@ public class SitemgmtServiceTest {
 	SitemgmtService sitemgmtService;
 	
 	@Autowired
-	CollectionCategoryService collectionCategorService;
+	SitemgmtCollectionCategoryService collectionCategorService;
 	
 	/**
 	 * @title Description Example

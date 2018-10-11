@@ -3,6 +3,8 @@ package net.fashiongo.webadmin.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,9 +185,14 @@ public class AdService extends ApiService {
 		Integer spotItemCount = parameters.getSpotItemCount();
 		//LocalDateTime bidEffectiveOn = parameters.getBidEffectiveOn();	
 		
-		LocalDateTime createdOn = LocalDateTime.now();
+//		Calendar createdOn = Calendar.getInstance();
+//		LocalDateTime createdOn = LocalDateTime.now();
+		Date createdOn = new Date();
+//		birthDateWithoutTime = DateUtils.truncate(birthDateWithTime, Calendar.DATE);
+
 		//String createdBy =  Utility.getUsername();
-		LocalDateTime modifiedOn = LocalDateTime.now();
+//		LocalDateTime modifiedOn = LocalDateTime.now();
+		Date modifiedOn = createdOn;
 		//String modifiedBy =  Utility.getUsername();
 		
 		if(spotID == 0) { // new (insert)
