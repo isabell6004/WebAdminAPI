@@ -17,7 +17,10 @@ public class OrderMonthlyStatic {
 	private BigDecimal returnAmount;
 	
 	public String getMonth() {
-		return month;
+		return month.substring(4, 6);
+	}
+	public String getYear() {
+		return month.substring(0, 4);
 	}
 	public void setMonth(String month) {
 		this.month = month;
@@ -34,5 +37,4 @@ public class OrderMonthlyStatic {
 	public void setReturnAmount(BigDecimal returnAmount) {
 		this.returnAmount = returnAmount;
 	}
-	
 }

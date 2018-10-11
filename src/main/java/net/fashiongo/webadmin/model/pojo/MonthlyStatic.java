@@ -13,7 +13,10 @@ public class MonthlyStatic{
 	private Integer value;
 	
 	public String getMonth() {
-		return month;
+		return month.substring(4, 6);
+	}
+	public String getYear() {
+		return month.substring(0, 4);
 	}
 	public void setMonth(String month) {
 		this.month = month;
@@ -24,5 +27,4 @@ public class MonthlyStatic{
 	public void setValue(Integer value) {
 		this.value = value;
 	}
-	
 }
