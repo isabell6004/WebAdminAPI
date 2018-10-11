@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
@@ -26,10 +27,11 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 /*
  * @author Sanghyup Kim
  */
+@Api(description = "Site Management", tags = { "sitemgmt" })
 @RestController
 @Consumes(MediaType.APPLICATION_JSON)
 @RequestMapping(value = "/sitemgmt", produces = "application/json")
-public class CollectionCategoryController {
+public class SitemgmtCollectionCategoryController {
 
 	@Autowired
 	CollectionCategoryService collectionCategoryService;
