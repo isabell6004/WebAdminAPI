@@ -23,6 +23,8 @@ public interface ShowScheduleRepository extends CrudRepository<ShowSchedule, Int
 	// findByShowID
 	List<ShowSchedule> findByShowID(int showID);
 	
+	List<ShowSchedule> findByActive(boolean active);
+	
 	// deleteByShowID
 	void deleteByShowID(int showID);
 }

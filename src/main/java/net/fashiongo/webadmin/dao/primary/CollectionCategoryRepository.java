@@ -3,6 +3,8 @@
  */
 package net.fashiongo.webadmin.dao.primary;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +19,15 @@ public interface CollectionCategoryRepository extends CrudRepository<CollectionC
 	// findOneByCollectionCategoryID
 	CollectionCategory findOneByCollectionCategoryID(Integer collectionCategoryID);
 
+	// findOneByParentCollectionCategoryID
+	List<CollectionCategory> findByParentCollectionCategoryID(Integer parentCollectionCategoryID);
+
+	// findBySpotID
+	List<CollectionCategory> findBySpotID(Integer spotID);
+
+	// findByActive
+	List<CollectionCategory> findByActive(boolean active);
+
 	// deleteByCollectionCategoryID
 	void deleteByCollectionCategoryID(Integer collectionCategoryID);
 
@@ -28,4 +39,14 @@ public interface CollectionCategoryRepository extends CrudRepository<CollectionC
 //	@Procedure(procedureName = "up_wa_SetCollectionCategoryInactive")
 	@Procedure(name = "CollectionCategory.upWaSetCollectionCategoryInactive")
 	void upWaSetCollectionCategoryInactive(@Param("CollectionCategoryID") Integer collectionCategoryID);
+
+	// deleteByParentCollectionCategoryID
+	void deleteByParentCollectionCategoryID(Integer parentCollectionCategoryID);
+
+	// deleteBySpotID
+	void deleteBySpotID(Integer spotID);
+
+	// deleteByActive
+	void deleteByActive(boolean active);
+
 }
