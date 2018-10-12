@@ -205,7 +205,7 @@ public class AdminService extends ApiService {
 	 */
 	@SuppressWarnings("unchecked")
 	public ResultCode SetSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {
-		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		
 		SecurityAccessIp securityAccessIps = new SecurityAccessIp();
 		
@@ -233,7 +233,7 @@ public class AdminService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode SetDeleteSecurityAccessIps(List<Integer> idList) {
-		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
+		ResultCode result = new ResultCode(true, 0, MSG_DELETE_SUCCESS);
 
 		for (Integer id : idList) {
 			securityAccessIpsRepository.deleteByipid(id);
