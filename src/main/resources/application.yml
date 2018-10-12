@@ -66,8 +66,8 @@ webAdminapi:
 spring:
   profiles: local
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
-    username: sa
+    jdbc-url: jdbc:sqlserver://172.21.101.101;databaseName=FG_V2
+    username: sqladmin
     password: msqLsa6301
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
