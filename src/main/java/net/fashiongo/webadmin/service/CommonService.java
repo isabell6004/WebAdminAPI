@@ -41,16 +41,40 @@ public class CommonService extends ApiService {
 	@Autowired
 	SecurityUserRepository securityUserRepository;
 	
+	/**
+	 * 
+	 * Get MenuID
+	 * @since 2018. 10. 4.
+	 * @author Dahye Jeong
+	 * @param pageName
+	 * @return SecurityMenu
+	 */
 	public Integer GetMenuID(String pageName) {
 		SecurityMenu result = new SecurityMenu();
 		result = securityMenuRepository.findOneByRoutePath(pageName);
 		return result.getMenuID();
 	}
 	
-	public void GetServerHeartBeat() {
-		
+	/**
+	 * 
+	 * Set Resource
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param q
+	 * @return "Spring Boot"
+	 */
+	public String GetServerHeartBeat(Long q) {
+		return "Spring Boot";
 	}
 	
+	/**
+	 * 
+	 * Set Resource
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param resourceID, active
+	 * @return ResultCode
+	 */
 	public void GetCountryStates() {
 		
 	}

@@ -33,12 +33,9 @@ public class CommonController {
 	
 	@RequestMapping(value="getsecuritygroups", method=RequestMethod.POST)
 	public JsonResponse<List<SecurityGroup>> GetSecurityGroups() {
-		JsonResponse<List<SecurityGroup>> results = new JsonResponse<List<SecurityGroup>>(false, null, null);
+		JsonResponse<List<SecurityGroup>> results = new JsonResponse<List<SecurityGroup>>();
 		List<SecurityGroup> result  = securityGroupService.GetCommonSecurityGroup();
-		
 		results.setData(result);
-		results.setSuccess(true);
-	
 		return results;
 	}
 
@@ -104,19 +101,37 @@ public class CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
-	public JsonResponse<Integer> GetMenuID(@RequestParam("PageName") String pageName) {
-		JsonResponse<Integer> results = new JsonResponse<Integer>(false, null, null, null);
+	public JsonResponse<Integer> GetMenuID(@RequestBody String pageName) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
 		Integer result = commonService.GetMenuID(pageName);
-		results.setSuccess(true);
 		results.setData(result);
 		return results;
 	}
 	
+	/**
+	 * Get Server Heart Beat
+	 * 
+	 * @since 2018. 10. 12.
+	 * @author DAHYE
+	 * @param q
+	 * @return "Spring Boot"
+	 */
 	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.POST)
-	public void GetServerHeartBeat() {
-		
+	public JsonResponse<String> GetServerHeartBeat(@RequestBody Long q) {
+		JsonResponse<String> results = new JsonResponse<String>();
+		String result = commonService.GetServerHeartBeat(q);
+		results.setMessage(result);
+		return results;
 	}
 	
+	/**
+	 * Get Country States
+	 * 
+	 * @since 2018. 10. 12.
+	 * @author DAHYE
+	 * @param Page Name
+	 * @return Page id
+	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
 	public void GetCountryStates() {
 		
