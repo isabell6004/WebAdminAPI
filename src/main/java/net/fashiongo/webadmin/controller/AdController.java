@@ -71,7 +71,7 @@ public class AdController {
 	 * 
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
-	 * @return GetBodySizeCodeResponse
+	 * @return List<CodeBodySize>
 	 */
 	@RequestMapping(value = "getbodysizecode", method = RequestMethod.POST)
 	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {

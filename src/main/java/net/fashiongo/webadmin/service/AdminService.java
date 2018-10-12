@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessIpsRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityResourceRepository;
 import net.fashiongo.webadmin.model.pojo.Resource;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
@@ -21,12 +22,14 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
+import net.fashiongo.webadmin.model.primary.SecurityResource;
 
 /**
  * 
@@ -40,6 +43,9 @@ public class AdminService extends ApiService {
 	
 	@Autowired
 	private SecurityAccessIpsRepository securityAccessIpsRepository;
+	
+	@Autowired
+	private SecurityResourceRepository securityResourceRepository;
 
 	/**
 	 * Get Security Access Code
@@ -199,7 +205,7 @@ public class AdminService extends ApiService {
 	 */
 	@SuppressWarnings("unchecked")
 	public ResultCode SetSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {
-		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		
 		SecurityAccessIp securityAccessIps = new SecurityAccessIp();
 		
@@ -227,7 +233,7 @@ public class AdminService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode SetDeleteSecurityAccessIps(List<Integer> idList) {
-		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
+		ResultCode result = new ResultCode(true, 0, MSG_DELETE_SUCCESS);
 
 		for (Integer id : idList) {
 			securityAccessIpsRepository.deleteByipid(id);
@@ -236,4 +242,63 @@ public class AdminService extends ApiService {
 		return result;
 	}
 	
+	
+	/**
+	 * 
+	 * Set Resource
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param resourceID, active
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetResource(Integer resourceID, boolean active) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		SecurityResource sr = securityResourceRepository.findOneByResourceID(resourceID);
+		if(sr != null) {
+			sr.setActive(active);
+			securityResourceRepository.save(sr);
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Set Security Resource
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param SetSecurityResourceParameter
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetSecurityResource(SetSecurityResourceParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		SecurityResource sr = securityResourceRepository.findOneByResourceID(parameters.getResourceID());
+		if(sr != null) {
+			sr.setName(parameters.getResourceName());
+			sr.setApplicationID(parameters.getApplicationid());
+			sr.setResourceType(parameters.getResourceType());
+			sr.setUrl(parameters.getResourceUrl());
+			sr.setActive(parameters.getActive());
+			securityResourceRepository.save(sr);
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Set Delete Security Resources
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param SetSecurityResourceParameter
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetDeleteSecurityResources(List<Integer> idList) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		for(Integer id : idList) {
+			securityResourceRepository.deleteById(id);
+		}
+		return result;
+	}
 }

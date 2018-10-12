@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -29,40 +30,38 @@ public class SecurityUser {
 	@Column(name = "FullName")
 	private String fullName;
 	
-	@JsonProperty("UserGUID")
-	@Column(name="UserGUID", columnDefinition="uniqueidentifier")
-	private String UserGUID;
-	
-	@JsonProperty("Role")
+	@JsonIgnore
 	@Column(name = "Role")
 	private String role;
 	
-	@JsonProperty("Active")
+	@JsonIgnore
 	@Column(name = "Active")
 	private Boolean active;
 	
-	@JsonProperty("IPTimeExempt")
+	@JsonIgnore
 	@Column(name = "IPTimeExempt")
 	private Boolean iPTimeExempt;
 	
-	@JsonProperty("CreatedOn")
+	@JsonIgnore
 	@Column(name = "CreatedOn")
 	private LocalDateTime createdOn;
 	
-	@JsonProperty("CreatedBy")
+	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 	
-	@JsonProperty("ModifiedOn")
+	@JsonIgnore
 	@Column(name = "ModifiedOn")
 	private LocalDateTime  modifiedOn;
 	
-	@JsonProperty("ModifiedBy")
+	@JsonIgnore
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
 	
 	@Transient
-	private String DispName;
+	@JsonProperty("DispName")
+	@Column(name = "DispName")
+	private String dispName;
 
 	public Integer getUserID() {
 		return userID;
@@ -86,14 +85,6 @@ public class SecurityUser {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
-	}
-
-	public String getUserGUID() {
-		return UserGUID;
-	}
-
-	public void setUserGUID(String userGUID) {
-		UserGUID = userGUID;
 	}
 
 	public String getRole() {
@@ -153,11 +144,11 @@ public class SecurityUser {
 	}
 
 	public String getDispName() {
-		DispName = (this.active) ? "" : "[x] " + this.userName;
-		return DispName;
+		dispName = (this.active) ? "" + this.userName : "[x] " + this.userName;
+        return dispName;
 	}
 
 	public void setDispName(String dispName) {
-		DispName = dispName;
+		this.dispName = dispName;
 	}
 }
