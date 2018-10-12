@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
@@ -114,12 +113,11 @@ public class AdService extends ApiService {
 	 * 
 	 * @since 2018. 10. 08.
 	 * @author Nayeon Kim
-	 * @param GetSpotCheckParameter
+	 * @param spotID
 	 * @return GetSpotCheckResponse
 	 */
-	public GetSpotCheckResponse getSpotCheck(GetSpotCheckParameter parameters) {
+	public GetSpotCheckResponse getSpotCheck(Integer spotID) {
 		GetSpotCheckResponse result = new GetSpotCheckResponse();
-		Integer spotID = parameters.getSpotID();
 		AdVendor advendor = adVendorRepository.findTopBySpotID(spotID);
 		if(advendor != null) {
 			result.setSpotID(spotID);
@@ -138,7 +136,7 @@ public class AdService extends ApiService {
 	 * @return
 	 */
 	@Transactional(value = "primaryTransactionManager")
-	public ResultCode delSpotSetting(int spotID) {
+	public ResultCode delSpotSetting(Integer spotID) {
 		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
 
 		adPageSpotRepository.deleteById(spotID);

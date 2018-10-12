@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
@@ -90,14 +89,14 @@ public class AdController {
 	 * 
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
-	 * @param GetSpotCheckParameter
+	 * @param spotID
 	 * @return GetSpotCheckResponse
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
-	public JsonResponse<GetSpotCheckResponse> getSpotCheck(GetSpotCheckParameter parameters) {
+	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody Integer spotID) {
 		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
 		
-		GetSpotCheckResponse result = AdService.getSpotCheck(parameters);
+		GetSpotCheckResponse result = AdService.getSpotCheck(spotID);
 		if(result.getSpotID() != null) {
 			results.setData(result);
 		}
