@@ -39,7 +39,7 @@ public class HttpClientConfig {
 		HttpClient httpClient = new HttpClient(fgWebAdminService, restTemplate());
 		return httpClient;
 	}
-
+	
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate(clientHttpRequestFactory());

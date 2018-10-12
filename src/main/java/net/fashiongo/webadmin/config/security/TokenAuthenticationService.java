@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.config.security;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,15 +20,14 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 
 @Component
 public class TokenAuthenticationService {
-	static final long EXPIRATIONTIME = 60 * 60 * 24; // default, 24 hours
+	static final long EXPIRATIONTIME = 24 * 60 * 60 * 1000; // default, 24 hours
+	static final Date exp = new Date(System.currentTimeMillis() + EXPIRATIONTIME);
 	static final String SECRET = "fgwav2^^9070";
 	static final String TOKEN_PREFIX = "Bearer";
 	static final String HEADER_STRING = "Authorization";
@@ -37,17 +35,16 @@ public class TokenAuthenticationService {
 	public static void addAuthentication(HttpServletRequest request, HttpServletResponse response,
 			WebAdminLoginUser webAdminLoginUser) throws JsonGenerationException, JsonMappingException, IOException {
 
-		HashMap<String, Object> claims = new HashMap<String, Object>();
-		claims.put("roleid", webAdminLoginUser.getRoleid());
-		claims.put("userId", webAdminLoginUser.getUserId());
-		claims.put("username", webAdminLoginUser.getUsername());
-		claims.put("fullname", webAdminLoginUser.getFullname());
-		claims.put("ipaddr", webAdminLoginUser.getIpaddr());
-		claims.put("useragent", webAdminLoginUser.getUseragent());
-
 		Algorithm algorithm = Algorithm.HMAC512(SECRET);
 	    String token = JWT.create()
-	        .withIssuer("auth0")
+	    	.withClaim("roleid", webAdminLoginUser.getRoleid())
+	    	.withClaim("userId", webAdminLoginUser.getUserId())
+	    	.withClaim("username", webAdminLoginUser.getUsername())
+	    	.withClaim("fullname", webAdminLoginUser.getFullname())
+	    	.withClaim("ipaddr", webAdminLoginUser.getIpaddr())
+	    	.withClaim("useragent", webAdminLoginUser.getUseragent())
+	        .withIssuer("WebAdmin")
+	        .withExpiresAt(exp)
 	        .sign(algorithm);
 
 		response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + token);
@@ -84,9 +81,9 @@ public class TokenAuthenticationService {
 				obj.put("fullname", claims.get("fullname").asString());
 				obj.put("ipaddr", claims.get("ipaddr").asString());
 				obj.put("useragent", claims.get("useragent").asString());
-				obj.put("nbf", claims.get("nbf").asDouble());
-				obj.put("iat", claims.get("iat").asDouble());
-				obj.put("exp", claims.get("exp").asDouble());
+//				obj.put("nbf", claims.get("nbf").asDouble());
+//				obj.put("iat", claims.get("iat").asDouble());
+//				obj.put("exp", claims.get("exp").asDouble());
 
 				WebAdminLoginUser webAdminLoginUser = mapper.convertValue(obj, WebAdminLoginUser.class);
 				vailidateClientUser(webAdminLoginUser, request);
