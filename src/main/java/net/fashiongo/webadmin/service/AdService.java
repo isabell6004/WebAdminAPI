@@ -101,7 +101,7 @@ public class AdService extends ApiService {
 	 * 
 	 * @since 2018. 10. 08.
 	 * @author Nayeon Kim
-	 * @return GetBodySizeCodeResponse
+	 * @return List<CodeBodySize>
 	 */
 	public List<CodeBodySize> getBodySizeCode() {
 		List<CodeBodySize> codeBodySizeList = codeBodySizeRepository.findAll();
