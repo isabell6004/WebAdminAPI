@@ -385,4 +385,21 @@ public class PhotoStudioController {
 
 		return response;
 	}
+	
+	@GetMapping("/reports")
+	public JsonResponse<?> getReports(@RequestParam Map<String, Object> parmMap) {
+		logger.debug("PhotoStudioController.getReports() called!!!");
+		JsonResponse<Map<String, Object> > response = new JsonResponse<>(false, null, null);
+
+		try {
+			Map<String, Object>  result = photoStudioService.getReports(parmMap);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getReports()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
 }

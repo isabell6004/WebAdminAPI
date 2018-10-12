@@ -23,6 +23,7 @@ import net.fashiongo.webadmin.dao.photostudio.PhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoPriceRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoUnitRepository;
+import net.fashiongo.webadmin.model.photostudio.CommonReportsVo;
 import net.fashiongo.webadmin.model.photostudio.DailySummaryVo;
 import net.fashiongo.webadmin.model.photostudio.DetailPhotoOrder;
 import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
@@ -604,5 +605,39 @@ public class PhotoStudioService {
 		List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(0);
 
 		return logPhotoActions;
+	}
+	
+	public Map<String, Object> getReports(Map<String, Object> parmMap) {
+		
+		int categoryID = Integer.parseInt(String.valueOf(parmMap.get("categoryID")));;
+		
+		Map<String, Object> result = new HashMap<String, Object> ();
+		List<Object> params = new ArrayList<Object>();
+		
+		params.add(parmMap.get("year"));
+		params.add(parmMap.get("month"));
+		params.add(categoryID);
+
+		if(categoryID == 5) {
+			List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class);
+			
+			List<CommonReportsVo> dailyData  = (List<CommonReportsVo>) r.get(0);
+			List<CommonReportsVo> monthSummary = (List<CommonReportsVo>) r.get(1);
+			
+			result.put("dailyData", dailyData);
+			result.put("monthSummary", monthSummary);
+
+		}else {
+			List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class, CommonReportsVo.class);
+			List<CommonReportsVo> dailyVendorData  = (List<CommonReportsVo>) r.get(0);
+			List<CommonReportsVo> dailyData = (List<CommonReportsVo>) r.get(1);
+			List<CommonReportsVo> monthSummary = (List<CommonReportsVo>) r.get(2);
+			
+			result.put("dailyVendorData", dailyVendorData);
+			result.put("dailyData", dailyData);
+			result.put("monthSummary", monthSummary);
+		}
+		
+		return result;
 	}
 }
