@@ -12,7 +12,6 @@ import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
 import net.fashiongo.webadmin.dao.primary.TopCategoriesRepository;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
@@ -113,10 +112,9 @@ public class CommonService extends ApiService {
 	 * 
 	 * @since 2018. 10. 10.
 	 * @author Nayeon Kim
-	 * @param GetSecurityUserParameter
 	 * @return GetSecurityUserResponse
 	 */
-	public List<SecurityUser> getSecurityUser(GetSecurityUserParameter parameters) {
+	public List<SecurityUser> GetSecurityUser() {
 		List<SecurityUser> result =  securityUserRepository.findAllByOrderByActiveDescUserName();
 		
 		return result;
