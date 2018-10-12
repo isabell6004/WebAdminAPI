@@ -388,5 +388,22 @@ public class AdminController {
 		results.setMessage(result.getResultMsg());
 		return results;
 	}
-
+	
+	
+	/**
+	 * 
+	 * Set Delete Security Resources
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param ID List
+	 * @return ResultCode
+	 */
+	@RequestMapping(value = "setdeletesecurityresources", method = RequestMethod.POST)
+	public JsonResponse<Integer> SetDeleteSecurityResources(@RequestBody List<Integer> idList) throws Exception {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0);
+		ResultCode result = adminService.SetDeleteSecurityResources(idList);
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		return results;
+	}
 }

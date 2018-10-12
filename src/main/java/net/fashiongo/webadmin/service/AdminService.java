@@ -285,5 +285,20 @@ public class AdminService extends ApiService {
 		return result;
 	}
 	
-	
+	/**
+	 * 
+	 * Set Delete Security Resources
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param SetSecurityResourceParameter
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetDeleteSecurityResources(List<Integer> idList) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		for(Integer id : idList) {
+			securityResourceRepository.deleteById(id);
+		}
+		return result;
+	}
 }
