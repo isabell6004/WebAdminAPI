@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessIpsRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityResourceRepository;
 import net.fashiongo.webadmin.model.pojo.Resource;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
@@ -19,6 +20,7 @@ import net.fashiongo.webadmin.model.pojo.SecurityLogsColumn;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
@@ -27,6 +29,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
+import net.fashiongo.webadmin.model.primary.SecurityGroup;
+import net.fashiongo.webadmin.model.primary.SecurityResource;
 
 /**
  * 
@@ -40,6 +44,9 @@ public class AdminService extends ApiService {
 	
 	@Autowired
 	private SecurityAccessIpsRepository securityAccessIpsRepository;
+	
+	@Autowired
+	private SecurityResourceRepository securityResourceRepository;
 
 	/**
 	 * Get Security Access Code
@@ -236,4 +243,23 @@ public class AdminService extends ApiService {
 		return result;
 	}
 	
+	
+	/**
+	 * 
+	 * Set Delete Security Access Ips
+	 * @since 2018. 10. 10.
+	 * @author Dahye Jeong
+	 * @param id list
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetResource(Integer resourceID, boolean active) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		SecurityResource sr = securityResourceRepository.findOneByResourceID(resourceID);
+		if(sr != null) {
+			sr.setActive(active);
+			securityResourceRepository.save(sr);
+		}
+		return result;
+	}
 }
