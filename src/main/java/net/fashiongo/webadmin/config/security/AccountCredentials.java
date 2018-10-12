@@ -9,26 +9,24 @@ package net.fashiongo.webadmin.config.security;
  */
 public class AccountCredentials {
 	private String username;
-	private String password;
-	private String accessCode;
-	
+	private String pwd;
+	private String accesscode;
 	public String getUsername() {
 		return username;
 	}
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getPassword() {
-		return password;
+	public String getPwd() {
+		return pwd;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
 	}
-	public String getAccessCode() {
-		return accessCode;
+	public String getAccesscode() {
+		return accesscode;
 	}
-	public void setAccessCode(String accessCode) {
-		this.accessCode = accessCode;
+	public void setAccesscode(String accesscode) {
+		this.accesscode = accesscode;
 	}
-	
 }

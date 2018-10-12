@@ -1,8 +1,13 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class AuthParameter {
+	@ApiModelProperty(required = false, example="krdev")
 	private String username;
+	@ApiModelProperty(required = false, example="Krdev6301")
 	private String pwd;
+	@ApiModelProperty(required = false, example="")
 	private String accesscode;
 	
 	public String getUsername() {
