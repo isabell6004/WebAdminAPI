@@ -20,16 +20,15 @@ import net.fashiongo.webadmin.model.pojo.SecurityLogsColumn;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
-import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityResource;
 
 /**
@@ -246,10 +245,10 @@ public class AdminService extends ApiService {
 	
 	/**
 	 * 
-	 * Set Delete Security Access Ips
-	 * @since 2018. 10. 10.
+	 * Set Resource
+	 * @since 2018. 10. 12.
 	 * @author Dahye Jeong
-	 * @param id list
+	 * @param resourceID, active
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")
@@ -262,4 +261,29 @@ public class AdminService extends ApiService {
 		}
 		return result;
 	}
+	
+	/**
+	 * 
+	 * Set Security Resource
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param SetSecurityResourceParameter
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetSecurityResource(SetSecurityResourceParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		SecurityResource sr = securityResourceRepository.findOneByResourceID(parameters.getResourceID());
+		if(sr != null) {
+			sr.setName(parameters.getResourceName());
+			sr.setApplicationID(parameters.getApplicationid());
+			sr.setResourceType(parameters.getResourceType());
+			sr.setUrl(parameters.getResourceUrl());
+			sr.setActive(parameters.getActive());
+			securityResourceRepository.save(sr);
+		}
+		return result;
+	}
+	
+	
 }

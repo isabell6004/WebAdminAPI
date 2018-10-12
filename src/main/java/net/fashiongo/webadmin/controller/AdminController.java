@@ -21,6 +21,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
@@ -366,6 +367,23 @@ public class AdminController {
 	public JsonResponse<Integer> SetResource(@RequestBody SetResourceParameter parameters) {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0);
 		ResultCode result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set Security Resource
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param SetSecurityResourceParameter
+	 * @return ResultCode
+	 */
+	@RequestMapping(value = "setsecurityresource", method = RequestMethod.POST)
+	public JsonResponse<Integer> SetSecurityResource(@RequestBody SetSecurityResourceParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0);
+		ResultCode result = adminService.SetSecurityResource(parameters);
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
 		return results;
