@@ -3,17 +3,40 @@ package net.fashiongo.webadmin.model.pojo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MenuPermission {
+	@JsonProperty("Allow")
 	private Boolean allow;
+	
+	@JsonProperty("AllowAdd")
 	private Boolean allowAdd;
+	
+	@JsonProperty("AllowDelete")
 	private Boolean allowDelete;
+	
+	@JsonProperty("AllowEdit")
 	private Boolean allowEdit;
+	
+	@JsonProperty("ListOrder")
 	private Integer listOrder;
+	
+	@JsonProperty("MenuID")
 	private Integer menuID;
+	
+	@JsonProperty("MenuName")
 	private String menuName;
+	
+	@JsonProperty("EarentID")
 	private Integer parentID;
+	
+	@JsonProperty("ResourceID")
 	private Integer resourceID;
+	
+	@JsonProperty("ResourceName")
 	private String resourceName;
+	
+	@JsonProperty("RoutePath")
 	private String routePath;
+	
+	@JsonProperty("Visible")
 	private Boolean visible;
 	public Boolean getAllow() {
 		return allow;
