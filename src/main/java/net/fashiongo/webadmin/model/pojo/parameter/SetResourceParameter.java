@@ -4,13 +4,13 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class SetResourceParameter {
 	@ApiModelProperty(required = false, example="161")
-	private String resourceId;
+	private Integer resourceId;
 	@ApiModelProperty(required = false, example="false")
 	private Boolean active;
-	public String getResourceId() {
+	public Integer getResourceId() {
 		return resourceId;
 	}
-	public void setResourceId(String resourceId) {
+	public void setResourceId(Integer resourceId) {
 		this.resourceId = resourceId;
 	}
 	public Boolean getActive() {

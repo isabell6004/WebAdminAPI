@@ -1,37 +1,40 @@
 package net.fashiongo.webadmin.model.pojo;
+
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+
 /**
  * 
  * @author Incheol Jung
  */
 public class OrderMonthlyStatic {
-	private Integer year;
-	private Integer month;
-	private Double newAmount;
-	private Double returnAmount;
+	@Column(name = "DateYM")
+	private String month;
+	@Column(name = "NewAmount")
+	private BigDecimal newAmount;
+	@Column(name = "ReturnAmount")
+	private BigDecimal returnAmount;
 	
-	public Integer getYear() {
-		return year;
+	public String getMonth() {
+		return month.substring(4, 6);
 	}
-	public void setYear(Integer year) {
-		this.year = year;
+	public String getYear() {
+		return month.substring(0, 4);
 	}
-	public Integer getMonth() {
-		return month;
-	}
-	public void setMonth(Integer month) {
+	public void setMonth(String month) {
 		this.month = month;
 	}
-	public Double getNewAmount() {
+	public BigDecimal getNewAmount() {
 		return newAmount;
 	}
-	public void setNewAmount(Double newAmount) {
+	public void setNewAmount(BigDecimal newAmount) {
 		this.newAmount = newAmount;
 	}
-	public Double getReturnAmount() {
+	public BigDecimal getReturnAmount() {
 		return returnAmount;
 	}
-	public void setReturnAmount(Double returnAmount) {
+	public void setReturnAmount(BigDecimal returnAmount) {
 		this.returnAmount = returnAmount;
 	}
-	
 }

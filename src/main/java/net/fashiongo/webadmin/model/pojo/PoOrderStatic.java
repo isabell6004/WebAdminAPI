@@ -1,21 +1,29 @@
 package net.fashiongo.webadmin.model.pojo;
+
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+
 /**
  * 
  * @author Incheol Jung
  */
 public class PoOrderStatic {
-	private Double totalOrderAmount;
-	private Double rate;
-	public Double getTotalOrderAmount() {
+	@Column(name = "ThisOrderAmount")
+	private BigDecimal totalOrderAmount;
+	@Column(name = "OrderAmountRate")
+	private BigDecimal rate;
+	
+	public BigDecimal getTotalOrderAmount() {
 		return totalOrderAmount;
 	}
-	public void setTotalOrderAmount(Double totalOrderAmount) {
+	public void setTotalOrderAmount(BigDecimal totalOrderAmount) {
 		this.totalOrderAmount = totalOrderAmount;
 	}
-	public Double getRate() {
+	public BigDecimal getRate() {
 		return rate;
 	}
-	public void setRate(Double rate) {
+	public void setRate(BigDecimal rate) {
 		this.rate = rate;
 	}
 }

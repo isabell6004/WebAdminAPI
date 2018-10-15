@@ -1,12 +1,20 @@
 package net.fashiongo.webadmin.model.pojo;
+
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+
 /**
  * 
  * @author Incheol Jung
  */
 public class ActiveBuyerStatic {
+	@Column(name = "TotalBuyerCount")
 	private Integer totalBuyerCount;
+	@Column(name = "ActiveBuyerCount")
 	private Integer activeBuyerCount;
-	private Integer rate;
+	@Column(name = "LifetimeRate")
+	private BigDecimal rate;
 	public Integer getTotalBuyerCount() {
 		return totalBuyerCount;
 	}
@@ -19,10 +27,10 @@ public class ActiveBuyerStatic {
 	public void setActiveBuyerCount(Integer activeBuyerCount) {
 		this.activeBuyerCount = activeBuyerCount;
 	}
-	public Integer getRate() {
+	public BigDecimal getRate() {
 		return rate;
 	}
-	public void setRate(Integer rate) {
+	public void setRate(BigDecimal rate) {
 		this.rate = rate;
 	}
 }

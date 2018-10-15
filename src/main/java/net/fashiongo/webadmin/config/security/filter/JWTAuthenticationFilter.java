@@ -13,15 +13,25 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import net.fashiongo.webadmin.config.security.TokenAuthenticationService;
+import net.fashiongo.webadmin.utility.Utility;
 
 
 public class JWTAuthenticationFilter extends GenericFilterBean {
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		Authentication authentication = TokenAuthenticationService.getAuthentication((HttpServletRequest)request);
-
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		filterChain.doFilter(request,response);
+		Authentication authentication;
+		try {
+			authentication = TokenAuthenticationService.getAuthentication((HttpServletRequest)request);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			filterChain.doFilter(request,response);
+		} catch (Exception e) {
+			try {
+				Utility.HttpResponse(e.getMessage());
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+			}
+		}
 	}
+
 }

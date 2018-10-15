@@ -43,6 +43,7 @@ public class JsonResponse<T> {
 		this.message = message;
 		this.code = code;
 		this.data = data;
+		this.pk = null;
 	}
 	
 	public JsonResponse(boolean success, String message, Integer code, Integer pk, T data) {

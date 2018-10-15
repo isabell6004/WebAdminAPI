@@ -10,11 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import net.fashiongo.webadmin.config.security.WebadminAuthenticationProvider;
 import net.fashiongo.webadmin.config.security.filter.CORSFilter;
 import net.fashiongo.webadmin.config.security.filter.JWTAuthenticationFilter;
+import net.fashiongo.webadmin.config.security.filter.JWTLoginFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +27,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private WebadminAuthenticationProvider authenticationProvider;
+	
+	@Autowired
+	private AuthenticationFailureHandler failureHandler;
   
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -32,10 +37,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		if(isCheckToken) {
 			http
 			.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class)
+			.addFilterBefore(new JWTLoginFilter("/authuser/auth", authenticationManager(), failureHandler), UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 			.csrf().disable()
 			.authorizeRequests()
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+			.antMatchers(HttpMethod.POST, "/logout").permitAll()
 			.antMatchers(HttpMethod.GET, "/expired").permitAll()
 			.antMatchers(HttpMethod.POST, "/payment/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/payment/**").permitAll()
@@ -49,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.anyRequest().authenticated()
 			.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+			
 		} else {
 			http
 			.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class)

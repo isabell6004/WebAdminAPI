@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,7 +22,6 @@ public class AdPage implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("PageID")
 	@Column(name = "PageID")
 	private Integer pageID;
@@ -32,6 +33,18 @@ public class AdPage implements Serializable {
 	@JsonProperty("PageUrl")
 	@Column(name = "PageUrl")
 	private String pageUrl;
+	
+	@OneToOne()
+    @JoinColumn(name="PageID")
+    private AdPageSpot adPageSpot;
+
+	public AdPageSpot getAdPageSpot() {
+		return adPageSpot;
+	}
+
+	public void setAdPageSpot(AdPageSpot adPageSpot) {
+		this.adPageSpot = adPageSpot;
+	}
 
 	public Integer getPageID() {
 		return pageID;

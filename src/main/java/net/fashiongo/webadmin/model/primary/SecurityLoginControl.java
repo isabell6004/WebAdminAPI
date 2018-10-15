@@ -1,12 +1,18 @@
 package net.fashiongo.webadmin.model.primary;
 
 import javax.persistence.Column;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author Incheol Jung
+ */
 @Entity
 @Table(name = "[security.Login_Control]")
 public class SecurityLoginControl {
@@ -94,6 +100,5 @@ public class SecurityLoginControl {
 	public void setActive(Integer active) {
 		this.active = active;
 	}
-	
 	
 }

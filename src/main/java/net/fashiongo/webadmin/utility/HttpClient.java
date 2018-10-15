@@ -21,10 +21,6 @@ public class HttpClient {
 		this.headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json; charset=utf-8");
 		headers.add("Accept", "*/*");
-		
-//		MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-//		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM));
-//		rest.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 	}
 	
 	public JsonResponse get(String uri) {

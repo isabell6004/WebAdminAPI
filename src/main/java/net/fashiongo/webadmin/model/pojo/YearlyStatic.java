@@ -3,19 +3,24 @@ package net.fashiongo.webadmin.model.pojo;
  * 
  * @author Incheol Jung
  */
+
+import javax.persistence.Column;
+
 public class YearlyStatic {
-	private Integer year;
-	private Double value;
-	public Integer getYear() {
+	@Column(name = "VisitorsYYYY")
+	private String year;
+	@Column(name = "VisitorsYearCount")
+	private Integer value;
+	public String getYear() {
 		return year;
 	}
-	public void setYear(Integer year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
-	public Double getValue() {
+	public Integer getValue() {
 		return value;
 	}
-	public void setValue(Double value) {
+	public void setValue(Integer value) {
 		this.value = value;
 	}
 	

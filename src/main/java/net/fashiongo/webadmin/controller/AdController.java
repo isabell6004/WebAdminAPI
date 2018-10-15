@@ -1,20 +1,20 @@
 package net.fashiongo.webadmin.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetBodySizeCodeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
+import net.fashiongo.webadmin.model.primary.CodeBodySize;
 import net.fashiongo.webadmin.service.AdService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -34,7 +34,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getadsetting", method = RequestMethod.POST)
 	public JsonResponse<GetADSettingResponse> getAdsetting() {
-		JsonResponse<GetADSettingResponse> results = new JsonResponse<GetADSettingResponse>(false, null, 0, null, null);
+		JsonResponse<GetADSettingResponse> results = new JsonResponse<GetADSettingResponse>(false, null, 0, null);
 		
 		GetADSettingResponse result = AdService.getAdsetting();
 		results.setData(result);
@@ -53,10 +53,15 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "setaddpage", method = RequestMethod.POST)
-	public ResultResponse<Object> setAddPage(@RequestBody SetAddPageParameter parameters) {
-		ResultResponse<Object> result = AdService.setAdPage(parameters);
+	public JsonResponse<String> setAddPage(@RequestBody SetAddPageParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.setAdPage(parameters);
 
-		return result;
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+
+		return results;
 	}
 	
 	/**
@@ -65,13 +70,13 @@ public class AdController {
 	 * 
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
-	 * @return GetBodySizeCodeResponse
+	 * @return List<CodeBodySize>
 	 */
 	@RequestMapping(value = "getbodysizecode", method = RequestMethod.POST)
-	public JsonResponse<GetBodySizeCodeResponse> getBodySizeCode() {
-		JsonResponse<GetBodySizeCodeResponse> results = new JsonResponse<GetBodySizeCodeResponse>(false, null, 0, null, null);
+	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {
+		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null);
 		
-		GetBodySizeCodeResponse result = AdService.getBodySizeCode();
+		List<CodeBodySize> result = AdService.getBodySizeCode();
 		results.setData(result);
 		results.setSuccess(true);
 		
@@ -84,14 +89,14 @@ public class AdController {
 	 * 
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
-	 * @param GetSpotCheckParameter
+	 * @param spotID
 	 * @return GetSpotCheckResponse
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
-	public JsonResponse<GetSpotCheckResponse> getSpotCheck(GetSpotCheckParameter parameters) {
-		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null, null);
+	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody Integer spotID) {
+		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
 		
-		GetSpotCheckResponse result = AdService.getSpotCheck(parameters);
+		GetSpotCheckResponse result = AdService.getSpotCheck(spotID);
 		if(result.getSpotID() != null) {
 			results.setData(result);
 		}
@@ -106,14 +111,19 @@ public class AdController {
 	 * 
 	 * @since 2018. 10. 05.
 	 * @author Nayeon Kim
-	 * @param DelSpotSettingParameter
+	 * @param spotID
 	 * @return 
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-	public ResultResponse<Object> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
-		ResultResponse<Object> result = AdService.delSpotSetting(parameters);
+	public JsonResponse<String> delSpotSetting(@RequestBody Integer spotID) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.delSpotSetting(spotID);
 
-		return result;
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+
+		return results;
 	}
 	
 	/**
@@ -126,9 +136,14 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "setaddspotsetting", method = RequestMethod.POST)
-	public ResultResponse<Object> setAddSpotSetting(@RequestBody SetAddSpotSettingParameter parameters) {
-		ResultResponse<Object> result = AdService.setAddSpotSetting(parameters);
-
-		return result;
+	public JsonResponse<String> setAddSpotSetting(@RequestBody SetAddSpotSettingParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = AdService.setAddSpotSetting(parameters);
+		
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
 	}
 }

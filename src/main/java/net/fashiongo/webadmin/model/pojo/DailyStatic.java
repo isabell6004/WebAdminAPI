@@ -1,15 +1,22 @@
 package net.fashiongo.webadmin.model.pojo;
+
+import java.sql.Date;
+
+import javax.persistence.Column;
+
 /**
  * 
  * @author Incheol Jung
  */
 public class DailyStatic {
-	private String period;
+	@Column(name = "VisitorsYMD")
+	private Date period;
+	@Column(name = "VisitorsDayCount")
 	private Integer value;
-	public String getPeriod() {
+	public Date getPeriod() {
 		return period;
 	}
-	public void setPeriod(String period) {
+	public void setPeriod(Date period) {
 		this.period = period;
 	}
 	public Integer getValue() {

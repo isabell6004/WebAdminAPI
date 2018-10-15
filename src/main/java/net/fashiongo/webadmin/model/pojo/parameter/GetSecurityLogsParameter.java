@@ -76,7 +76,7 @@ public class GetSecurityLogsParameter {
 	}
 
 	public Integer getUsrId() {
-		return usrId;
+		return (this.usrId != null && this.usrId.equals(0)) ? null : this.usrId;
 	}
 
 	public void setUsrId(Integer usrId) {
