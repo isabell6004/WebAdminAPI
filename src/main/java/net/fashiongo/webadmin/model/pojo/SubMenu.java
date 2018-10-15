@@ -1,25 +1,39 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SubMenu {
-	private Integer MenuID;
-	private String MenuIcon;
-	private String Name;
+
+	@JsonProperty("MenuID")
+	private Integer menuID;
+	
+	@JsonProperty("MenuIcon")
+	private String menuIcon;
+	
+	@JsonProperty("Name")
+	private String name;
+
 	public Integer getMenuID() {
-		return MenuID;
+		return menuID;
 	}
+
 	public void setMenuID(Integer menuID) {
-		MenuID = menuID;
+		this.menuID = menuID;
 	}
+
 	public String getMenuIcon() {
-		return MenuIcon;
+		return menuIcon;
 	}
+
 	public void setMenuIcon(String menuIcon) {
-		MenuIcon = menuIcon;
+		this.menuIcon = menuIcon;
 	}
+
 	public String getName() {
-		return Name;
+		return name;
 	}
+
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 }
