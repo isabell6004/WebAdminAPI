@@ -46,8 +46,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-		WebAdminLoginUser user = ((WebAdminUserAuthenticationToken)authentication).getUserInfo();
-		TokenAuthenticationService.addAuthentication(request, response, user);
+		WebAdminUserAuthenticationToken authInfo = ((WebAdminUserAuthenticationToken)authentication);
+		TokenAuthenticationService.addAuthentication(request, response, authInfo);
 	}
 	
 	@Override
