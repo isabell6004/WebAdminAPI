@@ -26,7 +26,7 @@ public class Utility {
 		String ipAddress = request.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null) ipAddress = request.getRemoteAddr();
         
-		return ipAddress;
+		return ipAddress.equals("0:0:0:0:0:0:0:1") ? "::1" : ipAddress;
 	}
 	
 	public static String getUserAgent(HttpServletRequest request) {
