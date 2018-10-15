@@ -7,25 +7,43 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.webadmin.dao.primary.MapWaUserVendorRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityMapUserGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityPermissionGroupRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
 import net.fashiongo.webadmin.model.pojo.GroupData;
+import net.fashiongo.webadmin.model.pojo.LoginControl;
+import net.fashiongo.webadmin.model.pojo.MapUserGroup;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityGroupPermissions;
+import net.fashiongo.webadmin.model.pojo.SecurityUserCreate;
+import net.fashiongo.webadmin.model.pojo.SecurityUserData;
 import net.fashiongo.webadmin.model.pojo.SecurityUsers;
 import net.fashiongo.webadmin.model.pojo.SubGroupData;
+import net.fashiongo.webadmin.model.pojo.UserMappingVendor;
+import net.fashiongo.webadmin.model.pojo.UserMappingVendorAssigned;
+import net.fashiongo.webadmin.model.pojo.parameter.DelSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 import net.fashiongo.webadmin.model.primary.SecurityPermissionGroup;
+import net.fashiongo.webadmin.model.primary.SecurityUser;
 /**
  * 
  * @author Reo
@@ -37,10 +55,19 @@ public class SecurityGroupService extends ApiService {
 	private SecurityGroupRepository securityGroupRepository;
 	
 	@Autowired
+	private SecurityUserRepository securityUserRepository;
+	
+	@Autowired
 	private SecurityPermissionGroupRepository securityPermissionGroupRepository;
 	
 	@Autowired
 	private SecurityMapUserGroupRepository securityMapUserGroupRepository;
+	
+	@Autowired
+	private MapWaUserVendorRepository mapWaUserVendorRepository;
+	
+	@Value("${spring.application.name}")
+	private String APPNAME;
 
 	/**
 	 * 
@@ -330,5 +357,153 @@ public class SecurityGroupService extends ApiService {
 	@Transactional
 	public ResultCode setSecurityGroupPermissions(Integer groupID, List<GroupData> p) {
 		return null;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param userID
+	 * @param active
+	 * @return
+	 */
+	@Transactional
+	public ResultCode setSecurityUserActive(Integer userID, boolean active) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		SecurityUser securityUser = securityUserRepository.findByUserID(userID);
+		if (securityUser != null) {
+			securityUser.setActive(active);
+			securityUserRepository.save(securityUser);
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public GetUserMappingVendorResponse GetUserMappingVendor(GetUserMappingVendorParameter parameters) {
+		GetUserMappingVendorResponse result = new GetUserMappingVendorResponse();
+		String spName = "up_wa_GetUserMappingVendor";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getUserID());
+		params.add(parameters.getAlphabet());
+		params.add(parameters.getCompanyType());
+		params.add(parameters.getCategorys());
+		params.add(parameters.getVendorType());
+		params.add(parameters.getVendorKeyword());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, UserMappingVendor.class, UserMappingVendorAssigned.class);
+		result.setUserMappingVendorList((List<UserMappingVendor>) _result.get(0));
+		result.setUserMappingVendorAssigned((List<UserMappingVendorAssigned>) _result.get(1));
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public Integer GetUserMappingVendorCount(GetUserMappingVendorParameter parameters) {
+		Integer userMappginVendorCount = mapWaUserVendorRepository.countByUserID(parameters.getUserID());
+		
+		return userMappginVendorCount;
+	}
+	
+    /**
+     * 
+     * Description Example
+     * @since 2018. 10. 10.
+     * @author Reo
+     * @param parameters
+     * @return
+     */
+	public SetResultResponse SetUserMappingVendor(SetUserMappingVendorParameter parameters) {
+		SetResultResponse result = new SetResultResponse(false, 0, null);
+		String spName = "up_wa_SetUserMappingVendor";
+		List<Object> params = new ArrayList<Object>();
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, UserMappingVendor.class);
+		result.setResultCode((Integer) _result.get(0));
+		result.setSuccess(true);
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public GetSecurityUserGroupAccesstimeResponse GetSecurityUserGroupAccessTimes(GetSecurityUserGroupParameter parameters) {
+		GetSecurityUserGroupAccesstimeResponse result = new GetSecurityUserGroupAccesstimeResponse();
+		String spName = "up_wa_GetSecurityUserGroupAccesstimes";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getUsrId());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, MapUserGroup.class, LoginControl.class);
+		result.setMapUserGroupList((List<MapUserGroup>) _result.get(0));
+		result.setLoginControlList((List<LoginControl>) _result.get(1));
+		result.setSuccess(true);
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 11.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public SetResultResponse SetDelSecurityUsers(DelSecurityUserParameter parameters) {		
+		SecurityUser securityUser = securityUserRepository.findByUserID(parameters.getUserID());
+		SetResultResponse result = new SetResultResponse(false, 0, null);
+		String spName = "up_wa_DeleteSecurityUser";
+		
+		List<Object> params = new ArrayList<Object>();
+		params.add(APPNAME);
+		params.add(securityUser.getUserName());
+		
+		List<Object> outputParams = new ArrayList<Object>();
+		outputParams.add(0);
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
+		result.setResultCode((Integer) outputParams.get(0));
+		result.setSuccess(true);
+		
+		return result;
+	}
+	
+	public SetResultResponse SetCreateSecurityUser(SetSecurityUserParameter jsonParameters) {
+		SecurityUserCreate securityUserCreateData = jsonParameters.getData().getUser();
+		SetResultResponse result = new SetResultResponse(false, 0, null);
+		String spName = "up_wa_CreateSecurityUser";
+		List<Object> params = new ArrayList<Object>();
+		params.add(APPNAME);
+		params.add(securityUserCreateData.getUserName());
+		params.add(securityUserCreateData.getPassword());
+		
+		List<Object> outputParams = new ArrayList<Object>();
+		outputParams.add(0);
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
+		result.setResultCode((Integer) outputParams.get(0));
+		result.setSuccess(true);
+		
+		return result;
 	}
 }

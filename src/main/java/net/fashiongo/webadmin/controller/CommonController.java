@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.service.CommonService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.utility.JsonResponse;

@@ -194,9 +194,9 @@ public class AdService extends ApiService {
 		//LocalDateTime bidEffectiveOn = parameters.getBidEffectiveOn();	
 		
 		LocalDateTime createdOn = LocalDateTime.now();
-		String createdBy =  Utility.getUsername();
+		//String createdBy =  Utility.getUsername();
 		LocalDateTime modifiedOn = LocalDateTime.now();
-		String modifiedBy =  Utility.getUsername();
+		//String modifiedBy =  Utility.getUsername();
 		
 		if(spotID == 0) { // new (insert)
 			adPageSpot.setPageID(pageID);
@@ -217,7 +217,7 @@ public class AdService extends ApiService {
 			adPageSpot.setSpotItemCount(spotItemCount);
 			//adPageSpot.setBidEffectiveOn(bidEffectiveOn);
 			adPageSpot.setCreatedOn(createdOn);
-			adPageSpot.setCreatedBy(createdBy);
+			//adPageSpot.setCreatedBy(createdBy);
 			
 			adPageSpotRepository.save(adPageSpot);
 			
@@ -242,7 +242,7 @@ public class AdService extends ApiService {
 			adPageSpot.setSpotItemCount(spotItemCount);
 			//adPageSpot.setBidEffectiveOn(bidEffectiveOn);
 			adPageSpot.setModifiedOn(modifiedOn);
-			adPageSpot.setModifiedBy(modifiedBy);
+			//adPageSpot.setModifiedBy(modifiedBy);
 			
 			adPageSpotRepository.save(adPageSpot);
 		}
