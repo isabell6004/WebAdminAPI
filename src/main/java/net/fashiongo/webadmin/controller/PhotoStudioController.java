@@ -258,6 +258,21 @@ public class PhotoStudioController {
 		}
 	}
 	
+	@GetMapping(value = "/model/{modelID}")
+	public JsonResponse getModel(@PathVariable("modelID") Integer modelID) {
+		logger.debug("PhotoStudioController.getModel() called!!!");
+		JsonResponse<PhotoModel> response = new JsonResponse<>(false, null, null);
+		try {
+			PhotoModel photoModel = photoStudioService.getModel(modelID);
+			response.setSuccess(true);
+			response.setData(photoModel);
+		} catch (Exception e) {
+			logger.error("Error: PhotoStudioController.getModel():", e);
+		}
+		
+		return response;
+	}
+	
 	@PostMapping(value = "/calendar/save")
 	public JsonResponse<?> saveCalendar(@RequestBody List<PhotoCalendar> photoCalendars) {
 		logger.debug("PhotoStudioController.saveCalendar() called!!!");

@@ -455,6 +455,23 @@ public class PhotoStudioService {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public PhotoModel getModel(Integer modelID) {
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(modelID);
+		
+		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetModelInfo", params, PhotoModel.class, PhotoImage.class);
+		
+		List<PhotoModel> photoModels = (List<PhotoModel>)_results.get(0);
+		List<PhotoImage> photoImages = (List<PhotoImage>)_results.get(1);
+		
+		PhotoModel photoModel = photoModels.get(0);
+		photoModel.setPhotoImages(photoImages);
+		
+		return photoModel;
+	}
+	
 	@Transactional
 	public String saveCalendar(List<PhotoCalendar> photoCalendars) throws IllegalArgumentException, IllegalAccessException {
 		
