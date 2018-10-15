@@ -34,6 +34,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityAccessCodesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityUserParameter;
@@ -119,9 +120,10 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "setdeletesecurityaccesscodes", method = RequestMethod.POST)
-	public JsonResponse<String> SetDeleteSecurityAccessCodes(@RequestBody List<Integer> idList) throws Exception {
+	public JsonResponse<String> SetDeleteSecurityAccessCodes(@RequestBody SetDeleteSecurityAccessCodesParameter parameters) {
 		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
-		ResultCode _result = adminService.SetDeleteSecurityAccessCodes(idList);
+		
+		ResultCode _result = adminService.SetDeleteSecurityAccessCodes(parameters.getIdList());
 		
 		result.setSuccess(_result.getSuccess());
 		result.setCode(_result.getResultCode());
