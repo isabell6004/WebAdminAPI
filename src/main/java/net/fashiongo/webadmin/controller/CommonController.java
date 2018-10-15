@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
+import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
@@ -133,8 +133,10 @@ public class CommonController {
 	 * @return Page id
 	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
-	public void GetCountryStates() {
+	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestBody String countryAbbrev) {
+		JsonResponse<GetCountryStatesResponse> results = commonService.GetCountryStates(countryAbbrev);
 		
+		return results;
 	}
 	
 	@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
