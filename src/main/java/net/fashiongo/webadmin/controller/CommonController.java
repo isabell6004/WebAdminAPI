@@ -135,10 +135,10 @@ public class CommonController {
 	/**
 	 * Get Country States
 	 * 
-	 * @since 2018. 10. 12.
+	 * @since 2018. 10. 15.
 	 * @author DAHYE
-	 * @param Page Name
-	 * @return Page id
+	 * @param countryAbbrev
+	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
 	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestBody String countryAbbrev) {

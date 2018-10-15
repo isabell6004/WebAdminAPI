@@ -138,7 +138,7 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode delSpotSetting(Integer spotID) {
-		ResultCode result = new ResultCode(true, 0, MSG_DELETE_SUCCESS);
+		ResultCode result = new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 
 		adPageSpotRepository.deleteById(spotID);
 
@@ -156,7 +156,7 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setAddSpotSetting(SetAddSpotSettingParameter parameters) {
-		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
+		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 		
 		AdPageSpot adPageSpot = new AdPageSpot();
 		Integer spotID = parameters.getSpotID();
