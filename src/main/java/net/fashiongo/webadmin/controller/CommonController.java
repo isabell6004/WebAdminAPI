@@ -110,6 +110,7 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
 	public JsonResponse<Integer> GetMenuID(@RequestBody String pageName) {
+		pageName = pageName != null ? pageName : "";
 		JsonResponse<Integer> results = new JsonResponse<Integer>();
 		Integer result = commonService.GetMenuID(pageName);
 		results.setData(result);
@@ -147,6 +148,14 @@ public class CommonController {
 		return results;
 	}
 	
+	/**
+	 * Get Top Categories
+	 * 
+	 * @since 2018. 10. 11.
+	 * @author DAHYE
+	 * @param countryAbbrev
+	 * @return JsonResponse<GetCountryStatesResponse>
+	 */
 	@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
 	public JsonResponse<List<TopCategories>> GetTopCategories() {
 		JsonResponse<List<TopCategories>> results = new JsonResponse<List<TopCategories>>(false, null, null, null);

@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 
 /**
@@ -13,7 +15,7 @@ public class SecurityLogs {
 	@Column(name = "IP")
 	private String ip;
 	@Column(name = "LoginOn")
-	private String loginOn;
+	private LocalDateTime loginOn;
 	
 	public Integer getLogID() {
 		return logID;
@@ -33,10 +35,10 @@ public class SecurityLogs {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-	public String getLoginOn() {
+	public LocalDateTime getLoginOn() {
 		return loginOn;
 	}
-	public void setLoginOn(String loginOn) {
+	public void setLoginOn(LocalDateTime loginOn) {
 		this.loginOn = loginOn;
 	}
 }

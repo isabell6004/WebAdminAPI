@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,8 @@ public class BuyerController {
 	@RequestMapping(value = "setmodifypassword", method = RequestMethod.POST)
 	public JsonResponse SetModifyPassword(@RequestBody String userid, String newpwd) {
 		SetModifyPasswordParameter parameters = new SetModifyPasswordParameter();
+		userid = StringUtils.isEmpty(userid) ? "-1" : userid;
+		newpwd = StringUtils.isEmpty(newpwd) ? "-2" : newpwd;
 		parameters.setUserName(userid);
 		parameters.setNewPassword(newpwd);
 		JsonResponse result = buyerService.SetModifyPassword(parameters);

@@ -188,8 +188,8 @@ public class AdService extends ApiService {
 		
 		if(spotID == 0) { // new (insert)
 			adPageSpot.setPageID(pageID);
-			adPageSpot.setPageID(categoryID);
-			adPageSpot.setPageID(bodySizeID);
+			adPageSpot.setCategoryID(categoryID);
+			adPageSpot.setBodySizeID(bodySizeID);
 			adPageSpot.setSpotName(spotName);
 			adPageSpot.setPrice1(price1);
 			adPageSpot.setPrice2(price2);
@@ -212,8 +212,8 @@ public class AdService extends ApiService {
 		} else { // update
 			adPageSpot = adPageSpotRepository.findOneBySpotID(spotID);
 			adPageSpot.setPageID(pageID);
-			adPageSpot.setPageID(categoryID);
-			adPageSpot.setPageID(bodySizeID);
+			adPageSpot.setCategoryID(categoryID);
+			adPageSpot.setBodySizeID(bodySizeID);
 			adPageSpot.setSpotName(spotName);
 			adPageSpot.setPrice1(price1);
 			adPageSpot.setPrice2(price2);

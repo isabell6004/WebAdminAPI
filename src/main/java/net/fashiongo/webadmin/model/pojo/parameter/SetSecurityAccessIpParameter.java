@@ -16,7 +16,7 @@ public class SetSecurityAccessIpParameter {
 	@ApiModelProperty(required = false, example="")
 	private String office;
 	public Integer getIpid() {
-		return ipid;
+		return ipid == null ? 0 : ipid;
 	}
 	public void setIpid(Integer ipid) {
 		this.ipid = ipid;
