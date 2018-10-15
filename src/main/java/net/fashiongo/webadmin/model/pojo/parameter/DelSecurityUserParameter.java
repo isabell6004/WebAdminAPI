@@ -4,18 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class GetSecurityUserGroupParameter {
+public class DelSecurityUserParameter {
 	@ApiModelProperty(required = true, example="1")
-	@JsonProperty("usrid")
-	private Integer usrId;
+	@JsonProperty("usrId")
+	private Integer userID;
 
-	public Integer getUsrId() {
-		return usrId;
+	public Integer getUserID() {
+		return userID;
 	}
 
-	public void setUsrId(Integer usrId) {
-		this.usrId = usrId;
+	public void setUserID(Integer userID) {
+		this.userID = userID;
 	}
-
+	
 	
 }

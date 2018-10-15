@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
@@ -13,11 +14,14 @@ import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
 import net.fashiongo.webadmin.dao.primary.TopCategoriesRepository;
 import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityMenu;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * 
@@ -40,6 +44,10 @@ public class CommonService extends ApiService {
 	
 	@Autowired
 	SecurityUserRepository securityUserRepository;
+	
+	@Autowired
+	@Qualifier("serviceJsonClient")
+	private HttpClient httpClient;
 	
 	/**
 	 * 
@@ -75,8 +83,12 @@ public class CommonService extends ApiService {
 	 * @param resourceID, active
 	 * @return ResultCode
 	 */
-	public void GetCountryStates() {
+	public JsonResponse<GetCountryStatesResponse> GetCountryStates(String countryAbbrev) {
+		JsonResponse<GetCountryStatesResponse> result = httpClient.get("location/countries/".concat(countryAbbrev));
 		
+		System.out.println("result.getMessage()" + result.getMessage()+result.getData());
+		
+		return result;
 	}
 	
 	public List<TopCategories> GetTopCategories() {

@@ -1,11 +1,13 @@
 package net.fashiongo.webadmin.model.primary;
 
+import java.util.Date;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,31 +32,34 @@ public class SecurityUser {
 	@Column(name = "FullName")
 	private String fullName;
 	
-	@JsonIgnore
+	@JsonProperty("UserGUID")
+	@Column(name = "UserGUID")
+	private String userGUID;
+	
+	@JsonProperty("Role")
 	@Column(name = "Role")
 	private String role;
 	
-	@JsonIgnore
+	@JsonProperty("Active")
 	@Column(name = "Active")
 	private Boolean active;
 	
-	@JsonIgnore
-	@Column(name = "IPTimeExempt")
-	private Boolean iPTimeExempt;
+	@JsonProperty("IPTimeExempt")
+	private Boolean ipTimeExempt;
 	
-	@JsonIgnore
+	@JsonProperty("CreatedOn")
 	@Column(name = "CreatedOn")
-	private LocalDateTime createdOn;
+	private Date createdOn;
 	
-	@JsonIgnore
+	@JsonProperty("CreatedBy")
 	@Column(name = "CreatedBy")
 	private String createdBy;
 	
-	@JsonIgnore
+	@JsonProperty("ModifiedOn")
 	@Column(name = "ModifiedOn")
-	private LocalDateTime  modifiedOn;
+	private Date modifiedOn;
 	
-	@JsonIgnore
+	@JsonProperty("ModifiedBy")
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
 	
@@ -87,6 +92,14 @@ public class SecurityUser {
 		this.fullName = fullName;
 	}
 
+	public String getUserGUID() {
+		return userGUID;
+	}
+
+	public void setUserGUID(String userGUID) {
+		this.userGUID = userGUID;
+	}
+
 	public String getRole() {
 		return role;
 	}
@@ -103,19 +116,19 @@ public class SecurityUser {
 		this.active = active;
 	}
 
-	public Boolean getiPTimeExempt() {
-		return iPTimeExempt;
+	public Boolean getIpTimeExempt() {
+		return ipTimeExempt;
 	}
 
-	public void setiPTimeExempt(Boolean iPTimeExempt) {
-		this.iPTimeExempt = iPTimeExempt;
+	public void setIpTimeExempt(Boolean ipTimeExempt) {
+		this.ipTimeExempt = ipTimeExempt;
 	}
 
-	public LocalDateTime getCreatedOn() {
+	public Date getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(LocalDateTime createdOn) {
+	public void setCreatedOn(Date createdOn) {
 		this.createdOn = createdOn;
 	}
 
@@ -127,11 +140,11 @@ public class SecurityUser {
 		this.createdBy = createdBy;
 	}
 
-	public LocalDateTime getModifiedOn() {
+	public Date getModifiedOn() {
 		return modifiedOn;
 	}
 
-	public void setModifiedOn(LocalDateTime modifiedOn) {
+	public void setModifiedOn(Date modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
 

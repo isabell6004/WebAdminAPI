@@ -1,17 +1,32 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
 public class GetSecurityUserParameter {
-    @ApiModelProperty(required = false, example="Vicky")
+	@JsonProperty("userid")
+	private Integer userID;
+	@ApiModelProperty(required = false, example="Vicky")
+	@JsonProperty("username")
 	private String userName;
-    @ApiModelProperty(required = false, example="Call Center")
+	@ApiModelProperty(required = false, example="Call Center")
+	@JsonProperty("group")
 	private String group;
-    @ApiModelProperty(required = false, example="S")
+	@ApiModelProperty(required = false, example="S")
+	@JsonProperty("role")
 	private String role;
-    @ApiModelProperty(required = false, example="2858")
+	@ApiModelProperty(required = false, example="2858")
+	@JsonProperty("vendorid")
 	private Integer vendorID;
+	@JsonProperty("active")
+	private Boolean active;
 	
+	public Integer getUserID() {
+		return userID;
+	}
+	public void setUserID(Integer userID) {
+		this.userID = userID;
+	}
 	public String getUserName() {
 		return userName;
 	}
@@ -35,6 +50,12 @@ public class GetSecurityUserParameter {
 	}
 	public void setVendorID(Integer vendorID) {
 		this.vendorID = vendorID;
+	}
+	public Boolean getActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 	
 }

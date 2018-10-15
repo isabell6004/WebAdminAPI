@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
+import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
 import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
@@ -72,7 +73,7 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setAdPage(SetAddPageParameter parameters) {
-		ResultCode result = new ResultCode(true, 1, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 
 		AdPage adPage = new AdPage();
 		Integer pageID = parameters.getPageID();
@@ -137,7 +138,7 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode delSpotSetting(Integer spotID) {
-		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
+		ResultCode result = new ResultCode(true, 0, MSG_DELETE_SUCCESS);
 
 		adPageSpotRepository.deleteById(spotID);
 
@@ -155,7 +156,7 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setAddSpotSetting(SetAddSpotSettingParameter parameters) {
-		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		
 		AdPageSpot adPageSpot = new AdPageSpot();
 		Integer spotID = parameters.getSpotID();
@@ -175,17 +176,15 @@ public class AdService extends ApiService {
 		Integer spotInstanceCount = parameters.getSpotInstanceCount();
 		Integer maxPurchasable = parameters.getMaxPurchasable();
 		Integer spotItemCount = parameters.getSpotItemCount();
-		//LocalDateTime bidEffectiveOn = parameters.getBidEffectiveOn();	
-		
-//		Calendar createdOn = Calendar.getInstance();
-//		LocalDateTime createdOn = LocalDateTime.now();
+		Date bidEffectiveOn = parameters.getBidEffectiveOn();	
+		//Calendar createdOn = Calendar.getInstance();
+		//LocalDateTime createdOn = LocalDateTime.now();
 		Date createdOn = new Date();
-//		birthDateWithoutTime = DateUtils.truncate(birthDateWithTime, Calendar.DATE);
-
-		//String createdBy =  Utility.getUsername();
-//		LocalDateTime modifiedOn = LocalDateTime.now();
+		//birthDateWithoutTime = DateUtils.truncate(birthDateWithTime, Calendar.DATE);
+		String createdBy =  Utility.getUsername();
+		//LocalDateTime modifiedOn = LocalDateTime.now();
 		Date modifiedOn = createdOn;
-		//String modifiedBy =  Utility.getUsername();
+		String modifiedBy =  Utility.getUsername();
 		
 		if(spotID == 0) { // new (insert)
 			adPageSpot.setPageID(pageID);
@@ -204,15 +203,14 @@ public class AdService extends ApiService {
 			adPageSpot.setSpotInstanceCount(spotInstanceCount);
 			adPageSpot.setMaxPurchasable(maxPurchasable);
 			adPageSpot.setSpotItemCount(spotItemCount);
-			//adPageSpot.setBidEffectiveOn(bidEffectiveOn);
+			adPageSpot.setBidEffectiveOn(bidEffectiveOn);
 			adPageSpot.setCreatedOn(createdOn);
-			//adPageSpot.setCreatedBy(createdBy);
+			adPageSpot.setCreatedBy(createdBy);
 			
 			adPageSpotRepository.save(adPageSpot);
 			
 		} else { // update
-			adPageSpotRepository.findOneBySpotID(spotID);
-			
+			adPageSpot = adPageSpotRepository.findOneBySpotID(spotID);
 			adPageSpot.setPageID(pageID);
 			adPageSpot.setPageID(categoryID);
 			adPageSpot.setPageID(bodySizeID);
@@ -229,9 +227,9 @@ public class AdService extends ApiService {
 			adPageSpot.setSpotInstanceCount(spotInstanceCount);
 			adPageSpot.setMaxPurchasable(maxPurchasable);
 			adPageSpot.setSpotItemCount(spotItemCount);
-			//adPageSpot.setBidEffectiveOn(bidEffectiveOn);
+			adPageSpot.setBidEffectiveOn(bidEffectiveOn);
 			adPageSpot.setModifiedOn(modifiedOn);
-			//adPageSpot.setModifiedBy(modifiedBy);
+			adPageSpot.setModifiedBy(modifiedBy);
 			
 			adPageSpotRepository.save(adPageSpot);
 		}

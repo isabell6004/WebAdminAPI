@@ -12,6 +12,16 @@ import net.fashiongo.webadmin.model.fgem.EmConfiguration;
  */
 @JsonSerialize
 public class GetPaidCampaignResponse {
+//	@JsonProperty("PaidCampaignList")
+//	private List<PaidCampaignList> paidCampaignList;
+//
+//	public List<PaidCampaignList> getPaidCampaignList() {
+//		return paidCampaignList;
+//	}
+//
+//	public void setPaidCampaignList(List<PaidCampaignList> paidCampaignList) {
+//		this.paidCampaignList = paidCampaignList;
+//	}
 	@JsonProperty("PaidCampaignList")
 	private List<EmConfiguration> emConfigurationsList;
 
