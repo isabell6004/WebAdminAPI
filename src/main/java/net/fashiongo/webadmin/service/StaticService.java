@@ -61,7 +61,7 @@ public class StaticService extends ApiService {
         result.getVisitors().setVisitorsMonthly((List<MonthlyStatic>)_result.get(3));
         result.getVisitors().setVisitorsDaily((List<DailyStatic>)_result.get(4));
         // buyers
-        result.getBuyers().setActiveBuyes(((List<ActiveBuyerStatic>)_result.get(5)).get(0));
+        result.getBuyers().setActiveBuyers(((List<ActiveBuyerStatic>)_result.get(5)).get(0));
         result.getBuyers().setPurchasingBuyers(((List<PurchasingBuyerStatic>)_result.get(6)).get(0));
         BuyerRegistrationStatic regiStatis = new BuyerRegistrationStatic(
         		((List<BuyerRegistrationDateStatic>)_result.get(8)).get(0)
