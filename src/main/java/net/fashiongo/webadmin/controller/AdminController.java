@@ -352,7 +352,7 @@ public class AdminController {
 	 * Set Delete Security Access Ips
 	 * @since 2018. 10. 10.
 	 * @author Dahye Jeong
-	 * @param SetSecurityAccessIpParameter
+	 * @param idList
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityaccessips", method = RequestMethod.POST)
