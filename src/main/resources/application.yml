@@ -59,7 +59,7 @@ webAdminapi:
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:
     develop:
-      check-token : false
+      check-token : true
 
 ---
 # Local
@@ -99,6 +99,9 @@ spring:
     
 logging:
   config: classpath:log4j2-dev.xml
+  
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.32:19008
   
 ---
 # Dev
