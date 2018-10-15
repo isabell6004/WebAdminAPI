@@ -290,7 +290,7 @@ public class AdminService extends ApiService {
 	 * Set Delete Security Resources
 	 * @since 2018. 10. 12.
 	 * @author Dahye Jeong
-	 * @param SetSecurityResourceParameter
+	 * @param idList
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")

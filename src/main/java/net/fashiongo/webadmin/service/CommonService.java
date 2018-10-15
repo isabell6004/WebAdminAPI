@@ -65,7 +65,7 @@ public class CommonService extends ApiService {
 	
 	/**
 	 * 
-	 * Set Resource
+	 * Get Server Heart Beat
 	 * @since 2018. 10. 12.
 	 * @author Dahye Jeong
 	 * @param q
@@ -77,11 +77,11 @@ public class CommonService extends ApiService {
 	
 	/**
 	 * 
-	 * Set Resource
-	 * @since 2018. 10. 12.
+	 * Get Country States
+	 * @since 2018. 10. 15.
 	 * @author Dahye Jeong
-	 * @param resourceID, active
-	 * @return ResultCode
+	 * @param countryAbbrev
+	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	public JsonResponse<GetCountryStatesResponse> GetCountryStates(String countryAbbrev) {
 		JsonResponse<GetCountryStatesResponse> result = httpClient.get("location/countries/".concat(countryAbbrev));
@@ -91,6 +91,14 @@ public class CommonService extends ApiService {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * Get Top Categories
+	 * @since 2018. 10. 11.
+	 * @author Dahye Jeong
+	 * @param 
+	 * @return List<TopCategories>
+	 */
 	public List<TopCategories> GetTopCategories() {
 		List<TopCategories> result = (List<TopCategories>) topCategoriesRepository.findByActiveAndLvlOrderByListOrder(true, 1);
 		
