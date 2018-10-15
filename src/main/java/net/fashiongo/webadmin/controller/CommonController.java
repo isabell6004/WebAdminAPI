@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.Resource;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
@@ -17,6 +20,7 @@ import net.fashiongo.webadmin.model.primary.TopCategories;
 import net.fashiongo.webadmin.service.CommonService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.service.AdminService;
 
 /**
  * 
@@ -25,6 +29,10 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 @RestController
 @RequestMapping(value = "/common", produces = "application/json")
 public class CommonController {
+
+	@Autowired
+	AdminService adminService;
+	
 	@Autowired
 	CommonService commonService;
 	
@@ -164,6 +172,32 @@ public class CommonController {
 		results.setData(result);
 		results.setSuccess(true);
 		
+		return results;
+	}
+	
+	
+	/**
+	 * 
+	 * Get Security Resources
+	 * 
+	 * @since 2018. 10. 15.
+	 * @author Jiwon Kim
+	 * @return GetSecurityResources
+	 */
+	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
+	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
+		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, null);
+		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
+		List<Resource> rs = result.getResource();
+		for (Resource rssub : rs) {
+			
+			String ReturnData = "";
+			if (rssub.getActive()) ReturnData = "";
+			else ReturnData = "[x] ";
+			ReturnData += rssub.getDispName();
+			rssub.setDispName(ReturnData);
+		}
+		results.setData(result);
 		return results;
 	}
 }
