@@ -40,7 +40,7 @@ public class GetSecurityLogsParameter {
 	private String ip;
 
 	public Integer getPageNum() {
-		return pageNum;
+		return pageNum == null ? 0 : pageNum;
 	}
 
 	public void setPageNum(Integer pageNum) {
@@ -48,7 +48,7 @@ public class GetSecurityLogsParameter {
 	}
 
 	public Integer getPageSize() {
-		return pageSize;
+		return pageSize == null ? 0 : pageSize;
 	}
 
 	public void setPageSize(Integer pageSize) {
@@ -80,7 +80,7 @@ public class GetSecurityLogsParameter {
 	}
 
 	public Integer getPeriodType() {
-		return periodType;
+		return periodType == null ? 0 : periodType;
 	}
 
 	public void setPeriodType(Integer periodType) {

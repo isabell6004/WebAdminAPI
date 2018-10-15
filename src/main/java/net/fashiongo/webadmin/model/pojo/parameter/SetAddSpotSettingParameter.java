@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -68,7 +70,7 @@ public class SetAddSpotSettingParameter {
 	private Integer spotItemCount;
 
 	public Integer getSpotID() {
-		return spotID;
+		return spotID == null ? 0 : spotID;
 	}
 
 	public void setSpotID(Integer spotID) {
@@ -76,7 +78,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public Integer getPageID() {
-		return pageID;
+		return pageID == null ? 0 : pageID;
 	}
 
 	public void setPageID(Integer pageID) {
@@ -84,7 +86,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public Integer getCategoryID() {
-		return categoryID;
+		return categoryID == null ? null : categoryID;
 	}
 
 	public void setCategoryID(Integer categoryID) {
@@ -92,7 +94,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public Integer getBodySizeID() {
-		return bodySizeID;
+		return bodySizeID == null ? null : bodySizeID;
 	}
 
 	public void setBodySizeID(Integer bodySizeID) {
@@ -100,7 +102,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public String getSpotName() {
-		return spotName;
+		return StringUtils.isEmpty(spotName) ? "" : spotName;
 	}
 
 	public void setSpotName(String spotName) {
@@ -108,35 +110,42 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public BigDecimal getPrice1() {
-		return BigDecimal.valueOf(price1);
+		//return BigDecimal.valueOf(price1);
+		return (price1 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price1);
 	}
 
 	public BigDecimal getPrice2() {
-		return BigDecimal.valueOf(price2);
+		//return BigDecimal.valueOf(price2);
+		return (price2 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price2);
 	}
 
 	public BigDecimal getPrice3() {
-		return BigDecimal.valueOf(price3);
+		//return BigDecimal.valueOf(price3);
+		return (price3 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price3);
 	}
 
 	public BigDecimal getPrice4() {
-		return BigDecimal.valueOf(price4);
+		//return BigDecimal.valueOf(price4);
+		return (price4 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price4);
 	}
 
 	public BigDecimal getPrice5() {
-		return BigDecimal.valueOf(price5);
+		//return BigDecimal.valueOf(price5);
+		return (price5 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price5);
 	}
 
 	public BigDecimal getPrice6() {
-		return BigDecimal.valueOf(price6);
+		//return BigDecimal.valueOf(price6);
+		return (price6 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price6);
 	}
 
 	public BigDecimal getPrice7() {
-		return BigDecimal.valueOf(price7);
+		//return BigDecimal.valueOf(price7);
+		return (price7 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price7);
 	}
 
 	public Boolean getActive() {
-		return active;
+		return active == null ? false : active;
 	}
 
 	public void setActive(Boolean active) {
@@ -144,7 +153,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public Boolean getIncludeVendorCategory() {
-		return includeVendorCategory;
+		return includeVendorCategory == null ? false : active;
 	}
 
 	public void setIncludeVendorCategory(Boolean includeVendorCategory) {
@@ -152,7 +161,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public Integer getSpotInstanceCount() {
-		return spotInstanceCount;
+		return spotInstanceCount == null ? 0 : spotInstanceCount;
 	}
 
 	public void setSpotInstanceCount(Integer spotInstanceCount) {
@@ -160,7 +169,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public String getBidEffectiveOn2() {
-		return bidEffectiveOn2;
+		return StringUtils.isEmpty(bidEffectiveOn2) ? "" : bidEffectiveOn2;
 	}
 
 	public void setBidEffectiveOn2(String bidEffectiveOn2) {
@@ -180,7 +189,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public Integer getMaxPurchasable() {
-		return maxPurchasable;
+		return maxPurchasable == null ? 0 : maxPurchasable;
 	}
 
 	public void setMaxPurchasable(Integer maxPurchasable) {
@@ -188,7 +197,7 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public Integer getSpotItemCount() {
-		return spotItemCount;
+		return spotItemCount == null ? 0 : spotItemCount;
 	}
 
 	public void setSpotItemCount(Integer spotItemCount) {
