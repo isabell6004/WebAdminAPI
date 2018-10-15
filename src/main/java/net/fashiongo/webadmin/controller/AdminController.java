@@ -1,8 +1,14 @@
 package net.fashiongo.webadmin.controller;
 
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,16 +16,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.SecurityUserData;
+import net.fashiongo.webadmin.model.pojo.SecurityUserManager;
+import net.fashiongo.webadmin.model.pojo.parameter.DelSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
@@ -29,8 +47,11 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
+import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 import net.fashiongo.webadmin.service.AdminService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -347,6 +368,21 @@ public class AdminController {
 	
 	/**
 	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "setsecurityusersactive", method=RequestMethod.POST)
+	public JsonResponse<String> setSecurityUserActive(@RequestBody GetSecurityUserParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, null);
+		ResultCode result = securityGroupService.setSecurityUserActive(parameters.getUserID(), parameters.getActive());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		return results;
+	}
+	/**
 	 * Set Resource
 	 * @since 2018. 10. 12.
 	 * @author Dahye Jeong
@@ -359,11 +395,105 @@ public class AdminController {
 		ResultCode result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
+		
 		return results;
 	}
 	
 	/**
 	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getusermappingvendor", method=RequestMethod.POST)
+	public GetUserMappingVendorResponse GetUserMappingVendor(@RequestBody GetUserMappingVendorParameter parameters) {
+		JsonResponse<GetUserMappingVendorResponse> results = new JsonResponse<GetUserMappingVendorResponse>(false, null, 0, null);
+		GetUserMappingVendorResponse result = securityGroupService.GetUserMappingVendor(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results.getData();
+	}
+
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getusermappingvendorcount", method=RequestMethod.POST)
+	public Integer GetUserMappingVendorCount (@RequestBody GetUserMappingVendorParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(false, null, 0, null);
+		Integer result = securityGroupService.GetUserMappingVendorCount(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results.getData();
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public ResultCode SetUserMappingVendor(@RequestBody SetUserMappingVendorParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		
+		result = securityGroupService.SetUserMappingVendor(parameters);
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 10.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="getsecurityusergroupaccesstimes", method=RequestMethod.POST)
+	public GetSecurityUserGroupAccesstimeResponse GetSecurityUserGroupAccessTimes(@RequestBody GetSecurityUserGroupParameter parameters) {
+		JsonResponse<GetSecurityUserGroupAccesstimeResponse> results = new JsonResponse<GetSecurityUserGroupAccesstimeResponse>(false, null, 0, null);
+		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.GetSecurityUserGroupAccessTimes(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results.getData();
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 11.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="setdeletesecurityusers", method=RequestMethod.POST)
+	public ResultCode SetDelSecurityUsers(@RequestBody DelSecurityUserParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		
+		result = securityGroupService.SetDelSecurityUsers(parameters);
+		
+		return result;
+	}
+	
+	@RequestMapping(value="setsecurityuser", method=RequestMethod.POST)
+	public ResultCode SetCreateSecurityUsers(@RequestBody SetSecurityUserParameter jsonParameters) throws ParseException, IOException {
+		ResultCode result = new ResultCode(false, 0, null);
+		result = securityGroupService.SetCreateSecurityUser(jsonParameters);
+		
+		return result;
+	}
+	/**
 	 * Set Security Resource
 	 * @since 2018. 10. 12.
 	 * @author Dahye Jeong

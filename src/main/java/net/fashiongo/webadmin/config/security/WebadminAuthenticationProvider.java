@@ -78,11 +78,11 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		}
 		
 		if(!securityUser.getRole().equals("S")) {
-			if(!securityUser.getiPTimeExempt()) {
+			if(!securityUser.getIpTimeExempt()) {
 				if(checkIPAddress(request)) {
 					boolean bAccessabletime = false;
 					Integer weekday = LocalDate.now().getDayOfWeek().getValue() + 1;
-					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekDay(securityUser.getUserID(), weekday);
+					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
 					
 					if(!CollectionUtils.isEmpty(list)) {
 						bAccessabletime = (list.get(0).getTimeFrom().after(new Date()) && list.get(0).getTimeFrom().before(new Date()));

@@ -1,47 +1,28 @@
-package net.fashiongo.webadmin.model.primary;
+package net.fashiongo.webadmin.model.pojo;
 
-import javax.persistence.Column;
 import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * 
- * @author Incheol Jung
- */
-@Entity
-@Table(name = "[security.Login_Control]")
-public class SecurityLoginControl {
-	@Id
-	@Column(name = "ControlID")
+public class LoginControl {
 	@JsonProperty("ControlID")
 	private Integer controlID;
 	
-	@Column(name = "UserID")
 	@JsonProperty("UserID")
 	private Integer userID;
 	
-	@Column(name = "Weekday")
 	@JsonProperty("Weekday")
 	private Integer weekday;
 	
-	@Column(name = "TimeFrom")
 	@JsonProperty("TimeFrom")
 	private Date timeFrom;
 	
-	@Column(name = "TimeTo")
 	@JsonProperty("TimeTo")
 	private Date timeTo;
 	
-	@Column(name = "Allow")
 	@JsonProperty("Allow")
 	private Boolean allow;
 	
-	@Column(name = "Active")
 	@JsonProperty("Active")
 	private Boolean active;
 
@@ -100,6 +81,6 @@ public class SecurityLoginControl {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-
+	
 	
 }
