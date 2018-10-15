@@ -1,6 +1,11 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -54,7 +59,7 @@ public class SetAddSpotSettingParameter {
 	private Integer spotInstanceCount;
 	
 	@ApiModelProperty(required = false, example="2018-05-01")
-	private String bidEffectiveOn;
+	private String bidEffectiveOn2;
 	
 	@ApiModelProperty(required = false, example="0")
 	private Integer maxPurchasable;
@@ -154,12 +159,24 @@ public class SetAddSpotSettingParameter {
 		this.spotInstanceCount = spotInstanceCount;
 	}
 
-	public String getBidEffectiveOn() {
-		return bidEffectiveOn;
+	public String getBidEffectiveOn2() {
+		return bidEffectiveOn2;
 	}
 
-	public void setBidEffectiveOn(String bidEffectiveOn) {
-		this.bidEffectiveOn = bidEffectiveOn;
+	public void setBidEffectiveOn2(String bidEffectiveOn2) {
+		this.bidEffectiveOn2 = bidEffectiveOn2;
+	}
+	
+	@JsonIgnore
+	public Date getBidEffectiveOn() {
+		Date bidEffectiveOn = new Date();
+		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			bidEffectiveOn = dt.parse(bidEffectiveOn2);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return bidEffectiveOn;
 	}
 
 	public Integer getMaxPurchasable() {
