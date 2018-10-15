@@ -24,7 +24,7 @@ public class MenuPermission {
 	@JsonProperty("MenuName")
 	private String menuName;
 	
-	@JsonProperty("EarentID")
+	@JsonProperty("ParentID")
 	private Integer parentID;
 	
 	@JsonProperty("ResourceID")
