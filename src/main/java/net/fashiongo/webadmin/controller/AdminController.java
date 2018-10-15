@@ -50,7 +50,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 import net.fashiongo.webadmin.service.AdminService;
@@ -444,8 +443,8 @@ public class AdminController {
 	 * @param parameters
 	 * @return
 	 */
-	public SetResultResponse SetUserMappingVendor(@RequestBody SetUserMappingVendorParameter parameters) {
-		SetResultResponse result = new SetResultResponse(false, 0, null);
+	public ResultCode SetUserMappingVendor(@RequestBody SetUserMappingVendorParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
 		
 		result = securityGroupService.SetUserMappingVendor(parameters);
 		
@@ -479,8 +478,8 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="setdeletesecurityusers", method=RequestMethod.POST)
-	public SetResultResponse SetDelSecurityUsers(@RequestBody DelSecurityUserParameter parameters) {
-		SetResultResponse result = new SetResultResponse(false, 0, null);
+	public ResultCode SetDelSecurityUsers(@RequestBody DelSecurityUserParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
 		
 		result = securityGroupService.SetDelSecurityUsers(parameters);
 		
@@ -488,8 +487,8 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="setsecurityuser", method=RequestMethod.POST)
-	public SetResultResponse SetCreateSecurityUsers(@RequestBody SetSecurityUserParameter jsonParameters) throws ParseException, IOException {
-		SetResultResponse result = new SetResultResponse(false, 0, null);
+	public ResultCode SetCreateSecurityUsers(@RequestBody SetSecurityUserParameter jsonParameters) throws ParseException, IOException {
+		ResultCode result = new ResultCode(false, 0, null);
 		result = securityGroupService.SetCreateSecurityUser(jsonParameters);
 		
 		return result;

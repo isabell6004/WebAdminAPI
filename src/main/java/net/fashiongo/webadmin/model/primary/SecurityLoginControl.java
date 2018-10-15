@@ -31,19 +31,19 @@ public class SecurityLoginControl {
 	
 	@Column(name = "TimeFrom")
 	@JsonProperty("TimeFrom")
-	private Integer timeFrom;
+	private Date timeFrom;
 	
 	@Column(name = "TimeTo")
 	@JsonProperty("TimeTo")
-	private Integer timeTo;
+	private Date timeTo;
 	
 	@Column(name = "Allow")
 	@JsonProperty("Allow")
-	private Integer allow;
+	private Boolean allow;
 	
 	@Column(name = "Active")
 	@JsonProperty("Active")
-	private Integer active;
+	private Boolean active;
 
 	public Integer getControlID() {
 		return controlID;
@@ -69,36 +69,37 @@ public class SecurityLoginControl {
 		this.weekday = weekday;
 	}
 
-	public Integer getTimeFrom() {
+	public Date getTimeFrom() {
 		return timeFrom;
 	}
 
-	public void setTimeFrom(Integer timeFrom) {
+	public void setTimeFrom(Date timeFrom) {
 		this.timeFrom = timeFrom;
 	}
 
-	public Integer getTimeTo() {
+	public Date getTimeTo() {
 		return timeTo;
 	}
 
-	public void setTimeTo(Integer timeTo) {
+	public void setTimeTo(Date timeTo) {
 		this.timeTo = timeTo;
 	}
 
-	public Integer getAllow() {
+	public Boolean getAllow() {
 		return allow;
 	}
 
-	public void setAllow(Integer allow) {
+	public void setAllow(Boolean allow) {
 		this.allow = allow;
 	}
 
-	public Integer getActive() {
+	public Boolean getActive() {
 		return active;
 	}
 
-	public void setActive(Integer active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
+
 	
 }

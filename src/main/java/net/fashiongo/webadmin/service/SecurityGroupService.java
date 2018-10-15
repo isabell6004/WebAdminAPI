@@ -39,7 +39,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsRes
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetResultResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 import net.fashiongo.webadmin.model.primary.SecurityPermissionGroup;
@@ -427,8 +426,8 @@ public class SecurityGroupService extends ApiService {
      * @param parameters
      * @return
      */
-	public SetResultResponse SetUserMappingVendor(SetUserMappingVendorParameter parameters) {
-		SetResultResponse result = new SetResultResponse(false, 0, null);
+	public ResultCode SetUserMappingVendor(SetUserMappingVendorParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
 		String spName = "up_wa_SetUserMappingVendor";
 		List<Object> params = new ArrayList<Object>();
 		
@@ -469,9 +468,9 @@ public class SecurityGroupService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	public SetResultResponse SetDelSecurityUsers(DelSecurityUserParameter parameters) {		
+	public ResultCode SetDelSecurityUsers(DelSecurityUserParameter parameters) {		
 		SecurityUser securityUser = securityUserRepository.findByUserID(parameters.getUserID());
-		SetResultResponse result = new SetResultResponse(false, 0, null);
+		ResultCode result = new ResultCode(false, 0, null);
 		String spName = "up_wa_DeleteSecurityUser";
 		
 		List<Object> params = new ArrayList<Object>();
@@ -488,9 +487,9 @@ public class SecurityGroupService extends ApiService {
 		return result;
 	}
 	
-	public SetResultResponse SetCreateSecurityUser(SetSecurityUserParameter jsonParameters) {
+	public ResultCode SetCreateSecurityUser(SetSecurityUserParameter jsonParameters) {
 		SecurityUserCreate securityUserCreateData = jsonParameters.getData().getUser();
-		SetResultResponse result = new SetResultResponse(false, 0, null);
+		ResultCode result = new ResultCode(false, 0, null);
 		String spName = "up_wa_CreateSecurityUser";
 		List<Object> params = new ArrayList<Object>();
 		params.add(APPNAME);
