@@ -7,17 +7,17 @@ import java.util.List;
  * @author Incheol Jung
  */
 public class BuyerStatic {
-	private ActiveBuyerStatic activeBuyes;
+	private ActiveBuyerStatic activeBuyers;
 	private PurchasingBuyerStatic purchasingBuyers;
 	private BuyerRegistrationStatic buyerRegistration;
 	private List<MonthlyBuyerStatic> buyerRegMonthly;
 	private List<DailyBuyerStatic> buyerPOMonthly;
 	
-	public ActiveBuyerStatic getActiveBuyes() {
-		return activeBuyes;
+	public ActiveBuyerStatic getActiveBuyers() {
+		return activeBuyers;
 	}
-	public void setActiveBuyes(ActiveBuyerStatic activeBuyes) {
-		this.activeBuyes = activeBuyes;
+	public void setActiveBuyers(ActiveBuyerStatic activeBuyers) {
+		this.activeBuyers = activeBuyers;
 	}
 	public PurchasingBuyerStatic getPurchasingBuyers() {
 		return purchasingBuyers;
