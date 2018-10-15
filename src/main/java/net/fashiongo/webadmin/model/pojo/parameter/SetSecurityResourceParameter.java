@@ -4,52 +4,54 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class SetSecurityResourceParameter {
 	@ApiModelProperty(required = false, example="113")
-	private Integer ResourceID;
+	private Integer resourceID;
 	@ApiModelProperty(required = false, example="User")
-	private String ResourceName;
+	private String resourceName;
 	@ApiModelProperty(required = false, example="1")
-	private Integer Applicationid;
+	private Integer applicationid;
 	@ApiModelProperty(required = false, example="Page")
-	private String ResourceType;
+	private String resourceType;
 	@ApiModelProperty(required = false, example="url")
-	private String ResourceUrl;
+	private String resourceUrl;
 	@ApiModelProperty(required = false, example="true")
-	private Boolean Active;
+	private Boolean active;
+
 	public Integer getResourceID() {
-		return ResourceID;
+		return resourceID == null ? 0 : resourceID;
 	}
 	public void setResourceID(Integer resourceID) {
-		ResourceID = resourceID;
+		this.resourceID = resourceID;
 	}
 	public String getResourceName() {
-		return ResourceName;
+		return resourceName;
 	}
 	public void setResourceName(String resourceName) {
-		ResourceName = resourceName;
+		this.resourceName = resourceName;
 	}
 	public Integer getApplicationid() {
-		return Applicationid;
+		return applicationid == null ? 0 : applicationid;
 	}
 	public void setApplicationid(Integer applicationid) {
-		Applicationid = applicationid;
+		this.applicationid = applicationid;
 	}
 	public String getResourceType() {
-		return ResourceType;
+		return resourceType;
 	}
 	public void setResourceType(String resourceType) {
-		ResourceType = resourceType;
+		this.resourceType = resourceType;
 	}
 	public String getResourceUrl() {
-		return ResourceUrl;
+		return resourceUrl;
 	}
 	public void setResourceUrl(String resourceUrl) {
-		ResourceUrl = resourceUrl;
+		this.resourceUrl = resourceUrl;
 	}
 	public Boolean getActive() {
-		return Active;
+		return active == null ? false : active;
 	}
 	public void setActive(Boolean active) {
-		Active = active;
+		this.active = active;
 	}
+	
 	
 }
