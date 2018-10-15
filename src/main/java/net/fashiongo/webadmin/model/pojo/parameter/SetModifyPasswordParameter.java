@@ -4,20 +4,20 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class SetModifyPasswordParameter {
 	@ApiModelProperty(required = false, example="Alesha.bax911@gmail.com")
-	private String userId;
+	private String userName;
 	@ApiModelProperty(required = false, example="1234")
-	private String newPwd;
-	public String getUserId() {
-		return userId;
+	private String newPassword;
+	public String getUserName() {
+		return userName;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	public String getNewPwd() {
-		return newPwd;
+	public String getNewPassword() {
+		return newPassword;
 	}
-	public void setNewPwd(String newPwd) {
-		this.newPwd = newPwd;
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
 	}
 	
 }
