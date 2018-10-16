@@ -33,9 +33,9 @@ public class SetBidSettingParameter {
 	@JsonProperty("priceunit")
 	private String priceUnit;
 	
-	@ApiModelProperty(required = false, example="0")
+	@ApiModelProperty(required = false, example=",")
 	@JsonProperty("buyitnowprice")
-	private Integer buyItNowPrice;
+	private String buyItNowPrice;
 	
 	public String getDataFlag() {
 		return dataFlag;
@@ -79,10 +79,10 @@ public class SetBidSettingParameter {
 	public void setPriceUnit(String priceUnit) {
 		this.priceUnit = priceUnit;
 	}
-	public Integer getBuyItNowPrice() {
+	public String getBuyItNowPrice() {
 		return buyItNowPrice;
 	}
-	public void setBuyItNowPrice(Integer buyItNowPrice) {
+	public void setBuyItNowPrice(String buyItNowPrice) {
 		this.buyItNowPrice = buyItNowPrice;
 	}
 	

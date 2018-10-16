@@ -1,7 +1,7 @@
 package net.fashiongo.webadmin.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,8 +159,8 @@ public class AdService extends ApiService {
 		
 		AdPageSpot adPageSpot = new AdPageSpot();
 		Integer spotID = parameters.getSpotID(); 
-		Date createdOn = new Date();
-		Date modifiedOn = createdOn;
+		LocalDateTime createdOn = LocalDateTime.now();
+		LocalDateTime modifiedOn = createdOn;
 		
 		if(spotID == 0) { // new (insert)
 			adPageSpot.setPageID(parameters.getPageID());

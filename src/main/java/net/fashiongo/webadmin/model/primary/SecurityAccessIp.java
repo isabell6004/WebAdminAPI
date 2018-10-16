@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 
  * @author DAHYE
@@ -18,12 +20,15 @@ public class SecurityAccessIp {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "IPID")
+	@JsonProperty("IPID")
 	private Integer ipid;
 	
 	@Column(name="IPAddress")
+	@JsonProperty("IPAddress")
 	private String ipAddress;
 	
 	@Column(name="Description")
+	@JsonProperty("Description")
 	private String description;
 
 	public Integer getIpid() {

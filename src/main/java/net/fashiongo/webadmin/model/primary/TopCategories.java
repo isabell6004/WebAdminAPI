@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 
@@ -21,9 +22,11 @@ public class TopCategories {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "CategoryID")
+	@JsonProperty("CategoryID")
 	private Integer categoryID;
 	
 	@Column(name = "CategoryName")
+	@JsonProperty("CategoryName")
 	private String categoryName;
 		
 	@JsonIgnore

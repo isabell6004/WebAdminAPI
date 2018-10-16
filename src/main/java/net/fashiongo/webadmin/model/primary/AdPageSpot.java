@@ -2,9 +2,10 @@ package net.fashiongo.webadmin.model.primary;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,13 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 /**
  *
@@ -57,7 +58,7 @@ public class AdPageSpot implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Basic(optional = false)
-	@NotNull
+	//@NotNull
 	@Column(name = "SpotID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("SpotID")
@@ -140,30 +141,42 @@ public class AdPageSpot implements Serializable {
 	@JsonProperty("BannerImage")
 	private String bannerImage;
 
-	@Column(name = "CreatedOn")
+	/*@Column(name = "CreatedOn")
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("CreatedOn")
-	private Date createdOn;
+	private LocalDateTime createdOn;*/
+	@JsonProperty("CreatedOn")
+	@Column(name = "CreatedOn")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime createdOn;
 
 	@Size(max = 50)
 	@Column(name = "CreatedBy")
 	@JsonProperty("CreatedBy")
 	private String createdBy;
 
-	@Column(name = "ModifiedOn")
+	/*@Column(name = "ModifiedOn")
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("ModifiedOn")
-	private Date modifiedOn;
+	private LocalDateTime modifiedOn;*/
+	@JsonProperty("ModifiedOn")
+	@Column(name = "ModifiedOn")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime modifiedOn;
 
 	@Size(max = 50)
 	@Column(name = "ModifiedBy")
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
 
-	@Column(name = "BidEffectiveOn")
+	/*@Column(name = "BidEffectiveOn")
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("BidEffectiveOn")
-	private Date bidEffectiveOn;
+	private LocalDateTime bidEffectiveOn;*/
+	@JsonProperty("BidEffectiveOn")
+	@Column(name = "BidEffectiveOn")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime bidEffectiveOn;
 
 	@Column(name = "SpotItemCount")
 	@JsonProperty("SpotItemCount")
@@ -324,11 +337,11 @@ public class AdPageSpot implements Serializable {
 		this.bannerImage = bannerImage;
 	}
 
-	public Date getCreatedOn() {
+	public LocalDateTime getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Date createdOn) {
+	public void setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
 	}
 
@@ -340,11 +353,11 @@ public class AdPageSpot implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Date getModifiedOn() {
+	public LocalDateTime getModifiedOn() {
 		return modifiedOn;
 	}
 
-	public void setModifiedOn(Date modifiedOn) {
+	public void setModifiedOn(LocalDateTime modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
 
@@ -356,11 +369,11 @@ public class AdPageSpot implements Serializable {
 		this.modifiedBy = modifiedBy;
 	}
 
-	public Date getBidEffectiveOn() {
+	public LocalDateTime getBidEffectiveOn() {
 		return bidEffectiveOn;
 	}
 
-	public void setBidEffectiveOn(Date bidEffectiveOn) {
+	public void setBidEffectiveOn(LocalDateTime bidEffectiveOn) {
 		this.bidEffectiveOn = bidEffectiveOn;
 	}
 

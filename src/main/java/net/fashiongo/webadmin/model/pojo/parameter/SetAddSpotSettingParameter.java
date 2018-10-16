@@ -1,13 +1,13 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -15,57 +15,75 @@ import io.swagger.annotations.ApiModelProperty;
  * @author Nayeon Kim
  */
 public class SetAddSpotSettingParameter {
+	@JsonProperty("SpotID")
 	@ApiModelProperty(required = false, example="82")
 	private String spotID;
 	
+	@JsonProperty("PageID")
 	@ApiModelProperty(required = false, example="1")
 	private String pageID;
 	
+	@JsonProperty("CategoryID")
 	@ApiModelProperty(required = false, example="7")
 	private String categoryID;
 	
+	@JsonProperty("BodySizeID")
 	@ApiModelProperty(required = false, example="")
 	private String bodySizeID;
 	
+	@JsonProperty("SpotName")
 	@ApiModelProperty(required = false, example="")
 	private String spotName;
 	
+	@JsonProperty("Price1")
 	@ApiModelProperty(required = false, example="30")
 	private String price1;
 	
+	@JsonProperty("Price2")
 	@ApiModelProperty(required = false, example="30")
 	private String price2;
 	
+	@JsonProperty("Price3")
 	@ApiModelProperty(required = false, example="30")
 	private String price3;
 	
+	@JsonProperty("Price4")
 	@ApiModelProperty(required = false, example="30")
 	private String price4;
 	
+	@JsonProperty("Price5")
 	@ApiModelProperty(required = false, example="30")
 	private String price5;
 	
+	@JsonProperty("Price6")
 	@ApiModelProperty(required = false, example="30")
 	private String price6;
 	
+	@JsonProperty("Price7")
 	@ApiModelProperty(required = false, example="30")
 	private String price7;
 	
+	@JsonProperty("Active")
 	@ApiModelProperty(required = false, example="true")
 	private Boolean active;
 	
+	@JsonProperty("IncludeVendorCategory")
 	@ApiModelProperty(required = false, example="true")
 	private Boolean includeVendorCategory;
 	
+	@JsonProperty("SpotInstanceCount")
 	@ApiModelProperty(required = false, example="10")
 	private String spotInstanceCount;
 	
+	@JsonProperty("BidEffectiveOn2")
 	@ApiModelProperty(required = false, example="2018-05-01")
 	private String bidEffectiveOn2;
 	
+	@JsonProperty("MaxPurchasable")
 	@ApiModelProperty(required = false, example="0")
 	private String maxPurchasable;
 	
+	@JsonProperty("SpotItemCount")
 	@ApiModelProperty(required = false, example="3")
 	private String spotItemCount;
 
@@ -90,52 +108,31 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public BigDecimal getPrice1() {
-		//return BigDecimal.valueOf(price1);
-		//return (price1 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price1);
-		BigDecimal bigDecimalprice1 = new BigDecimal(price1);
-		return (bigDecimalprice1 == null) ? BigDecimal.valueOf(0) : bigDecimalprice1;
+		return (StringUtils.isEmpty(price1)) ? BigDecimal.valueOf(0) : new BigDecimal(price1);
 	}
 
 	public BigDecimal getPrice2() {
-		//return BigDecimal.valueOf(price2);
-		//return (price2 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price2);
-		BigDecimal bigDecimalprice2 = new BigDecimal(price2);
-		return (bigDecimalprice2 == null) ? BigDecimal.valueOf(0) : bigDecimalprice2;
+		return (StringUtils.isEmpty(price2)) ? BigDecimal.valueOf(0) : new BigDecimal(price2);
 	}
 
 	public BigDecimal getPrice3() {
-		//return BigDecimal.valueOf(price3);
-		//return (price3 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price3);
-		BigDecimal bigDecimalprice3 = new BigDecimal(price3);
-		return (bigDecimalprice3 == null) ? BigDecimal.valueOf(0) : bigDecimalprice3;
+		return (StringUtils.isEmpty(price3)) ? BigDecimal.valueOf(0) : new BigDecimal(price3);
 	}
 
 	public BigDecimal getPrice4() {
-		//return BigDecimal.valueOf(price4);
-		//return (price4 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price4);
-		BigDecimal bigDecimalprice4 = new BigDecimal(price4);
-		return (bigDecimalprice4 == null) ? BigDecimal.valueOf(0) : bigDecimalprice4;
+		return (StringUtils.isEmpty(price4)) ? BigDecimal.valueOf(0) : new BigDecimal(price4);
 	}
 
 	public BigDecimal getPrice5() {
-		//return BigDecimal.valueOf(price5);
-		//return (price5 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price5);
-		BigDecimal bigDecimalprice5 = new BigDecimal(price5);
-		return (bigDecimalprice5 == null) ? BigDecimal.valueOf(0) : bigDecimalprice5;
+		return (StringUtils.isEmpty(price5)) ? BigDecimal.valueOf(0) : new BigDecimal(price5);
 	}
 
 	public BigDecimal getPrice6() {
-		//return BigDecimal.valueOf(price6);
-		//return (price6 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price6);
-		BigDecimal bigDecimalprice6 = new BigDecimal(price6);
-		return (bigDecimalprice6 == null) ? BigDecimal.valueOf(0) : bigDecimalprice6;
+		return (StringUtils.isEmpty(price6)) ? BigDecimal.valueOf(0) : new BigDecimal(price6);
 	}
 
 	public BigDecimal getPrice7() {
-		//return BigDecimal.valueOf(price7);
-		//return (price7 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price7);
-		BigDecimal bigDecimalprice7 = new BigDecimal(price7);
-		return (bigDecimalprice7 == null) ? BigDecimal.valueOf(0) : bigDecimalprice7;
+		return (StringUtils.isEmpty(price7)) ? BigDecimal.valueOf(0) : new BigDecimal(price7);
 	}
 
 	public Boolean getActive() {
@@ -151,19 +148,22 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public String getBidEffectiveOn2() {
-		return StringUtils.isEmpty(bidEffectiveOn2) ? "" : bidEffectiveOn2;
+		return StringUtils.isEmpty(bidEffectiveOn2) ? null : bidEffectiveOn2;
 	}
 	
 	@JsonIgnore
-	public Date getBidEffectiveOn() {
-		Date bidEffectiveOn = new Date();
+	public LocalDateTime getBidEffectiveOn() {
+		/*Date bidEffectiveOn = new Date();
 		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			bidEffectiveOn = dt.parse(bidEffectiveOn2);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		return bidEffectiveOn;
+		return bidEffectiveOn;*/
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		return StringUtils.isEmpty(bidEffectiveOn2) ? null : LocalDateTime.parse(bidEffectiveOn2+" 00:00:00",formatter);
 	}
 
 	public Integer getMaxPurchasable() {
