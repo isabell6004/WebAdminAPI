@@ -11,24 +11,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessIpsRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityResourceRepository;
 import net.fashiongo.webadmin.model.pojo.Resource;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityAccessCodes;
 import net.fashiongo.webadmin.model.pojo.SecurityLogs;
 import net.fashiongo.webadmin.model.pojo.SecurityLogsColumn;
+import net.fashiongo.webadmin.model.pojo.SecurityMenus2;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityMenus2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityMenuParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityMenus2Response;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityParentMenusResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
+import net.fashiongo.webadmin.model.primary.SecurityMenu;
 import net.fashiongo.webadmin.model.primary.SecurityResource;
 
 /**
@@ -37,6 +44,9 @@ import net.fashiongo.webadmin.model.primary.SecurityResource;
  */
 @Service
 public class AdminService extends ApiService {
+	
+	@Autowired
+	private SecurityMenuRepository securityMenuRepository;
 	
 	@Autowired
 	private SecurityAccessCodeRepository securityAccessCodeRepository;
@@ -299,6 +309,98 @@ public class AdminService extends ApiService {
 		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
 		for(Integer id : idList) {
 			securityResourceRepository.deleteById(id);
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get Security Parent Menus
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @return GetSecurityParentMenus
+	 */
+	@SuppressWarnings("unchecked")
+	public GetSecurityParentMenusResponse GetSecurityParentMenus() {
+		GetSecurityParentMenusResponse results = new GetSecurityParentMenusResponse();
+		List<SecurityMenu> result = (List<SecurityMenu>) securityMenuRepository.findAllByParentIDAndApplicationIDOrderByActiveDescNameAsc(null,1);
+		results.setSecurityMenu(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Get Security Menus2
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @return GetSecurityMenus2
+	 */
+	@SuppressWarnings("unchecked")
+	public GetSecurityMenus2Response GetSecurityMenus2(GetSecurityMenus2Parameter parameters) {
+
+		GetSecurityMenus2Response result = new GetSecurityMenus2Response();
+		String spName = "up_wa_GetSecurityMenus2";
+		
+		List<Object> params = new ArrayList<Object>();
+		
+
+        params.add(parameters.getMenuname());
+        params.add(parameters.getParentmenuid());
+        params.add(parameters.getApplicationid());
+        params.add(parameters.getActive());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityMenus2.class);
+		result.setSecurityMenu((List<SecurityMenus2>) _result.get(0));
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Set Security Resource
+	 * @since 2018. 10. 12.
+	 * @author Dahye Jeong
+	 * @param SetSecurityResourceParameter
+	 * @return ResultCode
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetSecurityMenu(SetSecurityMenuParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
+		SecurityMenu ssm = new SecurityMenu();
+		if (parameters.getMenuid()==0)
+		{
+			SecurityMenu sm = securityMenuRepository.findOneByResourceID(parameters.getResourceid());
+			if (sm != null)
+			{
+				result.setSuccess(false);
+				result.setResultCode(0);
+				result.setResultMsg("resource duplicated!");
+				return result;
+			}
+		}
+		else
+		{
+			SecurityMenu sm = securityMenuRepository.findOneByResourceIDAndMenuIDNot(parameters.getResourceid(),parameters.getMenuid());
+			if (sm != null)
+			{
+				result.setSuccess(false);
+				result.setResultCode(0);
+				result.setResultMsg("resource duplicated!");
+				return result;
+			}
+			ssm = securityMenuRepository.findOneByMenuID(parameters.getMenuid());
+		}
+		
+		if(ssm != null) {
+			ssm.setName(parameters.getMenuname());
+			ssm.setApplicationID(parameters.getApplicationid());
+			ssm.setParentID(parameters.getParentid());
+			ssm.setResourceID(parameters.getResourceid());
+			ssm.setRoutePath(parameters.getRoutepath());
+			ssm.setMenuIcon(parameters.getMenuicon());
+			ssm.setListOrder(parameters.getListorder());
+			ssm.setVisible(parameters.getVisible());
+			ssm.setActive(parameters.getActive());
+			securityMenuRepository.save(ssm);
 		}
 		return result;
 	}
