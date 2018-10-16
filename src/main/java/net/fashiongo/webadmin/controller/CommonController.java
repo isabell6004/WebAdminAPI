@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.Resource;
@@ -17,10 +18,10 @@ import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
+import net.fashiongo.webadmin.service.AdminService;
 import net.fashiongo.webadmin.service.CommonService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.utility.JsonResponse;
-import net.fashiongo.webadmin.service.AdminService;
 
 /**
  * 
@@ -109,7 +110,7 @@ public class CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
-	public JsonResponse<Integer> GetMenuID(@RequestBody String pageName) {
+	public JsonResponse<Integer> GetMenuID(@RequestParam String pageName) {
 		pageName = pageName != null ? pageName : "";
 		JsonResponse<Integer> results = new JsonResponse<Integer>();
 		Integer result = commonService.GetMenuID(pageName);
@@ -126,7 +127,7 @@ public class CommonController {
 	 * @return "Spring Boot"
 	 */
 	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.POST)
-	public JsonResponse<String> GetServerHeartBeat(@RequestBody Long q) {
+	public JsonResponse<String> GetServerHeartBeat(@RequestParam Long q) {
 		JsonResponse<String> results = new JsonResponse<String>();
 		String result = commonService.GetServerHeartBeat(q);
 		results.setMessage(result);
@@ -142,7 +143,7 @@ public class CommonController {
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
-	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestBody String countryAbbrev) {
+	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestParam String countryAbbrev) {
 		JsonResponse<GetCountryStatesResponse> results = commonService.GetCountryStates(countryAbbrev);
 		
 		return results;
@@ -197,15 +198,7 @@ public class CommonController {
 	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
 		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, null);
 		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
-		List<Resource> rs = result.getResource();
-		for (Resource rssub : rs) {
-			
-			String ReturnData = "";
-			if (rssub.getActive()) ReturnData = "";
-			else ReturnData = "[x] ";
-			ReturnData += rssub.getDispName();
-			rssub.setDispName(ReturnData);
-		}
+		
 		results.setData(result);
 		return results;
 	}

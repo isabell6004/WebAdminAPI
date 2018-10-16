@@ -1,74 +1,91 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Dahye Jeong
  */
 
 public class Resource {
-	private Integer ResourceID;
-	private Integer ApplicationID;
-	private String ApplicationName;
-	private String ResourceName;
-	private String DispName;
-	private String ResourceParent;
-	private String ResourceType;
-	private String ResourceUrl;
-	private Boolean Active;
+	@JsonProperty("ResourceID")
+	private Integer resourceID;
+	@JsonProperty("ApplicationID")
+	private Integer applicationID;
+	@JsonProperty("ApplicationName")
+	private String applicationName;
+	@JsonProperty("ResourceName")
+	private String resourceName;
+	@JsonProperty("DispName")
+	private String dispName;
+	@JsonProperty("ResourceParent")
+	private String resourceParent;
+	@JsonProperty("ResourceType")
+	private String resourceType;
+	@JsonProperty("ResourceUrl")
+	private String resourceUrl;
+	@JsonProperty("Active")
+	private Boolean active;
 	public Integer getResourceID() {
-		return ResourceID;
+		return resourceID;
 	}
 	public void setResourceID(Integer resourceID) {
-		ResourceID = resourceID;
+		this.resourceID = resourceID;
 	}
 	public Integer getApplicationID() {
-		return ApplicationID;
+		return applicationID;
 	}
 	public void setApplicationID(Integer applicationID) {
-		ApplicationID = applicationID;
+		this.applicationID = applicationID;
 	}
 	public String getApplicationName() {
-		return ApplicationName;
+		return applicationName;
 	}
 	public void setApplicationName(String applicationName) {
-		ApplicationName = applicationName;
+		this.applicationName = applicationName;
 	}
 	public String getResourceName() {
-		return ResourceName;
+		return resourceName;
 	}
 	public void setResourceName(String resourceName) {
-		ResourceName = resourceName;
+		this.resourceName = resourceName;
 	}
-	public String getResourceParent() {
-		return ResourceParent;
-	}
-	public void setResourceParent(String resourceParent) {
-		ResourceParent = resourceParent;
-	}
-	public String getResourceType() {
-		return ResourceType;
-	}
-	public void setResourceType(String resourceType) {
-		ResourceType = resourceType;
-	}
-	public String getResourceUrl() {
-		return ResourceUrl;
-	}
-	public void setResourceUrl(String resourceUrl) {
-		ResourceUrl = resourceUrl;
-	}
-	public Boolean getActive() {
-		return Active;
-	}
-	public void setActive(Boolean active) {
-		Active = active;
+	public String getDispName() {
+		String ReturnData = "";
+		if (active) ReturnData = "";
+		else ReturnData = "[x] ";
+		ReturnData += resourceName;
+		return ReturnData;
 	}
 	
-	public String getDispName() {
-		return DispName;
+	public void setDispName(String dispName) {
+		this.dispName = dispName;
 	}
-	public void setDispName(String dispname) {
-		DispName = dispname;
+	public String getResourceParent() {
+		return resourceParent;
 	}
+	public void setResourceParent(String resourceParent) {
+		this.resourceParent = resourceParent;
+	}
+	public String getResourceType() {
+		return resourceType;
+	}
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
+	}
+	public String getResourceUrl() {
+		return resourceUrl;
+	}
+	public void setResourceUrl(String resourceUrl) {
+		this.resourceUrl = resourceUrl;
+	}
+	public Boolean getActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+	
+
 	
 	
 }

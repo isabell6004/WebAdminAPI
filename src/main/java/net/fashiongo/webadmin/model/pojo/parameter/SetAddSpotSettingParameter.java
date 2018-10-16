@@ -90,52 +90,31 @@ public class SetAddSpotSettingParameter {
 	}
 
 	public BigDecimal getPrice1() {
-		//return BigDecimal.valueOf(price1);
-		//return (price1 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price1);
-		BigDecimal bigDecimalprice1 = new BigDecimal(price1);
-		return (bigDecimalprice1 == null) ? BigDecimal.valueOf(0) : bigDecimalprice1;
+		return (StringUtils.isEmpty(price1)) ? BigDecimal.valueOf(0) : new BigDecimal(price1);
 	}
 
 	public BigDecimal getPrice2() {
-		//return BigDecimal.valueOf(price2);
-		//return (price2 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price2);
-		BigDecimal bigDecimalprice2 = new BigDecimal(price2);
-		return (bigDecimalprice2 == null) ? BigDecimal.valueOf(0) : bigDecimalprice2;
+		return (StringUtils.isEmpty(price2)) ? BigDecimal.valueOf(0) : new BigDecimal(price2);
 	}
 
 	public BigDecimal getPrice3() {
-		//return BigDecimal.valueOf(price3);
-		//return (price3 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price3);
-		BigDecimal bigDecimalprice3 = new BigDecimal(price3);
-		return (bigDecimalprice3 == null) ? BigDecimal.valueOf(0) : bigDecimalprice3;
+		return (StringUtils.isEmpty(price3)) ? BigDecimal.valueOf(0) : new BigDecimal(price3);
 	}
 
 	public BigDecimal getPrice4() {
-		//return BigDecimal.valueOf(price4);
-		//return (price4 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price4);
-		BigDecimal bigDecimalprice4 = new BigDecimal(price4);
-		return (bigDecimalprice4 == null) ? BigDecimal.valueOf(0) : bigDecimalprice4;
+		return (StringUtils.isEmpty(price4)) ? BigDecimal.valueOf(0) : new BigDecimal(price4);
 	}
 
 	public BigDecimal getPrice5() {
-		//return BigDecimal.valueOf(price5);
-		//return (price5 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price5);
-		BigDecimal bigDecimalprice5 = new BigDecimal(price5);
-		return (bigDecimalprice5 == null) ? BigDecimal.valueOf(0) : bigDecimalprice5;
+		return (StringUtils.isEmpty(price5)) ? BigDecimal.valueOf(0) : new BigDecimal(price5);
 	}
 
 	public BigDecimal getPrice6() {
-		//return BigDecimal.valueOf(price6);
-		//return (price6 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price6);
-		BigDecimal bigDecimalprice6 = new BigDecimal(price6);
-		return (bigDecimalprice6 == null) ? BigDecimal.valueOf(0) : bigDecimalprice6;
+		return (StringUtils.isEmpty(price6)) ? BigDecimal.valueOf(0) : new BigDecimal(price6);
 	}
 
 	public BigDecimal getPrice7() {
-		//return BigDecimal.valueOf(price7);
-		//return (price7 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price7);
-		BigDecimal bigDecimalprice7 = new BigDecimal(price7);
-		return (bigDecimalprice7 == null) ? BigDecimal.valueOf(0) : bigDecimalprice7;
+		return (StringUtils.isEmpty(price7)) ? BigDecimal.valueOf(0) : new BigDecimal(price7);
 	}
 
 	public Boolean getActive() {

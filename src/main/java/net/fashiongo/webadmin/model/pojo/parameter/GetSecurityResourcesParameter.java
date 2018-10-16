@@ -9,12 +9,13 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 public class GetSecurityResourcesParameter {
+	@ApiModelProperty(required = false, example="Web Admin")
 	private String application;
-	@ApiModelProperty(required = false, example="fashiongo")
+	@ApiModelProperty(required = false, example="")
 	private String resourceName;
 	@ApiModelProperty(required = false, example="All")
 	private String resourceParent;
-	@ApiModelProperty(required = false, example="page")
+	@ApiModelProperty(required = false, example="All")
 	private String resourceType;
 	
 	public String getApplication() {
