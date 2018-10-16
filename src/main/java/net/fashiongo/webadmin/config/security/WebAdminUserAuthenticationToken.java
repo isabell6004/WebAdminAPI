@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+import net.fashiongo.webadmin.model.pojo.MenuDS;
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
 
 /**
@@ -16,6 +17,7 @@ import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
 public class WebAdminUserAuthenticationToken extends UsernamePasswordAuthenticationToken{
 	private HttpServletRequest httpServletRequest;
 	private WebAdminLoginUser userInfo;
+	private MenuDS menuDs;
 	
 	public WebAdminUserAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
 		super(principal, credentials, authorities);
@@ -44,5 +46,13 @@ public class WebAdminUserAuthenticationToken extends UsernamePasswordAuthenticat
 
 	public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
 		this.httpServletRequest = httpServletRequest;
+	}
+	
+	public MenuDS getMenuDs() {
+		return menuDs;
+	}
+
+	public void setMenuDs(MenuDS menuDs) {
+		this.menuDs = menuDs;
 	}
 }

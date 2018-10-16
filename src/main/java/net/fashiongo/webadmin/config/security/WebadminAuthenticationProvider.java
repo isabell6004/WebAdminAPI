@@ -20,10 +20,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityListIPRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityLoginControlRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
+import net.fashiongo.webadmin.model.pojo.MenuDS;
+import net.fashiongo.webadmin.model.pojo.MenuPermission;
+import net.fashiongo.webadmin.model.pojo.SubMenu;
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityLoginControl;
@@ -51,6 +55,9 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 	@Autowired
 	private SecurityListIPRepository securityListIPRepository;
 	
+	@Autowired
+	protected JdbcHelper jdbcHelper;
+	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		AccountCredentials credentials = (AccountCredentials) authentication.getCredentials();
@@ -61,7 +68,6 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		HttpServletRequest request = (HttpServletRequest) authentication.getDetails();
 		Integer Loginable = 2;
 
-//		JsonResponse response = new JsonResponse();
 		JsonResponse response = client.post("/membership/authenticate/3",
 				"{\"userName\":\"" + username + "\", \"password\":\"" + password + "\"}");
 		if (!response.isSuccess()) {
@@ -70,19 +76,64 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		this.validateAuthResponse(response);
 		
 		SecurityUser securityUser = securityUserRepository.findFirstByUserName(username);
+		this.checkUserInfo(securityUser);
 		
+		Loginable = this.checkUserRole(securityUser, accessCode, request);
+		if(!Loginable.equals(1)) {
+			throw new BadCredentialsException("");
+		}
+		
+		WebAdminLoginUser webAdminLoginUser = new WebAdminLoginUser();
+		webAdminLoginUser.setRoleid(securityUser.getRole());
+		webAdminLoginUser.setUserId(securityUser.getUserID());
+		webAdminLoginUser.setFullname(securityUser.getFullName());
+		webAdminLoginUser.setUsername(securityUser.getUserName());
+		webAdminLoginUser.setIpaddr(Utility.getIpAddress(request));
+		webAdminLoginUser.setUseragent(Utility.getUserAgent(request));
+		
+		List<GrantedAuthority> grantedAuths = new ArrayList<>();
+		grantedAuths.add(new SimpleGrantedAuthority("WEB_ADMIN"));
+		
+		WebAdminUserAuthenticationToken auth = new WebAdminUserAuthenticationToken(authentication.getName(),
+				authentication.getCredentials(), grantedAuths);
+
+		auth.setUserInfo(webAdminLoginUser);
+		auth.setMenuDs(this.getMenuDS(securityUser.getUserID()));
+		
+		return auth;
+	}
+	
+	private MenuDS getMenuDS(Integer userId) {
+		MenuDS menuDs = new MenuDS();
+		String spName = "up_wa_Security_GetLeftMenuByUser";
+        List<Object> params = new ArrayList<Object>();
+        
+        params.add(userId);
+        List<Object> _result = jdbcHelper.executeSP(spName, params, SubMenu.class, MenuPermission.class);
+        
+        menuDs.setSubMenus((List<SubMenu>)_result.get(0));
+        menuDs.setMenuPermission((List<MenuPermission>)_result.get(1));
+        
+        return menuDs;
+	}
+	
+	private void checkUserInfo(SecurityUser securityUser) {
 		if(securityUser == null) {
 			throw new BadCredentialsException("The userName and Password combination is invalid.");
 		} else if(securityUser.getActive() == false){
 			throw new BadCredentialsException("Sorry, this account is inactive or not approved yet!");
 		}
+	}
+	
+	private Integer checkUserRole(SecurityUser securityUser, String accessCode, HttpServletRequest request) {
+		Integer Loginable = 2;
 		
 		if(!securityUser.getRole().equals("S")) {
-			if(!securityUser.getiPTimeExempt()) {
+			if(!securityUser.getIpTimeExempt()) {
 				if(checkIPAddress(request)) {
 					boolean bAccessabletime = false;
 					Integer weekday = LocalDate.now().getDayOfWeek().getValue() + 1;
-					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekDay(securityUser.getUserID(), weekday);
+					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
 					
 					if(!CollectionUtils.isEmpty(list)) {
 						bAccessabletime = (list.get(0).getTimeFrom().after(new Date()) && list.get(0).getTimeFrom().before(new Date()));
@@ -103,26 +154,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 			Loginable = 1;
 		}
 		
-		if(!Loginable.equals(1)) {
-			throw new BadCredentialsException("");
-		}
-		
-		WebAdminLoginUser webAdminLoginUser = new WebAdminLoginUser();
-		webAdminLoginUser.setRoleid(securityUser.getRole());
-		webAdminLoginUser.setUserId(securityUser.getUserID());
-		webAdminLoginUser.setFullname(securityUser.getFullName());
-		webAdminLoginUser.setUsername(securityUser.getUserName());
-		webAdminLoginUser.setIpaddr(Utility.getIpAddress(request));
-		webAdminLoginUser.setUseragent(Utility.getUserAgent(request));
-		
-		List<GrantedAuthority> grantedAuths = new ArrayList<>();
-		grantedAuths.add(new SimpleGrantedAuthority("WEB_ADMIN"));
-		
-		WebAdminUserAuthenticationToken auth = new WebAdminUserAuthenticationToken(authentication.getName(),
-				authentication.getCredentials(), grantedAuths);
-
-		auth.setUserInfo(webAdminLoginUser);
-		return auth;
+		return Loginable;
 	}
 	
 	private Integer checkAccessCode(String accessCode) {

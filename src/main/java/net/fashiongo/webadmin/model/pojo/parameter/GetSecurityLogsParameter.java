@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -37,14 +39,8 @@ public class GetSecurityLogsParameter {
 	@ApiModelProperty(required = false, example="165.225.39.73")
 	private String ip;
 
-	@ApiModelProperty(hidden = true) 
-	private Date startDate;
-	
-	@ApiModelProperty(hidden = true) 
-	private Date endDate;
-	
 	public Integer getPageNum() {
-		return pageNum;
+		return pageNum == null ? 0 : pageNum;
 	}
 
 	public void setPageNum(Integer pageNum) {
@@ -52,7 +48,7 @@ public class GetSecurityLogsParameter {
 	}
 
 	public Integer getPageSize() {
-		return pageSize;
+		return pageSize == null ? 0 : pageSize;
 	}
 
 	public void setPageSize(Integer pageSize) {
@@ -84,7 +80,7 @@ public class GetSecurityLogsParameter {
 	}
 
 	public Integer getPeriodType() {
-		return periodType;
+		return periodType == null ? 0 : periodType;
 	}
 
 	public void setPeriodType(Integer periodType) {
@@ -115,7 +111,9 @@ public class GetSecurityLogsParameter {
 		this.ip = ip;
 	}
 
+	@JsonIgnore
 	public Date getStartDate() {
+		Date startDate = new Date();
 		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
 		try {
 			startDate= dt.parse(sDate);
@@ -125,11 +123,9 @@ public class GetSecurityLogsParameter {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
+	@JsonIgnore
 	public Date getEndDate() {
+		Date endDate = new Date();
 		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
 		try {
 			endDate= dt.parse(eDate);
@@ -137,9 +133,5 @@ public class GetSecurityLogsParameter {
 			e.printStackTrace();
 		}
 		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
 	}
 }

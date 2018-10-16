@@ -59,15 +59,15 @@ webAdminapi:
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:
     develop:
-      check-token : false
+      check-token : true
 
 ---
 # Local
 spring:
   profiles: local
   datasource:
-    jdbc-url: jdbc:sqlserver://172.21.101.101;databaseName=FG_V2
-    username: sqladmin
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
+    username: sa
     password: msqLsa6301
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
@@ -99,6 +99,9 @@ spring:
     
 logging:
   config: classpath:log4j2-dev.xml
+  
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.32:19008
   
 ---
 # Dev

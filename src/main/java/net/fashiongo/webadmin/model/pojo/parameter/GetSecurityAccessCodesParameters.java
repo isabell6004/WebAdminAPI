@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -7,10 +9,15 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class GetSecurityAccessCodesParameters {
 	@ApiModelProperty(required = false, example=" ")
+	@JsonProperty("accesscode")
 	private String accessCode;
+	
 	@ApiModelProperty(required = false, example="2015-01-01")
+	@JsonProperty("sdate")
 	private String sDate;
+	
 	@ApiModelProperty(required = false, example="2020-01-01")
+	@JsonProperty("edate")
 	private String eDate;
 	
 	public String getAccessCode() {

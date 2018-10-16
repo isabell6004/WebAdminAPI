@@ -8,13 +8,13 @@ public class SetResourceParameter {
 	@ApiModelProperty(required = false, example="false")
 	private Boolean active;
 	public Integer getResourceId() {
-		return resourceId;
+		return resourceId == null ? 0 : resourceId;
 	}
 	public void setResourceId(Integer resourceId) {
 		this.resourceId = resourceId;
 	}
 	public Boolean getActive() {
-		return active;
+		return active == null ? false : active;
 	}
 	public void setActive(Boolean active) {
 		this.active = active;

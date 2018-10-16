@@ -85,7 +85,7 @@ public class SitemgmtService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setPaidCampaign(SetPaidCampaignParameter parameters) {
-		ResultCode result = new ResultCode(true, 1, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 		
 		EmConfiguration emConfiguration;
 		List<EmConfiguration> emConfigurationList = parameters.getObjList();

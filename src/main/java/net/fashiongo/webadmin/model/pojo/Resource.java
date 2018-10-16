@@ -9,6 +9,7 @@ public class Resource {
 	private Integer ApplicationID;
 	private String ApplicationName;
 	private String ResourceName;
+	private String DispName;
 	private String ResourceParent;
 	private String ResourceType;
 	private String ResourceUrl;
@@ -60,6 +61,13 @@ public class Resource {
 	}
 	public void setActive(Boolean active) {
 		Active = active;
+	}
+	
+	public String getDispName() {
+		return DispName;
+	}
+	public void setDispName(String dispname) {
+		DispName = dispname;
 	}
 	
 	

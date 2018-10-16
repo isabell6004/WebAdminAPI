@@ -1,6 +1,13 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -9,40 +16,40 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class SetAddSpotSettingParameter {
 	@ApiModelProperty(required = false, example="82")
-	private Integer spotID;
+	private String spotID;
 	
 	@ApiModelProperty(required = false, example="1")
-	private Integer pageID;
+	private String pageID;
 	
 	@ApiModelProperty(required = false, example="7")
-	private Integer categoryID;
+	private String categoryID;
 	
 	@ApiModelProperty(required = false, example="")
-	private Integer bodySizeID;
+	private String bodySizeID;
 	
 	@ApiModelProperty(required = false, example="")
 	private String spotName;
 	
 	@ApiModelProperty(required = false, example="30")
-	private Integer price1;
+	private String price1;
 	
 	@ApiModelProperty(required = false, example="30")
-	private Integer price2;
+	private String price2;
 	
 	@ApiModelProperty(required = false, example="30")
-	private Integer price3;
+	private String price3;
 	
 	@ApiModelProperty(required = false, example="30")
-	private Integer price4;
+	private String price4;
 	
 	@ApiModelProperty(required = false, example="30")
-	private Integer price5;
+	private String price5;
 	
 	@ApiModelProperty(required = false, example="30")
-	private Integer price6;
+	private String price6;
 	
 	@ApiModelProperty(required = false, example="30")
-	private Integer price7;
+	private String price7;
 	
 	@ApiModelProperty(required = false, example="true")
 	private Boolean active;
@@ -51,130 +58,119 @@ public class SetAddSpotSettingParameter {
 	private Boolean includeVendorCategory;
 	
 	@ApiModelProperty(required = false, example="10")
-	private Integer spotInstanceCount;
+	private String spotInstanceCount;
 	
 	@ApiModelProperty(required = false, example="2018-05-01")
-	private String bidEffectiveOn;
+	private String bidEffectiveOn2;
 	
 	@ApiModelProperty(required = false, example="0")
-	private Integer maxPurchasable;
+	private String maxPurchasable;
 	
 	@ApiModelProperty(required = false, example="3")
-	private Integer spotItemCount;
+	private String spotItemCount;
 
 	public Integer getSpotID() {
-		return spotID;
-	}
-
-	public void setSpotID(Integer spotID) {
-		this.spotID = spotID;
+		return StringUtils.isEmpty(spotID) ? 0 : Integer.parseInt(spotID);
 	}
 
 	public Integer getPageID() {
-		return pageID;
-	}
-
-	public void setPageID(Integer pageID) {
-		this.pageID = pageID;
+		return StringUtils.isEmpty(pageID) ? 0 : Integer.parseInt(pageID);
 	}
 
 	public Integer getCategoryID() {
-		return categoryID;
-	}
-
-	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
+		return StringUtils.isEmpty(categoryID) ? null : Integer.parseInt(categoryID);
 	}
 
 	public Integer getBodySizeID() {
-		return bodySizeID;
-	}
-
-	public void setBodySizeID(Integer bodySizeID) {
-		this.bodySizeID = bodySizeID;
+		return StringUtils.isEmpty(bodySizeID) ? null : Integer.parseInt(bodySizeID);
 	}
 
 	public String getSpotName() {
-		return spotName;
-	}
-
-	public void setSpotName(String spotName) {
-		this.spotName = spotName;
+		return StringUtils.isEmpty(spotName) ? "" : spotName;
 	}
 
 	public BigDecimal getPrice1() {
-		return BigDecimal.valueOf(price1);
+		//return BigDecimal.valueOf(price1);
+		//return (price1 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price1);
+		BigDecimal bigDecimalprice1 = new BigDecimal(price1);
+		return (bigDecimalprice1 == null) ? BigDecimal.valueOf(0) : bigDecimalprice1;
 	}
 
 	public BigDecimal getPrice2() {
-		return BigDecimal.valueOf(price2);
+		//return BigDecimal.valueOf(price2);
+		//return (price2 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price2);
+		BigDecimal bigDecimalprice2 = new BigDecimal(price2);
+		return (bigDecimalprice2 == null) ? BigDecimal.valueOf(0) : bigDecimalprice2;
 	}
 
 	public BigDecimal getPrice3() {
-		return BigDecimal.valueOf(price3);
+		//return BigDecimal.valueOf(price3);
+		//return (price3 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price3);
+		BigDecimal bigDecimalprice3 = new BigDecimal(price3);
+		return (bigDecimalprice3 == null) ? BigDecimal.valueOf(0) : bigDecimalprice3;
 	}
 
 	public BigDecimal getPrice4() {
-		return BigDecimal.valueOf(price4);
+		//return BigDecimal.valueOf(price4);
+		//return (price4 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price4);
+		BigDecimal bigDecimalprice4 = new BigDecimal(price4);
+		return (bigDecimalprice4 == null) ? BigDecimal.valueOf(0) : bigDecimalprice4;
 	}
 
 	public BigDecimal getPrice5() {
-		return BigDecimal.valueOf(price5);
+		//return BigDecimal.valueOf(price5);
+		//return (price5 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price5);
+		BigDecimal bigDecimalprice5 = new BigDecimal(price5);
+		return (bigDecimalprice5 == null) ? BigDecimal.valueOf(0) : bigDecimalprice5;
 	}
 
 	public BigDecimal getPrice6() {
-		return BigDecimal.valueOf(price6);
+		//return BigDecimal.valueOf(price6);
+		//return (price6 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price6);
+		BigDecimal bigDecimalprice6 = new BigDecimal(price6);
+		return (bigDecimalprice6 == null) ? BigDecimal.valueOf(0) : bigDecimalprice6;
 	}
 
 	public BigDecimal getPrice7() {
-		return BigDecimal.valueOf(price7);
+		//return BigDecimal.valueOf(price7);
+		//return (price7 == null) ? BigDecimal.valueOf(0) : BigDecimal.valueOf(price7);
+		BigDecimal bigDecimalprice7 = new BigDecimal(price7);
+		return (bigDecimalprice7 == null) ? BigDecimal.valueOf(0) : bigDecimalprice7;
 	}
 
 	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
+		return active == null ? false : active;
 	}
 
 	public Boolean getIncludeVendorCategory() {
-		return includeVendorCategory;
-	}
-
-	public void setIncludeVendorCategory(Boolean includeVendorCategory) {
-		this.includeVendorCategory = includeVendorCategory;
+		return includeVendorCategory == null ? false : active;
 	}
 
 	public Integer getSpotInstanceCount() {
-		return spotInstanceCount;
+		return StringUtils.isEmpty(spotInstanceCount) ? 0 : Integer.parseInt(spotInstanceCount);
 	}
 
-	public void setSpotInstanceCount(Integer spotInstanceCount) {
-		this.spotInstanceCount = spotInstanceCount;
+	public String getBidEffectiveOn2() {
+		return StringUtils.isEmpty(bidEffectiveOn2) ? "" : bidEffectiveOn2;
 	}
-
-	public String getBidEffectiveOn() {
+	
+	@JsonIgnore
+	public Date getBidEffectiveOn() {
+		Date bidEffectiveOn = new Date();
+		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			bidEffectiveOn = dt.parse(bidEffectiveOn2);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		return bidEffectiveOn;
 	}
 
-	public void setBidEffectiveOn(String bidEffectiveOn) {
-		this.bidEffectiveOn = bidEffectiveOn;
-	}
-
 	public Integer getMaxPurchasable() {
-		return maxPurchasable;
-	}
-
-	public void setMaxPurchasable(Integer maxPurchasable) {
-		this.maxPurchasable = maxPurchasable;
+		return StringUtils.isEmpty(maxPurchasable) ? 0 : Integer.parseInt(maxPurchasable);
 	}
 
 	public Integer getSpotItemCount() {
-		return spotItemCount;
-	}
-
-	public void setSpotItemCount(Integer spotItemCount) {
-		this.spotItemCount = spotItemCount;
+		return StringUtils.isEmpty(spotItemCount) ? 0 : Integer.parseInt(spotItemCount);
 	}
 }

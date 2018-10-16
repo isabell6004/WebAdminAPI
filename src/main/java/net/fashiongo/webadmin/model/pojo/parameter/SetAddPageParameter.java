@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -7,24 +9,16 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class SetAddPageParameter {
 	@ApiModelProperty(required = false, example="1")
-	private Integer pageID;
+	private String pageID;
 	
 	@ApiModelProperty(required = false, example="Test")
 	private String pageName;
 
 	public Integer getPageID() {
-		return pageID;
-	}
-
-	public void setPageID(Integer pageID) {
-		this.pageID = pageID;
+		return StringUtils.isEmpty(pageID) ? null : Integer.parseInt(pageID);
 	}
 
 	public String getPageName() {
-		return pageName;
-	}
-
-	public void setPageName(String pageName) {
-		this.pageName = pageName;
+		return StringUtils.isEmpty(pageName) ? "" : pageName;
 	}
 }

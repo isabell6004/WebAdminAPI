@@ -1,9 +1,12 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModelProperty;
 
 public class GetSecurityUserGroupParameter {
 	@ApiModelProperty(required = true, example="1")
+	@JsonProperty("usrid")
 	private Integer usrId;
 
 	public Integer getUsrId() {
@@ -13,5 +16,6 @@ public class GetSecurityUserGroupParameter {
 	public void setUsrId(Integer usrId) {
 		this.usrId = usrId;
 	}
+
 	
 }

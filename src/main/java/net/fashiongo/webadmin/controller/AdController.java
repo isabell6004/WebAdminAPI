@@ -116,6 +116,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
 	public JsonResponse<String> delSpotSetting(@RequestBody Integer spotID) {
+		spotID = spotID == null ? 0 : spotID;
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result = AdService.delSpotSetting(spotID);
 
