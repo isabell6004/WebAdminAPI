@@ -50,8 +50,13 @@ public class Resource {
 		this.resourceName = resourceName;
 	}
 	public String getDispName() {
-		return dispName;
+		String ReturnData = "";
+		if (active) ReturnData = "";
+		else ReturnData = "[x] ";
+		ReturnData += resourceName;
+		return ReturnData;
 	}
+	
 	public void setDispName(String dispName) {
 		this.dispName = dispName;
 	}
@@ -77,20 +82,10 @@ public class Resource {
 		return active;
 	}
 	public void setActive(Boolean active) {
-<<<<<<< HEAD
 		this.active = active;
-=======
-		Active = active;
 	}
 	
-	public String getDispName() {
-		String ReturnData = "";
-		if (Active) ReturnData = "";
-		else ReturnData = "[x] ";
-		ReturnData += ResourceName;
-		return ReturnData;
->>>>>>> branch 'migration' of https://github.com/FashionGo/WebAdminAPI.git
-	}
+
 	
 	
 }
