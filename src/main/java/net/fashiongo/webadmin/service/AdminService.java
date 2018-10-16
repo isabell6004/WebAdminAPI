@@ -27,9 +27,11 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
+import net.fashiongo.webadmin.model.pojo.response.ReturnvalResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
 import net.fashiongo.webadmin.model.primary.SecurityResource;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * 
@@ -253,8 +255,8 @@ public class AdminService extends ApiService {
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetResource(Integer resourceID, boolean active) {
-		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+	public JsonResponse SetResource(Integer resourceID, boolean active) {
+		JsonResponse result = new JsonResponse(true, MSG_UPDATE_SUCCESS, 1, null);
 		SecurityResource sr = securityResourceRepository.findOneByResourceID(resourceID);
 		if(sr != null) {
 			sr.setActive(active);
