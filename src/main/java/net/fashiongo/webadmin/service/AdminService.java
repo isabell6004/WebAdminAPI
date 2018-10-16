@@ -23,6 +23,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParamet
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityMenus2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetActiveSecurityMenusParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityMenusParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityMenuParameter;
@@ -403,6 +405,42 @@ public class AdminService extends ApiService {
 			ssm.setActive(parameters.getActive());
 			securityMenuRepository.save(ssm);
 		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Set Delete Security Menus
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @param SetDeleteSecurityMenusParameter
+	 * @return SetDeleteSecurityMenus
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetDeleteSecurityMenus(SetDeleteSecurityMenusParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, MSG_DELETE_SUCCESS);
+		List<Integer> deleteids = parameters.getIdList();
+		for (Integer id : deleteids) {
+			securityMenuRepository.deleteById(id);
+		}
+		return result;
+	}
+	/**
+	 * 
+	 * Set Active Security Menus
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @param SetActiveSecurityMenusParameter
+	 * @return SetActiveSecurityMenus
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode SetActiveSecurityMenus(SetActiveSecurityMenusParameter parameters) {
+		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		SecurityMenu ssm = securityMenuRepository.findOneByMenuID(parameters.getMenuID());
+		ssm.setActive(parameters.getActive());
+		securityMenuRepository.save(ssm);
 		return result;
 	}
 }

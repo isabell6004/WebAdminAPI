@@ -15,7 +15,7 @@ public class SecurityMenus2 {
 	private String RoutePath;
 	private String MenuIcon;
 	private Integer ApplicationID;
-	private String ListOrder;
+	private Integer ListOrder;
 	private Boolean Visible;
 	private Boolean Active;
 	
@@ -73,10 +73,10 @@ public class SecurityMenus2 {
 	public void setApplicationID(Integer applicationID) {
 		ApplicationID = applicationID;
 	}
-	public String getListOrder() {
+	public Integer getListOrder() {
 		return ListOrder;
 	}
-	public void setListOrder(String listOrder) {
+	public void setListOrder(Integer listOrder) {
 		ListOrder = listOrder;
 	}
 	public Boolean getVisible() {
