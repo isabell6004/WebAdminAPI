@@ -481,21 +481,22 @@ public class SecurityGroupService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	public ResultCode SetDelSecurityUsers(List<DelSecurityUserParameter> parameters) {	
+	public ResultCode SetDelSecurityUsers(DelSecurityUserParameter parameters) {	
 		ResultCode result = new ResultCode(false, 0, null);
-		for(DelSecurityUserParameter delUser: parameters) {
-			SecurityUser securityUser = securityUserRepository.findByUserID(delUser.getUserID());
+		for(Integer delUserID: parameters.getUserList()) {
+			SecurityUser securityUser = securityUserRepository.findByUserID(delUserID);
 			String spName = "up_wa_DeleteSecurityUser";
 			
 			List<Object> params = new ArrayList<Object>();
-			params.add(appName);
-			params.add(securityUser.getUserName());
+			params.add("Fashiongo");
+			params.add(securityUser.getUserID());
 			
 			List<Object> outputParams = new ArrayList<Object>();
 			outputParams.add(0);
 			
 			List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
 			result.setResultCode((Integer) outputParams.get(0));
+			result.setResultMsg(MSG_DELETE_SUCCESS);
 			result.setSuccess(true);
 		}
 		

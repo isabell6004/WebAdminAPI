@@ -31,12 +31,7 @@ public class BuyerController {
 	 * @return JsonResponse
 	 */
 	@RequestMapping(value = "setmodifypassword", method = RequestMethod.POST)
-	public JsonResponse SetModifyPassword(@RequestParam String userid, String newpwd) {
-		SetModifyPasswordParameter parameters = new SetModifyPasswordParameter();
-		userid = StringUtils.isEmpty(userid) ? "-1" : userid;
-		newpwd = StringUtils.isEmpty(newpwd) ? "-2" : newpwd;
-		parameters.setUserName(userid);
-		parameters.setNewPassword(newpwd);
+	public JsonResponse SetModifyPassword(@RequestBody SetModifyPasswordParameter parameters) {
 		JsonResponse result = buyerService.SetModifyPassword(parameters);
 		return result;
 	}

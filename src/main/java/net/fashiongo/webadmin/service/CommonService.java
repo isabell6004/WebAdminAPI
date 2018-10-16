@@ -1,7 +1,7 @@
 package net.fashiongo.webadmin.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +133,7 @@ public class CommonService extends ApiService {
 	 * @return List<AdPageSpot>
 	 */
 	public List<AdPageSpot> GetBidAdPageSpots(Integer pageId) {
-		Date nowDate = new Date();
+		LocalDateTime nowDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0);
 		List<AdPageSpot> result = adPageSpotRepository.findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotName(nowDate, 0, pageId);
 		
 		return result;

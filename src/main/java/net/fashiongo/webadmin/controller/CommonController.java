@@ -1,16 +1,20 @@
 package net.fashiongo.webadmin.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.Resource;
+import net.fashiongo.webadmin.model.pojo.parameter.GetBidAdPageSpotsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCountryStatesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMenuIDParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetServerHeartBeatParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
@@ -71,13 +75,13 @@ public class CommonController {
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Junghwan Lee
-	 * @param pageId
+	 * @param parameter
 	 * @return JsonResponse<List<AdPageSpot>>
 	 */
 	@RequestMapping(value = "getbidadpagespots", method = RequestMethod.POST)
-	public JsonResponse<List<AdPageSpot>> GetBidAdPageSpots(@RequestBody Integer pageId) {
+	public JsonResponse<List<AdPageSpot>> GetBidAdPageSpots(@RequestBody GetBidAdPageSpotsParameter parameter) {
 		JsonResponse<List<AdPageSpot>> results = new JsonResponse<List<AdPageSpot>>();
-		List<AdPageSpot> result = commonService.GetBidAdPageSpots(pageId);
+		List<AdPageSpot> result = commonService.GetBidAdPageSpots(parameter.getPageId());
 		
 		results.setSuccess(true);
 		results.setData(result);
@@ -110,10 +114,9 @@ public class CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
-	public JsonResponse<Integer> GetMenuID(@RequestParam String pageName) {
-		pageName = pageName != null ? pageName : "";
+	public JsonResponse<Integer> GetMenuID(@RequestBody GetMenuIDParameter parameters) {
 		JsonResponse<Integer> results = new JsonResponse<Integer>();
-		Integer result = commonService.GetMenuID(pageName);
+		Integer result = commonService.GetMenuID(parameters.getPageName());
 		results.setData(result);
 		return results;
 	}
@@ -127,9 +130,9 @@ public class CommonController {
 	 * @return "Spring Boot"
 	 */
 	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.POST)
-	public JsonResponse<String> GetServerHeartBeat(@RequestParam Long q) {
+	public JsonResponse<String> GetServerHeartBeat(@RequestBody GetServerHeartBeatParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>();
-		String result = commonService.GetServerHeartBeat(q);
+		String result = commonService.GetServerHeartBeat(parameters.getQ());
 		results.setMessage(result);
 		return results;
 	}
@@ -143,8 +146,8 @@ public class CommonController {
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
-	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestParam String countryAbbrev) {
-		JsonResponse<GetCountryStatesResponse> results = commonService.GetCountryStates(countryAbbrev);
+	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestBody GetCountryStatesParameter parameters) {
+		JsonResponse<GetCountryStatesResponse> results = commonService.GetCountryStates(parameters.getCountryabbrev());
 		
 		return results;
 	}
@@ -186,6 +189,7 @@ public class CommonController {
 	}
 	
 	
+	
 	/**
 	 * 
 	 * Get Security Resources
@@ -198,7 +202,9 @@ public class CommonController {
 	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
 		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, null);
 		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
-		
+		List<Resource> rs = result.getResource();
+		rs = rs.stream().sorted((o1,o2) -> o1.getResourceName().toLowerCase().compareTo(o2.getResourceName().toLowerCase())).collect(Collectors.toList());
+		result.setResource(rs);
 		results.setData(result);
 		return results;
 	}

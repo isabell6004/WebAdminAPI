@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
@@ -72,7 +74,7 @@ public class AdController {
 	 * @author Nayeon Kim
 	 * @return List<CodeBodySize>
 	 */
-	@RequestMapping(value = "getbodysizecode", method = RequestMethod.POST)
+	@RequestMapping(value = "getbodysizelist", method = RequestMethod.POST)
 	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {
 		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null);
 		
@@ -93,13 +95,10 @@ public class AdController {
 	 * @return GetSpotCheckResponse
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
-	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody Integer spotID) {
+	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody GetSpotCheckParameter parameters) {
 		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
-		
-		GetSpotCheckResponse result = AdService.getSpotCheck(spotID);
-		if(result.getSpotID() != null) {
-			results.setData(result);
-		}
+		GetSpotCheckResponse result = AdService.getSpotCheck(parameters.getSpotID());
+		results.setData(result);
 		results.setSuccess(true);
 		
 		return results;
@@ -115,10 +114,9 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-	public JsonResponse<String> delSpotSetting(@RequestBody Integer spotID) {
-		spotID = spotID == null ? 0 : spotID;
+	public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-		ResultCode result = AdService.delSpotSetting(spotID);
+		ResultCode result = AdService.delSpotSetting(parameters.getSpotID());
 
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());

@@ -10,7 +10,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
@@ -18,16 +17,20 @@ import net.fashiongo.webadmin.model.pojo.parameter.DelSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityMenus2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetActiveSecurityMenusParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityAccessCodesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityMenusParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityMenuParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetUserMappingVendorParameter;
@@ -37,6 +40,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityMenus2Response;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityParentMenusResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
@@ -347,9 +352,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityaccessips", method = RequestMethod.POST)
-	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestParam List<Integer> idList) throws Exception {
+	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestBody SetdeletesecuritygroupsParameter data) throws Exception {
 		JsonResponse<String> results = new JsonResponse<String>(true, null, 0, null);
-		ResultCode result = adminService.SetDeleteSecurityAccessIps(idList);
+		ResultCode result = adminService.SetDeleteSecurityAccessIps(data.getData());
 		
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
@@ -381,13 +386,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setactiveresource", method = RequestMethod.POST)
-	public JsonResponse<Integer> SetResource(@RequestBody SetResourceParameter parameters) {
-		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
-		ResultCode result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		
-		return results;
+	public JsonResponse SetResource(@RequestBody SetResourceParameter parameters) {
+		JsonResponse result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
+		return result;
 	}
 	
 	/**
@@ -470,7 +471,7 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="setdeletesecurityusers", method=RequestMethod.POST)
-	public ResultCode SetDelSecurityUsers(@RequestBody List<DelSecurityUserParameter> parameters) {
+	public ResultCode SetDelSecurityUsers(@RequestBody DelSecurityUserParameter parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
 		
 		result = securityGroupService.SetDelSecurityUsers(parameters);
@@ -511,9 +512,96 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityresources", method = RequestMethod.POST)
-	public JsonResponse<Integer> SetDeleteSecurityResources(@RequestParam List<Integer> idList) throws Exception {
+	public JsonResponse<Integer> SetDeleteSecurityResources(@RequestBody SetdeletesecuritygroupsParameter data) throws Exception {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
-		ResultCode result = adminService.SetDeleteSecurityResources(idList);
+		ResultCode result = adminService.SetDeleteSecurityResources(data.getData());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Get Security Parent Menus
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @return GetSecurityParentMenus
+	 */
+	@RequestMapping(value="getsecurityparentmenus", method=RequestMethod.POST)
+	public JsonResponse<GetSecurityParentMenusResponse> GetSecurityParentMenus () {
+		JsonResponse<GetSecurityParentMenusResponse> results = new JsonResponse<GetSecurityParentMenusResponse>(true, null, 0, null);
+		GetSecurityParentMenusResponse result = adminService.GetSecurityParentMenus();
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Get Security Menus2
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @return GetSecurityMenus2
+	 */
+	@RequestMapping(value="getsecuritymenus2", method=RequestMethod.POST)
+	public JsonResponse<GetSecurityMenus2Response> GetSecurityMenus2 (@RequestBody GetSecurityMenus2Parameter parameters) {
+		JsonResponse<GetSecurityMenus2Response> results = new JsonResponse<GetSecurityMenus2Response>(true, null, 0, null);
+		GetSecurityMenus2Response result = adminService.GetSecurityMenus2(parameters);
+		results.setData(result);
+		return results;
+	}
+	
+	
+	/**
+	 * 
+	 * Set Security Menu
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @return SetSecurityMenu
+	 */
+	@RequestMapping(value="setsecuritymenu", method=RequestMethod.POST)
+	public JsonResponse<Integer> SetSecurityMenu(@RequestBody SetSecurityMenuParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
+		ResultCode result = adminService.SetSecurityMenu(parameters);
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set Delete Security Menus
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @return SetDeleteSecurityMenus
+	 */
+	@RequestMapping(value="setdeletesecuritymenus", method=RequestMethod.POST)
+	public JsonResponse<Integer> SetDeleteSecurityMenus(@RequestBody SetDeleteSecurityMenusParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
+		ResultCode result = adminService.SetDeleteSecurityMenus(parameters);
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set Active Security Menus
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Jiwon Kim
+	 * @return SetActiveSecurityMenus
+	 */
+	@RequestMapping(value="setactivesecuritymenus", method=RequestMethod.POST)
+	public JsonResponse<Integer> SetActiveSecurityMenus(@RequestBody SetActiveSecurityMenusParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
+		ResultCode result = adminService.SetActiveSecurityMenus(parameters);
+		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
 		return results;

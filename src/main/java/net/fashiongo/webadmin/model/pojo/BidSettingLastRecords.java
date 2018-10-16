@@ -1,9 +1,9 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 
@@ -29,7 +29,7 @@ public class BidSettingLastRecords {
 	
 	@JsonProperty("FromDate")
 	@Column(name = "FromDate")
-	private String fromDate;
+	private LocalDateTime fromDate;
 	
 	@JsonProperty("WeekDateName")
 	@Column(name = "AdDateName")
@@ -37,23 +37,23 @@ public class BidSettingLastRecords {
 	
 	@JsonProperty("BidStartedOn")
 	@Column(name = "BidStartedOn")
-	private String bidStartedOn;
+	private LocalDateTime bidStartedOn;
 	
 	@JsonProperty("BidEndedOn")
 	@Column(name = "BidEndedOn")
-	private String bidEndedOn;
+	private LocalDateTime bidEndedOn;
 	
 	@JsonProperty("BidStartingPrice")
-	@Column(name = "BidStartingPrice")
-	private String bidStartingPrice;
+	@Column(name = "bidstartingprice")
+	private BigDecimal bidStartingPrice;
 	
 	@JsonProperty("BidPriceUnit")
-	@Column(name = "BidPriceUnit")
-	private String bidPriceUnit;
+	@Column(name = "bidpriceunit")
+	private BigDecimal bidPriceUnit;
 	
 	@JsonProperty("BuyItNowPrice")
-	@Column(name = "BuyItNowPrice")
-	private String buyItNowPrice;
+	@Column(name = "buyitnowprice")
+	private BigDecimal buyItNowPrice;
 	
 	@JsonProperty("BidSettingID")
 	private Integer bidSettingID;
@@ -69,142 +69,153 @@ public class BidSettingLastRecords {
 	
 	@JsonProperty("SpotInstanceCount")
 	private Integer spotInstanceCount;
-	
+
 	public Integer getSpotID() {
 		return spotID;
 	}
+
 	public void setSpotID(Integer spotID) {
 		this.spotID = spotID;
 	}
+
 	public String getSpotName() {
 		return spotName;
 	}
+
 	public void setSpotName(String spotName) {
 		this.spotName = spotName;
 	}
+
 	public Integer getPageID() {
 		return pageID;
 	}
+
 	public void setPageID(Integer pageID) {
 		this.pageID = pageID;
 	}
+
 	public String getPageName() {
 		return pageName;
 	}
+
 	public void setPageName(String pageName) {
 		this.pageName = pageName;
 	}
+
 	public String getFromDate() {
-		if (fromDate != null) {
-			SimpleDateFormat convertDate = new SimpleDateFormat("MM/dd/yyyy");
-			SimpleDateFormat convertString = new SimpleDateFormat("MM/dd/yyyy");
-			try {
-				fromDate = convertString.format(convertDate.parse(fromDate));
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return fromDate;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+		return fromDate.format(formatter);
 	}
-	public void setFromDate(String fromDate) {
+
+	public void setFromDate(LocalDateTime fromDate) {
 		this.fromDate = fromDate;
 	}
+
 	public String getAdDateName() {
 		return adDateName.substring(0, 3);
 	}
+
 	public void setAdDateName(String adDateName) {
 		this.adDateName = adDateName;
 	}
+
 	public String getBidStartedOn() {
-		if (bidStartedOn!=null) {
-			SimpleDateFormat convertDate = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-			SimpleDateFormat convertString = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-			try {
-				bidStartedOn = convertString.format(convertDate.parse(bidStartedOn));
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (bidStartedOn == null) {
+			return "";
 		}
-		return bidStartedOn;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
+		return bidStartedOn.format(formatter);
 	}
-	public void setBidStartedOn(String bidStartedOn) {
+
+	public void setBidStartedOn(LocalDateTime bidStartedOn) {
 		this.bidStartedOn = bidStartedOn;
 	}
+
 	public String getBidEndedOn() {
-		if (bidEndedOn!=null) {
-			SimpleDateFormat convertDate = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-			SimpleDateFormat convertString = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-			try {
-				bidEndedOn = convertString.format(convertDate.parse(bidEndedOn));
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (bidEndedOn == null) {
+			return "";
 		}
-		return bidEndedOn;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
+		String formattedBidEndedOn = bidEndedOn.format(formatter);
+		return formattedBidEndedOn;
 	}
-	public void setBidEndedOn(String bidEndedOn) {
+
+	public void setBidEndedOn(LocalDateTime bidEndedOn) {
 		this.bidEndedOn = bidEndedOn;
 	}
+
 	public String getBidStartingPrice() {
-		if (bidStartingPrice != null) {
-			DecimalFormat df = new DecimalFormat("###.###");
-			bidStartingPrice = df.format(bidStartingPrice);
+		if (bidStartingPrice == null) {
+			return "";
 		}
-		return bidStartingPrice;
+		DecimalFormat df = new DecimalFormat("###.###");
+		return df.format(bidStartingPrice);
 	}
-	public void setBidStartingPrice(String bidStartingPrice) {
+
+	public void setBidStartingPrice(BigDecimal bidStartingPrice) {
 		this.bidStartingPrice = bidStartingPrice;
 	}
+
 	public String getBidPriceUnit() {
-		if (bidPriceUnit != null) {
-			DecimalFormat df = new DecimalFormat("###.###");
-			bidPriceUnit = df.format(bidPriceUnit);
+		if (bidPriceUnit == null) {
+			return "";
 		}
-		return bidPriceUnit;
+		DecimalFormat df = new DecimalFormat("###.###");
+		return df.format(bidPriceUnit);
 	}
-	public void setBidPriceUnit(String bidPriceUnit) {
+
+	public void setBidPriceUnit(BigDecimal bidPriceUnit) {
 		this.bidPriceUnit = bidPriceUnit;
 	}
+
 	public String getBuyItNowPrice() {
-		if (buyItNowPrice != null) {
-			DecimalFormat df = new DecimalFormat("###.###");
-			buyItNowPrice = df.format(buyItNowPrice);
+		if (buyItNowPrice == null) {
+			return "";
 		}
-		return buyItNowPrice;
+		DecimalFormat df = new DecimalFormat("###.###");
+		return df.format(buyItNowPrice);
 	}
-	public void setBuyItNowPrice(String buyItNowPrice) {
+
+	public void setBuyItNowPrice(BigDecimal buyItNowPrice) {
 		this.buyItNowPrice = buyItNowPrice;
 	}
+
 	public Integer getBidSettingID() {
 		return bidSettingID;
 	}
+
 	public void setBidSettingID(Integer bidSettingID) {
 		this.bidSettingID = bidSettingID;
 	}
+
 	public Integer getEmptySpotCnt() {
 		return emptySpotCnt;
 	}
+
 	public void setEmptySpotCnt(Integer emptySpotCnt) {
 		this.emptySpotCnt = emptySpotCnt;
 	}
+
 	public Integer getBidAcceptedCnt() {
 		return bidAcceptedCnt;
 	}
+
 	public void setBidAcceptedCnt(Integer bidAcceptedCnt) {
 		this.bidAcceptedCnt = bidAcceptedCnt;
 	}
+
 	public Integer getPurchasedCnt() {
 		return purchasedCnt;
 	}
+
 	public void setPurchasedCnt(Integer purchasedCnt) {
 		this.purchasedCnt = purchasedCnt;
 	}
+
 	public Integer getSpotInstanceCount() {
 		return spotInstanceCount;
 	}
+
 	public void setSpotInstanceCount(Integer spotInstanceCount) {
 		this.spotInstanceCount = spotInstanceCount;
 	}

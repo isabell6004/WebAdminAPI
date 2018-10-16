@@ -3,14 +3,18 @@
  */
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import javax.persistence.Convert;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 /**
  * Set ShowList Parameters
+ * 
  * @author Sanghyup Kim
  */
 public class GetShowListParameters {
@@ -29,22 +33,24 @@ public class GetShowListParameters {
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("location")
 	private String location;
-	
+
 	@ApiModelProperty(required = true, example = "1")
 	@JsonProperty("active")
 	private Integer active;
-	
+
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("orderby")
 	private String orderBy;
-	
+
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("fromdate")
-	private Date fromDate;
-	
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime fromDate;
+
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("todate")
-	private Date toDate;
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime toDate;
 
 	public Integer getPageNum() {
 		return pageNum;
@@ -94,22 +100,20 @@ public class GetShowListParameters {
 		this.orderBy = orderBy;
 	}
 
-	public Date getFromDate() {
+	public LocalDateTime getFromDate() {
 		return fromDate;
 	}
 
-	public void setFromDate(Date fromDate) {
+	public void setFromDate(LocalDateTime fromDate) {
 		this.fromDate = fromDate;
 	}
 
-	public Date getToDate() {
+	public LocalDateTime getToDate() {
 		return toDate;
 	}
 
-	public void setToDate(Date toDate) {
+	public void setToDate(LocalDateTime toDate) {
 		this.toDate = toDate;
 	}
-
-	
 
 }

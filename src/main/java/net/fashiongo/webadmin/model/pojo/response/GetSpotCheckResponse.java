@@ -1,9 +1,12 @@
 package net.fashiongo.webadmin.model.pojo.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Nayeon Kim
  */
 public class GetSpotCheckResponse {
+	 @JsonProperty("SpotID")
 	private Integer spotID;
 
 	public Integer getSpotID() {

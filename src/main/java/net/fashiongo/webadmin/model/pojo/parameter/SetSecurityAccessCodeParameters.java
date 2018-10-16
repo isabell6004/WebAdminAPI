@@ -1,7 +1,5 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
