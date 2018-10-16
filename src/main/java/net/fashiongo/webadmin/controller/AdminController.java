@@ -40,7 +40,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.pojo.response.ReturnvalResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.service.AdminService;
 import net.fashiongo.webadmin.service.SecurityGroupService;

@@ -27,7 +27,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
-import net.fashiongo.webadmin.model.pojo.response.ReturnvalResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
 import net.fashiongo.webadmin.model.primary.SecurityResource;
