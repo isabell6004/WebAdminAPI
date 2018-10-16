@@ -46,7 +46,7 @@ public class ShowSchedule implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ShowScheduleID")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("ShowScheduleID")
 	private Integer showScheduleID;
 
@@ -55,65 +55,69 @@ public class ShowSchedule implements Serializable {
 	@Column(name = "ShowID")
 	@JsonProperty("ShowID")
 	private int showID;
-	
+
 	@Size(max = 50)
 	@Column(name = "BannerImage")
 	@JsonProperty("BannerImage")
 	private String bannerImage;
-	
+
 	@Size(max = 50)
 	@Column(name = "TitleImage")
 	@JsonProperty("TitleImage")
 	private String titleImage;
-/*	
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "DateFrom")
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonProperty("DateFrom")
-	private Date dateFrom;
-*/
+	/*
+	 * @Basic(optional = false)
+	 * 
+	 * @NotNull
+	 * 
+	 * @Column(name = "DateFrom")
+	 * 
+	 * @Temporal(TemporalType.TIMESTAMP)
+	 * 
+	 * @JsonProperty("DateFrom") private Date dateFrom;
+	 */
 	@JsonProperty("DateFrom")
 	@Column(name = "DateFrom")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime dateFrom;
 
-/*	
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "DateTo")
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonProperty("DateTo")
-	private Date dateTo;
-*/
+	/*
+	 * @Basic(optional = false)
+	 * 
+	 * @NotNull
+	 * 
+	 * @Column(name = "DateTo")
+	 * 
+	 * @Temporal(TemporalType.TIMESTAMP)
+	 * 
+	 * @JsonProperty("DateTo") private Date dateTo;
+	 */
 	@JsonProperty("DateTo")
 	@Column(name = "DateTo")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime dateTo;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "Active")
 	@JsonProperty("Active")
 	private boolean active;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ListOrder")
 	@JsonProperty("ListOrder")
 	private int listOrder;
-	
+
 	@Size(max = 50)
 	@Column(name = "MobileImage")
 	@JsonProperty("MobileImage")
 	private String mobileImage;
 
-
 	@Transient
 	@Column(name = "rowno")
 	@JsonProperty("rowno")
 	private long rowNo;
-	
 
 	@Transient
 	@Column(name = "ShowName")
@@ -147,7 +151,8 @@ public class ShowSchedule implements Serializable {
 		this.showScheduleID = showScheduleID;
 	}
 
-	public ShowSchedule(Integer showScheduleID, int showID, LocalDateTime dateFrom, LocalDateTime dateTo, boolean active, int listOrder) {
+	public ShowSchedule(Integer showScheduleID, int showID, LocalDateTime dateFrom, LocalDateTime dateTo,
+			boolean active, int listOrder) {
 		this.showScheduleID = showScheduleID;
 		this.showID = showID;
 		this.dateFrom = dateFrom;
@@ -227,8 +232,6 @@ public class ShowSchedule implements Serializable {
 	public void setMobileImage(String mobileImage) {
 		this.mobileImage = mobileImage;
 	}
-	
-	
 
 	public long getRowNo() {
 		return rowNo;

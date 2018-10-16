@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +57,8 @@ public class SitemgmtShowService extends ApiService {
 			orderBy = null;
 		final String showName = parameters.getShowName();
 
-		final Date fromDate = parameters.getFromDate();
-		final Date toDate = parameters.getToDate();
+		final LocalDateTime fromDate = parameters.getFromDate();
+		final LocalDateTime toDate = parameters.getToDate();
 
 		params.add(pageNum);
 		params.add(pageSize);
@@ -239,7 +238,6 @@ public class SitemgmtShowService extends ApiService {
 		return result;
 	}
 
-
 	/**
 	 * 
 	 * Get Show detail
@@ -252,12 +250,11 @@ public class SitemgmtShowService extends ApiService {
 	public ResultResponse<ListShow> getShowDetail(Integer showID) {
 
 		ResultResponse<ListShow> result = new ResultResponse<ListShow>();
-		
+
 		ListShow listShow = listShowRepository.findOneByShowID(showID);
-		result.setData(listShow);		
+		result.setData(listShow);
 		return result;
 	}
-	
 
 	/**
 	 * 
@@ -278,7 +275,7 @@ public class SitemgmtShowService extends ApiService {
 		final Integer pageNum = parameters.getPageNum();
 		final Integer pageSize = parameters.getPageSize();
 		final Integer active = parameters.getActive();
-		
+
 		String showName = parameters.getShowName();
 		if (showName == "")
 			showName = null;
@@ -289,8 +286,8 @@ public class SitemgmtShowService extends ApiService {
 		if (orderBy == "")
 			orderBy = null;
 
-		Date dateFrom = parameters.getDateFrom();
-		Date dateTo = parameters.getDateTo();
+		LocalDateTime dateFrom = parameters.getDateFrom();
+		LocalDateTime dateTo = parameters.getDateTo();
 
 		params.add(pageNum);
 		params.add(pageSize);
@@ -312,11 +309,11 @@ public class SitemgmtShowService extends ApiService {
 		final List<ShowSchedule> showScheduleList = (List<ShowSchedule>) _result.get(1);
 
 		resultSet.setSingleValueResultList(singleValueResultList);
-		resultSet.setShowScheduleList(showScheduleList);;
+		resultSet.setShowScheduleList(showScheduleList);
+		;
 
 		return resultSet;
 	}
-	
 
 	/**
 	 * 
@@ -330,13 +327,13 @@ public class SitemgmtShowService extends ApiService {
 	public ResultResponse<Integer> setShow(SetShowParameters parameters) {
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
-		
+
 		Integer showID = parameters.getShowId();
 		Boolean active = parameters.getActive();
 		String location = parameters.getLocation();
 		String showName = parameters.getShowName();
 		String url = parameters.getUrl();
-		
+
 		ListShow listShow;
 		if (showID > 0) { // update
 			listShow = listShowRepository.findOneByShowID(showID);
@@ -346,14 +343,13 @@ public class SitemgmtShowService extends ApiService {
 				listShow.setShowName(showName);
 				listShow.setUrl(url);
 
-				listShowRepository.save(listShow);				
+				listShowRepository.save(listShow);
 			}
-		}
-		else { // insert
+		} else { // insert
 			listShow = new ListShow();
 			ListShow listShow2 = listShowRepository.findTopByOrderByShowIDDesc();
-			if (listShow2 != null){
-				showID = listShow2.getShowID() +1;
+			if (listShow2 != null) {
+				showID = listShow2.getShowID() + 1;
 			}
 
 			listShow.setShowID(showID);
@@ -362,13 +358,12 @@ public class SitemgmtShowService extends ApiService {
 			listShow.setShowName(showName);
 			listShow.setUrl(url);
 
-			listShowRepository.save(listShow);				
+			listShowRepository.save(listShow);
 		}
 
 		result.setResultWrapper(true, 1, showID, MSG_SAVE_SUCCESS, showID);
 
 		return result;
 	}
-	
-	
+
 }

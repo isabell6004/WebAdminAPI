@@ -1,9 +1,11 @@
 package net.fashiongo.webadmin.model.primary;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,13 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 /**
  *
@@ -46,17 +48,17 @@ public class ShowSchedulePromotionPlan implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "PlanID")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("")
 	private Integer planID;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Size(min = 1, max = 50)
 	@Column(name = "PlanName")
 	@JsonProperty("")
 	private String planName;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ShowScheduleID")
@@ -68,42 +70,46 @@ public class ShowSchedulePromotionPlan implements Serializable {
 	@Column(name = "IsOnline")
 	@JsonProperty("")
 	private boolean isOnline;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "IsOffline")
 	@JsonProperty("")
 	private boolean isOffline;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CommissionEffectiveFrom")
-	@Temporal(TemporalType.TIMESTAMP)
+//	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("")
-	private Date commissionEffectiveFrom;
-	
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime commissionEffectiveFrom;
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CommissionEffectiveTo")
-	@Temporal(TemporalType.TIMESTAMP)
+//	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("")
-	private Date commissionEffectiveTo;
-	
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime commissionEffectiveTo;
+
 	@Column(name = "CreatedOn")
-	@Temporal(TemporalType.TIMESTAMP)
+//	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("")
-	private Date createdOn;
-	
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime createdOn;
+
 	@Size(max = 50)
 	@Column(name = "CreatedBy")
 	@JsonProperty("")
 	private String createdBy;
-	
+
 	@Column(name = "ModifiedOn")
-	@Temporal(TemporalType.TIMESTAMP)
+//	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("")
-	private Date modifiedOn;
-	
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime modifiedOn;
+
 	@Size(max = 50)
 	@Column(name = "ModifiedBy")
 	@JsonProperty("")
@@ -117,7 +123,7 @@ public class ShowSchedulePromotionPlan implements Serializable {
 	}
 
 	public ShowSchedulePromotionPlan(Integer planID, String planName, int showScheduleID, boolean isOnline,
-			boolean isOffline, Date commissionEffectiveFrom, Date commissionEffectiveTo) {
+			boolean isOffline, LocalDateTime commissionEffectiveFrom, LocalDateTime commissionEffectiveTo) {
 		this.planID = planID;
 		this.planName = planName;
 		this.showScheduleID = showScheduleID;
@@ -167,27 +173,27 @@ public class ShowSchedulePromotionPlan implements Serializable {
 		this.isOffline = isOffline;
 	}
 
-	public Date getCommissionEffectiveFrom() {
+	public LocalDateTime getCommissionEffectiveFrom() {
 		return commissionEffectiveFrom;
 	}
 
-	public void setCommissionEffectiveFrom(Date commissionEffectiveFrom) {
+	public void setCommissionEffectiveFrom(LocalDateTime commissionEffectiveFrom) {
 		this.commissionEffectiveFrom = commissionEffectiveFrom;
 	}
 
-	public Date getCommissionEffectiveTo() {
+	public LocalDateTime getCommissionEffectiveTo() {
 		return commissionEffectiveTo;
 	}
 
-	public void setCommissionEffectiveTo(Date commissionEffectiveTo) {
+	public void setCommissionEffectiveTo(LocalDateTime commissionEffectiveTo) {
 		this.commissionEffectiveTo = commissionEffectiveTo;
 	}
 
-	public Date getCreatedOn() {
+	public LocalDateTime getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Date createdOn) {
+	public void setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
 	}
 
@@ -199,11 +205,11 @@ public class ShowSchedulePromotionPlan implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Date getModifiedOn() {
+	public LocalDateTime getModifiedOn() {
 		return modifiedOn;
 	}
 
-	public void setModifiedOn(Date modifiedOn) {
+	public void setModifiedOn(LocalDateTime modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
 

@@ -152,5 +152,4 @@ public class SetShowInfoParameters {
 		this.crud = crud;
 	}
 
-	
 }

@@ -72,5 +72,5 @@ public class SetShowParameters {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	
+
 }
