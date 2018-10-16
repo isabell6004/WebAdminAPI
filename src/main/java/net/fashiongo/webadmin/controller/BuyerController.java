@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.parameter.SetModifyPasswordParameter;
@@ -30,7 +31,7 @@ public class BuyerController {
 	 * @return JsonResponse
 	 */
 	@RequestMapping(value = "setmodifypassword", method = RequestMethod.POST)
-	public JsonResponse SetModifyPassword(@RequestBody String userid, String newpwd) {
+	public JsonResponse SetModifyPassword(@RequestParam String userid, String newpwd) {
 		SetModifyPasswordParameter parameters = new SetModifyPasswordParameter();
 		userid = StringUtils.isEmpty(userid) ? "-1" : userid;
 		newpwd = StringUtils.isEmpty(newpwd) ? "-2" : newpwd;

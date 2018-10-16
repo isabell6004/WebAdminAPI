@@ -61,7 +61,7 @@ public class ResultResponse<T> {
 		this.message = message;
 	}
 
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 

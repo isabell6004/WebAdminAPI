@@ -33,7 +33,7 @@ public class BuyerService extends ApiService {
 	public JsonResponse SetModifyPassword(SetModifyPasswordParameter parameters) {
 		
 		ObjectMapper mapper = new ObjectMapper();
-		JsonResponse result = new JsonResponse();
+		JsonResponse result = new JsonResponse(true, null, 0, null);
 		try {
 			String jsonParameters = mapper.writeValueAsString(parameters);
 			result = httpClient.post("membership/resetPassword", jsonParameters);
