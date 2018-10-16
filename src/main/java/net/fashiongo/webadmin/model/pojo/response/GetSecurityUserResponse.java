@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.fashiongo.webadmin.model.pojo.SecurityUsers;
 
 public class GetSecurityUserResponse {
-	@JsonProperty("data")
+	@JsonProperty("Table")
 	private List<SecurityUsers> securityUserList;
 
 	public List<SecurityUsers> getSecurityUserList() {

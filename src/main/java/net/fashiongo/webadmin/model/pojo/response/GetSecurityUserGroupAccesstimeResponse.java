@@ -8,10 +8,10 @@ import net.fashiongo.webadmin.model.pojo.LoginControl;
 import net.fashiongo.webadmin.model.pojo.MapUserGroup;
 
 public class GetSecurityUserGroupAccesstimeResponse {
-	@JsonProperty("data")
+	@JsonProperty("Table")
 	private List<MapUserGroup> mapUserGroupList;
 	
-	@JsonProperty("data2")
+	@JsonProperty("Table1")
 	private List<LoginControl> loginControlList;
 	
 	private boolean success;

@@ -270,13 +270,13 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecurityusers", method=RequestMethod.POST)
-	public GetSecurityUserResponse GetSecurityUsers(@RequestBody GetSecurityUserParameter parameters) {
+	public JsonResponse<GetSecurityUserResponse> GetSecurityUsers(@RequestBody GetSecurityUserParameter parameters) {
 		JsonResponse<GetSecurityUserResponse> results = new JsonResponse<GetSecurityUserResponse>(false, null, 0, null);
 		GetSecurityUserResponse result = securityGroupService.GetSecurityUsers(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 		
-		return results.getData();
+		return results;
 	}
 	
 	/**
@@ -289,14 +289,14 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecurityuserpermissions", method=RequestMethod.POST)
-	public GetSecurityGroupPermissionsResponse GetSecurityUserPermissions(@RequestBody GetSecurityUserPermissionsParameter parameters) {
+	public JsonResponse<GetSecurityGroupPermissionsResponse> GetSecurityUserPermissions(@RequestBody GetSecurityUserPermissionsParameter parameters) {
 		JsonResponse<GetSecurityGroupPermissionsResponse> results = new JsonResponse<GetSecurityGroupPermissionsResponse>(false, null, 0, null);
 		GetSecurityGroupPermissionsResponse result = securityGroupService.GetSecurityUserPermissions(parameters);
 		
 		results.setData(result);
 		results.setSuccess(true);
 		
-		return results.getData();
+		return results;
 	}
 	
 	/**
@@ -408,13 +408,13 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "getusermappingvendor", method=RequestMethod.POST)
-	public GetUserMappingVendorResponse GetUserMappingVendor(@RequestBody GetUserMappingVendorParameter parameters) {
+	public JsonResponse<GetUserMappingVendorResponse> GetUserMappingVendor(@RequestBody GetUserMappingVendorParameter parameters) {
 		JsonResponse<GetUserMappingVendorResponse> results = new JsonResponse<GetUserMappingVendorResponse>(false, null, 0, null);
 		GetUserMappingVendorResponse result = securityGroupService.GetUserMappingVendor(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 		
-		return results.getData();
+		return results;
 	}
 
 	/**
@@ -443,6 +443,7 @@ public class AdminController {
 	 * @param parameters
 	 * @return
 	 */
+	@RequestMapping(value = "setusermappingvendor", method=RequestMethod.POST)
 	public ResultCode SetUserMappingVendor(@RequestBody SetUserMappingVendorParameter parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
 		
@@ -460,13 +461,13 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecurityusergroupaccesstimes", method=RequestMethod.POST)
-	public GetSecurityUserGroupAccesstimeResponse GetSecurityUserGroupAccessTimes(@RequestBody GetSecurityUserGroupParameter parameters) {
+	public JsonResponse<GetSecurityUserGroupAccesstimeResponse> GetSecurityUserGroupAccessTimes(@RequestBody GetSecurityUserGroupParameter parameters) {
 		JsonResponse<GetSecurityUserGroupAccesstimeResponse> results = new JsonResponse<GetSecurityUserGroupAccesstimeResponse>(false, null, 0, null);
 		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.GetSecurityUserGroupAccessTimes(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 		
-		return results.getData();
+		return results;
 	}
 	
 	/**
@@ -478,7 +479,7 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="setdeletesecurityusers", method=RequestMethod.POST)
-	public ResultCode SetDelSecurityUsers(@RequestBody DelSecurityUserParameter parameters) {
+	public ResultCode SetDelSecurityUsers(@RequestBody List<DelSecurityUserParameter> parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
 		
 		result = securityGroupService.SetDelSecurityUsers(parameters);
