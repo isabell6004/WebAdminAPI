@@ -470,7 +470,7 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="setdeletesecurityusers", method=RequestMethod.POST)
-	public ResultCode SetDelSecurityUsers(@RequestBody List<DelSecurityUserParameter> parameters) {
+	public ResultCode SetDelSecurityUsers(@RequestBody DelSecurityUserParameter parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
 		
 		result = securityGroupService.SetDelSecurityUsers(parameters);
