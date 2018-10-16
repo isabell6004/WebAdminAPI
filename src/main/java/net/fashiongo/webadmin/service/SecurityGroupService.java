@@ -1,15 +1,21 @@
 package net.fashiongo.webadmin.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.fashiongo.webadmin.dao.primary.MapWaUserVendorRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityGroupRepository;
@@ -38,11 +44,14 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetUserMappingVendorParameter
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetUserByNameResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 import net.fashiongo.webadmin.model.primary.SecurityPermissionGroup;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 /**
  * 
  * @author Reo
@@ -66,7 +75,11 @@ public class SecurityGroupService extends ApiService {
 	private MapWaUserVendorRepository mapWaUserVendorRepository;
 	
 	@Value("${spring.application.name}")
-	private String APPNAME;
+	private String appName;
+	
+	@Autowired
+	@Qualifier("serviceJsonClient")
+	private HttpClient httpClient;
 
 	/**
 	 * 
@@ -330,7 +343,7 @@ public class SecurityGroupService extends ApiService {
 		return result;
 	}
 	
-	@Transactional
+	@Transactional("primaryTransactionManager")
 	public ResultCode setActiveGroup(Integer GroupID, boolean Active) {
 		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
 		
@@ -367,7 +380,7 @@ public class SecurityGroupService extends ApiService {
 	 * @param active
 	 * @return
 	 */
-	@Transactional
+	@Transactional("primaryTransactionManager")
 	public ResultCode setSecurityUserActive(Integer userID, boolean active) {
 		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
 		SecurityUser securityUser = securityUserRepository.findByUserID(userID);
@@ -468,41 +481,61 @@ public class SecurityGroupService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	public ResultCode SetDelSecurityUsers(DelSecurityUserParameter parameters) {		
-		SecurityUser securityUser = securityUserRepository.findByUserID(parameters.getUserID());
+	public ResultCode SetDelSecurityUsers(List<DelSecurityUserParameter> parameters) {	
 		ResultCode result = new ResultCode(false, 0, null);
-		String spName = "up_wa_DeleteSecurityUser";
-		
-		List<Object> params = new ArrayList<Object>();
-		params.add(APPNAME);
-		params.add(securityUser.getUserName());
-		
-		List<Object> outputParams = new ArrayList<Object>();
-		outputParams.add(0);
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
-		result.setResultCode((Integer) outputParams.get(0));
-		result.setSuccess(true);
+		for(DelSecurityUserParameter delUser: parameters) {
+			SecurityUser securityUser = securityUserRepository.findByUserID(delUser.getUserID());
+			String spName = "up_wa_DeleteSecurityUser";
+			
+			List<Object> params = new ArrayList<Object>();
+			params.add(appName);
+			params.add(securityUser.getUserName());
+			
+			List<Object> outputParams = new ArrayList<Object>();
+			outputParams.add(0);
+			
+			List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
+			result.setResultCode((Integer) outputParams.get(0));
+			result.setSuccess(true);
+		}
 		
 		return result;
 	}
 	
-	public ResultCode SetCreateSecurityUser(SetSecurityUserParameter jsonParameters) {
-		SecurityUserCreate securityUserCreateData = jsonParameters.getData().getUser();
+	public ResultCode SetCreateSecurityUser(SetSecurityUserParameter jsonParameters) throws JsonProcessingException {
 		ResultCode result = new ResultCode(false, 0, null);
-		String spName = "up_wa_CreateSecurityUser";
-		List<Object> params = new ArrayList<Object>();
-		params.add(APPNAME);
-		params.add(securityUserCreateData.getUserName());
-		params.add(securityUserCreateData.getPassword());
+		SecurityUserCreate userData = jsonParameters.getData().getUser();
+		String uri = "/membership/createMembership";
+		ObjectMapper mapper = new ObjectMapper();
+		JsonResponse<?> ret = httpClient.postObject(uri, mapper.writeValueAsString(userData));
 		
-		List<Object> outputParams = new ArrayList<Object>();
-		outputParams.add(0);
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
-		result.setResultCode((Integer) outputParams.get(0));
-		result.setSuccess(true);
-		
+		if (ret.isSuccess()) {
+			Boolean userByNameSuccess = true;
+			String guid = null;
+			String userByNameSpName = "aspnet_Membership_GetUserByName";
+			
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+			LocalDateTime now = LocalDateTime.now();
+			
+			List<Object> userByNameParams = new ArrayList<Object>();
+			userByNameParams.add(appName);
+			userByNameParams.add(userData.getUserName());
+			userByNameParams.add(0);
+			userByNameParams.add(dtf.format(now));
+			List<Object> _result = jdbcHelper.executeSP(userByNameSpName, userByNameParams);
+			GetUserByNameResponse userByNameRes = (GetUserByNameResponse) _result.get(0);
+			
+			if (userByNameRes.getUserId() != null) {
+				userByNameSuccess = false;
+			} else {
+				guid = userByNameRes.getUserId();
+				String userRoleSpName = "aspnet_UsersInRoles_AddUsersToRoles";
+				
+				List<Object> userRoleParams = new ArrayList<Object>();
+				userRoleParams.add(appName);
+			}
+			
+		}
 		return result;
 	}
 }

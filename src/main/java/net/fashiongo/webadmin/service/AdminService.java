@@ -137,9 +137,9 @@ public class AdminService extends ApiService {
 		String spName = "up_Security_GetLoginLog";
 		List<Object> params = new ArrayList<Object>();
 
-		params.add(parameters.getPageNum());
-		params.add(parameters.getPageSize());
-		params.add(parameters.getUsrId());
+		params.add(parameters.getPagenum());
+		params.add(parameters.getPagesize());
+		params.add(parameters.getUsrid());
 		params.add(parameters.getIp());
 		params.add(parameters.getStartDate());
 		params.add(parameters.getEndDate());

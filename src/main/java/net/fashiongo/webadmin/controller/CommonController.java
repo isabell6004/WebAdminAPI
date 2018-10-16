@@ -198,15 +198,7 @@ public class CommonController {
 	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
 		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, null);
 		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
-		List<Resource> rs = result.getResource();
-		for (Resource rssub : rs) {
-			
-			String ReturnData = "";
-			if (rssub.getActive()) ReturnData = "";
-			else ReturnData = "[x] ";
-			ReturnData += rssub.getDispName();
-			rssub.setDispName(ReturnData);
-		}
+		
 		results.setData(result);
 		return results;
 	}

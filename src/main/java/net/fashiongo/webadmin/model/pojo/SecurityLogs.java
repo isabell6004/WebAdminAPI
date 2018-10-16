@@ -2,19 +2,19 @@ package net.fashiongo.webadmin.model.pojo;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Nayeon Kim
  */
 public class SecurityLogs {
-	@Column(name = "LogID")
+	@JsonProperty("LogID")
 	private Integer logID;
-	@Column(name = "UserName")
+	@JsonProperty("UserName")
 	private String userName;
-	@Column(name = "IP")
+	@JsonProperty("IP")
 	private String ip;
-	@Column(name = "LoginOn")
+	@JsonProperty("LoginOn")
 	private LocalDateTime loginOn;
 	
 	public Integer getLogID() {
