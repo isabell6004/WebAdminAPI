@@ -10,7 +10,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
@@ -41,6 +40,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.ReturnvalResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.service.AdminService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
@@ -347,9 +347,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityaccessips", method = RequestMethod.POST)
-	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestParam List<Integer> idList) throws Exception {
+	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestBody SetdeletesecuritygroupsParameter data) throws Exception {
 		JsonResponse<String> results = new JsonResponse<String>(true, null, 0, null);
-		ResultCode result = adminService.SetDeleteSecurityAccessIps(idList);
+		ResultCode result = adminService.SetDeleteSecurityAccessIps(data.getData());
 		
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
@@ -381,13 +381,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setactiveresource", method = RequestMethod.POST)
-	public JsonResponse<Integer> SetResource(@RequestBody SetResourceParameter parameters) {
-		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
-		ResultCode result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		
-		return results;
+	public JsonResponse SetResource(@RequestBody SetResourceParameter parameters) {
+		JsonResponse result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
+		return result;
 	}
 	
 	/**
@@ -511,9 +507,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityresources", method = RequestMethod.POST)
-	public JsonResponse<Integer> SetDeleteSecurityResources(@RequestParam List<Integer> idList) throws Exception {
+	public JsonResponse<Integer> SetDeleteSecurityResources(@RequestBody SetdeletesecuritygroupsParameter data) throws Exception {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
-		ResultCode result = adminService.SetDeleteSecurityResources(idList);
+		ResultCode result = adminService.SetDeleteSecurityResources(data.getData());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
 		return results;
