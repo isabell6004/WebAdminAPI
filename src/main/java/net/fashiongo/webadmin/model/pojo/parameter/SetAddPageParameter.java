@@ -9,24 +9,16 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class SetAddPageParameter {
 	@ApiModelProperty(required = false, example="1")
-	private Integer pageID;
+	private String pageID;
 	
 	@ApiModelProperty(required = false, example="Test")
 	private String pageName;
 
 	public Integer getPageID() {
-		return pageID == null ? null : pageID;
-	}
-
-	public void setPageID(Integer pageID) {
-		this.pageID = pageID;
+		return StringUtils.isEmpty(pageID) ? null : Integer.parseInt(pageID);
 	}
 
 	public String getPageName() {
 		return StringUtils.isEmpty(pageName) ? "" : pageName;
-	}
-
-	public void setPageName(String pageName) {
-		this.pageName = pageName;
 	}
 }
