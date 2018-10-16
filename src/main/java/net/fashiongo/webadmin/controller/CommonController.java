@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -186,6 +187,7 @@ public class CommonController {
 	}
 	
 	
+	
 	/**
 	 * 
 	 * Get Security Resources
@@ -198,7 +200,9 @@ public class CommonController {
 	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
 		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, null);
 		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
-		
+		List<Resource> rs = result.getResource();
+		rs = rs.stream().sorted((o1,o2) -> o1.getResourceName().toLowerCase().compareTo(o2.getResourceName().toLowerCase())).collect(Collectors.toList());
+		result.setResource(rs);
 		results.setData(result);
 		return results;
 	}
