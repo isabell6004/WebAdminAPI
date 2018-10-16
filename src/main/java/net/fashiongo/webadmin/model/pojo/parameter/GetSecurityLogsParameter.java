@@ -4,6 +4,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -11,135 +15,89 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class GetSecurityLogsParameter {
 	@ApiModelProperty(required = false, example="1")
-	private Integer pageNum;
+	private Integer pagenum;
 	
 	@ApiModelProperty(required = false, example="30")
-	private Integer pageSize;
+	private Integer pagesize;
 	
 	@ApiModelProperty(required = false, example="ID")
-	private String sortField;
+	private String sortfield;
 	
 	@ApiModelProperty(required = false, example="desc")
-	private String sortDir;
+	private String sortdir;
 	
 	@ApiModelProperty(required = false, example="165")
-	private Integer usrId;
+	private Integer usrid;
 	
 	@ApiModelProperty(required = false, example="1")
-	private Integer periodType;
+	private Integer periodtype;
 	
 	@ApiModelProperty(required = false, example="08/01/2018")
-	private String sDate;
+	private String sdate;
 	
 	@ApiModelProperty(required = false, example="08/31/2018")
-	private String eDate;	
+	private String edate;	
 	
 	@ApiModelProperty(required = false, example="165.225.39.73")
 	private String ip;
 
-	@ApiModelProperty(hidden = true) 
-	private Date startDate;
+	public Integer getPagenum() {
+		return pagenum == null ? 0 : pagenum;
+	}
 	
-	@ApiModelProperty(hidden = true) 
-	private Date endDate;
-	
-	public Integer getPageNum() {
-		return pageNum;
+	public Integer getPagesize() {
+		return pagesize == null ? 0 : pagesize;
 	}
 
-	public void setPageNum(Integer pageNum) {
-		this.pageNum = pageNum;
+	public String getSortfield() {
+		return sortfield;
 	}
 
-	public Integer getPageSize() {
-		return pageSize;
+	public String getSortdir() {
+		return sortdir;
 	}
 
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
+	public Integer getUsrid() {
+		return (this.usrid != null && this.usrid.equals(0)) ? null : this.usrid;
 	}
 
-	public String getSortField() {
-		return sortField;
+	public Integer getPeriodtype() {
+		return periodtype == null ? 0 : periodtype;
 	}
 
-	public void setSortField(String sortField) {
-		this.sortField = sortField;
+	public String getSdate() {
+		return sdate;
 	}
 
-	public String getSortDir() {
-		return sortDir;
-	}
-
-	public void setSortDir(String sortDir) {
-		this.sortDir = sortDir;
-	}
-
-	public Integer getUsrId() {
-		return (this.usrId != null && this.usrId.equals(0)) ? null : this.usrId;
-	}
-
-	public void setUsrId(Integer usrId) {
-		this.usrId = usrId;
-	}
-
-	public Integer getPeriodType() {
-		return periodType;
-	}
-
-	public void setPeriodType(Integer periodType) {
-		this.periodType = periodType;
-	}
-
-	public String getsDate() {
-		return sDate;
-	}
-
-	public void setsDate(String sDate) {
-		this.sDate = sDate;
-	}
-
-	public String geteDate() {
-		return eDate;
-	}
-
-	public void seteDate(String eDate) {
-		this.eDate = eDate;
+	public String getEdate() {
+		return edate;
 	}
 
 	public String getIp() {
 		return ip;
 	}
 
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
-
+	@JsonIgnore
 	public Date getStartDate() {
+		Date startDate = new Date();
 		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
 		try {
-			startDate= dt.parse(sDate);
+			startDate= StringUtils.isEmpty(sdate) ? null : dt.parse(sdate);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
+	@JsonIgnore
 	public Date getEndDate() {
+		Date endDate = new Date();
 		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
 		try {
-			endDate= dt.parse(eDate);
+			endDate= StringUtils.isEmpty(edate) ? null : dt.parse(edate);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
 	}
 }

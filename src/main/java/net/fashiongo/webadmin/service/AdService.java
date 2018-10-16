@@ -1,6 +1,5 @@
 package net.fashiongo.webadmin.service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +12,7 @@ import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
+import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
 import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
@@ -72,7 +72,7 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setAdPage(SetAddPageParameter parameters) {
-		ResultCode result = new ResultCode(true, 1, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 
 		AdPage adPage = new AdPage();
 		Integer pageID = parameters.getPageID();
@@ -137,7 +137,7 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode delSpotSetting(Integer spotID) {
-		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
+		ResultCode result = new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 
 		adPageSpotRepository.deleteById(spotID);
 
@@ -155,83 +155,57 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setAddSpotSetting(SetAddSpotSettingParameter parameters) {
-		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
+		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 		
 		AdPageSpot adPageSpot = new AdPageSpot();
-		Integer spotID = parameters.getSpotID();
-		Integer pageID = parameters.getPageID();
-		Integer categoryID = parameters.getCategoryID();
-		Integer bodySizeID = parameters.getBodySizeID();
-		String spotName = parameters.getSpotName();
-		BigDecimal price1 = parameters.getPrice1();
-		BigDecimal price2 = parameters.getPrice2();
-		BigDecimal price3 = parameters.getPrice3();
-		BigDecimal price4 = parameters.getPrice4();
-		BigDecimal price5 = parameters.getPrice5();
-		BigDecimal price6 = parameters.getPrice6();
-		BigDecimal price7 = parameters.getPrice7();
-		Boolean active = parameters.getActive();
-		Boolean includeVendorCategory = parameters.getIncludeVendorCategory();
-		Integer spotInstanceCount = parameters.getSpotInstanceCount();
-		Integer maxPurchasable = parameters.getMaxPurchasable();
-		Integer spotItemCount = parameters.getSpotItemCount();
-		//LocalDateTime bidEffectiveOn = parameters.getBidEffectiveOn();	
-		
-//		Calendar createdOn = Calendar.getInstance();
-//		LocalDateTime createdOn = LocalDateTime.now();
+		Integer spotID = parameters.getSpotID(); 
 		Date createdOn = new Date();
-//		birthDateWithoutTime = DateUtils.truncate(birthDateWithTime, Calendar.DATE);
-
-		//String createdBy =  Utility.getUsername();
-//		LocalDateTime modifiedOn = LocalDateTime.now();
 		Date modifiedOn = createdOn;
-		//String modifiedBy =  Utility.getUsername();
 		
 		if(spotID == 0) { // new (insert)
-			adPageSpot.setPageID(pageID);
-			adPageSpot.setPageID(categoryID);
-			adPageSpot.setPageID(bodySizeID);
-			adPageSpot.setSpotName(spotName);
-			adPageSpot.setPrice1(price1);
-			adPageSpot.setPrice2(price2);
-			adPageSpot.setPrice3(price3);
-			adPageSpot.setPrice4(price4);
-			adPageSpot.setPrice5(price5);
-			adPageSpot.setPrice6(price6);
-			adPageSpot.setPrice7(price7);
-			adPageSpot.setActive(active);
-			adPageSpot.setIncludeVendorCategory(includeVendorCategory);
-			adPageSpot.setSpotInstanceCount(spotInstanceCount);
-			adPageSpot.setMaxPurchasable(maxPurchasable);
-			adPageSpot.setSpotItemCount(spotItemCount);
-			//adPageSpot.setBidEffectiveOn(bidEffectiveOn);
+			adPageSpot.setPageID(parameters.getPageID());
+			adPageSpot.setCategoryID(parameters.getCategoryID());
+			adPageSpot.setBodySizeID(parameters.getBodySizeID());
+			adPageSpot.setSpotName(parameters.getSpotName());
+			adPageSpot.setPrice1(parameters.getPrice1());
+			adPageSpot.setPrice2(parameters.getPrice2());
+			adPageSpot.setPrice3(parameters.getPrice3());
+			adPageSpot.setPrice4(parameters.getPrice4());
+			adPageSpot.setPrice5(parameters.getPrice5());
+			adPageSpot.setPrice6(parameters.getPrice6());
+			adPageSpot.setPrice7(parameters.getPrice7());
+			adPageSpot.setActive(parameters.getActive());
+			adPageSpot.setIncludeVendorCategory(parameters.getIncludeVendorCategory());
+			adPageSpot.setSpotInstanceCount(parameters.getSpotInstanceCount());
+			adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
+			adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
+			adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
 			adPageSpot.setCreatedOn(createdOn);
-			//adPageSpot.setCreatedBy(createdBy);
+			adPageSpot.setCreatedBy(Utility.getUsername());
 			
 			adPageSpotRepository.save(adPageSpot);
 			
 		} else { // update
-			adPageSpotRepository.findOneBySpotID(spotID);
-			
-			adPageSpot.setPageID(pageID);
-			adPageSpot.setPageID(categoryID);
-			adPageSpot.setPageID(bodySizeID);
-			adPageSpot.setSpotName(spotName);
-			adPageSpot.setPrice1(price1);
-			adPageSpot.setPrice2(price2);
-			adPageSpot.setPrice3(price3);
-			adPageSpot.setPrice4(price4);
-			adPageSpot.setPrice5(price5);
-			adPageSpot.setPrice6(price6);
-			adPageSpot.setPrice7(price7);
-			adPageSpot.setActive(active);
-			adPageSpot.setIncludeVendorCategory(includeVendorCategory);
-			adPageSpot.setSpotInstanceCount(spotInstanceCount);
-			adPageSpot.setMaxPurchasable(maxPurchasable);
-			adPageSpot.setSpotItemCount(spotItemCount);
-			//adPageSpot.setBidEffectiveOn(bidEffectiveOn);
+			adPageSpot = adPageSpotRepository.findOneBySpotID(spotID);
+			adPageSpot.setPageID(parameters.getPageID());
+			adPageSpot.setCategoryID(parameters.getCategoryID());
+			adPageSpot.setBodySizeID(parameters.getBodySizeID());
+			adPageSpot.setSpotName(parameters.getSpotName());
+			adPageSpot.setPrice1(parameters.getPrice1());
+			adPageSpot.setPrice2(parameters.getPrice2());
+			adPageSpot.setPrice3(parameters.getPrice3());
+			adPageSpot.setPrice4(parameters.getPrice4());
+			adPageSpot.setPrice5(parameters.getPrice5());
+			adPageSpot.setPrice6(parameters.getPrice6());
+			adPageSpot.setPrice7(parameters.getPrice7());
+			adPageSpot.setActive(parameters.getActive());
+			adPageSpot.setIncludeVendorCategory(parameters.getIncludeVendorCategory());
+			adPageSpot.setSpotInstanceCount(parameters.getSpotInstanceCount());
+			adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
+			adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
+			adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
 			adPageSpot.setModifiedOn(modifiedOn);
-			//adPageSpot.setModifiedBy(modifiedBy);
+			adPageSpot.setModifiedBy(Utility.getUsername());
 			
 			adPageSpotRepository.save(adPageSpot);
 		}

@@ -137,9 +137,9 @@ public class AdminService extends ApiService {
 		String spName = "up_Security_GetLoginLog";
 		List<Object> params = new ArrayList<Object>();
 
-		params.add(parameters.getPageNum());
-		params.add(parameters.getPageSize());
-		params.add(parameters.getUsrId());
+		params.add(parameters.getPagenum());
+		params.add(parameters.getPagesize());
+		params.add(parameters.getUsrid());
 		params.add(parameters.getIp());
 		params.add(parameters.getStartDate());
 		params.add(parameters.getEndDate());
@@ -166,7 +166,8 @@ public class AdminService extends ApiService {
 		GetSecurityResourcesResponse result = new GetSecurityResourcesResponse();
 		String spName = "up_wa_Security_GetResource";
         List<Object> params = new ArrayList<Object>();
-        
+
+        params.add(parameters.getApplication());
         params.add(parameters.getResourceName());
         params.add(parameters.getResourceParent());
         params.add(parameters.getResourceType());
@@ -290,7 +291,7 @@ public class AdminService extends ApiService {
 	 * Set Delete Security Resources
 	 * @since 2018. 10. 12.
 	 * @author Dahye Jeong
-	 * @param SetSecurityResourceParameter
+	 * @param idList
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")

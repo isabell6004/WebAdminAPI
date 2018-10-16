@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
@@ -13,11 +14,14 @@ import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
 import net.fashiongo.webadmin.dao.primary.TopCategoriesRepository;
 import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityMenu;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * 
@@ -41,6 +45,10 @@ public class CommonService extends ApiService {
 	@Autowired
 	SecurityUserRepository securityUserRepository;
 	
+	@Autowired
+	@Qualifier("serviceJsonClient")
+	private HttpClient httpClient;
+	
 	/**
 	 * 
 	 * Get MenuID
@@ -57,7 +65,7 @@ public class CommonService extends ApiService {
 	
 	/**
 	 * 
-	 * Set Resource
+	 * Get Server Heart Beat
 	 * @since 2018. 10. 12.
 	 * @author Dahye Jeong
 	 * @param q
@@ -69,16 +77,28 @@ public class CommonService extends ApiService {
 	
 	/**
 	 * 
-	 * Set Resource
-	 * @since 2018. 10. 12.
+	 * Get Country States
+	 * @since 2018. 10. 15.
 	 * @author Dahye Jeong
-	 * @param resourceID, active
-	 * @return ResultCode
+	 * @param countryAbbrev
+	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
-	public void GetCountryStates() {
+	public JsonResponse<GetCountryStatesResponse> GetCountryStates(String countryAbbrev) {
+		JsonResponse<GetCountryStatesResponse> result = httpClient.get("location/countries/".concat(countryAbbrev));
 		
+		System.out.println("result.getMessage()" + result.getMessage()+result.getData());
+		
+		return result;
 	}
 	
+	/**
+	 * 
+	 * Get Top Categories
+	 * @since 2018. 10. 11.
+	 * @author Dahye Jeong
+	 * @param 
+	 * @return List<TopCategories>
+	 */
 	public List<TopCategories> GetTopCategories() {
 		List<TopCategories> result = (List<TopCategories>) topCategoriesRepository.findByActiveAndLvlOrderByListOrder(true, 1);
 		

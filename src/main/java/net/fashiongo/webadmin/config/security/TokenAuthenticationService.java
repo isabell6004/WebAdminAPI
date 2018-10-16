@@ -21,6 +21,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.response.AuthuserResponse;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 
@@ -33,8 +34,10 @@ public class TokenAuthenticationService {
 	static final String HEADER_STRING = "Authorization";
 
 	public static void addAuthentication(HttpServletRequest request, HttpServletResponse response,
-			WebAdminLoginUser webAdminLoginUser) throws JsonGenerationException, JsonMappingException, IOException {
-
+			WebAdminUserAuthenticationToken authInfo) throws JsonGenerationException, JsonMappingException, IOException {
+		WebAdminLoginUser webAdminLoginUser = authInfo.getUserInfo();
+		AuthuserResponse result = new AuthuserResponse();
+		
 		Algorithm algorithm = Algorithm.HMAC512(SECRET);
 	    String token = JWT.create()
 	    	.withClaim("roleid", webAdminLoginUser.getRoleid())
@@ -49,9 +52,17 @@ public class TokenAuthenticationService {
 
 		response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + token);
 
-		JsonResponse<String> res = new JsonResponse<String>();
+		JsonResponse<AuthuserResponse> res = new JsonResponse<AuthuserResponse>();
 		res.setSuccess(true);
-		res.setData(token);
+		result.setUserID(webAdminLoginUser.getUserId());
+		result.setMenuDS(authInfo.getMenuDs());
+		result.setFullName(webAdminLoginUser.getFullname());
+		result.setRole(webAdminLoginUser.getRoleid());
+		result.setsCodeNo(1);
+		result.setsCodeYn(true);
+		result.setTokenID(token);
+		result.setUserName(webAdminLoginUser.getUsername());
+		res.setData(result);
 
 		ObjectMapper om = new ObjectMapper();
 		String returnStr = om.writeValueAsString(res);

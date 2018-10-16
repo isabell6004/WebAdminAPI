@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,7 +31,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		String url, 
 		AuthenticationManager authenticationManager, 
 		AuthenticationFailureHandler failureHandler) {
-		super(new AntPathRequestMatcher(url));
+		super(new AntPathRequestMatcher(url, "POST"));
 			
 		this.failureHandler = failureHandler;
 		setAuthenticationManager(authenticationManager);
@@ -46,8 +47,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-		WebAdminLoginUser user = ((WebAdminUserAuthenticationToken)authentication).getUserInfo();
-		TokenAuthenticationService.addAuthentication(request, response, user);
+		WebAdminUserAuthenticationToken authInfo = ((WebAdminUserAuthenticationToken)authentication);
+		TokenAuthenticationService.addAuthentication(request, response, authInfo);
 	}
 	
 	@Override

@@ -1,11 +1,16 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import javax.persistence.Column;
+
 /**
  * @author Nayeon Kim
  */
 public class AdSettingList {
+	@Column(name = "PageID")
 	private Integer pageID;
+	@Column(name = "PageName")
 	private String pageName;
+	@Column(name = "PageUrl")
 	private String pageUrl;
 	
 	public Integer getPageID() {
