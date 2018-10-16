@@ -16,12 +16,16 @@ import net.fashiongo.webadmin.model.primary.ListShow;
 public interface ListShowRepository extends CrudRepository<ListShow, Integer> {
 	// find all
 	List<ListShow> findAll();
-	
+
+	// findOneByShowID
+	ListShow findOneByShowID(Integer showID);
+
 	// find by showid
 	List<ListShow> findByShowID(Integer showID);
 
 	// find top 1 order by showid desc
 	// for getting the maximum number of key
 	ListShow findTopByOrderByShowIDDesc();
-	
+
+
 }

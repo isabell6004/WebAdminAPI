@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -44,55 +45,87 @@ public class ShowSchedule implements Serializable {
 	@NotNull
 	@Column(name = "ShowScheduleID")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@JsonProperty("")
+	@JsonProperty("ShowScheduleID")
 	private Integer showScheduleID;
 
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ShowID")
-	@JsonProperty("")
+	@JsonProperty("ShowID")
 	private int showID;
 	
 	@Size(max = 50)
 	@Column(name = "BannerImage")
-	@JsonProperty("")
+	@JsonProperty("BannerImage")
 	private String bannerImage;
 	
 	@Size(max = 50)
 	@Column(name = "TitleImage")
-	@JsonProperty("")
+	@JsonProperty("TitleImage")
 	private String titleImage;
 	
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "DateFrom")
 	@Temporal(TemporalType.TIMESTAMP)
-	@JsonProperty("")
+	@JsonProperty("DateFrom")
 	private Date dateFrom;
 	
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "DateTo")
 	@Temporal(TemporalType.TIMESTAMP)
-	@JsonProperty("")
+	@JsonProperty("DateTo")
 	private Date dateTo;
 	
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "Active")
-	@JsonProperty("")
+	@JsonProperty("Active")
 	private boolean active;
 	
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ListOrder")
-	@JsonProperty("")
+	@JsonProperty("ListOrder")
 	private int listOrder;
 	
 	@Size(max = 50)
 	@Column(name = "MobileImage")
-	@JsonProperty("")
+	@JsonProperty("MobileImage")
 	private String mobileImage;
+
+
+	@Transient
+	@Column(name = "rowno")
+	@JsonProperty("rowno")
+	private int rowNo;
+	
+
+	@Transient
+	@Column(name = "ShowName")
+	@JsonProperty("ShowName")
+	private String showName;
+
+	@Transient
+	@Column(name = "Location")
+	@JsonProperty("Location")
+	private String location;
+
+	@Transient
+	@Column(name = "Url")
+	@JsonProperty("Url")
+	private long url;
+
+	@Transient
+	@Column(name = "VendorCount")
+	@JsonProperty("VendorCount")
+	private long vendorCount;
+
+	@Transient
+	@Column(name = "DeleteFlag")
+	@JsonProperty("DeleteFlag")
+	private int deleteFlag;
 
 	public ShowSchedule() {
 	}
@@ -180,6 +213,60 @@ public class ShowSchedule implements Serializable {
 
 	public void setMobileImage(String mobileImage) {
 		this.mobileImage = mobileImage;
+	}
+	
+	
+
+	public int getRowNo() {
+		return rowNo;
+	}
+
+	public void setRowNo(int rowNo) {
+		this.rowNo = rowNo;
+	}
+
+	public String getShowName() {
+		return showName;
+	}
+
+	public void setShowName(String showName) {
+		this.showName = showName;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public long getUrl() {
+		return url;
+	}
+
+	public void setUrl(long url) {
+		this.url = url;
+	}
+
+	public long getVendorCount() {
+		return vendorCount;
+	}
+
+	public void setVendorCount(long vendorCount) {
+		this.vendorCount = vendorCount;
+	}
+
+	public int getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(int deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override

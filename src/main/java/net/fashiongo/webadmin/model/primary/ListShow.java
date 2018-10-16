@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -38,43 +39,53 @@ public class ListShow implements Serializable {
 	@NotNull
 	@Column(name = "ShowID")
 //	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@JsonProperty("")
+	@JsonProperty("ShowID")
 	private Integer showID;
 
 	@Basic(optional = false)
 	@NotNull
 	@Size(min = 1, max = 50)
 	@Column(name = "ShowName")
-	@JsonProperty("")
+	@JsonProperty("ShowName")
 	private String showName;
 
 	@Basic(optional = false)
 	@NotNull
 	@Size(min = 1, max = 100)
 	@Column(name = "Location")
-	@JsonProperty("")
+	@JsonProperty("Location")
 	private String location;
 
 	@Size(max = 250)
 	@Column(name = "Url")
-	@JsonProperty("")
+	@JsonProperty("Url")
 	private String url;
 
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "Active")
-	@JsonProperty("")
+	@JsonProperty("Active")
 	private boolean active;
 
 	@Size(max = 150)
 	@Column(name = "LogoFileName")
-	@JsonProperty("")
+	@JsonProperty("LogoFileName")
 	private String logoFileName;
 
 	@Size(max = 50)
 	@Column(name = "ShowCode")
-	@JsonProperty("")
+	@JsonProperty("ShowCode")
 	private String showCode;
+
+	@Transient
+	@Column(name = "row")
+	@JsonProperty("")
+	private long row;
+
+	@Transient
+	@Column(name = "DeleteFlag")
+	@JsonProperty("DeleteFlag")
+	private int deleteFlag;
 
 	public ListShow() {
 	}
@@ -144,6 +155,26 @@ public class ListShow implements Serializable {
 
 	public void setShowCode(String showCode) {
 		this.showCode = showCode;
+	}
+
+	public long getRow() {
+		return row;
+	}
+
+	public void setRow(long row) {
+		this.row = row;
+	}
+
+	public int getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(int deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override
