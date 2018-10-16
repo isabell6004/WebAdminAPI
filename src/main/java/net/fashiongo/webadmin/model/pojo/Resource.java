@@ -64,10 +64,11 @@ public class Resource {
 	}
 	
 	public String getDispName() {
-		return DispName;
-	}
-	public void setDispName(String dispname) {
-		DispName = dispname;
+		String ReturnData = "";
+		if (Active) ReturnData = "";
+		else ReturnData = "[x] ";
+		ReturnData += ResourceName;
+		return ReturnData;
 	}
 	
 	
