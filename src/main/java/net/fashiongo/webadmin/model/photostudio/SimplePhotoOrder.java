@@ -63,38 +63,38 @@ public class SimplePhotoOrder {
 	}
 	
 	@JsonIgnore
-	@Column(name = "OrderSubmit")
+	@Column(name = "CheckOutDate")
 	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _orderSubmit;
-	public LocalDateTime get_orderSubmit() {
-		return _orderSubmit;
+	private LocalDateTime _checkOutDate;
+	public LocalDateTime get_checkOutDate() {
+		return _checkOutDate;
 	}
 
-	public void set_orderSubmit(LocalDateTime _orderSubmit) {
-		this._orderSubmit = _orderSubmit;
+	public void set_checkOutDate(LocalDateTime _checkOutDate) {
+		this._checkOutDate = _checkOutDate;
 	}
 
 	@Transient
-	private String orderSubmit;
-	public String getOrderSubmit() {
-		return _orderSubmit != null ? _orderSubmit.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+	private String checkOutDate;
+	public String getCheckOutDate() {
+		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
 	}
 
-	public void setOrderSubmit(String orderSubmit) {
-		this.orderSubmit = StringUtils.isNotEmpty(orderSubmit) ? orderSubmit + DEFAULT_TIME : null;
-		this.set_photoshootDate(StringUtils.isNotEmpty(this.orderSubmit) ? LocalDateTime.parse(this.orderSubmit, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+	public void setCheckOutDate(String checkOutDate) {
+		this.checkOutDate = StringUtils.isNotEmpty(checkOutDate) ? checkOutDate + DEFAULT_TIME : null;
+		this.set_photoshootDate(StringUtils.isNotEmpty(this.checkOutDate) ? LocalDateTime.parse(this.checkOutDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 	
-	@Column(name = "OrderNumber")
-	private String orderNumber;
-	public String getOrderNumber() {
-		return orderNumber;
+	@Column(name = "PONumber")
+	private String poNumber;
+	public String getPoNumber() {
+		return poNumber;
 	}
 
-	public void setOrderNumber(String orderNumber) {
-		this.orderNumber = orderNumber;
+	public void setPoNumber(String poNumber) {
+		this.poNumber = poNumber;
 	}
-	
+
 	@Column(name = "InHouseNote")
 	private String inHouseNote;
 	public String getInHouseNote() {
@@ -218,14 +218,14 @@ public class SimplePhotoOrder {
 		this.orderStatusID = orderStatusID;
 	}
 	
-	@Column(name = "IsCancelledByVendor")
-	private Boolean isCancelledByVendor;
-	public Boolean getIsCancelledByVendor() {
-		return isCancelledByVendor;
+	@Column(name = "IsCancelled")
+	private Integer isCancelled;
+	public Integer getIsCancelled() {
+		return isCancelled;
 	}
 
-	public void setIsCancelledByVendor(Boolean isCancelledByVendor) {
-		this.isCancelledByVendor = isCancelledByVendor;
+	public void setIsCancelled(Integer isCancelled) {
+		this.isCancelled = isCancelled;
 	}
 
 	@Column(name = "CancelNote")

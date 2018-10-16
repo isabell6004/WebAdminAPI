@@ -333,13 +333,13 @@ public class PhotoStudioController {
 		}
 	}
 	
-	@GetMapping("/order/{orderNumber}")
-	public JsonResponse<?> getPhotoOrder(@PathVariable("orderNumber") String orderNumber) {
+	@GetMapping("/order/{poNumber}")
+	public JsonResponse<?> getPhotoOrder(@PathVariable("poNumber") String poNumber) {
 		logger.debug("PhotoStudioController.getPhotoOrder() called!!!");
 		JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
 
 		try {
-			Map<String, Object> result = photoStudioService.getPhotoOrder(orderNumber);
+			Map<String, Object> result = photoStudioService.getPhotoOrder(poNumber);
 			response.setSuccess(true);
 			response.setData(result);
 		} catch (Exception ex) {

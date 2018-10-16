@@ -70,14 +70,14 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.wholeSalerCompanyName = wholeSalerCompanyName;
 	}
 
-	@Column(name = "OrderNumber")
-	private String orderNumber;
-	public String getOrderNumber() {
-		return orderNumber;
+	@Column(name = "PONumber")
+	private String poNumber;
+	public String getPoNumber() {
+		return poNumber;
 	}
 
-	public void setOrderNumber(String orderNumber) {
-		this.orderNumber = orderNumber;
+	public void setPoNumber(String poNumber) {
+		this.poNumber = poNumber;
 	}
 
 	@Column(name = "CategoryID")
@@ -269,24 +269,24 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.cancelTypeID = cancelTypeID;
 	}
 
-	@Column(name = "CancelledBy")
-	private String cancelledBy;
-	public String getCancelledBy() {
-		return cancelledBy;
+	@Column(name = "CancelledByUserName")
+	private String cancelledByUserName;
+	public String getCancelledByUserName() {
+		return cancelledByUserName;
 	}
 
-	public void setCancelledBy(String cancelledBy) {
-		this.cancelledBy = cancelledBy;
+	public void setCancelledByUserName(String cancelledByUserName) {
+		this.cancelledByUserName = cancelledByUserName;
 	}
 
-	@Column(name = "IsCancelledByVendor")
-	private Boolean isCancelledByVendor;
-	public Boolean getIsCancelledByVendor() {
-		return isCancelledByVendor;
+	@Column(name = "IsCancelled")
+	private Integer isCancelled;
+	public Integer getIsCancelled() {
+		return isCancelled;
 	}
 
-	public void setIsCancelledByVendor(Boolean isCancelledByVendor) {
-		this.isCancelledByVendor = isCancelledByVendor;
+	public void setIsCancelled(Integer isCancelled) {
+		this.isCancelled = isCancelled;
 	}
 
 	@Column(name = "CancelNote")

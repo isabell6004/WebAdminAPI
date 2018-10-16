@@ -117,29 +117,29 @@ public class PhotoModel implements IPersistent, Serializable {
 	}
 
 	@Column(name = "Bust")
-	private String bust;
-	public String getBust() {
+	private Integer bust;
+	public Integer getBust() {
 		return bust;
 	}
-	public void setBust(String bust) {
+	public void setBust(Integer bust) {
 		this.bust = bust;
 	}
 
 	@Column(name = "Waist")
-	private String waist;
-	public String getWaist() {
+	private Integer waist;
+	public Integer getWaist() {
 		return waist;
 	}
-	public void setWaist(String waist) {
+	public void setWaist(Integer waist) {
 		this.waist = waist;
 	}
 
 	@Column(name = "Hip")
-	private String hip;
-	public String getHip() {
+	private Integer hip;
+	public Integer getHip() {
 		return hip;
 	}
-	public void setHip(String hip) {
+	public void setHip(Integer hip) {
 		this.hip = hip;
 	}
 

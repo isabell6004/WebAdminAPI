@@ -1061,4 +1061,29 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	//for model search end 
+	
+	private Integer isDelayed;
+	public Integer getIsDelayed() {
+		return isDelayed;
+	}
+	public void setIsDelayed(Integer isDelayed) {
+		this.isDelayed = isDelayed;
+	}
+	
+	private Integer cancelledByFG;
+	public Integer getCancelledByFG() {
+		return cancelledByFG;
+	}
+	public void setCancelledByFG(Integer cancelledByFG) {
+		this.cancelledByFG = cancelledByFG;
+	}
+	
+	private Integer cancelledByVendor;
+	public Integer getCancelledByVendor() {
+		return cancelledByVendor;
+	}
+	public void setCancelledByVendor(Integer cancelledByVendor) {
+		this.cancelledByVendor = cancelledByVendor;
+	}
+	
 }

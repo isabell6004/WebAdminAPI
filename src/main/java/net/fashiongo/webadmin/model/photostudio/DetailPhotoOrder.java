@@ -109,16 +109,16 @@ public class DetailPhotoOrder {
 		this.orderID = orderID;
 	}
 	
-	@Column(name = "OrderNumber")
-	private String orderNumber;
-	public String getOrderNumber() {
-		return orderNumber;
+	@Column(name = "PONumber")
+	private String poNumber;
+	public String getPoNumber() {
+		return poNumber;
 	}
 
-	public void setOrderNumber(String orderNumber) {
-		this.orderNumber = orderNumber;
+	public void setPoNumber(String poNumber) {
+		this.poNumber = poNumber;
 	}
-	
+
 	@Column(name = "WholeSalerID")
 	private Integer wholeSalerID;
 	public Integer getWholeSalerID() {
@@ -189,6 +189,16 @@ public class DetailPhotoOrder {
 		this.totalAmount = totalAmount;
 	}
 	
+	@Column(name = "PhotoCreditUsedAmount")
+	private BigDecimal photoCreditUsedAmount;
+	public BigDecimal getPhotoCreditUsedAmount() {
+		return photoCreditUsedAmount;
+	}
+
+	public void setPhotoCreditUsedAmount(BigDecimal photoCreditUsedAmount) {
+		this.photoCreditUsedAmount = photoCreditUsedAmount;
+	}
+	
 	@Column(name = "DiscountID")
 	private Integer discountID;
 	public Integer getDiscountID() {
@@ -209,6 +219,16 @@ public class DetailPhotoOrder {
 		this.discountAmount = discountAmount;
 	}
 	
+	@Column(name = "DiscountName")
+	private String discountName;
+	public String getDiscountName() {
+		return discountName;
+	}
+
+	public void setDiscountName(String discountName) {
+		this.discountName = discountName;
+	}
+
 	@Column(name = "InHouseNote")
 	private String inHouseNote;
 	public String getInHouseNote() {
@@ -296,6 +316,16 @@ public class DetailPhotoOrder {
 	public void setReceivedBy(String receivedBy) {
 		this.receivedBy = receivedBy;
 	}
+	
+	@Column(name = "ReceivedByCnt")
+	private Integer receivedByCnt;
+	public Integer getReceivedByCnt() {
+		return receivedByCnt;
+	}
+
+	public void setReceivedByCnt(Integer receivedByCnt) {
+		this.receivedByCnt = receivedByCnt;
+	}
 
 	@JsonIgnore
 	@Column(name = "PrepOn")
@@ -325,6 +355,16 @@ public class DetailPhotoOrder {
 	public void setPrepBy(String prepBy) {
 		this.prepBy = prepBy;
 	}
+	
+	@Column(name = "PrepByCnt")
+	private Integer prepByCnt;
+	public Integer getPrepByCnt() {
+		return prepByCnt;
+	}
+
+	public void setPrepByCnt(Integer prepByCnt) {
+		this.prepByCnt = prepByCnt;
+	}
 
 	@JsonIgnore
 	@Column(name = "PhotoshootOn")
@@ -352,6 +392,16 @@ public class DetailPhotoOrder {
 
 	public void setPhotoshootBy(String photoshootBy) {
 		this.photoshootBy = photoshootBy;
+	}
+	
+	@Column(name = "PhotoshootByCnt")
+	private Integer photoshootByCnt;
+	public Integer getPhotoshootByCnt() {
+		return photoshootByCnt;
+	}
+
+	public void setPhotoshootByCnt(Integer photoshootByCnt) {
+		this.photoshootByCnt = photoshootByCnt;
 	}
 
 	@JsonIgnore
@@ -381,6 +431,16 @@ public class DetailPhotoOrder {
 	public void setRetouchingBy(String retouchingBy) {
 		this.retouchingBy = retouchingBy;
 	}
+	
+	@Column(name = "RetouchingByCnt")
+	private Integer retouchingByCnt;
+	public Integer getRetouchingByCnt() {
+		return retouchingByCnt;
+	}
+
+	public void setRetouchingByCnt(Integer retouchingByCnt) {
+		this.retouchingByCnt = retouchingByCnt;
+	}
 
 	@JsonIgnore
 	@Column(name = "UploadingOn")
@@ -409,6 +469,16 @@ public class DetailPhotoOrder {
 	public void setUploadingBy(String uploadingBy) {
 		this.uploadingBy = uploadingBy;
 	}
+	
+	@Column(name = "UploadingByCnt")
+	private Integer uploadingByCnt;
+	public Integer getUploadingByCnt() {
+		return uploadingByCnt;
+	}
+
+	public void setUploadingByCnt(Integer uploadingByCnt) {
+		this.uploadingByCnt = uploadingByCnt;
+	}
 
 	@Column(name = "CancelTypeID")
 	private Integer cancelTypeID;
@@ -420,24 +490,24 @@ public class DetailPhotoOrder {
 		this.cancelTypeID = cancelTypeID;
 	}
 
-	@Column(name = "CancelledBy")
-	private String cancelledBy;
-	public String getCancelledBy() {
-		return cancelledBy;
+	@Column(name = "CancelledByUserName")
+	private String cancelledByUserName;
+	public String getCancelledByUserName() {
+		return cancelledByUserName;
 	}
 
-	public void setCancelledBy(String cancelledBy) {
-		this.cancelledBy = cancelledBy;
+	public void setCancelledByUserName(String cancelledByUserName) {
+		this.cancelledByUserName = cancelledByUserName;
 	}
 
-	@Column(name = "IsCancelledByVendor")
-	private Boolean isCancelledByVendor;
-	public Boolean getIsCancelledByVendor() {
-		return isCancelledByVendor;
+	@Column(name = "IsCancelled")
+	private Integer isCancelled;
+	public Integer getIsCancelled() {
+		return isCancelled;
 	}
 
-	public void setIsCancelledByVendor(Boolean isCancelledByVendor) {
-		this.isCancelledByVendor = isCancelledByVendor;
+	public void setIsCancelled(Integer isCancelled) {
+		this.isCancelled = isCancelled;
 	}
 
 	@Column(name = "CancelNote")

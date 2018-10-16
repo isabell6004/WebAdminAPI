@@ -402,9 +402,26 @@ public class PhotoStudioService {
 			photoModel.setModifiedOnDate(date);
 			String sql = photoModel.toUpdateQuery("");
 			jdbcTemplate.update(sql);
-			for (PhotoImage photoImage : photoImages) {
-				sql = photoImage.toUpdateQuery("");
-				jdbcTemplate.update(sql);
+			
+			if(photoImages.size() > 0) {
+				List<MapPhotoImage> mapPhotoImages = new ArrayList<MapPhotoImage>();
+				List<PhotoImage> newPhotoImages = new ArrayList<PhotoImage>();
+				for (PhotoImage photoImage : photoImages) {
+					if(photoImage.getImageID() == null) {
+						MapPhotoImage mapPhotoImage = new MapPhotoImage();
+						mapPhotoImage.setMappingType(IMAGE_MAPPING_TYPE_MODEL);
+						mapPhotoImage.setImageID(photoImage.getImageID());
+						mapPhotoImage.setReferenceID(photoModel.getModelID());
+						mapPhotoImage.setListOrder(photoImage.getListOrder());
+						mapPhotoImages.add(mapPhotoImage);
+						newPhotoImages.add(photoImage);
+					}else {
+						sql = photoImage.toUpdateQuery("");
+						jdbcTemplate.update(sql);
+					}
+				}
+				photoImageRepository.save(newPhotoImages);
+				mapPhotoImageRepository.save(mapPhotoImages);
 			}
 		}
 
@@ -418,7 +435,7 @@ public class PhotoStudioService {
 		params.add(queryParam.getModelName());
 		params.add(queryParam.getNoteLeft());
 		
-		/*String dType = queryParam.getDtype();
+		String dType = queryParam.getDtype();
 		Date df = queryParam.getDf();
 		Date dt = queryParam.getDt();
 		if(!StringUtils.isEmpty(dType) && (df != null || dt != null)) {
@@ -447,7 +464,7 @@ public class PhotoStudioService {
 		params.add(queryParam.getBustFrom());
 		params.add(queryParam.getBustTo());
 		params.add(queryParam.getShoeSizeFrom());
-		params.add(queryParam.getShoeSizeTo());*/
+		params.add(queryParam.getShoeSizeTo());
 		
 		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetModelList", params, PhotoModel.class);
 		List<PhotoModel> result = (List<PhotoModel>)_results.get(0);
@@ -556,6 +573,10 @@ public class PhotoStudioService {
 		
 		params.add(queryParam.getCatids());
 		params.add(queryParam.getOstsids());
+		
+		params.add(queryParam.getIsDelayed());
+		params.add(queryParam.getCancelledByFG());
+		params.add(queryParam.getCancelledByVendor());
 
 		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetOrderList", params, SingleValueResult.class, SimplePhotoOrder.class);
 		
@@ -568,10 +589,10 @@ public class PhotoStudioService {
 		return result;
 	}
 	
-	public Map<String, Object> getPhotoOrder(String orderNumber) {
+	public Map<String, Object> getPhotoOrder(String poNumber) {
 		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
-		params.add(orderNumber);
+		params.add(poNumber);
 
 		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, PhotoOrderDetail.class);
 
