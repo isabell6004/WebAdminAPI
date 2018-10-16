@@ -1,9 +1,11 @@
 package net.fashiongo.webadmin.model.primary;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,14 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 /**
  *
@@ -63,20 +65,31 @@ public class ShowSchedule implements Serializable {
 	@Column(name = "TitleImage")
 	@JsonProperty("TitleImage")
 	private String titleImage;
-	
+/*	
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "DateFrom")
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("DateFrom")
 	private Date dateFrom;
-	
+*/
+	@JsonProperty("DateFrom")
+	@Column(name = "DateFrom")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime dateFrom;
+
+/*	
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "DateTo")
 	@Temporal(TemporalType.TIMESTAMP)
 	@JsonProperty("DateTo")
 	private Date dateTo;
+*/
+	@JsonProperty("DateTo")
+	@Column(name = "DateTo")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime dateTo;
 	
 	@Basic(optional = false)
 	@NotNull
@@ -99,7 +112,7 @@ public class ShowSchedule implements Serializable {
 	@Transient
 	@Column(name = "rowno")
 	@JsonProperty("rowno")
-	private int rowNo;
+	private long rowNo;
 	
 
 	@Transient
@@ -115,7 +128,7 @@ public class ShowSchedule implements Serializable {
 	@Transient
 	@Column(name = "Url")
 	@JsonProperty("Url")
-	private long url;
+	private String url;
 
 	@Transient
 	@Column(name = "VendorCount")
@@ -134,7 +147,7 @@ public class ShowSchedule implements Serializable {
 		this.showScheduleID = showScheduleID;
 	}
 
-	public ShowSchedule(Integer showScheduleID, int showID, Date dateFrom, Date dateTo, boolean active, int listOrder) {
+	public ShowSchedule(Integer showScheduleID, int showID, LocalDateTime dateFrom, LocalDateTime dateTo, boolean active, int listOrder) {
 		this.showScheduleID = showScheduleID;
 		this.showID = showID;
 		this.dateFrom = dateFrom;
@@ -175,19 +188,19 @@ public class ShowSchedule implements Serializable {
 		this.titleImage = titleImage;
 	}
 
-	public Date getDateFrom() {
+	public LocalDateTime getDateFrom() {
 		return dateFrom;
 	}
 
-	public void setDateFrom(Date dateFrom) {
+	public void setDateFrom(LocalDateTime dateFrom) {
 		this.dateFrom = dateFrom;
 	}
 
-	public Date getDateTo() {
+	public LocalDateTime getDateTo() {
 		return dateTo;
 	}
 
-	public void setDateTo(Date dateTo) {
+	public void setDateTo(LocalDateTime dateTo) {
 		this.dateTo = dateTo;
 	}
 
@@ -217,11 +230,11 @@ public class ShowSchedule implements Serializable {
 	
 	
 
-	public int getRowNo() {
+	public long getRowNo() {
 		return rowNo;
 	}
 
-	public void setRowNo(int rowNo) {
+	public void setRowNo(long rowNo) {
 		this.rowNo = rowNo;
 	}
 
@@ -241,11 +254,11 @@ public class ShowSchedule implements Serializable {
 		this.location = location;
 	}
 
-	public long getUrl() {
+	public String getUrl() {
 		return url;
 	}
 
-	public void setUrl(long url) {
+	public void setUrl(String url) {
 		this.url = url;
 	}
 

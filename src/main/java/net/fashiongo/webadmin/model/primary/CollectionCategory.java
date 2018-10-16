@@ -1,9 +1,11 @@
 package net.fashiongo.webadmin.model.primary;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,14 +17,14 @@ import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 /**
  *
@@ -111,12 +113,17 @@ public class CollectionCategory implements Serializable {
 	@JsonProperty("ModifiedBy")
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
-
+/*
 	@JsonProperty("ModifiedOn")
 	@Column(name = "ModifiedOn")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date modifiedOn;
-
+*/
+	@JsonProperty("ModifiedOn")
+	@Column(name = "ModifiedOn")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime modifiedOn;
+	
 	@Transient
 	@JsonProperty("CategoryID")
 	@Column(name = "CategoryID")
@@ -267,11 +274,11 @@ public class CollectionCategory implements Serializable {
 		this.modifiedBy = modifiedBy;
 	}
 
-	public Date getModifiedOn() {
+	public LocalDateTime getModifiedOn() {
 		return modifiedOn;
 	}
 
-	public void setModifiedOn(Date modifiedOn) {
+	public void setModifiedOn(LocalDateTime modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
 

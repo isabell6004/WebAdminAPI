@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowScheduleListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowInfoParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetShowParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
@@ -110,8 +112,8 @@ public class SitemgmtShowService extends ApiService {
 		// showschedule
 		final Integer showScheduleID = parameters.getShowScheduleId();
 		final Integer listOrder = parameters.getListOrder();
-		final Date dateFrom = parameters.getDateFrom();
-		final Date dateTo = parameters.getDateTo();
+		final LocalDateTime dateFrom = parameters.getDateFrom();
+		final LocalDateTime dateTo = parameters.getDateTo();
 		final String bannerImage = null;
 		final String mobileImage = null;
 		final String titleImage = null;
@@ -261,7 +263,7 @@ public class SitemgmtShowService extends ApiService {
 	 * 
 	 * Get Show List
 	 * 
-	 * @since 2018. 10. 15.
+	 * @since 2018. 10. 16.
 	 * @author Sanghyup Kim
 	 * @param
 	 * @return
@@ -276,14 +278,19 @@ public class SitemgmtShowService extends ApiService {
 		final Integer pageNum = parameters.getPageNum();
 		final Integer pageSize = parameters.getPageSize();
 		final Integer active = parameters.getActive();
-		final String location = parameters.getLocation();
+		
+		String showName = parameters.getShowName();
+		if (showName == "")
+			showName = null;
+		String location = parameters.getLocation();
+		if (location == "")
+			location = null;
 		String orderBy = parameters.getOrderBy();
 		if (orderBy == "")
 			orderBy = null;
-		final String showName = parameters.getShowName();
 
-		final Date dateFrom = parameters.getDateFrom();
-		final Date dateTo = parameters.getDateTo();
+		Date dateFrom = parameters.getDateFrom();
+		Date dateTo = parameters.getDateTo();
 
 		params.add(pageNum);
 		params.add(pageSize);
@@ -291,9 +298,9 @@ public class SitemgmtShowService extends ApiService {
 		params.add(showName);
 		params.add(location);
 		params.add(active);
+		params.add(orderBy);
 		params.add(dateFrom);
 		params.add(dateTo);
-		params.add(orderBy);
 
 		final String spName = "up_wa_GetAdminShowSchedule2";
 
@@ -301,12 +308,66 @@ public class SitemgmtShowService extends ApiService {
 		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class, ShowSchedule.class);
 
 		final List<SingleValueResult> singleValueResultList = (List<SingleValueResult>) _result.get(0);
+//		final List<SingleValueResult> rs1 = (List<SingleValueResult>) _results.get(0);
 		final List<ShowSchedule> showScheduleList = (List<ShowSchedule>) _result.get(1);
 
 		resultSet.setSingleValueResultList(singleValueResultList);
 		resultSet.setShowScheduleList(showScheduleList);;
 
 		return resultSet;
+	}
+	
+
+	/**
+	 * 
+	 * Get Show List
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public ResultResponse<Integer> setShow(SetShowParameters parameters) {
+
+		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
+		
+		Integer showID = parameters.getShowId();
+		Boolean active = parameters.getActive();
+		String location = parameters.getLocation();
+		String showName = parameters.getShowName();
+		String url = parameters.getUrl();
+		
+		ListShow listShow;
+		if (showID > 0) { // update
+			listShow = listShowRepository.findOneByShowID(showID);
+			if (listShow != null) {
+				listShow.setActive(active);
+				listShow.setLocation(location);
+				listShow.setShowName(showName);
+				listShow.setUrl(url);
+
+				listShowRepository.save(listShow);				
+			}
+		}
+		else { // insert
+			listShow = new ListShow();
+			ListShow listShow2 = listShowRepository.findTopByOrderByShowIDDesc();
+			if (listShow2 != null){
+				showID = listShow2.getShowID() +1;
+			}
+
+			listShow.setShowID(showID);
+			listShow.setActive(active);
+			listShow.setLocation(location);
+			listShow.setShowName(showName);
+			listShow.setUrl(url);
+
+			listShowRepository.save(listShow);				
+		}
+
+		result.setResultWrapper(true, 1, showID, MSG_SAVE_SUCCESS, showID);
+
+		return result;
 	}
 	
 	

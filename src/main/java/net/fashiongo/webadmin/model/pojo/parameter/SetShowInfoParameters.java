@@ -3,11 +3,14 @@
  */
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
+import javax.persistence.Convert;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 /**
  * Set ShowList Parameters
@@ -41,11 +44,13 @@ public class SetShowInfoParameters {
 
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("datefrom")
-	private Date dateFrom;
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime dateFrom;
 
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("dateto")
-	private Date dateTo;
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime dateTo;
 
 	@ApiModelProperty(required = true, example = "false")
 	@JsonProperty("active")
@@ -107,19 +112,19 @@ public class SetShowInfoParameters {
 		this.showUrl = showUrl;
 	}
 
-	public Date getDateFrom() {
+	public LocalDateTime getDateFrom() {
 		return dateFrom;
 	}
 
-	public void setDateFrom(Date dateFrom) {
+	public void setDateFrom(LocalDateTime dateFrom) {
 		this.dateFrom = dateFrom;
 	}
 
-	public Date getDateTo() {
+	public LocalDateTime getDateTo() {
 		return dateTo;
 	}
 
-	public void setDateTo(Date dateTo) {
+	public void setDateTo(LocalDateTime dateTo) {
 		this.dateTo = dateTo;
 	}
 

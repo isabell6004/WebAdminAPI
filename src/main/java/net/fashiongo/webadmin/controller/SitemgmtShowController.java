@@ -16,6 +16,7 @@ import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowScheduleListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowInfoParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetShowParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
@@ -116,10 +117,35 @@ public class SitemgmtShowController {
 	public JsonResponse<GetShowScheduleListResponse> getShowSchedules(@RequestBody GetShowScheduleListParameters parameters) {
 
 		JsonResponse<GetShowScheduleListResponse> results = new JsonResponse<GetShowScheduleListResponse>();
-		
+		GetShowScheduleListResponse data = siteMgmtShowService.getShowScheduleList(parameters);
 
+		results.setData(data);
 		return results;
 	}
+	
+
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	@RequestMapping(value = "show/save", method = RequestMethod.POST)
+	@ApiOperation("site management > show info. - set show save")
+	public JsonResponse<SetShowParameters> setShow(@RequestBody SetShowParameters parameters) {
+
+		JsonResponse<SetShowParameters> results = new JsonResponse<SetShowParameters>();
+		ResultResponse<Integer> result = siteMgmtShowService.setShow(parameters);
+		
+		parameters.setShowId(result.getData());
+
+		results.setData(parameters);
+		return results;
+	}
+
 	
 	
 	/**
@@ -297,24 +323,6 @@ public class SitemgmtShowController {
 	@RequestMapping(value = "show/participating-vendor/{mapId}", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show participating vendor")
 	public JsonResponse<Object> getShowParticipatingVendor(@PathVariable("mapId") Integer mapId) {
-
-		JsonResponse<Object> results = new JsonResponse<Object>();
-
-		return results;
-	}
-
-	/**
-	 * 
-	 * 
-	 * 
-	 * @since 2018. 10. 11.
-	 * @author Sanghyup Kim
-	 * @param
-	 * @return
-	 */
-	@RequestMapping(value = "show/save", method = RequestMethod.POST)
-	@ApiOperation("site management > show info. - set show save")
-	public JsonResponse<Object> setShow() {
 
 		JsonResponse<Object> results = new JsonResponse<Object>();
 
