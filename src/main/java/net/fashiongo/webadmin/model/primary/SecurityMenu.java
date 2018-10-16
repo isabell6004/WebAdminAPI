@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -58,6 +59,12 @@ public class SecurityMenu {
 	@JsonProperty("MenuIcon")
 	@Column(name = "MenuIcon")
 	private String menuIcon;
+	
+	@Transient
+	@JsonProperty("DispName")
+	@Column(name = "DispName")
+	private String dispName;
+
 
 	public Integer getMenuID() {
 		return menuID;
@@ -140,5 +147,12 @@ public class SecurityMenu {
 		this.menuIcon = menuIcon;
 	}
 	
-	
+
+	public String getDispName() {
+		String ReturnData = "";
+		if (active) ReturnData = "";
+		else ReturnData = "[x] ";
+		ReturnData += name;
+		return ReturnData;
+	}
 }
