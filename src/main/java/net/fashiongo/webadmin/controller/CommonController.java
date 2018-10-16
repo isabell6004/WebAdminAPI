@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.Resource;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBidAdPageSpotsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCountryStatesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMenuIDParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetServerHeartBeatParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
@@ -112,10 +114,9 @@ public class CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
-	public JsonResponse<Integer> GetMenuID(@RequestParam String pageName) {
-		pageName = pageName != null ? pageName : "";
+	public JsonResponse<Integer> GetMenuID(@RequestBody GetMenuIDParameter parameters) {
 		JsonResponse<Integer> results = new JsonResponse<Integer>();
-		Integer result = commonService.GetMenuID(pageName);
+		Integer result = commonService.GetMenuID(parameters.getPageName());
 		results.setData(result);
 		return results;
 	}
@@ -129,9 +130,9 @@ public class CommonController {
 	 * @return "Spring Boot"
 	 */
 	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.POST)
-	public JsonResponse<String> GetServerHeartBeat(@RequestParam Long q) {
+	public JsonResponse<String> GetServerHeartBeat(@RequestBody GetServerHeartBeatParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>();
-		String result = commonService.GetServerHeartBeat(q);
+		String result = commonService.GetServerHeartBeat(parameters.getQ());
 		results.setMessage(result);
 		return results;
 	}
@@ -145,8 +146,8 @@ public class CommonController {
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
-	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestParam String countryAbbrev) {
-		JsonResponse<GetCountryStatesResponse> results = commonService.GetCountryStates(countryAbbrev);
+	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestBody GetCountryStatesParameter parameters) {
+		JsonResponse<GetCountryStatesResponse> results = commonService.GetCountryStates(parameters.getCountryabbrev());
 		
 		return results;
 	}

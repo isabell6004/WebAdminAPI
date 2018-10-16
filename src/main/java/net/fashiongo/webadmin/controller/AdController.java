@@ -98,9 +98,7 @@ public class AdController {
 	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody GetSpotCheckParameter parameters) {
 		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
 		GetSpotCheckResponse result = AdService.getSpotCheck(parameters.getSpotID());
-		if(result.getSpotID() != null) {
-			results.setData(result);
-		}
+		results.setData(result);
 		results.setSuccess(true);
 		
 		return results;

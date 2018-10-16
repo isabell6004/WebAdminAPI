@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -18,22 +17,30 @@ import net.fashiongo.webadmin.utility.JsonResponse;
  *
  */
 @Service
-public class BuyerService extends ApiService {
-	@Autowired
-	private UserService userService;
-	
+public class UserService extends ApiService {
 	@Autowired
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
+	
 	/**
 	 * 
-	 * Set Modify Password
-	 * @since 2018. 10. 15.
+	 * Reset Password
+	 * @since 2018. 10. 16.
 	 * @author Dahye
-	 * @param SetModifyPasswordParameter
-	 * @return JsonResponse
+	 * @param pageName
+	 * @return SecurityMenu
 	 */
-	public JsonResponse SetModifyPassword(SetModifyPasswordParameter parameters) {
-		return userService.ResetPassword(parameters);
+	public JsonResponse ResetPassword(SetModifyPasswordParameter parameters) {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonResponse result = new JsonResponse(true, null, 0, null);
+		try {
+			String jsonParameters = mapper.writeValueAsString(parameters);
+			result = httpClient.post("membership/resetPassword", jsonParameters);
+			result.setMessage(MSG_CHANGE_SUCCESS);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }
