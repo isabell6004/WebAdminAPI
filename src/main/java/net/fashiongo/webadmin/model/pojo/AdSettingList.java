@@ -1,16 +1,16 @@
 package net.fashiongo.webadmin.model.pojo;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Nayeon Kim
  */
 public class AdSettingList {
-	@Column(name = "PageID")
+	@JsonProperty("PageID")
 	private Integer pageID;
-	@Column(name = "PageName")
+	@JsonProperty("PageName")
 	private String pageName;
-	@Column(name = "PageUrl")
+	@JsonProperty("PageUrl")
 	private String pageUrl;
 	
 	public Integer getPageID() {

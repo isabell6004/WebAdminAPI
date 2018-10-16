@@ -3,10 +3,12 @@ package net.fashiongo.webadmin.controller;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
@@ -72,7 +74,7 @@ public class AdController {
 	 * @author Nayeon Kim
 	 * @return List<CodeBodySize>
 	 */
-	@RequestMapping(value = "getbodysizecode", method = RequestMethod.POST)
+	@RequestMapping(value = "getbodysizelist", method = RequestMethod.POST)
 	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {
 		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null);
 		
@@ -93,10 +95,10 @@ public class AdController {
 	 * @return GetSpotCheckResponse
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
-	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody Integer spotID) {
+	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestParam String spotID) {
 		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
-		
-		GetSpotCheckResponse result = AdService.getSpotCheck(spotID);
+		Integer spotIDfiled =  StringUtils.isEmpty(spotID) ? 0 : Integer.parseInt(spotID);
+		GetSpotCheckResponse result = AdService.getSpotCheck(spotIDfiled);
 		if(result.getSpotID() != null) {
 			results.setData(result);
 		}
@@ -115,10 +117,10 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-	public JsonResponse<String> delSpotSetting(@RequestBody Integer spotID) {
-		spotID = spotID == null ? 0 : spotID;
+	public JsonResponse<String> delSpotSetting(@RequestParam String spotID) {
+		Integer spotIDfiled =  StringUtils.isEmpty(spotID) ? 0 : Integer.parseInt(spotID);
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-		ResultCode result = AdService.delSpotSetting(spotID);
+		ResultCode result = AdService.delSpotSetting(spotIDfiled);
 
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());

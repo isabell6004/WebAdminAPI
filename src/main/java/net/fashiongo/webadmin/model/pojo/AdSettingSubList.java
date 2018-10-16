@@ -3,61 +3,61 @@ package net.fashiongo.webadmin.model.pojo;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Nayeon Kim
  */
 public class AdSettingSubList {
-	@Column(name = "SpotID")
+	@JsonProperty("SpotID")
 	private Integer spotID;
-	@Column(name = "PageID")
+	@JsonProperty("PageID")
 	private Integer pageID;
-	@Column(name = "PageName")
+	@JsonProperty("PageName")
 	private String pageName;
-	@Column(name = "CategoryID")
+	@JsonProperty("CategoryID")
 	private Integer categoryID;
-	@Column(name = "BodySizeID")
+	@JsonProperty("BodySizeID")
 	private Integer bodySizeID;
-	@Column(name = "SpotName")
+	@JsonProperty("SpotName")
 	private String spotName;
-	@Column(name = "SpotDescription")
+	@JsonProperty("SpotDescription")
 	private String spotDescription;
-	@Column(name = "Price1")
+	@JsonProperty("Price1")
 	private BigDecimal price1;
-	@Column(name = "Price2")
+	@JsonProperty("Price2")
 	private BigDecimal price2;
-	@Column(name = "Price3")
+	@JsonProperty("Price3")
 	private BigDecimal price3;
-	@Column(name = "Price4")
+	@JsonProperty("Price4")
 	private BigDecimal price4;
-	@Column(name = "Price5")
+	@JsonProperty("Price5")
 	private BigDecimal price5;
-	@Column(name = "Price6")
+	@JsonProperty("Price6")
 	private BigDecimal price6;
-	@Column(name = "Price7")
+	@JsonProperty("Price7")
 	private BigDecimal price7;
-	@Column(name = "Active")
+	@JsonProperty("Active")
 	private Boolean active;
-	@Column(name = "IncludeVendorCategory")
+	@JsonProperty("IncludeVendorCategory")
 	private Boolean includeVendorCategory;
-	@Column(name = "SpotInstanceCount")
+	@JsonProperty("SpotInstanceCount")
 	private Integer spotInstanceCount;
-	@Column(name = "BannerImage")
+	@JsonProperty("BannerImage")
 	private String bannerImage;
-	@Column(name = "CreatedOn")
+	@JsonProperty("CreatedOn")
 	private LocalDateTime createdOn;
-	@Column(name = "CreatedBy")
+	@JsonProperty("CreatedBy")
 	private String createdBy;
-	@Column(name = "ModifiedOn")
+	@JsonProperty("ModifiedOn")
 	private LocalDateTime modifiedOn;
-	@Column(name = "ModifiedBy")
+	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
-	@Column(name = "BidEffectiveOn")
+	@JsonProperty("BidEffectiveOn")
 	private LocalDateTime bidEffectiveOn;
-	@Column(name = "MaxPurchasable")
+	@JsonProperty("MaxPurchasable")
 	private Integer maxPurchasable;
-	@Column(name = "SpotItemCount")
+	@JsonProperty("SpotItemCount")
 	private Integer spotItemCount;
 	
 	public Integer getSpotID() {
