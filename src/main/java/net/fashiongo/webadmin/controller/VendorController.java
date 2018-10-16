@@ -31,7 +31,7 @@ public class VendorController {
 	@RequestMapping(value="getvendorlistall", method=RequestMethod.POST)
 	public JsonResponse<List<VendorCompany>> getVendorListAll() {
 		
-		List<VendorCompany> vendors = vendorService.getVendors();	
+		List<VendorCompany> vendors = vendorService.getVendorList();	
 		return new JsonResponse<List<VendorCompany>>(true, null, 0, vendors);
 	}
 }

@@ -23,7 +23,7 @@ public class VendorService extends ApiService {
 	 * @author roy
 	 * @return vendor list
 	 */
-	public List<VendorCompany> getVendors() {
+	public List<VendorCompany> getVendorList() {
 		return vendorListRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
 	}
 }
