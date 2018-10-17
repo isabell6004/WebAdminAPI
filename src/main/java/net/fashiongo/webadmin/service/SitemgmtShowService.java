@@ -1,20 +1,29 @@
 package net.fashiongo.webadmin.service;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.common.SingleValueResult;
 import net.fashiongo.webadmin.dao.primary.ListShowRepository;
+import net.fashiongo.webadmin.dao.primary.ShowSchedulePromotionPlanRepository;
 import net.fashiongo.webadmin.dao.primary.ShowScheduleRepository;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.DelShowParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowScheduleListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowInfoParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetShowScheduleParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
@@ -32,6 +41,9 @@ public class SitemgmtShowService extends ApiService {
 
 	@Autowired
 	ShowScheduleRepository showScheduleRepository;
+
+	@Autowired
+	ShowSchedulePromotionPlanRepository showSchedulePromotionPlanRepository;
 
 	/**
 	 * 
@@ -105,7 +117,11 @@ public class SitemgmtShowService extends ApiService {
 		final String location = parameters.getLocation();
 		final String showName = parameters.getShowName();
 		final String url = parameters.getShowUrl();
-		final Boolean active = parameters.getActive();
+		Boolean active = parameters.getActive();
+		if (active == null) {
+			active = false;
+		}
+
 		final String showCode = null;
 
 		// showschedule
@@ -286,9 +302,20 @@ public class SitemgmtShowService extends ApiService {
 		if (orderBy == "")
 			orderBy = null;
 
-		LocalDateTime dateFrom = parameters.getDateFrom();
-		LocalDateTime dateTo = parameters.getDateTo();
+		LocalDateTime dateFrom = null;
+		LocalDateTime dateTo = null;
+		
+		String df = parameters.getDateFrom(); 
+		String dt = parameters.getDateTo(); 
 
+		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+		if (StringUtils.isNotEmpty(df)) {
+			dateFrom = LocalDateTime.parse(parameters.getDateFrom(), dtFormatter);
+		}
+		if (StringUtils.isNotEmpty(dt)) {
+			dateTo = LocalDateTime.parse(parameters.getDateTo(), dtFormatter);
+		}
+		
 		params.add(pageNum);
 		params.add(pageSize);
 		params.add(showId);
@@ -330,6 +357,9 @@ public class SitemgmtShowService extends ApiService {
 
 		Integer showID = parameters.getShowId();
 		Boolean active = parameters.getActive();
+		if (active == null) {
+			active = false;
+		}
 		String location = parameters.getLocation();
 		String showName = parameters.getShowName();
 		String url = parameters.getUrl();
@@ -366,4 +396,165 @@ public class SitemgmtShowService extends ApiService {
 		return result;
 	}
 
+
+	/**
+	 * 
+	 * Get Show List
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public ResultResponse<Integer> setDeleteShow(DelShowParameter parameters) {
+		Integer showID = parameters.getShowID();
+		
+		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
+
+		int size = showScheduleRepository.findByShowID(showID).size();
+		if (size > 0) {
+			result.setMessage("Unable to delete show. There are still schedules linked to this show.");
+			return result;
+		}
+		
+		listShowRepository.deleteById(showID);
+		
+		result.setResultWrapper(true, 1, showID, MSG_DELETE_SUCCESS, showID);
+
+		return result;
+	}
+	
+
+	/**
+	 * 
+	 * Delete ShowSchedule List
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public ResultResponse<Integer> setDeleteShowSchedule(DelShowParameter parameters) {
+//		Integer showID = parameters.getShowID();
+		Integer showScheduleID = parameters.getShowScheduleID();
+		
+		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
+
+		int size = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID).size();
+		if (size > 0) {
+			result.setMessage("Unable to delete schedule. Either the Show Schedule date has passed or there are still plans/vendors linked to this schedule.");
+			return result;
+		}
+		
+		showScheduleRepository.deleteById(showScheduleID);
+		
+		result.setResultWrapper(true, 1, showScheduleID, MSG_DELETE_SUCCESS, showScheduleID);
+
+		return result;
+	}
+	
+
+	/**
+	 * 
+	 * Set Showschedule
+	 * 
+	 * @since 2018. 10. 17.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public ResultResponse<Integer> setShowSchedule(SetShowScheduleParameters parameters) throws Exception {
+
+		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
+
+		Integer showScheduleID = parameters.getShowScheduleId();
+		Integer showID = parameters.getShowId();
+
+		String bannerImage = parameters.getBannerImage();
+		String mobileImage = parameters.getMobileImage();
+		String titleImage = parameters.getTitleImage();
+
+		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
+		
+		Date dateFrom = dt.parse(parameters.getDateFrom());
+		Date dateTo = dt.parse(parameters.getDateTo());
+		if (dateFrom == null || dateTo == null) {
+			result.setMessage("FromDate or ToDate is null!");
+			return result;
+		}
+		
+        Instant instant = dateFrom.toInstant();
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+		LocalDateTime dateFrom2 = instant.atZone(defaultZoneId).toLocalDateTime();
+
+		instant = dateTo.toInstant();
+		LocalDateTime dateTo2 = instant.atZone(defaultZoneId).toLocalDateTime();
+
+		Integer listOrder = parameters.getListOrder();
+		if (listOrder == null) {
+			listOrder = 0;
+		}
+		Boolean active = parameters.getActive();
+		if (active == null) {
+			active = false;
+		}
+
+		ShowSchedule showSchedule;
+		if (showScheduleID > 0) { // update
+			showSchedule = showScheduleRepository.findOneByShowScheduleID(showScheduleID);
+			if (showSchedule != null) {
+				showSchedule.setActive(active);
+				showSchedule.setBannerImage(bannerImage);
+				showSchedule.setDateFrom(dateFrom2);
+				showSchedule.setDateTo(dateTo2);
+				showSchedule.setListOrder(listOrder);
+				showSchedule.setMobileImage(mobileImage);
+				showSchedule.setShowID(showID);
+				showSchedule.setTitleImage(titleImage);
+
+				showScheduleRepository.save(showSchedule);
+			}
+		} else { // insert
+			showSchedule = new ShowSchedule();
+
+			showSchedule.setShowScheduleID(showScheduleID);
+
+			showSchedule.setActive(active);
+			showSchedule.setBannerImage(bannerImage);
+			showSchedule.setDateFrom(dateFrom2);
+			showSchedule.setDateTo(dateTo2);
+			showSchedule.setListOrder(listOrder);
+			showSchedule.setMobileImage(mobileImage);
+			showSchedule.setShowID(showID);
+			showSchedule.setTitleImage(titleImage);
+			
+			ShowSchedule showSchedule2 = showScheduleRepository.save(showSchedule);
+			showScheduleID = showSchedule2.getShowScheduleID();
+		}
+
+		result.setResultWrapper(true, 1, showScheduleID, MSG_SAVE_SUCCESS, showScheduleID);
+
+		return result;
+	}
+	
+
+	/**
+	 * 
+	 * Get Showschedule detail
+	 * 
+	 * @since 2018. 10. 17.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public ResultResponse<ShowSchedule> getShowScheduleDetail(Integer showScheduleID) {
+
+		ResultResponse<ShowSchedule> result = new ResultResponse<ShowSchedule>();
+
+		ShowSchedule showSchedule = showScheduleRepository.findOneByShowScheduleID(showScheduleID);
+		result.setData(showSchedule);
+		return result;
+	}
+	
+	
 }

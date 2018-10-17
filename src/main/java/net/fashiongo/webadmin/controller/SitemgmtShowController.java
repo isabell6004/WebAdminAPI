@@ -13,13 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.DelShowParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowScheduleListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowInfoParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetShowScheduleParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
+import net.fashiongo.webadmin.model.primary.ShowSchedule;
 import net.fashiongo.webadmin.service.SitemgmtShowService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -81,7 +84,6 @@ public class SitemgmtShowController {
 		return results;
 	}
 
-
 	/**
 	 * 
 	 * 
@@ -101,7 +103,6 @@ public class SitemgmtShowController {
 		results.setData(result.getData());
 		return results;
 	}
-	
 
 	/**
 	 * 
@@ -114,7 +115,8 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/schedule", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show schedule list")
-	public JsonResponse<GetShowScheduleListResponse> getShowSchedules(@RequestBody GetShowScheduleListParameters parameters) {
+	public JsonResponse<GetShowScheduleListResponse> getShowSchedules(
+			@RequestBody GetShowScheduleListParameters parameters) {
 
 		JsonResponse<GetShowScheduleListResponse> results = new JsonResponse<GetShowScheduleListResponse>();
 		GetShowScheduleListResponse data = siteMgmtShowService.getShowScheduleList(parameters);
@@ -122,7 +124,6 @@ public class SitemgmtShowController {
 		results.setData(data);
 		return results;
 	}
-	
 
 	/**
 	 * 
@@ -139,14 +140,82 @@ public class SitemgmtShowController {
 
 		JsonResponse<SetShowParameters> results = new JsonResponse<SetShowParameters>();
 		ResultResponse<Integer> result = siteMgmtShowService.setShow(parameters);
-		
+
 		parameters.setShowId(result.getData());
 
 		results.setData(parameters);
 		return results;
 	}
 
-	
+	/**
+	 * 
+	 * delete showschedule
+	 * 
+	 * @since 2018. 10. 17.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	@RequestMapping(value = "show/schedule/delete", method = RequestMethod.POST)
+	@ApiOperation("site management > show info. - set show schedule delete")
+	public JsonResponse<Integer> deleteShowSchedule(@RequestBody DelShowParameter parameters) {
+
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
+		ResultResponse<Integer> result = siteMgmtShowService.setDeleteShowSchedule(parameters);
+
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getMessage());
+
+		return results;
+	}
+
+	/**
+	 * 
+	 * delete show
+	 * 
+	 * @since 2018. 10. 17.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	@RequestMapping(value = "show/delete", method = RequestMethod.POST)
+	@ApiOperation("site management > show info. - set show delete")
+	public JsonResponse<Integer> deleteShow(@RequestBody DelShowParameter parameters) {
+
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
+		ResultResponse<Integer> result = siteMgmtShowService.setDeleteShow(parameters);
+
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getMessage());
+
+		return results;
+	}
+
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 11.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	@RequestMapping(value = "show/schedule/save", method = RequestMethod.POST)
+	@ApiOperation("site management > show info. - set show schedule save")
+	public JsonResponse<SetShowScheduleParameters> setShowSchedule(@RequestBody SetShowScheduleParameters parameters) throws Exception {
+
+		JsonResponse<SetShowScheduleParameters> results = new JsonResponse<SetShowScheduleParameters>();
+		ResultResponse<Integer> result = siteMgmtShowService.setShowSchedule(parameters);
+
+		parameters.setShowScheduleId(result.getData());
+		
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getMessage());
+		results.setData(parameters);
+
+		return results;
+	}
+
 	
 	/**
 	 * 
@@ -201,7 +270,6 @@ public class SitemgmtShowController {
 
 		return results;
 	}
-
 
 	/**
 	 * 
@@ -286,10 +354,12 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/schedule/{showScheduleId}", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show schedule")
-	public JsonResponse<Object> getShowSchedule(@PathVariable("showScheduleId") Integer showScheduleId) {
+	public JsonResponse<ShowSchedule> getShowSchedule(@PathVariable("showScheduleId") Integer showScheduleId) {
 
-		JsonResponse<Object> results = new JsonResponse<Object>();
+		JsonResponse<ShowSchedule> results = new JsonResponse<ShowSchedule>();
 
+		ResultResponse<ShowSchedule> result = siteMgmtShowService.getShowScheduleDetail(showScheduleId);
+		results.setData(result.getData());
 		return results;
 	}
 
@@ -338,60 +408,6 @@ public class SitemgmtShowController {
 	 * @param
 	 * @return
 	 */
-	@RequestMapping(value = "show/schedule/save", method = RequestMethod.POST)
-	@ApiOperation("site management > show info. - set show schedule save")
-	public JsonResponse<Object> setShowSchedule() {
-
-		JsonResponse<Object> results = new JsonResponse<Object>();
-
-		return results;
-	}
-
-	/**
-	 * 
-	 * 
-	 * 
-	 * @since 2018. 10. 11.
-	 * @author Sanghyup Kim
-	 * @param
-	 * @return
-	 */
-	@RequestMapping(value = "show/delete", method = RequestMethod.POST)
-	@ApiOperation("site management > show info. - set show delete")
-	public JsonResponse<Object> deleteShow() {
-
-		JsonResponse<Object> results = new JsonResponse<Object>();
-
-		return results;
-	}
-
-	/**
-	 * 
-	 * 
-	 * 
-	 * @since 2018. 10. 11.
-	 * @author Sanghyup Kim
-	 * @param
-	 * @return
-	 */
-	@RequestMapping(value = "show/schedule/delete", method = RequestMethod.POST)
-	@ApiOperation("site management > show info. - set show schedule delete")
-	public JsonResponse<Object> deleteShowSchedule() {
-
-		JsonResponse<Object> results = new JsonResponse<Object>();
-
-		return results;
-	}
-
-	/**
-	 * 
-	 * 
-	 * 
-	 * @since 2018. 10. 11.
-	 * @author Sanghyup Kim
-	 * @param
-	 * @return
-	 */
 	@RequestMapping(value = "show/participating-vendor/delete", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - set show participating-vendor delete")
 	public JsonResponse<Object> deleteShowParticipatingVendor() {
@@ -418,6 +434,5 @@ public class SitemgmtShowController {
 
 		return results;
 	}
-
 
 }

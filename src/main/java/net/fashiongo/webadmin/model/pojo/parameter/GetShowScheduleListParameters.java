@@ -3,14 +3,9 @@
  */
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Convert;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
-import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 /**
  * Set GetShowScheduleList Parameters
@@ -45,16 +40,25 @@ public class GetShowScheduleListParameters {
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("orderby")
 	private String orderBy;
-
+/*
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("datefrom")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime dateFrom;
-
+*/
+	@ApiModelProperty(required = true, example = "10/1/2018 00:00")
+	@JsonProperty("datefrom")
+	private String dateFrom;
+	
+/*	
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("dateto")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime dateTo;
+*/
+	@ApiModelProperty(required = true, example = "10/28/2018 00:00")
+	@JsonProperty("dateto")
+	private String dateTo;
 
 	public Integer getShowId() {
 		return showId;
@@ -112,19 +116,19 @@ public class GetShowScheduleListParameters {
 		this.orderBy = orderBy;
 	}
 
-	public LocalDateTime getDateFrom() {
+	public String getDateFrom() {
 		return dateFrom;
 	}
 
-	public void setDateFrom(LocalDateTime dateFrom) {
+	public void setDateFrom(String dateFrom) {
 		this.dateFrom = dateFrom;
 	}
 
-	public LocalDateTime getDateTo() {
+	public String getDateTo() {
 		return dateTo;
 	}
 
-	public void setDateTo(LocalDateTime dateTo) {
+	public void setDateTo(String dateTo) {
 		this.dateTo = dateTo;
 	}
 
