@@ -14,13 +14,13 @@ public class SetSecurityMenuParameter {
 	@ApiModelProperty(required = true, example="0")
 	private Integer menuid;
 	
-	@ApiModelProperty(required = true, example="")
+	@ApiModelProperty(required = true, example="1")
 	private Integer parentid;
 	
-	@ApiModelProperty(required = true, example="")
+	@ApiModelProperty(required = true, example="2")
 	private Integer resourceid;
 
-	@ApiModelProperty(required = true, example="")
+	@ApiModelProperty(required = true, example="3")
 	private Integer applicationid;
 	
 	@ApiModelProperty(required = true, example="test")
@@ -35,10 +35,10 @@ public class SetSecurityMenuParameter {
 	@ApiModelProperty(required = true, example="0")
 	private Integer listorder;
 	
-	@ApiModelProperty(required = true, example="Marketing Team")
+	@ApiModelProperty(required = true, example="1")
 	private Boolean visible;
 	
-	@ApiModelProperty(required = true, example="Marketing Team")
+	@ApiModelProperty(required = true, example="1")
 	private Boolean active;
 
 	public Integer getMenuid() {
