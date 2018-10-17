@@ -25,7 +25,7 @@ public class SecurityUsers {
 	private String modifiedBy;
 	@JsonProperty("AccessTime")
 	private String accessTime;
-	@JsonProperty("IpTimeExempt")
+	@JsonProperty("IPTimeExempt")
 	private Boolean ipTimeExempt;
 	@JsonProperty("Active")
 	private Boolean active;
