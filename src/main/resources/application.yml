@@ -47,6 +47,13 @@ spring:
     properties.javax.persistence.query.timeout: 10000
     properties.hibernate.dialect: org.hibernate.dialect.SQLServer2008Dialect
     hibernate.naming.physical-strategy: net.fashiongo.common.dal.MSSQLServerNamingStrategy
+  cache:
+    type: redis
+  redis:
+    host: 172.21.101.20
+    port: 6379
+    database: 2
+    
     
 server:
   port: 29901 
@@ -65,6 +72,8 @@ webAdminapi:
 # Local
 spring:
   profiles: local
+  redis:
+    host: 172.21.101.20
   datasource:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
     username: sa
@@ -85,6 +94,8 @@ logging:
 # Migration
 spring:
   profiles: migration
+  redis:
+    host: 10.10.0.145
   datasource:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
   datasource2:
@@ -104,6 +115,8 @@ logging:
 # Dev
 spring:
   profiles: dev
+  redis:
+    host: 10.10.0.145
   datasource:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_CC
   datasource2:
@@ -128,6 +141,8 @@ spring:
 # Prod
 spring:
   profiles: prod
+  redis:
+    host: 10.10.0.168
   datasource:
     jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
   datasource2:

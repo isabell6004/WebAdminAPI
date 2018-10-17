@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
@@ -99,6 +100,7 @@ public class CommonService extends ApiService {
 	 * @param 
 	 * @return List<TopCategories>
 	 */
+	@Cacheable(value="GetTopCategories")
 	public List<TopCategories> GetTopCategories() {
 		List<TopCategories> result = (List<TopCategories>) topCategoriesRepository.findByActiveAndLvlOrderByListOrder(true, 1);
 		

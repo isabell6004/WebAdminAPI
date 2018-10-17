@@ -64,6 +64,13 @@
 		 </dependency>
 		<!-- //log4j2 -->
 		
+		<!-- redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- // redis -->
+		
 		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
 		<dependency>
 		    <groupId>commons-codec</groupId>
