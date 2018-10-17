@@ -100,9 +100,6 @@ spring:
 logging:
   config: classpath:log4j2-dev.xml
   
-webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.32:19008
-  
 ---
 # Dev
 spring:

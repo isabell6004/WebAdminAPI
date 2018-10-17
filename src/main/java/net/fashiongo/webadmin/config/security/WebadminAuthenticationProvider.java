@@ -170,10 +170,6 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		return this.securityListIPRepository.existsByIpAddress(Utility.getIpAddress(request));
 	}
 	
-	private void test() {
-		
-	}
-	
 	private void validateAuthResponse(JsonResponse response) {
 		LinkedHashMap<String, Object> d = (LinkedHashMap<String, Object>) response.getData();
 		if (!(Boolean) d.get("isAuthenticated")) {
