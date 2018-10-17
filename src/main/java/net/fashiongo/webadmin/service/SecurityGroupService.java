@@ -332,10 +332,10 @@ public class SecurityGroupService extends ApiService {
 		List<SecurityMapUserGroup> mapList = securityMapUserGroupRepository.findByGroupIDIn(groupIds);
 		if(!CollectionUtils.isEmpty(mapList)) {
 			result.setResultMsg("Check the mapped user");
+			
+			List<Integer> filteredGroupIds = mapList.stream().map(group -> group.getGroupID()).distinct().collect(Collectors.toList());
+			groupIds.removeAll(filteredGroupIds);
 		}
-
-		List<Integer> filteredGroupIds = mapList.stream().map(group -> group.getGroupID()).distinct().collect(Collectors.toList());
-		groupIds.removeAll(filteredGroupIds);
 		
 		securityPermissionGroupRepository.deleteByGroupIDIn(groupIds);
 		securityGroupRepository.deleteByGroupIDIn(groupIds);
