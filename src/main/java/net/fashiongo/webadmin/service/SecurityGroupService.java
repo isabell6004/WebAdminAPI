@@ -33,6 +33,7 @@ import net.fashiongo.webadmin.model.pojo.SecurityUsers;
 import net.fashiongo.webadmin.model.pojo.SubGroupData;
 import net.fashiongo.webadmin.model.pojo.UserMappingVendor;
 import net.fashiongo.webadmin.model.pojo.UserMappingVendorAssigned;
+import net.fashiongo.webadmin.model.pojo.UserMappingVendorResult;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
@@ -46,6 +47,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstime
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserByNameResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.SetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 import net.fashiongo.webadmin.model.primary.SecurityPermissionGroup;
@@ -439,13 +441,16 @@ public class SecurityGroupService extends ApiService {
      * @param parameters
      * @return
      */
-	public ResultCode SetUserMappingVendor(SetUserMappingVendorParameter parameters) {
-		ResultCode result = new ResultCode(false, 0, null);
+	public SetUserMappingVendorResponse SetUserMappingVendor(SetUserMappingVendorParameter parameters) {
+		SetUserMappingVendorResponse result = new SetUserMappingVendorResponse();
 		String spName = "up_wa_SetUserMappingVendor";
 		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getUserID());
+		params.add(parameters.getSaveWholeSalerIDs());
+		params.add(parameters.getRemoveWholeSalerIDs());
 		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, UserMappingVendor.class);
-		result.setResultCode((Integer) _result.get(0));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, UserMappingVendorResult.class);
+		result.setUserMappingVendorResultList((List<UserMappingVendorResult>) _result.get(0));
 		result.setSuccess(true);
 		
 		return result;
