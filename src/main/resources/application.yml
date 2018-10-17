@@ -74,8 +74,8 @@ spring:
     username: sa
     password: msqLsa6301
   datasource3:
-    jdbc-url: jdbc:sqlserver://172.21.101.101;databaseName=FG_EM
-    username: sqladmin
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
+    username: sa
     password: msqLsa6301
         
 logging:
