@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.config.security;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,7 +9,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,6 +25,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
@@ -29,6 +37,7 @@ import net.fashiongo.webadmin.model.pojo.MenuDS;
 import net.fashiongo.webadmin.model.pojo.MenuPermission;
 import net.fashiongo.webadmin.model.pojo.SubMenu;
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.response.AuthuserResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityLoginControl;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
@@ -71,16 +80,15 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		JsonResponse response = client.post("/membership/authenticate/3",
 				"{\"userName\":\"" + username + "\", \"password\":\"" + password + "\"}");
 		if (!response.isSuccess()) {
-			throw new BadCredentialsException(password);
+			this.ResponseException(Loginable, "The UserName and Password combination is invalid");
 		}
-		this.validateAuthResponse(response);
-		
+		this.validateAuthResponse(Loginable, response);
 		SecurityUser securityUser = securityUserRepository.findFirstByUserName(username);
-		this.checkUserInfo(securityUser);
-		
+		this.checkUserInfo(Loginable, securityUser);
 		Loginable = this.checkUserRole(securityUser, accessCode, request);
+		
 		if(!Loginable.equals(1)) {
-			throw new BadCredentialsException("");
+			this.ResponseException(Loginable, "Sorry, this account is inactive or not approved yet!");
 		}
 		
 		WebAdminLoginUser webAdminLoginUser = new WebAdminLoginUser();
@@ -103,6 +111,29 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		return auth;
 	}
 	
+	private void ResponseException(Integer code, String message){
+		HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getResponse();
+		AuthuserResponse result = new AuthuserResponse();
+		
+		JsonResponse<AuthuserResponse> res = new JsonResponse<AuthuserResponse>();
+		res.setSuccess(true);
+		result.setUserID(0);
+		result.setsCodeNo(code);
+		result.setsCodeYn(false);
+		result.setMessage(message);
+		res.setData(result);
+		try {
+			ObjectMapper om = new ObjectMapper();
+			String returnStr = om.writeValueAsString(res);
+			OutputStream ostr = response.getOutputStream();
+			ostr.write(returnStr.getBytes());
+			ostr.flush();
+			ostr.close();
+		} catch(Exception e) {
+			
+		}
+	}
+	
 	private MenuDS getMenuDS(Integer userId) {
 		MenuDS menuDs = new MenuDS();
 		String spName = "up_wa_Security_GetLeftMenuByUser";
@@ -117,11 +148,13 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
         return menuDs;
 	}
 	
-	private void checkUserInfo(SecurityUser securityUser) {
+	private void checkUserInfo(Integer loginable, SecurityUser securityUser) {
+		
+		
 		if(securityUser == null) {
-			throw new BadCredentialsException("The userName and Password combination is invalid.");
+			this.ResponseException(loginable,"The userName and Password combination is invalid.");
 		} else if(securityUser.getActive() == false){
-			throw new BadCredentialsException("Sorry, this account is inactive or not approved yet!");
+			this.ResponseException(loginable,"Sorry, this account is inactive or not approved yet!");
 		}
 	}
 	
@@ -136,7 +169,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
 					
 					if(!CollectionUtils.isEmpty(list)) {
-						bAccessabletime = (list.get(0).getTimeFrom().after(new Date()) && list.get(0).getTimeFrom().before(new Date()));
+						bAccessabletime = (list.get(0).getTimeFrom().before(new Date()) && list.get(0).getTimeTo().after(new Date()));
 					}
 					
 					if(!bAccessabletime) {
@@ -162,7 +195,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		if(acsCode != null && acsCode.getExpiredOn().after(new Date()) == true) {
 			return 1;
 		}else {
-			return 6;
+			return 5;
 		}
 	}
 	
@@ -170,17 +203,13 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 		return this.securityListIPRepository.existsByIpAddress(Utility.getIpAddress(request));
 	}
 	
-	private void test() {
-		
-	}
-	
-	private void validateAuthResponse(JsonResponse response) {
+	private void validateAuthResponse(Integer loginable, JsonResponse response) {
 		LinkedHashMap<String, Object> d = (LinkedHashMap<String, Object>) response.getData();
 		if (!(Boolean) d.get("isAuthenticated")) {
 			if ((Boolean) d.get("isBlocked") != null && (Boolean) d.get("isBlocked")) {
-				throw new VendorBlockedException((String) d.get("message"));
+				this.ResponseException(loginable,((String) d.get("message")));
 			} else {
-				throw new BadCredentialsException((String) d.get("message"));
+				this.ResponseException(loginable,((String) d.get("message")));
 			}
 		}
 	}

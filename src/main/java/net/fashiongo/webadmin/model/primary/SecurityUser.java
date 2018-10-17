@@ -49,7 +49,7 @@ public class SecurityUser {
 	
 	@JsonProperty("CreatedOn")
 	@Column(name = "CreatedOn")
-	private Date createdOn;
+	private LocalDateTime createdOn;
 	
 	@JsonProperty("CreatedBy")
 	@Column(name = "CreatedBy")
@@ -57,7 +57,7 @@ public class SecurityUser {
 	
 	@JsonProperty("ModifiedOn")
 	@Column(name = "ModifiedOn")
-	private Date modifiedOn;
+	private LocalDateTime modifiedOn;
 	
 	@JsonProperty("ModifiedBy")
 	@Column(name = "ModifiedBy")
@@ -124,12 +124,20 @@ public class SecurityUser {
 		this.ipTimeExempt = ipTimeExempt;
 	}
 
-	public Date getCreatedOn() {
+	public LocalDateTime getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Date createdOn) {
+	public void setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
+	}
+
+	public LocalDateTime getModifiedOn() {
+		return modifiedOn;
+	}
+
+	public void setModifiedOn(LocalDateTime modifiedOn) {
+		this.modifiedOn = modifiedOn;
 	}
 
 	public String getCreatedBy() {
@@ -138,14 +146,6 @@ public class SecurityUser {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
-	}
-
-	public Date getModifiedOn() {
-		return modifiedOn;
-	}
-
-	public void setModifiedOn(Date modifiedOn) {
-		this.modifiedOn = modifiedOn;
 	}
 
 	public String getModifiedBy() {

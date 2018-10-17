@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,10 +16,10 @@ public class LoginControl {
 	private Integer weekday;
 	
 	@JsonProperty("TimeFrom")
-	private Date timeFrom;
+	private LocalDateTime timeFrom;
 	
 	@JsonProperty("TimeTo")
-	private Date timeTo;
+	private LocalDateTime timeTo;
 	
 	@JsonProperty("Allow")
 	private Boolean allow;
@@ -50,19 +51,19 @@ public class LoginControl {
 		this.weekday = weekday;
 	}
 
-	public Date getTimeFrom() {
+	public LocalDateTime getTimeFrom() {
 		return timeFrom;
 	}
 
-	public void setTimeFrom(Date timeFrom) {
+	public void setTimeFrom(LocalDateTime timeFrom) {
 		this.timeFrom = timeFrom;
 	}
 
-	public Date getTimeTo() {
+	public LocalDateTime getTimeTo() {
 		return timeTo;
 	}
 
-	public void setTimeTo(Date timeTo) {
+	public void setTimeTo(LocalDateTime timeTo) {
 		this.timeTo = timeTo;
 	}
 

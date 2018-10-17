@@ -1,8 +1,13 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserMappingVendor {
+	@JsonProperty("WholeSalerID")
 	private Integer wholeSalerID;
+	@JsonProperty("CompanyName")
 	private String companyName;
+	@JsonProperty("MapID")
 	private Integer mapID;
 	
 	public Integer getWholeSalerID() {

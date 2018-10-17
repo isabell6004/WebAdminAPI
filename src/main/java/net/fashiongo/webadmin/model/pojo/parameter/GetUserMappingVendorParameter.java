@@ -26,7 +26,7 @@ public class GetUserMappingVendorParameter {
 	private String vendorType;
 	
 	@ApiModelProperty(required = true, example="test")
-	@JsonProperty("vendorkeyword")
+	@JsonProperty("vendorKeyword")
 	private String vendorKeyword;
 
 	public Integer getUserID() {

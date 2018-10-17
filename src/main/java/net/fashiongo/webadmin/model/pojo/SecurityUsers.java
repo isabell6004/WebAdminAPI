@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SecurityUsers {
@@ -14,16 +16,16 @@ public class SecurityUsers {
 	@JsonProperty("GroupName")
 	private String groupName;
 	@JsonProperty("CreatedOn")
-	private String createdOn;
+	private LocalDateTime createdOn;
 	@JsonProperty("CreatedBy")
 	private String createdBy;
 	@JsonProperty("ModifiedOn")
-	private String modifiedOn;
+	private LocalDateTime modifiedOn;
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
 	@JsonProperty("AccessTime")
 	private String accessTime;
-	@JsonProperty("IpTimeExempt")
+	@JsonProperty("IPTimeExempt")
 	private Boolean ipTimeExempt;
 	@JsonProperty("Active")
 	private Boolean active;
@@ -59,22 +61,24 @@ public class SecurityUsers {
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
-	public String getCreatedOn() {
-		return createdOn;
-	}
-	public void setCreatedOn(String createdOn) {
-		this.createdOn = createdOn;
-	}
+
 	public String getCreatedBy() {
 		return createdBy;
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	public String getModifiedOn() {
+
+	public LocalDateTime getCreatedOn() {
+		return createdOn;
+	}
+	public void setCreatedOn(LocalDateTime createdOn) {
+		this.createdOn = createdOn;
+	}
+	public LocalDateTime getModifiedOn() {
 		return modifiedOn;
 	}
-	public void setModifiedOn(String modifiedOn) {
+	public void setModifiedOn(LocalDateTime modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
 	public String getModifiedBy() {
