@@ -163,7 +163,7 @@ public class SecurityGroupService extends ApiService {
 	 */
 	public GetSecurityGroupPermissionsResponse GetSecurityUserPermissions(GetSecurityUserPermissionsParameter parameters) {
 		GetSecurityGroupPermissionsResponse result = new GetSecurityGroupPermissionsResponse();
-		String spName = "up_wa_Security_GetPermissionGroup";
+		String spName = "up_wa_Security_GetPermission";
         List<Object> params = new ArrayList<Object>();
         params.add(parameters.getAppid());
         params.add(parameters.getUserid());
