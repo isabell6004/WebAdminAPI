@@ -113,7 +113,7 @@ public class CommonController {
 	 * @return Page id
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
+	@RequestMapping(value = "getmenuid", method = RequestMethod.GET)
 	public JsonResponse<Integer> GetMenuID(@RequestBody GetMenuIDParameter parameters) {
 		JsonResponse<Integer> results = new JsonResponse<Integer>();
 		Integer result = commonService.GetMenuID(parameters.getPageName());
@@ -129,7 +129,7 @@ public class CommonController {
 	 * @param q
 	 * @return "Spring Boot"
 	 */
-	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.POST)
+	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.GET)
 	public JsonResponse<String> GetServerHeartBeat(@RequestBody GetServerHeartBeatParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>();
 		String result = commonService.GetServerHeartBeat(parameters.getQ());
@@ -145,7 +145,7 @@ public class CommonController {
 	 * @param countryAbbrev
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
-	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
+	@RequestMapping(value = "getcountrystates", method = RequestMethod.GET)
 	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestBody GetCountryStatesParameter parameters) {
 		JsonResponse<GetCountryStatesResponse> results = commonService.GetCountryStates(parameters.getCountryabbrev());
 		
