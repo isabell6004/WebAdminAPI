@@ -224,9 +224,10 @@ public class AdminController {
 	 * @author Incheol Jung
 	 * @param parameters
 	 * @return
+	 * @throws IOException 
 	 */
 	@RequestMapping(value="setdeletesecuritygroups", method=RequestMethod.POST)
-	public JsonResponse<Integer> setdeletesecuritygroups(@RequestBody SetdeletesecuritygroupsParameter parameters) {
+	public JsonResponse<Integer> setdeletesecuritygroups(@RequestBody SetdeletesecuritygroupsParameter parameters) throws IOException {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
 		
 		ResultCode result = securityGroupService.setdeletesecuritygroups(parameters.getData());
