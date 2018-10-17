@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.model.primary;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -16,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "[Security.Group]")
 public class SecurityGroup {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "GroupID")
 	@JsonProperty("GroupID")
 	private Integer groupID;

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.Resource;
+import net.fashiongo.webadmin.model.pojo.parameter.GetBidAdPageSpotsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCountryStatesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMenuIDParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
@@ -74,13 +75,13 @@ public class CommonController {
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Junghwan Lee
-	 * @param pageId
+	 * @param parameter
 	 * @return JsonResponse<List<AdPageSpot>>
 	 */
 	@RequestMapping(value = "getbidadpagespots", method = RequestMethod.POST)
-	public JsonResponse<List<AdPageSpot>> GetBidAdPageSpots(@RequestBody Integer pageId) {
+	public JsonResponse<List<AdPageSpot>> GetBidAdPageSpots(@RequestBody GetBidAdPageSpotsParameter parameter) {
 		JsonResponse<List<AdPageSpot>> results = new JsonResponse<List<AdPageSpot>>();
-		List<AdPageSpot> result = commonService.GetBidAdPageSpots(pageId);
+		List<AdPageSpot> result = commonService.GetBidAdPageSpots(parameter.getPageId());
 		
 		results.setSuccess(true);
 		results.setData(result);
