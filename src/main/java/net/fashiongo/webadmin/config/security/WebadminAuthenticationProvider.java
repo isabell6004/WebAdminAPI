@@ -136,7 +136,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
 					
 					if(!CollectionUtils.isEmpty(list)) {
-						bAccessabletime = (list.get(0).getTimeFrom().after(new Date()) && list.get(0).getTimeFrom().before(new Date()));
+						bAccessabletime = (list.get(0).getTimeFrom().before(new Date()) && list.get(0).getTimeTo().after(new Date()));
 					}
 					
 					if(!bAccessabletime) {
