@@ -46,6 +46,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.SetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.service.AdminService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
@@ -437,11 +438,13 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "setusermappingvendor", method=RequestMethod.POST)
-	public ResultCode SetUserMappingVendor(@RequestBody SetUserMappingVendorParameter parameters) {
-		ResultCode result = new ResultCode(false, 0, null);
+	public SetUserMappingVendorResponse SetUserMappingVendor(@RequestBody SetUserMappingVendorParameter parameters) {
+		JsonResponse<SetUserMappingVendorResponse> results = new JsonResponse<SetUserMappingVendorResponse>(false, null, 0, null);
 		
-		result = securityGroupService.SetUserMappingVendor(parameters);
+		SetUserMappingVendorResponse result = securityGroupService.SetUserMappingVendor(parameters);
 		
+		results.setData(result);
+		results.setSuccess(true);
 		return result;
 	}
 	

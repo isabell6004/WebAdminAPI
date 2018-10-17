@@ -16,7 +16,7 @@ public class GetSecurityUserParameter {
 	@JsonProperty("role")
 	private String role;
 	@ApiModelProperty(required = false, example="2858")
-	@JsonProperty("vendorid")
+	@JsonProperty("assignedvendor")
 	private Integer vendorID;
 	@JsonProperty("active")
 	private Boolean active;
