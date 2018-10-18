@@ -49,7 +49,7 @@ public class ShowSchedulePromotionPlan implements Serializable {
 	@NotNull
 	@Column(name = "PlanID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty("")
+	@JsonProperty("planId")
 	private Integer planID;
 
 	@Basic(optional = false)

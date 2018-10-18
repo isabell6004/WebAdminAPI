@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -39,47 +40,72 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "MapID")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@JsonProperty("")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonProperty("MapID")
 	private Integer mapID;
 
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "PlanID")
-	@JsonProperty("")
+	@JsonProperty("PlanID")
 	private int planID;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "WholeSalerID")
-	@JsonProperty("")
+	@JsonProperty("WholeSalerID")
 	private int wholeSalerID;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CommissionRate")
-	@JsonProperty("")
+	@JsonProperty("CommissionRate")
 	private double commissionRate;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "RackCount")
-	@JsonProperty("")
+	@JsonProperty("RackCount")
 	private int rackCount;
-	
+
 	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
 	// consider using these annotations to enforce field validation
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "Fee")
-	@JsonProperty("")
+	@JsonProperty("Fee")
 	private BigDecimal fee;
-	
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ItemCountMax")
-	@JsonProperty("")
+	@JsonProperty("ItemCountMax")
 	private int itemCountMax;
+
+	@Transient
+	@Column(name = "row")
+	@JsonProperty("")
+	private long row;
+
+	@Transient
+	@Column(name = "ShowScheduleID")
+	@JsonProperty("ShowScheduleID")
+	private int showScheduleID;
+
+	@Transient
+	@Column(name = "CompanyName")
+	@JsonProperty("CompanyName")
+	private String companyName;
+
+	@Transient
+	@Column(name = "PlanName")
+	@JsonProperty("PlanName")
+	private String planName;
+
+	@Transient
+	@Column(name = "DeleteFlag")
+	@JsonProperty("DeleteFlag")
+	private int deleteFlag;
 
 	public MapShowSchedulePromotionPlanVendor() {
 	}
@@ -153,6 +179,50 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 
 	public void setItemCountMax(int itemCountMax) {
 		this.itemCountMax = itemCountMax;
+	}
+
+	public long getRow() {
+		return row;
+	}
+
+	public void setRow(long row) {
+		this.row = row;
+	}
+
+	public int getShowScheduleID() {
+		return showScheduleID;
+	}
+
+	public void setShowScheduleID(int showScheduleID) {
+		this.showScheduleID = showScheduleID;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getPlanName() {
+		return planName;
+	}
+
+	public void setPlanName(String planName) {
+		this.planName = planName;
+	}
+
+	public int getDeleteFlag() {
+		return deleteFlag;
+	}
+
+	public void setDeleteFlag(int deleteFlag) {
+		this.deleteFlag = deleteFlag;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override

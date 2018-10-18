@@ -17,6 +17,9 @@ public interface ListShowRepository extends CrudRepository<ListShow, Integer> {
 	// find all
 	List<ListShow> findAll();
 
+	// findAllOrderByShowNameAsc
+	List<ListShow> findAllByOrderByShowNameAsc();
+
 	// findOneByShowID
 	ListShow findOneByShowID(Integer showID);
 
