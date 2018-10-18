@@ -30,7 +30,7 @@ public class SecurityUsers {
 	@JsonProperty("Active")
 	private Boolean active;
 	@JsonProperty("AssignedVendors")
-	private String assignedVendors;
+	private Integer assignedVendors;
 	public Integer getUserID() {
 		return userID;
 	}
@@ -105,11 +105,12 @@ public class SecurityUsers {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	public String getAssignedVendors() {
+	public Integer getAssignedVendors() {
 		return assignedVendors;
 	}
-	public void setAssignedVendors(String assignedVendors) {
+	public void setAssignedVendors(Integer assignedVendors) {
 		this.assignedVendors = assignedVendors;
 	}
+	
 	
 }
