@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.model.primary;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -18,6 +20,7 @@ public class SecurityResource {
 	@Id
 	@Column(name = "ResourceID")
 	@JsonProperty("ResourceID")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer resourceID;
 	
 	@Column(name = "ApplicationID")

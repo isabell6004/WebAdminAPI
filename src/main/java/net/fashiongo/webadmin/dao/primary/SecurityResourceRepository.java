@@ -11,4 +11,5 @@ import net.fashiongo.webadmin.model.primary.SecurityResource;
  */
 public interface SecurityResourceRepository extends CrudRepository<SecurityResource, Integer> {
 	SecurityResource findOneByResourceID(Integer resourceID);
+	void deleteByResourceID(Integer resourceID);
 }
