@@ -1,10 +1,11 @@
 package net.fashiongo.webadmin.model.pojo.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 import net.fashiongo.webadmin.model.pojo.State;
 
-public class GetCountryStatesResponse {
+public class GetCountryStatesResponse implements Serializable{
 	private Integer countryId;
 	private List<State> states;
 	

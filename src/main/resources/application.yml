@@ -1,3 +1,8 @@
+# ===================================================================
+# COMMON SPRING BOOT PROPERTIES
+# (http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html)
+# ===================================================================
+
 spring:
   application:
     name: FashionGo WebAdminAPI
@@ -49,6 +54,8 @@ spring:
     hibernate.naming.physical-strategy: net.fashiongo.common.dal.MSSQLServerNamingStrategy
   cache:
     type: redis
+    redis:
+      time-to-live: 18000000 # expries after 30 min
   redis:
     host: 172.21.101.20
     port: 6379

@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.model.pojo;
 
-public class State {
+import java.io.Serializable;
+
+public class State implements Serializable{
 	private String stateAbbrev;
 	private String stateName;
 	
