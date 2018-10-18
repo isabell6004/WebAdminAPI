@@ -286,7 +286,7 @@ public class AdminService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode SetSecurityResource(SetSecurityResourceParameter parameters) {
-		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		SecurityResource sr = securityResourceRepository.findOneByResourceID(parameters.getResourceID());
 		if(sr != null) {
 			sr.setName(parameters.getResourceName());
