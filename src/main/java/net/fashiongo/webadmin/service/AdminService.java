@@ -287,7 +287,11 @@ public class AdminService extends ApiService {
 	@Transactional("primaryTransactionManager")
 	public ResultCode SetSecurityResource(SetSecurityResourceParameter parameters) {
 		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
-		SecurityResource sr = securityResourceRepository.findOneByResourceID(parameters.getResourceID());
+		SecurityResource sr = new SecurityResource();
+		if(parameters.getResourceID() != 0) {
+			sr = securityResourceRepository.findOneByResourceID(parameters.getResourceID());
+		}
+		
 		if(sr != null) {
 			sr.setName(parameters.getResourceName());
 			sr.setApplicationID(parameters.getApplicationid());
@@ -311,7 +315,7 @@ public class AdminService extends ApiService {
 	public ResultCode SetDeleteSecurityResources(List<Integer> idList) {
 		ResultCode result = new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 		for(Integer id : idList) {
-			securityResourceRepository.deleteById(id);
+			securityResourceRepository.deleteByResourceID(id);
 		}
 		return result;
 	}

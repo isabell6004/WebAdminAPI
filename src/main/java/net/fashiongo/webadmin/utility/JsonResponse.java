@@ -3,6 +3,8 @@
  */
 package net.fashiongo.webadmin.utility;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,7 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  *
  */
 @JsonSerialize
-public class JsonResponse<T> {
+public class JsonResponse<T> implements Serializable {
 	
 	private boolean success;
 	private Integer code;
