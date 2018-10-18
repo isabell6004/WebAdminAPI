@@ -518,9 +518,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityresources", method = RequestMethod.POST)
-	public JsonResponse<Integer> SetDeleteSecurityResources(@RequestBody SetdeletesecuritygroupsParameter data) throws Exception {
+	public JsonResponse<Integer> SetDeleteSecurityResources(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
-		ResultCode result = adminService.SetDeleteSecurityResources(data.getData());
+		ResultCode result = adminService.SetDeleteSecurityResources(data.getIdList());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
 		return results;

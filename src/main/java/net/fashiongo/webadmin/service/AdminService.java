@@ -309,7 +309,7 @@ public class AdminService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode SetDeleteSecurityResources(List<Integer> idList) {
-		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
+		ResultCode result = new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 		for(Integer id : idList) {
 			securityResourceRepository.deleteById(id);
 		}
