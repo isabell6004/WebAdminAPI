@@ -103,8 +103,8 @@ public class AdService extends ApiService {
 	 * @return List<CodeBodySize>
 	 */
 	public List<CodeBodySize> getBodySizeCode() {
-		List<CodeBodySize> codeBodySizeList = codeBodySizeRepository.findAll();
-		return codeBodySizeList;
+		List<CodeBodySize> result = codeBodySizeRepository.findAll();
+		return result;
 	}
 
 	/**
