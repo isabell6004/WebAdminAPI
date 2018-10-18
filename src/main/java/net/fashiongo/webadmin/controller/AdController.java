@@ -24,7 +24,7 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 @RequestMapping(value="/ad", produces = "application/json")
 public class AdController {
 	@Autowired
-	AdService AdService;
+	AdService adService;
 	
 	/**
 	 * 
@@ -38,7 +38,7 @@ public class AdController {
 	public JsonResponse<GetADSettingResponse> getAdsetting() {
 		JsonResponse<GetADSettingResponse> results = new JsonResponse<GetADSettingResponse>(false, null, 0, null);
 		
-		GetADSettingResponse result = AdService.getAdsetting();
+		GetADSettingResponse result = adService.getAdsetting();
 		results.setData(result);
 		results.setSuccess(true);
 		
@@ -57,7 +57,7 @@ public class AdController {
 	@RequestMapping(value = "setaddpage", method = RequestMethod.POST)
 	public JsonResponse<String> setAddPage(@RequestBody SetAddPageParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-		ResultCode result = AdService.setAdPage(parameters);
+		ResultCode result = adService.setAdPage(parameters);
 
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());
@@ -78,7 +78,7 @@ public class AdController {
 	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {
 		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null);
 		
-		List<CodeBodySize> result = AdService.getBodySizeCode();
+		List<CodeBodySize> result = adService.getBodySizeCode();
 		results.setData(result);
 		results.setSuccess(true);
 		
@@ -97,7 +97,7 @@ public class AdController {
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
 	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody GetSpotCheckParameter parameters) {
 		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
-		GetSpotCheckResponse result = AdService.getSpotCheck(parameters.getSpotID());
+		GetSpotCheckResponse result = adService.getSpotCheck(parameters.getSpotID());
 		results.setData(result);
 		results.setSuccess(true);
 		
@@ -116,7 +116,7 @@ public class AdController {
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
 	public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-		ResultCode result = AdService.delSpotSetting(parameters.getSpotID());
+		ResultCode result = adService.delSpotSetting(parameters.getSpotID());
 
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());
@@ -137,7 +137,7 @@ public class AdController {
 	@RequestMapping(value = "setaddspotsetting", method = RequestMethod.POST)
 	public JsonResponse<String> setAddSpotSetting(@RequestBody SetAddSpotSettingParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-		ResultCode result = AdService.setAddSpotSetting(parameters);
+		ResultCode result = adService.setAddSpotSetting(parameters);
 		
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());
