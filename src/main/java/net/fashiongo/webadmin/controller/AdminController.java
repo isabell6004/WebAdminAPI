@@ -26,6 +26,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveSecurityMenusParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityAccessCodesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityAccessIpsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityMenusParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetResourceParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
@@ -341,7 +342,8 @@ public class AdminController {
 	public JsonResponse<ResultCode> SetSecurityAccessIp (@RequestBody SetSecurityAccessIpParameter parameters) throws Exception {
 		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
 		ResultCode result = adminService.SetSecurityAccessIp(parameters);
-		results.setData(result);
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getResultMsg());
 		return results;
 	}
 	
@@ -354,9 +356,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityaccessips", method = RequestMethod.POST)
-	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestBody SetdeletesecuritygroupsParameter data) throws Exception {
+	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
 		JsonResponse<String> results = new JsonResponse<String>(true, null, 0, null);
-		ResultCode result = adminService.SetDeleteSecurityAccessIps(data.getData());
+		ResultCode result = adminService.SetDeleteSecurityAccessIps(data.getIdList());
 		
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
