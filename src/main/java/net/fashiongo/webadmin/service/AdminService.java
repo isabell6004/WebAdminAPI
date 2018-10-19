@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,7 +96,7 @@ public class AdminService extends ApiService {
 	 * @throws Exception 
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetSecurityAccessCode(SetSecurityAccessCodeParameters parameters) throws Exception {
+	public ResultCode SetSecurityAccessCode(SetSecurityAccessCodeParameters parameters) {
 		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
 		
 		SecurityAccessCode securityAccessCode = new SecurityAccessCode();
@@ -108,7 +109,12 @@ public class AdminService extends ApiService {
 			securityAccessCode.setAccessCode(parameters.getAccessCode());
 			
 			SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
-			Date dtExpiredOn = dt.parse(parameters.getExpiredOn());
+			Date dtExpiredOn = null;
+			try {
+				dtExpiredOn = dt.parse(parameters.getExpiredOn());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			securityAccessCode.setExpiredOn(dtExpiredOn);
 			
 			securityAccessCodeRepository.save(securityAccessCode);
