@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -12,13 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
-import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
 
 /**
