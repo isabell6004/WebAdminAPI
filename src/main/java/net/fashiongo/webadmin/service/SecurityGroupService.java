@@ -141,7 +141,7 @@ public class SecurityGroupService extends ApiService {
 	 */
 	public GetSecurityUserResponse GetSecurityUsers(GetSecurityUserParameter parameters) {
 		GetSecurityUserResponse result = new GetSecurityUserResponse();
-		String spName = "up_wa_GetSecurityUserList";
+		String spName = "up_wa_GetSecurityUserList_Migration";
         List<Object> params = new ArrayList<Object>();
         
         params.add(parameters.getUserName());
@@ -539,6 +539,9 @@ public class SecurityGroupService extends ApiService {
 				
 				List<Object> userRoleParams = new ArrayList<Object>();
 				userRoleParams.add(appName);
+				userRoleParams.add(userData.getUserName());
+				userRoleParams.add("Admin");
+				userRoleParams.add(LocalDateTime.now());
 			}
 			
 		}

@@ -20,14 +20,19 @@ import net.fashiongo.webadmin.dao.primary.ShowScheduleRepository;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.DelShowParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetShowParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowScheduleListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowInfoParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowScheduleParameters;
+import net.fashiongo.webadmin.model.pojo.response.GetShowCategoriesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetShowParticipatingVendorsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
+import net.fashiongo.webadmin.model.primary.MapShowSchedulePromotionPlanVendor;
 import net.fashiongo.webadmin.model.primary.ShowSchedule;
+import net.fashiongo.webadmin.model.primary.ShowSchedulePromotionPlan;
 
 /**
  * 
@@ -556,5 +561,109 @@ public class SitemgmtShowService extends ApiService {
 		return result;
 	}
 	
+
+	/**
+	 * 
+	 * Get Show detail
+	 * 
+	 * @since 2018. 10. 18.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public GetShowCategoriesResponse getShowCategories(GetShowParameter parameters) {
+
+		Integer showID = parameters.getShowID();
+		List<ListShow> showCategoryList;
+		if (showID == null) {
+			showCategoryList = listShowRepository.findAllByOrderByShowNameAsc();
+		}
+		else {
+			if (showID == 0) {
+				showCategoryList = listShowRepository.findAllByOrderByShowNameAsc();
+			}
+			else {
+				showCategoryList = listShowRepository.findByShowID(showID);
+			}
+		}
+		GetShowCategoriesResponse getShowCategoriesResponse = new GetShowCategoriesResponse();
+		
+		getShowCategoriesResponse.setShowCategoryList(showCategoryList);
+		return getShowCategoriesResponse;
+	}
+	
+
+	/**
+	 * 
+	 * Get Show detail
+	 * 
+	 * @since 2018. 10. 18.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public List<ShowSchedulePromotionPlan> getShowPromotionPlans(GetShowParameter parameters) {
+/*
+		Integer pageNum = parameters.getPageNum();
+		Integer pageSize = parameters.getPageSize();
+		Integer showID = parameters.getShowID();
+		Integer planID = parameters.getPlanID();
+*/
+		Integer showScheduleID = parameters.getShowScheduleID();
+
+		List<ShowSchedulePromotionPlan> showSchedulePromotionPlanList;
+		if (showScheduleID == null) {
+			showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
+		}
+		else {
+			if (showScheduleID == 0) {
+				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
+			}
+			else {
+				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID);
+			}
+		}
+		return showSchedulePromotionPlanList;
+	}
+	
+
+	/**
+	 * 
+	 * get ShowParticipating Vendors
+	 * 
+	 * @since 2018. 10. 18.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public GetShowParticipatingVendorsResponse getShowParticipatingVendors(GetShowParameter parameters) {
+
+		List<Object> params = new ArrayList<Object>();
+
+		// add parameters
+		final Integer pageNum = parameters.getPageNum();
+		final Integer pageSize = parameters.getPageSize();
+		final Integer showScheduleID = parameters.getShowScheduleID();
+		final Integer planID = parameters.getPlanID();
+
+		params.add(pageNum);
+		params.add(pageSize);
+		params.add(showScheduleID);
+		params.add(planID);
+
+		final String spName = "up_wa_GetShowVendor";
+
+		GetShowParticipatingVendorsResponse resultSet = new GetShowParticipatingVendorsResponse();
+		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class, MapShowSchedulePromotionPlanVendor.class);
+
+		final List<SingleValueResult> singleValueResultList = (List<SingleValueResult>) _result.get(0);
+		final List<MapShowSchedulePromotionPlanVendor> showSchedulePromotionPlanVendorList = (List<MapShowSchedulePromotionPlanVendor>) _result.get(1);
+
+		resultSet.setSingleValueResultList(singleValueResultList);
+		resultSet.setShowSchedulePromotionPlanVendorList(showSchedulePromotionPlanVendorList);
+
+		return resultSet;
+	}
 	
 }

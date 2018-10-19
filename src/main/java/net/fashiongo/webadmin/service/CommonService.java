@@ -159,7 +159,7 @@ public class CommonService extends ApiService {
 	 * 
 	 * @since 2018. 10. 10.
 	 * @author Nayeon Kim
-	 * @return GetSecurityUserResponse
+	 * @return List<SecurityUser>
 	 */
 	public List<SecurityUser> GetSecurityUser() {
 		List<SecurityUser> result =  securityUserRepository.findAllByOrderByActiveDescUserName();

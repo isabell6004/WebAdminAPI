@@ -175,7 +175,7 @@ public class CommonController {
 	 * 
 	 * @since 2018. 10. 10.
 	 * @author Nayeon Kim
-	 * @return GetSecurityUserResponse
+	 * @return List<SecurityUser>
 	 */
 	@RequestMapping(value="getsecurityusers", method=RequestMethod.POST)
 	public JsonResponse<List<SecurityUser>> GetSecurityUser() {

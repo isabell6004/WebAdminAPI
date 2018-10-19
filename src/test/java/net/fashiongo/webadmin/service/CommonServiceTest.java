@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -13,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
+import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
 import net.fashiongo.webadmin.utility.JsonResponse;
 /**
@@ -54,4 +54,9 @@ public class CommonServiceTest {
 		assertNotNull(result);	
 	}
 
+	@Test
+	public void testGetSecurityUser() {
+		List<SecurityUser> result = commonService.GetSecurityUser();
+		assertNotNull(result);	
+	}
 }
