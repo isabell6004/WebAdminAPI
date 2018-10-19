@@ -14,10 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -104,4 +106,18 @@ public class AdminServiceTest {
 		assertTrue(result.getSuccess());
 	}*/
 
+    @Test
+    public void testGetSecurityLogs() {
+           GetSecurityLogsParameter parameters = new GetSecurityLogsParameter();
+           parameters.setPagenum(1);
+           parameters.setPagesize(30);
+           parameters.setUsrid(1);
+           parameters.setIp(null);
+           parameters.setSdate("10/01/2018");
+           parameters.setEdate("10/31/2018");
+           
+           GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
+           assertNotNull(result.getSecurityLogs());
+           assertNotNull(result.getSecurityLogsColumn());
+    }
 }
