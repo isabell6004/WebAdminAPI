@@ -153,15 +153,6 @@ public class SetAddSpotSettingParameter {
 	
 	@JsonIgnore
 	public LocalDateTime getBidEffectiveOn() {
-		/*Date bidEffectiveOn = new Date();
-		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			bidEffectiveOn = dt.parse(bidEffectiveOn2);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return bidEffectiveOn;*/
-		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return StringUtils.isEmpty(bidEffectiveOn2) ? null : LocalDateTime.parse(bidEffectiveOn2+" 00:00:00",formatter);
 	}
@@ -172,5 +163,77 @@ public class SetAddSpotSettingParameter {
 
 	public Integer getSpotItemCount() {
 		return StringUtils.isEmpty(spotItemCount) ? 0 : Integer.parseInt(spotItemCount);
+	}
+
+	public void setSpotID(String spotID) {
+		this.spotID = spotID;
+	}
+
+	public void setPageID(String pageID) {
+		this.pageID = pageID;
+	}
+
+	public void setCategoryID(String categoryID) {
+		this.categoryID = categoryID;
+	}
+
+	public void setBodySizeID(String bodySizeID) {
+		this.bodySizeID = bodySizeID;
+	}
+
+	public void setSpotName(String spotName) {
+		this.spotName = spotName;
+	}
+
+	public void setPrice1(String price1) {
+		this.price1 = price1;
+	}
+
+	public void setPrice2(String price2) {
+		this.price2 = price2;
+	}
+
+	public void setPrice3(String price3) {
+		this.price3 = price3;
+	}
+
+	public void setPrice4(String price4) {
+		this.price4 = price4;
+	}
+
+	public void setPrice5(String price5) {
+		this.price5 = price5;
+	}
+
+	public void setPrice6(String price6) {
+		this.price6 = price6;
+	}
+
+	public void setPrice7(String price7) {
+		this.price7 = price7;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public void setIncludeVendorCategory(Boolean includeVendorCategory) {
+		this.includeVendorCategory = includeVendorCategory;
+	}
+
+	public void setSpotInstanceCount(String spotInstanceCount) {
+		this.spotInstanceCount = spotInstanceCount;
+	}
+
+	public void setBidEffectiveOn2(String bidEffectiveOn2) {
+		this.bidEffectiveOn2 = bidEffectiveOn2;
+	}
+
+	public void setMaxPurchasable(String maxPurchasable) {
+		this.maxPurchasable = maxPurchasable;
+	}
+
+	public void setSpotItemCount(String spotItemCount) {
+		this.spotItemCount = spotItemCount;
 	}
 }
