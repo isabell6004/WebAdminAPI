@@ -76,6 +76,7 @@ public class TokenAuthenticationService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Authentication getAuthentication(HttpServletRequest request) throws Exception {
 		String token = request.getHeader(HEADER_STRING);
 		ObjectMapper mapper = new ObjectMapper();

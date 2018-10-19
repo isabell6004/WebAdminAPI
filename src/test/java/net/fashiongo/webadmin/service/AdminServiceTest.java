@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityAccessCodesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
@@ -22,6 +22,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -142,4 +143,19 @@ public class AdminServiceTest {
 		//ResultCode _result = adminService.SetDeleteSecurityAccessCodes(parameters.getIdList());
 		//assertTrue(_result.getSuccess());
 	}
+	
+    @Test
+    public void testGetSecurityLogs() {
+           GetSecurityLogsParameter parameters = new GetSecurityLogsParameter();
+           parameters.setPagenum(1);
+           parameters.setPagesize(30);
+           parameters.setUsrid(1);
+           parameters.setIp(null);
+           parameters.setSdate("10/01/2018");
+           parameters.setEdate("10/31/2018");
+           
+           GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
+           assertNotNull(result.getSecurityLogs());
+           assertNotNull(result.getSecurityLogsColumn());
+    }
 }

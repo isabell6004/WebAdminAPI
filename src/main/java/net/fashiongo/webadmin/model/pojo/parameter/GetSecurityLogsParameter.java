@@ -100,4 +100,40 @@ public class GetSecurityLogsParameter {
 		}
 		return endDate;
 	}
+
+	public void setPagenum(Integer pagenum) {
+		this.pagenum = pagenum;
+	}
+
+	public void setPagesize(Integer pagesize) {
+		this.pagesize = pagesize;
+	}
+
+	public void setSortfield(String sortfield) {
+		this.sortfield = sortfield;
+	}
+
+	public void setSortdir(String sortdir) {
+		this.sortdir = sortdir;
+	}
+
+	public void setUsrid(Integer usrid) {
+		this.usrid = usrid;
+	}
+
+	public void setPeriodtype(Integer periodtype) {
+		this.periodtype = periodtype;
+	}
+
+	public void setSdate(String sdate) {
+		this.sdate = sdate;
+	}
+
+	public void setEdate(String edate) {
+		this.edate = edate;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
 }
