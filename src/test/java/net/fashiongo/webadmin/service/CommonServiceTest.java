@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import net.fashiongo.webadmin.model.pojo.parameter.GetBidAdPageSpotsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
+import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -57,6 +60,27 @@ public class CommonServiceTest {
 	public void testGetTopCategories() {
 		List<TopCategories> result = commonService.GetTopCategories();
 		assertNotNull(result);	
+	}
+	
+	@Test
+	public void testGetBidAdPages() {
+		GetBidAdPagesResponse result = commonService.GetBidAdPages();
+		assertNotNull(result.getAdPage());
+	}
+	
+	@Test
+	public void testGetBidAdPageSpots() {
+		GetBidAdPageSpotsParameter parameter = new GetBidAdPageSpotsParameter();
+		parameter.setPageId(1);
+		
+		List<AdPageSpot> result = commonService.GetBidAdPageSpots(parameter.getPageId());
+		assertNotNull(result);
+	}
+	
+	@Deprecated
+	@Test
+	public void testGetBidAdPageSpotsCombined() {
+		
 	}
 
 	@Test
