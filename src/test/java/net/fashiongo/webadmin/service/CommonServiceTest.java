@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCountryStatesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -26,6 +28,9 @@ public class CommonServiceTest {
 
 	@Autowired
 	CommonService commonService;
+	
+	@Autowired
+	AdminService adminService;
 	
 	@Test
 	public void testGetMenuID() {
@@ -57,6 +62,17 @@ public class CommonServiceTest {
 	@Test
 	public void testGetSecurityUser() {
 		List<SecurityUser> result = commonService.GetSecurityUser();
+		assertNotNull(result);	
+	}
+
+	@Test
+	public void testGetSecurityResources() {
+		GetSecurityResourcesParameter parameters = new GetSecurityResourcesParameter();
+		parameters.setApplication("Web Admin");
+		parameters.setResourceName("");
+		parameters.setResourceParent("All");
+		parameters.setResourceType("All");
+		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
 		assertNotNull(result);	
 	}
 }
