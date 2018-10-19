@@ -1,15 +1,15 @@
 package net.fashiongo.webadmin.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.service.BuyerService;
+import net.fashiongo.webadmin.service.UserService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
@@ -20,7 +20,10 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 @RestController
 @RequestMapping(value = "/buyer", produces = "application/json")
 public class BuyerController {
-	@Autowired BuyerService buyerService;
+	@Autowired 
+	BuyerService buyerService;
+	@Autowired
+	private UserService userService;
 	/**
 	 * 
 	 * Set Modify Password
@@ -31,8 +34,8 @@ public class BuyerController {
 	 * @return JsonResponse
 	 */
 	@RequestMapping(value = "setmodifypassword", method = RequestMethod.POST)
-	public JsonResponse SetModifyPassword(@RequestBody SetModifyPasswordParameter parameters) {
-		JsonResponse result = buyerService.SetModifyPassword(parameters);
-		return result;
+	public JsonResponse<String> SetModifyPassword(@RequestBody SetModifyPasswordParameter parameters) {
+		ResultCode result = userService.ResetPassword(parameters);
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 }
