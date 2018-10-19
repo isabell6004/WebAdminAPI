@@ -83,7 +83,7 @@ spring:
     host: 172.21.101.20
   datasource:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
-    username: sqladmin
+    username: sa
     password: msqLsa6301
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
