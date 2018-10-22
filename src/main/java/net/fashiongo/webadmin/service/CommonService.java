@@ -84,12 +84,10 @@ public class CommonService extends ApiService {
 	 * @param countryAbbrev
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
+	@SuppressWarnings("unchecked")
 	@Cacheable(value="GetCountryStates", key="#countryAbbrev")
 	public JsonResponse<GetCountryStatesResponse> GetCountryStates(String countryAbbrev) {
 		JsonResponse<GetCountryStatesResponse> result = httpClient.get("location/countries/".concat(countryAbbrev));
-		
-		System.out.println("result.getMessage()" + result.getMessage()+result.getData());
-		
 		return result;
 	}
 	
@@ -104,7 +102,6 @@ public class CommonService extends ApiService {
 	@Cacheable(value="GetTopCategories")
 	public List<TopCategories> GetTopCategories() {
 		List<TopCategories> result = (List<TopCategories>) topCategoriesRepository.findByActiveAndLvlOrderByListOrder(true, 1);
-		
 		return result;
 	}
 	
