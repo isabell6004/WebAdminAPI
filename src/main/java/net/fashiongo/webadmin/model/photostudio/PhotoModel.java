@@ -18,9 +18,11 @@ import net.fashiongo.common.conversion.LocalDateTimeConverter;
 import net.fashiongo.common.dal.IPersistent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
 @Table(name = "Photo_Model")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PhotoModel implements IPersistent, Serializable {
 
 	@Id
@@ -284,5 +286,16 @@ public class PhotoModel implements IPersistent, Serializable {
 	private String nextPhotoshoot;
 	public String getNextPhotoshoot() {
 		return _nextPhotoshoot != null ? _nextPhotoshoot.toString() : null;
+	}
+	
+	@Transient
+	@Column(name = "ImageUrl")
+	private String imageUrl;
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 }

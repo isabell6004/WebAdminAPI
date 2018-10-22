@@ -273,6 +273,40 @@ public class PhotoStudioController {
 		return response;
 	}
 	
+	@GetMapping("/calendar")
+	public JsonResponse<?> getPhotoCalendar(@RequestParam Map<String, String> parmMap) {
+		logger.debug("PhotoStudioController.getPhotoCalendar() called!!!");
+		JsonResponse<List<PhotoCalendar>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<PhotoCalendar> result = photoStudioService.getPhotoCalendar(parmMap);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getPhotoCalendar()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/calendar/models-orders/{calendarID}")
+	public JsonResponse<?> getPhotoCalendarModelsOrders(@PathVariable("calendarID") Integer calendarID) {
+		logger.debug("PhotoStudioController.getPhotoCalendarModelsOrders() called!!!");
+		JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			Map<String, Object> result = photoStudioService.getPhotoCalendarModelsOrders(calendarID);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getPhotoCalendarModelsOrders()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
 	@PostMapping(value = "/calendar/save")
 	public JsonResponse<?> saveCalendar(@RequestBody List<PhotoCalendar> photoCalendars) {
 		logger.debug("PhotoStudioController.saveCalendar() called!!!");
@@ -361,23 +395,6 @@ public class PhotoStudioController {
 			response.setData(result);
 		} catch (Exception ex) {
 			logger.error("Exception Error: PhotoStudioController.getDailySummary()：", ex);
-			response.setMessage(ex.getMessage());
-		}
-
-		return response;
-	}
-	
-	@GetMapping("/calendar")
-	public JsonResponse<?> getPhotoCalendar(@RequestParam Map<String, String> parmMap) {
-		logger.debug("PhotoStudioController.getPhotoCalendar() called!!!");
-		JsonResponse<List<PhotoCalendar>> response = new JsonResponse<>(false, null, null);
-
-		try {
-			List<PhotoCalendar> result = photoStudioService.getPhotoCalendar(parmMap);
-			response.setSuccess(true);
-			response.setData(result);
-		} catch (Exception ex) {
-			logger.error("Exception Error: PhotoStudioController.getPhotoCalendar()：", ex);
 			response.setMessage(ex.getMessage());
 		}
 

@@ -89,6 +89,26 @@ public class PhotoOrder implements IPersistent, Serializable {
 	public void setCategoryID(Integer categoryID) {
 		this.categoryID = categoryID;
 	}
+	
+	@Column(name = "PackageID")
+	private Integer packageID;
+	public Integer getPackageID() {
+		return packageID;
+	}
+
+	public void setPackageID(Integer packageID) {
+		this.packageID = packageID;
+	}
+	
+	@Column(name = "ColorID")
+	private Integer colorID;
+	public Integer getColorID() {
+		return colorID;
+	}
+
+	public void setColorID(Integer colorID) {
+		this.colorID = colorID;
+	}
 
 	@Column(name = "DiscountID")
 	private Integer discountID;

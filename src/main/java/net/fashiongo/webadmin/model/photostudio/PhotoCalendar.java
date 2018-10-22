@@ -21,9 +21,11 @@ import net.fashiongo.common.dal.IPersistent;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
 @Table(name = "Photo_Calendar")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PhotoCalendar implements IPersistent, Serializable {
 	
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
@@ -190,13 +192,24 @@ public class PhotoCalendar implements IPersistent, Serializable {
 	}
 	
 	@Transient
-	@Column(name = "ActualBookedUnit")
-	private Integer actualBookedUnit;
-	public Integer getActualBookedUnit() {
-		return actualBookedUnit;
+	@Column(name = "AvailableUnits")
+	private BigDecimal availableUnits;
+	public BigDecimal getAvailableUnits() {
+		return availableUnits == null? BigDecimal.ZERO: availableUnits;
 	}
 
-	public void setActualBookedUnit(Integer actualBookedUnit) {
-		this.actualBookedUnit = actualBookedUnit;
+	public void setAvailableUnits(BigDecimal availableUnits) {
+		this.availableUnits = availableUnits;
+	}
+
+	@Transient
+	@Column(name = "BookedCnt")
+	private Integer bookedCnt;
+	public Integer getBookedCnt() {
+		return bookedCnt;
+	}
+
+	public void setBookedCnt(Integer bookedCnt) {
+		this.bookedCnt = bookedCnt;
 	}
 }

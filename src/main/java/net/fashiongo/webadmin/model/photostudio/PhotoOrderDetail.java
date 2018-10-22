@@ -67,26 +67,6 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 		this.styleName = styleName;
 	}
 
-	@Column(name = "PackageID")
-	private Integer packageID;
-	public Integer getPackageID() {
-		return packageID;
-	}
-
-	public void setPackageID(Integer packageID) {
-		this.packageID = packageID;
-	}
-
-	@Column(name = "ColorID")
-	private Integer colorID;
-	public Integer getColorID() {
-		return colorID;
-	}
-
-	public void setColorID(Integer colorID) {
-		this.colorID = colorID;
-	}
-
 	@Column(name = "StyleUnitPrice")
 	private BigDecimal styleUnitPrice;
 	public BigDecimal getStyleUnitPrice() {

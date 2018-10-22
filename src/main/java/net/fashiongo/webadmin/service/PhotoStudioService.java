@@ -23,6 +23,7 @@ import net.fashiongo.webadmin.dao.photostudio.PhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoPriceRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoUnitRepository;
+import net.fashiongo.webadmin.model.photostudio.CalendarPhotoModel;
 import net.fashiongo.webadmin.model.photostudio.CommonReportsVo;
 import net.fashiongo.webadmin.model.photostudio.DailySummaryVo;
 import net.fashiongo.webadmin.model.photostudio.DetailPhotoOrder;
@@ -489,6 +490,37 @@ public class PhotoStudioService {
 		return photoModel;
 	}
 	
+	public List<PhotoCalendar> getPhotoCalendar(Map<String, String> parmMap) {
+		List<Object> params = new ArrayList<Object>();
+		params.add(parmMap.get("year"));
+		params.add(parmMap.get("month"));
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetPhotoCalendar", params, PhotoCalendar.class);
+
+		List<PhotoCalendar> photoCalendars = (List<PhotoCalendar>) r.get(0);
+
+		return photoCalendars;
+	}
+	
+	public Map<String, Object> getPhotoCalendarModelsOrders(Integer calendarID) {
+		Map<String, Object> result = new HashMap<String, Object> ();
+		List<Object> params = new ArrayList<Object>();
+		params.add(calendarID);
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetCalendarModelsAndOrders", params, CalendarPhotoModel.class, SimplePhotoOrder.class, PhotoModel.class);
+
+		List<PhotoModel> models = (List<PhotoModel>) r.get(0);
+		List<SimplePhotoOrder> orders = (List<SimplePhotoOrder>) r.get(1);
+		List<PhotoModel> modelsOption = (List<PhotoModel>) r.get(2);
+		
+		
+		result.put("models", models);
+		result.put("orders", orders);
+		result.put("modelsOption", modelsOption);
+
+		return result;
+	}
+	
 	@Transactional
 	public String saveCalendar(List<PhotoCalendar> photoCalendars) throws IllegalArgumentException, IllegalAccessException {
 		
@@ -616,18 +648,6 @@ public class PhotoStudioService {
 		List<DailySummaryVo> dailySummaryVos = (List<DailySummaryVo>) r.get(0);
 
 		return dailySummaryVos.get(0);
-	}
-	
-	public List<PhotoCalendar> getPhotoCalendar(Map<String, String> parmMap) {
-		List<Object> params = new ArrayList<Object>();
-		params.add(parmMap.get("year"));
-		params.add(parmMap.get("month"));
-
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetPhotoCalendar", params, PhotoCalendar.class);
-
-		List<PhotoCalendar> photoCalendars = (List<PhotoCalendar>) r.get(0);
-
-		return photoCalendars;
 	}
 	
 	public List<LogPhotoAction> getActionLog(Integer orderId, Integer actionType) {

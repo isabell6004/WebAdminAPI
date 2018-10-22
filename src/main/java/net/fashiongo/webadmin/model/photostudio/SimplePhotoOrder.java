@@ -154,6 +154,26 @@ public class SimplePhotoOrder {
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
+	
+	@Column(name = "PackageID")
+	private Integer packageID;
+	public Integer getPackageID() {
+		return packageID;
+	}
+
+	public void setPackageID(Integer packageID) {
+		this.packageID = packageID;
+	}
+	
+	@Column(name = "PackageName")
+	private String packageName;
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
 
 	@Column(name = "TypeOfPhotoshoot")
 	private String typeOfPhotoshoot;
@@ -248,4 +268,31 @@ public class SimplePhotoOrder {
 		this.isDelayed = isDelayed;
 	}
 	
+	@Column(name = "ModelID")
+	private Integer modelID;
+	public Integer getModelID() {
+		return modelID;
+	}
+	public void setModelID(Integer modelID) {
+		this.modelID = modelID;
+	}
+	
+	@Column(name = "ModelName")
+	private String modelName;
+	public String getModelName() {
+		return modelName;
+	}
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
+	
+	@Column(name = "TotalUnit")
+	private BigDecimal totalUnit;
+	public BigDecimal getTotalUnit() {
+		return totalUnit;
+	}
+
+	public void setTotalUnit(BigDecimal totalUnit) {
+		this.totalUnit = totalUnit;
+	}
 }
