@@ -1,6 +1,9 @@
 package net.fashiongo.webadmin.model.pojo;
 
-public class ResultCode {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class ResultCode implements Serializable {
 	
 	public ResultCode() {
 		

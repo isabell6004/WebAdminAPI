@@ -308,10 +308,8 @@ public class AdminController {
 	 */
 	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
 	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
-		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, null);
-		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
-		results.setData(result);
-		return results;
+		GetSecurityResourcesResponse resource = adminService.GetSecurityResources(parameters);
+		return new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, resource);
 	}
 	
 	/**
@@ -324,10 +322,8 @@ public class AdminController {
 	 */
 	@RequestMapping(value="getsecurityaccessips", method=RequestMethod.POST)
 	public JsonResponse<GetSecurityAccessIpsResponse> GetSecurityAccessIps () {
-		JsonResponse<GetSecurityAccessIpsResponse> results = new JsonResponse<GetSecurityAccessIpsResponse>(true, null, 0, null);
 		GetSecurityAccessIpsResponse result = adminService.GetSecurityAccessIps();
-		results.setData(result);
-		return results;
+		return new JsonResponse<GetSecurityAccessIpsResponse>(true, null, 0, result);
 	}
 	
 	/**
@@ -340,11 +336,8 @@ public class AdminController {
 	 */
 	@RequestMapping(value="setsecurityaccessip", method=RequestMethod.POST)
 	public JsonResponse<ResultCode> SetSecurityAccessIp (@RequestBody SetSecurityAccessIpParameter parameters) throws Exception {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
 		ResultCode result = adminService.SetSecurityAccessIp(parameters);
-		results.setSuccess(result.getSuccess());
-		results.setMessage(result.getResultMsg());
-		return results;
+		return new JsonResponse<ResultCode>(result.getSuccess(), result.getResultMsg(), 0, null);
 	}
 	
 	/**
@@ -357,13 +350,8 @@ public class AdminController {
 	 */
 	@RequestMapping(value = "setdeletesecurityaccessips", method = RequestMethod.POST)
 	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
-		JsonResponse<String> results = new JsonResponse<String>(true, null, 0, null);
 		ResultCode result = adminService.SetDeleteSecurityAccessIps(data.getIdList());
-		
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		
-		return results;
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
 	/**
@@ -376,11 +364,8 @@ public class AdminController {
 	 */
 	@RequestMapping(value = "setsecurityusersactive", method=RequestMethod.POST)
 	public JsonResponse<String> setSecurityUserActive(@RequestBody GetSecurityUserParameter parameters) {
-		JsonResponse<String> results = new JsonResponse<String>(true, null, null);
 		ResultCode result = securityGroupService.setSecurityUserActive(parameters.getUserID(), parameters.getActive());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		return results;
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	/**
 	 * Set Resource
@@ -390,9 +375,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setactiveresource", method = RequestMethod.POST)
-	public JsonResponse SetResource(@RequestBody SetResourceParameter parameters) {
-		JsonResponse result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
-		return result;
+	public JsonResponse<String> SetResource(@RequestBody SetResourceParameter parameters) {
+		ResultCode result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
 	/**
@@ -500,12 +485,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setsecurityresource", method = RequestMethod.POST)
-	public JsonResponse<Integer> SetSecurityResource(@RequestBody SetSecurityResourceParameter parameters) {
-		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
+	public JsonResponse<String> SetSecurityResource(@RequestBody SetSecurityResourceParameter parameters) {
 		ResultCode result = adminService.SetSecurityResource(parameters);
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		return results;
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
 	
@@ -518,12 +500,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityresources", method = RequestMethod.POST)
-	public JsonResponse<Integer> SetDeleteSecurityResources(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
-		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
+	public JsonResponse<String> SetDeleteSecurityResources(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
 		ResultCode result = adminService.SetDeleteSecurityResources(data.getIdList());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		return results;
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
 	/**

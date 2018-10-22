@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +12,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @author DAHYE
  *
  */
-public class SetDeleteSecurityAccessIpsParameter {
+@SuppressWarnings("serial")
+public class SetDeleteSecurityAccessIpsParameter implements Serializable {
 	@ApiModelProperty(required = false, example="[3,4]")
 	@JsonProperty("data")
 	private List<Integer> idList;

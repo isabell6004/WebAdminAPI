@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.StringUtils;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -8,7 +10,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @author Dahye Jeong
  */
 
-public class GetSecurityResourcesParameter {
+@SuppressWarnings("serial")
+public class GetSecurityResourcesParameter implements Serializable {
 	@ApiModelProperty(required = false, example="Web Admin")
 	private String application;
 	@ApiModelProperty(required = false, example="")
