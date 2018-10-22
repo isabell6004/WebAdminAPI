@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.service;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,28 +12,25 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.SecurityGroupPermissions;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityMenus2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetActiveSecurityMenusParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityAccessCodesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityMenusParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityMenuParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityMenus2Response;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityParentMenusResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
-import net.fashiongo.webadmin.model.primary.SecurityGroup;
-import net.fashiongo.webadmin.utility.JsonResponse;
 
 
 /**
@@ -225,6 +221,92 @@ public class AdminServiceTest {
 		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
 		assertNotNull(result.getSecurityLogs());
 		assertNotNull(result.getSecurityLogsColumn());
+	}
+	
+	
+	/**
+     * 
+     * @author Jiwon
+     *
+     */
+    @Test
+	public void testGetSecurityParentMenus() {
+    	GetSecurityParentMenusResponse result = adminService.GetSecurityParentMenus();
+    	assertNotNull(result);
+	}
+    
+    /**
+     * 
+     * @author Jiwon
+     *
+     */
+    @Test
+	public void testGetSecurityMenus2() {
+    	GetSecurityMenus2Parameter parameters = new GetSecurityMenus2Parameter();
+        parameters.setMenuname("");
+        parameters.setParentmenuid("0");
+        parameters.setApplicationid("0");
+        parameters.setActive(1);
+        
+    	GetSecurityMenus2Response result = adminService.GetSecurityMenus2(parameters);
+    	assertNotNull(result);
+	}
+    
+    /**
+     * 
+     * @author Jiwon
+     *
+     */
+    @Test
+	public void testSetSecurityMenu() {
+    	SetSecurityMenuParameter parameters = new SetSecurityMenuParameter();
+        parameters.setMenuid(0);
+        parameters.setParentid(1);
+        parameters.setResourceid(2);
+        parameters.setApplicationid(3);
+        parameters.setMenuname("menutest");
+        parameters.setRoutepath("RoutePath Test");
+        parameters.setMenuicon("menuicon Test");
+        parameters.setListorder(0);
+        parameters.setVisible(true);
+        parameters.setActive(true);
+        
+        //ResultCode result = adminService.SetSecurityMenu(parameters);
+        //assertTrue(result.getSuccess());
+	}
+    
+    
+    /**
+     * 
+     * @author Jiwon
+     *
+     */
+    @Test
+	public void testSetDeleteSecurityMenus() {
+    	SetDeleteSecurityMenusParameter parameters = new SetDeleteSecurityMenusParameter();
+        List<Integer> data = null;
+        data.add(3);
+        data.add(4);
+    	parameters.setIdList(data);
+        
+        //ResultCode result = adminService.SetDeleteSecurityMenus(parameters);
+        //assertTrue(result.getSuccess());
+	}
+    
+    
+    /**
+     * 
+     * @author Jiwon
+     *
+     */
+    @Test
+	public void testSetActiveSecurityMenus() {
+    	SetActiveSecurityMenusParameter parameters = new SetActiveSecurityMenusParameter();
+    	parameters.setMenuID(1);
+    	parameters.setActive(true);
+    	
+        //ResultCode result = adminService.SetActiveSecurityMenus(parameters);
+        //assertTrue(result.getSuccess());
 	}
     
     
