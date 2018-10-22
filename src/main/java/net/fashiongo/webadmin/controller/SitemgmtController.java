@@ -13,9 +13,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -201,5 +203,23 @@ public class SitemgmtController {
 	 */
 	public void SetCommunicationReason () {
 		
+	}
+	
+	/**
+	 * 
+	 * Get VendorList
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getvendorlist", method = RequestMethod.POST)
+	public JsonResponse<GetVendorListResponse> getVendorList(@RequestBody GetVendorListParameter parameters) {
+		JsonResponse<GetVendorListResponse> results = new JsonResponse<GetVendorListResponse>(true, null, null);
+		GetVendorListResponse result = sitemgmtService.getVendorList();
+		results.setData(result);
+		
+		return results;
 	}
 }

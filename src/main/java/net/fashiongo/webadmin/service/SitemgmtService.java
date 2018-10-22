@@ -11,12 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
+import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.VendorSummary;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 
 /**
@@ -208,5 +211,30 @@ public class SitemgmtService extends ApiService {
 		
 	}
 	
+	/**
+	 * 
+	 * Get VendorList
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Incheol Jung
+	 * @return
+	 */
+	public GetVendorListResponse getVendorList() {
+		GetVendorListResponse resultSet = new GetVendorListResponse();
+		List<Object> params = new ArrayList<Object>();
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		
+		String spName = "up_GetVendorList";
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryCount.class, VendorSummary.class);
+		List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
+		
+		resultSet.setCategoryCountlist((List<CategoryCount>) _result.get(0));
+		resultSet.setVendorSummarylist((List<VendorSummary>) _result.get(1));
+
+		return resultSet;
+	}
 	
 }
