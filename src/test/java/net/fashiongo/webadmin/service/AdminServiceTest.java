@@ -226,8 +226,10 @@ public class AdminServiceTest {
 	
 	/**
      * 
+     * testGetSecurityParentMenus
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
 	public void testGetSecurityParentMenus() {
@@ -237,8 +239,10 @@ public class AdminServiceTest {
     
     /**
      * 
+     * testGetSecurityMenus2
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
 	public void testGetSecurityMenus2() {
@@ -254,10 +258,13 @@ public class AdminServiceTest {
     
     /**
      * 
+     * testSetSecurityMenu
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
+	@Ignore
 	public void testSetSecurityMenu() {
     	SetSecurityMenuParameter parameters = new SetSecurityMenuParameter();
         parameters.setMenuid(0);
@@ -271,42 +278,50 @@ public class AdminServiceTest {
         parameters.setVisible(true);
         parameters.setActive(true);
         
-        //ResultCode result = adminService.SetSecurityMenu(parameters);
-        //assertTrue(result.getSuccess());
+        ResultCode result = adminService.SetSecurityMenu(parameters);
+        assertTrue(result.getSuccess());
 	}
     
     
     /**
      * 
+     * testSetDeleteSecurityMenus
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
+	@Ignore
 	public void testSetDeleteSecurityMenus() {
     	SetDeleteSecurityMenusParameter parameters = new SetDeleteSecurityMenusParameter();
-        List<Integer> data = null;
-        data.add(3);
-        data.add(4);
-    	parameters.setIdList(data);
+    	String data = "";
+    	List<Integer> idList= new ArrayList<Integer>();
+    	idList.add(3);
+    	idList.add(4);
+    	parameters.setIdList(idList);
         
-        //ResultCode result = adminService.SetDeleteSecurityMenus(parameters);
-        //assertTrue(result.getSuccess());
+        ResultCode result = adminService.SetDeleteSecurityMenus(parameters);
+        assertTrue(result.getSuccess());
 	}
+    
     
     
     /**
      * 
+     * testSetActiveSecurityMenus
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
+	@Ignore
 	public void testSetActiveSecurityMenus() {
     	SetActiveSecurityMenusParameter parameters = new SetActiveSecurityMenusParameter();
     	parameters.setMenuID(1);
     	parameters.setActive(true);
     	
-        //ResultCode result = adminService.SetActiveSecurityMenus(parameters);
-        //assertTrue(result.getSuccess());
+        ResultCode result = adminService.SetActiveSecurityMenus(parameters);
+        assertTrue(result.getSuccess());
 	}
     
     
