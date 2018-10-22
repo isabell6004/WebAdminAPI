@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.fashiongo.webadmin.model.pojo.Message;
+import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 
 @RunWith(SpringRunner.class)
@@ -20,18 +21,18 @@ public class MessageServiceTest {
 
 	@Test
 	public void testGetMessage() {
-//		GetMessageParameters parameters = new GetMessageParameters();
-//		parameters.setPagesize(20);
-//		parameters.setPagenum(0);
-//		parameters.setSendertypeid(1);
-//		
-//		GetMessageResponse result = messageService.GetMessage(parameters);
-//		
-//		if(result != null) {
-//			for(Message msg : result.getMessagelist()) {
-//				assertNotNull(msg.getTitle());
-//			}
-//		}
+		GetMessageParameter parameters = new GetMessageParameter();
+		parameters.setPagesize(20);
+		parameters.setPagenum(0);
+		parameters.setSendertypeid(1);
+		
+		GetMessageResponse result = messageService.GetMessage(parameters);
+		
+		if(result != null) {
+			for(Message msg : result.getMessagelist()) {
+				assertNotNull(msg.getTitle());
+			}
+		}
 	}
 
 }

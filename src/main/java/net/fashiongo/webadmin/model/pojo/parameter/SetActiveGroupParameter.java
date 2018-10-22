@@ -17,4 +17,12 @@ public class SetActiveGroupParameter {
 	public boolean getActive() {
 		return StringUtils.isEmpty(active) ? false : Boolean.valueOf(active);
 	}
+
+	public void setGroupID(String groupID) {
+		this.groupID = groupID;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
 }
