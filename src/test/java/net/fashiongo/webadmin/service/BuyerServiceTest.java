@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author DAHYE
  *
  */
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @SpringBootTest
 public class BuyerServiceTest {
 	@Autowired
