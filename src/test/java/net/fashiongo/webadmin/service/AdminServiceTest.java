@@ -233,10 +233,11 @@ public class AdminServiceTest {
     @Test
 	public void testSetDeleteSecurityMenus() {
     	SetDeleteSecurityMenusParameter parameters = new SetDeleteSecurityMenusParameter();
-        List<Integer> data = null;
-        data.add(3);
-        data.add(4);
-    	parameters.setIdList(data);
+    	String data = "";
+    	List<Integer> idList= new ArrayList<Integer>();
+    	idList.add(3);
+    	idList.add(4);
+    	parameters.setIdList(idList);
         
         //ResultCode result = adminService.SetDeleteSecurityMenus(parameters);
         //assertTrue(result.getSuccess());
