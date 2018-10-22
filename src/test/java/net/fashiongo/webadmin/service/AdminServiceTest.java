@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +110,13 @@ public class AdminServiceTest {
 		assertTrue(result.getSuccess());
 	}*/
 
+	/**
+	 * 
+	 * Get Security Access Code
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Test
 	public void testGetSecurityAccessCodes() {
 		GetSecurityAccessCodesParameters parameters = new GetSecurityAccessCodesParameters();
@@ -121,6 +129,14 @@ public class AdminServiceTest {
 		assertNotNull(_result.getSecurityAccessCodes());
 	}
 	
+	/**
+	 * 
+	 * Set Security Access Code
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
+	@Ignore
 	@Test
 	public void testSetSecurityAccessCode() {
 		SetSecurityAccessCodeParameters parameters = new SetSecurityAccessCodeParameters();
@@ -132,6 +148,14 @@ public class AdminServiceTest {
 		//assertTrue(_result.getSuccess());
 	}
 	
+	/**
+	 * 
+	 * Delete Security Access Code
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
+	@Ignore
 	@Test
 	public void testSetDeleteSecurityAccessCodes() {
 		SetDeleteSecurityAccessCodesParameter parameters = new SetDeleteSecurityAccessCodesParameter();

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,12 +63,26 @@ public class CommonServiceTest {
 		assertNotNull(result);	
 	}
 	
+	/**
+	 * 
+	 * Get Bid AdPage
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Test
 	public void testGetBidAdPages() {
 		GetBidAdPagesResponse result = commonService.GetBidAdPages();
 		assertNotNull(result.getAdPage());
 	}
 	
+	/**
+	 * 
+	 * Get Bid AdPage Spots
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Test
 	public void testGetBidAdPageSpots() {
 		GetBidAdPageSpotsParameter parameter = new GetBidAdPageSpotsParameter();
@@ -77,6 +92,13 @@ public class CommonServiceTest {
 		assertNotNull(result);
 	}
 	
+	/**
+	 * 
+	 * Get Bid AdPage Spots Combined 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Deprecated
 	@Test
 	public void testGetBidAdPageSpotsCombined() {
