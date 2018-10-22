@@ -264,6 +264,7 @@ public class AdminServiceTest {
      * @author Jiwon
      */
     @Test
+	@Ignore
 	public void testSetSecurityMenu() {
     	SetSecurityMenuParameter parameters = new SetSecurityMenuParameter();
         parameters.setMenuid(0);
@@ -277,8 +278,8 @@ public class AdminServiceTest {
         parameters.setVisible(true);
         parameters.setActive(true);
         
-        //ResultCode result = adminService.SetSecurityMenu(parameters);
-        //assertTrue(result.getSuccess());
+        ResultCode result = adminService.SetSecurityMenu(parameters);
+        assertTrue(result.getSuccess());
 	}
     
     
@@ -290,6 +291,7 @@ public class AdminServiceTest {
      * @author Jiwon
      */
     @Test
+	@Ignore
 	public void testSetDeleteSecurityMenus() {
     	SetDeleteSecurityMenusParameter parameters = new SetDeleteSecurityMenusParameter();
     	String data = "";
@@ -298,8 +300,8 @@ public class AdminServiceTest {
     	idList.add(4);
     	parameters.setIdList(idList);
         
-        //ResultCode result = adminService.SetDeleteSecurityMenus(parameters);
-        //assertTrue(result.getSuccess());
+        ResultCode result = adminService.SetDeleteSecurityMenus(parameters);
+        assertTrue(result.getSuccess());
 	}
     
     
@@ -311,13 +313,14 @@ public class AdminServiceTest {
      * @author Jiwon
      */
     @Test
+	@Ignore
 	public void testSetActiveSecurityMenus() {
     	SetActiveSecurityMenusParameter parameters = new SetActiveSecurityMenusParameter();
     	parameters.setMenuID(1);
     	parameters.setActive(true);
     	
-        //ResultCode result = adminService.SetActiveSecurityMenus(parameters);
-        //assertTrue(result.getSuccess());
+        ResultCode result = adminService.SetActiveSecurityMenus(parameters);
+        assertTrue(result.getSuccess());
 	}
     
     
