@@ -57,7 +57,7 @@ spring:
     redis:
       time-to-live: 18000000 # expries after 30 min
   redis:
-    host: 172.21.101.20
+    host: 10.10.0.145
     port: 6379
     database: 2
     
@@ -80,7 +80,7 @@ webAdminapi:
 spring:
   profiles: local
   redis:
-    host: 172.21.101.20
+    host: 10.10.0.145
   datasource:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
     username: sa
