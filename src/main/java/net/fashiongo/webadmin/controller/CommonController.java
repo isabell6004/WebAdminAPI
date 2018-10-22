@@ -115,10 +115,8 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
 	public JsonResponse<Integer> GetMenuID(@RequestBody GetMenuIDParameter parameters) {
-		JsonResponse<Integer> results = new JsonResponse<Integer>();
-		Integer result = commonService.GetMenuID(parameters.getPageName());
-		results.setData(result);
-		return results;
+		Integer menuID = commonService.GetMenuID(parameters.getPageName());
+		return new JsonResponse<Integer>(true, null, 0, menuID);
 	}
 	
 	/**
@@ -131,10 +129,8 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.POST)
 	public JsonResponse<String> GetServerHeartBeat(@RequestBody GetServerHeartBeatParameter parameters) {
-		JsonResponse<String> results = new JsonResponse<String>();
 		String result = commonService.GetServerHeartBeat(parameters.getQ());
-		results.setMessage(result);
-		return results;
+		return new JsonResponse<String>(true, null, 0, result);
 	}
 	
 	/**
@@ -162,11 +158,8 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
 	public JsonResponse<List<TopCategories>> GetTopCategories() {
-		JsonResponse<List<TopCategories>> results = new JsonResponse<List<TopCategories>>(false, null, null, null);
-		List<TopCategories> result = commonService.GetTopCategories();
-		results.setSuccess(true);
-		results.setData(result);
-		return results;
+		List<TopCategories> categories = commonService.GetTopCategories();
+		return new JsonResponse<List<TopCategories>>(true, null, 0, categories);
 	}
 	
 	/**

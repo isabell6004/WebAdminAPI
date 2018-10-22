@@ -1,8 +1,15 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 
-public class GetServerHeartBeatParameter {
+import io.swagger.annotations.ApiModelProperty;
+/**
+ * 
+ * @author DAHYE
+ *
+ */
+@SuppressWarnings("serial")
+public class GetServerHeartBeatParameter implements Serializable {
 	@ApiModelProperty(required = false, example="1539669765324")
 	private Long q;
 

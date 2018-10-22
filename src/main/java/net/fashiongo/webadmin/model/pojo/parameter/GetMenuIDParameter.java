@@ -1,10 +1,13 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.StringUtils;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class GetMenuIDParameter {
+@SuppressWarnings("serial")
+public class GetMenuIDParameter implements Serializable {
 	@ApiModelProperty(required = false, example="vendor-list")
 	private String pageName;
 

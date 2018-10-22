@@ -1,8 +1,15 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 
-public class GetCountryStatesParameter {
+import io.swagger.annotations.ApiModelProperty;
+/**
+ * 
+ * @author DAHYE
+ *
+ */
+@SuppressWarnings("serial")
+public class GetCountryStatesParameter implements Serializable {
 	@ApiModelProperty(required = false, example="us")
 	private String countryabbrev;
 
