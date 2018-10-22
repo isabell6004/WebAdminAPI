@@ -84,14 +84,12 @@ public class LogPhotoAction implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
-	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
-	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 	public String getCreatedBy() {

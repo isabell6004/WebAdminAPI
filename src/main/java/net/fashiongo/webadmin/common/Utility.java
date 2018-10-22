@@ -79,6 +79,9 @@ private static final HashMap<String, Integer[]> psMap = new HashMap<String, Inte
 		
 		// photo order
 		psMap.put("getPhotoOrders", new Integer[]{20, 40, 100});
+		
+		// photo Model
+		psMap.put("getModels", new Integer[]{20, 40, 100});
 	}
 	
 	

@@ -32,6 +32,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public Integer getModelID() {
 		return modelID;
 	}
+
 	public void setModelID(Integer modelID) {
 		this.modelID = modelID;
 	}
@@ -41,16 +42,17 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getModelName() {
 		return modelName;
 	}
+
 	public void setModelName(String modelName) {
 		this.modelName = modelName;
 	}
 
 	@Column(name = "AgencyName")
 	private String agencyName;
-
 	public String getAgencyName() {
 		return agencyName;
 	}
+
 	public void setAgencyName(String agencyName) {
 		this.agencyName = agencyName;
 	}
@@ -60,15 +62,17 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
 	@Column(name = "Size")
 	private String size;
 	public String getSize() {
 		return size;
 	}
+
 	public void setSize(String size) {
 		this.size = size;
 	}
@@ -78,6 +82,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public Integer getHeightFt() {
 		return heightFt;
 	}
+
 	public void setHeightFt(Integer heightFt) {
 		this.heightFt = heightFt;
 	}
@@ -87,6 +92,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public Integer getHeightIn() {
 		return heightIn;
 	}
+
 	public void setHeightIn(Integer heightIn) {
 		this.heightIn = heightIn;
 	}
@@ -96,6 +102,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public Integer getWeight() {
 		return weight;
 	}
+
 	public void setWeight(Integer weight) {
 		this.weight = weight;
 	}
@@ -105,6 +112,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public BigDecimal getShoeSize() {
 		return shoeSize;
 	}
+
 	public void setShoeSize(BigDecimal shoeSize) {
 		this.shoeSize = shoeSize;
 	}
@@ -114,34 +122,38 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getCup() {
 		return cup;
 	}
+
 	public void setCup(String cup) {
 		this.cup = cup;
 	}
 
 	@Column(name = "Bust")
-	private Integer bust;
-	public Integer getBust() {
+	private String bust;
+	public String getBust() {
 		return bust;
 	}
-	public void setBust(Integer bust) {
+
+	public void setBust(String bust) {
 		this.bust = bust;
 	}
 
 	@Column(name = "Waist")
-	private Integer waist;
-	public Integer getWaist() {
+	private String waist;
+	public String getWaist() {
 		return waist;
 	}
-	public void setWaist(Integer waist) {
+
+	public void setWaist(String waist) {
 		this.waist = waist;
 	}
 
 	@Column(name = "Hip")
-	private Integer hip;
-	public Integer getHip() {
+	private String hip;
+	public String getHip() {
 		return hip;
 	}
-	public void setHip(Integer hip) {
+
+	public void setHip(String hip) {
 		this.hip = hip;
 	}
 
@@ -150,6 +162,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getHairColor() {
 		return hairColor;
 	}
+
 	public void setHairColor(String hairColor) {
 		this.hairColor = hairColor;
 	}
@@ -159,6 +172,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getEyesColor() {
 		return eyesColor;
 	}
+
 	public void setEyesColor(String eyesColor) {
 		this.eyesColor = eyesColor;
 	}
@@ -168,6 +182,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public BigDecimal getHourlyPayRate() {
 		return hourlyPayRate;
 	}
+
 	public void setHourlyPayRate(BigDecimal hourlyPayRate) {
 		this.hourlyPayRate = hourlyPayRate;
 	}
@@ -177,6 +192,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public Integer getStatusID() {
 		return statusID;
 	}
+
 	public void setStatusID(Integer statusID) {
 		this.statusID = statusID;
 	}
@@ -186,6 +202,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -195,6 +212,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getPhone() {
 		return phone;
 	}
+
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
@@ -204,10 +222,10 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getNote() {
 		return note;
 	}
+
 	public void setNote(String note) {
 		this.note = note;
 	}
-
 	@JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
@@ -215,25 +233,29 @@ public class PhotoModel implements IPersistent, Serializable {
 	public LocalDateTime getCreatedOnDate() {
 		return createdOnDate;
 	}
+
 	public void setCreatedOnDate(LocalDateTime createdOnDate) {
 		this.createdOnDate = createdOnDate;
 	}
-	
+
+	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 	public String getCreatedBy() {
 		return createdBy;
 	}
+
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	
+
 	@JsonIgnore
 	@Column(name = "ModifiedOn")
 	@Convert(converter = LocalDateTimeConverter.class)
@@ -241,10 +263,12 @@ public class PhotoModel implements IPersistent, Serializable {
 	public LocalDateTime getModifiedOnDate() {
 		return modifiedOnDate;
 	}
+
 	public void setModifiedOnDate(LocalDateTime modifiedOnDate) {
 		this.modifiedOnDate = modifiedOnDate;
 	}
-	
+
+	@JsonIgnore
 	@Transient
 	private String modifiedOn;
 	public String getModifiedOn() {
@@ -256,6 +280,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	public String getModifiedBY() {
 		return modifiedBY;
 	}
+
 	public void setModifiedBY(String modifiedBY) {
 		this.modifiedBY = modifiedBY;
 	}
@@ -272,7 +297,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	
 	@Transient
 	@JsonIgnore
-	@Column(name = "CreatedOn", updatable = false)
+	@Column(name = "nextPhotoshoot", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime _nextPhotoshoot;
 	public LocalDateTime get_nextPhotoshoot() {
@@ -285,7 +310,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	@Transient
 	private String nextPhotoshoot;
 	public String getNextPhotoshoot() {
-		return _nextPhotoshoot != null ? _nextPhotoshoot.toString() : null;
+		return _nextPhotoshoot != null ? _nextPhotoshoot.toString() : "";
 	}
 	
 	@Transient

@@ -247,11 +247,24 @@ public class PhotoStudioController {
 	@GetMapping(value = "/models")
 	public JsonResponse getModels(@ModelAttribute QueryParam queryParam) {
 		logger.debug("PhotoStudioController.getModels() called!!!");
+		if (queryParam.getPn() == null) {
+			queryParam.setPn(1);
+		}
+		if (queryParam.getPs() == null){
+			queryParam.setPs(20);
+		}
+		if(queryParam.getOrderBy() == null) {
+			queryParam.setOrderBy("PhotoshootDateDesc");
+		}
 		
 		try {
-			logger.debug("getModels() params: {}", queryParam.toString());
-			List<PhotoModel> photoModels = photoStudioService.getModels(queryParam);
-			return new JsonResponse(true, "", photoModels);
+			if (Utility.checkValidPageSize("getModels", queryParam.getPs())) {
+				logger.debug("getModels() params: {}", queryParam.toString());
+				PagedResult<PhotoModel> photoModels = photoStudioService.getModels(queryParam);
+				return new JsonResponse(true, "", photoModels);
+			} else {
+				return new JsonResponse(false, "getModels Page Size invalid.", null);
+			}
 		} catch (Exception e) {
 			logger.error("Error: PhotoStudioController.getModels():", e);
 			logger.error("QueryParam: {}", queryParam.toString());
@@ -347,7 +360,7 @@ public class PhotoStudioController {
 			queryParam.setPn(1);
 		}
 		if (queryParam.getPs() == null){
-			queryParam.setPs(5);
+			queryParam.setPs(20);
 		}
 		if(queryParam.getOrderBy() == null) {
 			queryParam.setOrderBy("PhotoshootDateDesc");

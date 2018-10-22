@@ -454,11 +454,18 @@ public class PhotoStudioService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<PhotoModel> getModels(QueryParam queryParam) {
-
+	public PagedResult<PhotoModel> getModels(QueryParam queryParam) {
+		PagedResult<PhotoModel> result = new PagedResult<PhotoModel>();
+		
 		List<Object> params = new ArrayList<Object>();
+		
+		params.add(queryParam.getPn());
+		params.add(queryParam.getPs());
+		params.add(queryParam.getOrderBy());
+		
 		params.add(queryParam.getModelName());
 		params.add(queryParam.getNoteLeft());
+		params.add(queryParam.getStatusID());
 		
 		String dType = queryParam.getDtype();
 		Date df = queryParam.getDf();
@@ -491,8 +498,12 @@ public class PhotoStudioService {
 		params.add(queryParam.getShoeSizeFrom());
 		params.add(queryParam.getShoeSizeTo());
 		
-		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetModelList", params, PhotoModel.class);
-		List<PhotoModel> result = (List<PhotoModel>)_results.get(0);
+		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetModelList", params, SingleValueResult.class, PhotoModel.class);
+		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
+		List<PhotoModel> rs2 = (List<PhotoModel>)_results.get(1);
+
+		result.setTotal(rs1.get(0));
+		result.setRecords(rs2);
 		
 		return result;
 	}
