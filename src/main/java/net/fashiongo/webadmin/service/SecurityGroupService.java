@@ -139,6 +139,7 @@ public class SecurityGroupService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public GetSecurityUserResponse GetSecurityUsers(GetSecurityUserParameter parameters) {
 		GetSecurityUserResponse result = new GetSecurityUserResponse();
 		String spName = "up_wa_GetSecurityUserList_Migration";
@@ -383,7 +384,7 @@ public class SecurityGroupService extends ApiService {
 	 * @return
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode setSecurityUserActive(Integer userID, boolean active) {
+	public ResultCode SetSecurityUserActive(Integer userID, boolean active) {
 		ResultCode result = new ResultCode(true, 0, MSG_UPDATE_SUCCESS);
 		SecurityUser securityUser = securityUserRepository.findByUserID(userID);
 		if (securityUser != null) {
@@ -401,6 +402,7 @@ public class SecurityGroupService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public GetUserMappingVendorResponse GetUserMappingVendor(GetUserMappingVendorParameter parameters) {
 		GetUserMappingVendorResponse result = new GetUserMappingVendorResponse();
 		String spName = "up_wa_GetUserMappingVendor";
@@ -441,6 +443,7 @@ public class SecurityGroupService extends ApiService {
      * @param parameters
      * @return
      */
+	@SuppressWarnings("unchecked")
 	public SetUserMappingVendorResponse SetUserMappingVendor(SetUserMappingVendorParameter parameters) {
 		SetUserMappingVendorResponse result = new SetUserMappingVendorResponse();
 		String spName = "up_wa_SetUserMappingVendor";
@@ -464,6 +467,7 @@ public class SecurityGroupService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public GetSecurityUserGroupAccesstimeResponse GetSecurityUserGroupAccessTimes(GetSecurityUserGroupParameter parameters) {
 		GetSecurityUserGroupAccesstimeResponse result = new GetSecurityUserGroupAccesstimeResponse();
 		String spName = "up_wa_GetSecurityUserGroupAccesstimes";
@@ -499,6 +503,7 @@ public class SecurityGroupService extends ApiService {
 			List<Object> outputParams = new ArrayList<Object>();
 			outputParams.add(0);
 			
+			@SuppressWarnings("unused")
 			List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
 			result.setResultCode((Integer) outputParams.get(0));
 			result.setResultMsg(MSG_DELETE_SUCCESS);
