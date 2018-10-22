@@ -52,4 +52,69 @@ public class MessageService extends ApiService {
 		
 		return result;
 	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void GetVendorNews () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void DelVendorNews () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void GetVendorNewsDetail () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void SetVendorNews () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void SetVendorNewsInActive () {
+		
+	}
 }
