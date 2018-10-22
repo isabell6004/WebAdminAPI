@@ -222,7 +222,7 @@ public class SecurityGroupService extends ApiService {
 			
 			securityGroupRepository.save(securityGroup);
 			
-			result.setResultMsg(securityGroup.getGroupID().toString());
+			result.setResultCode(securityGroup.getGroupID());
 			
 		} catch(Exception ex) {
 			result = new ResultCode(false, 0, ex.getMessage());

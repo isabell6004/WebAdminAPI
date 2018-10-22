@@ -48,6 +48,13 @@ public class AdminServiceTest {
 	@Autowired
 	SecurityGroupService securityGroupService;
 	
+	/**
+     * 
+     * testGetSecurityResources
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetSecurityResources() {
 		GetSecurityResourcesParameter parameters = new GetSecurityResourcesParameter();
@@ -60,14 +67,28 @@ public class AdminServiceTest {
 		assertNotNull(result.getResource());
 	}
 
+	/**
+     * 
+     * testGetSecurityAccessIps
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetSecurityAccessIps() {
 		GetSecurityAccessIpsResponse result = adminService.GetSecurityAccessIps();
 		assertNotNull(result.getIps());
 	}
 
+	/**
+     * 
+     * testSetSecurityAccessIp
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
-	@Ignore("Not yet implemented")
+	@Ignore
 	public void testSetSecurityAccessIp() throws Exception {
 		SetSecurityAccessIpParameter parameters = new SetSecurityAccessIpParameter();
 		parameters.setIpid(18);
@@ -79,7 +100,15 @@ public class AdminServiceTest {
 		assertTrue(result.getSuccess());
 	}
 
-/*	@Test
+	/**
+     * 
+     * testSetDeleteSecurityAccessIps
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
+	@Test
+	@Ignore
 	public void testSetDeleteSecurityAccessIps() {
 		List<Integer> idList = new ArrayList();
 		idList.add(3);
@@ -87,10 +116,17 @@ public class AdminServiceTest {
 		
 		ResultCode result = adminService.SetDeleteSecurityAccessIps(idList);
 		assertTrue(result.getSuccess());
-	}*/
-
+	}
+	
+	/**
+     * 
+     * testSetResource
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
-	@Ignore("Not yet implemented")
+	@Ignore
 	public void testSetResource() {
 		Integer resourceID = 161;
 		boolean active = false;
@@ -99,8 +135,15 @@ public class AdminServiceTest {
 		assertTrue(result.getSuccess());
 	}
 
+	/**
+     * 
+     * testSetSecurityResource
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
-	@Ignore("Not yet implemented")
+	@Ignore
 	public void testSetSecurityResource() {
 		SetSecurityResourceParameter parameters = new SetSecurityResourceParameter();
 		parameters.setActive(true);
@@ -114,13 +157,21 @@ public class AdminServiceTest {
 		assertTrue(result.getSuccess());
 	}
 
-/*	@Test
+	/**
+     * 
+     * testSetDeleteSecurityResources
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
+	@Test
+	@Ignore
 	public void testSetDeleteSecurityResources() {
 		List<Integer> idList = new ArrayList();
 		
 		ResultCode result = adminService.SetDeleteSecurityResources(idList);
 		assertTrue(result.getSuccess());
-	}*/
+	}
 
 	@Test
 	public void testGetSecurityAccessCodes() {
