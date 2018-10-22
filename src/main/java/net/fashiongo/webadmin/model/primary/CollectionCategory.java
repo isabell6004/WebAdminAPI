@@ -59,7 +59,7 @@ public class CollectionCategory implements Serializable {
 	@Id
 	@Basic(optional = false)
 	@NotNull
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("CollectionCategoryID")
 	@Column(name = "CollectionCategoryID")
 	private Integer collectionCategoryID;
@@ -113,17 +113,18 @@ public class CollectionCategory implements Serializable {
 	@JsonProperty("ModifiedBy")
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
-/*
-	@JsonProperty("ModifiedOn")
-	@Column(name = "ModifiedOn")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date modifiedOn;
-*/
+	/*
+	 * @JsonProperty("ModifiedOn")
+	 * 
+	 * @Column(name = "ModifiedOn")
+	 * 
+	 * @Temporal(TemporalType.TIMESTAMP) private Date modifiedOn;
+	 */
 	@JsonProperty("ModifiedOn")
 	@Column(name = "ModifiedOn")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime modifiedOn;
-	
+
 	@Transient
 	@JsonProperty("CategoryID")
 	@Column(name = "CategoryID")
@@ -136,10 +137,11 @@ public class CollectionCategory implements Serializable {
 	@JsonProperty("ParentCategoryID")
 	@Column(name = "ParentCategoryID")
 	private Integer parentCategoryID;
+	
 	@Transient
 //	@JsonProperty("expended")
 	@Column(name = "Expended")
-	private Boolean expended;
+	private int expended;
 	@Transient
 	@JsonProperty("NodeCnt")
 	@Column(name = "NodeCnt")
@@ -306,11 +308,11 @@ public class CollectionCategory implements Serializable {
 		this.parentCategoryID = parentCategoryID;
 	}
 
-	public Boolean getExpended() {
+	public int getExpended() {
 		return expended;
 	}
 
-	public void setExpended(Boolean expended) {
+	public void setExpended(int expended) {
 		this.expended = expended;
 	}
 

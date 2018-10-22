@@ -36,6 +36,13 @@ public class CommonServiceTest {
 	@Autowired
 	AdminService adminService;
 	
+	/**
+     * 
+     * testGetMenuID
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetMenuID() {
 		String pageName = "vendor-list";
@@ -43,6 +50,13 @@ public class CommonServiceTest {
 		assertEquals(result.toString(), "143");
 	}
 
+	/**
+     * 
+     * testGetServerHeartBeat
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetServerHeartBeat() {
 		Long q = 1539669765324l;
@@ -50,6 +64,13 @@ public class CommonServiceTest {
 		assertEquals(result.toString(), "Spring Boot");
 	}
 
+	/**
+     * 
+     * testGetCountryStates
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetCountryStates() {
 		String countryAbbrev = "us";
@@ -57,6 +78,13 @@ public class CommonServiceTest {
 		assertNotNull(result.getData());	
 	}
 
+	/**
+     * 
+     * testGetTopCategories
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetTopCategories() {
 		List<TopCategories> result = commonService.GetTopCategories();

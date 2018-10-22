@@ -98,4 +98,108 @@ public class SitemgmtController {
 		
 		return results;
 	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void GetPolicyManagement () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void SetAddDelPolicyManagement () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void GetPolicyDetail () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void GetPolicyManagementDetail () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void GetCommunicationReasonAll () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void DeleteCommunicationReason () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void SetCommunicationReasonActive () {
+		
+	}
+	
+	/**
+	 * 
+	 * 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void SetCommunicationReason () {
+		
+	}
 }

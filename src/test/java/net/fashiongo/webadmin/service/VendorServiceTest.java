@@ -21,7 +21,6 @@ import net.fashiongo.webadmin.model.primary.VendorCompany;
  *
  */
 @RunWith(SpringRunner.class)
-@ActiveProfiles("dev")
 @SpringBootTest
 public class VendorServiceTest {
 	

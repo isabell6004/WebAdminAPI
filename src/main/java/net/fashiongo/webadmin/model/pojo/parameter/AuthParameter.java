@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class AuthParameter {
 	@ApiModelProperty(required = false, example="krdev")
 	private String username;
-	@ApiModelProperty(required = false, example="Krdev6301")
+	@ApiModelProperty(required = false, example="1234")
 	private String pwd;
 	@ApiModelProperty(required = false, example="")
 	private String accesscode;
