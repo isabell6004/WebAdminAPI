@@ -220,6 +220,7 @@ public class AdminServiceTest {
 	 * @since 2018. 10. 22.
 	 * @author Incheol Jung
 	 */
+	@Ignore
 	@Test
 	public void testsetActiveGroup() {
 		SetActiveGroupParameter param = new SetActiveGroupParameter();
@@ -237,6 +238,7 @@ public class AdminServiceTest {
 	 * @since 2018. 10. 22.
 	 * @author Incheol Jung
 	 */
+	@Ignore
 	@Test
 	public void testSetSecurityGroup() {
 		SetsecuritygroupParameter param = new SetsecuritygroupParameter();
@@ -258,6 +260,7 @@ public class AdminServiceTest {
 	 * @author Incheol Jung
 	 * @throws IOException
 	 */
+	@Ignore
 	@Test
 	public void testSetDeleteSecurityGroups() throws IOException {
 		SetdeletesecuritygroupsParameter param = new SetdeletesecuritygroupsParameter();
