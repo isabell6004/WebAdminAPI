@@ -95,7 +95,7 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "setsecurityaccesscode", method = RequestMethod.POST)
-	public JsonResponse<String> SetSecurityAccessCode(@RequestBody SetSecurityAccessCodeParameters parameters) throws Exception {
+	public JsonResponse<String> SetSecurityAccessCode(@RequestBody SetSecurityAccessCodeParameters parameters) {
 		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
 		ResultCode _result = adminService.SetSecurityAccessCode(parameters);
 		

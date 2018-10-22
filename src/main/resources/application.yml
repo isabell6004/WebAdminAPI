@@ -68,7 +68,7 @@ server:
     context-path: /api
   
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.145:19002
+  fgServiceAPI_EndPoint: http://10.10.0.145:29001
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:
@@ -82,8 +82,8 @@ spring:
   redis:
     host: 172.21.101.20
   datasource:
-    jdbc-url: jdbc:sqlserver://172.21.101.101;databaseName=FG_V2
-    username: sqladmin
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
+    username: sa
     password: msqLsa6301
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY

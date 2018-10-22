@@ -25,4 +25,12 @@ public class SetAddPageParameter {
 	public String getPageName() {
 		return StringUtils.isEmpty(pageName) ? "" : pageName;
 	}
+
+	public void setPageID(String pageID) {
+		this.pageID = pageID;
+	}
+
+	public void setPageName(String pageName) {
+		this.pageName = pageName;
+	}
 }
