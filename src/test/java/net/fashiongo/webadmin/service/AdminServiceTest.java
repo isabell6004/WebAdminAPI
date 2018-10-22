@@ -226,8 +226,10 @@ public class AdminServiceTest {
 	
 	/**
      * 
+     * testGetSecurityParentMenus
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
 	public void testGetSecurityParentMenus() {
@@ -237,8 +239,10 @@ public class AdminServiceTest {
     
     /**
      * 
+     * testGetSecurityMenus2
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
 	public void testGetSecurityMenus2() {
@@ -254,8 +258,10 @@ public class AdminServiceTest {
     
     /**
      * 
+     * testSetSecurityMenu
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
 	public void testSetSecurityMenu() {
@@ -278,8 +284,10 @@ public class AdminServiceTest {
     
     /**
      * 
+     * testSetDeleteSecurityMenus
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
 	public void testSetDeleteSecurityMenus() {
@@ -297,8 +305,10 @@ public class AdminServiceTest {
     
     /**
      * 
+     * testSetActiveSecurityMenus
+     * 
+     * @since 2018. 10. 22.
      * @author Jiwon
-     *
      */
     @Test
 	public void testSetActiveSecurityMenus() {
