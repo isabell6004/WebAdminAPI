@@ -18,7 +18,7 @@ public class LoginServiceTest {
 	@Test
 	public void testCheckIP() {
 		boolean result  = loginService.checkIP("::1");
-		assertTrue(result);
+		assertTrue(!result);
 	}
 
 }
