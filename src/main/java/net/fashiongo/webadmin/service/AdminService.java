@@ -181,6 +181,7 @@ public class AdminService extends ApiService {
 	 * @param GetSecurityResourcesParameter
 	 * @return GetSecurityResourcesResponse
 	 */
+	@SuppressWarnings("unchecked")
 	public GetSecurityResourcesResponse GetSecurityResources (GetSecurityResourcesParameter parameters) {
 		GetSecurityResourcesResponse result = new GetSecurityResourcesResponse();
 		String spName = "up_wa_Security_GetResource";
@@ -224,23 +225,17 @@ public class AdminService extends ApiService {
 	 * @return ResultCode
 	 */
 	@SuppressWarnings("unchecked")
-	public ResultCode SetSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {
-		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
-		
+	public ResultCode SetSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {		
 		SecurityAccessIp securityAccessIps = new SecurityAccessIp();
-		
 		if (parameters.getIpid() != 0) {
 			securityAccessIps = securityAccessIpsRepository.findFirstByipid(parameters.getIpid());
 		}
-
 		if (securityAccessIps != null) {
 			securityAccessIps.setIpAddress(parameters.getIp());
 			securityAccessIps.setDescription(parameters.getDescription());
-		
 			securityAccessIpsRepository.save(securityAccessIps);
 		}
-		
-		return result;
+		return new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 	}
 	
 	/**
@@ -253,13 +248,8 @@ public class AdminService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode SetDeleteSecurityAccessIps(List<Integer> idList) {
-		ResultCode result = new ResultCode(true, 0, MSG_DELETE_SUCCESS);
-
-		for (Integer id : idList) {
-			securityAccessIpsRepository.deleteByipid(id);
-		}
-
-		return result;
+		securityAccessIpsRepository.deleteByipidIn(idList);
+		return new ResultCode(true, idList.size(), MSG_DELETE_SUCCESS);
 	}
 	
 	
@@ -272,14 +262,13 @@ public class AdminService extends ApiService {
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")
-	public JsonResponse SetResource(Integer resourceID, boolean active) {
-		JsonResponse result = new JsonResponse(true, MSG_UPDATE_SUCCESS, 1, null);
+	public ResultCode SetResource(Integer resourceID, boolean active) {
 		SecurityResource sr = securityResourceRepository.findOneByResourceID(resourceID);
 		if(sr != null) {
 			sr.setActive(active);
 			securityResourceRepository.save(sr);
 		}
-		return result;
+		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
 	}
 	
 	/**
@@ -292,7 +281,6 @@ public class AdminService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode SetSecurityResource(SetSecurityResourceParameter parameters) {
-		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		SecurityResource sr = new SecurityResource();
 		if(parameters.getResourceID() != 0) {
 			sr = securityResourceRepository.findOneByResourceID(parameters.getResourceID());
@@ -306,7 +294,7 @@ public class AdminService extends ApiService {
 			sr.setActive(parameters.getActive());
 			securityResourceRepository.save(sr);
 		}
-		return result;
+		return new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 	}
 	
 	/**
@@ -319,11 +307,8 @@ public class AdminService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode SetDeleteSecurityResources(List<Integer> idList) {
-		ResultCode result = new ResultCode(true, 1, MSG_DELETE_SUCCESS);
-		for(Integer id : idList) {
-			securityResourceRepository.deleteByResourceID(id);
-		}
-		return result;
+		securityResourceRepository.deleteByResourceIDIn(idList);
+		return new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 	}
 	
 	/**
