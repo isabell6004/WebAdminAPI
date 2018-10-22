@@ -80,7 +80,7 @@ webAdminapi:
 spring:
   profiles: local
   redis:
-    host: 172.21.101.20
+    host: 10.10.0.145
   datasource:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
     username: sa
