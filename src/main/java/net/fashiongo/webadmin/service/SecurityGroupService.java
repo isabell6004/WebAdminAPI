@@ -229,7 +229,7 @@ public class SecurityGroupService extends ApiService {
 			return result;
 		}
 		
-		return null;
+		return result;
 	}
 	
 	/**

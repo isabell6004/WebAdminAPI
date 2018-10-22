@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +13,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityAccessCodesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -104,4 +109,53 @@ public class AdminServiceTest {
 		assertTrue(result.getSuccess());
 	}*/
 
+	@Test
+	public void testGetSecurityAccessCodes() {
+		GetSecurityAccessCodesParameters parameters = new GetSecurityAccessCodesParameters();
+		parameters.setAccessCode(" ");
+		parameters.setsDate("2015-01-01");
+		parameters.seteDate("2020-01-01");
+		
+		GetSecurityAccessCodesResponse _result = adminService.GetSecurityAccessCodes(parameters);
+		
+		assertNotNull(_result.getSecurityAccessCodes());
+	}
+	
+	@Test
+	public void testSetSecurityAccessCode() {
+		SetSecurityAccessCodeParameters parameters = new SetSecurityAccessCodeParameters();
+		parameters.setCodeID(0);
+		parameters.setAccessCode("hgfhgf");
+		parameters.setExpiredOn("09/23/2019");
+		
+		//ResultCode _result = adminService.SetSecurityAccessCode(parameters);
+		//assertTrue(_result.getSuccess());
+	}
+	
+	@Test
+	public void testSetDeleteSecurityAccessCodes() {
+		SetDeleteSecurityAccessCodesParameter parameters = new SetDeleteSecurityAccessCodesParameter();
+		List<Integer> idList= new ArrayList<Integer>();
+		idList.add(3);
+		idList.add(4);
+		parameters.setIdList(idList);
+		
+		//ResultCode _result = adminService.SetDeleteSecurityAccessCodes(parameters.getIdList());
+		//assertTrue(_result.getSuccess());
+	}
+	
+    @Test
+    public void testGetSecurityLogs() {
+           GetSecurityLogsParameter parameters = new GetSecurityLogsParameter();
+           parameters.setPagenum(1);
+           parameters.setPagesize(30);
+           parameters.setUsrid(1);
+           parameters.setIp(null);
+           parameters.setSdate("10/01/2018");
+           parameters.setEdate("10/31/2018");
+           
+           GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
+           assertNotNull(result.getSecurityLogs());
+           assertNotNull(result.getSecurityLogsColumn());
+    }
 }
