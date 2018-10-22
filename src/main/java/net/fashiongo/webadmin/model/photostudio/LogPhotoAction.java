@@ -53,6 +53,25 @@ public class LogPhotoAction implements IPersistent, Serializable {
 		this.orderID = orderID;
 	}
 
+	@Column(name = "ItemQty")
+	private Integer itemQty;
+	public Integer getItemQty() {
+		return itemQty;
+	}
+
+	public void setItemQty(Integer itemQty) {
+		this.itemQty = itemQty;
+	}
+
+	@Column(name = "DroppedBy")
+	private String droppedBy;
+	public String getDroppedBy() {
+		return droppedBy;
+	}
+
+	public void setDroppedBy(String droppedBy) {
+		this.droppedBy = droppedBy;
+	}
 	@JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
@@ -65,12 +84,14 @@ public class LogPhotoAction implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 	public String getCreatedBy() {

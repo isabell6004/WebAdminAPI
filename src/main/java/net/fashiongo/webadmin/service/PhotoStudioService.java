@@ -12,6 +12,7 @@ import net.fashiongo.webadmin.common.PagedResult;
 import net.fashiongo.webadmin.common.PhotoStudioJdbcHelper;
 import net.fashiongo.webadmin.common.QueryParam;
 import net.fashiongo.webadmin.common.SingleValueResult;
+import net.fashiongo.webadmin.dao.photostudio.LogPhotoActionRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCalendarModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCategoryPriceRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoImageRepository;
@@ -31,12 +32,14 @@ import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCategoryPrice;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoImage;
+import net.fashiongo.webadmin.model.photostudio.PhotoActionUser;
 import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
 import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoImage;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
+import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrderDetail;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
@@ -85,6 +88,9 @@ public class PhotoStudioService {
 	
 	@Autowired
 	private MapPhotoCalendarModelRepository mapPhotoCalendarModelRepository;
+	
+	@Autowired
+	private LogPhotoActionRepository logPhotoActionRepository;
 	
 	@Autowired
 	protected PhotoStudioJdbcHelper jdbcHelper;
@@ -189,6 +195,9 @@ public class PhotoStudioService {
 			currentPhotoPrice.set_toEffectiveDate(currentToEffectiveDate);
 			currentPhotoPrice.setModifiedBY(username);
 			currentPhotoPrice.setModifiedOnDate(now);
+			if(currentPhotoPrice.getPriceID() == null) {
+				return "The current price does not exist , can't update ！ ";
+			}
 			String sql = currentPhotoPrice.toUpdateQuery("");
 			jdbcTemplate.update(sql);
 		}
@@ -217,6 +226,9 @@ public class PhotoStudioService {
 			for(PhotoPrice newPhotoPrice : newPrices) {
 				newPhotoPrice.setModifiedOnDate(now);
 				newPhotoPrice.setModifiedBY(username);
+				if(newPhotoPrice.getPriceID() == null) {
+					return "The new price does not exist , can't update ！ ";
+				}
 				String sql = newPhotoPrice.toUpdateQuery("");
 				jdbcTemplate.update(sql);
 			}
@@ -276,6 +288,9 @@ public class PhotoStudioService {
 			currentPhotoCancellationFee.set_toEffectiveDate(currentToEffectiveDate);
 			currentPhotoCancellationFee.setModifiedBY(username);
 			currentPhotoCancellationFee.setModifiedOnDate(now);
+			if(currentPhotoCancellationFee.getCancelTypeID() == null) {
+				return "The current cancellationFee does not exist , can't update ！ ";
+			}
 			String sql = currentPhotoCancellationFee.toUpdateQuery("");
 			jdbcTemplate.update(sql);
 		}
@@ -291,6 +306,9 @@ public class PhotoStudioService {
 			for (PhotoCancellationFee newPhotoCancellationFee : newCancellationFees) {
 				newPhotoCancellationFee.setModifiedOnDate(now);
 				newPhotoCancellationFee.setModifiedBY(username);
+				if(newPhotoCancellationFee.getCancelTypeID() == null) {
+					return "The new cancellationFee does not exist , can't update ！ ";
+				}
 				String sql = newPhotoCancellationFee.toUpdateQuery("");
 				jdbcTemplate.update(sql);
 			}
@@ -352,6 +370,9 @@ public class PhotoStudioService {
 			currentPhotoUnit.set_toEffectiveDate(currentToEffectiveDate);
 			currentPhotoUnit.setModifiedBY(username);
 			currentPhotoUnit.setModifiedOnDate(now);
+			if(currentPhotoUnit.getUnitID() == null) {
+				return "The current unit does not exist , can't update ！ ";
+			}
 			String sql = currentPhotoUnit.toUpdateQuery("");
 			jdbcTemplate.update(sql);
 		}
@@ -367,6 +388,9 @@ public class PhotoStudioService {
 			for (PhotoUnit newPhotoUnit : newPhotoUnits) {
 				newPhotoUnit.setModifiedOnDate(now);
 				newPhotoUnit.setModifiedBY(username);
+				if(newPhotoUnit.getUnitID() == null) {
+					return "The new unit does not exist , can't update ！ ";
+				}
 				String sql = newPhotoUnit.toUpdateQuery("");
 				jdbcTemplate.update(sql);
 			}
@@ -563,6 +587,10 @@ public class PhotoStudioService {
 		
 		photoCalendar.setModifiedOnDate(now);
 		photoCalendar.setModifiedBY(username);
+		if(photoCalendar.getCalendarID() == null) {
+			return "CalendarID does not exist!";
+		}
+		
 		String sql = photoCalendar.toUpdateQuery("");
 		jdbcTemplate.update(sql);
 		
@@ -626,18 +654,54 @@ public class PhotoStudioService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(poNumber);
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, PhotoOrderDetail.class);
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, LogPhotoAction.class, PhotoOrderDetail.class, PhotoActionUser.class);
 
 		List<DetailPhotoOrder> photoOrders = (List<DetailPhotoOrder>) r.get(0);
-		List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) r.get(1);
+		List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(1);
+		List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) r.get(2);
+		List<PhotoActionUser> photoActionUsers = (List<PhotoActionUser>) r.get(3);
 		
 		result.put("photoOrder", photoOrders.get(0));
-		result.put("photoOrderDetails", photoOrderDetails);
-		
-		//get photoStudio Users Being confirmed
-		result.put("photoStudioUsers", Arrays.asList("Brooke","Maria","Brandon","Rosa"));
+		result.put("actionLogs", logPhotoActions);
+		result.put("items", photoOrderDetails);
+		result.put("photoStudioUsers", photoActionUsers);
 
 		return result;
+	}
+	
+	public String updatePhotoOrder(PhotoOrder photoOrder) {
+		List<Object> params = new ArrayList<Object>();
+		if(photoOrder.getOrderID() == null) {
+			return "OrderID does not exist!";
+		}
+		
+		params.add(photoOrder.getOrderID());
+		params.add(photoOrder.get_photoshootDate());
+		params.add(photoOrder.getModelID());
+		params.add(photoOrder.getAdditionalDiscountAmount());
+		params.add(photoOrder.getInHouseNote());
+		params.add(Utility.getWebAdminUserName());
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_UpdateOrder", params);
+
+		return null;
+	}
+	
+	public String cancelPhotoOrder(PhotoOrder photoOrder) {
+		List<Object> params = new ArrayList<Object>();
+		if(photoOrder.getOrderID() == null) {
+			return "OrderID does not exist!";
+		}
+		
+		params.add(photoOrder.getOrderID());
+		params.add(photoOrder.getCancelTypeID());
+		params.add(photoOrder.getCancelNote());
+		params.add(photoOrder.getIsCancelled());
+		params.add(Utility.getWebAdminUserName());
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_CancelOrder", params);
+
+		return null;
 	}
 	
 	public DailySummaryVo getDailySummary(String photoshootDate) {
@@ -663,6 +727,17 @@ public class PhotoStudioService {
 		List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(0);
 
 		return logPhotoActions;
+	}
+	
+	public Integer saveActionLog(LogPhotoAction logPhotoAction) {
+		LocalDateTime date = LocalDateTime.now();
+		String username = Utility.getWebAdminUserName();
+
+		logPhotoAction.setCreatedBy(username);
+		logPhotoAction.setCreatedOnDate(date);
+		logPhotoActionRepository.save(logPhotoAction);
+
+		return logPhotoAction.getActionID();
 	}
 	
 	public Map<String, Object> getReports(Map<String, Object> parmMap) {

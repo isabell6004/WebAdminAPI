@@ -14,6 +14,7 @@ import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
+import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
@@ -384,6 +385,40 @@ public class PhotoStudioController {
 		return response;
 	}
 	
+	@PostMapping(value = "order/update")
+	public JsonResponse<?> updatePhotoOrder(@RequestBody PhotoOrder photoOrder) {
+		logger.debug("PhotoStudioController.updatePhotoOrder() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			
+			String resultMsg = photoStudioService.updatePhotoOrder(photoOrder);
+			response.setSuccess(StringUtils.isEmpty(resultMsg));
+			response.setMessage(resultMsg);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.updatePhotoOrder():", ex);
+		}
+
+		return response;
+	}
+	
+	@PostMapping(value = "order/cancel")
+	public JsonResponse<?> cancelPhotoOrder(@RequestBody PhotoOrder photoOrder) {
+		logger.debug("PhotoStudioController.cancelPhotoOrder() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			
+			String resultMsg = photoStudioService.cancelPhotoOrder(photoOrder);
+			response.setSuccess(StringUtils.isEmpty(resultMsg));
+			response.setMessage(resultMsg);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.cancelPhotoOrder():", ex);
+		}
+
+		return response;
+	}
+	
 	@GetMapping("/order/dailysummary/{photoshootDate}")
 	public JsonResponse<?> getDailySummary(@PathVariable("photoshootDate") String photoshootDate) {
 		logger.debug("PhotoStudioController.getDailySummary() called!!!");
@@ -396,6 +431,21 @@ public class PhotoStudioController {
 		} catch (Exception ex) {
 			logger.error("Exception Error: PhotoStudioController.getDailySummary()：", ex);
 			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@PostMapping(value = "/order/action/save")
+	public JsonResponse<?> saveActionLog(@RequestBody LogPhotoAction logPhotoAction) {
+		logger.debug("PhotoStudioController.saveActionLog() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			photoStudioService.saveActionLog(logPhotoAction);
+			response.setSuccess(true);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.saveActionLog():", ex);
 		}
 
 		return response;

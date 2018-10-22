@@ -79,7 +79,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	public void setPoNumber(String poNumber) {
 		this.poNumber = poNumber;
 	}
-
+	
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 	public Integer getCategoryID() {
@@ -89,7 +89,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	public void setCategoryID(Integer categoryID) {
 		this.categoryID = categoryID;
 	}
-	
+
 	@Column(name = "PackageID")
 	private Integer packageID;
 	public Integer getPackageID() {
@@ -99,7 +99,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	public void setPackageID(Integer packageID) {
 		this.packageID = packageID;
 	}
-	
+
 	@Column(name = "ColorID")
 	private Integer colorID;
 	public Integer getColorID() {
@@ -110,24 +110,14 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.colorID = colorID;
 	}
 
-	@Column(name = "DiscountID")
-	private Integer discountID;
-	public Integer getDiscountID() {
-		return discountID;
+	@Column(name = "IsByStyle")
+	private Boolean isByStyle;
+	public Boolean getIsByStyle() {
+		return isByStyle;
 	}
 
-	public void setDiscountID(Integer discountID) {
-		this.discountID = discountID;
-	}
-
-	@Column(name = "DiscountAmount")
-	private BigDecimal discountAmount;
-	public BigDecimal getDiscountAmount() {
-		return discountAmount;
-	}
-
-	public void setDiscountAmount(BigDecimal discountAmount) {
-		this.discountAmount = discountAmount;
+	public void setIsByStyle(Boolean isByStyle) {
+		this.isByStyle = isByStyle;
 	}
 
 	@Column(name = "BookingID")
@@ -170,6 +160,16 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.totalQty = totalQty;
 	}
 
+	@Column(name = "SubtotalAmount")
+	private BigDecimal subtotalAmount;
+	public BigDecimal getSubtotalAmount() {
+		return subtotalAmount;
+	}
+
+	public void setSubtotalAmount(BigDecimal subtotalAmount) {
+		this.subtotalAmount = subtotalAmount;
+	}
+
 	@Column(name = "TotalAmount")
 	private BigDecimal totalAmount;
 	public BigDecimal getTotalAmount() {
@@ -178,6 +178,56 @@ public class PhotoOrder implements IPersistent, Serializable {
 
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
+	}
+
+	@Column(name = "DiscountID")
+	private Integer discountID;
+	public Integer getDiscountID() {
+		return discountID;
+	}
+
+	public void setDiscountID(Integer discountID) {
+		this.discountID = discountID;
+	}
+
+	@Column(name = "DiscountAmount")
+	private BigDecimal discountAmount;
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
+	@Column(name = "DiscountCode")
+	private String discountCode;
+	public String getDiscountCode() {
+		return discountCode;
+	}
+
+	public void setDiscountCode(String discountCode) {
+		this.discountCode = discountCode;
+	}
+
+	@Column(name = "AdditionalDiscountAmount")
+	private BigDecimal additionalDiscountAmount;
+	public BigDecimal getAdditionalDiscountAmount() {
+		return additionalDiscountAmount;
+	}
+
+	public void setAdditionalDiscountAmount(BigDecimal additionalDiscountAmount) {
+		this.additionalDiscountAmount = additionalDiscountAmount;
+	}
+
+	@Column(name = "PhotoCreditUsedAmount")
+	private BigDecimal photoCreditUsedAmount;
+	public BigDecimal getPhotoCreditUsedAmount() {
+		return photoCreditUsedAmount;
+	}
+
+	public void setPhotoCreditUsedAmount(BigDecimal photoCreditUsedAmount) {
+		this.photoCreditUsedAmount = photoCreditUsedAmount;
 	}
 
 	@JsonIgnore
@@ -204,6 +254,52 @@ public class PhotoOrder implements IPersistent, Serializable {
 	}
 
 	@JsonIgnore
+	@Column(name = "DropOffDate")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _dropOffDate;
+	public LocalDateTime get_dropOffDate() {
+		return _dropOffDate;
+	}
+
+	public void set_dropOffDate(LocalDateTime _dropOffDate) {
+		this._dropOffDate = _dropOffDate;
+	}
+
+	@Transient
+	private String dropOffDate;
+	public String getDropOffDate() {
+		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+	}
+
+	public void setDropOffDate(String dropOffDate) {
+		this.dropOffDate = StringUtils.isNotEmpty(dropOffDate) ? dropOffDate + DEFAULT_TIME : null;
+		this.set_dropOffDate(StringUtils.isNotEmpty(this.dropOffDate) ? LocalDateTime.parse(this.dropOffDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+	}
+
+	@JsonIgnore
+	@Column(name = "PrepDate")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _prepDate;
+	public LocalDateTime get_prepDate() {
+		return _prepDate;
+	}
+
+	public void set_prepDate(LocalDateTime _prepDate) {
+		this._prepDate = _prepDate;
+	}
+
+	@Transient
+	private String prepDate;
+	public String getPrepDate() {
+		return _prepDate != null ? _prepDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+	}
+
+	public void setPrepDate(String prepDate) {
+		this.prepDate = StringUtils.isNotEmpty(prepDate) ? prepDate + DEFAULT_TIME : null;
+		this.set_prepDate(StringUtils.isNotEmpty(this.prepDate) ? LocalDateTime.parse(this.prepDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+	}
+
+	@JsonIgnore
 	@Column(name = "PhotoshootDate")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime _photoshootDate;
@@ -226,37 +322,50 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.set_photoshootDate(StringUtils.isNotEmpty(this.photoshootDate) ? LocalDateTime.parse(this.photoshootDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
-	@Column(name = "IsByStyle")
-	private Boolean isByStyle;
-	public Boolean getIsByStyle() {
-		return isByStyle;
-	}
-
-	public void setIsByStyle(Boolean isByStyle) {
-		this.isByStyle = isByStyle;
-	}
-
 	@JsonIgnore
-	@Column(name = "DropOffDate")
+	@Column(name = "RetouchDate")
 	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _dropOffDate;
-	public LocalDateTime get_dropOffDate() {
-		return _dropOffDate;
+	private LocalDateTime _retouchDate;
+	public LocalDateTime get_retouchDate() {
+		return _retouchDate;
 	}
 
-	public void set_dropOffDate(LocalDateTime _dropOffDate) {
-		this._dropOffDate = _dropOffDate;
+	public void set_retouchDate(LocalDateTime _retouchDate) {
+		this._retouchDate = _retouchDate;
 	}
 
 	@Transient
-	private String dropOffDate;
-	public String getDropOffDate() {
-		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+	private String retouchDate;
+	public String getRetouchDate() {
+		return _retouchDate != null ? _retouchDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
 	}
 
-	public void setDropOffDate(String dropOffDate) {
-		this.dropOffDate = StringUtils.isNotEmpty(dropOffDate) ? dropOffDate + DEFAULT_TIME : null;
-		this.set_dropOffDate(StringUtils.isNotEmpty(this.dropOffDate) ? LocalDateTime.parse(this.dropOffDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+	public void setRetouchDate(String retouchDate) {
+		this.retouchDate = StringUtils.isNotEmpty(retouchDate) ? retouchDate + DEFAULT_TIME : null;
+		this.set_retouchDate(StringUtils.isNotEmpty(this.retouchDate) ? LocalDateTime.parse(this.retouchDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+	}
+
+	@JsonIgnore
+	@Column(name = "UploadDate")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _uploadDate;
+	public LocalDateTime get_uploadDate() {
+		return _uploadDate;
+	}
+
+	public void set_uploadDate(LocalDateTime _uploadDate) {
+		this._uploadDate = _uploadDate;
+	}
+
+	@Transient
+	private String uploadDate;
+	public String getUploadDate() {
+		return _uploadDate != null ? _uploadDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+	}
+
+	public void setUploadDate(String uploadDate) {
+		this.uploadDate = StringUtils.isNotEmpty(uploadDate) ? uploadDate + DEFAULT_TIME : null;
+		this.set_uploadDate(StringUtils.isNotEmpty(this.uploadDate) ? LocalDateTime.parse(this.uploadDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
 	@Column(name = "SpecialRequest")
@@ -287,6 +396,16 @@ public class PhotoOrder implements IPersistent, Serializable {
 
 	public void setCancelTypeID(Integer cancelTypeID) {
 		this.cancelTypeID = cancelTypeID;
+	}
+
+	@Column(name = "CancellationFee")
+	private BigDecimal cancellationFee;
+	public BigDecimal getCancellationFee() {
+		return cancellationFee;
+	}
+
+	public void setCancellationFee(BigDecimal cancellationFee) {
+		this.cancellationFee = cancellationFee;
 	}
 
 	@Column(name = "CancelledByUserName")
@@ -341,12 +460,10 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.cancelledOn = StringUtils.isNotEmpty(cancelledOn) ? cancelledOn + DEFAULT_TIME : null;
 		this.set_cancelledOn(StringUtils.isNotEmpty(this.cancelledOn) ? LocalDateTime.parse(this.cancelledOn, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
-
 	@JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime createdOnDate;
-
 	public LocalDateTime getCreatedOnDate() {
 		return createdOnDate;
 	}
@@ -355,6 +472,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {
@@ -376,7 +494,6 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Column(name = "ModifiedOn")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime modifiedOnDate;
-
 	public LocalDateTime getModifiedOnDate() {
 		return modifiedOnDate;
 	}
@@ -392,7 +509,6 @@ public class PhotoOrder implements IPersistent, Serializable {
 		return modifiedOnDate != null ? modifiedOnDate.toString() : null;
 	}
 
-	@JsonIgnore
 	@Column(name = "ModifiedBY")
 	private String modifiedBY;
 	public String getModifiedBY() {
@@ -402,5 +518,13 @@ public class PhotoOrder implements IPersistent, Serializable {
 	public void setModifiedBY(String modifiedBY) {
 		this.modifiedBY = modifiedBY;
 	}
-
+	
+	@Transient
+	private Integer modelID;
+	public Integer getModelID() {
+		return modelID;
+	}
+	public void setModelID(Integer modelID) {
+		this.modelID = modelID;
+	}
 }

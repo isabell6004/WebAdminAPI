@@ -186,12 +186,10 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	public void setMovieAmount(BigDecimal movieAmount) {
 		this.movieAmount = movieAmount;
 	}
-
 	@JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime createdOnDate;
-
 	public LocalDateTime getCreatedOnDate() {
 		return createdOnDate;
 	}
@@ -200,12 +198,14 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
+	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 	public String getCreatedBy() {
@@ -220,7 +220,6 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "ModifiedOn")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime modifiedOnDate;
-
 	public LocalDateTime getModifiedOnDate() {
 		return modifiedOnDate;
 	}
@@ -229,6 +228,7 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 		this.modifiedOnDate = modifiedOnDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	private String modifiedOn;
 	public String getModifiedOn() {
@@ -244,5 +244,4 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	public void setModifiedBY(String modifiedBY) {
 		this.modifiedBY = modifiedBY;
 	}
-
 }
