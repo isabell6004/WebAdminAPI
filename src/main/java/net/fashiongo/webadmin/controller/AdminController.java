@@ -375,9 +375,9 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "setsecurityusersactive", method=RequestMethod.POST)
-	public JsonResponse<String> setSecurityUserActive(@RequestBody GetSecurityUserParameter parameters) {
+	public JsonResponse<String> SetSecurityUserActive(@RequestBody GetSecurityUserParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>(true, null, null);
-		ResultCode result = securityGroupService.setSecurityUserActive(parameters.getUserID(), parameters.getActive());
+		ResultCode result = securityGroupService.SetSecurityUserActive(parameters.getUserID(), parameters.getActive());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
 		return results;
@@ -422,13 +422,13 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "getusermappingvendorcount", method=RequestMethod.POST)
-	public Integer GetUserMappingVendorCount (@RequestBody GetUserMappingVendorParameter parameters) {
+	public JsonResponse<Integer> GetUserMappingVendorCount (@RequestBody GetUserMappingVendorParameter parameters) {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(false, null, 0, null);
 		Integer result = securityGroupService.GetUserMappingVendorCount(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 		
-		return results.getData();
+		return results;
 	}
 	
 	/**
@@ -477,20 +477,38 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="setdeletesecurityusers", method=RequestMethod.POST)
-	public ResultCode SetDelSecurityUsers(@RequestBody DelSecurityUserParameter parameters) {
+	public JsonResponse<String> SetDelSecurityUsers(@RequestBody DelSecurityUserParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, 0, null);
 		ResultCode result = new ResultCode(false, 0, null);
 		
 		result = securityGroupService.SetDelSecurityUsers(parameters);
+		results.setCode(result.getResultCode());
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getResultMsg());
 		
-		return result;
+		return results;
 	}
 	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 19.
+	 * @author Reo
+	 * @param jsonParameters
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	@RequestMapping(value="setsecurityuser", method=RequestMethod.POST)
-	public ResultCode SetCreateSecurityUsers(@RequestBody SetSecurityUserParameter jsonParameters) throws ParseException, IOException {
+	public JsonResponse<String> SetCreateSecurityUsers(@RequestBody SetSecurityUserParameter jsonParameters) throws ParseException, IOException {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, 0, null);
 		ResultCode result = new ResultCode(false, 0, null);
 		result = securityGroupService.SetCreateSecurityUser(jsonParameters);
+		results.setCode(result.getResultCode());
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getResultMsg());
 		
-		return result;
+		return results;
 	}
 	/**
 	 * Set Security Resource
