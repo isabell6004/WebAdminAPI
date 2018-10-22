@@ -199,7 +199,7 @@ public class SecurityGroupService extends ApiService {
 			if(groupID.equals(0)) {
 				isDuplicated = securityGroupRepository.existsByGroupName(groupName);
 			} else {
-				isDuplicated = securityGroupRepository.existsByGroupIDAndGroupName(groupID, groupName);
+				isDuplicated = securityGroupRepository.existsByGroupIDNotAndGroupName(groupID, groupName);
 			}
 			
 			if(isDuplicated) {
