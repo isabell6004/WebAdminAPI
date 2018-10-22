@@ -133,6 +133,13 @@ public class CommonServiceTest {
 		
 	}
 
+	/**
+	 * 
+	 * testGetSecurityUser
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Test
 	public void testGetSecurityUser() {
 		List<SecurityUser> result = commonService.GetSecurityUser();
