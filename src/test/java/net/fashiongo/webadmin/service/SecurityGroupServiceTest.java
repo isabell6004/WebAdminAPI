@@ -30,7 +30,6 @@ import net.fashiongo.webadmin.model.pojo.response.SetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("dev")
 @SpringBootTest
 public class SecurityGroupServiceTest {
 	@Autowired
