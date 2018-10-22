@@ -205,4 +205,28 @@ public class SitemgmtServiceTest {
 		fail("Not yet implemented");
 
 	}
+	
+	/**
+	 * 
+	 * testGetPaidCampaign
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetPaidCampaign() {
+		GetPaidCampaignResponse result = sitemgmtService.getPaidCampaign();
+		assertNotNull(result);	
+	}
+	
+	/**
+	 * 
+	 * testSetPaidCampaign
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testSetPaidCampaign() {
+	}
 }

@@ -231,6 +231,13 @@ public class AdminServiceTest {
 		//assertTrue(_result.getSuccess());
 	}
 
+	/**
+	 * 
+	 * testGetSecurityLogs
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Test
 	public void testGetSecurityLogs() {
 		GetSecurityLogsParameter parameters = new GetSecurityLogsParameter();
