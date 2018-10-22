@@ -68,7 +68,7 @@ server:
     context-path: /api
   
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.145:19002
+  fgServiceAPI_EndPoint: http://10.10.0.145:29001
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:
