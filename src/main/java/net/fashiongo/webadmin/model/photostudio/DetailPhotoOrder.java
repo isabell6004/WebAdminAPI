@@ -298,6 +298,16 @@ public class DetailPhotoOrder {
 	public void setCancelTypeID(Integer cancelTypeID) {
 		this.cancelTypeID = cancelTypeID;
 	}
+	
+	@Column(name = "CancellationFee")
+	private BigDecimal cancellationFee;
+	public BigDecimal getCancellationFee() {
+		return cancellationFee;
+	}
+
+	public void setCancellationFee(BigDecimal cancellationFee) {
+		this.cancellationFee = cancellationFee;
+	}
 
 	@Column(name = "CancelledByUserName")
 	private String cancelledByUserName;

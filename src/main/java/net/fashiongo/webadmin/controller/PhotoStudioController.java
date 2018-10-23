@@ -322,12 +322,12 @@ public class PhotoStudioController {
 	}
 	
 	@PostMapping(value = "/calendar/save")
-	public JsonResponse<?> saveCalendar(@RequestBody List<PhotoCalendar> photoCalendars) {
+	public JsonResponse<?> saveCalendar(@RequestBody PhotoCalendar photoCalendar) {
 		logger.debug("PhotoStudioController.saveCalendar() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
 
 		try {
-			String resultMsg = photoStudioService.saveCalendar(photoCalendars);
+			String resultMsg = photoStudioService.saveCalendar(photoCalendar);
 			response.setSuccess(StringUtils.isEmpty(resultMsg));
 			response.setMessage(resultMsg);
 		} catch (Exception ex) {

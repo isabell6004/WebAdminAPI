@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.photostudio;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,9 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import net.fashiongo.common.dal.IPersistent;
+
 @Entity
 @Table(name = "Map_Photo_Image")
-public class MapPhotoImage {
+public class MapPhotoImage  implements IPersistent, Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

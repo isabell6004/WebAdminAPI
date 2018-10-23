@@ -48,13 +48,14 @@ public class MapPhotoCalendarModel implements IPersistent, Serializable {
 		this.modelID = modelID;
 	}
 	
-	@Column(name = "AvaiableUnit")
-	private BigDecimal avaiableUnit;
-	public BigDecimal getAvaiableUnit() {
-		return avaiableUnit;
+	@Column(name = "AvailableUnit")
+	private BigDecimal availableUnit;
+	public BigDecimal getAvailableUnit() {
+		return availableUnit;
 	}
 
-	public void setAvaiableUnit(BigDecimal avaiableUnit) {
-		this.avaiableUnit = avaiableUnit;
+	public void setAvailableUnit(BigDecimal availableUnit) {
+		this.availableUnit = availableUnit;
 	}
+	
 }

@@ -159,6 +159,7 @@ public class PhotoStudioService {
 				newPhotoPrice.setPriceTypeName(currentPhotoPrice.getPriceTypeName());
 				newPhotoPrice.setPhotoshootType(currentPhotoPrice.getPhotoshootType());
 				newPhotoPrice.setPhotoShootTypeName(currentPhotoPrice.getPhotoShootTypeName());
+				newPhotoPrices.add(newPhotoPrice);
 			}
 		}
 		
@@ -333,6 +334,7 @@ public class PhotoStudioService {
 				newPhotoUnit.setPriceTypeName(currentPhotoUnit.getPriceTypeName());
 				newPhotoUnit.setPhotoshootType(currentPhotoUnit.getPhotoshootType());
 				newPhotoUnit.setPhotoShootTypeName(currentPhotoUnit.getPhotoShootTypeName());
+				newPhotoUnits.add(newPhotoUnit);
 			}
 		}
 		
@@ -410,9 +412,11 @@ public class PhotoStudioService {
 			photoModel.setCreatedOnDate(date);
 			photoModelRepository.save(photoModel);
 			if(photoImages.size() > 0) {
-				photoImageRepository.save(photoImages);
 				List<MapPhotoImage> mapPhotoImages = new ArrayList<MapPhotoImage>();
 				for (PhotoImage photoImage : photoImages) {
+					photoImage.setCreatedBy(username);
+					photoImage.setCreatedOnDate(date);
+					photoImageRepository.save(photoImage);
 					MapPhotoImage mapPhotoImage = new MapPhotoImage();
 					mapPhotoImage.setMappingType(IMAGE_MAPPING_TYPE_MODEL);
 					mapPhotoImage.setImageID(photoImage.getImageID());
@@ -429,24 +433,44 @@ public class PhotoStudioService {
 			jdbcTemplate.update(sql);
 			
 			if(photoImages.size() > 0) {
+				List<MapPhotoImage> oldMapPhotoImages = mapPhotoImageRepository.findByMappingTypeAndReferenceID(IMAGE_MAPPING_TYPE_MODEL, photoModel.getModelID());
 				List<MapPhotoImage> mapPhotoImages = new ArrayList<MapPhotoImage>();
-				List<PhotoImage> newPhotoImages = new ArrayList<PhotoImage>();
 				for (PhotoImage photoImage : photoImages) {
+					//add new image
 					if(photoImage.getImageID() == null) {
+						photoImage.setCreatedBy(username);
+						photoImage.setCreatedOnDate(date);
+						photoImageRepository.save(photoImage);
 						MapPhotoImage mapPhotoImage = new MapPhotoImage();
 						mapPhotoImage.setMappingType(IMAGE_MAPPING_TYPE_MODEL);
 						mapPhotoImage.setImageID(photoImage.getImageID());
 						mapPhotoImage.setReferenceID(photoModel.getModelID());
 						mapPhotoImage.setListOrder(photoImage.getListOrder());
 						mapPhotoImages.add(mapPhotoImage);
-						newPhotoImages.add(photoImage);
 					}else {
-						sql = photoImage.toUpdateQuery("");
-						jdbcTemplate.update(sql);
+						for(MapPhotoImage oldMapPhotoImage : oldMapPhotoImages) {
+							//do nothing
+							if(photoImage.getImageID().intValue() == oldMapPhotoImage.getImageID().intValue()) {
+								oldMapPhotoImages.remove(oldMapPhotoImage);
+								break;
+							}
+						}
 					}
 				}
-				photoImageRepository.save(newPhotoImages);
-				mapPhotoImageRepository.save(mapPhotoImages);
+				
+				//delete
+				if(oldMapPhotoImages.size() > 0) {
+					for(MapPhotoImage deleteMapPhotoImage : oldMapPhotoImages) {
+						jdbcTemplate.update(deleteMapPhotoImage.toDeleteQuery());
+						PhotoImage photoImage = new PhotoImage();
+						photoImage.setImageID(deleteMapPhotoImage.getImageID());
+						jdbcTemplate.update(photoImage.toDeleteQuery());
+					}
+				}
+				
+				if(mapPhotoImages.size() > 0) {
+					mapPhotoImageRepository.save(mapPhotoImages);
+				}
 			}
 		}
 
@@ -557,31 +581,38 @@ public class PhotoStudioService {
 	}
 	
 	@Transactional
-	public String saveCalendar(List<PhotoCalendar> photoCalendars) throws IllegalArgumentException, IllegalAccessException {
+	public String saveCalendar(PhotoCalendar photoCalendar) throws IllegalArgumentException, IllegalAccessException {
 		
 		String Msg = null;
 		
-		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
-		
-		List<MapPhotoCalendarModel> mapPhotoCalendarModels;
-		
-		for(PhotoCalendar photoCalendar : photoCalendars) {
-			if(photoCalendar.getCalendarID() == null) {
-				return "CalendarID does not exist!";
-			}else {
-				photoCalendar.setModifiedOnDate(now);
-				photoCalendar.setModifiedBY(username);
-				String sql = photoCalendar.toUpdateQuery("");
-				jdbcTemplate.update(sql);
-				mapPhotoCalendarModels = photoCalendar.getMapPhotoCalendarModels();
-				for(MapPhotoCalendarModel mapPhotoCalendarModel : mapPhotoCalendarModels) {
-					if(mapPhotoCalendarModel.getModelScheduleID() == null) {
-						mapPhotoCalendarModelRepository.save(mapPhotoCalendarModels);
-					}else {
-						sql = mapPhotoCalendarModel.toUpdateQuery("");
-						jdbcTemplate.update(sql);
+		if(photoCalendar.getCalendarID() == null) {
+			return "CalendarID does not exist!";
+		}else {
+			
+			List<MapPhotoCalendarModel> mapPhotoCalendarModels = photoCalendar.getMapPhotoCalendarModels();
+			List<MapPhotoCalendarModel> oldmapPhotoCalendarModels = mapPhotoCalendarModelRepository.findByCalendarID(photoCalendar.getCalendarID());
+			
+			for(MapPhotoCalendarModel mapPhotoCalendarModel : mapPhotoCalendarModels) {
+				mapPhotoCalendarModel.setCalendarID(photoCalendar.getCalendarID());
+				if(mapPhotoCalendarModel.getModelScheduleID() == null) {
+					//add
+					mapPhotoCalendarModelRepository.save(mapPhotoCalendarModel);
+				}else {
+					for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
+						//update
+						if(oldMapPhotoCalendarModel.getModelScheduleID().intValue() == mapPhotoCalendarModel.getModelScheduleID().intValue()) {
+							jdbcTemplate.update(mapPhotoCalendarModel.toUpdateQuery(""));
+							oldmapPhotoCalendarModels.remove(oldMapPhotoCalendarModel);
+							break;
+						}
 					}
+				}
+			}
+			
+			//delete
+			if(oldmapPhotoCalendarModels.size() > 0) {
+				for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
+					jdbcTemplate.update(oldMapPhotoCalendarModel.toDeleteQuery());
 				}
 			}
 		}
