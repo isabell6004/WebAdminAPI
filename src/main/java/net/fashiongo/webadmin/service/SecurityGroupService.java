@@ -198,8 +198,10 @@ public class SecurityGroupService extends ApiService {
 		try {
 			if(groupID.equals(0)) {
 				isDuplicated = securityGroupRepository.existsByGroupName(groupName);
+				securityGroup = new SecurityGroup();
 			} else {
 				isDuplicated = securityGroupRepository.existsByGroupIDNotAndGroupName(groupID, groupName);
+				securityGroup = securityGroupRepository.findOneByGroupID(groupID);
 			}
 			
 			if(isDuplicated) {
@@ -210,12 +212,6 @@ public class SecurityGroupService extends ApiService {
 				return result;
 			}
 			
-			if(!groupID.equals(0)) {
-				securityGroup = securityGroupRepository.findOneByGroupID(groupID);
-				securityGroupRepository.delete(securityGroup);
-			}
-			
-			securityGroup = new SecurityGroup();
 			securityGroup.setGroupName(groupName);
 			securityGroup.setDescription(description);
 			securityGroup.setActive(active);
