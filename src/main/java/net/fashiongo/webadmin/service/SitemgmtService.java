@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 //import java.util.Date;
 import java.util.List;
@@ -13,14 +14,18 @@ import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
+import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
 
 /**
  * 
@@ -221,18 +226,42 @@ public class SitemgmtService extends ApiService {
 	 */
 	public GetVendorListResponse getVendorList() {
 		GetVendorListResponse resultSet = new GetVendorListResponse();
+		String spName = "up_GetVendorList";
+		
 		List<Object> params = new ArrayList<Object>();
 		params.add(null);
 		params.add(null);
 		params.add(null);
-		
-		String spName = "up_GetVendorList";
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryCount.class, VendorSummary.class);
-		List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
 		
 		resultSet.setCategoryCountlist((List<CategoryCount>) _result.get(0));
 		resultSet.setVendorSummarylist((List<VendorSummary>) _result.get(1));
+
+		return resultSet;
+	}
+	
+	public GetTodaydealResponse getTodaydeal(GetTodaydealParameter parameters) throws ParseException {
+		GetTodaydealResponse resultSet = new GetTodaydealResponse();
+		String spName = "up_wa_GetAdminTodayDeal";
+		
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPagenum());
+		params.add(parameters.getPagesize());
+		params.add(parameters.getWholesalerid());
+		params.add(parameters.getCheckedCompanyNo());
+		params.add(parameters.getCategoryid());
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getFromdate());
+		params.add(parameters.getTodate());
+		params.add(parameters.getActive());
+		params.add(parameters.getOrderby());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TodayDealDetail.class);
+		
+		resultSet.setTotal(((List<Total>) _result.get(0)).get(0));
+		resultSet.setTodayDealDetail((List<TodayDealDetail>) _result.get(1));
 
 		return resultSet;
 	}

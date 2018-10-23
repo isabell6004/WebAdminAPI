@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
+import java.text.ParseException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
@@ -17,7 +19,9 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
+import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -218,6 +222,15 @@ public class SitemgmtController {
 	public JsonResponse<GetVendorListResponse> getVendorList(@RequestBody GetVendorListParameter parameters) {
 		JsonResponse<GetVendorListResponse> results = new JsonResponse<GetVendorListResponse>(true, null, null);
 		GetVendorListResponse result = sitemgmtService.getVendorList();
+		results.setData(result);
+		
+		return results;
+	}
+	
+	@RequestMapping(value = "gettodaydeal", method = RequestMethod.POST)
+	public JsonResponse<GetTodaydealResponse> getTodaydeal(@RequestBody GetTodaydealParameter parameters) throws ParseException {
+		JsonResponse<GetTodaydealResponse> results = new JsonResponse<GetTodaydealResponse>(true, null, null);
+		GetTodaydealResponse result = sitemgmtService.getTodaydeal(parameters);
 		results.setData(result);
 		
 		return results;
