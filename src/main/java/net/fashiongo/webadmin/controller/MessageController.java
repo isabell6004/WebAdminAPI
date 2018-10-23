@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.service.MessageService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -44,15 +46,17 @@ public class MessageController {
 	
 	/**
 	 * 
-	 * 
+	 * Get Vendor News
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
 	 * @param 
 	 * @return 
 	 */
-	public void GetVendorNews () {
-		
+	@RequestMapping(value="getvendornews", method=RequestMethod.POST)
+	public JsonResponse<GetVendorNewsResponse> GetVendorNews (@RequestBody GetVendorNewsParameter param) {
+		GetVendorNewsResponse result = messageService.GetVendorNews(param);
+		return new JsonResponse<GetVendorNewsResponse>(true, null, 0, result);
 	}
 	
 	/**

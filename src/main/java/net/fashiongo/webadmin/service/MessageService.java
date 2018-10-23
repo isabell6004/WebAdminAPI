@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
+import net.fashiongo.webadmin.model.pojo.VendorNews;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
 
 /**
  * 
@@ -62,8 +65,28 @@ public class MessageService extends ApiService {
 	 * @param 
 	 * @return 
 	 */
-	public void GetVendorNews () {
+	public GetVendorNewsResponse GetVendorNews (GetVendorNewsParameter parameters) {
+		GetVendorNewsResponse result = new GetVendorNewsResponse();
+		String spName = "up_wa_GetVendorNews";
+        List<Object> params = new ArrayList<Object>();
+        
+        params.add(parameters.getPageNum());
+        params.add(parameters.getPageSize());
+        params.add(parameters.getVendor());
+        params.add(parameters.getNewsTitle());
+        params.add(parameters.getActive());
+        params.add(parameters.getPeriod());
+        params.add(parameters.getFromDate());
+        params.add(parameters.getToDate());
+        params.add(parameters.getOrderBy());
+        params.add(parameters.getDropOffNotice());
+        
+        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, VendorNews.class);
+        
+		result.setTotal((List<Total>)_result.get(0));
+		result.setNewsList((List<VendorNews>) _result.get(1));
 		
+		return result;
 	}
 	
 	/**
