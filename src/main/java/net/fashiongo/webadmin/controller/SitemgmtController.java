@@ -241,4 +241,30 @@ public class SitemgmtController {
 		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
 		return new JsonResponse<List<SocialMedia>>(true, null, socialMediaList);
 	}
+	
+	/**
+	 * 
+	 * Set Category
+	 * 
+	 * @since 2018. 10. 23.
+	 * @author Nayeon Kim
+	 * @param SetCategoryParameter
+	 * @return
+	 */
+	public void SetCategory() {
+
+	}
+
+	/**
+	 * 
+	 * Set Category List Order
+	 * 
+	 * @since 2018. 10. 23.
+	 * @author Nayeon Kim
+	 * @param SetCategoryListOrderParameter
+	 * @return
+	 */
+	public void SetCategoryListOrder() {
+
+	}
 }
