@@ -616,12 +616,12 @@ public class SitemgmtShowService extends ApiService {
 			showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
 		}
 		else {
-			if (showScheduleID == 0) {
-				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
-			}
-			else {
+//			if (showScheduleID == 0) {
+//				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
+//			}
+//			else {
 				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID);
-			}
+//			}
 		}
 		return showSchedulePromotionPlanList;
 	}
