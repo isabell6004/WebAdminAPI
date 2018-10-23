@@ -432,8 +432,8 @@ public class PhotoStudioService {
 			String sql = photoModel.toUpdateQuery("");
 			jdbcTemplate.update(sql);
 			
+			List<MapPhotoImage> oldMapPhotoImages = mapPhotoImageRepository.findByMappingTypeAndReferenceID(IMAGE_MAPPING_TYPE_MODEL, photoModel.getModelID());
 			if(photoImages.size() > 0) {
-				List<MapPhotoImage> oldMapPhotoImages = mapPhotoImageRepository.findByMappingTypeAndReferenceID(IMAGE_MAPPING_TYPE_MODEL, photoModel.getModelID());
 				List<MapPhotoImage> mapPhotoImages = new ArrayList<MapPhotoImage>();
 				for (PhotoImage photoImage : photoImages) {
 					//add new image
@@ -458,18 +458,17 @@ public class PhotoStudioService {
 					}
 				}
 				
-				//delete
-				if(oldMapPhotoImages.size() > 0) {
-					for(MapPhotoImage deleteMapPhotoImage : oldMapPhotoImages) {
-						jdbcTemplate.update(deleteMapPhotoImage.toDeleteQuery());
-						PhotoImage photoImage = new PhotoImage();
-						photoImage.setImageID(deleteMapPhotoImage.getImageID());
-						jdbcTemplate.update(photoImage.toDeleteQuery());
-					}
-				}
-				
 				if(mapPhotoImages.size() > 0) {
 					mapPhotoImageRepository.save(mapPhotoImages);
+				}
+			}
+			//delete
+			if(oldMapPhotoImages.size() > 0) {
+				for(MapPhotoImage deleteMapPhotoImage : oldMapPhotoImages) {
+					jdbcTemplate.update(deleteMapPhotoImage.toDeleteQuery());
+					PhotoImage photoImage = new PhotoImage();
+					photoImage.setImageID(deleteMapPhotoImage.getImageID());
+					jdbcTemplate.update(photoImage.toDeleteQuery());
 				}
 			}
 		}
