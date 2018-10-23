@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.controller;
 
+
 import java.text.ParseException;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
@@ -22,7 +24,9 @@ import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.primary.SocialMedia;
 import net.fashiongo.webadmin.service.SitemgmtService;
+import net.fashiongo.webadmin.service.SocialMediaService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
 /*
@@ -36,6 +40,9 @@ public class SitemgmtController {
 
 	@Autowired
 	SitemgmtService sitemgmtService;
+	
+	@Autowired
+	SocialMediaService socialMediaService;
 
 	// ----------------------------------------------------
 	// collection category setting
@@ -227,6 +234,16 @@ public class SitemgmtController {
 		return results;
 	}
 	
+	/**
+	 * 
+	 * Get Todaydeal
+	 * 
+	 * @since 2018. 10. 23.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 * @throws ParseException
+	 */
 	@RequestMapping(value = "gettodaydeal", method = RequestMethod.POST)
 	public JsonResponse<GetTodaydealResponse> getTodaydeal(@RequestBody GetTodaydealParameter parameters) throws ParseException {
 		JsonResponse<GetTodaydealResponse> results = new JsonResponse<GetTodaydealResponse>(true, null, null);
@@ -234,5 +251,17 @@ public class SitemgmtController {
 		results.setData(result);
 		
 		return results;
+	}
+	/**
+	 * Get social media list
+	 * @since Oct 23, 2018.
+	 * @author roy
+	 * @return JsonResponse<List<SocialMedia>>
+	 */
+	@RequestMapping(value = "getsocialmedialist", method = RequestMethod.GET)
+	public JsonResponse<List<SocialMedia>> getSocialMediaList() {
+		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
+		return new JsonResponse<List<SocialMedia>>(true, null, socialMediaList);
+
 	}
 }
