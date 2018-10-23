@@ -335,9 +335,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value="setsecurityaccessip", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> SetSecurityAccessIp (@RequestBody SetSecurityAccessIpParameter parameters) throws Exception {
+	public JsonResponse<String> SetSecurityAccessIp (@RequestBody SetSecurityAccessIpParameter parameters) throws Exception {
 		ResultCode result = adminService.SetSecurityAccessIp(parameters);
-		return new JsonResponse<ResultCode>(result.getSuccess(), result.getResultMsg(), 0, null);
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
 	/**
