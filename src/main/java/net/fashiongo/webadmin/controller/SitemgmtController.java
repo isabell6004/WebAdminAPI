@@ -16,14 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
+import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
 import net.fashiongo.webadmin.service.SitemgmtService;
@@ -292,8 +295,19 @@ public class SitemgmtController {
 	 * @param SetCategoryParameter
 	 * @return
 	 */
-	public void SetCategory() {
+	@RequestMapping(value = "setcategory", method = RequestMethod.POST)
+	public JsonResponse<Integer> setCategory(@RequestBody SetCategoryParameter parameters) {
 
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
+		ResultResponse<Integer> result = sitemgmtService.setCategory(parameters);
+
+		results.setCode(result.getCode());
+		results.setData(result.getData());
+		results.setMessage(result.getMessage());
+		results.setPk(result.getPk());
+		results.setSuccess(result.getSuccess());
+
+		return results;
 	}
 
 	/**
