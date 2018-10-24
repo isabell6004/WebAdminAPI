@@ -285,6 +285,14 @@ public class SitemgmtService extends ApiService {
 		return resultSet;
 	}
 
+	/**
+	 * 
+	 * Get TrendReportCategory
+	 * 
+	 * @since 2018. 10. 24.
+	 * @author Incheol Jung
+	 * @return
+	 */
 	public GetTrendReportCategoryResponse GetTrendReportCategory() {
 		GetTrendReportCategoryResponse result = new GetTrendReportCategoryResponse();
 
