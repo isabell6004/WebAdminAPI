@@ -1,9 +1,9 @@
 package net.fashiongo.webadmin.model.pojo;
 
 public class Total {
-	private Integer RecCnt;
+	private Integer recCnt;
 
 	public Integer getRecCnt() {
-		return RecCnt;
+		return this.recCnt;
 	}
 }
