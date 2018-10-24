@@ -72,7 +72,7 @@ public class MessageController {
 	 * @return 
 	 */
 	@RequestMapping(value="delvendornews", method=RequestMethod.POST)
-	public JsonResponse<Integer> DelVendorNews (DelVendorNewsParameter parameters) {
+	public JsonResponse<Integer> DelVendorNews (@RequestBody DelVendorNewsParameter parameters) {
 		Integer result = messageService.DelVendorNews(parameters);
 		return new JsonResponse<Integer>(true, null, 0, result);
 	}

@@ -7,13 +7,13 @@ import io.swagger.annotations.ApiModelProperty;
 public class DelVendorNewsParameter {
 	@ApiModelProperty(required = false, example="12637")
 	@JsonProperty("arraynewsid")
-	private Integer arrayNewsID;
+	private String arrayNewsID;
 
-	public Integer getArrayNewsID() {
+	public String getArrayNewsID() {
 		return arrayNewsID;
 	}
 
-	public void setArrayNewsID(Integer arrayNewsID) {
+	public void setArrayNewsID(String arrayNewsID) {
 		this.arrayNewsID = arrayNewsID;
 	}
 	
