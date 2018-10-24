@@ -299,4 +299,30 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 
+	
+	/**
+	 * 
+	 * Set Category
+	 * 
+	 * @since 2018. 10. 23.
+	 * @author Nayeon Kim
+	 * @param SetCategoryParameter
+	 * @return
+	 */
+	public void SetCategory() {
+
+	}
+
+	/**
+	 * 
+	 * Set Category List Order
+	 * 
+	 * @since 2018. 10. 23.
+	 * @author Nayeon Kim
+	 * @param SetCategoryParameter
+	 * @return
+	 */
+	public void SetCategoryListOrder() {
+
+	}
 }
