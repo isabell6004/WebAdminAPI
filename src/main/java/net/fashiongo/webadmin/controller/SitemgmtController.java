@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
@@ -240,5 +241,11 @@ public class SitemgmtController {
 	public JsonResponse<List<SocialMedia>> getSocialMediaList() {
 		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
 		return new JsonResponse<List<SocialMedia>>(true, null, socialMediaList);
+	}
+	
+	@RequestMapping(value = "delsocialmedia", method = RequestMethod.POST)
+	public JsonResponse<String> deleteSocialMedia(@RequestBody DelSocialMediaParameter delSocialMediaParameter) {
+		boolean result = socialMediaService.deleteSocialMedias(delSocialMediaParameter.getSocialMediaIds());
+		return new JsonResponse<String>(result, null, "");
 	}
 }
