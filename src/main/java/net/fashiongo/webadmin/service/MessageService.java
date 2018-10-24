@@ -3,15 +3,19 @@ package net.fashiongo.webadmin.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorNews;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 
 /**
  * 
@@ -19,6 +23,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
  */
 @Service
 public class MessageService extends ApiService {
+	@Autowired
+	VendorNewsDetailRepository vendorNewsDetailRepository;
 	
 	/**
 	 * 
@@ -58,12 +64,12 @@ public class MessageService extends ApiService {
 	
 	/**
 	 * 
-	 * 
+	 * GetVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetVendorNewsParameter
+	 * @return GetVendorNewsResponse
 	 */
 	public GetVendorNewsResponse GetVendorNews (GetVendorNewsParameter parameters) {
 		GetVendorNewsResponse result = new GetVendorNewsResponse();
@@ -111,8 +117,9 @@ public class MessageService extends ApiService {
 	 * @param 
 	 * @return 
 	 */
-	public void GetVendorNewsDetail () {
-		
+	public VendorNewsDetail GetVendorNewsDetail (GetVendorNewsDetailParameter parameters) {
+		VendorNewsDetail result = vendorNewsDetailRepository.findOneByNewsID(parameters.getNewsID());
+		return result;
 	}
 	
 	/**
