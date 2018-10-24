@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.security;
+package net.fashiongo.webadmin.config.security.filter;
 
 import java.io.IOException;
 
