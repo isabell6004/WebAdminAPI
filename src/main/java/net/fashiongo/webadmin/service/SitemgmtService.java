@@ -18,14 +18,18 @@ import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
+import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
@@ -293,7 +297,7 @@ public class SitemgmtService extends ApiService {
 	 * @author Incheol Jung
 	 * @return
 	 */
-	public GetTrendReportCategoryResponse GetTrendReportCategory() {
+	public GetTrendReportCategoryResponse getTrendReportCategory() {
 		GetTrendReportCategoryResponse result = new GetTrendReportCategoryResponse();
 
 		List<Category> categories = this.categoryRepository.findByActiveTrue();
@@ -305,6 +309,22 @@ public class SitemgmtService extends ApiService {
 		}
 
 		return result;
+	}
+	
+	public GetTodayDealCalendarResponse getTodayDealCalendar(GetTodayDealCanlendarParameter parameters) {
+		GetTodayDealCalendarResponse resultSet = new GetTodayDealCalendarResponse();
+		String spName = "up_wa_GetAdminTodayDealCalendar";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getFromdate());
+		params.add(parameters.getTodate());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, TodayDealCalendarDetail.class, VendorSummaryDetail.class);
+		
+		resultSet.setCalendarDetails((List<TodayDealCalendarDetail>) _result.get(0));
+		resultSet.setVendors((List<VendorSummaryDetail>) _result.get(1));
+
+		return resultSet;
 	}
 
 	

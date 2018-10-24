@@ -17,10 +17,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
@@ -275,9 +277,27 @@ public class SitemgmtController {
 	 * @return
 	 */
 	@RequestMapping(value = "gettrendcategory", method = RequestMethod.POST)
-	public JsonResponse<GetTrendReportCategoryResponse> GetTrendReportCategory() {
+	public JsonResponse<GetTrendReportCategoryResponse> getTrendReportCategory() {
 		JsonResponse<GetTrendReportCategoryResponse> results = new JsonResponse<GetTrendReportCategoryResponse>(true, null, null);
-		GetTrendReportCategoryResponse result = sitemgmtService.GetTrendReportCategory();
+		GetTrendReportCategoryResponse result = sitemgmtService.getTrendReportCategory();
+		results.setData(result);
+
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Get TodayDealCalendar
+	 * 
+	 * @since 2018. 10. 24.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "gettodaydealcalendar", method = RequestMethod.POST)
+	public JsonResponse<GetTodayDealCalendarResponse> getTodayDealCalendar(@RequestBody GetTodayDealCanlendarParameter parameters) {
+		JsonResponse<GetTodayDealCalendarResponse> results = new JsonResponse<GetTodayDealCalendarResponse>(true, null, null);
+		GetTodayDealCalendarResponse result = sitemgmtService.getTodayDealCalendar(parameters);
 		results.setData(result);
 
 		return results;
