@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
@@ -70,9 +71,10 @@ public class MessageController {
 	 * @param 
 	 * @return 
 	 */
-	//@RequestMapping(value="", method=RequestMethod.POST)
-	public void DelVendorNews () {
-		
+	@RequestMapping(value="delvendornews", method=RequestMethod.POST)
+	public JsonResponse<Integer> DelVendorNews (DelVendorNewsParameter parameters) {
+		Integer result = messageService.DelVendorNews(parameters);
+		return new JsonResponse<Integer>(true, null, 0, result);
 	}
 	
 	/**

@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorNews;
+import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
@@ -104,8 +106,17 @@ public class MessageService extends ApiService {
 	 * @param 
 	 * @return 
 	 */
-	public void DelVendorNews () {
-		
+	@Transactional("primaryTransactionManager")
+	public Integer DelVendorNews (DelVendorNewsParameter parameters) {
+		String spName = "up_wa_DeleteVendorNews";
+        List<Object> params = new ArrayList<Object>();
+        
+        params.add(parameters.getArrayNewsID());
+        
+        List<Object> _result = jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
+        
+        System.out.println(_result);
+		return 1;
 	}
 	
 	/**
