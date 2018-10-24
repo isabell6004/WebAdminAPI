@@ -18,22 +18,16 @@ import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
-<<<<<<< HEAD
-import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
-=======
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
->>>>>>> 40842bad5125bd7de74c31391ca776453c9038e3
+import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
-<<<<<<< HEAD
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
-=======
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
->>>>>>> 40842bad5125bd7de74c31391ca776453c9038e3
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
