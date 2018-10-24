@@ -12,6 +12,7 @@ import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
 import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
 import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
+import net.fashiongo.webadmin.model.photostudio.PhotoCredit;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
@@ -493,6 +494,98 @@ public class PhotoStudioController {
 		} catch (Exception ex) {
 			logger.error("Exception Error: PhotoStudioController.getReports()：", ex);
 			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@PostMapping(value = "/credit/save")
+	public JsonResponse<?> saveCredit(@RequestBody PhotoCredit photoCredit) {
+		logger.debug("PhotoStudioController.saveCredit() called!!!");
+		JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
+
+		try {
+			Integer result = photoStudioService.saveCredit(photoCredit);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.saveCredit():", ex);
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/credit/{wholeSalerCompanyName}")
+	public JsonResponse<?> getCredit(@PathVariable("wholeSalerCompanyName") String wholeSalerCompanyName) {
+		logger.debug("PhotoStudioController.getCredit() called!!!");
+		JsonResponse<PhotoCredit> response = new JsonResponse<>(false, null, null);
+
+		try {
+			PhotoCredit  result = photoStudioService.getCredit(wholeSalerCompanyName);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getCredit()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/credits")
+	public JsonResponse<?> getCredits(@ModelAttribute QueryParam queryParam) {
+
+		logger.debug("PhotoStudioController.getCredits() called!!!");
+		if (queryParam.getPn() == null) {
+			queryParam.setPn(1);
+		}
+		if (queryParam.getPs() == null){
+			queryParam.setPs(20);
+		}
+		
+		try {
+			if (Utility.checkValidPageSize("getCredits", queryParam.getPs())) {
+				logger.debug("getCredits() params: {}", queryParam.toString());
+				PagedResult<PhotoCredit> photoCredits = photoStudioService.getCredits(queryParam);
+				return new JsonResponse(true, "", photoCredits);
+			} else {
+				return new JsonResponse(false, "Credits Page Size invalid.", null);
+			}
+		} catch (Exception e) {
+			logger.error("Error: PhotoStudioController.getCredits():", e);
+			logger.error("QueryParam: {}", queryParam.toString());
+			return new JsonResponse(false, "", null);
+		}
+	}
+	
+	@GetMapping("/credit/history/{wholeSalerID}")
+	public JsonResponse<?> getCreditHistory(@PathVariable("wholeSalerID") Integer wholeSalerID) {
+		logger.debug("PhotoStudioController.getCreditHistory() called!!!");
+		JsonResponse<List<PhotoCredit>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<PhotoCredit> result = photoStudioService.getCreditHistory(wholeSalerID);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getCreditHistory()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@GetMapping(value = "/credit/{photoCreditID}/delete")
+	public JsonResponse<?> deleteCredit(@PathVariable("photoCreditID") Integer photoCreditID) {
+		logger.debug("PhotoStudioController.deleteCredit() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
+		try {
+			boolean bSuccess = photoStudioService.deleteCredit(photoCreditID);
+			response.setSuccess(bSuccess);
+			response.setData("");
+		} catch (Exception ex) {
+			logger.error("Error: PhotoStudioController.deleteCredit():", ex);
 		}
 
 		return response;

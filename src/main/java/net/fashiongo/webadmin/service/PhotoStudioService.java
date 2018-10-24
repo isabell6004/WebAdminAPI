@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +18,8 @@ import net.fashiongo.webadmin.dao.photostudio.MapPhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoCalendarRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoCancellationFeeRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoCategoryRepository;
+import net.fashiongo.webadmin.dao.photostudio.PhotoCreditRepository;
+import net.fashiongo.webadmin.dao.photostudio.PhotoCreditUsageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoDiscountRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoImageRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoModelRepository;
@@ -36,6 +37,7 @@ import net.fashiongo.webadmin.model.photostudio.PhotoActionUser;
 import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
 import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
+import net.fashiongo.webadmin.model.photostudio.PhotoCredit;
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
 import net.fashiongo.webadmin.model.photostudio.PhotoImage;
 import net.fashiongo.webadmin.model.photostudio.PhotoModel;
@@ -91,6 +93,12 @@ public class PhotoStudioService {
 	
 	@Autowired
 	private LogPhotoActionRepository logPhotoActionRepository;
+	
+	@Autowired
+	private PhotoCreditUsageRepository photoCreditUsageRepository;
+	
+	@Autowired
+	private PhotoCreditRepository photoCreditRepository;
 	
 	@Autowired
 	protected PhotoStudioJdbcHelper jdbcHelper;
@@ -813,5 +821,88 @@ public class PhotoStudioService {
 		}
 		
 		return result;
+	}
+	
+	public Integer saveCredit(PhotoCredit photoCredit) {
+		LocalDateTime date = LocalDateTime.now();
+		String username = Utility.getWebAdminUserName();
+
+		photoCredit.setCreatedBy(username);
+		photoCredit.setCreatedOnDate(date);
+		photoCreditRepository.save(photoCredit);
+		
+		return photoCredit.getPhotoCreditID();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public PhotoCredit getCredit(String wholeSalerCompanyName) {
+		List<Object> params = new ArrayList<Object>();
+		params.add(1);
+		params.add(1);
+		params.add(0);
+		params.add(wholeSalerCompanyName);
+		
+		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetCreditList", params, SingleValueResult.class, PhotoCredit.class);
+		
+		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
+		List<PhotoCredit> rs2 = (List<PhotoCredit>)_results.get(1);
+
+		if(rs2.size() > 0) {
+			return rs2.get(0);
+		}
+		
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public PagedResult<PhotoCredit> getCredits(QueryParam queryParam) {
+		PagedResult<PhotoCredit> result = new PagedResult<PhotoCredit>();
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(queryParam.getPn());
+		params.add(queryParam.getPs());
+		
+		String searchType = queryParam.getQt();	
+		String searchKeyword = queryParam.getQ();
+		
+		if(!StringUtils.isEmpty(searchType) && !StringUtils.isEmpty(searchKeyword) ) {
+			params.add(searchType);
+			params.add(searchKeyword);
+		}
+		else {
+			params.add(null);
+			params.add(null);
+		}
+		
+		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetCreditList", params, SingleValueResult.class, PhotoCredit.class);
+		
+		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
+		List<PhotoCredit> rs2 = (List<PhotoCredit>)_results.get(1);
+
+		result.setTotal(rs1.get(0));
+		result.setRecords(rs2);
+		
+		return result;
+	}
+	
+	public List<PhotoCredit> getCreditHistory(Integer wholeSalerID) {
+		List<Object> params = new ArrayList<Object>();
+		params.add(wholeSalerID);
+
+		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetCreditDetail", params, PhotoCredit.class);
+		List<PhotoCredit> photoCredits  = (List<PhotoCredit>) r.get(0);
+		
+		return photoCredits;
+	}
+	
+	public boolean deleteCredit(Integer photoCreditID) {
+		boolean bSuccess = false;
+		PhotoCredit photoCredit = new PhotoCredit();
+		photoCredit.setPhotoCreditID(photoCreditID);
+		String sql = photoCredit.toDeleteQuery();
+		jdbcTemplate.update(sql);
+		bSuccess = true;
+
+		return bSuccess;
 	}
 }
