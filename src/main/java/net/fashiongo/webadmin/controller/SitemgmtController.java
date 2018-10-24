@@ -22,6 +22,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
@@ -40,7 +41,7 @@ public class SitemgmtController {
 
 	@Autowired
 	SitemgmtService sitemgmtService;
-	
+
 	@Autowired
 	SocialMediaService socialMediaService;
 
@@ -48,9 +49,9 @@ public class SitemgmtController {
 	// collection category setting
 
 	/**
-	 * 
+	 *
 	 * get Category List
-	 * 
+	 *
 	 * @since 2018. 9. 28.
 	 * @author Sanghyup Kim
 	 * @param GetCategoryListParameters
@@ -73,9 +74,9 @@ public class SitemgmtController {
 	// ----------------------------------------------------
 
 	/**
-	 * 
+	 *
 	 * Get Paid Campaign
-	 * 
+	 *
 	 * @since 2018. 10. 08.
 	 * @author Nayeon Kim
 	 * @return GetPaidCampaignResponse
@@ -90,136 +91,136 @@ public class SitemgmtController {
 
 		return results;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Set Paid Campaign
-	 * 
+	 *
 	 * @since 2018. 10. 11.
 	 * @author Nayeon Kim
 	 * @param SetPaidCampaignParameter
-	 * @return 
+	 * @return
 	 */
 	@RequestMapping(value = "setpaidcampaign", method = RequestMethod.POST)
 	public JsonResponse<String> setPaidCampaign(@RequestBody SetPaidCampaignParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result = sitemgmtService.setPaidCampaign(parameters);
-		
+
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
-		
+
 		return results;
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void GetPolicyManagement () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void SetAddDelPolicyManagement () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void GetPolicyDetail () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void GetPolicyManagementDetail () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void GetCommunicationReasonAll () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void DeleteCommunicationReason () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void SetCommunicationReasonActive () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void SetCommunicationReason () {
-		
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Get VendorList
-	 * 
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Incheol Jung
 	 * @param parameters
@@ -230,14 +231,14 @@ public class SitemgmtController {
 		JsonResponse<GetVendorListResponse> results = new JsonResponse<GetVendorListResponse>(true, null, null);
 		GetVendorListResponse result = sitemgmtService.getVendorList();
 		results.setData(result);
-		
+
 		return results;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Get Todaydeal
-	 * 
+	 *
 	 * @since 2018. 10. 23.
 	 * @author Incheol Jung
 	 * @param parameters
@@ -249,7 +250,7 @@ public class SitemgmtController {
 		JsonResponse<GetTodaydealResponse> results = new JsonResponse<GetTodaydealResponse>(true, null, null);
 		GetTodaydealResponse result = sitemgmtService.getTodaydeal(parameters);
 		results.setData(result);
-		
+
 		return results;
 	}
 	/**
@@ -263,5 +264,22 @@ public class SitemgmtController {
 		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
 		return new JsonResponse<List<SocialMedia>>(true, null, socialMediaList);
 
+	}
+
+	/**
+	 *
+	 * Get TrendReportCategory
+	 *
+	 * @since 2018. 10. 23.
+	 * @author Incheol Jung
+	 * @return
+	 */
+	@RequestMapping(value = "gettrendcategory", method = RequestMethod.POST)
+	public JsonResponse<GetTrendReportCategoryResponse> GetTrendReportCategory() {
+		JsonResponse<GetTrendReportCategoryResponse> results = new JsonResponse<GetTrendReportCategoryResponse>(true, null, null);
+		GetTrendReportCategoryResponse result = sitemgmtService.GetTrendReportCategory();
+		results.setData(result);
+
+		return results;
 	}
 }

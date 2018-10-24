@@ -4,15 +4,19 @@ import java.text.ParseException;
 import java.util.ArrayList;
 //import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
+import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
+import net.fashiongo.webadmin.model.pojo.CategoryReport;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
@@ -23,12 +27,14 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
+import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
 
 /**
- * 
+ *
  * @author Sanghyup Kim
  */
 @Service
@@ -37,10 +43,13 @@ public class SitemgmtService extends ApiService {
 	@Autowired
 	private EmConfigurationRepository emConfigurationRepository;
 
+	@Autowired
+	private CategoryRepository categoryRepository;
+
 	/**
-	 * 
+	 *
 	 * Get Category List
-	 * 
+	 *
 	 * @since 2018. 9. 28.
 	 * @author Sanghyup Kim
 	 * @param GetCategoryListParameters
@@ -67,9 +76,9 @@ public class SitemgmtService extends ApiService {
 	}
 
 	/**
-	 * 
+	 *
 	 * Get Paid Campaign
-	 * 
+	 *
 	 * @since 2018. 10. 08.
 	 * @author Nayeon Kim
 	 * @return GetPaidCampaignResponse
@@ -81,145 +90,145 @@ public class SitemgmtService extends ApiService {
 
 		return getPaidCampaignResponse;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Set Paid Campaign
-	 * 
+	 *
 	 * @since 2018. 10. 11.
 	 * @author Nayeon Kim
 	 * @param SetPaidCampaignParameter
-	 * @return 
+	 * @return
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setPaidCampaign(SetPaidCampaignParameter parameters) {
 		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
-		
+
 		EmConfiguration emConfiguration;
 		List<EmConfiguration> emConfigurationList = parameters.getObjList();
-		
+
 		for (EmConfiguration emConfiguration2 : emConfigurationList) {
 			emConfiguration = new EmConfiguration();
 			emConfiguration.setConfigID(emConfiguration2.getConfigID());
 			emConfiguration.setConfigType(emConfiguration2.getConfigType());
 			emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
-			
+
 			emConfigurationRepository.save(emConfiguration);
 		}
-		
+
 		//emConfigurationRepository.findOneByConfigID(configID);
 
 		return result;
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void GetPolicyManagement () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void SetAddDelPolicyManagement () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void GetPolicyDetail () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void GetPolicyManagementDetail () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void GetCommunicationReasonAll () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void DeleteCommunicationReason () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void SetCommunicationReasonActive () {
-		
+
 	}
-	
+
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param
+	 * @return
 	 */
 	public void SetCommunicationReason () {
-		
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Get VendorList
-	 * 
+	 *
 	 * @since 2018. 10. 22.
 	 * @author Incheol Jung
 	 * @return
@@ -227,24 +236,34 @@ public class SitemgmtService extends ApiService {
 	public GetVendorListResponse getVendorList() {
 		GetVendorListResponse resultSet = new GetVendorListResponse();
 		String spName = "up_GetVendorList";
-		
+
 		List<Object> params = new ArrayList<Object>();
 		params.add(null);
 		params.add(null);
 		params.add(null);
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryCount.class, VendorSummary.class);
-		
+
 		resultSet.setCategoryCountlist((List<CategoryCount>) _result.get(0));
 		resultSet.setVendorSummarylist((List<VendorSummary>) _result.get(1));
 
 		return resultSet;
 	}
-	
+
+	/**
+	 *
+	 * Description Example
+	 *
+	 * @since 2018. 10. 23.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 * @throws ParseException
+	 */
 	public GetTodaydealResponse getTodaydeal(GetTodaydealParameter parameters) throws ParseException {
 		GetTodaydealResponse resultSet = new GetTodaydealResponse();
 		String spName = "up_wa_GetAdminTodayDeal";
-		
+
 		List<Object> params = new ArrayList<Object>();
 		params.add(parameters.getPagenum());
 		params.add(parameters.getPagesize());
@@ -259,11 +278,25 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getOrderby());
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TodayDealDetail.class);
-		
+
 		resultSet.setTotal(((List<Total>) _result.get(0)).get(0));
 		resultSet.setTodayDealDetail((List<TodayDealDetail>) _result.get(1));
 
 		return resultSet;
 	}
-	
+
+	public GetTrendReportCategoryResponse GetTrendReportCategory() {
+		GetTrendReportCategoryResponse result = new GetTrendReportCategoryResponse();
+
+		List<Category> categories = this.categoryRepository.findByActiveTrue();
+		if(!CollectionUtils.isEmpty(categories)) {
+			result.setCategoryList(
+					categories.stream()
+					.map(c -> new CategoryReport(c.getParentCategoryID(), c.getCategoryID(), c.getCategoryName(), c.getLvl()))
+					.collect(Collectors.toList()));
+		}
+
+		return result;
+	}
+
 }
