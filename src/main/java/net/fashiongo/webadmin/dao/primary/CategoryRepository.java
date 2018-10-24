@@ -8,4 +8,8 @@ import net.fashiongo.webadmin.model.primary.Category;
 
 public interface CategoryRepository extends CrudRepository<Category, Integer> {
 	List<Category> findByActiveTrue();
+	
+	Category findOneByCategoryID(Integer categoryID); 
+	
+	void deleteByCategoryID(Integer categoryID);
 }

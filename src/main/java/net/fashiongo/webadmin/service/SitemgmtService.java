@@ -18,14 +18,22 @@ import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+<<<<<<< HEAD
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
+=======
+import net.fashiongo.webadmin.model.pojo.ResultResponse;
+>>>>>>> 40842bad5125bd7de74c31391ca776453c9038e3
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+<<<<<<< HEAD
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
+=======
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+>>>>>>> 40842bad5125bd7de74c31391ca776453c9038e3
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
@@ -337,8 +345,83 @@ public class SitemgmtService extends ApiService {
 	 * @param SetCategoryParameter
 	 * @return
 	 */
-	public void SetCategory() {
+	@Transactional(value = "primaryTransactionManager")
+	public ResultResponse<Integer> setCategory(SetCategoryParameter parameters) {
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
 
+		Category category = new Category();
+		Category objCategory = parameters.getObjCategory();
+		String setType = parameters.getSettype();
+		Integer categoryID = objCategory.getCategoryID();
+
+		switch (setType) {
+		case "Add":
+			category.setCategoryName(objCategory.getCategoryName());
+			category.setCategoryDescription(objCategory.getCategoryDescription());
+			category.setParentCategoryID(objCategory.getParentCategoryID());
+			category.setParentParentCategoryID(objCategory.getParentCategoryID());
+			category.setLvl(objCategory.getLvl());
+			category.setTitleImage(objCategory.getTitleImage());
+			category.setIsLandingPage(objCategory.getIsLandingPage());
+			category.setIsFeatured(objCategory.getIsFeatured());
+			category.setListOrder(objCategory.getListOrder());
+			category.setActive(objCategory.getActive());
+			categoryRepository.save(category); // Save
+			result.setResultWrapper(true, 1, category.getCategoryID(), MSG_SAVE_SUCCESS, null);
+
+			break;
+
+		case "Upd":
+			category = categoryRepository.findOneByCategoryID(categoryID);
+			category.setCategoryName(objCategory.getCategoryName());
+			category.setCategoryDescription(objCategory.getCategoryDescription());
+			category.setParentCategoryID(objCategory.getParentCategoryID());
+			category.setParentParentCategoryID(objCategory.getParentCategoryID());
+			category.setLvl(objCategory.getLvl());
+			category.setTitleImage(objCategory.getTitleImage());
+			category.setIsLandingPage(objCategory.getIsLandingPage());
+			category.setIsFeatured(objCategory.getIsFeatured());
+			category.setListOrder(objCategory.getListOrder());
+			category.setActive(objCategory.getActive());
+			categoryRepository.save(category); // Update
+			result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
+
+			break;
+
+		case "Act":
+			if (objCategory.getActive()) {
+				category = categoryRepository.findOneByCategoryID(categoryID);
+				category.setActive(objCategory.getActive());
+				categoryRepository.save(category); // Update();
+				result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
+
+			} else {
+				// var sp = _Fg_v3Db.up_wa_SetCategoryInactive(objCategory.CategoryID);
+				// var ds = sp.Execute();
+				String spName = "up_wa_SetCategoryInactive";
+				List<Object> params = new ArrayList<Object>();
+				params.add(categoryID);
+				
+				@SuppressWarnings("unused")
+				List<Object> _result = jdbcHelper.executeSP(spName, params, Integer.class);
+				
+				result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
+			}
+
+			break;
+
+		case "Del":
+			category.setCategoryID(categoryID);
+			categoryRepository.deleteById(categoryID);
+			result.setResultWrapper(true, 1, null, MSG_DELETE_SUCCESS, null);
+
+			break;
+
+		default:
+			break;
+		}
+
+		return result;
 	}
 
 	/**

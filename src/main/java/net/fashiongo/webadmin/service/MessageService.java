@@ -3,12 +3,21 @@ package net.fashiongo.webadmin.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
+import net.fashiongo.webadmin.model.pojo.VendorNews;
+import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 
 /**
  * 
@@ -16,6 +25,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
  */
 @Service
 public class MessageService extends ApiService {
+	@Autowired
+	VendorNewsDetailRepository vendorNewsDetailRepository;
 	
 	/**
 	 * 
@@ -55,15 +66,35 @@ public class MessageService extends ApiService {
 	
 	/**
 	 * 
-	 * 
+	 * GetVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetVendorNewsParameter
+	 * @return GetVendorNewsResponse
 	 */
-	public void GetVendorNews () {
+	public GetVendorNewsResponse GetVendorNews (GetVendorNewsParameter parameters) {
+		GetVendorNewsResponse result = new GetVendorNewsResponse();
+		String spName = "up_wa_GetVendorNews";
+        List<Object> params = new ArrayList<Object>();
+        
+        params.add(parameters.getPageNum());
+        params.add(parameters.getPageSize());
+        params.add(parameters.getVendor());
+        params.add(parameters.getNewsTitle());
+        params.add(parameters.getActive());
+        params.add(parameters.getPeriod());
+        params.add(parameters.getFromDate());
+        params.add(parameters.getToDate());
+        params.add(parameters.getOrderBy());
+        params.add(parameters.getDropOffNotice());
+        
+        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, VendorNews.class);
+        
+		result.setTotal((List<Total>)_result.get(0));
+		result.setNewsList((List<VendorNews>) _result.get(1));
 		
+		return result;
 	}
 	
 	/**
@@ -75,8 +106,17 @@ public class MessageService extends ApiService {
 	 * @param 
 	 * @return 
 	 */
-	public void DelVendorNews () {
-		
+	@Transactional("primaryTransactionManager")
+	public Integer DelVendorNews (DelVendorNewsParameter parameters) {
+		String spName = "up_wa_DeleteVendorNews";
+        List<Object> params = new ArrayList<Object>();
+        
+        params.add(parameters.getArrayNewsID());
+        
+        List<Object> _result = jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
+        
+        System.out.println(_result);
+		return 1;
 	}
 	
 	/**
@@ -88,8 +128,9 @@ public class MessageService extends ApiService {
 	 * @param 
 	 * @return 
 	 */
-	public void GetVendorNewsDetail () {
-		
+	public VendorNewsDetail GetVendorNewsDetail (GetVendorNewsDetailParameter parameters) {
+		VendorNewsDetail result = vendorNewsDetailRepository.findOneByNewsID(parameters.getNewsID());
+		return result;
 	}
 	
 	/**
