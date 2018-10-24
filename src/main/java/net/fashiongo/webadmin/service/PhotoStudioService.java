@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -568,10 +569,11 @@ public class PhotoStudioService {
 		return photoCalendars;
 	}
 	
-	public Map<String, Object> getPhotoCalendarModelsOrders(Integer calendarID) {
+	public Map<String, Object> getPhotoCalendarModelsOrders(Map<String, String> parmMap) {
 		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
-		params.add(calendarID);
+		params.add(parmMap.get("calendarID"));
+		params.add(parmMap.get("modelID"));
 
 		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetCalendarModelsAndOrders", params, CalendarPhotoModel.class, SimplePhotoOrder.class, PhotoModel.class);
 
@@ -591,7 +593,7 @@ public class PhotoStudioService {
 	public String saveCalendar(PhotoCalendar photoCalendar) throws IllegalArgumentException, IllegalAccessException {
 		
 		String Msg = null;
-		
+		BigDecimal maxUnitPerDaySum = BigDecimal.ZERO; 
 		if(photoCalendar.getCalendarID() == null) {
 			return "CalendarID does not exist!";
 		}else {
@@ -601,6 +603,7 @@ public class PhotoStudioService {
 			
 			for(MapPhotoCalendarModel mapPhotoCalendarModel : mapPhotoCalendarModels) {
 				mapPhotoCalendarModel.setCalendarID(photoCalendar.getCalendarID());
+				maxUnitPerDaySum = maxUnitPerDaySum.add(mapPhotoCalendarModel.getAvailableUnit());
 				if(mapPhotoCalendarModel.getModelScheduleID() == null) {
 					//add
 					mapPhotoCalendarModelRepository.save(mapPhotoCalendarModel);
@@ -615,6 +618,10 @@ public class PhotoStudioService {
 					}
 				}
 			}
+			
+			//update MaxUnitPerDay 
+			photoCalendar.setMaxUnitPerDay(maxUnitPerDaySum);
+			jdbcTemplate.update(photoCalendar.toUpdateQuery(""));
 			
 			//delete
 			if(oldmapPhotoCalendarModels.size() > 0) {

@@ -323,4 +323,15 @@ public class PhotoModel implements IPersistent, Serializable {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
+	
+	@Transient
+	@Column(name = "IsBooked")
+	private Boolean isBooked;
+	public Boolean getIsBooked() {
+		return isBooked;
+	}
+
+	public void setIsBooked(Boolean isBooked) {
+		this.isBooked = isBooked;
+	}
 }

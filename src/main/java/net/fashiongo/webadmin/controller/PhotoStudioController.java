@@ -305,13 +305,13 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@GetMapping("/calendar/models-orders/{calendarID}")
-	public JsonResponse<?> getPhotoCalendarModelsOrders(@PathVariable("calendarID") Integer calendarID) {
+	@GetMapping("/calendar/models-orders")
+	public JsonResponse<?> getPhotoCalendarModelsOrders(@RequestParam Map<String, String> parmMap) {
 		logger.debug("PhotoStudioController.getPhotoCalendarModelsOrders() called!!!");
 		JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
 
 		try {
-			Map<String, Object> result = photoStudioService.getPhotoCalendarModelsOrders(calendarID);
+			Map<String, Object> result = photoStudioService.getPhotoCalendarModelsOrders(parmMap);
 			response.setSuccess(true);
 			response.setData(result);
 		} catch (Exception ex) {
