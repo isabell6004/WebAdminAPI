@@ -364,34 +364,59 @@ public class AdminService extends ApiService {
 	public ResultCode SetSecurityMenu(SetSecurityMenuParameter parameters) {
 		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		SecurityMenu ssm = new SecurityMenu();
-		if (parameters.getMenuid()==0)
-		{
-			SecurityMenu sm = securityMenuRepository.findOneByResourceID(parameters.getResourceid());
-			if (sm != null)
-			{
-				result.setSuccess(false);
-				result.setResultCode(0);
-				result.setResultMsg("resource duplicated!");
-				return result;
-			}
-		}
-		else
-		{
-			SecurityMenu sm = securityMenuRepository.findOneByResourceIDAndMenuIDNot(parameters.getResourceid(),parameters.getMenuid());
-			if (sm != null)
-			{
-				result.setSuccess(false);
-				result.setResultCode(0);
-				result.setResultMsg("resource duplicated!");
-				return result;
-			}
-			ssm = securityMenuRepository.findOneByMenuID(parameters.getMenuid());
-		}
 		
-		if(ssm != null) {
+		Integer menuId = parameters.getMenuid();
+		if (menuId == null) {
+			menuId = 0;
+		}
+		Integer resourceId = parameters.getResourceid();
+		if (resourceId != null) {
+			if (resourceId == 0) {
+				resourceId = null;
+			}
+		}
+		Integer parentId = parameters.getParentid();
+		if (parentId != null) {
+			if (parentId == 0) {
+				parentId = null;
+			}
+		}
+
+		if (parentId != null) {
+			if (menuId == 0)
+			{
+				SecurityMenu sm = securityMenuRepository.findOneByResourceID(parameters.getResourceid());
+				if (sm != null)
+				{
+					result.setSuccess(false);
+					result.setResultCode(0);
+					result.setResultMsg("resource duplicated!");
+					return result;
+				}
+			}
+			else
+			{
+				if (resourceId != null) {
+//					SecurityMenu sm = securityMenuRepository.findOneByResourceIDAndMenuIDNot(parameters.getResourceid(),menuId);
+					List<SecurityMenu> sm2 = securityMenuRepository.findByResourceIDAndMenuIDNot(resourceId, menuId);
+//					if (sm != null)
+					if (sm2.size() > 0)
+					{
+						result.setSuccess(false);
+						result.setResultCode(0);
+						result.setResultMsg("resource duplicated!");
+						return result;
+					}
+//					ssm = securityMenuRepository.findOneByMenuID(menuId);
+				}
+			}
+		}
+	
+//		if(ssm != null) {
+			ssm.setMenuID(menuId);
+			ssm.setParentID(parentId);
 			ssm.setName(parameters.getMenuname());
 			ssm.setApplicationID(parameters.getApplicationid());
-			ssm.setParentID(parameters.getParentid());
 			ssm.setResourceID(parameters.getResourceid());
 			ssm.setRoutePath(parameters.getRoutepath());
 			ssm.setMenuIcon(parameters.getMenuicon());
@@ -399,7 +424,7 @@ public class AdminService extends ApiService {
 			ssm.setVisible(parameters.getVisible());
 			ssm.setActive(parameters.getActive());
 			securityMenuRepository.save(ssm);
-		}
+//		}
 		return result;
 	}
 	
