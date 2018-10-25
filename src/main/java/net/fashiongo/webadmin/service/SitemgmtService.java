@@ -315,7 +315,7 @@ public class SitemgmtService extends ApiService {
 					.map(c -> new CategoryReport(c.getParentCategoryID(), c.getCategoryID(), c.getCategoryName(), c.getLvl()))
 					.collect(Collectors.toList()));
 		}
-
+		
 		return result;
 	}
 	
