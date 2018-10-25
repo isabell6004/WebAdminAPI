@@ -65,26 +65,26 @@ public class MessageController {
 	
 	/**
 	 * 
-	 * 
+	 * DelVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param DelVendorNewsParameter
 	 * @return 
 	 */
 	@RequestMapping(value="delvendornews", method=RequestMethod.POST)
 	public JsonResponse<Integer> DelVendorNews (@RequestBody DelVendorNewsParameter parameters) {
 		Integer result = messageService.DelVendorNews(parameters);
-		return new JsonResponse<Integer>(true, null, 0, result);
+		return new JsonResponse<Integer>(true, null, result, null);
 	}
 	
 	/**
 	 * 
-	 * 
+	 * GetVendorNewsDetail
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param GetVendorNewsDetailParameter
 	 * @return 
 	 */
 	@RequestMapping(value="getvendornewsdetail", method=RequestMethod.POST)
@@ -95,11 +95,11 @@ public class MessageController {
 	
 	/**
 	 * 
-	 * 
+	 * SetVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param SetVendorNewsParameter
 	 * @return 
 	 */
 	@RequestMapping(value="setvendornews", method=RequestMethod.POST)
@@ -110,15 +110,16 @@ public class MessageController {
 	
 	/**
 	 * 
-	 * 
+	 * SetVendorNewsInActive
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param DelVendorNewsParameter
 	 * @return 
 	 */
 	@RequestMapping(value="setvendornewsinactive", method=RequestMethod.POST)
-	public void SetVendorNewsInActive () {
-		
+	public JsonResponse<Integer> SetVendorNewsInActive (@RequestBody DelVendorNewsParameter parameters) {
+		Integer result = messageService.SetVendorNewsInActive(parameters);
+		return new JsonResponse<Integer>(true, null, result, null);		
 	}
 }
