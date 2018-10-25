@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
@@ -28,9 +30,9 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
-import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
+import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.SocialMediaService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -49,6 +51,9 @@ public class SitemgmtController {
 
 	@Autowired
 	SocialMediaService socialMediaService;
+	
+    @Autowired
+    private CacheService cacheService;
 
 	// ----------------------------------------------------
 	// collection category setting
@@ -327,6 +332,9 @@ public class SitemgmtController {
 		results.setPk(result.getPk());
 		results.setSuccess(result.getSuccess());
 
+		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
+		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
+		
 		return results;
 	}
 
@@ -339,7 +347,13 @@ public class SitemgmtController {
 	 * @param SetCategoryListOrderParameter
 	 * @return
 	 */
-	public void SetCategoryListOrder() {
-
+	@RequestMapping(value = "setcategorylistOrder", method = RequestMethod.POST)
+	public JsonResponse<List<CategoryListOrder>> setCategoryListOrder(@RequestBody SetCategoryListOrderParameter parameters) {
+		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
+		
+		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
+		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
+		
+		return new JsonResponse<List<CategoryListOrder>>(true, "Updated successfully!", null, result);
 	}
 }

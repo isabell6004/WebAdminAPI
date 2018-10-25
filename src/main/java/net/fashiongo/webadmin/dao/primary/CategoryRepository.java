@@ -12,4 +12,10 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
 	Category findOneByCategoryID(Integer categoryID); 
 	
 	void deleteByCategoryID(Integer categoryID);
+	
+	List<Category> findByParentCategoryIDAndLvlAndCategoryIDNotOrderByListOrderAsc(Integer parentCategoryID, Integer lvl, Integer categoryID);
+	
+	List<Category> findByParentCategoryIDAndLvlAndCategoryIDNot(Integer parentCategoryID, Integer lvl, Integer categoryID);
+	
+	List<Category> findByParentCategoryIDAndLvlOrderByListOrderAsc(Integer parentCategoryID, Integer lvl);
 }

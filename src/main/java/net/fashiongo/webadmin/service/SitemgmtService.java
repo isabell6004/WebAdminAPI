@@ -16,6 +16,7 @@ import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
+import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
@@ -27,6 +28,7 @@ import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
@@ -350,34 +352,14 @@ public class SitemgmtService extends ApiService {
 
 		switch (setType) {
 		case "Add":
-			category.setCategoryName(objCategory.getCategoryName());
-			category.setCategoryDescription(objCategory.getCategoryDescription());
-			category.setParentCategoryID(objCategory.getParentCategoryID());
-			category.setParentParentCategoryID(objCategory.getParentCategoryID());
-			category.setLvl(objCategory.getLvl());
-			category.setTitleImage(objCategory.getTitleImage());
-			category.setIsLandingPage(objCategory.getIsLandingPage());
-			category.setIsFeatured(objCategory.getIsFeatured());
-			category.setListOrder(objCategory.getListOrder());
-			category.setActive(objCategory.getActive());
-			categoryRepository.save(category); // Save
+			this.saveCategory(category, objCategory);
 			result.setResultWrapper(true, 1, category.getCategoryID(), MSG_SAVE_SUCCESS, null);
 
 			break;
 
 		case "Upd":
 			category = categoryRepository.findOneByCategoryID(categoryID);
-			category.setCategoryName(objCategory.getCategoryName());
-			category.setCategoryDescription(objCategory.getCategoryDescription());
-			category.setParentCategoryID(objCategory.getParentCategoryID());
-			category.setParentParentCategoryID(objCategory.getParentCategoryID());
-			category.setLvl(objCategory.getLvl());
-			category.setTitleImage(objCategory.getTitleImage());
-			category.setIsLandingPage(objCategory.getIsLandingPage());
-			category.setIsFeatured(objCategory.getIsFeatured());
-			category.setListOrder(objCategory.getListOrder());
-			category.setActive(objCategory.getActive());
-			categoryRepository.save(category); // Update
+			this.saveCategory(category, objCategory);
 			result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
 
 			break;
@@ -390,8 +372,6 @@ public class SitemgmtService extends ApiService {
 				result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
 
 			} else {
-				// var sp = _Fg_v3Db.up_wa_SetCategoryInactive(objCategory.CategoryID);
-				// var ds = sp.Execute();
 				String spName = "up_wa_SetCategoryInactive";
 				List<Object> params = new ArrayList<Object>();
 				params.add(categoryID);
@@ -417,6 +397,20 @@ public class SitemgmtService extends ApiService {
 
 		return result;
 	}
+	
+	private void saveCategory(Category category, Category objCategory) {
+		category.setCategoryName(objCategory.getCategoryName());
+		category.setCategoryDescription(objCategory.getCategoryDescription());
+		category.setParentCategoryID(objCategory.getParentCategoryID());
+		category.setParentParentCategoryID(objCategory.getParentCategoryID());
+		category.setLvl(objCategory.getLvl());
+		category.setTitleImage(objCategory.getTitleImage());
+		category.setIsLandingPage(objCategory.getIsLandingPage());
+		category.setIsFeatured(objCategory.getIsFeatured());
+		category.setListOrder(objCategory.getListOrder());
+		category.setActive(objCategory.getActive());
+		categoryRepository.save(category); // Save, Update
+	}
 
 	/**
 	 * 
@@ -427,7 +421,52 @@ public class SitemgmtService extends ApiService {
 	 * @param SetCategoryParameter
 	 * @return
 	 */
-	public void SetCategoryListOrder() {
-
+	@Transactional(value = "primaryTransactionManager")
+	public List<CategoryListOrder> setCategoryListOrder(SetCategoryListOrderParameter parameters) {
+		List<CategoryListOrder> result = new ArrayList<CategoryListOrder>();
+		
+		// set parameters
+		final int categoryID = parameters.getCategoryid();
+		final int parentCategoryID = parameters.getParentcategoryid();
+		final int listOrder = parameters.getListorder();
+		final int lvl = parameters.getLvl();
+		int newListOrder = listOrder;
+		
+		final Category category = categoryRepository.findOneByCategoryID(categoryID);
+		
+		if (category != null) {
+			final List<Category> CategoryList = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNotOrderByListOrderAsc(parentCategoryID, lvl, categoryID);
+			
+			for (Category cs : CategoryList) {
+				if (cs.getListOrder() >= listOrder) {
+					newListOrder++;
+					cs.setListOrder(newListOrder);
+					categoryRepository.save(cs);
+				}
+			}
+			
+			category.setParentCategoryID(parentCategoryID);
+			category.setListOrder(listOrder);
+			categoryRepository.save(category);
+			
+			if (lvl == 2) {
+				final List<Category> CategoryList2 = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNot(parentCategoryID, 3, categoryID);
+				
+				for (Category cc : CategoryList2) {
+					cc.setParentParentCategoryID(parentCategoryID);
+					categoryRepository.save(cc);
+				}
+			}
+		}
+		
+		final List<Category> ccc = categoryRepository.findByParentCategoryIDAndLvlOrderByListOrderAsc(parentCategoryID, lvl);
+		
+		if(!CollectionUtils.isEmpty(ccc)) {
+			result = ccc.stream()
+					.map(c -> new CategoryListOrder(c.getCategoryID(), c.getParentCategoryID(), c.getCategoryName(), c.getLvl(), c.getListOrder(), c.getActive()))
+					.collect(Collectors.toList());
+		}
+		
+		return result;
 	}
 }
