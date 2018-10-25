@@ -750,10 +750,9 @@ public class PhotoStudioService {
 		}
 		
 		params.add(photoOrder.getOrderID());
-		params.add(photoOrder.getCancelTypeID());
 		params.add(photoOrder.getCancelNote());
-		params.add(photoOrder.getIsCancelled());
 		params.add(Utility.getWebAdminUserName());
+		params.add(photoOrder.getCancellationFeeRate());
 
 		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_CancelOrder", params);
 

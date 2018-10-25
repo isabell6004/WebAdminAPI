@@ -238,14 +238,14 @@ public class SimplePhotoOrder {
 		this.orderStatusID = orderStatusID;
 	}
 	
-	@Column(name = "IsCancelled")
-	private Integer isCancelled;
-	public Integer getIsCancelled() {
-		return isCancelled;
+	@Column(name = "IsCancelledBy")
+	private Integer isCancelledBy;
+	public Integer getIsCancelledBy() {
+		return isCancelledBy;
 	}
 
-	public void setIsCancelled(Integer isCancelled) {
-		this.isCancelled = isCancelled;
+	public void setIsCancelledBy(Integer isCancelledBy) {
+		this.isCancelledBy = isCancelledBy;
 	}
 
 	@Column(name = "CancelNote")

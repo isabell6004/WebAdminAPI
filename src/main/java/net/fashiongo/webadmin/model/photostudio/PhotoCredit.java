@@ -178,7 +178,6 @@ public class PhotoCredit implements IPersistent, Serializable {
 		this.createdOnDate = createdOnDate;
 	}
 
-	@JsonIgnore
 	@Transient
 	private String createdOn;
 	public String getCreatedOn() {

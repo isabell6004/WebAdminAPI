@@ -178,6 +178,16 @@ public class DetailPhotoOrder {
 	public void setTotalQty(Integer totalQty) {
 		this.totalQty = totalQty;
 	}
+	
+	@Column(name = "SubtotalAmount")
+	private BigDecimal subtotalAmount;
+	public BigDecimal getSubtotalAmount() {
+		return subtotalAmount;
+	}
+
+	public void setSubtotalAmount(BigDecimal subtotalAmount) {
+		this.subtotalAmount = subtotalAmount;
+	}
 
 	@Column(name = "TotalAmount")
 	private BigDecimal totalAmount;
@@ -308,6 +318,16 @@ public class DetailPhotoOrder {
 	public void setCancellationFee(BigDecimal cancellationFee) {
 		this.cancellationFee = cancellationFee;
 	}
+	
+	@Column(name = "CancellationFeeRate")
+	private BigDecimal cancellationFeeRate;
+	public BigDecimal getCancellationFeeRate() {
+		return cancellationFeeRate;
+	}
+
+	public void setCancellationFeeRate(BigDecimal cancellationFeeRate) {
+		this.cancellationFeeRate = cancellationFeeRate;
+	}
 
 	@Column(name = "CancelledByUserName")
 	private String cancelledByUserName;
@@ -319,14 +339,14 @@ public class DetailPhotoOrder {
 		this.cancelledByUserName = cancelledByUserName;
 	}
 
-	@Column(name = "IsCancelled")
-	private Integer isCancelled;
-	public Integer getIsCancelled() {
-		return isCancelled;
+	@Column(name = "IsCancelledBy")
+	private Integer isCancelledBy;
+	public Integer getIsCancelledBy() {
+		return isCancelledBy;
 	}
 
-	public void setIsCancelled(Integer isCancelled) {
-		this.isCancelled = isCancelled;
+	public void setIsCancelledBy(Integer isCancelledBy) {
+		this.isCancelledBy = isCancelledBy;
 	}
 
 	@Column(name = "CancelNote")

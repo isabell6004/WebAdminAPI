@@ -170,7 +170,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.subtotalAmount = subtotalAmount;
 	}
 
-	@Column(name = "TotalAmount")
+	@Column(name = "TotalAmount", insertable=false, updatable=false)
 	private BigDecimal totalAmount;
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
@@ -408,6 +408,16 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.cancellationFee = cancellationFee;
 	}
 
+	@Column(name = "CancellationFeeRate")
+	private BigDecimal cancellationFeeRate;
+	public BigDecimal getCancellationFeeRate() {
+		return cancellationFeeRate;
+	}
+
+	public void setCancellationFeeRate(BigDecimal cancellationFeeRate) {
+		this.cancellationFeeRate = cancellationFeeRate;
+	}
+
 	@Column(name = "CancelledByUserName")
 	private String cancelledByUserName;
 	public String getCancelledByUserName() {
@@ -418,14 +428,14 @@ public class PhotoOrder implements IPersistent, Serializable {
 		this.cancelledByUserName = cancelledByUserName;
 	}
 
-	@Column(name = "IsCancelled")
-	private Integer isCancelled;
-	public Integer getIsCancelled() {
-		return isCancelled;
+	@Column(name = "IsCancelledBy")
+	private Integer isCancelledBy;
+	public Integer getIsCancelledBy() {
+		return isCancelledBy;
 	}
 
-	public void setIsCancelled(Integer isCancelled) {
-		this.isCancelled = isCancelled;
+	public void setIsCancelledBy(Integer isCancelledBy) {
+		this.isCancelledBy = isCancelledBy;
 	}
 
 	@Column(name = "CancelNote")
