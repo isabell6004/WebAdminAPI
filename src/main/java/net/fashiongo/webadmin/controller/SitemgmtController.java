@@ -20,6 +20,7 @@ import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
@@ -313,6 +314,16 @@ public class SitemgmtController {
 
 		return results;
 	}
+	
+	
+//	@RequestMapping(value = "gettodaydealcalendarlist", method = RequestMethod.POST)
+//	public JsonResponse<GetTodayDealCalendarListResponse> getTodayDealCalendarList(@RequestBody GetTodayDealCalendarListParameter parameters) {
+//		JsonResponse<GetTodayDealCalendarListResponse> results = new JsonResponse<GetTodayDealCalendarListResponse>(true, null, null);
+//		GetTodayDealCalendarResponse result = sitemgmtService.getTodayDealCalendarList(parameters);
+//		results.setData(result);
+//		
+//		return results;
+//	}
 	
 	
 	/**
