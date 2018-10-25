@@ -41,8 +41,5 @@ public class CategoryReport implements Serializable{
 	public void setLvl(Integer lvl) {
 		this.lvl = lvl;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 
 }

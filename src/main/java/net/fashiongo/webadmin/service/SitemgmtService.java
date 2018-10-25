@@ -15,13 +15,19 @@ import org.springframework.util.CollectionUtils;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
+import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
 import net.fashiongo.webadmin.model.pojo.CategoryVendor;
 import net.fashiongo.webadmin.model.pojo.CategoryVendorInfo;
+import net.fashiongo.webadmin.model.pojo.ColorListInfo;
+import net.fashiongo.webadmin.model.pojo.FabricInfo;
+import net.fashiongo.webadmin.model.pojo.LengthInfo;
+import net.fashiongo.webadmin.model.pojo.PatternInfo;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
@@ -37,6 +43,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
@@ -315,7 +322,7 @@ public class SitemgmtService extends ApiService {
 					.map(c -> new CategoryReport(c.getParentCategoryID(), c.getCategoryID(), c.getCategoryName(), c.getLvl()))
 					.collect(Collectors.toList()));
 		}
-
+		
 		return result;
 	}
 	
@@ -497,6 +504,34 @@ public class SitemgmtService extends ApiService {
 		result.setCategoryCountlist((List<CategoryCount>) _result.get(0));
 		result.setCategoryVendorList((List<CategoryVendor>) _result.get(1));
 		result.setCategoryVendorInfoList((List<CategoryVendorInfo>) _result.get(2));
+
+		return result;
+	}
+	
+
+	/**
+	 *
+	 * Get Product Attributes Total
+	 *
+	 * @since 2018. 10. 25.
+	 * @author Nayeon Kim
+	 * @return GetProductAttributesTotalResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetProductAttributesTotalResponse getProductAttributesTotal() {
+		GetProductAttributesTotalResponse result = new GetProductAttributesTotalResponse();
+		String spName = "up_wa_GetItemFilter";
+
+		List<Object> params = new ArrayList<Object>();
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, PatternInfo.class, LengthInfo.class,
+				StyleInfo.class, FabricInfo.class, BodySizeInfo.class, ColorListInfo.class);
+		result.setPatternInfolist((List<PatternInfo>) _result.get(0));
+		result.setLengthInfolist((List<LengthInfo>) _result.get(1));
+		result.setStyleInfolist((List<StyleInfo>) _result.get(2));
+		result.setFabricInfolist((List<FabricInfo>) _result.get(3));
+		result.setBodySizeInfolist((List<BodySizeInfo>) _result.get(4));
+		result.setColorListInfolist((List<ColorListInfo>) _result.get(5));
 
 		return result;
 	}
