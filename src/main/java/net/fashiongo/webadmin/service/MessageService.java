@@ -79,7 +79,8 @@ public class MessageService extends ApiService {
 	 * @param GetVendorNewsParameter
 	 * @return GetVendorNewsResponse
 	 */
-	public GetVendorNewsResponse GetVendorNews (GetVendorNewsParameter parameters) {
+	@SuppressWarnings("unchecked")
+	public GetVendorNewsResponse getVendorNews (GetVendorNewsParameter parameters) {
 		GetVendorNewsResponse result = new GetVendorNewsResponse();
 		String spName = "up_wa_GetVendorNews";
         List<Object> params = new ArrayList<Object>();
@@ -113,7 +114,7 @@ public class MessageService extends ApiService {
 	 * @return Integer
 	 */
 	@Transactional("primaryTransactionManager")
-	public Integer DelVendorNews (DelVendorNewsParameter parameters) {
+	public Integer delVendorNews (DelVendorNewsParameter parameters) {
 		String spName = "up_wa_DeleteVendorNews";
         List<Object> params = new ArrayList<Object>();
         params.add(parameters.getArrayNewsID());
@@ -130,7 +131,7 @@ public class MessageService extends ApiService {
 	 * @param GetVendorNewsDetailParameter
 	 * @return VendorNewsDetail
 	 */
-	public VendorNewsDetail GetVendorNewsDetail (GetVendorNewsDetailParameter parameters) {
+	public VendorNewsDetail getVendorNewsDetail (GetVendorNewsDetailParameter parameters) {
 		VendorNewsDetail result = vendorNewsDetailRepository.findOneByNewsID(parameters.getNewsID());
 		return result;
 	}
@@ -144,7 +145,7 @@ public class MessageService extends ApiService {
 	 * @param news, selectedVendor
 	 * @return Integer
 	 */
-	public Integer SetVendorNews(VendorNewsDetail news, String selectedVendor) {
+	public Integer setVendorNews(VendorNewsDetail news, String selectedVendor) {
 		Integer result = 0;
 		String[] widList = selectedVendor.split(",", -1);
 		if(widList.length > 0) {
@@ -190,7 +191,7 @@ public class MessageService extends ApiService {
 	 * @param DelVendorNewsParameter
 	 * @return Integer
 	 */
-	public Integer SetVendorNewsInActive (DelVendorNewsParameter parameters) {
+	public Integer setVendorNewsInActive (DelVendorNewsParameter parameters) {
 		String spName = "up_wa_SetVendorNewsInactive";
         List<Object> params = new ArrayList<Object>();
         params.add(parameters.getArrayNewsID());

@@ -34,7 +34,7 @@ public class UserServiceTest {
 		SetModifyPasswordParameter param = new SetModifyPasswordParameter();
 		param.setUserName("admingo");
 		param.setNewPassword("1234");
-		ResultCode result = userService.ResetPassword(param);
+		ResultCode result = userService.resetPassword(param);
 		assertTrue(result.getSuccess());		
 	}
 

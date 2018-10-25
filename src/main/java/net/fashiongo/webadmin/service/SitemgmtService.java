@@ -149,7 +149,7 @@ public class SitemgmtService extends ApiService {
 	 * @param
 	 * @return
 	 */
-	public void GetPolicyManagement () {
+	public void getPolicyManagement () {
 
 	}
 
@@ -162,7 +162,7 @@ public class SitemgmtService extends ApiService {
 	 * @param
 	 * @return
 	 */
-	public void SetAddDelPolicyManagement () {
+	public void setAddDelPolicyManagement () {
 
 	}
 
@@ -175,7 +175,7 @@ public class SitemgmtService extends ApiService {
 	 * @param
 	 * @return
 	 */
-	public void GetPolicyDetail () {
+	public void getPolicyDetail () {
 
 	}
 
@@ -188,7 +188,7 @@ public class SitemgmtService extends ApiService {
 	 * @param
 	 * @return
 	 */
-	public void GetPolicyManagementDetail () {
+	public void getPolicyManagementDetail () {
 
 	}
 
@@ -201,7 +201,7 @@ public class SitemgmtService extends ApiService {
 	 * @param
 	 * @return
 	 */
-	public void GetCommunicationReasonAll () {
+	public void getCommunicationReasonAll () {
 
 	}
 
@@ -214,7 +214,7 @@ public class SitemgmtService extends ApiService {
 	 * @param
 	 * @return
 	 */
-	public void DeleteCommunicationReason () {
+	public void deleteCommunicationReason () {
 
 	}
 
@@ -227,7 +227,7 @@ public class SitemgmtService extends ApiService {
 	 * @param
 	 * @return
 	 */
-	public void SetCommunicationReasonActive () {
+	public void setCommunicationReasonActive () {
 
 	}
 
@@ -240,7 +240,7 @@ public class SitemgmtService extends ApiService {
 	 * @param
 	 * @return
 	 */
-	public void SetCommunicationReason () {
+	public void setCommunicationReason () {
 
 	}
 

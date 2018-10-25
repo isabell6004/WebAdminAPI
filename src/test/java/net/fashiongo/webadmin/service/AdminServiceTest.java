@@ -63,7 +63,7 @@ public class AdminServiceTest {
 		parameters.setResourceParent("All");
 		parameters.setResourceType("All");
 		
-		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
+		GetSecurityResourcesResponse result = adminService.getSecurityResources(parameters);
 		assertNotNull(result.getResource());
 	}
 
@@ -76,7 +76,7 @@ public class AdminServiceTest {
      */
 	@Test
 	public void testGetSecurityAccessIps() {
-		GetSecurityAccessIpsResponse result = adminService.GetSecurityAccessIps();
+		GetSecurityAccessIpsResponse result = adminService.getSecurityAccessIps();
 		assertNotNull(result.getIps());
 	}
 
@@ -96,7 +96,7 @@ public class AdminServiceTest {
 		parameters.setDescription("Seoul");
 		parameters.setOffice(null);
 		
-		ResultCode result = adminService.SetSecurityAccessIp(parameters);
+		ResultCode result = adminService.setSecurityAccessIp(parameters);
 		assertTrue(result.getSuccess());
 	}
 
@@ -114,7 +114,7 @@ public class AdminServiceTest {
 		idList.add(3);
 		idList.add(5);
 		
-		ResultCode result = adminService.SetDeleteSecurityAccessIps(idList);
+		ResultCode result = adminService.setDeleteSecurityAccessIps(idList);
 		assertTrue(result.getSuccess());
 	}
 	
@@ -131,7 +131,7 @@ public class AdminServiceTest {
 		Integer resourceID = 161;
 		boolean active = false;
 		
-		ResultCode result = adminService.SetResource(resourceID, active);
+		ResultCode result = adminService.setResource(resourceID, active);
 		assertTrue(result.getSuccess());
 	}
 
@@ -153,7 +153,7 @@ public class AdminServiceTest {
 		parameters.setResourceType("Page");
 		parameters.setResourceUrl("url");
 		
-		ResultCode result = adminService.SetSecurityResource(parameters);
+		ResultCode result = adminService.setSecurityResource(parameters);
 		assertTrue(result.getSuccess());
 	}
 
@@ -169,7 +169,7 @@ public class AdminServiceTest {
 	public void testSetDeleteSecurityResources() {
 		List<Integer> idList = new ArrayList();
 		
-		ResultCode result = adminService.SetDeleteSecurityResources(idList);
+		ResultCode result = adminService.setDeleteSecurityResources(idList);
 		assertTrue(result.getSuccess());
 	}
 
@@ -308,7 +308,7 @@ public class AdminServiceTest {
         parameters.setVisible(true);
         parameters.setActive(true);
         
-        ResultCode result = adminService.SetSecurityMenu(parameters);
+        ResultCode result = adminService.setSecurityMenu(parameters);
         assertTrue(result.getSuccess());
 	}
     
