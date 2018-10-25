@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,11 @@ public class CacheService {
 	 * @return
 	 */
 	public JsonResponse GetRedisCacheEvict(String cacheName, String key) {
-		String request = "cache/".concat(cacheName).concat("/").concat(key);
+		String request = "cache/".concat(cacheName);
+		if(StringUtils.isNotEmpty(key)) {
+			request.concat("/").concat(key);
+		}
+		
 		JsonResponse result = httpClient.get(request);
 		
 		return result;

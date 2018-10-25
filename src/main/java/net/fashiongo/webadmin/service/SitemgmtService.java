@@ -16,16 +16,28 @@ import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
+import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
+import net.fashiongo.webadmin.model.pojo.CategoryVendor;
+import net.fashiongo.webadmin.model.pojo.CategoryVendorInfo;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
+import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
@@ -293,7 +305,7 @@ public class SitemgmtService extends ApiService {
 	 * @author Incheol Jung
 	 * @return
 	 */
-	public GetTrendReportCategoryResponse GetTrendReportCategory() {
+	public GetTrendReportCategoryResponse getTrendReportCategory() {
 		GetTrendReportCategoryResponse result = new GetTrendReportCategoryResponse();
 
 		List<Category> categories = this.categoryRepository.findByActiveTrue();
@@ -306,6 +318,22 @@ public class SitemgmtService extends ApiService {
 
 		return result;
 	}
+	
+	public GetTodayDealCalendarResponse getTodayDealCalendar(GetTodayDealCanlendarParameter parameters) {
+		GetTodayDealCalendarResponse resultSet = new GetTodayDealCalendarResponse();
+		String spName = "up_wa_GetAdminTodayDealCalendar";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getFromdate());
+		params.add(parameters.getTodate());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, TodayDealCalendarDetail.class, VendorSummaryDetail.class);
+		
+		resultSet.setCalendarDetails((List<TodayDealCalendarDetail>) _result.get(0));
+		resultSet.setVendors((List<VendorSummaryDetail>) _result.get(1));
+
+		return resultSet;
+	}
 
 	
 	/**
@@ -317,8 +345,75 @@ public class SitemgmtService extends ApiService {
 	 * @param SetCategoryParameter
 	 * @return
 	 */
-	public void SetCategory() {
+	@Transactional(value = "primaryTransactionManager")
+	public ResultResponse<Integer> setCategory(SetCategoryParameter parameters) {
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
 
+		Category category = new Category();
+		Category objCategory = parameters.getObjCategory();
+		String setType = parameters.getSettype();
+		Integer categoryID = objCategory.getCategoryID();
+
+		switch (setType) {
+		case "Add":
+			this.saveCategory(category, objCategory);
+			result.setResultWrapper(true, 1, category.getCategoryID(), MSG_SAVE_SUCCESS, null);
+
+			break;
+
+		case "Upd":
+			category = categoryRepository.findOneByCategoryID(categoryID);
+			this.saveCategory(category, objCategory);
+			result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
+
+			break;
+
+		case "Act":
+			if (objCategory.getActive()) {
+				category = categoryRepository.findOneByCategoryID(categoryID);
+				category.setActive(objCategory.getActive());
+				categoryRepository.save(category); // Update();
+				result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
+
+			} else {
+				String spName = "up_wa_SetCategoryInactive";
+				List<Object> params = new ArrayList<Object>();
+				params.add(categoryID);
+				
+				@SuppressWarnings("unused")
+				List<Object> _result = jdbcHelper.executeSP(spName, params, Integer.class);
+				
+				result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
+			}
+
+			break;
+
+		case "Del":
+			category.setCategoryID(categoryID);
+			categoryRepository.deleteById(categoryID);
+			result.setResultWrapper(true, 1, null, MSG_DELETE_SUCCESS, null);
+
+			break;
+
+		default:
+			break;
+		}
+
+		return result;
+	}
+	
+	private void saveCategory(Category category, Category objCategory) {
+		category.setCategoryName(objCategory.getCategoryName());
+		category.setCategoryDescription(objCategory.getCategoryDescription());
+		category.setParentCategoryID(objCategory.getParentCategoryID());
+		category.setParentParentCategoryID(objCategory.getParentCategoryID());
+		category.setLvl(objCategory.getLvl());
+		category.setTitleImage(objCategory.getTitleImage());
+		category.setIsLandingPage(objCategory.getIsLandingPage());
+		category.setIsFeatured(objCategory.getIsFeatured());
+		category.setListOrder(objCategory.getListOrder());
+		category.setActive(objCategory.getActive());
+		categoryRepository.save(category); // Save, Update
 	}
 
 	/**
@@ -330,7 +425,79 @@ public class SitemgmtService extends ApiService {
 	 * @param SetCategoryParameter
 	 * @return
 	 */
-	public void SetCategoryListOrder() {
+	@Transactional(value = "primaryTransactionManager")
+	public List<CategoryListOrder> setCategoryListOrder(SetCategoryListOrderParameter parameters) {
+		List<CategoryListOrder> result = new ArrayList<CategoryListOrder>();
+		
+		// set parameters
+		final int categoryID = parameters.getCategoryid();
+		final int parentCategoryID = parameters.getParentcategoryid();
+		final int listOrder = parameters.getListorder();
+		final int lvl = parameters.getLvl();
+		int newListOrder = listOrder;
+		
+		final Category category = categoryRepository.findOneByCategoryID(categoryID);
+		
+		if (category != null) {
+			final List<Category> CategoryList = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNotOrderByListOrderAsc(parentCategoryID, lvl, categoryID);
+			
+			for (Category cs : CategoryList) {
+				if (cs.getListOrder() >= listOrder) {
+					newListOrder++;
+					cs.setListOrder(newListOrder);
+					categoryRepository.save(cs);
+				}
+			}
+			
+			category.setParentCategoryID(parentCategoryID);
+			category.setListOrder(listOrder);
+			categoryRepository.save(category);
+			
+			if (lvl == 2) {
+				final List<Category> CategoryList2 = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNot(parentCategoryID, 3, categoryID);
+				
+				for (Category cc : CategoryList2) {
+					cc.setParentParentCategoryID(parentCategoryID);
+					categoryRepository.save(cc);
+				}
+			}
+		}
+		
+		final List<Category> ccc = categoryRepository.findByParentCategoryIDAndLvlOrderByListOrderAsc(parentCategoryID, lvl);
+		
+		if(!CollectionUtils.isEmpty(ccc)) {
+			result = ccc.stream()
+					.map(c -> new CategoryListOrder(c.getCategoryID(), c.getParentCategoryID(), c.getCategoryName(), c.getLvl(), c.getListOrder(), c.getActive()))
+					.collect(Collectors.toList());
+		}
+		
+		return result;
+	}
+	
+	/**
+    *
+    * Get Category Vendor List
+    *
+    * @since 2018. 10. 25.
+    * @author Nayeon Kim
+    * @param GetCategoryVendorListParameter
+    * @return GetCategoryVendorListResponse
+    */
+	@SuppressWarnings("unchecked")
+	public GetCategoryVendorListResponse getCategoryVendorList(GetCategoryVendorListParameter parameters) {
+		GetCategoryVendorListResponse result = new GetCategoryVendorListResponse();
+		String spName = "up_wa_GetCategoryVendorList";
+		
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getCategoryid());
+		params.add(parameters.getVendorname());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryCount.class, CategoryVendor.class, CategoryVendorInfo.class);
 
+		result.setCategoryCountlist((List<CategoryCount>) _result.get(0));
+		result.setCategoryVendorList((List<CategoryVendor>) _result.get(1));
+		result.setCategoryVendorInfoList((List<CategoryVendorInfo>) _result.get(2));
+
+		return result;
 	}
 }

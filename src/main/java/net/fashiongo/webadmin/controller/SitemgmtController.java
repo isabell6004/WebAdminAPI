@@ -15,17 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
+import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.SocialMediaService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -44,6 +53,9 @@ public class SitemgmtController {
 
 	@Autowired
 	SocialMediaService socialMediaService;
+	
+    @Autowired
+    private CacheService cacheService;
 
 	// ----------------------------------------------------
 	// collection category setting
@@ -275,9 +287,27 @@ public class SitemgmtController {
 	 * @return
 	 */
 	@RequestMapping(value = "gettrendcategory", method = RequestMethod.POST)
-	public JsonResponse<GetTrendReportCategoryResponse> GetTrendReportCategory() {
+	public JsonResponse<GetTrendReportCategoryResponse> getTrendReportCategory() {
 		JsonResponse<GetTrendReportCategoryResponse> results = new JsonResponse<GetTrendReportCategoryResponse>(true, null, null);
-		GetTrendReportCategoryResponse result = sitemgmtService.GetTrendReportCategory();
+		GetTrendReportCategoryResponse result = sitemgmtService.getTrendReportCategory();
+		results.setData(result);
+
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Get TodayDealCalendar
+	 * 
+	 * @since 2018. 10. 24.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "gettodaydealcalendar", method = RequestMethod.POST)
+	public JsonResponse<GetTodayDealCalendarResponse> getTodayDealCalendar(@RequestBody GetTodayDealCanlendarParameter parameters) {
+		JsonResponse<GetTodayDealCalendarResponse> results = new JsonResponse<GetTodayDealCalendarResponse>(true, null, null);
+		GetTodayDealCalendarResponse result = sitemgmtService.getTodayDealCalendar(parameters);
 		results.setData(result);
 
 		return results;
@@ -292,8 +322,22 @@ public class SitemgmtController {
 	 * @param SetCategoryParameter
 	 * @return
 	 */
-	public void SetCategory() {
+	@RequestMapping(value = "setcategory", method = RequestMethod.POST)
+	public JsonResponse<Integer> setCategory(@RequestBody SetCategoryParameter parameters) {
 
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
+		ResultResponse<Integer> result = sitemgmtService.setCategory(parameters);
+
+		results.setCode(result.getCode());
+		results.setData(result.getData());
+		results.setMessage(result.getMessage());
+		results.setPk(result.getPk());
+		results.setSuccess(result.getSuccess());
+
+		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
+		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
+		
+		return results;
 	}
 
 	/**
@@ -305,7 +349,31 @@ public class SitemgmtController {
 	 * @param SetCategoryListOrderParameter
 	 * @return
 	 */
-	public void SetCategoryListOrder() {
+	@RequestMapping(value = "setcategorylistOrder", method = RequestMethod.POST)
+	public JsonResponse<List<CategoryListOrder>> setCategoryListOrder(@RequestBody SetCategoryListOrderParameter parameters) {
+		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
+		
+		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
+		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
+		
+		return new JsonResponse<List<CategoryListOrder>>(true, "Updated successfully!", null, result);
+	}
+	
+    /**
+    *
+    * Get Category Vendor List
+    *
+    * @since 2018. 10. 25.
+    * @author Nayeon Kim
+    * @param GetCategoryVendorListParameter
+    * @return GetCategoryVendorListResponse
+    */
+	@RequestMapping(value = "getcategoryvendorlist", method = RequestMethod.POST)
+	public JsonResponse<GetCategoryVendorListResponse> getCategoryVendorList(@RequestBody GetCategoryVendorListParameter parameters) {
+		JsonResponse<GetCategoryVendorListResponse> results = new JsonResponse<GetCategoryVendorListResponse>(true, null, null);
+		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
+		results.setData(result);
 
+		return results;
 	}
 }
