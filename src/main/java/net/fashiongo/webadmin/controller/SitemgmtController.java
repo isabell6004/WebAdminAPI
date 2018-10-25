@@ -134,7 +134,8 @@ public class SitemgmtController {
 	 * @param
 	 * @return
 	 */
-	public void GetPolicyManagement () {
+	@RequestMapping(value="getpolicymanagement", method=RequestMethod.POST)
+	public void getPolicyManagement () {
 
 	}
 
@@ -147,7 +148,8 @@ public class SitemgmtController {
 	 * @param
 	 * @return
 	 */
-	public void SetAddDelPolicyManagement () {
+	@RequestMapping(value="setpolicymanagement", method=RequestMethod.POST)
+	public void setAddDelPolicyManagement () {
 
 	}
 
@@ -160,7 +162,8 @@ public class SitemgmtController {
 	 * @param
 	 * @return
 	 */
-	public void GetPolicyDetail () {
+	@RequestMapping(value="getpolicydetail", method=RequestMethod.POST)
+	public void getPolicyDetail () {
 
 	}
 
@@ -173,7 +176,8 @@ public class SitemgmtController {
 	 * @param
 	 * @return
 	 */
-	public void GetPolicyManagementDetail () {
+	@RequestMapping(value="getpolicymanagementdetail", method=RequestMethod.POST)
+	public void getPolicyManagementDetail () {
 
 	}
 
@@ -186,7 +190,8 @@ public class SitemgmtController {
 	 * @param
 	 * @return
 	 */
-	public void GetCommunicationReasonAll () {
+	@RequestMapping(value="getcommunicationreasonall", method=RequestMethod.POST)
+	public void getCommunicationReasonAll () {
 
 	}
 
@@ -199,7 +204,8 @@ public class SitemgmtController {
 	 * @param
 	 * @return
 	 */
-	public void DeleteCommunicationReason () {
+	@RequestMapping(value="deletecommunicationreason", method=RequestMethod.POST)
+	public void deleteCommunicationReason () {
 
 	}
 
@@ -212,7 +218,8 @@ public class SitemgmtController {
 	 * @param
 	 * @return
 	 */
-	public void SetCommunicationReasonActive () {
+	@RequestMapping(value="setcommunicationreasonactive", method=RequestMethod.POST)
+	public void setCommunicationReasonActive () {
 
 	}
 
@@ -225,7 +232,8 @@ public class SitemgmtController {
 	 * @param
 	 * @return
 	 */
-	public void SetCommunicationReason () {
+	@RequestMapping(value="setcommunicationreason", method=RequestMethod.POST)
+	public void setCommunicationReason () {
 
 	}
 

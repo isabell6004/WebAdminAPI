@@ -58,8 +58,8 @@ public class MessageController {
 	 * @return JsonResponse<GetVendorNewsResponse>
 	 */
 	@RequestMapping(value="getvendornews", method=RequestMethod.POST)
-	public JsonResponse<GetVendorNewsResponse> GetVendorNews (@RequestBody GetVendorNewsParameter parameters) {
-		GetVendorNewsResponse result = messageService.GetVendorNews(parameters);
+	public JsonResponse<GetVendorNewsResponse> getVendorNews (@RequestBody GetVendorNewsParameter parameters) {
+		GetVendorNewsResponse result = messageService.getVendorNews(parameters);
 		return new JsonResponse<GetVendorNewsResponse>(true, null, 0, result);
 	}
 	
@@ -70,11 +70,11 @@ public class MessageController {
 	 * @since 2018. 10. 22.
 	 * @author Dahye
 	 * @param DelVendorNewsParameter
-	 * @return 
+	 * @return JsonResponse<Integer>
 	 */
 	@RequestMapping(value="delvendornews", method=RequestMethod.POST)
-	public JsonResponse<Integer> DelVendorNews (@RequestBody DelVendorNewsParameter parameters) {
-		Integer result = messageService.DelVendorNews(parameters);
+	public JsonResponse<Integer> delVendorNews (@RequestBody DelVendorNewsParameter parameters) {
+		Integer result = messageService.delVendorNews(parameters);
 		return new JsonResponse<Integer>(true, null, result, null);
 	}
 	
@@ -85,11 +85,11 @@ public class MessageController {
 	 * @since 2018. 10. 22.
 	 * @author Dahye
 	 * @param GetVendorNewsDetailParameter
-	 * @return 
+	 * @return JsonResponse<VendorNewsDetail>
 	 */
 	@RequestMapping(value="getvendornewsdetail", method=RequestMethod.POST)
-	public JsonResponse<VendorNewsDetail> GetVendorNewsDetail (@RequestBody GetVendorNewsDetailParameter parameters) {
-		VendorNewsDetail result = messageService.GetVendorNewsDetail(parameters);
+	public JsonResponse<VendorNewsDetail> getVendorNewsDetail (@RequestBody GetVendorNewsDetailParameter parameters) {
+		VendorNewsDetail result = messageService.getVendorNewsDetail(parameters);
 		return new JsonResponse<VendorNewsDetail>(true, null, 0, result);
 	}
 	
@@ -103,8 +103,8 @@ public class MessageController {
 	 * @return 
 	 */
 	@RequestMapping(value="setvendornews", method=RequestMethod.POST)
-	public JsonResponse<Integer> SetVendorNews (@RequestBody SetVendorNewsParameter parameters) {
-		Integer result = messageService.SetVendorNews(parameters.getVendorNews(), parameters.getSelectedVendor());
+	public JsonResponse<Integer> setVendorNews (@RequestBody SetVendorNewsParameter parameters) {
+		Integer result = messageService.setVendorNews(parameters.getVendorNews(), parameters.getSelectedVendor());
 		return new JsonResponse<Integer>(true, null, result, null);		
 	}
 	
@@ -115,11 +115,11 @@ public class MessageController {
 	 * @since 2018. 10. 22.
 	 * @author Dahye
 	 * @param DelVendorNewsParameter
-	 * @return 
+	 * @return JsonResponse<Integer>
 	 */
 	@RequestMapping(value="setvendornewsinactive", method=RequestMethod.POST)
-	public JsonResponse<Integer> SetVendorNewsInActive (@RequestBody DelVendorNewsParameter parameters) {
-		Integer result = messageService.SetVendorNewsInActive(parameters);
+	public JsonResponse<Integer> setVendorNewsInActive (@RequestBody DelVendorNewsParameter parameters) {
+		Integer result = messageService.setVendorNewsInActive(parameters);
 		return new JsonResponse<Integer>(true, null, result, null);		
 	}
 }
