@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
@@ -101,9 +102,10 @@ public class MessageController {
 	 * @param 
 	 * @return 
 	 */
-	//@RequestMapping(value="", method=RequestMethod.POST)
-	public void SetVendorNews () {
-		
+	@RequestMapping(value="setvendornews", method=RequestMethod.POST)
+	public JsonResponse<Integer> SetVendorNews (@RequestBody SetVendorNewsParameter parameters) {
+		Integer result = messageService.SetVendorNews(parameters.getVendorNews(), parameters.getSelectedVendor());
+		return new JsonResponse<Integer>(true, null, result, null);		
 	}
 	
 	/**
@@ -115,7 +117,7 @@ public class MessageController {
 	 * @param 
 	 * @return 
 	 */
-	//@RequestMapping(value="", method=RequestMethod.POST)
+	@RequestMapping(value="setvendornewsinactive", method=RequestMethod.POST)
 	public void SetVendorNewsInActive () {
 		
 	}
