@@ -352,14 +352,7 @@ public class AdminService extends ApiService {
 		return result;
 	}
 	
-	/**
-	 * 
-	 * Set Security Resource
-	 * @since 2018. 10. 12.
-	 * @author Dahye Jeong
-	 * @param SetSecurityResourceParameter
-	 * @return ResultCode
-	 */
+
 	@Transactional("primaryTransactionManager")
 	public ResultCode setSecurityMenu(SetSecurityMenuParameter parameters) {
 		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
