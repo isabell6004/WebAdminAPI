@@ -19,13 +19,16 @@ import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
@@ -311,6 +314,7 @@ public class SitemgmtController {
 		return results;
 	}
 	
+	
 	/**
 	 * 
 	 * Set Category
@@ -355,5 +359,39 @@ public class SitemgmtController {
 		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
 		
 		return new JsonResponse<List<CategoryListOrder>>(true, "Updated successfully!", null, result);
+	}
+	
+    /**
+    *
+    * Get Category Vendor List
+    *
+    * @since 2018. 10. 25.
+    * @author Nayeon Kim
+    * @param GetCategoryVendorListParameter
+    * @return GetCategoryVendorListResponse
+    */
+	@RequestMapping(value = "getcategoryvendorlist", method = RequestMethod.POST)
+	public JsonResponse<GetCategoryVendorListResponse> getCategoryVendorList(@RequestBody GetCategoryVendorListParameter parameters) {
+		JsonResponse<GetCategoryVendorListResponse> results = new JsonResponse<GetCategoryVendorListResponse>(true, null, null);
+		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
+		results.setData(result);
+
+		return results;
+	}
+	
+	/**
+	 *
+	 * Get Product Attributes Total
+	 *
+	 * @since 2018. 10. 25.
+	 * @author Nayeon Kim
+	 * @return GetProductAttributesTotalResponse
+	 */
+	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
+	public JsonResponse<GetProductAttributesTotalResponse> getProductAttributesTotal() {
+		JsonResponse<GetProductAttributesTotalResponse> results = new JsonResponse<GetProductAttributesTotalResponse>(true, null, null);
+		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
+		results.setData(result);
+		return results;
 	}
 }

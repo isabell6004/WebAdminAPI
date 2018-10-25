@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
@@ -64,26 +65,26 @@ public class MessageController {
 	
 	/**
 	 * 
-	 * 
+	 * DelVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param DelVendorNewsParameter
 	 * @return 
 	 */
 	@RequestMapping(value="delvendornews", method=RequestMethod.POST)
-	public JsonResponse<Integer> DelVendorNews (DelVendorNewsParameter parameters) {
+	public JsonResponse<Integer> DelVendorNews (@RequestBody DelVendorNewsParameter parameters) {
 		Integer result = messageService.DelVendorNews(parameters);
-		return new JsonResponse<Integer>(true, null, 0, result);
+		return new JsonResponse<Integer>(true, null, result, null);
 	}
 	
 	/**
 	 * 
-	 * 
+	 * GetVendorNewsDetail
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param GetVendorNewsDetailParameter
 	 * @return 
 	 */
 	@RequestMapping(value="getvendornewsdetail", method=RequestMethod.POST)
@@ -94,29 +95,31 @@ public class MessageController {
 	
 	/**
 	 * 
-	 * 
+	 * SetVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param SetVendorNewsParameter
 	 * @return 
 	 */
-	//@RequestMapping(value="", method=RequestMethod.POST)
-	public void SetVendorNews () {
-		
+	@RequestMapping(value="setvendornews", method=RequestMethod.POST)
+	public JsonResponse<Integer> SetVendorNews (@RequestBody SetVendorNewsParameter parameters) {
+		Integer result = messageService.SetVendorNews(parameters.getVendorNews(), parameters.getSelectedVendor());
+		return new JsonResponse<Integer>(true, null, result, null);		
 	}
 	
 	/**
 	 * 
-	 * 
+	 * SetVendorNewsInActive
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param DelVendorNewsParameter
 	 * @return 
 	 */
-	//@RequestMapping(value="", method=RequestMethod.POST)
-	public void SetVendorNewsInActive () {
-		
+	@RequestMapping(value="setvendornewsinactive", method=RequestMethod.POST)
+	public JsonResponse<Integer> SetVendorNewsInActive (@RequestBody DelVendorNewsParameter parameters) {
+		Integer result = messageService.SetVendorNewsInActive(parameters);
+		return new JsonResponse<Integer>(true, null, result, null);		
 	}
 }

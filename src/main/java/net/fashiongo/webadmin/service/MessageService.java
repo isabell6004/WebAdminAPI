@@ -1,8 +1,14 @@
 package net.fashiongo.webadmin.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,34 +105,30 @@ public class MessageService extends ApiService {
 	
 	/**
 	 * 
-	 * 
+	 * DelVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param DelVendorNewsParameter
+	 * @return Integer
 	 */
 	@Transactional("primaryTransactionManager")
 	public Integer DelVendorNews (DelVendorNewsParameter parameters) {
 		String spName = "up_wa_DeleteVendorNews";
         List<Object> params = new ArrayList<Object>();
-        
         params.add(parameters.getArrayNewsID());
-        
-        List<Object> _result = jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
-        
-        System.out.println(_result);
+        jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
 		return 1;
 	}
 	
 	/**
 	 * 
-	 * 
+	 * GetVendorNewsDetail
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetVendorNewsDetailParameter
+	 * @return VendorNewsDetail
 	 */
 	public VendorNewsDetail GetVendorNewsDetail (GetVendorNewsDetailParameter parameters) {
 		VendorNewsDetail result = vendorNewsDetailRepository.findOneByNewsID(parameters.getNewsID());
@@ -135,27 +137,65 @@ public class MessageService extends ApiService {
 	
 	/**
 	 * 
-	 * 
+	 * SetVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param news, selectedVendor
+	 * @return Integer
 	 */
-	public void SetVendorNews () {
-		
+	public Integer SetVendorNews(VendorNewsDetail news, String selectedVendor) {
+		Integer result = 0;
+		String[] widList = selectedVendor.split(",", -1);
+		if(widList.length > 0) {
+			for(String wid : widList) {
+				if(StringUtils.isEmpty(news.getNewsTitle()) || news.getNewsTitle().trim().length() < 1) {
+					return -2;
+				}
+				if(news.getNewsTitle().length() > 50) return -3;
+				VendorNewsDetail vendorNews = vendorNewsDetailRepository.findOneByNewsID(news.getNewsID());
+				if(vendorNews == null) {
+					vendorNews = new VendorNewsDetail();
+					vendorNews.setStartingDate(LocalDateTime.now());
+				}
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+				LocalDateTime fromdate = LocalDateTime.parse(news.getFromDate()+" 00:00:00", formatter);
+				LocalDateTime todate = LocalDateTime.parse(news.getToDate()+" 23:59:59", formatter);
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");	
+				
+				vendorNews.setNewsTitle(news.getNewsTitle());
+				vendorNews.setNewsContent(news.getNewsContent());
+				vendorNews.setWholeSalerID(Integer.parseInt(wid));
+				vendorNews.setNewsType(news.getNewsType());
+				vendorNews.setActive(news.getActive());
+				vendorNews.setSortNo(news.getSortNo());
+				vendorNews.setShowBanner(news.getShowBanner());
+				vendorNews.setFromDate(fromdate);
+				vendorNews.setToDate(todate);
+				vendorNews.setLastUser(news.getLastUser());
+				vendorNews.setLastModifiedDateTime(LocalDateTime.now());
+				vendorNewsDetailRepository.save(vendorNews);
+				result = 1;
+			}
+		}
+		return result;
 	}
 	
 	/**
 	 * 
-	 * 
+	 * SetVendorNewsInActive
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param DelVendorNewsParameter
+	 * @return Integer
 	 */
-	public void SetVendorNewsInActive () {
-		
+	public Integer SetVendorNewsInActive (DelVendorNewsParameter parameters) {
+		String spName = "up_wa_SetVendorNewsInactive";
+        List<Object> params = new ArrayList<Object>();
+        params.add(parameters.getArrayNewsID());
+        jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
+		return 1;
 	}
+
 }

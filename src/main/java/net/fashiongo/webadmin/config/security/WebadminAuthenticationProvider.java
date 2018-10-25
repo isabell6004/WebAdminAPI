@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.config.security;
 
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -181,7 +182,8 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
 					
 					if(!CollectionUtils.isEmpty(list)) {
-						bAccessabletime = (list.get(0).getTimeFrom().before(new Date()) && list.get(0).getTimeTo().after(new Date()));
+						String currentTime = new SimpleDateFormat("HH:mm").format(new Date());
+						bAccessabletime = ((list.get(0).getTimeFromTime().compareTo(currentTime)) <= 0 && (list.get(0).getTimeToTime().compareTo(currentTime)) >= 0);
 					}
 					
 					if(!bAccessabletime) {
