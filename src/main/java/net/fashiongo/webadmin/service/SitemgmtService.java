@@ -18,6 +18,8 @@ import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
+import net.fashiongo.webadmin.model.pojo.CategoryVendor;
+import net.fashiongo.webadmin.model.pojo.CategoryVendorInfo;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
@@ -27,11 +29,13 @@ import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
@@ -467,6 +471,33 @@ public class SitemgmtService extends ApiService {
 					.collect(Collectors.toList());
 		}
 		
+		return result;
+	}
+	
+	/**
+    *
+    * Get Category Vendor List
+    *
+    * @since 2018. 10. 25.
+    * @author Nayeon Kim
+    * @param GetCategoryVendorListParameter
+    * @return GetCategoryVendorListResponse
+    */
+	@SuppressWarnings("unchecked")
+	public GetCategoryVendorListResponse getCategoryVendorList(GetCategoryVendorListParameter parameters) {
+		GetCategoryVendorListResponse result = new GetCategoryVendorListResponse();
+		String spName = "up_wa_GetCategoryVendorList";
+		
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getCategoryid());
+		params.add(parameters.getVendorname());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryCount.class, CategoryVendor.class, CategoryVendorInfo.class);
+
+		result.setCategoryCountlist((List<CategoryCount>) _result.get(0));
+		result.setCategoryVendorList((List<CategoryVendor>) _result.get(1));
+		result.setCategoryVendorInfoList((List<CategoryVendorInfo>) _result.get(2));
+
 		return result;
 	}
 }
