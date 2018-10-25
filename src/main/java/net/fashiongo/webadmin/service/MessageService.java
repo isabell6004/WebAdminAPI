@@ -105,34 +105,30 @@ public class MessageService extends ApiService {
 	
 	/**
 	 * 
-	 * 
+	 * DelVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param DelVendorNewsParameter
+	 * @return Integer
 	 */
 	@Transactional("primaryTransactionManager")
 	public Integer DelVendorNews (DelVendorNewsParameter parameters) {
 		String spName = "up_wa_DeleteVendorNews";
         List<Object> params = new ArrayList<Object>();
-        
         params.add(parameters.getArrayNewsID());
-        
-        List<Object> _result = jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
-        
-        System.out.println(_result);
+        jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
 		return 1;
 	}
 	
 	/**
 	 * 
-	 * 
+	 * GetVendorNewsDetail
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetVendorNewsDetailParameter
+	 * @return VendorNewsDetail
 	 */
 	public VendorNewsDetail GetVendorNewsDetail (GetVendorNewsDetailParameter parameters) {
 		VendorNewsDetail result = vendorNewsDetailRepository.findOneByNewsID(parameters.getNewsID());
@@ -141,12 +137,12 @@ public class MessageService extends ApiService {
 	
 	/**
 	 * 
-	 * 
+	 * SetVendorNews
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param news, selectedVendor
+	 * @return Integer
 	 */
 	public Integer SetVendorNews(VendorNewsDetail news, String selectedVendor) {
 		Integer result = 0;
@@ -187,15 +183,19 @@ public class MessageService extends ApiService {
 	
 	/**
 	 * 
-	 * 
+	 * SetVendorNewsInActive
 	 * 
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param DelVendorNewsParameter
+	 * @return Integer
 	 */
-	public void SetVendorNewsInActive () {
-		
+	public Integer SetVendorNewsInActive (DelVendorNewsParameter parameters) {
+		String spName = "up_wa_SetVendorNewsInactive";
+        List<Object> params = new ArrayList<Object>();
+        params.add(parameters.getArrayNewsID());
+        jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
+		return 1;
 	}
 
 }
