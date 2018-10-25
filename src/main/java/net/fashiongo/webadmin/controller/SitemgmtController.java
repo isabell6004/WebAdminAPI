@@ -28,6 +28,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
@@ -375,6 +376,22 @@ public class SitemgmtController {
 		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
 		results.setData(result);
 
+		return results;
+	}
+	
+	/**
+	 *
+	 * Get Product Attributes Total
+	 *
+	 * @since 2018. 10. 25.
+	 * @author Nayeon Kim
+	 * @return GetProductAttributesTotalResponse
+	 */
+	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
+	public JsonResponse<GetProductAttributesTotalResponse> getProductAttributesTotal() {
+		JsonResponse<GetProductAttributesTotalResponse> results = new JsonResponse<GetProductAttributesTotalResponse>(true, null, null);
+		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
+		results.setData(result);
 		return results;
 	}
 }
