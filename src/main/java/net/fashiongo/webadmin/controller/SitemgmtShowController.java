@@ -21,6 +21,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetShowParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowScheduleListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowInfoParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetShowParticipatingVendorParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowScheduleParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetShowCategoriesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
@@ -28,6 +29,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetShowParticipatingVendorsRes
 import net.fashiongo.webadmin.model.pojo.response.GetShowPromotionPlanResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
+import net.fashiongo.webadmin.model.primary.MapShowSchedulePromotionPlanVendor;
 import net.fashiongo.webadmin.model.primary.ShowSchedule;
 import net.fashiongo.webadmin.model.primary.ShowSchedulePromotionPlan;
 import net.fashiongo.webadmin.service.SitemgmtShowService;
@@ -209,13 +211,14 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/schedule/save", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - set show schedule save")
-	public JsonResponse<SetShowScheduleParameters> setShowSchedule(@RequestBody SetShowScheduleParameters parameters) throws Exception {
+	public JsonResponse<SetShowScheduleParameters> setShowSchedule(@RequestBody SetShowScheduleParameters parameters)
+			throws Exception {
 
 		JsonResponse<SetShowScheduleParameters> results = new JsonResponse<SetShowScheduleParameters>();
 		ResultResponse<Integer> result = siteMgmtShowService.setShowSchedule(parameters);
 
 		parameters.setShowScheduleId(result.getData());
-		
+
 		results.setSuccess(result.getSuccess());
 		results.setMessage(result.getMessage());
 		results.setData(parameters);
@@ -223,7 +226,6 @@ public class SitemgmtShowController {
 		return results;
 	}
 
-	
 	/**
 	 * 
 	 * getshowcategorylist (for comobobox)
@@ -241,10 +243,9 @@ public class SitemgmtShowController {
 		GetShowCategoriesResponse getShowCategoriesResponse = siteMgmtShowService.getShowCategories(parameters);
 
 		results.setData(getShowCategoriesResponse);
-		
+
 		return results;
 	}
-
 
 	/**
 	 * 
@@ -257,15 +258,16 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/promotion-plan", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show promotion-plans")
-	public JsonResponse<List<ShowSchedulePromotionPlan>> getShowPromotionPlans(@RequestBody GetShowParameter parameters) {
+	public JsonResponse<List<ShowSchedulePromotionPlan>> getShowPromotionPlans(
+			@RequestBody GetShowParameter parameters) {
 
 		JsonResponse<List<ShowSchedulePromotionPlan>> results = new JsonResponse<List<ShowSchedulePromotionPlan>>();
-		List<ShowSchedulePromotionPlan> showSchedulePromotionPlanList = siteMgmtShowService.getShowPromotionPlans(parameters);
+		List<ShowSchedulePromotionPlan> showSchedulePromotionPlanList = siteMgmtShowService
+				.getShowPromotionPlans(parameters);
 
 		results.setData(showSchedulePromotionPlanList);
 		return results;
 	}
-	
 
 	/**
 	 * 
@@ -278,17 +280,17 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/participating-vendor", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show participating vendors")
-	public JsonResponse<GetShowParticipatingVendorsResponse> getShowParticipatingVendors(@RequestBody GetShowParameter parameters) {
+	public JsonResponse<GetShowParticipatingVendorsResponse> getShowParticipatingVendors(
+			@RequestBody GetShowParameter parameters) {
 
 		JsonResponse<GetShowParticipatingVendorsResponse> results = new JsonResponse<GetShowParticipatingVendorsResponse>();
-		GetShowParticipatingVendorsResponse getShowCategoriesResponse = siteMgmtShowService.getShowParticipatingVendors(parameters);
+		GetShowParticipatingVendorsResponse getShowCategoriesResponse = siteMgmtShowService
+				.getShowParticipatingVendors(parameters);
 
 		results.setData(getShowCategoriesResponse);
 		return results;
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * 
@@ -318,10 +320,13 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/participating-vendor/save", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - set show participating-vendor save")
-	public JsonResponse<Object> setShowParticipatingVendor() {
+	public JsonResponse<Integer> setShowParticipatingVendor(
+			@RequestBody SetShowParticipatingVendorParameters parameters) {
 
-		JsonResponse<Object> results = new JsonResponse<Object>();
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
+		ResultResponse<Integer> result = siteMgmtShowService.setShowParticipatingVendor(parameters);
 
+		results.setData(result.getData());
 		return results;
 	}
 
@@ -342,7 +347,6 @@ public class SitemgmtShowController {
 
 		return results;
 	}
-
 
 	/**
 	 * 
@@ -402,7 +406,6 @@ public class SitemgmtShowController {
 		return results;
 	}
 
-
 	/**
 	 * 
 	 * 
@@ -414,10 +417,14 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/participating-vendor/{mapId}", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show participating vendor")
-	public JsonResponse<Object> getShowParticipatingVendor(@PathVariable("mapId") Integer mapId) {
+	public JsonResponse<MapShowSchedulePromotionPlanVendor> getShowParticipatingVendor(
+			@PathVariable("mapId") Integer mapId) {
 
-		JsonResponse<Object> results = new JsonResponse<Object>();
+		JsonResponse<MapShowSchedulePromotionPlanVendor> results = new JsonResponse<MapShowSchedulePromotionPlanVendor>();
 
+		ResultResponse<MapShowSchedulePromotionPlanVendor> result = siteMgmtShowService
+				.getShowParticipatingVendor(mapId);
+		results.setData(result.getData());
 		return results;
 	}
 

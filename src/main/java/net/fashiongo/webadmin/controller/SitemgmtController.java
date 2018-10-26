@@ -100,13 +100,8 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getpaidcampaign", method = RequestMethod.POST)
 	public JsonResponse<GetPaidCampaignResponse> getPaidCampaign() {
-		JsonResponse<GetPaidCampaignResponse> results = new JsonResponse<GetPaidCampaignResponse>(false, null, 0, null);
-
 		GetPaidCampaignResponse result = sitemgmtService.getPaidCampaign();
-		results.setData(result);
-		results.setSuccess(true);
-
-		return results;
+		return new JsonResponse<GetPaidCampaignResponse>(true, null, 0, result);
 	}
 
 	/**
@@ -120,14 +115,8 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "setpaidcampaign", method = RequestMethod.POST)
 	public JsonResponse<String> setPaidCampaign(@RequestBody SetPaidCampaignParameter parameters) {
-		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result = sitemgmtService.setPaidCampaign(parameters);
-
-		results.setSuccess(result.getSuccess());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-
-		return results;
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 
 	/**
@@ -356,20 +345,12 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "setcategory", method = RequestMethod.POST)
 	public JsonResponse<Integer> setCategory(@RequestBody SetCategoryParameter parameters) {
-
-		JsonResponse<Integer> results = new JsonResponse<Integer>();
 		ResultResponse<Integer> result = sitemgmtService.setCategory(parameters);
-
-		results.setCode(result.getCode());
-		results.setData(result.getData());
-		results.setMessage(result.getMessage());
-		results.setPk(result.getPk());
-		results.setSuccess(result.getSuccess());
-
+		
 		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
 		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
 		
-		return results;
+		return new JsonResponse<Integer>(result.getSuccess(), result.getMessage(), result.getCode(), result.getPk(),result.getData());
 	}
 
 	/**
@@ -402,11 +383,8 @@ public class SitemgmtController {
     */
 	@RequestMapping(value = "getcategoryvendorlist", method = RequestMethod.POST)
 	public JsonResponse<GetCategoryVendorListResponse> getCategoryVendorList(@RequestBody GetCategoryVendorListParameter parameters) {
-		JsonResponse<GetCategoryVendorListResponse> results = new JsonResponse<GetCategoryVendorListResponse>(true, null, null);
 		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
-		results.setData(result);
-
-		return results;
+		return new JsonResponse<GetCategoryVendorListResponse>(true, null, result);
 	}
 	
 	/**
@@ -419,10 +397,8 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
 	public JsonResponse<GetProductAttributesTotalResponse> getProductAttributesTotal() {
-		JsonResponse<GetProductAttributesTotalResponse> results = new JsonResponse<GetProductAttributesTotalResponse>(true, null, null);
 		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
-		results.setData(result);
-		return results;
+		return new JsonResponse<GetProductAttributesTotalResponse>(true, null, result);
 	}
 	
 	/**
@@ -436,10 +412,7 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getfeatureditemcount", method = RequestMethod.POST)
 	public JsonResponse<GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody GetFeaturedItemCountParameter parameters) {
-		JsonResponse<GetFeaturedItemCountResponse> results = new JsonResponse<GetFeaturedItemCountResponse>(true, null, null);
-		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());
-		results.setData(result);
-		
-		return results;
+		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());	
+		return new JsonResponse<GetFeaturedItemCountResponse>(true, null, result);
 	}
 }
