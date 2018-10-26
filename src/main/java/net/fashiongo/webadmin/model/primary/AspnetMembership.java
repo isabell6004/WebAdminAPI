@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.model.primary;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -14,11 +15,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AspnetMembership {
 	@Id
 	@JsonProperty("ApplicationId")
-	@Column(name = "ApplicationId")
+	@Column(name = "ApplicationId", columnDefinition="uniqueidentifier")
 	private String applicationId; 
 	
 	@JsonProperty("UserId")
-	@Column(name = "UserId")
+	@Column(name = "UserId", columnDefinition="uniqueidentifier")
 	private String userId;
 	
 	@JsonProperty("Password")
@@ -63,19 +64,19 @@ public class AspnetMembership {
 	
 	@JsonProperty("CreateDate")
 	@Column(name = "CreateDate")
-	private Date createDate;
+	private LocalDateTime createDate;
 	
 	@JsonProperty("LastLoginDate")
 	@Column(name = "LastLoginDate")
-	private Date lastLoginDate; 
+	private LocalDateTime lastLoginDate; 
 	
 	@JsonProperty("LastPasswordChangedDate")
 	@Column(name = "LastPasswordChangedDate")
-	private Date lastPasswordChangedDate;
+	private LocalDateTime lastPasswordChangedDate;
 	
 	@JsonProperty("LastLockoutDate")
 	@Column(name = "LastLockoutDate")
-	private Date lastLockoutDate;
+	private LocalDateTime lastLockoutDate;
 	
 	@JsonProperty("FailedPasswordAttemptCount")
 	@Column(name = "FailedPasswordAttemptCount")
@@ -83,7 +84,7 @@ public class AspnetMembership {
 	
 	@JsonProperty("FailedPasswordAttemptWindowStart")
 	@Column(name = "FailedPasswordAttemptWindowStart")
-	private Date failedPasswordAttemptWindowStart; 
+	private LocalDateTime failedPasswordAttemptWindowStart; 
 	
 	@JsonProperty("FailedPasswordAnswerAttemptCount")
 	@Column(name = "FailedPasswordAnswerAttemptCount")
@@ -91,7 +92,7 @@ public class AspnetMembership {
 	
 	@JsonProperty("FailedPasswordAnswerAttemptWindowStart")
 	@Column(name = "FailedPasswordAnswerAttemptWindowStart")
-	private Integer failedPasswordAnswerAttemptWindowStart;
+	private LocalDateTime failedPasswordAnswerAttemptWindowStart;
 	
 	@JsonProperty("Comment")
 	@Column(name = "Comment")
@@ -193,35 +194,35 @@ public class AspnetMembership {
 		this.isLockedOut = isLockedOut;
 	}
 
-	public Date getCreateDate() {
+	public LocalDateTime getCreateDate() {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
+	public void setCreateDate(LocalDateTime createDate) {
 		this.createDate = createDate;
 	}
 
-	public Date getLastLoginDate() {
+	public LocalDateTime getLastLoginDate() {
 		return lastLoginDate;
 	}
 
-	public void setLastLoginDate(Date lastLoginDate) {
+	public void setLastLoginDate(LocalDateTime lastLoginDate) {
 		this.lastLoginDate = lastLoginDate;
 	}
 
-	public Date getLastPasswordChangedDate() {
+	public LocalDateTime getLastPasswordChangedDate() {
 		return lastPasswordChangedDate;
 	}
 
-	public void setLastPasswordChangedDate(Date lastPasswordChangedDate) {
+	public void setLastPasswordChangedDate(LocalDateTime lastPasswordChangedDate) {
 		this.lastPasswordChangedDate = lastPasswordChangedDate;
 	}
 
-	public Date getLastLockoutDate() {
+	public LocalDateTime getLastLockoutDate() {
 		return lastLockoutDate;
 	}
 
-	public void setLastLockoutDate(Date lastLockoutDate) {
+	public void setLastLockoutDate(LocalDateTime lastLockoutDate) {
 		this.lastLockoutDate = lastLockoutDate;
 	}
 
@@ -233,11 +234,11 @@ public class AspnetMembership {
 		this.failedPasswordAttemptCount = failedPasswordAttemptCount;
 	}
 
-	public Date getFailedPasswordAttemptWindowStart() {
+	public LocalDateTime getFailedPasswordAttemptWindowStart() {
 		return failedPasswordAttemptWindowStart;
 	}
 
-	public void setFailedPasswordAttemptWindowStart(Date failedPasswordAttemptWindowStart) {
+	public void setFailedPasswordAttemptWindowStart(LocalDateTime failedPasswordAttemptWindowStart) {
 		this.failedPasswordAttemptWindowStart = failedPasswordAttemptWindowStart;
 	}
 
@@ -249,11 +250,11 @@ public class AspnetMembership {
 		this.failedPasswordAnswerAttemptCount = failedPasswordAnswerAttemptCount;
 	}
 
-	public Integer getFailedPasswordAnswerAttemptWindowStart() {
+	public LocalDateTime getFailedPasswordAnswerAttemptWindowStart() {
 		return failedPasswordAnswerAttemptWindowStart;
 	}
 
-	public void setFailedPasswordAnswerAttemptWindowStart(Integer failedPasswordAnswerAttemptWindowStart) {
+	public void setFailedPasswordAnswerAttemptWindowStart(LocalDateTime failedPasswordAnswerAttemptWindowStart) {
 		this.failedPasswordAnswerAttemptWindowStart = failedPasswordAnswerAttemptWindowStart;
 	}
 
@@ -264,6 +265,7 @@ public class AspnetMembership {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+
 	
 	
 }

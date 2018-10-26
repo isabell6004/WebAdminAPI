@@ -47,7 +47,7 @@ public class CommonController {
 	@RequestMapping(value="getsecuritygroups", method=RequestMethod.POST)
 	public JsonResponse<List<SecurityGroup>> GetSecurityGroups() {
 		JsonResponse<List<SecurityGroup>> results = new JsonResponse<List<SecurityGroup>>();
-		List<SecurityGroup> result  = securityGroupService.GetCommonSecurityGroup();
+		List<SecurityGroup> result  = securityGroupService.getCommonSecurityGroup();
 		results.setData(result);
 		return results;
 	}

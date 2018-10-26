@@ -1,23 +1,39 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SecurityUserCreate {
+public class SecurityUserCreate  implements Serializable {
+	@JsonProperty("ID")
 	private Integer ID;
+	@JsonProperty("userName")
 	private String userName;
+	@JsonProperty("fullName")
 	private String fullName;
+	@JsonProperty("userGUID")
+	private String userGUID;
+	@JsonProperty("password")
 	private String password;
+	@JsonProperty("role")
 	private String role;
+	@JsonProperty("group")
 	private String group;
-	private Date createdOn;
+	@JsonProperty("createdOn")
+	private LocalDateTime createdOn;
+	@JsonProperty("createdBy")
 	private String createdBy;
-	private Date modifiedOn;
+	@JsonProperty("modifiedOn")
+	private LocalDateTime modifiedOn;
+	@JsonProperty("modifiedBy")
 	private String modifiedBy;
+	@JsonProperty("active")
 	private Boolean active;
+	@JsonProperty("exempt")
 	private Boolean exempt;
 	public Integer getID() {
 		return ID;
@@ -55,22 +71,23 @@ public class SecurityUserCreate {
 	public void setGroup(String group) {
 		this.group = group;
 	}
-	public Date getCreatedOn() {
-		return createdOn;
-	}
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
 	public String getCreatedBy() {
 		return createdBy;
 	}
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	public Date getModifiedOn() {
+	
+	public LocalDateTime getCreatedOn() {
+		return createdOn;
+	}
+	public void setCreatedOn(LocalDateTime createdOn) {
+		this.createdOn = createdOn;
+	}
+	public LocalDateTime getModifiedOn() {
 		return modifiedOn;
 	}
-	public void setModifiedOn(Date modifiedOn) {
+	public void setModifiedOn(LocalDateTime modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
 	public String getModifiedBy() {
@@ -90,6 +107,12 @@ public class SecurityUserCreate {
 	}
 	public void setExempt(Boolean exempt) {
 		this.exempt = exempt;
+	}
+	public String getUserGUID() {
+		return userGUID;
+	}
+	public void setUserGUID(String userGUID) {
+		this.userGUID = userGUID;
 	}
 	
 }

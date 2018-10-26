@@ -14,4 +14,5 @@ public interface SecurityGroupRepository extends CrudRepository<SecurityGroup, I
 	SecurityGroup findOneByGroupID(Integer groupID);
 	@Transactional
 	void deleteByGroupIDIn(List<Integer> groupIDs);
+	List<SecurityGroup> findByGroupNameIn(List<String> groupName);
 }
