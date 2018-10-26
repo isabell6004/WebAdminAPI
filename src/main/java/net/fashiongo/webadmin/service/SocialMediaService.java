@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.primary.SocialMediaRepository;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
 
 /**
@@ -49,6 +50,27 @@ public class SocialMediaService extends ApiService {
         jdbcHelper.executeSP(spName, params);
 		
 		return true;
+	}
+	
+	/**
+	 * Save social media
+	 * @since Oct 25, 2018.
+	 * @author roy
+	 * @param SocialMedia
+	 * @return ResultCode
+	 */
+	public ResultCode saveSocialMedia(SocialMedia socialMedia) {
+		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+		
+		try {
+			socialMediaRepository.save(socialMedia);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setResultCode(-1);
+			result.setResultMsg("failure");
+		}
+		
+		return result;
 	}
 	
 }

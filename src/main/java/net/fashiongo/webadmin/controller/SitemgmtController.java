@@ -240,12 +240,25 @@ public class SitemgmtController {
 	@RequestMapping(value = "getsocialmedialist", method = RequestMethod.GET)
 	public JsonResponse<List<SocialMedia>> getSocialMediaList() {
 		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
-		return new JsonResponse<List<SocialMedia>>(true, null, socialMediaList);
+		return new JsonResponse<>(true, null, socialMediaList);
 	}
 	
+	/**
+	 * Delete social media
+	 * @since Oct 25, 2018.
+	 * @author roy
+	 * @param DelSocialMediaParameter
+	 * @return JsonResponse<String>
+	 */
 	@RequestMapping(value = "delsocialmedia", method = RequestMethod.POST)
-	public JsonResponse<String> deleteSocialMedia(@RequestBody DelSocialMediaParameter delSocialMediaParameter) {
+	public JsonResponse<String> deleteSocialMedias(@RequestBody DelSocialMediaParameter delSocialMediaParameter) {
 		boolean result = socialMediaService.deleteSocialMedias(delSocialMediaParameter.getSocialMediaIds());
-		return new JsonResponse<String>(result, null, "");
+		return new JsonResponse<>(result, null, "");
+	}
+	
+	@RequestMapping(value = "setsocialmedialist", method = RequestMethod.POST)
+	public JsonResponse<String> saveSocialMedia(@RequestBody SocialMedia socialMedia) {
+		ResultCode result = socialMediaService.saveSocialMedia(socialMedia);
+		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
 	}
 }
