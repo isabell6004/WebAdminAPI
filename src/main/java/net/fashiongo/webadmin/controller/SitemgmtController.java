@@ -28,6 +28,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
@@ -414,5 +415,25 @@ public class SitemgmtController {
 	public JsonResponse<GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody GetFeaturedItemCountParameter parameters) {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());	
 		return new JsonResponse<GetFeaturedItemCountResponse>(true, null, result);
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * 
+	 * @since 2018. 10. 26.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "settodaydealcalendar", method = RequestMethod.POST)
+	public JsonResponse<String> setTodayDealCalendar(@RequestBody SetTodayDealCalendarParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, null);
+		
+		ResultCode _result = sitemgmtService.setTodayDealCalendar(parameters);
+		results.setCode(_result.getResultCode());
+		results.setMessage(_result.getResultMsg());
+		
+		return results;
 	}
 }

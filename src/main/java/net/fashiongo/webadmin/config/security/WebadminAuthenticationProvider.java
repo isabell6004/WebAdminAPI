@@ -183,7 +183,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					
 					if(!CollectionUtils.isEmpty(list)) {
 						String currentTime = new SimpleDateFormat("HH:mm").format(new Date());
-						bAccessabletime = ((list.get(0).getTimeFromTime().compareTo(currentTime)) <= 0 && (list.get(0).getTimeToTime().compareTo(currentTime)) >= 0);
+						bAccessabletime = ((list.get(0).getTimeFromTime().compareTo(currentTime)<=0) && (list.get(0).getTimeToTime().compareTo(currentTime)>=0));
 					}
 					
 					if(!bAccessabletime) {
