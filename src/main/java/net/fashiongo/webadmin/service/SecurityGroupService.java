@@ -855,6 +855,10 @@ public class SecurityGroupService extends ApiService {
 		    	resultLoginControl.setResultCode(-1);
 		    	resultLoginControl.setResultMsg("No data selected!");
 		    }
+		} else {
+			resultLoginControl.setSuccess(resultMembership.getSuccess());
+	    	resultLoginControl.setResultCode(resultMembership.getResultCode());
+	    	resultLoginControl.setResultMsg(resultMembership.getResultMsg());
 		}
 	    SetCreateSecurityUserResponse createUserRes = new SetCreateSecurityUserResponse();
 	    createUserRes.setResultCode(resultLoginControl);
