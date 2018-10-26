@@ -28,6 +28,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetShowScheduleParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetShowCategoriesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowParticipatingVendorsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetShowPromotionPlanResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
 import net.fashiongo.webadmin.model.primary.MapShowSchedulePromotionPlanVendor;
@@ -664,6 +665,24 @@ public class SitemgmtShowService extends ApiService {
 		resultSet.setShowSchedulePromotionPlanVendorList(showSchedulePromotionPlanVendorList);
 
 		return resultSet;
+	}
+	
+	/**
+	 * 
+	 * Get Show detail
+	 * 
+	 * @since 2018. 10. 25.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public GetShowPromotionPlanResponse getShowPromotionPlan(Integer planID) {
+
+		GetShowPromotionPlanResponse result = new GetShowPromotionPlanResponse();
+
+		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository.findOneByPlanID(planID);
+		result.setShowSchedulePromotionPlan(showSchedulePromotionPlan);
+		return result;
 	}
 	
 }

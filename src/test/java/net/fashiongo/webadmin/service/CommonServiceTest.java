@@ -142,7 +142,7 @@ public class CommonServiceTest {
 	 */
 	@Test
 	public void testGetSecurityUser() {
-		List<SecurityUser> result = commonService.GetSecurityUser();
+		List<SecurityUser> result = commonService.getSecurityUser();
 		assertNotNull(result);	
 	}
 
