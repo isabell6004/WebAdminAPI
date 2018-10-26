@@ -293,6 +293,13 @@ public class SitemgmtController {
 		return new JsonResponse<>(result, null, "");
 	}
 	
+	/**
+	 * Save social media
+	 * @since Oct 26, 2018.
+	 * @author roy
+	 * @param SocialMedia
+	 * @return JsonResponse<String>
+	 */
 	@RequestMapping(value = "setsocialmedialist", method = RequestMethod.POST)
 	public JsonResponse<String> saveSocialMedia(@RequestBody SocialMedia socialMedia) {
 		ResultCode result = socialMediaService.saveSocialMedia(socialMedia);
