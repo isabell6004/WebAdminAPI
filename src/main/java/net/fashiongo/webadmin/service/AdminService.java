@@ -164,12 +164,8 @@ public class AdminService extends ApiService {
 		params.add(parameters.getEndDate());
 			
 		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityLogs.class, SecurityLogsColumn.class);
-		List<SecurityLogs> securityLogs = (List<SecurityLogs>) _result.get(0);
-		List<SecurityLogsColumn> securityLogsColumn = (List<SecurityLogsColumn>) _result.get(1);
-
-		result.setSecurityLogs(securityLogs);
-		result.setSecurityLogsColumn(securityLogsColumn);
-		
+		result.setSecurityLogs((List<SecurityLogs>) _result.get(0));
+		result.setSecurityLogsColumn((List<SecurityLogsColumn>) _result.get(1));
 		return result;
 	}
 	
