@@ -107,11 +107,9 @@ public class SitemgmtService extends ApiService {
 	 * @return GetPaidCampaignResponse
 	 */
 	public GetPaidCampaignResponse getPaidCampaign() {
-		GetPaidCampaignResponse getPaidCampaignResponse = new GetPaidCampaignResponse();
-		List<EmConfiguration> configurationsList = emConfigurationRepository.findAll();
-		getPaidCampaignResponse.setConfigurationsList(configurationsList);
-
-		return getPaidCampaignResponse;
+		GetPaidCampaignResponse result = new GetPaidCampaignResponse();
+		result.setConfigurationsList(emConfigurationRepository.findAll());
+		return result;
 	}
 
 	/**
@@ -125,23 +123,16 @@ public class SitemgmtService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setPaidCampaign(SetPaidCampaignParameter parameters) {
-		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
-
-		EmConfiguration emConfiguration;
 		List<EmConfiguration> emConfigurationList = parameters.getObjList();
-
+		
 		for (EmConfiguration emConfiguration2 : emConfigurationList) {
-			emConfiguration = new EmConfiguration();
+			EmConfiguration emConfiguration = new EmConfiguration();
 			emConfiguration.setConfigID(emConfiguration2.getConfigID());
 			emConfiguration.setConfigType(emConfiguration2.getConfigType());
 			emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
-
 			emConfigurationRepository.save(emConfiguration);
 		}
-
-		//emConfigurationRepository.findOneByConfigID(configID);
-
-		return result;
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 
 	/**
@@ -498,17 +489,15 @@ public class SitemgmtService extends ApiService {
 	public GetCategoryVendorListResponse getCategoryVendorList(GetCategoryVendorListParameter parameters) {
 		GetCategoryVendorListResponse result = new GetCategoryVendorListResponse();
 		String spName = "up_wa_GetCategoryVendorList";
-		
 		List<Object> params = new ArrayList<Object>();
+		
 		params.add(parameters.getCategoryid());
 		params.add(parameters.getVendorname());
 		
 		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryCount.class, CategoryVendor.class, CategoryVendorInfo.class);
-
 		result.setCategoryCountlist((List<CategoryCount>) _result.get(0));
 		result.setCategoryVendorList((List<CategoryVendor>) _result.get(1));
 		result.setCategoryVendorInfoList((List<CategoryVendorInfo>) _result.get(2));
-
 		return result;
 	}
 	
@@ -527,7 +516,6 @@ public class SitemgmtService extends ApiService {
 		String spName = "up_wa_GetItemFilter";
 
 		List<Object> params = new ArrayList<Object>();
-
 		List<Object> _result = jdbcHelper.executeSP(spName, params, PatternInfo.class, LengthInfo.class, StyleInfo.class, FabricInfo.class, BodySizeInfo.class, ColorListInfo.class);
 		result.setPatternInfolist((List<PatternInfo>) _result.get(0));
 		result.setLengthInfolist((List<LengthInfo>) _result.get(1));
@@ -535,7 +523,6 @@ public class SitemgmtService extends ApiService {
 		result.setFabricInfolist((List<FabricInfo>) _result.get(3));
 		result.setBodySizeInfolist((List<BodySizeInfo>) _result.get(4));
 		result.setColorListInfolist((List<ColorListInfo>) _result.get(5));
-
 		return result;
 	}
 
@@ -552,14 +539,13 @@ public class SitemgmtService extends ApiService {
 	public GetFeaturedItemCountResponse getFeaturedItemCount(String sDate) {
 		GetFeaturedItemCountResponse result = new GetFeaturedItemCountResponse();
 		String spName = "up_wa_GetFeaturedItemCount";
-
 		List<Object> params = new ArrayList<Object>();
+		
 		params.add(sDate);
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItem.class);
 		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
 		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
-
 		return result;
 	}
 }
