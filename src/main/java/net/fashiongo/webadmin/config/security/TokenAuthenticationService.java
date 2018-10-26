@@ -28,8 +28,6 @@ import net.fashiongo.webadmin.utility.Utility;
 
 @Component
 public class TokenAuthenticationService {
-	static final long EXPIRATIONTIME = 24 * 60 * 60 * 1000; // default, 24 hours
-	static final Date exp = Date.from(ZonedDateTime.now().plusHours(24).toInstant());
 	static final String SECRET = "fgwav2^^9070";
 	static final String TOKEN_PREFIX = "Bearer";
 	static final String HEADER_STRING = "Authorization";
@@ -38,6 +36,8 @@ public class TokenAuthenticationService {
 			WebAdminUserAuthenticationToken authInfo) throws JsonGenerationException, JsonMappingException, IOException {
 		WebAdminLoginUser webAdminLoginUser = authInfo.getUserInfo();
 		AuthuserResponse result = new AuthuserResponse();
+		
+		Date exp = Date.from(ZonedDateTime.now().plusHours(24).toInstant());
 		
 		Algorithm algorithm = Algorithm.HMAC512(SECRET);
 	    String token = JWT.create()
