@@ -626,7 +626,7 @@ public class SecurityGroupService extends ApiService {
 				su.setModifiedBy(userData.getModifiedBy());
 				su.setModifiedOn(now);
 			}
-			if (userByNameRes != null) {
+			if (userByNameRes.getUserId() != null) {
 				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";
 				
 				List<Object> membershipParams = new ArrayList<Object>();
