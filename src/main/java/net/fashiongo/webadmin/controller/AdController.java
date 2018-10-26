@@ -36,13 +36,8 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getadsetting", method = RequestMethod.POST)
 	public JsonResponse<GetADSettingResponse> getAdsetting() {
-		JsonResponse<GetADSettingResponse> results = new JsonResponse<GetADSettingResponse>(false, null, 0, null);
-		
 		GetADSettingResponse result = adService.getAdsetting();
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
+		return new JsonResponse<GetADSettingResponse>(true, null, 0, result);
 	}
 	
 	/**
@@ -56,14 +51,8 @@ public class AdController {
 	 */
 	@RequestMapping(value = "setaddpage", method = RequestMethod.POST)
 	public JsonResponse<String> setAddPage(@RequestBody SetAddPageParameter parameters) {
-		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result = adService.setAdPage(parameters);
-
-		results.setSuccess(result.getSuccess());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-
-		return results;
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
 	/**
@@ -76,13 +65,8 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getbodysizelist", method = RequestMethod.POST)
 	public JsonResponse<List<CodeBodySize>> getBodySizeCode() {
-		JsonResponse<List<CodeBodySize>> results = new JsonResponse<List<CodeBodySize>>(false, null, 0, null);
-		
 		List<CodeBodySize> result = adService.getBodySizeCode();
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
+		return new JsonResponse<List<CodeBodySize>>(true, null, 0, result);
 	}
 	
 	/**
@@ -96,12 +80,8 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
 	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody GetSpotCheckParameter parameters) {
-		JsonResponse<GetSpotCheckResponse> results = new JsonResponse<GetSpotCheckResponse>(false, null, 0, null);
 		GetSpotCheckResponse result = adService.getSpotCheck(parameters.getSpotID());
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
+		return new JsonResponse<GetSpotCheckResponse>(true, null, 0, result);
 	}
 	
 	/**
@@ -115,14 +95,8 @@ public class AdController {
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
 	public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
-		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result = adService.delSpotSetting(parameters.getSpotID());
-
-		results.setSuccess(result.getSuccess());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-
-		return results;
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
 	/**
@@ -136,13 +110,7 @@ public class AdController {
 	 */
 	@RequestMapping(value = "setaddspotsetting", method = RequestMethod.POST)
 	public JsonResponse<String> setAddSpotSetting(@RequestBody SetAddSpotSettingParameter parameters) {
-		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result = adService.setAddSpotSetting(parameters);
-		
-		results.setSuccess(result.getSuccess());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		
-		return results;
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 }
