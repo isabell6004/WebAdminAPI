@@ -49,15 +49,11 @@ public class AdService extends ApiService {
 	public GetADSettingResponse getAdsetting() {
 		GetADSettingResponse result = new GetADSettingResponse();
 		String spName = "up_wa_GetAdSetting";
+		
 		List<Object> params = new ArrayList<Object>();
-
 		List<Object> _result = jdbcHelper.executeSP(spName, params, AdSettingSubList.class, AdSettingList.class);
-		List<AdSettingSubList> adSettingSubList = (List<AdSettingSubList>) _result.get(0);
-		List<AdSettingList> adSettingList = (List<AdSettingList>) _result.get(1);
-
-		result.setAdSettingSubList(adSettingSubList);
-		result.setAdSettingList(adSettingList);
-
+		result.setAdSettingSubList((List<AdSettingSubList>) _result.get(0));
+		result.setAdSettingList((List<AdSettingList>) _result.get(1));
 		return result;
 	}
 
@@ -72,11 +68,10 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setAdPage(SetAddPageParameter parameters) {
-		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
-
 		AdPage adPage = new AdPage();
 		Integer pageID = parameters.getPageID();
 		String pageName = parameters.getPageName();
+		
 		if (pageID == null) { // new (insert)
 			AdPage adPage2 = adPageRepository.findTopByOrderByPageIDDesc();
 			if (adPage2 != null) {
@@ -91,7 +86,7 @@ public class AdService extends ApiService {
 			// adPage2.setPageUrl(pageUrl);
 			adPageRepository.save(adPage2);
 		}
-		return result;
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 
 	/**
@@ -119,10 +114,10 @@ public class AdService extends ApiService {
 	public GetSpotCheckResponse getSpotCheck(Integer spotID) {
 		GetSpotCheckResponse result = new GetSpotCheckResponse();
 		AdVendor advendor = adVendorRepository.findTopBySpotID(spotID);
+		
 		if(advendor != null) {
 			result.setSpotID(spotID);
 		}
-		
 		return result;
 	}
 
@@ -137,11 +132,8 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode delSpotSetting(Integer spotID) {
-		ResultCode result = new ResultCode(true, 1, MSG_DELETE_SUCCESS);
-
 		adPageSpotRepository.deleteById(spotID);
-
-		return result;
+		return new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 	}
 	
 	/**
@@ -155,61 +147,43 @@ public class AdService extends ApiService {
 	 */
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setAddSpotSetting(SetAddSpotSettingParameter parameters) {
-		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
-		
 		AdPageSpot adPageSpot = new AdPageSpot();
 		Integer spotID = parameters.getSpotID(); 
 		LocalDateTime createdOn = LocalDateTime.now();
 		LocalDateTime modifiedOn = createdOn;
 		
 		if(spotID == 0) { // new (insert)
-			adPageSpot.setPageID(parameters.getPageID());
-			adPageSpot.setCategoryID(parameters.getCategoryID());
-			adPageSpot.setBodySizeID(parameters.getBodySizeID());
-			adPageSpot.setSpotName(parameters.getSpotName());
-			adPageSpot.setPrice1(parameters.getPrice1());
-			adPageSpot.setPrice2(parameters.getPrice2());
-			adPageSpot.setPrice3(parameters.getPrice3());
-			adPageSpot.setPrice4(parameters.getPrice4());
-			adPageSpot.setPrice5(parameters.getPrice5());
-			adPageSpot.setPrice6(parameters.getPrice6());
-			adPageSpot.setPrice7(parameters.getPrice7());
-			adPageSpot.setActive(parameters.getActive());
-			adPageSpot.setIncludeVendorCategory(parameters.getIncludeVendorCategory());
-			adPageSpot.setSpotInstanceCount(parameters.getSpotInstanceCount());
-			adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
-			adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
-			adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
+			this.saveSpotSetting(adPageSpot, parameters);
 			adPageSpot.setCreatedOn(createdOn);
 			adPageSpot.setCreatedBy(Utility.getUsername());
-			
 			adPageSpotRepository.save(adPageSpot);
-			
 		} else { // update
 			adPageSpot = adPageSpotRepository.findOneBySpotID(spotID);
-			adPageSpot.setPageID(parameters.getPageID());
-			adPageSpot.setCategoryID(parameters.getCategoryID());
-			adPageSpot.setBodySizeID(parameters.getBodySizeID());
-			adPageSpot.setSpotName(parameters.getSpotName());
-			adPageSpot.setPrice1(parameters.getPrice1());
-			adPageSpot.setPrice2(parameters.getPrice2());
-			adPageSpot.setPrice3(parameters.getPrice3());
-			adPageSpot.setPrice4(parameters.getPrice4());
-			adPageSpot.setPrice5(parameters.getPrice5());
-			adPageSpot.setPrice6(parameters.getPrice6());
-			adPageSpot.setPrice7(parameters.getPrice7());
-			adPageSpot.setActive(parameters.getActive());
-			adPageSpot.setIncludeVendorCategory(parameters.getIncludeVendorCategory());
-			adPageSpot.setSpotInstanceCount(parameters.getSpotInstanceCount());
-			adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
-			adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
-			adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
+			this.saveSpotSetting(adPageSpot, parameters);
 			adPageSpot.setModifiedOn(modifiedOn);
 			adPageSpot.setModifiedBy(Utility.getUsername());
-			
 			adPageSpotRepository.save(adPageSpot);
 		}
-		
-		return result;
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+	}
+	
+	private void saveSpotSetting(AdPageSpot adPageSpot, SetAddSpotSettingParameter parameters) {
+		adPageSpot.setPageID(parameters.getPageID());
+		adPageSpot.setCategoryID(parameters.getCategoryID());
+		adPageSpot.setBodySizeID(parameters.getBodySizeID());
+		adPageSpot.setSpotName(parameters.getSpotName());
+		adPageSpot.setPrice1(parameters.getPrice1());
+		adPageSpot.setPrice2(parameters.getPrice2());
+		adPageSpot.setPrice3(parameters.getPrice3());
+		adPageSpot.setPrice4(parameters.getPrice4());
+		adPageSpot.setPrice5(parameters.getPrice5());
+		adPageSpot.setPrice6(parameters.getPrice6());
+		adPageSpot.setPrice7(parameters.getPrice7());
+		adPageSpot.setActive(parameters.getActive());
+		adPageSpot.setIncludeVendorCategory(parameters.getIncludeVendorCategory());
+		adPageSpot.setSpotInstanceCount(parameters.getSpotInstanceCount());
+		adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
+		adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
+		adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
 	}
 }

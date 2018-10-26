@@ -1,8 +1,9 @@
 package net.fashiongo.webadmin.config.security;
 
-import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -11,13 +12,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -32,6 +30,7 @@ import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityListIPRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityLoginControlRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityLoginLogRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
 import net.fashiongo.webadmin.model.pojo.MenuDS;
 import net.fashiongo.webadmin.model.pojo.MenuPermission;
@@ -40,6 +39,7 @@ import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.response.AuthuserResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityLoginControl;
+import net.fashiongo.webadmin.model.primary.SecurityLoginLog;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -63,6 +63,9 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 	
 	@Autowired
 	private SecurityListIPRepository securityListIPRepository;
+	
+	@Autowired
+	private SecurityLoginLogRepository securityLoginLogRepository;
 	
 	@Autowired
 	protected JdbcHelper jdbcHelper;
@@ -107,8 +110,18 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 
 		auth.setUserInfo(webAdminLoginUser);
 		auth.setMenuDs(this.getMenuDS(securityUser.getUserID()));
+		this.setLoginLog(webAdminLoginUser);
 		
 		return auth;
+	}
+	
+	private void setLoginLog(WebAdminLoginUser webAdminLoginUser) {
+		SecurityLoginLog loginLog = new SecurityLoginLog();
+		loginLog.setUserID(webAdminLoginUser.getUserId());
+		loginLog.setIp(webAdminLoginUser.getIpaddr());
+		loginLog.setLoginOn(LocalDateTime.now());
+		
+		this.securityLoginLogRepository.save(loginLog);
 	}
 	
 	private void ResponseException(Integer code, String message){
@@ -169,7 +182,8 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
 					
 					if(!CollectionUtils.isEmpty(list)) {
-						bAccessabletime = (list.get(0).getTimeFrom().before(new Date()) && list.get(0).getTimeTo().after(new Date()));
+						String currentTime = new SimpleDateFormat("HH:mm").format(new Date());
+						bAccessabletime = ((list.get(0).getTimeFromTime().compareTo(currentTime)) <= 0 && (list.get(0).getTimeToTime().compareTo(currentTime)) >= 0);
 					}
 					
 					if(!bAccessabletime) {

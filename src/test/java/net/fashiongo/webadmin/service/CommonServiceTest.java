@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,39 +36,81 @@ public class CommonServiceTest {
 	@Autowired
 	AdminService adminService;
 	
+	/**
+     * 
+     * testGetMenuID
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetMenuID() {
 		String pageName = "vendor-list";
-		Integer result = commonService.GetMenuID(pageName);
+		Integer result = commonService.getMenuID(pageName);
 		assertEquals(result.toString(), "143");
 	}
 
+	/**
+     * 
+     * testGetServerHeartBeat
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetServerHeartBeat() {
 		Long q = 1539669765324l;
-		String result = commonService.GetServerHeartBeat(q);
+		String result = commonService.getServerHeartBeat(q);
 		assertEquals(result.toString(), "Spring Boot");
 	}
 
+	/**
+     * 
+     * testGetCountryStates
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetCountryStates() {
 		String countryAbbrev = "us";
-		JsonResponse<GetCountryStatesResponse> result = commonService.GetCountryStates(countryAbbrev);
+		JsonResponse<GetCountryStatesResponse> result = commonService.getCountryStates(countryAbbrev);
 		assertNotNull(result.getData());	
 	}
 
+	/**
+     * 
+     * testGetTopCategories
+     * 
+     * @since 2018. 10. 18.
+     * @author Dahye
+     */
 	@Test
 	public void testGetTopCategories() {
-		List<TopCategories> result = commonService.GetTopCategories();
+		List<TopCategories> result = commonService.getTopCategories();
 		assertNotNull(result);	
 	}
 	
+	/**
+	 * 
+	 * Get Bid AdPage
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Test
 	public void testGetBidAdPages() {
 		GetBidAdPagesResponse result = commonService.GetBidAdPages();
 		assertNotNull(result.getAdPage());
 	}
 	
+	/**
+	 * 
+	 * Get Bid AdPage Spots
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Test
 	public void testGetBidAdPageSpots() {
 		GetBidAdPageSpotsParameter parameter = new GetBidAdPageSpotsParameter();
@@ -77,15 +120,29 @@ public class CommonServiceTest {
 		assertNotNull(result);
 	}
 	
+	/**
+	 * 
+	 * Get Bid AdPage Spots Combined 
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Deprecated
 	@Test
 	public void testGetBidAdPageSpotsCombined() {
 		
 	}
 
+	/**
+	 * 
+	 * testGetSecurityUser
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Test
 	public void testGetSecurityUser() {
-		List<SecurityUser> result = commonService.GetSecurityUser();
+		List<SecurityUser> result = commonService.getSecurityUser();
 		assertNotNull(result);	
 	}
 
@@ -96,7 +153,7 @@ public class CommonServiceTest {
 		parameters.setResourceName("");
 		parameters.setResourceParent("All");
 		parameters.setResourceType("All");
-		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
+		GetSecurityResourcesResponse result = adminService.getSecurityResources(parameters);
 		assertNotNull(result);	
 	}
 }

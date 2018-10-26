@@ -11,5 +11,6 @@ public interface SecurityMenuRepository extends CrudRepository<SecurityMenu, Int
 	List<SecurityMenu> findAllByParentIDAndApplicationIDOrderByActiveDescNameAsc(String ParentID,Integer ApplicationID);
 	SecurityMenu findOneByResourceID(Integer ResourceID);
 	SecurityMenu findOneByResourceIDAndMenuIDNot(Integer ResourceID,Integer MenuID);
+	List<SecurityMenu> findByResourceIDAndMenuIDNot(Integer ResourceID,Integer MenuID);
 	SecurityMenu findOneByMenuID(Integer MenuID);
 }

@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.service;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,13 @@ public class BidServiceTest {
 	@Autowired
 	BidService bidService;
 	
+	/**
+	 * 
+	 * Get BidSetting LastRecords
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Test
 	public void testGetBidSettingLastRecords() {
 		GetBidSettingLastRecordsParameter parameters = new GetBidSettingLastRecordsParameter();
@@ -37,6 +45,14 @@ public class BidServiceTest {
 		assertNotNull(_result.getBidSettingLastRecords());
 	}
 	
+	/**
+	 * 
+	 * Set BidSetting
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
+	@Ignore
 	@Test
 	public void testSetBidSetting() {
 		SetBidSettingParameter parameters = new SetBidSettingParameter();
@@ -53,6 +69,13 @@ public class BidServiceTest {
 		assertTrue(_result.getSuccess());
 	}
 	
+	/**
+	 * 
+	 * Get BidSetting
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Test
 	public void testGetBidSetting() {
 		GetBidSettingParameter parameters = new GetBidSettingParameter();
@@ -67,6 +90,13 @@ public class BidServiceTest {
 		assertNotNull(_result.getBidSetting());
 	}
 	
+	/**
+	 * 
+	 * Get BidSetting Last Week
+	 * 
+	 * @since 2018. 10. 22.
+	 * @author Junghwan Lee
+	 */
 	@Test
 	public void testGetBidSettingLastWeek() {
 		GetBidSettingLastWeekParameter parameters = new GetBidSettingLastWeekParameter();

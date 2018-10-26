@@ -234,8 +234,10 @@ public class SecurityGroupService extends ApiService {
 		try {
 			if(groupID.equals(0)) {
 				isDuplicated = securityGroupRepository.existsByGroupName(groupName);
+				securityGroup = new SecurityGroup();
 			} else {
-				isDuplicated = securityGroupRepository.existsByGroupIDAndGroupName(groupID, groupName);
+				isDuplicated = securityGroupRepository.existsByGroupIDNotAndGroupName(groupID, groupName);
+				securityGroup = securityGroupRepository.findOneByGroupID(groupID);
 			}
 			
 			if(isDuplicated) {
@@ -246,19 +248,13 @@ public class SecurityGroupService extends ApiService {
 				return result;
 			}
 			
-			if(!groupID.equals(0)) {
-				securityGroup = securityGroupRepository.findOneByGroupID(groupID);
-				securityGroupRepository.delete(securityGroup);
-			}
-			
-			securityGroup = new SecurityGroup();
 			securityGroup.setGroupName(groupName);
 			securityGroup.setDescription(description);
 			securityGroup.setActive(active);
 			
 			securityGroupRepository.save(securityGroup);
 			
-			result.setResultMsg(securityGroup.getGroupID().toString());
+			result.setResultCode(securityGroup.getGroupID());
 			
 		} catch(Exception ex) {
 			result = new ResultCode(false, 0, ex.getMessage());

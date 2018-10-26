@@ -28,6 +28,13 @@ public class AdServiceTest {
 	@Autowired
 	AdService adService;
 
+	/**
+	 * 
+	 * testGetAdsetting
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Test
 	public void testGetAdsetting() {
 		GetADSettingResponse result = adService.getAdsetting();
@@ -35,6 +42,13 @@ public class AdServiceTest {
 		assertNotNull(result.getAdSettingList());
 	}
 	
+	/**
+	 * 
+	 * testSetAdPage
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Ignore
 	@Test
 	public void testSetAdPage() {
@@ -53,12 +67,26 @@ public class AdServiceTest {
 		assertTrue(result2.getSuccess());
 	}
 
+	/**
+	 * 
+	 * testGetBodySizeCode
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Test
 	public void testGetBodySizeCode() {
 		List<CodeBodySize> result = adService.getBodySizeCode();
 		assertNotNull(result);	
 	}
 
+	/**
+	 * 
+	 * testGetSpotCheck
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Test
 	public void testGetSpotCheck() {
 		Integer spotID = 10;
@@ -66,6 +94,13 @@ public class AdServiceTest {
 		assertNotNull(result.getSpotID());
 	}
 
+	/**
+	 * 
+	 * testDelSpotSetting
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Ignore
 	@Test
 	public void testDelSpotSetting() {
@@ -74,6 +109,13 @@ public class AdServiceTest {
 		assertTrue(result.getSuccess());
 	}
 	
+	/**
+	 * 
+	 * testSetAddSpotSetting
+	 * 
+	 * @since 2018. 10. 19.
+	 * @author Nayeon Kim
+	 */
 	@Ignore
 	@Test
 	public void testSetAddSpotSetting() {

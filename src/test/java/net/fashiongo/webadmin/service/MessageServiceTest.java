@@ -26,7 +26,7 @@ public class MessageServiceTest {
 		parameters.setPagenum(0);
 		parameters.setSendertypeid(1);
 		
-		GetMessageResponse result = messageService.GetMessage(parameters);
+		GetMessageResponse result = messageService.getMessage(parameters);
 		
 		if(result != null) {
 			for(Message msg : result.getMessagelist()) {

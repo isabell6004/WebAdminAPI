@@ -1,9 +1,9 @@
 package net.fashiongo.webadmin.model.primary;
 
-import javax.persistence.Column;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -77,6 +77,14 @@ public class SecurityLoginControl {
 	public Date getTimeFrom() {
 		return timeFrom;
 	}
+	
+	public String getTimeFromTime() {
+		String time = null;
+		if(this.timeFrom != null) {
+			time = new SimpleDateFormat("HH:mm").format(this.timeFrom);
+		}
+		return time;
+	}
 
 	public void setTimeFrom(Date timeFrom) {
 		this.timeFrom = timeFrom;
@@ -84,6 +92,14 @@ public class SecurityLoginControl {
 
 	public Date getTimeTo() {
 		return timeTo;
+	}
+	
+	public String getTimeToTime() {
+		String time = null;
+		if(this.timeTo != null) {
+			time = new SimpleDateFormat("HH:mm").format(this.timeTo);
+		}
+		return time;
 	}
 
 	public void setTimeTo(Date timeTo) {

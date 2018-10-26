@@ -1,9 +1,12 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Total {
-	private Integer RecCnt;
+	@JsonProperty("RecCnt")
+	private Integer recCnt;
 
 	public Integer getRecCnt() {
-		return RecCnt;
+		return this.recCnt;
 	}
 }

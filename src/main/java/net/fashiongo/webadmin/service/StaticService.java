@@ -44,7 +44,7 @@ public class StaticService extends ApiService {
 	 * @author Incheol Jung
 	 * @return
 	 */
-	public GetDashboardResponse GetDashboard() {
+	public GetDashboardResponse getDashboard() {
 		GetDashboardResponse result = new GetDashboardResponse();
 		String spName = "up_GetDashboard_WebAdmin";
         List<Object> params = new ArrayList<Object>();

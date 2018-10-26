@@ -140,13 +140,8 @@ public class AdminController {
 	 */
 	@RequestMapping(value = "getsecuritylogs", method = RequestMethod.POST)
 	public JsonResponse<GetSecurityLogsResponse> getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {		
-		JsonResponse<GetSecurityLogsResponse> results = new JsonResponse<GetSecurityLogsResponse>(false, null, 0, null);
 		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
-		
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
+		return new JsonResponse<GetSecurityLogsResponse>(true, null, 0, result);
 	}
 	
 	/**
@@ -198,7 +193,7 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="setsecuritygroup", method=RequestMethod.POST)
-	public JsonResponse<List<ResultCode>> SetSecurityGroup(@RequestBody SetsecuritygroupParameter parameters) {
+	public JsonResponse<List<ResultCode>> setSecurityGroup(@RequestBody SetsecuritygroupParameter parameters) {
 		JsonResponse<List<ResultCode>> results = new JsonResponse<List<ResultCode>>(true, null, 0, null);
 		List<ResultCode> data = new ArrayList<ResultCode>();
 		
@@ -308,8 +303,8 @@ public class AdminController {
 	 * @return GetSecurityResourcesResponse
 	 */
 	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
-		GetSecurityResourcesResponse resource = adminService.GetSecurityResources(parameters);
+	public JsonResponse<GetSecurityResourcesResponse> getSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
+		GetSecurityResourcesResponse resource = adminService.getSecurityResources(parameters);
 		return new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, resource);
 	}
 	
@@ -322,8 +317,8 @@ public class AdminController {
 	 * @return GetSecurityAccessIpsResponse
 	 */
 	@RequestMapping(value="getsecurityaccessips", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityAccessIpsResponse> GetSecurityAccessIps () {
-		GetSecurityAccessIpsResponse result = adminService.GetSecurityAccessIps();
+	public JsonResponse<GetSecurityAccessIpsResponse> getSecurityAccessIps () {
+		GetSecurityAccessIpsResponse result = adminService.getSecurityAccessIps();
 		return new JsonResponse<GetSecurityAccessIpsResponse>(true, null, 0, result);
 	}
 	
@@ -336,9 +331,9 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value="setsecurityaccessip", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> SetSecurityAccessIp (@RequestBody SetSecurityAccessIpParameter parameters) throws Exception {
-		ResultCode result = adminService.SetSecurityAccessIp(parameters);
-		return new JsonResponse<ResultCode>(result.getSuccess(), result.getResultMsg(), 0, null);
+	public JsonResponse<String> setSecurityAccessIp (@RequestBody SetSecurityAccessIpParameter parameters) throws Exception {
+		ResultCode result = adminService.setSecurityAccessIp(parameters);
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
 	/**
@@ -350,8 +345,8 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityaccessips", method = RequestMethod.POST)
-	public JsonResponse<String> SetDeleteSecurityAccessIps(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
-		ResultCode result = adminService.SetDeleteSecurityAccessIps(data.getIdList());
+	public JsonResponse<String> setDeleteSecurityAccessIps(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
+		ResultCode result = adminService.setDeleteSecurityAccessIps(data.getIdList());
 		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
@@ -379,8 +374,8 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setactiveresource", method = RequestMethod.POST)
-	public JsonResponse<String> SetResource(@RequestBody SetResourceParameter parameters) {
-		ResultCode result = adminService.SetResource(parameters.getResourceId(), parameters.getActive());
+	public JsonResponse<String> setResource(@RequestBody SetResourceParameter parameters) {
+		ResultCode result = adminService.setResource(parameters.getResourceId(), parameters.getActive());
 		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
@@ -506,8 +501,8 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setsecurityresource", method = RequestMethod.POST)
-	public JsonResponse<String> SetSecurityResource(@RequestBody SetSecurityResourceParameter parameters) {
-		ResultCode result = adminService.SetSecurityResource(parameters);
+	public JsonResponse<String> setSecurityResource(@RequestBody SetSecurityResourceParameter parameters) {
+		ResultCode result = adminService.setSecurityResource(parameters);
 		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
@@ -521,8 +516,8 @@ public class AdminController {
 	 * @return ResultCode
 	 */
 	@RequestMapping(value = "setdeletesecurityresources", method = RequestMethod.POST)
-	public JsonResponse<String> SetDeleteSecurityResources(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
-		ResultCode result = adminService.SetDeleteSecurityResources(data.getIdList());
+	public JsonResponse<String> setDeleteSecurityResources(@RequestBody SetDeleteSecurityAccessIpsParameter data) throws Exception {
+		ResultCode result = adminService.setDeleteSecurityResources(data.getIdList());
 		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
@@ -570,7 +565,7 @@ public class AdminController {
 	@RequestMapping(value="setsecuritymenu", method=RequestMethod.POST)
 	public JsonResponse<Integer> SetSecurityMenu(@RequestBody SetSecurityMenuParameter parameters) {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, 0, null);
-		ResultCode result = adminService.SetSecurityMenu(parameters);
+		ResultCode result = adminService.setSecurityMenu(parameters);
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
