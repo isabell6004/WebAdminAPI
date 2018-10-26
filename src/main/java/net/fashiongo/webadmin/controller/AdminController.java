@@ -192,7 +192,7 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="setsecuritygroup", method=RequestMethod.POST)
-	public JsonResponse<List<ResultCode>> SetSecurityGroup(@RequestBody SetsecuritygroupParameter parameters) {
+	public JsonResponse<List<ResultCode>> setSecurityGroup(@RequestBody SetsecuritygroupParameter parameters) {
 		JsonResponse<List<ResultCode>> results = new JsonResponse<List<ResultCode>>(true, null, 0, null);
 		List<ResultCode> data = new ArrayList<ResultCode>();
 		

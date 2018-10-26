@@ -31,7 +31,7 @@ public class StaticServiceTest {
 	 */
 	@Test
 	public void TestGetDashboard() {
-		GetDashboardResponse result = this.staticService.GetDashboard();
+		GetDashboardResponse result = this.staticService.getDashboard();
 		
 		VisitorStatic visitors = result.getVisitors();
 		if(visitors != null) {

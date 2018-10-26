@@ -68,7 +68,7 @@ public class LoginController {
 	 * @return
 	 */
 	@RequestMapping(value="logout", method=RequestMethod.POST)
-	public JsonResponse<String> LogOut(HttpSession session) {
+	public JsonResponse<String> logOut(HttpSession session) {
 		JsonResponse<String> results = new JsonResponse<String>(true, null, 0, null);
 		
 		session.invalidate();

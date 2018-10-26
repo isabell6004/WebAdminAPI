@@ -42,7 +42,7 @@ public class MessageService extends ApiService {
 	 * @param parameters
 	 * @return 
 	 */
-	public GetMessageResponse GetMessage(GetMessageParameter parameters) {
+	public GetMessageResponse getMessage(GetMessageParameter parameters) {
 		GetMessageResponse result = new GetMessageResponse();
 		String spName = "up_wa_GetAdminMessage";
         List<Object> params = new ArrayList<Object>();

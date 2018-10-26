@@ -39,10 +39,10 @@ public class MessageController {
 	 * @return
 	 */
 	@RequestMapping(value="getmessage", method=RequestMethod.POST)
-	public JsonResponse<GetMessageResponse> GetMessage(@RequestBody GetMessageParameter parameters) {
+	public JsonResponse<GetMessageResponse> getMessage(@RequestBody GetMessageParameter parameters) {
 		JsonResponse<GetMessageResponse> results = new JsonResponse<GetMessageResponse>(true, null, null);
 		
-		GetMessageResponse result = messageService.GetMessage(parameters);
+		GetMessageResponse result = messageService.getMessage(parameters);
 		results.setData(result);
 		
 		return results;
