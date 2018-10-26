@@ -171,14 +171,9 @@ public class CommonController {
 	 * @return List<SecurityUser>
 	 */
 	@RequestMapping(value="getsecurityusers", method=RequestMethod.POST)
-	public JsonResponse<List<SecurityUser>> GetSecurityUser() {
-		JsonResponse<List<SecurityUser>> results = new JsonResponse<List<SecurityUser>>(false, null, 0, null);
-		
-		List<SecurityUser> result = commonService.GetSecurityUser();
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
+	public JsonResponse<List<SecurityUser>> getSecurityUser() {
+		List<SecurityUser> result = commonService.getSecurityUser();
+		return new JsonResponse<List<SecurityUser>>(true, null, 0, result);
 	}
 	
 	

@@ -25,6 +25,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetShowScheduleParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetShowCategoriesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowParticipatingVendorsResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetShowPromotionPlanResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
 import net.fashiongo.webadmin.model.primary.ShowSchedule;
@@ -354,10 +355,12 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/promotion-plan/{planId}", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show promotion-plan")
-	public JsonResponse<Object> getShowPromotionPlan(@PathVariable("planId") Integer planId) {
+	public JsonResponse<GetShowPromotionPlanResponse> getShowPromotionPlan(@PathVariable("planId") Integer planId) {
 
-		JsonResponse<Object> results = new JsonResponse<Object>();
+		JsonResponse<GetShowPromotionPlanResponse> results = new JsonResponse<GetShowPromotionPlanResponse>();
 
+		GetShowPromotionPlanResponse result = siteMgmtShowService.getShowPromotionPlan(planId);
+		results.setData(result);
 		return results;
 	}
 

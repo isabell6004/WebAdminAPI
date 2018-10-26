@@ -23,6 +23,8 @@ import net.fashiongo.webadmin.model.pojo.CategoryVendor;
 import net.fashiongo.webadmin.model.pojo.CategoryVendorInfo;
 import net.fashiongo.webadmin.model.pojo.ColorListInfo;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
+import net.fashiongo.webadmin.model.pojo.FeaturedItem;
+import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.PatternInfo;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
@@ -36,12 +38,14 @@ import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -524,14 +528,37 @@ public class SitemgmtService extends ApiService {
 
 		List<Object> params = new ArrayList<Object>();
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, PatternInfo.class, LengthInfo.class,
-				StyleInfo.class, FabricInfo.class, BodySizeInfo.class, ColorListInfo.class);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, PatternInfo.class, LengthInfo.class, StyleInfo.class, FabricInfo.class, BodySizeInfo.class, ColorListInfo.class);
 		result.setPatternInfolist((List<PatternInfo>) _result.get(0));
 		result.setLengthInfolist((List<LengthInfo>) _result.get(1));
 		result.setStyleInfolist((List<StyleInfo>) _result.get(2));
 		result.setFabricInfolist((List<FabricInfo>) _result.get(3));
 		result.setBodySizeInfolist((List<BodySizeInfo>) _result.get(4));
 		result.setColorListInfolist((List<ColorListInfo>) _result.get(5));
+
+		return result;
+	}
+
+	/**
+	 *
+	 * Get Featured Item Count
+	 *
+	 * @since 2018. 10. 25.
+	 * @author Nayeon Kim
+	 * @return GetFeaturedItemCountParameter
+	 * @return GetFeaturedItemCountResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetFeaturedItemCountResponse getFeaturedItemCount(String sDate) {
+		GetFeaturedItemCountResponse result = new GetFeaturedItemCountResponse();
+		String spName = "up_wa_GetFeaturedItemCount";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(sDate);
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItem.class);
+		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
+		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
 
 		return result;
 	}

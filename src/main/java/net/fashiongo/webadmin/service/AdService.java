@@ -163,23 +163,7 @@ public class AdService extends ApiService {
 		LocalDateTime modifiedOn = createdOn;
 		
 		if(spotID == 0) { // new (insert)
-			adPageSpot.setPageID(parameters.getPageID());
-			adPageSpot.setCategoryID(parameters.getCategoryID());
-			adPageSpot.setBodySizeID(parameters.getBodySizeID());
-			adPageSpot.setSpotName(parameters.getSpotName());
-			adPageSpot.setPrice1(parameters.getPrice1());
-			adPageSpot.setPrice2(parameters.getPrice2());
-			adPageSpot.setPrice3(parameters.getPrice3());
-			adPageSpot.setPrice4(parameters.getPrice4());
-			adPageSpot.setPrice5(parameters.getPrice5());
-			adPageSpot.setPrice6(parameters.getPrice6());
-			adPageSpot.setPrice7(parameters.getPrice7());
-			adPageSpot.setActive(parameters.getActive());
-			adPageSpot.setIncludeVendorCategory(parameters.getIncludeVendorCategory());
-			adPageSpot.setSpotInstanceCount(parameters.getSpotInstanceCount());
-			adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
-			adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
-			adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
+			this.saveSpotSetting(adPageSpot, parameters);
 			adPageSpot.setCreatedOn(createdOn);
 			adPageSpot.setCreatedBy(Utility.getUsername());
 			
@@ -187,23 +171,7 @@ public class AdService extends ApiService {
 			
 		} else { // update
 			adPageSpot = adPageSpotRepository.findOneBySpotID(spotID);
-			adPageSpot.setPageID(parameters.getPageID());
-			adPageSpot.setCategoryID(parameters.getCategoryID());
-			adPageSpot.setBodySizeID(parameters.getBodySizeID());
-			adPageSpot.setSpotName(parameters.getSpotName());
-			adPageSpot.setPrice1(parameters.getPrice1());
-			adPageSpot.setPrice2(parameters.getPrice2());
-			adPageSpot.setPrice3(parameters.getPrice3());
-			adPageSpot.setPrice4(parameters.getPrice4());
-			adPageSpot.setPrice5(parameters.getPrice5());
-			adPageSpot.setPrice6(parameters.getPrice6());
-			adPageSpot.setPrice7(parameters.getPrice7());
-			adPageSpot.setActive(parameters.getActive());
-			adPageSpot.setIncludeVendorCategory(parameters.getIncludeVendorCategory());
-			adPageSpot.setSpotInstanceCount(parameters.getSpotInstanceCount());
-			adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
-			adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
-			adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
+			this.saveSpotSetting(adPageSpot, parameters);
 			adPageSpot.setModifiedOn(modifiedOn);
 			adPageSpot.setModifiedBy(Utility.getUsername());
 			
@@ -211,5 +179,25 @@ public class AdService extends ApiService {
 		}
 		
 		return result;
+	}
+	
+	private void saveSpotSetting(AdPageSpot adPageSpot, SetAddSpotSettingParameter parameters) {
+		adPageSpot.setPageID(parameters.getPageID());
+		adPageSpot.setCategoryID(parameters.getCategoryID());
+		adPageSpot.setBodySizeID(parameters.getBodySizeID());
+		adPageSpot.setSpotName(parameters.getSpotName());
+		adPageSpot.setPrice1(parameters.getPrice1());
+		adPageSpot.setPrice2(parameters.getPrice2());
+		adPageSpot.setPrice3(parameters.getPrice3());
+		adPageSpot.setPrice4(parameters.getPrice4());
+		adPageSpot.setPrice5(parameters.getPrice5());
+		adPageSpot.setPrice6(parameters.getPrice6());
+		adPageSpot.setPrice7(parameters.getPrice7());
+		adPageSpot.setActive(parameters.getActive());
+		adPageSpot.setIncludeVendorCategory(parameters.getIncludeVendorCategory());
+		adPageSpot.setSpotInstanceCount(parameters.getSpotInstanceCount());
+		adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
+		adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
+		adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
 	}
 }
