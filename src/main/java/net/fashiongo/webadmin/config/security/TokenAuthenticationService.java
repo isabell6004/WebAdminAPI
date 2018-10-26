@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.config.security;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ import net.fashiongo.webadmin.utility.Utility;
 @Component
 public class TokenAuthenticationService {
 	static final long EXPIRATIONTIME = 24 * 60 * 60 * 1000; // default, 24 hours
-	static final Date exp = new Date(System.currentTimeMillis() + EXPIRATIONTIME);
+	static final Date exp = Date.from(ZonedDateTime.now().plusHours(24).toInstant());
 	static final String SECRET = "fgwav2^^9070";
 	static final String TOKEN_PREFIX = "Bearer";
 	static final String HEADER_STRING = "Authorization";
