@@ -18,11 +18,6 @@ import org.springframework.util.CollectionUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.fashiongo.webadmin.dao.primary.AspnetMembershipRepository;
-import net.fashiongo.webadmin.dao.primary.AspnetPersonalizationPerUserRepository;
-import net.fashiongo.webadmin.dao.primary.AspnetProfileRepository;
-import net.fashiongo.webadmin.dao.primary.AspnetUsersInRolesRepository;
-import net.fashiongo.webadmin.dao.primary.AspnetUsersRepository;
 import net.fashiongo.webadmin.dao.primary.MapWaUserVendorRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityLoginControlRepository;
@@ -60,7 +55,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetAspnetMembershipResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetCreateSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.primary.AspnetUsers;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityLoginControl;
 import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
@@ -97,21 +91,6 @@ public class SecurityGroupService extends ApiService {
 	
 	@Autowired
 	private SecurityPermissionRepository securityPermissionRepository;
-	
-	@Autowired 
-	private AspnetUsersRepository aspnetUsersRepository;
-	
-	@Autowired
-	private AspnetMembershipRepository aspnetMembershipRepository;
-	
-	@Autowired
-	private AspnetUsersInRolesRepository aspnetUsersInRolesRepository;
-	
-	@Autowired
-	private AspnetProfileRepository aspnetProfileRepository;
-	
-	@Autowired
-	private AspnetPersonalizationPerUserRepository aspnetPersonalizationPerUserRepository;
 	
 	private String appName = "FashionGo";
 	
@@ -234,10 +213,8 @@ public class SecurityGroupService extends ApiService {
 		try {
 			if(groupID.equals(0)) {
 				isDuplicated = securityGroupRepository.existsByGroupName(groupName);
-				securityGroup = new SecurityGroup();
 			} else {
-				isDuplicated = securityGroupRepository.existsByGroupIDNotAndGroupName(groupID, groupName);
-				securityGroup = securityGroupRepository.findOneByGroupID(groupID);
+				isDuplicated = securityGroupRepository.existsByGroupIDAndGroupName(groupID, groupName);
 			}
 			
 			if(isDuplicated) {
@@ -248,13 +225,19 @@ public class SecurityGroupService extends ApiService {
 				return result;
 			}
 			
+			if(!groupID.equals(0)) {
+				securityGroup = securityGroupRepository.findOneByGroupID(groupID);
+				securityGroupRepository.delete(securityGroup);
+			}
+			
+			securityGroup = new SecurityGroup();
 			securityGroup.setGroupName(groupName);
 			securityGroup.setDescription(description);
 			securityGroup.setActive(active);
 			
 			securityGroupRepository.save(securityGroup);
 			
-			result.setResultCode(securityGroup.getGroupID());
+			result.setResultMsg(securityGroup.getGroupID().toString());
 			
 		} catch(Exception ex) {
 			result = new ResultCode(false, 0, ex.getMessage());
@@ -534,45 +517,23 @@ public class SecurityGroupService extends ApiService {
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setDelSecurityUsers(DelSecurityUserParameter parameters) {	
 		ResultCode result = new ResultCode(false, 0, null);
-		List<Integer> securityUserID = parameters.getUserList();
-		List<SecurityUser> securityUserList = securityUserRepository.findByUserIDIn(securityUserID);
-		List<String> aspnetUserIdList = new ArrayList<String>();
-		for(SecurityUser su: securityUserList) {
-			AspnetUsers au = new AspnetUsers();
-			au = aspnetUsersRepository.findByLoweredUserName(su.getUserName().toLowerCase().trim());
-			aspnetUserIdList.add(au.getUserId());
+		List<Integer> delSecurityUserList = parameters.getUserList();
+		for(Integer delUserID: delSecurityUserList) {
+			String spName = "up_wa_DeleteSecurityUser";
+			
+			List<Object> params = new ArrayList<Object>();
+			params.add("Fashiongo");
+			params.add(delUserID);
+			
+			List<Object> outputParams = new ArrayList<Object>();
+			outputParams.add(0);
+			
+			@SuppressWarnings("unused")
+			List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
+			result.setResultCode((Integer) outputParams.get(0));
+			result.setResultMsg(MSG_DELETE_SUCCESS);
+			result.setSuccess(true);
 		}
-		
-		securityLoginControlRepository.deleteByUserIDIn(parameters.getUserList());
-		securityMapUserGroupRepository.deleteByUserIDIn(parameters.getUserList());
-		securityPermissionRepository.deleteByUserIDIn(parameters.getUserList());
-		securityUserRepository.deleteByUserIDIn(parameters.getUserList());
-		
-		aspnetMembershipRepository.deleteByUserIdIn(aspnetUserIdList);
-		aspnetUsersInRolesRepository.deleteByUserIdIn(aspnetUserIdList);
-		aspnetProfileRepository.deleteByUserIdIn(aspnetUserIdList);
-		aspnetPersonalizationPerUserRepository.deleteByUserIdIn(aspnetUserIdList);
-		aspnetUsersRepository.deleteByUserIdIn(aspnetUserIdList);
-
-		result.setResultCode(1);
-		result.setResultMsg(MSG_DELETE_SUCCESS);
-		result.setSuccess(true);
-//		for(SecurityUser su: securityUserList) {
-//			String spName = "up_wa_DeleteSecurityUser";
-//			
-//			List<Object> params = new ArrayList<Object>();
-//			params.add("Fashiongo");
-//			params.add(su.getUserID());
-//			
-//			List<Object> outputParams = new ArrayList<Object>();
-//			outputParams.add(0);
-//			
-//			@SuppressWarnings("unused")
-//			List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
-//			result.setResultCode((Integer) outputParams.get(0));
-//			result.setResultMsg(MSG_DELETE_SUCCESS);
-//			result.setSuccess(true);
-//		}
 		
 		return result;
 	}

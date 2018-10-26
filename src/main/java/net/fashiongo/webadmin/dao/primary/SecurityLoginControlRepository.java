@@ -12,6 +12,5 @@ public interface SecurityLoginControlRepository extends CrudRepository<SecurityL
 	SecurityLoginControl findOneByUserIDAndWeekday(Integer userID, Integer weekDay);
 	@Transactional
 	void deleteByUserIDIn(Integer userID);
-	void deleteByUserIDIn(List<Integer> userIDList);
 }
 

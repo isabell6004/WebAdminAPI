@@ -13,7 +13,6 @@ public interface SecurityUserRepository extends CrudRepository<SecurityUser, Int
 	List<SecurityUser> findByUserIDIn(List<Integer> delUserIDList);
 	@Transactional
 	void deleteByUserIDIn(Integer userID);
-	void deleteByUserIDIn(List<Integer> userIDList);
 	List<SecurityUser> findAllByOrderByActiveDescUserName();
 	SecurityUser findFirstByUserName(String userName);
 }

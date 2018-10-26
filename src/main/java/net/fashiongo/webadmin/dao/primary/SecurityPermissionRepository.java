@@ -10,5 +10,4 @@ import net.fashiongo.webadmin.model.primary.SecurityPermission;
 public interface SecurityPermissionRepository extends CrudRepository<SecurityPermission, Integer>{
 	@Transactional
 	void deleteByUserIDIn(Integer userID);
-	void deleteByUserIDIn(List<Integer> userIDList);
 }
