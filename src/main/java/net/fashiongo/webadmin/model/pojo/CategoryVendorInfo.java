@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -22,10 +24,10 @@ public class CategoryVendorInfo {
     private Integer viewChk;
 	
 	@JsonProperty("BuyerRate")
-	private Double buyerRate;
+	private BigDecimal buyerRate;
 	
 	@JsonProperty("VendorRate")
-	private Double vendorRate;
+	private BigDecimal vendorRate;
 	
 	@JsonProperty("VendorTierGroup")
 	private String vendorTierGroup;
@@ -64,16 +66,16 @@ public class CategoryVendorInfo {
 	public void setViewChk(Integer viewChk) {
 		this.viewChk = viewChk;
 	}
-	public Double getBuyerRate() {
+	public BigDecimal getBuyerRate() {
 		return buyerRate;
 	}
-	public void setBuyerRate(Double buyerRate) {
+	public void setBuyerRate(BigDecimal buyerRate) {
 		this.buyerRate = buyerRate;
 	}
-	public Double getVendorRate() {
+	public BigDecimal getVendorRate() {
 		return vendorRate;
 	}
-	public void setVendorRate(Double vendorRate) {
+	public void setVendorRate(BigDecimal vendorRate) {
 		this.vendorRate = vendorRate;
 	}
 	public String getVendorTierGroup() {
