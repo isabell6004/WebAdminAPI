@@ -253,4 +253,15 @@ public class PhotoCredit implements IPersistent, Serializable {
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
+	
+	@Transient
+	@Column(name = "isAdd")
+	private Boolean isAdd;
+	public Boolean getIsAdd() {
+		return isAdd;
+	}
+
+	public void setIsAdd(Boolean isAdd) {
+		this.isAdd = isAdd;
+	}
 }
