@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
+import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
@@ -25,6 +26,7 @@ import net.fashiongo.webadmin.model.pojo.ColorListInfo;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
 import net.fashiongo.webadmin.model.pojo.FeaturedItem;
 import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
+import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.PatternInfo;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
@@ -38,8 +40,9 @@ import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
@@ -48,13 +51,13 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
-import net.fashiongo.webadmin.model.primary.GetTodaydealParameter;
 
 /**
  *
@@ -330,6 +333,15 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * Get TodayDealCalendar
+	 * 
+	 * @since 2018. 10. 26.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
 	public GetTodayDealCalendarResponse getTodayDealCalendar(GetTodayDealCanlendarParameter parameters) {
 		GetTodayDealCalendarResponse resultSet = new GetTodayDealCalendarResponse();
 		String spName = "up_wa_GetAdminTodayDealCalendar";
@@ -560,6 +572,31 @@ public class SitemgmtService extends ApiService {
 		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
 		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
 
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get TodayDealCalendarList
+	 * 
+	 * @since 2018. 10. 26.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public GetTodayDealCalendarListResponse getTodayDealCalendarList(GetTodayDealCalendarListParameter parameters) {
+		GetTodayDealCalendarListResponse result = new GetTodayDealCalendarListResponse();
+		String spName = "up_wa_GetAdminTodayDealCalendarList";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getSelectdate());
+		params.add(parameters.getWholesalerid());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, ActiveTodayDealDetail.class, InactiveTodayDealDetail.class);
+		result.setActiveTodayDeals((List<ActiveTodayDealDetail>) _result.get(0));
+		result.setInactiveTodayDeals((List<InactiveTodayDealDetail>) _result.get(1));
+		
 		return result;
 	}
 }

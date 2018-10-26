@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.model.primary;
+package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.io.Serializable;
 import java.text.ParseException;
