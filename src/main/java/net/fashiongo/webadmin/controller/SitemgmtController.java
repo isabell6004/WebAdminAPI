@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
@@ -276,7 +277,26 @@ public class SitemgmtController {
 	@RequestMapping(value = "getsocialmedialist", method = RequestMethod.GET)
 	public JsonResponse<List<SocialMedia>> getSocialMediaList() {
 		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
-		return new JsonResponse<List<SocialMedia>>(true, null, socialMediaList);
+		return new JsonResponse<>(true, null, socialMediaList);
+	}
+	
+	/**
+	 * Delete social media
+	 * @since Oct 25, 2018.
+	 * @author roy
+	 * @param DelSocialMediaParameter
+	 * @return JsonResponse<String>
+	 */
+	@RequestMapping(value = "delsocialmedia", method = RequestMethod.POST)
+	public JsonResponse<String> deleteSocialMedias(@RequestBody DelSocialMediaParameter delSocialMediaParameter) {
+		boolean result = socialMediaService.deleteSocialMedias(delSocialMediaParameter.getSocialMediaIds());
+		return new JsonResponse<>(result, null, "");
+	}
+	
+	@RequestMapping(value = "setsocialmedialist", method = RequestMethod.POST)
+	public JsonResponse<String> saveSocialMedia(@RequestBody SocialMedia socialMedia) {
+		ResultCode result = socialMediaService.saveSocialMedia(socialMedia);
+		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
 
 	}
 
