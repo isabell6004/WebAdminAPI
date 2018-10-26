@@ -12,9 +12,12 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.common.SingleValueResult;
 import net.fashiongo.webadmin.dao.primary.ListShowRepository;
+import net.fashiongo.webadmin.dao.primary.MapShowSchedulePromotionPlanVendorRepository;
+import net.fashiongo.webadmin.dao.primary.MapShowScheduleWholeSalerRepository;
 import net.fashiongo.webadmin.dao.primary.ShowSchedulePromotionPlanRepository;
 import net.fashiongo.webadmin.dao.primary.ShowScheduleRepository;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
@@ -24,6 +27,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetShowParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetShowScheduleListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowInfoParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetShowParticipatingVendorParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetShowScheduleParameters;
 import net.fashiongo.webadmin.model.pojo.response.GetShowCategoriesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
@@ -32,6 +36,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetShowPromotionPlanResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
 import net.fashiongo.webadmin.model.primary.MapShowSchedulePromotionPlanVendor;
+import net.fashiongo.webadmin.model.primary.MapShowScheduleWholeSaler;
 import net.fashiongo.webadmin.model.primary.ShowSchedule;
 import net.fashiongo.webadmin.model.primary.ShowSchedulePromotionPlan;
 
@@ -50,6 +55,12 @@ public class SitemgmtShowService extends ApiService {
 
 	@Autowired
 	ShowSchedulePromotionPlanRepository showSchedulePromotionPlanRepository;
+
+	@Autowired
+	MapShowSchedulePromotionPlanVendorRepository mapShowSchedulePromotionPlanVendorRepository;
+
+	@Autowired
+	MapShowScheduleWholeSalerRepository mapShowScheduleWholeSalerRepository;
 
 	/**
 	 * 
@@ -310,9 +321,9 @@ public class SitemgmtShowService extends ApiService {
 
 		LocalDateTime dateFrom = null;
 		LocalDateTime dateTo = null;
-		
-		String df = parameters.getDateFrom(); 
-		String dt = parameters.getDateTo(); 
+
+		String df = parameters.getDateFrom();
+		String dt = parameters.getDateTo();
 
 		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
 		if (StringUtils.isNotEmpty(df)) {
@@ -321,7 +332,7 @@ public class SitemgmtShowService extends ApiService {
 		if (StringUtils.isNotEmpty(dt)) {
 			dateTo = LocalDateTime.parse(parameters.getDateTo(), dtFormatter);
 		}
-		
+
 		params.add(pageNum);
 		params.add(pageSize);
 		params.add(showId);
@@ -402,7 +413,6 @@ public class SitemgmtShowService extends ApiService {
 		return result;
 	}
 
-
 	/**
 	 * 
 	 * Get Show List
@@ -414,7 +424,7 @@ public class SitemgmtShowService extends ApiService {
 	 */
 	public ResultResponse<Integer> setDeleteShow(DelShowParameter parameters) {
 		Integer showID = parameters.getShowID();
-		
+
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 		int size = showScheduleRepository.findByShowID(showID).size();
@@ -422,14 +432,13 @@ public class SitemgmtShowService extends ApiService {
 			result.setMessage("Unable to delete show. There are still schedules linked to this show.");
 			return result;
 		}
-		
+
 		listShowRepository.deleteById(showID);
-		
+
 		result.setResultWrapper(true, 1, showID, MSG_DELETE_SUCCESS, showID);
 
 		return result;
 	}
-	
 
 	/**
 	 * 
@@ -443,22 +452,22 @@ public class SitemgmtShowService extends ApiService {
 	public ResultResponse<Integer> setDeleteShowSchedule(DelShowParameter parameters) {
 //		Integer showID = parameters.getShowID();
 		Integer showScheduleID = parameters.getShowScheduleID();
-		
+
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 		int size = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID).size();
 		if (size > 0) {
-			result.setMessage("Unable to delete schedule. Either the Show Schedule date has passed or there are still plans/vendors linked to this schedule.");
+			result.setMessage(
+					"Unable to delete schedule. Either the Show Schedule date has passed or there are still plans/vendors linked to this schedule.");
 			return result;
 		}
-		
+
 		showScheduleRepository.deleteById(showScheduleID);
-		
+
 		result.setResultWrapper(true, 1, showScheduleID, MSG_DELETE_SUCCESS, showScheduleID);
 
 		return result;
 	}
-	
 
 	/**
 	 * 
@@ -481,16 +490,16 @@ public class SitemgmtShowService extends ApiService {
 		String titleImage = parameters.getTitleImage();
 
 		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
-		
+
 		Date dateFrom = dt.parse(parameters.getDateFrom());
 		Date dateTo = dt.parse(parameters.getDateTo());
 		if (dateFrom == null || dateTo == null) {
 			result.setMessage("FromDate or ToDate is null!");
 			return result;
 		}
-		
-        Instant instant = dateFrom.toInstant();
-        ZoneId defaultZoneId = ZoneId.systemDefault();
+
+		Instant instant = dateFrom.toInstant();
+		ZoneId defaultZoneId = ZoneId.systemDefault();
 		LocalDateTime dateFrom2 = instant.atZone(defaultZoneId).toLocalDateTime();
 
 		instant = dateTo.toInstant();
@@ -533,7 +542,7 @@ public class SitemgmtShowService extends ApiService {
 			showSchedule.setMobileImage(mobileImage);
 			showSchedule.setShowID(showID);
 			showSchedule.setTitleImage(titleImage);
-			
+
 			ShowSchedule showSchedule2 = showScheduleRepository.save(showSchedule);
 			showScheduleID = showSchedule2.getShowScheduleID();
 		}
@@ -542,7 +551,6 @@ public class SitemgmtShowService extends ApiService {
 
 		return result;
 	}
-	
 
 	/**
 	 * 
@@ -561,7 +569,6 @@ public class SitemgmtShowService extends ApiService {
 		result.setData(showSchedule);
 		return result;
 	}
-	
 
 	/**
 	 * 
@@ -578,21 +585,18 @@ public class SitemgmtShowService extends ApiService {
 		List<ListShow> showCategoryList;
 		if (showID == null) {
 			showCategoryList = listShowRepository.findAllByOrderByShowNameAsc();
-		}
-		else {
+		} else {
 			if (showID == 0) {
 				showCategoryList = listShowRepository.findAllByOrderByShowNameAsc();
-			}
-			else {
+			} else {
 				showCategoryList = listShowRepository.findByShowID(showID);
 			}
 		}
 		GetShowCategoriesResponse getShowCategoriesResponse = new GetShowCategoriesResponse();
-		
+
 		getShowCategoriesResponse.setShowCategoryList(showCategoryList);
 		return getShowCategoriesResponse;
 	}
-	
 
 	/**
 	 * 
@@ -604,29 +608,26 @@ public class SitemgmtShowService extends ApiService {
 	 * @return
 	 */
 	public List<ShowSchedulePromotionPlan> getShowPromotionPlans(GetShowParameter parameters) {
-/*
-		Integer pageNum = parameters.getPageNum();
-		Integer pageSize = parameters.getPageSize();
-		Integer showID = parameters.getShowID();
-		Integer planID = parameters.getPlanID();
-*/
+		/*
+		 * Integer pageNum = parameters.getPageNum(); Integer pageSize =
+		 * parameters.getPageSize(); Integer showID = parameters.getShowID(); Integer
+		 * planID = parameters.getPlanID();
+		 */
 		Integer showScheduleID = parameters.getShowScheduleID();
 
 		List<ShowSchedulePromotionPlan> showSchedulePromotionPlanList;
 		if (showScheduleID == null) {
 			showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
-		}
-		else {
+		} else {
 //			if (showScheduleID == 0) {
 //				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
 //			}
 //			else {
-				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID);
+			showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID);
 //			}
 		}
 		return showSchedulePromotionPlanList;
 	}
-	
 
 	/**
 	 * 
@@ -656,17 +657,19 @@ public class SitemgmtShowService extends ApiService {
 		final String spName = "up_wa_GetShowVendor";
 
 		GetShowParticipatingVendorsResponse resultSet = new GetShowParticipatingVendorsResponse();
-		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class, MapShowSchedulePromotionPlanVendor.class);
+		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class,
+				MapShowSchedulePromotionPlanVendor.class);
 
 		final List<SingleValueResult> singleValueResultList = (List<SingleValueResult>) _result.get(0);
-		final List<MapShowSchedulePromotionPlanVendor> showSchedulePromotionPlanVendorList = (List<MapShowSchedulePromotionPlanVendor>) _result.get(1);
+		final List<MapShowSchedulePromotionPlanVendor> showSchedulePromotionPlanVendorList = (List<MapShowSchedulePromotionPlanVendor>) _result
+				.get(1);
 
 		resultSet.setSingleValueResultList(singleValueResultList);
 		resultSet.setShowSchedulePromotionPlanVendorList(showSchedulePromotionPlanVendorList);
 
 		return resultSet;
 	}
-	
+
 	/**
 	 * 
 	 * Get Show detail
@@ -680,9 +683,87 @@ public class SitemgmtShowService extends ApiService {
 
 		GetShowPromotionPlanResponse result = new GetShowPromotionPlanResponse();
 
-		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository.findOneByPlanID(planID);
+		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
+				.findOneByPlanID(planID);
 		result.setShowSchedulePromotionPlan(showSchedulePromotionPlan);
 		return result;
 	}
-	
+
+	/**
+	 * 
+	 * Get Show detail
+	 * 
+	 * @since 2018. 10. 25.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public ResultResponse<MapShowSchedulePromotionPlanVendor> getShowParticipatingVendor(Integer mapID) {
+
+		ResultResponse<MapShowSchedulePromotionPlanVendor> result = new ResultResponse<MapShowSchedulePromotionPlanVendor>();
+
+		MapShowSchedulePromotionPlanVendor mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository
+				.findOneByMapID(mapID);
+		result.setData(mapShowSchedulePromotionPlanVendor);
+		return result;
+	}
+
+	/**
+	 * 
+	 * Set Show List
+	 * 
+	 * @since 2018. 10. 16.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	public ResultResponse<Integer> setShowParticipatingVendor(SetShowParticipatingVendorParameters parameters) {
+		Integer mapID = parameters.getMapId();
+		Integer planID = parameters.getPlanId();
+		Integer wholeSalerID = parameters.getWholesalerId();
+
+		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
+
+		// mapShowSchedulePromotionPlanVendor save
+		MapShowSchedulePromotionPlanVendor mapShowSchedulePromotionPlanVendor;
+		List<MapShowSchedulePromotionPlanVendor> mapShowSchedulePromotionPlanVendorList = mapShowSchedulePromotionPlanVendorRepository
+				.findByPlanIDAndWholeSalerID(planID, wholeSalerID);
+//		if (mapShowSchedulePromotionPlanVendorList.size() > 0) {			
+		if (!CollectionUtils.isEmpty(mapShowSchedulePromotionPlanVendorList)) {
+			mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorList.get(0);
+		} else {
+			mapShowSchedulePromotionPlanVendor = new MapShowSchedulePromotionPlanVendor();
+		}
+
+		mapShowSchedulePromotionPlanVendor.setPlanID(planID);
+		mapShowSchedulePromotionPlanVendor.setWholeSalerID(wholeSalerID);
+		mapShowSchedulePromotionPlanVendor.setCommissionRate(parameters.getCommissionRate());
+		mapShowSchedulePromotionPlanVendor.setRackCount(parameters.getRackCount());
+		mapShowSchedulePromotionPlanVendor.setFee(parameters.getFee());
+
+		mapShowSchedulePromotionPlanVendorRepository.save(mapShowSchedulePromotionPlanVendor);
+		mapID = mapShowSchedulePromotionPlanVendor.getMapID();
+
+		// MapShowScheduleWholeSaler save
+		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
+				.findOneByPlanID(planID);
+		Integer showScheduleID = showSchedulePromotionPlan.getShowScheduleID();
+		List<MapShowScheduleWholeSaler> mapShowScheduleWholeSalerList = mapShowScheduleWholeSalerRepository
+				.findByShowScheduleIDAndWholeSalerID(showScheduleID, wholeSalerID);
+
+//		if (mapShowScheduleWholeSalerList.size() > 0) {
+		if (!CollectionUtils.isEmpty(mapShowScheduleWholeSalerList)) {
+			MapShowScheduleWholeSaler mapShowScheduleWholeSaler = mapShowScheduleWholeSalerList.get(0);
+			if (mapShowScheduleWholeSaler.getMapID() == 0) {
+				mapShowScheduleWholeSaler.setShowScheduleID(showScheduleID);
+				mapShowScheduleWholeSaler.setWholeSalerID(wholeSalerID);
+				mapShowScheduleWholeSalerRepository.save(mapShowScheduleWholeSaler);
+			}
+		}
+
+		result.setResultWrapper(true, 1, mapID, MSG_SAVE_SUCCESS, mapID);
+
+		return result;
+	}
+
 }
