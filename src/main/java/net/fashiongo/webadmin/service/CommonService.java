@@ -58,7 +58,7 @@ public class CommonService extends ApiService {
 	 * @param pageName
 	 * @return SecurityMenu
 	 */
-	public Integer GetMenuID(String pageName) {
+	public Integer getMenuID(String pageName) {
 		SecurityMenu result = new SecurityMenu();
 		result = securityMenuRepository.findOneByRoutePath(pageName);
 		return result.getMenuID();
@@ -72,7 +72,7 @@ public class CommonService extends ApiService {
 	 * @param q
 	 * @return "Spring Boot"
 	 */
-	public String GetServerHeartBeat(Long q) {
+	public String getServerHeartBeat(Long q) {
 		return "Spring Boot";
 	}
 	
@@ -86,7 +86,7 @@ public class CommonService extends ApiService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Cacheable(value="GetCountryStates", key="#countryAbbrev", unless = "#result == null")
-	public JsonResponse<GetCountryStatesResponse> GetCountryStates(String countryAbbrev) {
+	public JsonResponse<GetCountryStatesResponse> getCountryStates(String countryAbbrev) {
 		JsonResponse<GetCountryStatesResponse> result = httpClient.get("location/countries/".concat(countryAbbrev));
 		return result;
 	}
@@ -100,7 +100,7 @@ public class CommonService extends ApiService {
 	 * @return List<TopCategories>
 	 */
 	@Cacheable(value="GetTopCategories")
-	public List<TopCategories> GetTopCategories() {
+	public List<TopCategories> getTopCategories() {
 		List<TopCategories> result = (List<TopCategories>) topCategoriesRepository.findByActiveAndLvlOrderByListOrder(true, 1);
 		return result;
 	}
@@ -158,7 +158,7 @@ public class CommonService extends ApiService {
 	 * @author Nayeon Kim
 	 * @return List<SecurityUser>
 	 */
-	public List<SecurityUser> GetSecurityUser() {
+	public List<SecurityUser> getSecurityUser() {
 		List<SecurityUser> result =  securityUserRepository.findAllByOrderByActiveDescUserName();
 		
 		return result;
