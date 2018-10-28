@@ -67,7 +67,7 @@ public class SocialMedia implements Serializable {
 	}
 
 	public void setSocialMediaId(Integer socialMediaId) {
-		this.socialMediaId = socialMediaId;
+		this.socialMediaId = socialMediaId.equals(0) ? null : socialMediaId;;
 	}
 
 	public void setSocialMedia(String socialMedia) {

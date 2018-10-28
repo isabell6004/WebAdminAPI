@@ -626,7 +626,7 @@ public class SecurityGroupService extends ApiService {
 				su.setModifiedBy(userData.getModifiedBy());
 				su.setModifiedOn(now);
 			}
-			if (userByNameRes != null) {
+			if (userByNameRes.getUserId() != null) {
 				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";
 				
 				List<Object> membershipParams = new ArrayList<Object>();
@@ -855,6 +855,10 @@ public class SecurityGroupService extends ApiService {
 		    	resultLoginControl.setResultCode(-1);
 		    	resultLoginControl.setResultMsg("No data selected!");
 		    }
+		} else {
+			resultLoginControl.setSuccess(resultMembership.getSuccess());
+	    	resultLoginControl.setResultCode(resultMembership.getResultCode());
+	    	resultLoginControl.setResultMsg(resultMembership.getResultMsg());
 		}
 	    SetCreateSecurityUserResponse createUserRes = new SetCreateSecurityUserResponse();
 	    createUserRes.setResultCode(resultLoginControl);

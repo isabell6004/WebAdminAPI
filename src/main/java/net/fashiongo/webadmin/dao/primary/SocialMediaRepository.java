@@ -11,4 +11,6 @@ import net.fashiongo.webadmin.model.primary.SocialMedia;
  */
 public interface SocialMediaRepository extends CrudRepository<SocialMedia, Integer> {
 	public List<SocialMedia> findAllByOrderBySocialMediaIdAsc();
+	
+//	public <T> List<T> findAllBy(Class<T> type);
 }
