@@ -177,6 +177,16 @@ public class PhotoDiscount implements IPersistent, Serializable {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
+	
+	@Column(name = "IsFirstTimeOrder")
+	private Boolean isFirstTimeOrder;
+	public Boolean getIsFirstTimeOrder() {
+		return isFirstTimeOrder;
+	}
+
+	public void setIsFirstTimeOrder(Boolean isFirstTimeOrder) {
+		this.isFirstTimeOrder = isFirstTimeOrder;
+	}
 
 	@Column(name = "CouponUsageLimit")
 	private Integer couponUsageLimit;
