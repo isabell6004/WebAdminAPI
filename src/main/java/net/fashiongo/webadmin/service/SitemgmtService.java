@@ -17,6 +17,7 @@ import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
@@ -38,6 +39,7 @@ import net.fashiongo.webadmin.model.pojo.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
+import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
@@ -59,10 +61,12 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListRespon
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
+import net.fashiongo.webadmin.model.primary.VendorCategory;
 
 /**
  *
@@ -79,6 +83,9 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private TodayDealRepository todayDealRepository;
+	
+	@Autowired
+	private VendorCategoryRepository vendorCategoryRepository;
 
 	/**
 	 *
@@ -626,6 +633,26 @@ public class SitemgmtService extends ApiService {
 			result.setResultCode(-1);
 			result.setResultMsg("failure");
 		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get VendorCategory
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param wholesalerId
+	 * @return
+	 */
+	public GetVendorCategoryResponse getVendorCategory(Integer wholesalerId) {
+		GetVendorCategoryResponse result = new GetVendorCategoryResponse();
+		List<VendorCategory> list = this.vendorCategoryRepository.findByWholeSalerIDAndActiveTrue(wholesalerId);
+		result.setVendorCategorySummaryList(
+				list.stream()
+				.map(v -> new VendorCategorySummary(v.getVendorCategoryID(), v.getCategoryName()))
+				.collect(Collectors.toList()));
 		
 		return result;
 	}

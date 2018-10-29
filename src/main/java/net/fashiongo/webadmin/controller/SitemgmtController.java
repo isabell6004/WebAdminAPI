@@ -25,6 +25,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
@@ -39,6 +40,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListRespon
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
 import net.fashiongo.webadmin.service.CacheService;
@@ -460,6 +462,25 @@ public class SitemgmtController {
 		ResultCode _result = sitemgmtService.setTodayDealCalendar(parameters);
 		results.setCode(_result.getResultCode());
 		results.setMessage(_result.getResultMsg());
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Get VendorCategory
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getvendorcategory", method = RequestMethod.POST)
+	public JsonResponse<GetVendorCategoryResponse> getVendorCategory(@RequestBody GetVendorCategoryParameter parameters) {
+		JsonResponse<GetVendorCategoryResponse> results = new JsonResponse<GetVendorCategoryResponse>(true, null, null);
+		
+		GetVendorCategoryResponse _result = sitemgmtService.getVendorCategory(parameters.getWholesalerid());
+		results.setData(_result);
 		
 		return results;
 	}
