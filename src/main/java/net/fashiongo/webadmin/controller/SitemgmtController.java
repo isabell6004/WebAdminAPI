@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
@@ -510,6 +511,17 @@ public class SitemgmtController {
 	@RequestMapping(value = "settrendreportsort", method = RequestMethod.POST)
 	public void setTrendReportSort() {}
 	
+	/**
+	 *
+	 * Get Last KMM Data
+	 *
+	 * @since 2018. 10. 29.
+	 * @author Nayeon Kim
+	 * @return List<TrendReportKmmImage>
+	 */
 	@RequestMapping(value = "getlastkmmdata", method = RequestMethod.POST)
-	public void getLastKMMData() {}
+	public JsonResponse<List<TrendReportKmmImage>> getLastKMMData() {
+		List<TrendReportKmmImage> result = sitemgmtService.getLastKMMData();
+		return new JsonResponse<List<TrendReportKmmImage>>(true, null, result);
+	}
 }
