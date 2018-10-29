@@ -3,11 +3,13 @@ package net.fashiongo.webadmin.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -33,5 +35,24 @@ public class VendorController {
 		
 		List<VendorCompany> vendors = vendorService.getVendorList();	
 		return new JsonResponse<List<VendorCompany>>(true, null, 0, vendors);
+	}
+	
+	/**
+	 * 
+	 * Get ProductList
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="getproductlist", method=RequestMethod.POST)
+	public JsonResponse<GetProductListResponse> getProductList(@RequestBody GetProductListParameter parameters) {
+		JsonResponse<GetProductListResponse> result = new JsonResponse<GetProductListResponse>(true, null, null);
+		
+		GetProductListResponse _result = vendorService.getProductList(parameters);	
+		result.setData(_result);
+		
+		return result; 
 	}
 }
