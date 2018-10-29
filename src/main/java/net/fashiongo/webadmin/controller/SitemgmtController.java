@@ -34,6 +34,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportSortParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
@@ -544,11 +545,20 @@ public class SitemgmtController {
 //	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
 //	public JsonResponse<String>  setAddDelTrendReportMap() { return null; }
 	
-	@RequestMapping(value = "settrendreport", method = RequestMethod.POST)
-	public void setTrendReport() {}
-	
+	/**
+	 *
+	 * Set Trend Report Sort
+	 *
+	 * @since 2018. 10. 29.
+	 * @author Nayeon Kim
+	 * @param SetTrendReportSortParameter
+	 * @return ResultCode
+	 */
 	@RequestMapping(value = "settrendreportsort", method = RequestMethod.POST)
-	public void setTrendReportSort() {}
+	public JsonResponse<String> setTrendReportSort(@RequestBody SetTrendReportSortParameter parameters) {
+		ResultCode result = sitemgmtService.setTrendReportSort(parameters.getxMLDatas());
+		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
+	}
 	
 	/**
 	 *
