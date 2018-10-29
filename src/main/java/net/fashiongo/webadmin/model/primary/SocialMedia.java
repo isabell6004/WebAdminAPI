@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author roy
  *
@@ -29,23 +31,28 @@ public class SocialMedia implements Serializable {
 	@Column(name = "SocialMediaID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("SocialMediaID")
+	@ApiModelProperty(example="0")
 	private Integer socialMediaId;
 	
 	@NotNull
 	@Column(name = "SocialMedia")
 	@JsonProperty("SocialMedia")
+	@ApiModelProperty(example="SNS Name")
 	private String socialMedia;
 	
 	@Column(name = "ListOrder")
 	@JsonProperty("ListOrder")
+	@ApiModelProperty(hidden=true)
 	private Integer listOrder;
 	
 	@Column(name = "Icon")
 	@JsonProperty("Icon")
+	@ApiModelProperty(example="fb.png")
 	private String icon;
 	
 	@Transient
 	@JsonProperty("CheckBox")
+	@ApiModelProperty(hidden=true)
 	private Boolean checkBox;
 
 	public Integer getSocialMediaId() {
