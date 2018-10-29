@@ -187,7 +187,7 @@ public class AdminServiceTest {
 		parameters.setsDate("2015-01-01");
 		parameters.seteDate("2020-01-01");
 		
-		GetSecurityAccessCodesResponse _result = adminService.GetSecurityAccessCodes(parameters);
+		GetSecurityAccessCodesResponse _result = adminService.getSecurityAccessCodes(parameters);
 		
 		assertNotNull(_result.getSecurityAccessCodes());
 	}
