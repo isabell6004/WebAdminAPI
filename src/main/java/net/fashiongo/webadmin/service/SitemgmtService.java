@@ -415,11 +415,10 @@ public class SitemgmtService extends ApiService {
 			} else {
 				String spName = "up_wa_SetCategoryInactive";
 				List<Object> params = new ArrayList<Object>();
+				
 				params.add(categoryID);
 				
-				@SuppressWarnings("unused")
-				List<Object> _result = jdbcHelper.executeSP(spName, params, Integer.class);
-				
+				jdbcHelper.executeSP(spName, params);		
 				result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
 			}
 
@@ -583,7 +582,26 @@ public class SitemgmtService extends ApiService {
 		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
 		return result;
 	}
+	
+	/**
+	 *
+	 * Set Trend Report Sort
+	 *
+	 * @since 2018. 10. 29.
+	 * @author Nayeon Kim
+	 * @param SetTrendReportSortParameter
+	 * @return ResultCode
+	 */
+	public ResultCode setTrendReportSort(String xMLDatas) {
+		String spName = "up_wa_SetTrendReportSort";
+		List<Object> params = new ArrayList<Object>();
 
+		params.add(xMLDatas);
+
+		jdbcHelper.executeSP(spName, params);
+		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+	}
+   
 	/**
 	 *
 	 * Get Last KMM Data
