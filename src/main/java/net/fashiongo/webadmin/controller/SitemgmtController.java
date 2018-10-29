@@ -22,6 +22,7 @@ import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
@@ -37,6 +38,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportSortParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
@@ -572,5 +574,24 @@ public class SitemgmtController {
 	public JsonResponse<List<TrendReportKmmImage>> getLastKMMData() {
 		List<TrendReportKmmImage> result = sitemgmtService.getLastKMMData();
 		return new JsonResponse<List<TrendReportKmmImage>>(true, null, result);
+	}
+	
+	/**
+	 * 
+	 * Get DMRequest
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getdmrequest", method = RequestMethod.POST)
+	public JsonResponse<GetDMRequestResponse> getDMRequest(@RequestBody GetDMRequestParameter parameters) {
+		JsonResponse<GetDMRequestResponse> results = new JsonResponse<GetDMRequestResponse>(true, null, null);
+		
+		GetDMRequestResponse _result = sitemgmtService.getDMRequest(parameters);
+		results.setData(_result);
+		
+		return results;
 	}
 }

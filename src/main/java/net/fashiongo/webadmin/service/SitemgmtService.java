@@ -1,7 +1,6 @@
 package net.fashiongo.webadmin.service;
 
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 //import java.util.Date;
@@ -29,6 +28,7 @@ import net.fashiongo.webadmin.model.pojo.CategoryReport;
 import net.fashiongo.webadmin.model.pojo.CategoryVendor;
 import net.fashiongo.webadmin.model.pojo.CategoryVendorInfo;
 import net.fashiongo.webadmin.model.pojo.ColorListInfo;
+import net.fashiongo.webadmin.model.pojo.DMRequest;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
 import net.fashiongo.webadmin.model.pojo.FeaturedItem;
 import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
@@ -48,6 +48,7 @@ import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -58,6 +59,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
@@ -728,5 +730,34 @@ public class SitemgmtService extends ApiService {
 		this.todayDealRepository.save(todayDeal);
 		
 		return 1;
+	}
+	
+	/**
+	 * 
+	 * Get DMRequest
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public GetDMRequestResponse getDMRequest(GetDMRequestParameter parameters) {
+		GetDMRequestResponse result = new GetDMRequestResponse();
+		String spName = "up_wa_GetFGCatalog";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPagenum());
+		params.add(parameters.getPagesize());
+		params.add(parameters.getStatus());
+		params.add(parameters.getWholesalerid());
+		params.add(parameters.getCompanytypecd());
+		params.add(parameters.getDatefrom());
+		params.add(parameters.getDateto());
+		params.add(parameters.getOrderby());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequest.class);
+		result.setDmList((List<DMRequest>) _result.get(0));
+		
+		return result;
 	}
 }
