@@ -21,6 +21,7 @@ import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -415,4 +416,52 @@ public class SitemgmtController {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());	
 		return new JsonResponse<GetFeaturedItemCountResponse>(true, null, result);
 	}
+	
+	@RequestMapping(value = "getfeatureditemsearch", method = RequestMethod.POST)
+	public void getFeaturedItemSearch(@RequestBody GetFeaturedItemSearchParameter parameters) {
+		
+	}
+	
+	@RequestMapping(value = "getfeatureditemsearchvendor", method = RequestMethod.POST)
+	public void getFeaturedItemSearchVendor() {}
+	
+	@RequestMapping(value = "setfeatureditem", method = RequestMethod.POST)
+	public void getFeaturedItem() {}
+	
+	@RequestMapping(value = "delfeatureditem", method = RequestMethod.POST)
+	public void gelFeaturedItem() {}
+	
+	@RequestMapping(value = "getfeatureditemlistday", method = RequestMethod.POST)
+	public void getFeaturedItemListDay() {}
+	
+	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
+	public void getProductDetail() {}
+	
+	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
+	public void getTrendReportDefault() {}
+	
+	@RequestMapping(value = "gettrendreport2", method = RequestMethod.POST)
+	public void getTrendReport2() {}
+	
+	@RequestMapping(value = "getvendorcategory", method = RequestMethod.POST)
+	public void getVendorCategory() {}
+	
+	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
+	public void getItems2() {}
+	
+	@RequestMapping(value = "gettrendreportitem", method = RequestMethod.POST)
+	public void getTrendReportItem() {}
+	
+	@Deprecated
+	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
+	public void setAddDelTrendReportMap() {}
+	
+	@RequestMapping(value = "settrendreport", method = RequestMethod.POST)
+	public void setTrendReport() {}
+	
+	@RequestMapping(value = "settrendreportsort", method = RequestMethod.POST)
+	public void setTrendReportSort() {}
+	
+	@RequestMapping(value = "getlastkmmdata", method = RequestMethod.POST)
+	public void getLastKMMData() {}
 }
