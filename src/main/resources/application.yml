@@ -73,7 +73,7 @@ webAdminapi:
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:
     develop:
-      check-token : false
+      check-token : true
 
 ---
 # Local
