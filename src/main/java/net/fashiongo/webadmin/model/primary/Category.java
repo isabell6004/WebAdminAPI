@@ -93,9 +93,9 @@ public class Category implements Serializable {
 		return categoryName2;
 	}
 
-	public void setCategoryName2(String categoryName2) {
+	/*public void setCategoryName2(String categoryName2) {
 		this.categoryName2 = categoryName2;
-	}
+	}*/
 
 	public String getCategoryDescription() {
 		return categoryDescription;
