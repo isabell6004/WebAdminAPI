@@ -18,10 +18,12 @@ import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -466,6 +468,7 @@ public class SitemgmtController {
 		return results;
 	}
 	
+
 	/**
 	 * 
 	 * Get VendorCategory
@@ -483,5 +486,61 @@ public class SitemgmtController {
 		results.setData(_result);
 		
 		return results;
+	}
+
+	@RequestMapping(value = "getfeatureditemsearch", method = RequestMethod.POST)
+	public void getFeaturedItemSearch(@RequestBody GetFeaturedItemSearchParameter parameters) {
+		
+	}
+	
+	@RequestMapping(value = "getfeatureditemsearchvendor", method = RequestMethod.POST)
+	public void getFeaturedItemSearchVendor() {}
+	
+	@RequestMapping(value = "setfeatureditem", method = RequestMethod.POST)
+	public void getFeaturedItem() {}
+	
+	@RequestMapping(value = "delfeatureditem", method = RequestMethod.POST)
+	public void gelFeaturedItem() {}
+	
+	@RequestMapping(value = "getfeatureditemlistday", method = RequestMethod.POST)
+	public void getFeaturedItemListDay() {}
+	
+	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
+	public void getProductDetail() {}
+	
+	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
+	public void getTrendReportDefault() {}
+	
+	@RequestMapping(value = "gettrendreport2", method = RequestMethod.POST)
+	public void getTrendReport2() {}
+	
+	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
+	public void getItems2() {}
+	
+	@RequestMapping(value = "gettrendreportitem", method = RequestMethod.POST)
+	public void getTrendReportItem() {}
+	
+//	@Deprecated
+//	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
+//	public JsonResponse<String>  setAddDelTrendReportMap() { return null; }
+	
+	@RequestMapping(value = "settrendreport", method = RequestMethod.POST)
+	public void setTrendReport() {}
+	
+	@RequestMapping(value = "settrendreportsort", method = RequestMethod.POST)
+	public void setTrendReportSort() {}
+	
+	/**
+	 *
+	 * Get Last KMM Data
+	 *
+	 * @since 2018. 10. 29.
+	 * @author Nayeon Kim
+	 * @return List<TrendReportKmmImage>
+	 */
+	@RequestMapping(value = "getlastkmmdata", method = RequestMethod.POST)
+	public JsonResponse<List<TrendReportKmmImage>> getLastKMMData() {
+		List<TrendReportKmmImage> result = sitemgmtService.getLastKMMData();
+		return new JsonResponse<List<TrendReportKmmImage>>(true, null, result);
 	}
 }

@@ -70,7 +70,7 @@ public class AdminService extends ApiService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public GetSecurityAccessCodesResponse GetSecurityAccessCodes(GetSecurityAccessCodesParameters parameters) {
+	public GetSecurityAccessCodesResponse getSecurityAccessCodes(GetSecurityAccessCodesParameters parameters) {
 		GetSecurityAccessCodesResponse result = new GetSecurityAccessCodesResponse();
 		String spName = "up_Security_GetAccessCode";
 		List<Object> params = new ArrayList<Object>();
@@ -96,7 +96,7 @@ public class AdminService extends ApiService {
 	 * @throws Exception 
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetSecurityAccessCode(SetSecurityAccessCodeParameters parameters) {
+	public ResultCode setSecurityAccessCode(SetSecurityAccessCodeParameters parameters) {
 		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
 		
 		SecurityAccessCode securityAccessCode = new SecurityAccessCode();
@@ -132,7 +132,7 @@ public class AdminService extends ApiService {
 	 * @return
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetDeleteSecurityAccessCodes(List<Integer> idList) {
+	public ResultCode setDeleteSecurityAccessCodes(List<Integer> idList) {
 		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
 
 		for (Integer id : idList) {

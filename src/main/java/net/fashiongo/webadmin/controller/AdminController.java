@@ -76,9 +76,9 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "getsecurityaccesscodes", method = RequestMethod.POST)
-	public JsonResponse<GetSecurityAccessCodesResponse> GetSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
+	public JsonResponse<GetSecurityAccessCodesResponse> getSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
 		JsonResponse<GetSecurityAccessCodesResponse> result = new JsonResponse<GetSecurityAccessCodesResponse>(false, null, null);
-		GetSecurityAccessCodesResponse _result = adminService.GetSecurityAccessCodes(parameters);
+		GetSecurityAccessCodesResponse _result = adminService.getSecurityAccessCodes(parameters);
 
 		result.setSuccess(true);
 		result.setData(_result);
@@ -96,9 +96,9 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "setsecurityaccesscode", method = RequestMethod.POST)
-	public JsonResponse<String> SetSecurityAccessCode(@RequestBody SetSecurityAccessCodeParameters parameters) {
+	public JsonResponse<String> setSecurityAccessCode(@RequestBody SetSecurityAccessCodeParameters parameters) {
 		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
-		ResultCode _result = adminService.SetSecurityAccessCode(parameters);
+		ResultCode _result = adminService.setSecurityAccessCode(parameters);
 		
 		result.setSuccess(_result.getSuccess());
 		result.setCode(_result.getResultCode());
@@ -117,10 +117,10 @@ public class AdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "setdeletesecurityaccesscodes", method = RequestMethod.POST)
-	public JsonResponse<String> SetDeleteSecurityAccessCodes(@RequestBody SetDeleteSecurityAccessCodesParameter parameters) {
+	public JsonResponse<String> setDeleteSecurityAccessCodes(@RequestBody SetDeleteSecurityAccessCodesParameter parameters) {
 		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
 		
-		ResultCode _result = adminService.SetDeleteSecurityAccessCodes(parameters.getIdList());
+		ResultCode _result = adminService.setDeleteSecurityAccessCodes(parameters.getIdList());
 		
 		result.setSuccess(_result.getSuccess());
 		result.setCode(_result.getResultCode());

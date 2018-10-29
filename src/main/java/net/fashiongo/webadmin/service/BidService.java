@@ -32,7 +32,7 @@ public class BidService extends ApiService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public GetBidSettingLastRecordsResponse GetBidSettingLastRecords(GetBidSettingLastRecordsParameter parameters) {
+	public GetBidSettingLastRecordsResponse getBidSettingLastRecords(GetBidSettingLastRecordsParameter parameters) {
 		GetBidSettingLastRecordsResponse result = new GetBidSettingLastRecordsResponse();
 		String spName = "up_wa_Bid_Admin_SearchSettingRecords";
 		List<Object> params = new ArrayList<Object>();
@@ -56,7 +56,7 @@ public class BidService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	public ResultCode SetBidSetting(SetBidSettingParameter parameters) {
+	public ResultCode setBidSetting(SetBidSettingParameter parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
 
 		String spName = "up_GenerateAdBid";
@@ -90,7 +90,7 @@ public class BidService extends ApiService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public GetBidSettingResponse GetBidSetting(GetBidSettingParameter parameters) {
+	public GetBidSettingResponse getBidSetting(GetBidSettingParameter parameters) {
 		GetBidSettingResponse result = new GetBidSettingResponse();
 
 		String spName = "up_Bid_Admin_SettingList";
@@ -116,7 +116,7 @@ public class BidService extends ApiService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public GetBidSettingLastWeekResponse GetBidSettingLastWeek(Integer top) {
+	public GetBidSettingLastWeekResponse getBidSettingLastWeek(Integer top) {
 		GetBidSettingLastWeekResponse result = new GetBidSettingLastWeekResponse();
 		
 		String spName = "up_wa_Bid_Admin_AdVendorPeriodWeekly";

@@ -18,6 +18,7 @@ import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
+import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
@@ -40,6 +41,7 @@ import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
+import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
@@ -67,6 +69,7 @@ import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
+import net.fashiongo.webadmin.model.primary.TrendReport;
 
 /**
  *
@@ -86,6 +89,9 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private VendorCategoryRepository vendorCategoryRepository;
+	
+	@Autowired
+	private TrendReportRepository trendReportRepository;
 
 	/**
 	 *
@@ -559,7 +565,7 @@ public class SitemgmtService extends ApiService {
 	 *
 	 * @since 2018. 10. 25.
 	 * @author Nayeon Kim
-	 * @return GetFeaturedItemCountParameter
+	 * @param GetFeaturedItemCountParameter
 	 * @return GetFeaturedItemCountResponse
 	 */
 	@SuppressWarnings("unchecked")
@@ -573,6 +579,24 @@ public class SitemgmtService extends ApiService {
 		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItem.class);
 		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
 		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
+		return result;
+	}
+
+	/**
+	 *
+	 * Get Last KMM Data
+	 *
+	 * @since 2018. 10. 29.
+	 * @author Nayeon Kim
+	 * @return List<TrendReportKmmImage>
+	 */
+	public List<TrendReportKmmImage> getLastKMMData() {
+		List<TrendReportKmmImage> result = new ArrayList<TrendReportKmmImage>();
+		List<TrendReport> trendReport = trendReportRepository.findAllByCuratedTypeOrderByTrendReportIDDesc(4);
+		if (!CollectionUtils.isEmpty(trendReport)) {
+			result = trendReport.stream().map(c -> new TrendReportKmmImage(c.getSquareImage(), c.getImage(),
+					c.getMiniImage(), c.getkMMImage1(), c.getkMMImage2())).collect(Collectors.toList());
+		}
 		return result;
 	}
 	
