@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
+import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
 import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorNews;
@@ -24,6 +24,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
+import net.fashiongo.webadmin.model.primary.VendorNewsView;
 
 /**
  * 
@@ -33,6 +34,9 @@ import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 public class MessageService extends ApiService {
 	@Autowired
 	VendorNewsDetailRepository vendorNewsDetailRepository;
+	
+	@Autowired
+	VendorNewsViewRepository vendorNewsViewRepository;
 	
 	/**
 	 * 
@@ -131,8 +135,8 @@ public class MessageService extends ApiService {
 	 * @param GetVendorNewsDetailParameter
 	 * @return VendorNewsDetail
 	 */
-	public VendorNewsDetail getVendorNewsDetail (GetVendorNewsDetailParameter parameters) {
-		VendorNewsDetail result = vendorNewsDetailRepository.findOneByNewsID(parameters.getNewsID());
+	public VendorNewsView getVendorNewsDetail (GetVendorNewsDetailParameter parameters) {
+		VendorNewsView result = vendorNewsViewRepository.findOneByNewsID(parameters.getNewsID());
 		return result;
 	}
 	
@@ -150,35 +154,47 @@ public class MessageService extends ApiService {
 		String[] widList = selectedVendor.split(",", -1);
 		if(widList.length > 0) {
 			for(String wid : widList) {
-				if(StringUtils.isEmpty(news.getNewsTitle()) || news.getNewsTitle().trim().length() < 1) {
-					return -2;
-				}
-				if(news.getNewsTitle().length() > 50) return -3;
-				VendorNewsDetail vendorNews = vendorNewsDetailRepository.findOneByNewsID(news.getNewsID());
-				if(vendorNews == null) {
-					vendorNews = new VendorNewsDetail();
-					vendorNews.setStartingDate(LocalDateTime.now());
-				}
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-				LocalDateTime fromdate = LocalDateTime.parse(news.getFromDate()+" 00:00:00", formatter);
-				LocalDateTime todate = LocalDateTime.parse(news.getToDate()+" 23:59:59", formatter);
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");	
-				
-				vendorNews.setNewsTitle(news.getNewsTitle());
-				vendorNews.setNewsContent(news.getNewsContent());
-				vendorNews.setWholeSalerID(Integer.parseInt(wid));
-				vendorNews.setNewsType(news.getNewsType());
-				vendorNews.setActive(news.getActive());
-				vendorNews.setSortNo(news.getSortNo());
-				vendorNews.setShowBanner(news.getShowBanner());
-				vendorNews.setFromDate(fromdate);
-				vendorNews.setToDate(todate);
-				vendorNews.setLastUser(news.getLastUser());
-				vendorNews.setLastModifiedDateTime(LocalDateTime.now());
-				vendorNewsDetailRepository.save(vendorNews);
-				result = 1;
+				if(wid != "") news.setWholeSalerID(Integer.parseInt(wid));
+				result = setVendorNewsDetail(news);
 			}
+		} else {
+			result = setVendorNewsDetail(news);
 		}
+		return result;
+	}
+	
+	public Integer setVendorNewsDetail(VendorNewsDetail news) {
+		Integer result = 0;
+		if(StringUtils.isEmpty(news.getNewsTitle()) || news.getNewsTitle().trim().length() < 1) {
+			return -2;
+		}
+		if(news.getNewsTitle().length() > 50) return -3;
+		VendorNewsDetail vendorNews = vendorNewsDetailRepository.findOneByNewsID(news.getNewsID());
+		if(vendorNews == null) {
+			vendorNews = new VendorNewsDetail();
+			vendorNews.setStartingDate(LocalDateTime.now());
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+		LocalDateTime fromdate = StringUtils.isEmpty(news.getFromDate()) ? null : LocalDateTime.parse(news.getFromDate()+" 00:00:00", formatter);
+		LocalDateTime todate = StringUtils.isEmpty(news.getToDate()) ? null : LocalDateTime.parse(news.getToDate()+" 23:59:59", formatter);
+		
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");	
+		
+		vendorNews.setNewsTitle(news.getNewsTitle());
+		vendorNews.setNewsContent(news.getNewsContent());
+		vendorNews.setWholeSalerID(news.getWholeSalerID());
+		vendorNews.setNewsType(news.getNewsType());
+		vendorNews.setActive(news.getActive());
+		vendorNews.setSortNo(news.getSortNo());
+		vendorNews.setShowBanner(news.getShowBanner());
+		vendorNews.setFromDate(fromdate);
+		vendorNews.setToDate(todate);
+		vendorNews.setLastUser(news.getLastUser());
+		vendorNews.setLastModifiedDateTime(LocalDateTime.now());
+		System.out.println(vendorNews);
+		vendorNewsDetailRepository.save(vendorNews);
+		result = 1;
+		
 		return result;
 	}
 	

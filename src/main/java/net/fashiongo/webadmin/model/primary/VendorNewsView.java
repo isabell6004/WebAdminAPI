@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 
@@ -21,61 +19,66 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "tblNews")
-public class VendorNewsDetail implements Serializable {
+@Table(name = "vwtblNews")
+public class VendorNewsView implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "NewsID")
-	@JsonProperty("newsid")
+	@JsonProperty("NewsID")
 	private Integer newsID;
 	
 	@Column(name = "WholeSalerID")
-	@JsonProperty("wholesalerid")
+	@JsonProperty("WholeSalerID")
 	private Integer wholeSalerID;
 	
 	@Column(name = "NewsTitle")
-	@JsonProperty("newstitle")
+	@JsonProperty("NewsTitle")
 	private String newsTitle;
 	
 	@Column(name = "NewsContent")
-	@JsonProperty("newscontent")
+	@JsonProperty("NewsContent")
 	private String newsContent;
 	
 	@Column(name = "NewsType")
-	@JsonProperty("newstype")
+	@JsonProperty("NewsType")
 	private String newsType;
 	
 	@Column(name = "StartingDate")
-	@JsonProperty("startingdate")
+	@JsonProperty("StartingDate")
 	private LocalDateTime startingDate;
 	
 	@Column(name = "FromDate")
-	@JsonProperty("fromdate")
+	@JsonProperty("FromDate")
 	private LocalDateTime fromDate;
 	
 	@Column(name = "ToDate")
-	@JsonProperty("todate")
+	@JsonProperty("ToDate")
 	private LocalDateTime toDate;
 	
 	@Column(name = "LastUser")
-	@JsonProperty("lastUser")
+	@JsonProperty("LastUser")
 	private String lastUser;
 	
 	@Column(name = "LastModifiedDateTime")
-	@JsonProperty("lastmodifieddatetime")
+	@JsonProperty("LastModifiedDateTime")
 	private LocalDateTime lastModifiedDateTime;
 	
 	@Column(name = "SortNo")
-	@JsonProperty("sortno")
+	@JsonProperty("SortNo")
 	private Integer sortNo;
 	
 	@Column(name = "Active")
-	@JsonProperty("active")
+	@JsonProperty("Active")
 	private Boolean active;
 	
 	@Column(name = "ShowBanner")
-	@JsonProperty("showbanner")
+	@JsonProperty("ShowBanner")
 	private Boolean showBanner;
+	
+	@Column(name = "Recipient")
+	@JsonProperty("Recipient")
+	private String recipient;
+	
 
 	public Integer getNewsID() {
 		return newsID;
@@ -95,21 +98,21 @@ public class VendorNewsDetail implements Serializable {
 
 	public String getStartingDate() {
 		if (startingDate == null) return null;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String formattedStartingDate = startingDate.format(formatter);		
 		return formattedStartingDate;
 	}
 
 	public String getFromDate() {
 		if (fromDate == null) return null;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String formattedFromDate = fromDate.format(formatter);				
 		return formattedFromDate;
 	}
 
 	public String getToDate() {
 		if (toDate == null) return null;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String formattedToDate = toDate.format(formatter);				
 		return formattedToDate;
 	}
@@ -120,7 +123,7 @@ public class VendorNewsDetail implements Serializable {
 
 	public String getLastModifiedDateTime() {
 		if (lastModifiedDateTime == null) return null;
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String formattedLastModifiedDateTime = lastModifiedDateTime.format(formatter);				
 		return formattedLastModifiedDateTime;
 	}
@@ -134,7 +137,7 @@ public class VendorNewsDetail implements Serializable {
 	}
 
 	public Boolean getShowBanner() {
-		return showBanner == null ? false : showBanner;
+		return showBanner;
 	}
 
 	public void setNewsID(Integer newsID) {
@@ -158,10 +161,8 @@ public class VendorNewsDetail implements Serializable {
 	}
 	
 	public void setStartingDate(String startingDate) {
-		if (StringUtils.isNotEmpty(startingDate)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
-			this.startingDate = LocalDateTime.parse(startingDate+" 00:00:00", formatter);
-		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
+		this.startingDate = LocalDateTime.parse(startingDate+" 00:00:00", formatter);
 	}
 
 	public void setFromDate(LocalDateTime fromDate) {
@@ -169,10 +170,8 @@ public class VendorNewsDetail implements Serializable {
 	}
 	
 	public void setFromDate(String fromDate) {
-		if (StringUtils.isNotEmpty(fromDate)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-			this.fromDate = LocalDateTime.parse(fromDate+" 00:00:00", formatter);
-		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
+		this.fromDate = LocalDateTime.parse(fromDate+" 00:00:00", formatter);
 	}
 
 	public void setToDate(LocalDateTime toDate) {
@@ -180,10 +179,8 @@ public class VendorNewsDetail implements Serializable {
 	}
 	
 	public void setToDate(String toDate) {
-		if (StringUtils.isNotEmpty(toDate)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
-			this.toDate = LocalDateTime.parse(toDate+" 00:00:00", formatter);
-		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
+		this.toDate = LocalDateTime.parse(toDate+" 00:00:00", formatter);
 	}
 
 	public void setLastUser(String lastUser) {
@@ -195,10 +192,8 @@ public class VendorNewsDetail implements Serializable {
 	}
 	
 	public void setLastModifiedDateTime(String lastModifiedDateTime) {
-		if (StringUtils.isNotEmpty(lastModifiedDateTime)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
-			this.lastModifiedDateTime = LocalDateTime.parse(lastModifiedDateTime+" 00:00:00", formatter);
-		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
+		this.lastModifiedDateTime = LocalDateTime.parse(lastModifiedDateTime+" 00:00:00", formatter);
 	}
 
 	public void setSortNo(Integer sortNo) {
@@ -220,7 +215,14 @@ public class VendorNewsDetail implements Serializable {
 	public void setNewsType(String newsType) {
 		this.newsType = newsType;
 	}
-	
+
+	public String getRecipient() {
+		return recipient;
+	}
+
+	public void setRecipient(String recipient) {
+		this.recipient = recipient;
+	}
 	
 	
 }
