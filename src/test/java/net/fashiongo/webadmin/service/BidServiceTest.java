@@ -41,7 +41,7 @@ public class BidServiceTest {
 		parameters.setFromDate("8/1/2018");
 		parameters.setToDate("8/31/2018");
 		
-		GetBidSettingLastRecordsResponse _result = bidService.GetBidSettingLastRecords(parameters);
+		GetBidSettingLastRecordsResponse _result = bidService.getBidSettingLastRecords(parameters);
 		assertNotNull(_result.getBidSettingLastRecords());
 	}
 	
@@ -65,7 +65,7 @@ public class BidServiceTest {
 		parameters.setPriceUnit("3,3");
 		parameters.setBuyItNowPrice(",");
 		
-		ResultCode _result = bidService.SetBidSetting(parameters);
+		ResultCode _result = bidService.setBidSetting(parameters);
 		assertTrue(_result.getSuccess());
 	}
 	
@@ -86,7 +86,7 @@ public class BidServiceTest {
 		parameters.setFromDate("10/28/2018");
 		parameters.setToDate("11/03/2018");
 		
-		GetBidSettingResponse _result = bidService.GetBidSetting(parameters);
+		GetBidSettingResponse _result = bidService.getBidSetting(parameters);
 		assertNotNull(_result.getBidSetting());
 	}
 	
@@ -102,7 +102,7 @@ public class BidServiceTest {
 		GetBidSettingLastWeekParameter parameters = new GetBidSettingLastWeekParameter();
 		parameters.setTop(120);
 		
-		GetBidSettingLastWeekResponse _result = bidService.GetBidSettingLastWeek(parameters.getTop());
+		GetBidSettingLastWeekResponse _result = bidService.getBidSettingLastWeek(parameters.getTop());
 		assertNotNull(_result.getBidSettingLastWeek());
 	}
 }
