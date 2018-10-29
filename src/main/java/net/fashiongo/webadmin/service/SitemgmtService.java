@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.json.simple.JSONObject;
 //import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import net.fashiongo.webadmin.model.pojo.CategoryVendor;
 import net.fashiongo.webadmin.model.pojo.CategoryVendorInfo;
 import net.fashiongo.webadmin.model.pojo.ColorListInfo;
 import net.fashiongo.webadmin.model.pojo.DMRequest;
+import net.fashiongo.webadmin.model.pojo.DMRequestDetail;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
 import net.fashiongo.webadmin.model.pojo.FeaturedItem;
 import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
@@ -49,6 +51,7 @@ import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -759,5 +762,45 @@ public class SitemgmtService extends ApiService {
 		result.setDmList((List<DMRequest>) _result.get(0));
 		
 		return result;
+	}
+	
+	/**
+	 * 
+	 * Get DMRequestSendList
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public JSONObject getDMRequestSendList(GetDMRequestSendListParameter parameters) {
+		JSONObject result = new JSONObject();
+		List<DMRequestDetail> subList = null;
+		
+		for(Integer catalogId : parameters.getDmIds()) {
+			subList = getDMDetail(catalogId);
+			if(!CollectionUtils.isEmpty(subList)) {
+				result.put(catalogId.toString(), getDMDetail(catalogId));
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get DMDetail
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param catalogId
+	 * @return
+	 */
+	private List<DMRequestDetail> getDMDetail(Integer catalogId) {
+		String spName = "up_wa_DMSendList";
+		List<Object> params = new ArrayList<Object>();
+		params.add(catalogId);
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
+		return CollectionUtils.isEmpty(_result) ? null : (List<DMRequestDetail>) _result.get(0);
 	}
 }
