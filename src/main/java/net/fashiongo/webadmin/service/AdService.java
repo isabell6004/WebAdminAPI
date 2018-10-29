@@ -32,6 +32,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdCalendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
@@ -39,6 +40,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
@@ -363,6 +365,60 @@ public class AdService extends ApiService {
 		result.setVendorCount(vendorCount);
 		result.setVendorData1(vendorData1);
 		result.setVendorData2(vendorData2);
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * Get Category Ad Item Search Vendor
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Jiwon Kim
+	 * @param GetCategoryAdItemSearchVendorParameter
+	 * @return GetCategoryAdItemSearchVendor
+	 */
+	public GetCategoryAdItemSearchVendorResponse GetCategoryAdItemSearchVendor(GetCategoryAdItemSearchVendorParameter parameters) {
+		GetCategoryAdItemSearchVendorResponse result = new GetCategoryAdItemSearchVendorResponse();
+		String spName = "up_wa_GetCollectionCategoryItemsSearchVendor";
+		List<Object> params = new ArrayList<Object>();
+        params.add(parameters.getPagenum());
+        params.add(parameters.getPagesize());
+        params.add(parameters.getCategoryIDs());
+        params.add(parameters.getCollectionCategoryID());
+        params.add(parameters.getVendorID());
+        params.add(parameters.getSelectedCategoryID());
+        params.add(parameters.getFromDate());
+        params.add(parameters.getToDate());
+        params.add(null);
+        params.add(null);
+        params.add(parameters.getBodySizeIDs());
+        params.add(parameters.getPatternIDs());
+        params.add(parameters.getLengthIDs());
+        params.add(parameters.getStyleIDs());
+        params.add(parameters.getFabricIDs());
+        params.add(parameters.getColorNames());
+        params.add(parameters.getFilter());
+        params.add("ProductDescription");
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(null);        
+        params.add(null);
+        params.add(null);
+        params.add(parameters.getSearchAndOr());
+        params.add(parameters.getKeyword());
+        params.add(null);
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class);
+		List<CategoryAdCount> count = (List<CategoryAdCount>) _result.get(0);
+		List<SelectData> selectData = (List<SelectData>) _result.get(1);
+
+		result.setCount(count);
+		result.setSelectData(selectData);
 		
 		return result;
 	}

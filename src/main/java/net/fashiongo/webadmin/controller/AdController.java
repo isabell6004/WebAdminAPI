@@ -16,6 +16,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdCalendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
@@ -24,6 +25,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
 import net.fashiongo.webadmin.service.AdService;
@@ -208,13 +210,32 @@ public class AdController {
 	 * 
 	 * @since 2018. 10. 26.
 	 * @author Jiwon Kim
-	 * @param AdID
+	 * @param GetCategoryAdItemSearchParameter
 	 * @return GetCategoryAdItemSearch
 	 */
 	@RequestMapping(value = "getcategoryaditemsearch", method = RequestMethod.POST)
 	public JsonResponse<GetCategoryAdItemSearchResponse> GetCategoryAdItemSearch(@RequestBody GetCategoryAdItemSearchParameter parameters) {
 		JsonResponse<GetCategoryAdItemSearchResponse> results = new JsonResponse<GetCategoryAdItemSearchResponse>(false, null, 0, null);
 		GetCategoryAdItemSearchResponse result = adService.GetCategoryAdItemSearch(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		return results;
+	}
+	
+	
+	/**
+	 * 
+	 * Get Category Ad Item Search Vendor
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Jiwon Kim
+	 * @param GetCategoryAdItemSearchVendorParameter
+	 * @return GetCategoryAdItemSearchVendor
+	 */
+	@RequestMapping(value = "getcategoryaditemsearchvendor", method = RequestMethod.POST)
+	public JsonResponse<GetCategoryAdItemSearchVendorResponse> GetCategoryAdItemSearchVendor(@RequestBody GetCategoryAdItemSearchVendorParameter parameters) {
+		JsonResponse<GetCategoryAdItemSearchVendorResponse> results = new JsonResponse<GetCategoryAdItemSearchVendorResponse>(false, null, 0, null);
+		GetCategoryAdItemSearchVendorResponse result = adService.GetCategoryAdItemSearchVendor(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 		return results;
