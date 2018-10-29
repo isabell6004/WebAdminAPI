@@ -21,6 +21,8 @@ import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -28,11 +30,14 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
@@ -414,5 +419,61 @@ public class SitemgmtController {
 	public JsonResponse<GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody GetFeaturedItemCountParameter parameters) {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());	
 		return new JsonResponse<GetFeaturedItemCountResponse>(true, null, result);
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 29.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="getproductattributes", method=RequestMethod.POST)
+	public JsonResponse<GetProductAttributesResponse> getProductAttributes(@RequestBody GetProductAttributesParameter parameters) {
+		JsonResponse<GetProductAttributesResponse> results = new JsonResponse<GetProductAttributesResponse>(false, null, 0, null);
+		GetProductAttributesResponse result = sitemgmtService.getProductAttributes(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 29.
+	 * @author Reo
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value="setproductattributes", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setProductAttributes(@RequestBody SetProductAttributesParameter parameter) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
+		
+		ResultCode result = sitemgmtService.setProductAttributes(parameter);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 29.
+	 * @author Reo
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value="setproductattributesactive", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setProductAttributesActive(@RequestBody SetProductAttributesParameter parameter) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
+		
+		ResultCode result = sitemgmtService.setProductAttributesActive(parameter);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
 	}
 }
