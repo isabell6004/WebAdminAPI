@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.service;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 //import java.util.Date;
 import java.util.List;
@@ -12,8 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
+import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
+import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
@@ -35,6 +41,8 @@ import net.fashiongo.webadmin.model.pojo.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
+import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
+import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
@@ -45,7 +53,9 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
@@ -55,9 +65,13 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListRespon
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import net.fashiongo.webadmin.model.primary.TodayDeal;
+import net.fashiongo.webadmin.model.primary.TrendReport;
+import net.fashiongo.webadmin.model.primary.VendorCategory;
 
 /**
  *
@@ -71,6 +85,15 @@ public class SitemgmtService extends ApiService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
+	
+	@Autowired
+	private TodayDealRepository todayDealRepository;
+	
+	@Autowired
+	private VendorCategoryRepository vendorCategoryRepository;
+	
+	@Autowired
+	private TrendReportRepository trendReportRepository;
 
 	/**
 	 *
@@ -544,7 +567,7 @@ public class SitemgmtService extends ApiService {
 	 *
 	 * @since 2018. 10. 25.
 	 * @author Nayeon Kim
-	 * @return GetFeaturedItemCountParameter
+	 * @param GetFeaturedItemCountParameter
 	 * @return GetFeaturedItemCountResponse
 	 */
 	@SuppressWarnings("unchecked")
@@ -558,6 +581,24 @@ public class SitemgmtService extends ApiService {
 		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItem.class);
 		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
 		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
+		return result;
+	}
+
+	/**
+	 *
+	 * Get Last KMM Data
+	 *
+	 * @since 2018. 10. 29.
+	 * @author Nayeon Kim
+	 * @return List<TrendReportKmmImage>
+	 */
+	public List<TrendReportKmmImage> getLastKMMData() {
+		List<TrendReportKmmImage> result = new ArrayList<TrendReportKmmImage>();
+		List<TrendReport> trendReport = trendReportRepository.findAllByCuratedTypeOrderByTrendReportIDDesc(4);
+		if (!CollectionUtils.isEmpty(trendReport)) {
+			result = trendReport.stream().map(c -> new TrendReportKmmImage(c.getSquareImage(), c.getImage(),
+					c.getMiniImage(), c.getkMMImage1(), c.getkMMImage2())).collect(Collectors.toList());
+		}
 		return result;
 	}
 	
@@ -584,5 +625,90 @@ public class SitemgmtService extends ApiService {
 		result.setInactiveTodayDeals((List<InactiveTodayDealDetail>) _result.get(1));
 		
 		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * 
+	 * @since 2018. 10. 26.
+	 * @author Incheol Jung
+	 * @param todayDeal
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setTodayDealCalendar(SetTodayDealCalendarParameter parameters) {
+		ResultCode result = new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+		TodayDeal todayDeal = this.todayDealRepository.findOneByTodayDealId(parameters.getTodayDealID());
+		
+		if(todayDeal != null) {
+			todayDeal.setFromDate(parameters.getFromDate());
+			todayDeal.setActive(parameters.getActive());
+			
+			if(parameters.getFromDate() != null) {
+				todayDeal.setToDate(parameters.getFromDate().plusDays(1).minusSeconds(1));
+			}
+			
+			if(parameters.getActive() == false) {
+				todayDeal.setRevokedOn(LocalDateTime.now());
+				todayDeal.setRevokedBy(Utility.getUsername());
+			}
+			
+			this.todayDealRepository.save(todayDeal);
+		}else {
+			result.setResultCode(-1);
+			result.setResultMsg("failure");
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get VendorCategory
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param wholesalerId
+	 * @return
+	 */
+	public GetVendorCategoryResponse getVendorCategory(Integer wholesalerId) {
+		GetVendorCategoryResponse result = new GetVendorCategoryResponse();
+		List<VendorCategory> list = this.vendorCategoryRepository.findByWholeSalerIDAndActiveTrue(wholesalerId);
+		result.setVendorCategorySummaryList(
+				list.stream()
+				.map(v -> new VendorCategorySummary(v.getVendorCategoryID(), v.getCategoryName()))
+				.collect(Collectors.toList()));
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Set NewTodayDeal
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public Integer setNewTodayDeal(SetNewTodayDealParameter parameters) {
+		TodayDeal todayDeal = new TodayDeal();
+		todayDeal.setTitle("");
+		todayDeal.setDescription("");
+		todayDeal.setProductId(parameters.getProductID());
+		todayDeal.setFromDate(parameters.getFromDate());
+		todayDeal.setToDate(parameters.getToDate());
+		todayDeal.setTodayDealPrice(parameters.getTodayDealPrice());
+		todayDeal.setActive(true);
+		todayDeal.setAppliedOn(LocalDateTime.now());
+		todayDeal.setApprovedOn(LocalDateTime.now());
+		todayDeal.setCreatedBy(Utility.getUsername());
+		todayDeal.setModifiedBy(Utility.getUsername());
+		todayDeal.setCreatedByVendor(false);
+		
+		this.todayDealRepository.save(todayDeal);
+		
+		return 1;
 	}
 }

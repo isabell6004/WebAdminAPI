@@ -49,4 +49,42 @@ public class Utility {
 		ostr.flush();
 		ostr.close();
 	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 23.
+	 * @author Reo
+	 * @param weekday
+	 * @return
+	 */
+	public static Integer GetWeekday(String weekday) {
+		Integer weekid = 1;
+		
+		switch (weekday) {
+		case "Sun":
+			weekid = 1;
+			break;
+		case "Mon":
+			weekid = 2;
+			break;
+		case "Tue":
+			weekid = 3;
+			break;
+		case "Wed":
+			weekid = 4;
+			break;
+		case "Thu":
+			weekid = 5;
+			break;
+		case "Fri":
+			weekid = 6;
+			break;
+		case "Sat":
+			weekid = 7;
+			break;
+		}
+		
+		return weekid;
+	}
 }

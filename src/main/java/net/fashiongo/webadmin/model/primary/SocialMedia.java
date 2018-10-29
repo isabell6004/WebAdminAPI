@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -30,6 +31,7 @@ public class SocialMedia implements Serializable {
 	@JsonProperty("SocialMediaID")
 	private Integer socialMediaId;
 	
+	@NotNull
 	@Column(name = "SocialMedia")
 	@JsonProperty("SocialMedia")
 	private String socialMedia;
@@ -67,7 +69,7 @@ public class SocialMedia implements Serializable {
 	}
 
 	public void setSocialMediaId(Integer socialMediaId) {
-		this.socialMediaId = socialMediaId;
+		this.socialMediaId = socialMediaId.equals(0) ? null : socialMediaId;;
 	}
 
 	public void setSocialMedia(String socialMedia) {

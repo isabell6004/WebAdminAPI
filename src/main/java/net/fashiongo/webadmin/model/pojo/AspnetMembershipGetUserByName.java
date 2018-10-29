@@ -1,19 +1,32 @@
-package net.fashiongo.webadmin.model.pojo.response;
+package net.fashiongo.webadmin.model.pojo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-public class GetUserByNameResponse {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class AspnetMembershipGetUserByName {
+	@JsonProperty("Email")
 	private String Email;
+	@JsonProperty("PasswordQuestion")
 	private String PasswordQuestion;
+	@JsonProperty("Comment")
 	private String Comment;
+	@JsonProperty("IsApproved")
 	private Boolean IsApproved;
-	private Date CreateDate;
-	private Date LastLoginDate;
-	private Date LastActivityDate;
-	private Date LastPasswordChangedDate;
+	@JsonProperty("CreateDate")
+	private LocalDateTime CreateDate;
+	@JsonProperty("LastLoginDate")
+	private LocalDateTime LastLoginDate;
+	@JsonProperty("LastActivityDate")
+	private LocalDateTime LastActivityDate;
+	@JsonProperty("LastPasswordChangedDate")
+	private LocalDateTime LastPasswordChangedDate;
+	@JsonProperty("UserId")
 	private String UserId;
+	@JsonProperty("IsLockedOut")
 	private Boolean IsLockedOut;
-	private Date LastLockoutDate;
+	@JsonProperty("LastLockoutDate")
+	private LocalDateTime LastLockoutDate;
 	public String getEmail() {
 		return Email;
 	}
@@ -32,34 +45,35 @@ public class GetUserByNameResponse {
 	public void setComment(String comment) {
 		Comment = comment;
 	}
+	
 	public Boolean getIsApproved() {
 		return IsApproved;
 	}
 	public void setIsApproved(Boolean isApproved) {
 		IsApproved = isApproved;
 	}
-	public Date getCreateDate() {
+	public LocalDateTime getCreateDate() {
 		return CreateDate;
 	}
-	public void setCreateDate(Date createDate) {
+	public void setCreateDate(LocalDateTime createDate) {
 		CreateDate = createDate;
 	}
-	public Date getLastLoginDate() {
+	public LocalDateTime getLastLoginDate() {
 		return LastLoginDate;
 	}
-	public void setLastLoginDate(Date lastLoginDate) {
+	public void setLastLoginDate(LocalDateTime lastLoginDate) {
 		LastLoginDate = lastLoginDate;
 	}
-	public Date getLastActivityDate() {
+	public LocalDateTime getLastActivityDate() {
 		return LastActivityDate;
 	}
-	public void setLastActivityDate(Date lastActivityDate) {
+	public void setLastActivityDate(LocalDateTime lastActivityDate) {
 		LastActivityDate = lastActivityDate;
 	}
-	public Date getLastPasswordChangedDate() {
+	public LocalDateTime getLastPasswordChangedDate() {
 		return LastPasswordChangedDate;
 	}
-	public void setLastPasswordChangedDate(Date lastPasswordChangedDate) {
+	public void setLastPasswordChangedDate(LocalDateTime lastPasswordChangedDate) {
 		LastPasswordChangedDate = lastPasswordChangedDate;
 	}
 	public String getUserId() {
@@ -74,12 +88,11 @@ public class GetUserByNameResponse {
 	public void setIsLockedOut(Boolean isLockedOut) {
 		IsLockedOut = isLockedOut;
 	}
-	public Date getLastLockoutDate() {
+	public LocalDateTime getLastLockoutDate() {
 		return LastLockoutDate;
 	}
-	public void setLastLockoutDate(Date lastLockoutDate) {
+	public void setLastLockoutDate(LocalDateTime lastLockoutDate) {
 		LastLockoutDate = lastLockoutDate;
 	}
-	
 	
 }

@@ -1,28 +1,35 @@
 package net.fashiongo.webadmin.model.pojo;
 
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
 
-import net.fashiongo.webadmin.model.primary.SecurityUser;
-
-public class SecurityUserData {
-	private Date accesstime;
+/**
+ * 
+ * @author Reo
+ *
+ */
+public class SecurityUserData  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private List<String> accesstimes;
 	private List<String> delaccesstimes;
 	private List<String> delgroupnames;
 	private List<String> groupnames;
 	private SecurityUserCreate user;
-	
+
+	public List<String> getAccesstimes() {
+		return accesstimes;
+	}
+	public void setAccesstimes(List<String> accesstimes) {
+		this.accesstimes = accesstimes;
+	}
 	public List<String> getDelaccesstimes() {
 		return delaccesstimes;
 	}
 	public void setDelaccesstimes(List<String> delaccesstimes) {
 		this.delaccesstimes = delaccesstimes;
-	}
-	public Date getAccesstime() {
-		return accesstime;
-	}
-	public void setAccesstime(Date accesstime) {
-		this.accesstime = accesstime;
 	}
 	public List<String> getDelgroupnames() {
 		return delgroupnames;

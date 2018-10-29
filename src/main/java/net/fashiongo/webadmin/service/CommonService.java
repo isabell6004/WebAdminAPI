@@ -85,7 +85,7 @@ public class CommonService extends ApiService {
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value="GetCountryStates", key="#countryAbbrev")
+	@Cacheable(value="GetCountryStates", key="#countryAbbrev", unless = "#result == null")
 	public JsonResponse<GetCountryStatesResponse> getCountryStates(String countryAbbrev) {
 		JsonResponse<GetCountryStatesResponse> result = httpClient.get("location/countries/".concat(countryAbbrev));
 		return result;
@@ -113,7 +113,7 @@ public class CommonService extends ApiService {
 	 * @return GetBidAdPagesResponse
 	 */
 	@SuppressWarnings("unchecked")
-	public GetBidAdPagesResponse GetBidAdPages() {
+	public GetBidAdPagesResponse getBidAdPages() {
 		GetBidAdPagesResponse result = new GetBidAdPagesResponse();
 		String spName = "up_wa_GetBidAdPages";
 		List<Object> params = new ArrayList<Object>();
@@ -132,7 +132,7 @@ public class CommonService extends ApiService {
 	 * @param pageId
 	 * @return List<AdPageSpot>
 	 */
-	public List<AdPageSpot> GetBidAdPageSpots(Integer pageId) {
+	public List<AdPageSpot> getBidAdPageSpots(Integer pageId) {
 		LocalDateTime nowDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0);
 		List<AdPageSpot> result = adPageSpotRepository.findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotName(nowDate, 0, pageId);
 		
@@ -146,7 +146,7 @@ public class CommonService extends ApiService {
 	 * @author Junghwan Lee
 	 * @return void
 	 */
-	public void GetAdPageSpotsCombined() {
+	public void getAdPageSpotsCombined() {
 		
 	}
 
@@ -160,6 +160,7 @@ public class CommonService extends ApiService {
 	 */
 	public List<SecurityUser> getSecurityUser() {
 		List<SecurityUser> result =  securityUserRepository.findAllByOrderByActiveDescUserName();
+		
 		return result;
 	}
 }

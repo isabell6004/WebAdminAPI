@@ -56,7 +56,7 @@ public class SecurityGroupServiceTest {
 		GetSecurityUserGroupParameter parameters = new GetSecurityUserGroupParameter();
 		parameters.setUsrId(11);
 		
-		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.GetSecurityUserGroupAccessTimes(parameters);
+		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.getSecurityUserGroupAccessTimes(parameters);
 		if (result != null) {
 			for(MapUserGroup mug : result.getMapUserGroupList()) {
 				assertNotNull(mug.getGroupID());
@@ -81,7 +81,7 @@ public class SecurityGroupServiceTest {
 		parameters.setRole("G");
 		parameters.setVendorID(3064);
 		
-		GetSecurityUserResponse result = securityGroupService.GetSecurityUsers(parameters);
+		GetSecurityUserResponse result = securityGroupService.getSecurityUsers(parameters);
 		if (result != null) {
 			for(SecurityUsers su: result.getSecurityUserList()) {
 				assertNotNull(su.getUserID());
@@ -111,7 +111,7 @@ public class SecurityGroupServiceTest {
 		parameters.setVendorType(null);
 		parameters.setVendorKeyword(null);
 		
-		GetUserMappingVendorResponse result = securityGroupService.GetUserMappingVendor(parameters);
+		GetUserMappingVendorResponse result = securityGroupService.getUserMappingVendor(parameters);
 		if (result != null) {
 			for(UserMappingVendor umv: result.getUserMappingVendorList()) {
 				assertNotNull(umv.getWholeSalerID());
@@ -138,7 +138,7 @@ public class SecurityGroupServiceTest {
 		GetUserMappingVendorParameter parameters = new GetUserMappingVendorParameter();
 		parameters.setUserID(11);
 		
-		Integer result = securityGroupService.GetUserMappingVendorCount(parameters);
+		Integer result = securityGroupService.getUserMappingVendorCount(parameters);
 		if (result > 0) {
 			assertNotNull(result);
 			assertTrue(result > 0);
@@ -157,7 +157,7 @@ public class SecurityGroupServiceTest {
 		parameters.setUserID(11);
 		parameters.setActive(true);
 		
-		ResultCode result = securityGroupService.SetSecurityUserActive(parameters.getUserID(), parameters.getActive());
+		ResultCode result = securityGroupService.setSecurityUserActive(parameters.getUserID(), parameters.getActive());
 		if (result != null) {
 			assertTrue(result.getSuccess());
 		}
@@ -176,9 +176,31 @@ public class SecurityGroupServiceTest {
 		parameters.setSaveWholeSalerIDs(null);
 		parameters.setRemoveWholeSalerIDs(null);
 		
-		SetUserMappingVendorResponse result = securityGroupService.SetUserMappingVendor(parameters);
+		SetUserMappingVendorResponse result = securityGroupService.setUserMappingVendor(parameters);
 		if (result != null) {
 			assertTrue(result.isSuccess());
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 22.
+	 * @author Reo
+	 */
+	@Ignore
+	@Test
+	public void testSetDelSecurityUsers() {
+		DelSecurityUserParameter parameters = new DelSecurityUserParameter();
+		List<Integer> userList = new ArrayList<Integer>();
+		userList.add(0,  900);
+		parameters.setUserList(userList);
+        ResultCode result = new ResultCode(false, 0, null);
+		
+		result = securityGroupService.setDelSecurityUsers(parameters);
+		
+		if (result != null) {
+			assertTrue(result.getSuccess());
 		}
 	}
 	
@@ -213,7 +235,7 @@ public class SecurityGroupServiceTest {
 	 */
 	@Test
     public void testGetSecurityGroups() {
-		List<SecurityGroup> result  = securityGroupService.GetSecurityGroup();
+		List<SecurityGroup> result  = securityGroupService.getSecurityGroup();
 		if(!CollectionUtils.isEmpty(result)) {
 			assertNotNull(result.get(0).getGroupID());
 		}

@@ -36,10 +36,10 @@ public class BidController {
 	 * @return
 	 */
 	@RequestMapping(value = "getbidsettinglastrecords", method = RequestMethod.POST)
-	public JsonResponse<GetBidSettingLastRecordsResponse> GetBidSettingLastRecords(@RequestBody GetBidSettingLastRecordsParameter parameters) {
+	public JsonResponse<GetBidSettingLastRecordsResponse> getBidSettingLastRecords(@RequestBody GetBidSettingLastRecordsParameter parameters) {
 		JsonResponse<GetBidSettingLastRecordsResponse> result = new JsonResponse<GetBidSettingLastRecordsResponse>(
 				false, null, null);
-		GetBidSettingLastRecordsResponse _result = bidService.GetBidSettingLastRecords(parameters);
+		GetBidSettingLastRecordsResponse _result = bidService.getBidSettingLastRecords(parameters);
 
 		result.setSuccess(true);
 		result.setData(_result);
@@ -56,9 +56,9 @@ public class BidController {
 	 * @return
 	 */
 	@RequestMapping(value = "setbidsetting", method = RequestMethod.POST)
-	public JsonResponse<String> SetBidSetting(@RequestBody SetBidSettingParameter parameters) {
+	public JsonResponse<String> setBidSetting(@RequestBody SetBidSettingParameter parameters) {
 		JsonResponse<String> result = new JsonResponse<String>(false, null, -1, null);
-		ResultCode _result = bidService.SetBidSetting(parameters);
+		ResultCode _result = bidService.setBidSetting(parameters);
 
 		result.setSuccess(_result.getSuccess());
 		result.setCode(_result.getResultCode());
@@ -76,9 +76,9 @@ public class BidController {
 	 * @return
 	 */
 	@RequestMapping(value = "getbidsetting", method = RequestMethod.POST)
-	public JsonResponse<GetBidSettingResponse> GetBidSetting(@RequestBody GetBidSettingParameter parameters) {
+	public JsonResponse<GetBidSettingResponse> getBidSetting(@RequestBody GetBidSettingParameter parameters) {
 		JsonResponse<GetBidSettingResponse> result = new JsonResponse<GetBidSettingResponse>(false, null, null);
-		GetBidSettingResponse _result = bidService.GetBidSetting(parameters);
+		GetBidSettingResponse _result = bidService.getBidSetting(parameters);
 
 		result.setSuccess(true);
 		result.setData(_result);
@@ -95,11 +95,11 @@ public class BidController {
 	 * @return
 	 */
 	@RequestMapping(value = "getbidsettinglastweek", method = RequestMethod.POST)
-	public JsonResponse<GetBidSettingLastWeekResponse> GetBidSettingLastWeek(@RequestBody GetBidSettingLastWeekParameter parameters) {
+	public JsonResponse<GetBidSettingLastWeekResponse> getBidSettingLastWeek(@RequestBody GetBidSettingLastWeekParameter parameters) {
 		JsonResponse<GetBidSettingLastWeekResponse> result = new JsonResponse<GetBidSettingLastWeekResponse>(false,
 				null, null);
 
-		GetBidSettingLastWeekResponse _result = bidService.GetBidSettingLastWeek(parameters.getTop());
+		GetBidSettingLastWeekResponse _result = bidService.getBidSettingLastWeek(parameters.getTop());
 		result.setSuccess(true);
 		result.setData(_result);
 

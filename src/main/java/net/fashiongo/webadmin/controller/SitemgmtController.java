@@ -18,16 +18,22 @@ import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
+import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
@@ -37,6 +43,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListRespon
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
 import net.fashiongo.webadmin.service.CacheService;
@@ -276,7 +283,33 @@ public class SitemgmtController {
 	@RequestMapping(value = "getsocialmedialist", method = RequestMethod.GET)
 	public JsonResponse<List<SocialMedia>> getSocialMediaList() {
 		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
-		return new JsonResponse<List<SocialMedia>>(true, null, socialMediaList);
+		return new JsonResponse<>(true, null, socialMediaList);
+	}
+	
+	/**
+	 * Delete social media
+	 * @since Oct 25, 2018.
+	 * @author roy
+	 * @param DelSocialMediaParameter
+	 * @return JsonResponse<String>
+	 */
+	@RequestMapping(value = "delsocialmedia", method = RequestMethod.POST)
+	public JsonResponse<String> deleteSocialMedias(@RequestBody DelSocialMediaParameter delSocialMediaParameter) {
+		boolean result = socialMediaService.deleteSocialMedias(delSocialMediaParameter.getSocialMediaIds());
+		return new JsonResponse<>(result, null, "");
+	}
+	
+	/**
+	 * Save social media
+	 * @since Oct 26, 2018.
+	 * @author roy
+	 * @param SocialMedia
+	 * @return JsonResponse<String>
+	 */
+	@RequestMapping(value = "setsocialmedialist", method = RequestMethod.POST)
+	public JsonResponse<String> saveSocialMedia(@RequestBody SocialMedia socialMedia) {
+		ResultCode result = socialMediaService.saveSocialMedia(socialMedia);
+		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
 
 	}
 
@@ -414,5 +447,120 @@ public class SitemgmtController {
 	public JsonResponse<GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody GetFeaturedItemCountParameter parameters) {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());	
 		return new JsonResponse<GetFeaturedItemCountResponse>(true, null, result);
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * 
+	 * @since 2018. 10. 26.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "settodaydealcalendar", method = RequestMethod.POST)
+	public JsonResponse<String> setTodayDealCalendar(@RequestBody SetTodayDealCalendarParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, null);
+		
+		ResultCode _result = sitemgmtService.setTodayDealCalendar(parameters);
+		results.setCode(_result.getResultCode());
+		results.setMessage(_result.getResultMsg());
+		
+		return results;
+	}
+	
+
+	/**
+	 * 
+	 * Get VendorCategory
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getvendorcategory", method = RequestMethod.POST)
+	public JsonResponse<GetVendorCategoryResponse> getVendorCategory(@RequestBody GetVendorCategoryParameter parameters) {
+		JsonResponse<GetVendorCategoryResponse> results = new JsonResponse<GetVendorCategoryResponse>(true, null, null);
+		
+		GetVendorCategoryResponse _result = sitemgmtService.getVendorCategory(parameters.getWholesalerid());
+		results.setData(_result);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set NewTodayDeal
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "setnewtodaydeal", method = RequestMethod.POST)
+	public JsonResponse<Integer> setNewTodayDeal(@RequestBody SetNewTodayDealParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, null);
+		
+		Integer _result = sitemgmtService.setNewTodayDeal(parameters);
+		results.setData(_result);
+		
+		return results;
+	}
+
+	@RequestMapping(value = "getfeatureditemsearch", method = RequestMethod.POST)
+	public void getFeaturedItemSearch(@RequestBody GetFeaturedItemSearchParameter parameters) {
+		
+	}
+	
+	@RequestMapping(value = "getfeatureditemsearchvendor", method = RequestMethod.POST)
+	public void getFeaturedItemSearchVendor() {}
+	
+	@RequestMapping(value = "setfeatureditem", method = RequestMethod.POST)
+	public void getFeaturedItem() {}
+	
+	@RequestMapping(value = "delfeatureditem", method = RequestMethod.POST)
+	public void gelFeaturedItem() {}
+	
+	@RequestMapping(value = "getfeatureditemlistday", method = RequestMethod.POST)
+	public void getFeaturedItemListDay() {}
+	
+	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
+	public void getProductDetail() {}
+	
+	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
+	public void getTrendReportDefault() {}
+	
+	@RequestMapping(value = "gettrendreport2", method = RequestMethod.POST)
+	public void getTrendReport2() {}
+	
+	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
+	public void getItems2() {}
+	
+	@RequestMapping(value = "gettrendreportitem", method = RequestMethod.POST)
+	public void getTrendReportItem() {}
+	
+//	@Deprecated
+//	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
+//	public JsonResponse<String>  setAddDelTrendReportMap() { return null; }
+	
+	@RequestMapping(value = "settrendreport", method = RequestMethod.POST)
+	public void setTrendReport() {}
+	
+	@RequestMapping(value = "settrendreportsort", method = RequestMethod.POST)
+	public void setTrendReportSort() {}
+	
+	/**
+	 *
+	 * Get Last KMM Data
+	 *
+	 * @since 2018. 10. 29.
+	 * @author Nayeon Kim
+	 * @return List<TrendReportKmmImage>
+	 */
+	@RequestMapping(value = "getlastkmmdata", method = RequestMethod.POST)
+	public JsonResponse<List<TrendReportKmmImage>> getLastKMMData() {
+		List<TrendReportKmmImage> result = sitemgmtService.getLastKMMData();
+		return new JsonResponse<List<TrendReportKmmImage>>(true, null, result);
 	}
 }

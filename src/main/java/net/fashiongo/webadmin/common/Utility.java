@@ -107,4 +107,10 @@ private static final HashMap<String, Integer[]> psMap = new HashMap<String, Inte
 		
 		return bResult;
 	}
+	
+	public static String ReplaceString(String paramstr) {
+		String result;
+		result= paramstr.replace("'", "''");
+		return result;
+	}
 }

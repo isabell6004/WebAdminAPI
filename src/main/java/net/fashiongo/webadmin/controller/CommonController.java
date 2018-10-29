@@ -47,7 +47,7 @@ public class CommonController {
 	@RequestMapping(value="getsecuritygroups", method=RequestMethod.POST)
 	public JsonResponse<List<SecurityGroup>> GetSecurityGroups() {
 		JsonResponse<List<SecurityGroup>> results = new JsonResponse<List<SecurityGroup>>();
-		List<SecurityGroup> result  = securityGroupService.GetCommonSecurityGroup();
+		List<SecurityGroup> result  = securityGroupService.getCommonSecurityGroup();
 		results.setData(result);
 		return results;
 	}
@@ -60,9 +60,9 @@ public class CommonController {
 	 * @return JsonResponse<GetBidAdPagesResponse>
 	 */
 	@RequestMapping(value = "getbidadpages", method = RequestMethod.POST)
-	public JsonResponse<GetBidAdPagesResponse> GetBidAdPages() {
+	public JsonResponse<GetBidAdPagesResponse> getBidAdPages() {
 		JsonResponse<GetBidAdPagesResponse> results = new JsonResponse<GetBidAdPagesResponse>();
-		GetBidAdPagesResponse result = commonService.GetBidAdPages();
+		GetBidAdPagesResponse result = commonService.getBidAdPages();
 
 		results.setSuccess(true);
 		results.setData(result);
@@ -79,9 +79,9 @@ public class CommonController {
 	 * @return JsonResponse<List<AdPageSpot>>
 	 */
 	@RequestMapping(value = "getbidadpagespots", method = RequestMethod.POST)
-	public JsonResponse<List<AdPageSpot>> GetBidAdPageSpots(@RequestBody GetBidAdPageSpotsParameter parameter) {
+	public JsonResponse<List<AdPageSpot>> getBidAdPageSpots(@RequestBody GetBidAdPageSpotsParameter parameter) {
 		JsonResponse<List<AdPageSpot>> results = new JsonResponse<List<AdPageSpot>>();
-		List<AdPageSpot> result = commonService.GetBidAdPageSpots(parameter.getPageId());
+		List<AdPageSpot> result = commonService.getBidAdPageSpots(parameter.getPageId());
 		
 		results.setSuccess(true);
 		results.setData(result);
@@ -98,7 +98,7 @@ public class CommonController {
 	 */
 	@Deprecated
 	@RequestMapping(value = "getbidadpagespotscombined", method = RequestMethod.POST)
-	public JsonResponse<String> GetBidAdPageSpotsCombined() {
+	public JsonResponse<String> getBidAdPageSpotsCombined() {
 		JsonResponse<String> results = new JsonResponse<String>();
 		
 		return results;
@@ -143,8 +143,7 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
 	public JsonResponse<GetCountryStatesResponse> getCountryStates(@RequestBody GetCountryStatesParameter parameters) {
-		JsonResponse<GetCountryStatesResponse> results = commonService.getCountryStates(parameters.getCountryabbrev());
-		
+		JsonResponse<GetCountryStatesResponse> results = commonService.getCountryStates(parameters.getCountryAbbrev());
 		return results;
 	}
 	
