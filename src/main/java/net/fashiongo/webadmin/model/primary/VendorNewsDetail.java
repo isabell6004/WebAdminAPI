@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 
@@ -92,21 +94,21 @@ public class VendorNewsDetail implements Serializable {
 	}
 
 	public String getStartingDate() {
-		if (startingDate == null) return "";
+		if (startingDate == null) return null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 		String formattedStartingDate = startingDate.format(formatter);		
 		return formattedStartingDate;
 	}
 
 	public String getFromDate() {
-		if (fromDate == null) return "";
+		if (fromDate == null) return null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 		String formattedFromDate = fromDate.format(formatter);				
 		return formattedFromDate;
 	}
 
 	public String getToDate() {
-		if (toDate == null) return "";
+		if (toDate == null) return null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 		String formattedToDate = toDate.format(formatter);				
 		return formattedToDate;
@@ -117,7 +119,7 @@ public class VendorNewsDetail implements Serializable {
 	}
 
 	public String getLastModifiedDateTime() {
-		if (lastModifiedDateTime == null) return "";
+		if (lastModifiedDateTime == null) return null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 		String formattedLastModifiedDateTime = lastModifiedDateTime.format(formatter);				
 		return formattedLastModifiedDateTime;
@@ -132,7 +134,7 @@ public class VendorNewsDetail implements Serializable {
 	}
 
 	public Boolean getShowBanner() {
-		return showBanner;
+		return showBanner == null ? false : showBanner;
 	}
 
 	public void setNewsID(Integer newsID) {
@@ -156,8 +158,10 @@ public class VendorNewsDetail implements Serializable {
 	}
 	
 	public void setStartingDate(String startingDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
-		this.startingDate = LocalDateTime.parse(startingDate+" 00:00:00", formatter);
+		if (StringUtils.isNotEmpty(startingDate)) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
+			this.startingDate = LocalDateTime.parse(startingDate+" 00:00:00", formatter);
+		}
 	}
 
 	public void setFromDate(LocalDateTime fromDate) {
@@ -165,8 +169,10 @@ public class VendorNewsDetail implements Serializable {
 	}
 	
 	public void setFromDate(String fromDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
-		this.fromDate = LocalDateTime.parse(fromDate+" 00:00:00", formatter);
+		if (StringUtils.isNotEmpty(fromDate)) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+			this.fromDate = LocalDateTime.parse(fromDate+" 00:00:00", formatter);
+		}
 	}
 
 	public void setToDate(LocalDateTime toDate) {
@@ -174,8 +180,10 @@ public class VendorNewsDetail implements Serializable {
 	}
 	
 	public void setToDate(String toDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
-		this.toDate = LocalDateTime.parse(toDate+" 00:00:00", formatter);
+		if (StringUtils.isNotEmpty(toDate)) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
+			this.toDate = LocalDateTime.parse(toDate+" 00:00:00", formatter);
+		}
 	}
 
 	public void setLastUser(String lastUser) {
@@ -187,8 +195,10 @@ public class VendorNewsDetail implements Serializable {
 	}
 	
 	public void setLastModifiedDateTime(String lastModifiedDateTime) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
-		this.lastModifiedDateTime = LocalDateTime.parse(lastModifiedDateTime+" 00:00:00", formatter);
+		if (StringUtils.isNotEmpty(lastModifiedDateTime)) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");	
+			this.lastModifiedDateTime = LocalDateTime.parse(lastModifiedDateTime+" 00:00:00", formatter);
+		}
 	}
 
 	public void setSortNo(Integer sortNo) {

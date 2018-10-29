@@ -8,17 +8,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
 import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
 import net.fashiongo.webadmin.dao.primary.CodeBodySizeRepository;
+import net.fashiongo.webadmin.dao.primary.CollectionCategoryItemRepository;
 import net.fashiongo.webadmin.model.pojo.AdSettingList;
+import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
+import net.fashiongo.webadmin.model.pojo.BidList;
+import net.fashiongo.webadmin.model.pojo.BiddingList;
+import net.fashiongo.webadmin.model.pojo.BiddingList2;
+import net.fashiongo.webadmin.model.pojo.CategoryAdCount;
+import net.fashiongo.webadmin.model.pojo.CollectionCategory;
+import net.fashiongo.webadmin.model.pojo.CuratedBestList;
+import net.fashiongo.webadmin.model.pojo.CuratedList;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.SelectData;
+import net.fashiongo.webadmin.model.pojo.VendorCount;
+import net.fashiongo.webadmin.model.pojo.VendorData1;
+import net.fashiongo.webadmin.model.pojo.VendorData2;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdCalendarParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchVendorParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdCalendarResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdDetailResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
@@ -36,6 +58,8 @@ public class AdService extends ApiService {
 	private AdVendorRepository adVendorRepository;
 	@Autowired
 	private CodeBodySizeRepository codeBodySizeRepository;
+	@Autowired
+	private CollectionCategoryItemRepository collectionCategoryItemRepository;
 
 	/**
 	 * 
@@ -185,5 +209,217 @@ public class AdService extends ApiService {
 		adPageSpot.setMaxPurchasable(parameters.getMaxPurchasable());
 		adPageSpot.setSpotItemCount(parameters.getSpotItemCount());
 		adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
+	}
+	
+	
+	
+	/**
+	 * 
+	 * Get Category Ad Calendar
+	 * 
+	 * @since 2018. 10. 23.
+	 * @author Jiwon Kim
+	 * @param categoryDate
+	 * @return GetCategoryAdCalendar
+	 */
+	public GetCategoryAdCalendarResponse GetCategoryAdCalendar(GetCategoryAdCalendarParameter parameters) {
+		GetCategoryAdCalendarResponse result = new GetCategoryAdCalendarResponse();
+		String spName = "up_wa_GetCategoryAdCalendar2";
+		List<Object> params = new ArrayList<Object>();
+
+        params.add(parameters.getCategoryDate());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class, BiddingList.class, CuratedList.class);
+		List<CollectionCategory> collectionCategory = (List<CollectionCategory>) _result.get(0);
+		List<BiddingList> biddingList = (List<BiddingList>) _result.get(1);
+		List<CuratedList> curatedList = (List<CuratedList>) _result.get(2);
+		
+		result.setCollectionCategory(collectionCategory);
+		result.setBiddingList(biddingList);
+		result.setCuratedList(curatedList);
+
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Del Category Ad Item
+	 * 
+	 * @since 2018. 10. 24.
+	 * @author Jiwon Kim
+	 * @param ccitemid
+	 * @return DelCategoryAdItem
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode DelCategoryAdItem(Integer CcItemID) {
+		ResultCode result = new ResultCode(true, 1, MSG_DELETE_SUCCESS);
+		collectionCategoryItemRepository.deleteById(CcItemID);
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * Get Category Ad Detail
+	 * 
+	 * @since 2018. 10. 24.
+	 * @author Jiwon Kim
+	 * @param spotid,categorydate
+	 * @return GetCategoryAdDetail
+	 */
+	public GetCategoryAdDetailResponse GetCategoryAdDetail(GetCategoryAdDetailParameter parameters) {
+		GetCategoryAdDetailResponse result = new GetCategoryAdDetailResponse();
+		String spName = "up_wa_GetCategoryAdDetail";
+		List<Object> params = new ArrayList<Object>();
+        params.add(parameters.getCategorydate());
+        params.add(parameters.getSpotID());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, BiddingList2.class, CuratedBestList.class);
+		List<BiddingList2> biddingList = (List<BiddingList2>) _result.get(0);
+		List<CuratedBestList> curatedBestList = (List<CuratedBestList>) _result.get(1);
+		
+		result.setBiddingList(biddingList);
+		result.setCuratedBestList(curatedBestList);
+
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get Category Ad Item For Bid Vendor
+	 * 
+	 * @since 2018. 10. 25.
+	 * @author Jiwon Kim
+	 * @param AdID
+	 * @return GetCategoryAdItemForBidVendor
+	 */
+	public GetCategoryAdItemForBidVendorResponse GetCategoryAdItemForBidVendor(GetCategoryAdItemForBidVendorParameter parameters) {
+		GetCategoryAdItemForBidVendorResponse result = new GetCategoryAdItemForBidVendorResponse();
+		String spName = "up_wa_GetCategoryAdItemForBidVendor";
+		List<Object> params = new ArrayList<Object>();
+        params.add(parameters.getAdID());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, BidList.class);
+		List<BidList> bidList = (List<BidList>) _result.get(0);
+		result.setBidList(bidList);
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get Category Ad Item For Bid Vendor
+	 * 
+	 * @since 2018. 10. 25.
+	 * @author Jiwon Kim
+	 * @param AdID
+	 * @return GetCategoryAdItemForBidVendor
+	 */
+	public GetCategoryAdItemSearchResponse GetCategoryAdItemSearch(GetCategoryAdItemSearchParameter parameters) {
+		GetCategoryAdItemSearchResponse result = new GetCategoryAdItemSearchResponse();
+		String spName = "up_wa_GetCollectionCategoryItemsSearch";
+		List<Object> params = new ArrayList<Object>();
+        params.add(parameters.getPagenum());
+        params.add(parameters.getPagesize());
+        params.add(parameters.getCategoryIDs());
+        params.add(parameters.getCollectionCategoryID());
+        params.add(parameters.getVendorID());
+        params.add(parameters.getSelectedCategoryID());
+        params.add(parameters.getFromDate());
+        params.add(parameters.getToDate());
+        params.add(null);
+        params.add(null);
+        params.add(parameters.getBodySizeIDs());
+        params.add(parameters.getPatternIDs());
+        params.add(parameters.getLengthIDs());
+        params.add(parameters.getStyleIDs());
+        params.add(parameters.getFabricIDs());
+        params.add(parameters.getColorNames());
+        params.add(parameters.getFilter());
+        params.add("ProductDescription");
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(parameters.getOrderBy());
+        params.add(parameters.getVendorOrderBy());
+        params.add(null);
+        params.add(null);
+        params.add(parameters.getSearchAndOr());
+        params.add(parameters.getKeyword());
+        params.add(parameters.getStyleNo());
+        params.add(parameters.getVendorDateFrom());
+        params.add(parameters.getVendorDateTo());
+        params.add(parameters.getNeverUsed());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class, VendorCount.class, VendorData1.class, VendorData2.class);
+		List<CategoryAdCount> count = (List<CategoryAdCount>) _result.get(0);
+		List<SelectData> selectData = (List<SelectData>) _result.get(1);
+		List<VendorCount> vendorCount = (List<VendorCount>) _result.get(2);
+		List<VendorData1> vendorData1 = (List<VendorData1>) _result.get(3);
+		List<VendorData2> vendorData2 = (List<VendorData2>) _result.get(4);
+
+		result.setCount(count);
+		result.setSelectData(selectData);
+		result.setVendorCount(vendorCount);
+		result.setVendorData1(vendorData1);
+		result.setVendorData2(vendorData2);
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 
+	 * Get Category Ad Item Search Vendor
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Jiwon Kim
+	 * @param GetCategoryAdItemSearchVendorParameter
+	 * @return GetCategoryAdItemSearchVendor
+	 */
+	public GetCategoryAdItemSearchVendorResponse GetCategoryAdItemSearchVendor(GetCategoryAdItemSearchVendorParameter parameters) {
+		GetCategoryAdItemSearchVendorResponse result = new GetCategoryAdItemSearchVendorResponse();
+		String spName = "up_wa_GetCollectionCategoryItemsSearchVendor";
+		List<Object> params = new ArrayList<Object>();
+        params.add(parameters.getPagenum());
+        params.add(parameters.getPagesize());
+        params.add(parameters.getCategoryIDs());
+        params.add(parameters.getCollectionCategoryID());
+        params.add(parameters.getVendorID());
+        params.add(parameters.getSelectedCategoryID());
+        params.add(parameters.getFromDate());
+        params.add(parameters.getToDate());
+        params.add(null);
+        params.add(null);
+        params.add(parameters.getBodySizeIDs());
+        params.add(parameters.getPatternIDs());
+        params.add(parameters.getLengthIDs());
+        params.add(parameters.getStyleIDs());
+        params.add(parameters.getFabricIDs());
+        params.add(parameters.getColorNames());
+        params.add(parameters.getFilter());
+        params.add("ProductDescription");
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(null);
+        params.add(null);        
+        params.add(null);
+        params.add(null);
+        params.add(parameters.getSearchAndOr());
+        params.add(parameters.getKeyword());
+        params.add(null);
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class);
+		List<CategoryAdCount> count = (List<CategoryAdCount>) _result.get(0);
+		List<SelectData> selectData = (List<SelectData>) _result.get(1);
+
+		result.setCount(count);
+		result.setSelectData(selectData);
+		
+		return result;
 	}
 }

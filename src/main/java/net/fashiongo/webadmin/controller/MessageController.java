@@ -16,7 +16,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
-import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
+import net.fashiongo.webadmin.model.primary.VendorNewsView;
 import net.fashiongo.webadmin.service.MessageService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -88,9 +88,9 @@ public class MessageController {
 	 * @return JsonResponse<VendorNewsDetail>
 	 */
 	@RequestMapping(value="getvendornewsdetail", method=RequestMethod.POST)
-	public JsonResponse<VendorNewsDetail> getVendorNewsDetail (@RequestBody GetVendorNewsDetailParameter parameters) {
-		VendorNewsDetail result = messageService.getVendorNewsDetail(parameters);
-		return new JsonResponse<VendorNewsDetail>(true, null, 0, result);
+	public JsonResponse<VendorNewsView> getVendorNewsDetail (@RequestBody GetVendorNewsDetailParameter parameters) {
+		VendorNewsView result = messageService.getVendorNewsDetail(parameters);
+		return new JsonResponse<VendorNewsView>(true, null, 0, result);
 	}
 	
 	/**

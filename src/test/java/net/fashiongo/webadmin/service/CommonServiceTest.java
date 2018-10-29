@@ -100,7 +100,7 @@ public class CommonServiceTest {
 	 */
 	@Test
 	public void testGetBidAdPages() {
-		GetBidAdPagesResponse result = commonService.GetBidAdPages();
+		GetBidAdPagesResponse result = commonService.getBidAdPages();
 		assertNotNull(result.getAdPage());
 	}
 	
@@ -116,7 +116,7 @@ public class CommonServiceTest {
 		GetBidAdPageSpotsParameter parameter = new GetBidAdPageSpotsParameter();
 		parameter.setPageId(1);
 		
-		List<AdPageSpot> result = commonService.GetBidAdPageSpots(parameter.getPageId());
+		List<AdPageSpot> result = commonService.getBidAdPageSpots(parameter.getPageId());
 		assertNotNull(result);
 	}
 	
