@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.service;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 //import java.util.Date;
@@ -17,8 +18,8 @@ import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
-import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
@@ -40,8 +41,8 @@ import net.fashiongo.webadmin.model.pojo.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
-import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
+import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
@@ -52,6 +53,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
@@ -68,8 +70,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
-import net.fashiongo.webadmin.model.primary.VendorCategory;
 import net.fashiongo.webadmin.model.primary.TrendReport;
+import net.fashiongo.webadmin.model.primary.VendorCategory;
 
 /**
  *
@@ -679,5 +681,34 @@ public class SitemgmtService extends ApiService {
 				.collect(Collectors.toList()));
 		
 		return result;
+	}
+	
+	/**
+	 * 
+	 * Set NewTodayDeal
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public Integer setNewTodayDeal(SetNewTodayDealParameter parameters) {
+		TodayDeal todayDeal = new TodayDeal();
+		todayDeal.setTitle("");
+		todayDeal.setDescription("");
+		todayDeal.setProductId(parameters.getProductID());
+		todayDeal.setFromDate(parameters.getFromDate());
+		todayDeal.setToDate(parameters.getToDate());
+		todayDeal.setTodayDealPrice(parameters.getTodayDealPrice());
+		todayDeal.setActive(true);
+		todayDeal.setAppliedOn(LocalDateTime.now());
+		todayDeal.setApprovedOn(LocalDateTime.now());
+		todayDeal.setCreatedBy(Utility.getUsername());
+		todayDeal.setModifiedBy(Utility.getUsername());
+		todayDeal.setCreatedByVendor(false);
+		
+		this.todayDealRepository.save(todayDeal);
+		
+		return 1;
 	}
 }

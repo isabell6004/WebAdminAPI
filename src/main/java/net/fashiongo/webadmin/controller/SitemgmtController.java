@@ -31,6 +31,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
@@ -483,6 +484,25 @@ public class SitemgmtController {
 		JsonResponse<GetVendorCategoryResponse> results = new JsonResponse<GetVendorCategoryResponse>(true, null, null);
 		
 		GetVendorCategoryResponse _result = sitemgmtService.getVendorCategory(parameters.getWholesalerid());
+		results.setData(_result);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set NewTodayDeal
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "setnewtodaydeal", method = RequestMethod.POST)
+	public JsonResponse<Integer> setNewTodayDeal(@RequestBody SetNewTodayDealParameter parameters) {
+		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, null);
+		
+		Integer _result = sitemgmtService.setNewTodayDeal(parameters);
 		results.setData(_result);
 		
 		return results;

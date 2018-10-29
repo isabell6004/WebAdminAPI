@@ -4,6 +4,7 @@
 package net.fashiongo.webadmin.model.primary;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -25,7 +26,7 @@ import net.fashiongo.common.dal.IPersistent;
 @Table(name = "TodayDeal")
 public class TodayDeal implements IPersistent, Serializable {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "TodayDealID")
 	private Integer todayDealId;
 	
@@ -39,7 +40,7 @@ public class TodayDeal implements IPersistent, Serializable {
 	private String description;
 	
 	@Column(name = "TodayDealPrice")
-	private double todayDealPrice;
+	private BigDecimal todayDealPrice;
 	
 	@Column(name = "ToDate")
 	@Convert(converter = LocalDateTimeConverter.class)
@@ -52,6 +53,9 @@ public class TodayDeal implements IPersistent, Serializable {
 	@Column(name = "CreatedOn")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime createdOn;
+	
+	@Column(name = "CreatedBy")
+	private String createdBy;
 
 	@Column(name = "ModifiedOn")
 	@Convert(converter = LocalDateTimeConverter.class)
@@ -77,6 +81,9 @@ public class TodayDeal implements IPersistent, Serializable {
 	
 	@Column(name = "RevokedBy")
 	private String revokedBy;
+	
+	@Column(name = "CreatedByVendor")
+	private Boolean createdByVendor;
 
 	public Integer getTodayDealId() {
 		return todayDealId;
@@ -110,11 +117,11 @@ public class TodayDeal implements IPersistent, Serializable {
 		this.description = description;
 	}
 
-	public double getTodayDealPrice() {
+	public BigDecimal getTodayDealPrice() {
 		return todayDealPrice;
 	}
 
-	public void setTodayDealPrice(double todayDealPrice) {
+	public void setTodayDealPrice(BigDecimal todayDealPrice) {
 		this.todayDealPrice = todayDealPrice;
 	}
 
@@ -196,5 +203,21 @@ public class TodayDeal implements IPersistent, Serializable {
 
 	public void setRevokedBy(String revokedBy) {
 		this.revokedBy = revokedBy;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Boolean getCreatedByVendor() {
+		return createdByVendor;
+	}
+
+	public void setCreatedByVendor(Boolean createdByVendor) {
+		this.createdByVendor = createdByVendor;
 	}
 }
