@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.service;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 //import java.util.Date;
 import java.util.List;
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
+import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
@@ -46,6 +49,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
@@ -58,6 +62,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import net.fashiongo.webadmin.model.primary.TodayDeal;
 
 /**
  *
@@ -71,6 +76,9 @@ public class SitemgmtService extends ApiService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
+	
+	@Autowired
+	private TodayDealRepository todayDealRepository;
 
 	/**
 	 *
@@ -582,6 +590,42 @@ public class SitemgmtService extends ApiService {
 		List<Object> _result = jdbcHelper.executeSP(spName, params, ActiveTodayDealDetail.class, InactiveTodayDealDetail.class);
 		result.setActiveTodayDeals((List<ActiveTodayDealDetail>) _result.get(0));
 		result.setInactiveTodayDeals((List<InactiveTodayDealDetail>) _result.get(1));
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * 
+	 * @since 2018. 10. 26.
+	 * @author Incheol Jung
+	 * @param todayDeal
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setTodayDealCalendar(SetTodayDealCalendarParameter parameters) {
+		ResultCode result = new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+		TodayDeal todayDeal = this.todayDealRepository.findOneByTodayDealId(parameters.getTodayDealID());
+		
+		if(todayDeal != null) {
+			todayDeal.setFromDate(parameters.getFromDate());
+			todayDeal.setActive(parameters.getActive());
+			
+			if(parameters.getFromDate() != null) {
+				todayDeal.setToDate(parameters.getFromDate().plusDays(1).minusSeconds(1));
+			}
+			
+			if(parameters.getActive() == false) {
+				todayDeal.setRevokedOn(LocalDateTime.now());
+				todayDeal.setRevokedBy(Utility.getUsername());
+			}
+			
+			this.todayDealRepository.save(todayDeal);
+		}else {
+			result.setResultCode(-1);
+			result.setResultMsg("failure");
+		}
 		
 		return result;
 	}

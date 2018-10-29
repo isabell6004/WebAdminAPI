@@ -85,7 +85,7 @@ public class CommonService extends ApiService {
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	@SuppressWarnings("unchecked")
-	@Cacheable(value="GetCountryStates", key="#countryAbbrev")
+	@Cacheable(value="GetCountryStates", key="#countryAbbrev", unless = "#result == null")
 	public JsonResponse<GetCountryStatesResponse> getCountryStates(String countryAbbrev) {
 		JsonResponse<GetCountryStatesResponse> result = httpClient.get("location/countries/".concat(countryAbbrev));
 		return result;
@@ -160,6 +160,7 @@ public class CommonService extends ApiService {
 	 */
 	public List<SecurityUser> getSecurityUser() {
 		List<SecurityUser> result =  securityUserRepository.findAllByOrderByActiveDescUserName();
+		
 		return result;
 	}
 }

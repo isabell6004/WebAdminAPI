@@ -107,19 +107,19 @@ public class FeaturedItem {
 		this.createdBy = createdBy;
 	}
 	public Integer getProductID1() {
-		return productID1;
+		return productID1 = this.productID;
 	}
 	public void setProductID1(Integer productID1) {
 		this.productID1 = productID1;
 	}
 	public Integer getWholeSalerID1() {
-		return wholeSalerID1;
+		return wholeSalerID1 = this.wholeSalerID;
 	}
 	public void setWholeSalerID1(Integer wholeSalerID1) {
 		this.wholeSalerID1 = wholeSalerID1;
 	}
 	public String getProductName1() {
-		return productName1;
+		return productName1 = this.productName;
 	}
 	public void setProductName1(String productName1) {
 		this.productName1 = productName1;
@@ -161,7 +161,7 @@ public class FeaturedItem {
 		this.activatedOn = activatedOn;
 	}
 	public LocalDateTime getCreatedOn1() {
-		return createdOn1;
+		return createdOn1 = this.createdOn;
 	}
 	public void setCreatedOn1(LocalDateTime createdOn1) {
 		this.createdOn1 = createdOn1;

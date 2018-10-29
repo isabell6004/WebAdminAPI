@@ -143,8 +143,7 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
 	public JsonResponse<GetCountryStatesResponse> getCountryStates(@RequestBody GetCountryStatesParameter parameters) {
-		JsonResponse<GetCountryStatesResponse> results = commonService.getCountryStates(parameters.getCountryabbrev());
-		
+		JsonResponse<GetCountryStatesResponse> results = commonService.getCountryStates(parameters.getCountryAbbrev());
 		return results;
 	}
 	

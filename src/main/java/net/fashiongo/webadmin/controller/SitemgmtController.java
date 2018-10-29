@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
@@ -29,6 +30,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
@@ -277,7 +279,33 @@ public class SitemgmtController {
 	@RequestMapping(value = "getsocialmedialist", method = RequestMethod.GET)
 	public JsonResponse<List<SocialMedia>> getSocialMediaList() {
 		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
-		return new JsonResponse<List<SocialMedia>>(true, null, socialMediaList);
+		return new JsonResponse<>(true, null, socialMediaList);
+	}
+	
+	/**
+	 * Delete social media
+	 * @since Oct 25, 2018.
+	 * @author roy
+	 * @param DelSocialMediaParameter
+	 * @return JsonResponse<String>
+	 */
+	@RequestMapping(value = "delsocialmedia", method = RequestMethod.POST)
+	public JsonResponse<String> deleteSocialMedias(@RequestBody DelSocialMediaParameter delSocialMediaParameter) {
+		boolean result = socialMediaService.deleteSocialMedias(delSocialMediaParameter.getSocialMediaIds());
+		return new JsonResponse<>(result, null, "");
+	}
+	
+	/**
+	 * Save social media
+	 * @since Oct 26, 2018.
+	 * @author roy
+	 * @param SocialMedia
+	 * @return JsonResponse<String>
+	 */
+	@RequestMapping(value = "setsocialmedialist", method = RequestMethod.POST)
+	public JsonResponse<String> saveSocialMedia(@RequestBody SocialMedia socialMedia) {
+		ResultCode result = socialMediaService.saveSocialMedia(socialMedia);
+		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
 
 	}
 
@@ -415,6 +443,26 @@ public class SitemgmtController {
 	public JsonResponse<GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody GetFeaturedItemCountParameter parameters) {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());	
 		return new JsonResponse<GetFeaturedItemCountResponse>(true, null, result);
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * 
+	 * @since 2018. 10. 26.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "settodaydealcalendar", method = RequestMethod.POST)
+	public JsonResponse<String> setTodayDealCalendar(@RequestBody SetTodayDealCalendarParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, null);
+		
+		ResultCode _result = sitemgmtService.setTodayDealCalendar(parameters);
+		results.setCode(_result.getResultCode());
+		results.setMessage(_result.getResultMsg());
+		
+		return results;
 	}
 	
 	@RequestMapping(value = "getfeatureditemsearch", method = RequestMethod.POST)

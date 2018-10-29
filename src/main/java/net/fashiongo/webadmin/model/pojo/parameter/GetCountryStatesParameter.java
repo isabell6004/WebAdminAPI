@@ -11,14 +11,11 @@ import io.swagger.annotations.ApiModelProperty;
 @SuppressWarnings("serial")
 public class GetCountryStatesParameter implements Serializable {
 	@ApiModelProperty(required = false, example="us")
-	private String countryabbrev;
-
-	public String getCountryabbrev() {
-		return countryabbrev;
+	private String countryAbbrev;
+	public String getCountryAbbrev() {
+		return countryAbbrev;
 	}
-
-	public void setCountryabbrev(String countryabbrev) {
-		this.countryabbrev = countryabbrev;
+	public void setCountryAbbrev(String countryAbbrev) {
+		this.countryAbbrev = countryAbbrev;
 	}
-	
 }
