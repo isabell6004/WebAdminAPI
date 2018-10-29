@@ -150,26 +150,28 @@ public class MessageService extends ApiService {
 	 * @return Integer
 	 */
 	public Integer setVendorNews(VendorNewsDetail news, String selectedVendor) {
-		Integer result = 0;
+		Integer result = 1;
 		String[] widList = selectedVendor.split(",", -1);
-		if(widList.length > 0) {
-			for(String wid : widList) {
-				if(wid != "") news.setWholeSalerID(Integer.parseInt(wid));
-				result = setVendorNewsDetail(news);
-			}
-		} else {
-			result = setVendorNewsDetail(news);
-		}
-		return result;
-	}
-	
-	public Integer setVendorNewsDetail(VendorNewsDetail news) {
-		Integer result = 0;
+		
+		List<VendorNewsDetail> newsList = new ArrayList<VendorNewsDetail>();
+		VendorNewsDetail vendorNews = vendorNewsDetailRepository.findOneByNewsID(news.getNewsID());
 		if(StringUtils.isEmpty(news.getNewsTitle()) || news.getNewsTitle().trim().length() < 1) {
 			return -2;
 		}
 		if(news.getNewsTitle().length() > 50) return -3;
-		VendorNewsDetail vendorNews = vendorNewsDetailRepository.findOneByNewsID(news.getNewsID());
+		if(widList.length > 0) {
+			for(String wid : widList) {
+				if(StringUtils.isNotEmpty(wid)) news.setWholeSalerID(Integer.parseInt(wid));
+				newsList.add(setVendorNewsDetail(news, vendorNews));
+			}
+		} else {
+			newsList.add(setVendorNewsDetail(news, vendorNews));
+		}
+		vendorNewsDetailRepository.saveAll(newsList);
+		return result;
+	}
+	
+	public VendorNewsDetail setVendorNewsDetail(VendorNewsDetail news, VendorNewsDetail vendorNews) {
 		if(vendorNews == null) {
 			vendorNews = new VendorNewsDetail();
 			vendorNews.setStartingDate(LocalDateTime.now());
@@ -177,9 +179,7 @@ public class MessageService extends ApiService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
 		LocalDateTime fromdate = StringUtils.isEmpty(news.getFromDate()) ? null : LocalDateTime.parse(news.getFromDate()+" 00:00:00", formatter);
 		LocalDateTime todate = StringUtils.isEmpty(news.getToDate()) ? null : LocalDateTime.parse(news.getToDate()+" 23:59:59", formatter);
-		
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");	
-		
+	
 		vendorNews.setNewsTitle(news.getNewsTitle());
 		vendorNews.setNewsContent(news.getNewsContent());
 		vendorNews.setWholeSalerID(news.getWholeSalerID());
@@ -191,11 +191,8 @@ public class MessageService extends ApiService {
 		vendorNews.setToDate(todate);
 		vendorNews.setLastUser(news.getLastUser());
 		vendorNews.setLastModifiedDateTime(LocalDateTime.now());
-		System.out.println(vendorNews);
-		vendorNewsDetailRepository.save(vendorNews);
-		result = 1;
 		
-		return result;
+		return vendorNews;
 	}
 	
 	/**
