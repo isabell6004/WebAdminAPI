@@ -32,6 +32,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetAddDelPolicyManagementParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
@@ -44,6 +46,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -134,30 +137,32 @@ public class SitemgmtController {
 
 	/**
 	 *
+	 *getPolicyManagement
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 29.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param PageSizeParameter
+	 * @return GetPolicyManagementResponse
 	 */
 	@RequestMapping(value="getpolicymanagement", method=RequestMethod.POST)
-	public void getPolicyManagement () {
-
+	public JsonResponse<GetPolicyManagementResponse> getPolicyManagement (@RequestBody PageSizeParameter parameters) {
+		GetPolicyManagementResponse result = sitemgmtService.getPolicyManagement(parameters);
+		return new JsonResponse<GetPolicyManagementResponse>(true, null, 0, result);
 	}
 
 	/**
 	 *
+	 *setAddDelPolicyManagement
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 30.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetAddDelPolicyManagementParameter
+	 * @return ResultCode
 	 */
 	@RequestMapping(value="setpolicymanagement", method=RequestMethod.POST)
-	public void setAddDelPolicyManagement () {
-
+	public JsonResponse<String> setAddDelPolicyManagement (@RequestBody SetAddDelPolicyManagementParameter parameters) {
+		ResultCode result = sitemgmtService.setAddDelPolicyManagement(parameters.getSetType(), parameters.getPolicy());
+		return new JsonResponse<String>(true, result.getResultMsg(), result.getResultCode(), null);
 	}
 
 	/**

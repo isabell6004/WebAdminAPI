@@ -15,19 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.DelShowParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetShowListParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.GetShowParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetShowScheduleListParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.SetShowInfoParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.SetShowParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.SetShowParticipatingVendorParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.SetShowScheduleParameters;
-import net.fashiongo.webadmin.model.pojo.response.GetShowCategoriesResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetShowListResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetShowParticipatingVendorsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetShowPromotionPlanResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetShowScheduleListResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.show.DelShowParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.show.GetShowListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.show.GetShowParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.show.GetShowScheduleListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.show.SetShowInfoParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.show.SetShowParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.show.SetShowParticipatingVendorParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.show.SetShowPromotionPlanParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.show.SetShowScheduleParameters;
+import net.fashiongo.webadmin.model.pojo.response.show.GetShowCategoriesResponse;
+import net.fashiongo.webadmin.model.pojo.response.show.GetShowListResponse;
+import net.fashiongo.webadmin.model.pojo.response.show.GetShowParticipatingVendorsResponse;
+import net.fashiongo.webadmin.model.pojo.response.show.GetShowPromotionPlanResponse;
+import net.fashiongo.webadmin.model.pojo.response.show.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.ListShow;
 import net.fashiongo.webadmin.model.primary.MapShowSchedulePromotionPlanVendor;
 import net.fashiongo.webadmin.model.primary.ShowSchedule;
@@ -379,10 +380,15 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/promotion-plan/save", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - set show promotion-plan save")
-	public JsonResponse<Object> setShowPromotionPlan() {
+	public JsonResponse<Integer> setShowPromotionPlan(@RequestBody SetShowPromotionPlanParameters parameters) {
 
-		JsonResponse<Object> results = new JsonResponse<Object>();
+		ResultResponse<Integer> result = siteMgmtShowService.setShowPromotionPlan(parameters);
 
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getMessage());
+		results.setData(result.getData());
+		
 		return results;
 	}
 
@@ -439,9 +445,13 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/participating-vendor/delete", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - set show participating-vendor delete")
-	public JsonResponse<Object> deleteShowParticipatingVendor() {
+	public JsonResponse<Integer> deleteShowParticipatingVendor(@RequestBody DelShowParameter parameters) {
 
-		JsonResponse<Object> results = new JsonResponse<Object>();
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
+		ResultResponse<Integer> result = siteMgmtShowService.setDeleteShowParticipatingVendor(parameters);
+
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getMessage());
 
 		return results;
 	}
@@ -457,9 +467,13 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/promotion-plan/delete", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - set show promotion-plan delete")
-	public JsonResponse<Object> deleteShowPromotionPlan() {
+	public JsonResponse<Integer> deleteShowPromotionPlan(@RequestBody DelShowParameter parameters) {
 
-		JsonResponse<Object> results = new JsonResponse<Object>();
+		JsonResponse<Integer> results = new JsonResponse<Integer>();
+		ResultResponse<Integer> result = siteMgmtShowService.setDeleteShowPromotionPlan(parameters);
+
+		results.setSuccess(result.getSuccess());
+		results.setMessage(result.getMessage());
 
 		return results;
 	}
