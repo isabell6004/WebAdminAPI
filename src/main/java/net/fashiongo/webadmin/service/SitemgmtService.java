@@ -210,7 +210,7 @@ public class SitemgmtService extends ApiService {
 	@Transactional("primaryTransactionManager")
 	public ResultCode setAddDelPolicyManagement (String type, Policy objPolicy) {
 		Policy pc = new Policy();
-		String sessionUserID = "";
+		String sessionUserID = Utility.getUsername();
 		switch(type) {
 		case "Upd":
 			if(objPolicy.getPolicyID() < 1) {
