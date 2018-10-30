@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
 //import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -21,8 +23,10 @@ import net.fashiongo.webadmin.dao.primary.CodeFabricRepository;
 import net.fashiongo.webadmin.dao.primary.CodeLengthRepository;
 import net.fashiongo.webadmin.dao.primary.CodePatternRepository;
 import net.fashiongo.webadmin.dao.primary.CodeStyleRepository;
+import net.fashiongo.webadmin.dao.primary.PolicyRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCatalogRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
@@ -61,8 +65,11 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetAddDelPolicyManagementParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
@@ -73,6 +80,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -86,8 +94,10 @@ import net.fashiongo.webadmin.model.primary.CodeLength;
 import net.fashiongo.webadmin.model.primary.CodePattern;
 import net.fashiongo.webadmin.model.primary.CodeStyle;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
+import net.fashiongo.webadmin.model.primary.VendorCatalog;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
 
 /**
@@ -123,7 +133,13 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private TrendReportRepository trendReportRepository;
+	
+	@Autowired
+	private VendorCatalogRepository vendorCatalogRepository;
 
+	@Autowired
+	private PolicyRepository policyRepository;
+	
 	/**
 	 *
 	 * Get Category List
@@ -192,28 +208,75 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
+	 *getPolicyManagement
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 29.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param PageSizeParameter
+	 * @return GetPolicyManagementResponse
 	 */
-	public void getPolicyManagement () {
-
+	public GetPolicyManagementResponse getPolicyManagement (PageSizeParameter parameters) {
+		GetPolicyManagementResponse results = new GetPolicyManagementResponse();
+		// Integer skip = parameters.getPageSize() * (parameters.getPageNum() - 1);
+		/*Pageable pageable = new Pageable();
+		pageable.setPage(parameters.getPageNum());
+		pageable.setSize(parameters.getPageSize());*/
+		/*QPageRequest request = new QPageRequest(parameters.getPageNum()-1, parameters.getPageSize());
+		Page<Policy> result = policyRepository.findAll(request);
+		results.setRecCnt(policyRepository.count());
+		results.setVpolicyList(result);*/
+		return results;
 	}
 
 	/**
 	 *
+	 *setAddDelPolicyManagement
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 30.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetAddDelPolicyManagementParameter
+	 * @return ResultCode
 	 */
-	public void setAddDelPolicyManagement () {
-
+	@Transactional("primaryTransactionManager")
+	public ResultCode setAddDelPolicyManagement (String type, Policy objPolicy) {
+		Policy pc = new Policy();
+		String sessionUserID = Utility.getUsername();
+		switch(type) {
+		case "Upd":
+			if(objPolicy.getPolicyID() < 1) {
+				pc.setPolicyTitle(objPolicy.getPolicyTitle());
+				pc.setPolicyContents(objPolicy.getPolicyContents());
+				pc.setForVendor(objPolicy.getForVendor());
+				pc.setForRetailer(objPolicy.getForRetailer());
+				pc.setEffectiveOn(objPolicy.getEffectiveOn());
+				pc.setCreatedBy(sessionUserID);
+				pc.setCreatedOn(objPolicy.getCreatedOn());
+				pc.setModifiedBy(sessionUserID);
+				pc.setModifiedOn(objPolicy.getModifiedOn());
+				pc.setActive(objPolicy.getActive());
+				policyRepository.save(pc);
+			} else {
+				pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
+				pc.setPolicyTitle(objPolicy.getPolicyTitle());
+				pc.setPolicyContents(objPolicy.getPolicyContents());
+				pc.setForVendor(objPolicy.getForVendor());
+				pc.setForRetailer(objPolicy.getForRetailer());
+				pc.setEffectiveOn(objPolicy.getEffectiveOn());
+				pc.setModifiedBy(sessionUserID);
+				pc.setModifiedOn(objPolicy.getModifiedOn());
+				pc.setActive(objPolicy.getActive());
+				policyRepository.save(pc);
+			}
+			break;
+		case "Act":
+			pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
+			pc.setModifiedBy(sessionUserID);
+			pc.setModifiedOn(objPolicy.getModifiedOn());
+			pc.setActive(objPolicy.getActive());
+			policyRepository.save(pc);
+			break;
+		}
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 
 	/**
@@ -1178,5 +1241,30 @@ public class SitemgmtService extends ApiService {
 		
 		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
 		return CollectionUtils.isEmpty(_result) ? null : (List<DMRequestDetail>) _result.get(0);
+	}
+	
+	/**
+	 * 
+	 * Set FGCatalog
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
+		
+		if(parameters.getCatalogsendqueueid() <= 0) {
+			VendorCatalog vc = new VendorCatalog();
+			vc.setVendorID(0);
+			vc.setCaltalogName(parameters.getSubject());
+			vc.setCreatedOn(LocalDateTime.now());
+			vc.setModifiedOn(LocalDateTime.now());
+			
+			this.vendorCatalogRepository.save(vc);
+		}else {
+			
+		}
+		return null;
 	}
 }

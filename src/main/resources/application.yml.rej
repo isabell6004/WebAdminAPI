@@ -1,0 +1,10 @@
+diff a/src/main/resources/application.yml b/src/main/resources/application.yml	(rejected hunks)
+@@ -73,7 +73,7 @@
+ #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
+   jwt:
+     develop:
+-      check-token : true
++      check-token: false
+ 
+ ---
+ # Local

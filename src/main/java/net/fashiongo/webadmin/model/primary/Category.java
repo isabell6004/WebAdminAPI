@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,6 +34,7 @@ public class Category implements Serializable {
 	@Column(name = "CategoryName")
 	private String categoryName;
 
+	@Transient
 	@JsonProperty("CategoryName2")
 	@Column(name = "CategoryName2")
 	private String categoryName2;
@@ -93,9 +95,9 @@ public class Category implements Serializable {
 		return categoryName2;
 	}
 
-	/*public void setCategoryName2(String categoryName2) {
+	public void setCategoryName2(String categoryName2) {
 		this.categoryName2 = categoryName2;
-	}*/
+	}
 
 	public String getCategoryDescription() {
 		return categoryDescription;
