@@ -25,7 +25,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemCountParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
