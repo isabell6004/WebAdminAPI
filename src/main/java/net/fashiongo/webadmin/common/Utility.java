@@ -6,15 +6,9 @@ package net.fashiongo.webadmin.common;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import net.fashiongo.common.enums.UserRole;
 
 /**
  * @author Brian
@@ -88,11 +82,11 @@ private static final HashMap<String, Integer[]> psMap = new HashMap<String, Inte
 	}
 	
 	
-//	public static String getUsername() {
-//		SecurityContext context = SecurityContextHolder.getContext();
-//		Authentication auth = context.getAuthentication();
-//		return auth.getName();
-//	}
+	public static String getUsername() {
+		SecurityContext context = SecurityContextHolder.getContext();
+		Authentication auth = context.getAuthentication();
+		return (auth == null) ? null : auth.getName();
+	}
 	
 	public static String getFileExtension(String fileName) {
 		return ".jpg";

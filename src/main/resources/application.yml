@@ -1,3 +1,8 @@
+# ===================================================================
+# COMMON SPRING BOOT PROPERTIES
+# (http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html)
+# ===================================================================
+
 spring:
   application:
     name: FashionGo WebAdminAPI
@@ -29,8 +34,19 @@ spring:
       maximumPoolSize: 100
       connectionTestQuery: Select top 1 * from Stripe_Charges
       connectionTimeout: 250
-  # FG PhtoStudio DB
+  # FG EM DB
   datasource3:
+    username: FGWebAdminAPIUser
+    password: APIUser6301
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    # Connection pool for FG EM DB
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximumPoolSize: 100
+      connectionTestQuery: Select top 1 * from Stripe_Charges
+      connectionTimeout: 250
+  # FG PhtoStudio DB
+  datasource4:
     username: FGWebAdminAPIUser
     password: APIUser6301
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -39,39 +55,62 @@ spring:
     hikari:
       maximumPoolSize: 100
       connectionTestQuery: Select top 1 * from Photo_Image
-      connectionTimeout: 250
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
-    properties.hibernate.generate_statistics: true
+    properties.hibernate.generate_statistics: false
     properties.javax.persistence.query.timeout: 10000
     properties.hibernate.dialect: org.hibernate.dialect.SQLServer2008Dialect
     hibernate.naming.physical-strategy: net.fashiongo.common.dal.MSSQLServerNamingStrategy
-security.ignored: /**
+  cache:
+    type: redis
+    redis:
+      time-to-live: 18000000 # expries after 30 min
+  redis:
+    host: 10.10.0.145
+    port: 6379
+    database: 2
+    
+    
 server:
   port: 29901 
 
 waapi:
-  disableAuthenticate: false
+  servlet:
+    context-path: /api
+  
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.145:29001
+  fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
+#  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
+  jwt:
+    develop:
+      check-token: true
 
 ---
 
 # Local
 spring:
   profiles: local
+  redis:
+    host: 10.10.0.145
   datasource:
-    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_PhotoStudio
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_PhotoStudio
   datasource2:
-    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
   datasource3:
-    url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PhotoStudio
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_EM
+  datasource4:
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PhotoStudio
 
 logging:
   config: classpath:log4j2-local.xml
   path: logs/
 
-waapi:
-  disableAuthenticate: true
+webAdminapi:
+  jwt:
+    develop:
+      check-token: false
 
 ---
 
@@ -79,11 +118,14 @@ waapi:
 spring:
   profiles: photo-studio
   datasource:
-    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_PhotoStudio
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_PhotoStudio
   datasource2:
-    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
-    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PhotoStudio
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
+  datasource4:
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PhotoStudio
+        
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
@@ -95,18 +137,23 @@ logging:
 
 server:
   port: 29911 
-
+  
 ---
 
 # Dev
 spring:
   profiles: dev
+  redis:
+    host: 10.10.0.145
   datasource:
-    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_Dev
   datasource2:
-    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
-    url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PhotoStudio
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
+  datasource4:
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PhotoStudio
+    
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
@@ -115,28 +162,35 @@ spring:
 logging:
   config: classpath:log4j2-dev.xml
   path: /var/www/logs/
-
+  
 ---
-
 # Stage
 spring:
   profiles: stage
 
 ---
-  
 # Prod
 spring:
   profiles: prod
+  redis:
+    host: 10.10.0.168
   datasource:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
+    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
   datasource2:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
+    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
   datasource3:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PhotoStudio
+    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_EM
+  datasource4:
+    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PhotoStudio
+  
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
+    
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.150:19002
+  
 server:
   port: 19901
 

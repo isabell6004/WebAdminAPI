@@ -8,10 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import net.fashiongo.webadmin.common.PagedResult;
-import net.fashiongo.webadmin.common.PhotoStudioJdbcHelper;
 import net.fashiongo.webadmin.common.QueryParam;
 import net.fashiongo.webadmin.common.SingleValueResult;
+import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.photostudio.LogPhotoActionRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCalendarModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCategoryPriceRepository;
@@ -47,17 +52,9 @@ import net.fashiongo.webadmin.model.photostudio.PhotoOrderDetail;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
-import net.fashiongo.webadmin.utility.Utility;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class PhotoStudioService {
+public class PhotoStudioService extends ApiService {
 
 	@Autowired
 	private PhotoCategoryRepository photoCategoryRepository;
@@ -101,13 +98,6 @@ public class PhotoStudioService {
 	@Autowired
 	private PhotoCreditRepository photoCreditRepository;
 	
-	@Autowired
-	protected PhotoStudioJdbcHelper jdbcHelper;
-	
-	@Autowired
-	@Qualifier("photostudioJdbcTemplate")
-	protected JdbcTemplate jdbcTemplate;
-	
 	public static final int IMAGE_MAPPING_TYPE_MODEL = 3;
 
 	public List<PhotoCategory> getCategories() {
@@ -120,7 +110,7 @@ public class PhotoStudioService {
 
 	public Integer saveDiscount(PhotoDiscount photoDiscount) throws IllegalArgumentException, IllegalAccessException {
 		LocalDateTime date = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
+		String username = Utility.getUsername();
 
 		if (photoDiscount.getDiscountID() == null) {
 			photoDiscount.setCreatedBy(username);
@@ -130,14 +120,14 @@ public class PhotoStudioService {
 			photoDiscount.setModifiedBY(username);
 			photoDiscount.setModifiedOnDate(date);
 			String sql = photoDiscount.toUpdateQuery("");
-			jdbcTemplate.update(sql);
+			jdbcTemplatePhotoStudio.update(sql);
 		}
 
 		return photoDiscount.getDiscountID();
 	}
 
 	public PhotoDiscount getDiscount(Integer discountID) {
-		return photoDiscountRepository.findOne(discountID);
+		return photoDiscountRepository.findById(discountID).orElse(null);
 	}
 	
 	public boolean deleteDiscount(Integer discountID) {
@@ -146,7 +136,7 @@ public class PhotoStudioService {
 		PhotoDiscount photoDiscount = new PhotoDiscount();
 		photoDiscount.setDiscountID(discountID);
 		String sql = photoDiscount.toDeleteQuery();
-		jdbcTemplate.update(sql);
+		jdbcTemplatePhotoStudio.update(sql);
 		bSuccess = true;
 
 		return bSuccess;
@@ -156,7 +146,7 @@ public class PhotoStudioService {
 		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetPrices", params, PhotoPrice.class, PhotoPrice.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetPrices", params, PhotoPrice.class, PhotoPrice.class);
 
 		List<PhotoPrice> currentPhotoPrices = (List<PhotoPrice>) r.get(0);
 		List<PhotoPrice> newPhotoPrices = (List<PhotoPrice>) r.get(1);
@@ -190,7 +180,7 @@ public class PhotoStudioService {
 		LocalDateTime newFromEffectiveDate = newPrices.get(0).get_fromEffectiveDate();
 		
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
+		String username = Utility.getUsername();
 		
 		if(!newFromEffectiveDate.isAfter(now)) {
 			return "The new effective date must after today!";
@@ -209,7 +199,7 @@ public class PhotoStudioService {
 				return "The current price does not exist , can't update ！ ";
 			}
 			String sql = currentPhotoPrice.toUpdateQuery("");
-			jdbcTemplate.update(sql);
+			jdbcTemplatePhotoStudio.update(sql);
 		}
 		
 		if(newPrices.get(0).getPriceID() == null) {
@@ -217,7 +207,7 @@ public class PhotoStudioService {
 				newPhotoPrice.setCreatedOnDate(now);
 				newPhotoPrice.setCreatedBy(username);
 			}
-			photoPriceRepository.save(newPrices);
+			photoPriceRepository.saveAll(newPrices);
 			
 			List<PhotoCategory> photoCategorys = photoCategoryRepository.findAll();
 			List<MapPhotoCategoryPrice> mapPhotoCategoryPrices = new ArrayList<MapPhotoCategoryPrice>();
@@ -231,7 +221,7 @@ public class PhotoStudioService {
 					}
 				}
 			}
-			mapPhotoCategoryPriceRepository.save(mapPhotoCategoryPrices);
+			mapPhotoCategoryPriceRepository.saveAll(mapPhotoCategoryPrices);
 		}else {
 			for(PhotoPrice newPhotoPrice : newPrices) {
 				newPhotoPrice.setModifiedOnDate(now);
@@ -240,7 +230,7 @@ public class PhotoStudioService {
 					return "The new price does not exist , can't update ！ ";
 				}
 				String sql = newPhotoPrice.toUpdateQuery("");
-				jdbcTemplate.update(sql);
+				jdbcTemplatePhotoStudio.update(sql);
 			}
 		}
 
@@ -251,7 +241,7 @@ public class PhotoStudioService {
 		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetCancellationFees", params, PhotoCancellationFee.class, PhotoCancellationFee.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCancellationFees", params, PhotoCancellationFee.class, PhotoCancellationFee.class);
 
 		List<PhotoCancellationFee> currentCancellationFees = (List<PhotoCancellationFee>) r.get(0);
 		List<PhotoCancellationFee> newCancellationFees = (List<PhotoCancellationFee>) r.get(1);
@@ -283,7 +273,7 @@ public class PhotoStudioService {
 		LocalDateTime newFromEffectiveDate = newCancellationFees.get(0).get_fromEffectiveDate();
 
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
+		String username = Utility.getUsername();
 
 		if (!newFromEffectiveDate.isAfter(now)) {
 			return "The new effective date must after today!";
@@ -302,7 +292,7 @@ public class PhotoStudioService {
 				return "The current cancellationFee does not exist , can't update ！ ";
 			}
 			String sql = currentPhotoCancellationFee.toUpdateQuery("");
-			jdbcTemplate.update(sql);
+			jdbcTemplatePhotoStudio.update(sql);
 		}
 
 		if (newCancellationFees.get(0).getCancelTypeID() == null) {
@@ -310,7 +300,7 @@ public class PhotoStudioService {
 				newPhotoCancellationFee.setCreatedOnDate(now);
 				newPhotoCancellationFee.setCreatedBy(username);
 			}
-			photoCancellationFeeRepository.save(newCancellationFees);
+			photoCancellationFeeRepository.saveAll(newCancellationFees);
 
 		} else {
 			for (PhotoCancellationFee newPhotoCancellationFee : newCancellationFees) {
@@ -320,7 +310,7 @@ public class PhotoStudioService {
 					return "The new cancellationFee does not exist , can't update ！ ";
 				}
 				String sql = newPhotoCancellationFee.toUpdateQuery("");
-				jdbcTemplate.update(sql);
+				jdbcTemplatePhotoStudio.update(sql);
 			}
 		}
 
@@ -331,7 +321,7 @@ public class PhotoStudioService {
 		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetUnits", params, PhotoUnit.class, PhotoUnit.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetUnits", params, PhotoUnit.class, PhotoUnit.class);
 
 		List<PhotoUnit> currentPhotoUnits = (List<PhotoUnit>) r.get(0);
 		List<PhotoUnit> newPhotoUnits = (List<PhotoUnit>) r.get(1);
@@ -366,7 +356,7 @@ public class PhotoStudioService {
 		LocalDateTime newFromEffectiveDate = newPhotoUnits.get(0).get_fromEffectiveDate();
 
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
+		String username = Utility.getUsername();
 
 		if (!newFromEffectiveDate.isAfter(now)) {
 			return "The new effective date must after today!";
@@ -385,7 +375,7 @@ public class PhotoStudioService {
 				return "The current unit does not exist , can't update ！ ";
 			}
 			String sql = currentPhotoUnit.toUpdateQuery("");
-			jdbcTemplate.update(sql);
+			jdbcTemplatePhotoStudio.update(sql);
 		}
 
 		if (newPhotoUnits.get(0).getUnitID() == null) {
@@ -393,7 +383,7 @@ public class PhotoStudioService {
 				newPhotoUnit.setCreatedOnDate(now);
 				newPhotoUnit.setCreatedBy(username);
 			}
-			photoUnitRepository.save(newPhotoUnits);
+			photoUnitRepository.saveAll(newPhotoUnits);
 
 		} else {
 			for (PhotoUnit newPhotoUnit : newPhotoUnits) {
@@ -403,7 +393,7 @@ public class PhotoStudioService {
 					return "The new unit does not exist , can't update ！ ";
 				}
 				String sql = newPhotoUnit.toUpdateQuery("");
-				jdbcTemplate.update(sql);
+				jdbcTemplatePhotoStudio.update(sql);
 			}
 		}
 
@@ -413,7 +403,7 @@ public class PhotoStudioService {
 	@Transactional
 	public Integer saveModel(PhotoModel photoModel) throws IllegalArgumentException, IllegalAccessException {
 		LocalDateTime date = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
+		String username = Utility.getUsername();
 
 		List<PhotoImage> photoImages = photoModel.getPhotoImages();
 		if (photoModel.getModelID() == null) {
@@ -433,13 +423,13 @@ public class PhotoStudioService {
 					mapPhotoImage.setListOrder(photoImage.getListOrder());
 					mapPhotoImages.add(mapPhotoImage);
 				}
-				mapPhotoImageRepository.save(mapPhotoImages);
+				mapPhotoImageRepository.saveAll(mapPhotoImages);
 			}
 		} else {
 			photoModel.setModifiedBY(username);
 			photoModel.setModifiedOnDate(date);
 			String sql = photoModel.toUpdateQuery("");
-			jdbcTemplate.update(sql);
+			jdbcTemplatePhotoStudio.update(sql);
 			
 			List<MapPhotoImage> oldMapPhotoImages = mapPhotoImageRepository.findByMappingTypeAndReferenceID(IMAGE_MAPPING_TYPE_MODEL, photoModel.getModelID());
 			if(photoImages.size() > 0) {
@@ -468,16 +458,16 @@ public class PhotoStudioService {
 				}
 				
 				if(mapPhotoImages.size() > 0) {
-					mapPhotoImageRepository.save(mapPhotoImages);
+					mapPhotoImageRepository.saveAll(mapPhotoImages);
 				}
 			}
 			//delete
 			if(oldMapPhotoImages.size() > 0) {
 				for(MapPhotoImage deleteMapPhotoImage : oldMapPhotoImages) {
-					jdbcTemplate.update(deleteMapPhotoImage.toDeleteQuery());
+					jdbcTemplatePhotoStudio.update(deleteMapPhotoImage.toDeleteQuery());
 					PhotoImage photoImage = new PhotoImage();
 					photoImage.setImageID(deleteMapPhotoImage.getImageID());
-					jdbcTemplate.update(photoImage.toDeleteQuery());
+					jdbcTemplatePhotoStudio.update(photoImage.toDeleteQuery());
 				}
 			}
 		}
@@ -530,7 +520,7 @@ public class PhotoStudioService {
 		params.add(queryParam.getShoeSizeFrom());
 		params.add(queryParam.getShoeSizeTo());
 		
-		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetModelList", params, SingleValueResult.class, PhotoModel.class);
+		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetModelList", params, SingleValueResult.class, PhotoModel.class);
 		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
 		List<PhotoModel> rs2 = (List<PhotoModel>)_results.get(1);
 
@@ -546,7 +536,7 @@ public class PhotoStudioService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(modelID);
 		
-		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetModelInfo", params, PhotoModel.class, PhotoImage.class);
+		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetModelInfo", params, PhotoModel.class, PhotoImage.class);
 		
 		List<PhotoModel> photoModels = (List<PhotoModel>)_results.get(0);
 		List<PhotoImage> photoImages = (List<PhotoImage>)_results.get(1);
@@ -562,7 +552,7 @@ public class PhotoStudioService {
 		params.add(parmMap.get("year"));
 		params.add(parmMap.get("month"));
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetPhotoCalendar", params, PhotoCalendar.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetPhotoCalendar", params, PhotoCalendar.class);
 
 		List<PhotoCalendar> photoCalendars = (List<PhotoCalendar>) r.get(0);
 
@@ -575,7 +565,7 @@ public class PhotoStudioService {
 		params.add(parmMap.get("calendarID"));
 		params.add(parmMap.get("modelID"));
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetCalendarModelsAndOrders", params, CalendarPhotoModel.class, SimplePhotoOrder.class, PhotoModel.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCalendarModelsAndOrders", params, CalendarPhotoModel.class, SimplePhotoOrder.class, PhotoModel.class);
 
 		List<PhotoModel> models = (List<PhotoModel>) r.get(0);
 		List<SimplePhotoOrder> orders = (List<SimplePhotoOrder>) r.get(1);
@@ -611,7 +601,7 @@ public class PhotoStudioService {
 					for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
 						//update
 						if(oldMapPhotoCalendarModel.getModelScheduleID().intValue() == mapPhotoCalendarModel.getModelScheduleID().intValue()) {
-							jdbcTemplate.update(mapPhotoCalendarModel.toUpdateQuery(""));
+							jdbcTemplatePhotoStudio.update(mapPhotoCalendarModel.toUpdateQuery(""));
 							oldmapPhotoCalendarModels.remove(oldMapPhotoCalendarModel);
 							break;
 						}
@@ -621,12 +611,12 @@ public class PhotoStudioService {
 			
 			//update MaxUnitPerDay 
 			photoCalendar.setMaxUnitPerDay(maxUnitPerDaySum);
-			jdbcTemplate.update(photoCalendar.toUpdateQuery(""));
+			jdbcTemplatePhotoStudio.update(photoCalendar.toUpdateQuery(""));
 			
 			//delete
 			if(oldmapPhotoCalendarModels.size() > 0) {
 				for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
-					jdbcTemplate.update(oldMapPhotoCalendarModel.toDeleteQuery());
+					jdbcTemplatePhotoStudio.update(oldMapPhotoCalendarModel.toDeleteQuery());
 				}
 			}
 		}
@@ -639,7 +629,7 @@ public class PhotoStudioService {
 		String Msg = null;
 		
 		LocalDateTime now = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
+		String username = Utility.getUsername();
 		
 		photoCalendar.setModifiedOnDate(now);
 		photoCalendar.setModifiedBY(username);
@@ -648,7 +638,7 @@ public class PhotoStudioService {
 		}
 		
 		String sql = photoCalendar.toUpdateQuery("");
-		jdbcTemplate.update(sql);
+		jdbcTemplatePhotoStudio.update(sql);
 		
 		return Msg;
 	}
@@ -694,7 +684,7 @@ public class PhotoStudioService {
 		params.add(queryParam.getCancelledByFG());
 		params.add(queryParam.getCancelledByVendor());
 
-		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetOrderList", params, SingleValueResult.class, SimplePhotoOrder.class);
+		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderList", params, SingleValueResult.class, SimplePhotoOrder.class);
 		
 		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
 		List<SimplePhotoOrder> rs2 = (List<SimplePhotoOrder>)_results.get(1);
@@ -710,7 +700,7 @@ public class PhotoStudioService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(poNumber);
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, LogPhotoAction.class, PhotoOrderDetail.class, PhotoActionUser.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, LogPhotoAction.class, PhotoOrderDetail.class, PhotoActionUser.class);
 
 		List<DetailPhotoOrder> photoOrders = (List<DetailPhotoOrder>) r.get(0);
 		List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(1);
@@ -736,9 +726,9 @@ public class PhotoStudioService {
 		params.add(photoOrder.getModelID());
 		params.add(photoOrder.getAdditionalDiscountAmount());
 		params.add(photoOrder.getInHouseNote());
-		params.add(Utility.getWebAdminUserName());
+		params.add(Utility.getUsername());
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_UpdateOrder", params);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_UpdateOrder", params);
 
 		return null;
 	}
@@ -751,10 +741,10 @@ public class PhotoStudioService {
 		
 		params.add(photoOrder.getOrderID());
 		params.add(photoOrder.getCancelNote());
-		params.add(Utility.getWebAdminUserName());
+		params.add(Utility.getUsername());
 		params.add(photoOrder.getCancellationFeeRate());
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_CancelOrder", params);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_CancelOrder", params);
 
 		return null;
 	}
@@ -763,7 +753,7 @@ public class PhotoStudioService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(photoshootDate);
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetDailySummary", params, DailySummaryVo.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetDailySummary", params, DailySummaryVo.class);
 		List<DailySummaryVo> dailySummaryVos = (List<DailySummaryVo>) r.get(0);
 
 		return dailySummaryVos.get(0);
@@ -777,7 +767,7 @@ public class PhotoStudioService {
 		params.add(null);//CreatedOn
 		params.add(null);//CreatedBy
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetActionLog", params, LogPhotoAction.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetActionLog", params, LogPhotoAction.class);
 
 		List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(0);
 
@@ -786,7 +776,7 @@ public class PhotoStudioService {
 	
 	public Integer saveActionLog(LogPhotoAction logPhotoAction) {
 		LocalDateTime date = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
+		String username = Utility.getUsername();
 
 		logPhotoAction.setCreatedBy(username);
 		logPhotoAction.setCreatedOnDate(date);
@@ -807,7 +797,7 @@ public class PhotoStudioService {
 		params.add(categoryID);
 
 		if(categoryID == 5) {
-			List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class);
+			List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class);
 			
 			List<CommonReportsVo> dailyData  = (List<CommonReportsVo>) r.get(0);
 			List<CommonReportsVo> monthSummary = (List<CommonReportsVo>) r.get(1);
@@ -816,7 +806,7 @@ public class PhotoStudioService {
 			result.put("monthSummary", monthSummary);
 
 		}else {
-			List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class, CommonReportsVo.class);
+			List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class, CommonReportsVo.class);
 			List<CommonReportsVo> dailyVendorData  = (List<CommonReportsVo>) r.get(0);
 			List<CommonReportsVo> dailyData = (List<CommonReportsVo>) r.get(1);
 			List<CommonReportsVo> monthSummary = (List<CommonReportsVo>) r.get(2);
@@ -831,7 +821,7 @@ public class PhotoStudioService {
 	
 	public Integer saveCredit(PhotoCredit photoCredit) {
 		LocalDateTime date = LocalDateTime.now();
-		String username = Utility.getWebAdminUserName();
+		String username = Utility.getUsername();
 
 		photoCredit.setCreatedBy(username);
 		photoCredit.setCreatedOnDate(date);
@@ -848,7 +838,7 @@ public class PhotoStudioService {
 		params.add(0);
 		params.add(wholeSalerCompanyName);
 		
-		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetCreditList", params, SingleValueResult.class, PhotoCredit.class);
+		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCreditList", params, SingleValueResult.class, PhotoCredit.class);
 		
 		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
 		List<PhotoCredit> rs2 = (List<PhotoCredit>)_results.get(1);
@@ -880,7 +870,7 @@ public class PhotoStudioService {
 			params.add(null);
 		}
 		
-		List<Object> _results = jdbcHelper.executeSP("up_wa_Photo_GetCreditList", params, SingleValueResult.class, PhotoCredit.class);
+		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCreditList", params, SingleValueResult.class, PhotoCredit.class);
 		
 		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
 		List<PhotoCredit> rs2 = (List<PhotoCredit>)_results.get(1);
@@ -895,7 +885,7 @@ public class PhotoStudioService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(wholeSalerID);
 
-		List<Object> r = jdbcHelper.executeSP("up_wa_Photo_GetCreditDetail", params, PhotoCredit.class);
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCreditDetail", params, PhotoCredit.class);
 		List<PhotoCredit> photoCredits  = (List<PhotoCredit>) r.get(0);
 		
 		return photoCredits;
@@ -906,7 +896,7 @@ public class PhotoStudioService {
 		PhotoCredit photoCredit = new PhotoCredit();
 		photoCredit.setPhotoCreditID(photoCreditID);
 		String sql = photoCredit.toDeleteQuery();
-		jdbcTemplate.update(sql);
+		jdbcTemplatePhotoStudio.update(sql);
 		bSuccess = true;
 
 		return bSuccess;
