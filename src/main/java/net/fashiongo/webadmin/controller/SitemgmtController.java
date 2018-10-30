@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.JsonObject;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
@@ -36,6 +34,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
@@ -614,6 +613,25 @@ public class SitemgmtController {
 		
 		JSONObject _result = sitemgmtService.getDMRequestSendList(parameters);
 		results.setData(_result);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Set FGCatalog
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "setfgcatalog", method = RequestMethod.POST)
+	public JsonResponse<String> setFGCatalog(@RequestBody SetFGCatalogParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(true, null, null);
+		
+		ResultCode _result = sitemgmtService.setFGCatalog(parameters);
+		results.setCode(_result.getResultCode());
 		
 		return results;
 	}

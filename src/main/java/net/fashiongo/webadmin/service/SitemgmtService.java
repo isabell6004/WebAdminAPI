@@ -19,6 +19,7 @@ import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCatalogRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
@@ -57,6 +58,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
@@ -76,6 +78,7 @@ import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
+import net.fashiongo.webadmin.model.primary.VendorCatalog;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
 
 /**
@@ -99,6 +102,9 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private TrendReportRepository trendReportRepository;
+	
+	@Autowired
+	private VendorCatalogRepository vendorCatalogRepository;
 
 	/**
 	 *
@@ -802,5 +808,30 @@ public class SitemgmtService extends ApiService {
 		
 		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
 		return CollectionUtils.isEmpty(_result) ? null : (List<DMRequestDetail>) _result.get(0);
+	}
+	
+	/**
+	 * 
+	 * Set FGCatalog
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
+		
+		if(parameters.getCatalogsendqueueid() <= 0) {
+			VendorCatalog vc = new VendorCatalog();
+			vc.setVendorID(0);
+			vc.setCaltalogName(parameters.getSubject());
+			vc.setCreatedOn(LocalDateTime.now());
+			vc.setModifiedOn(LocalDateTime.now());
+			
+			this.vendorCatalogRepository.save(vc);
+		}else {
+			
+		}
+		return null;
 	}
 }
