@@ -1,7 +1,6 @@
 package net.fashiongo.webadmin.service;
 
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 //import java.util.Date;
@@ -10,6 +9,8 @@ import java.util.stream.Collectors;
 
 //import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
+import net.fashiongo.webadmin.dao.primary.PolicyRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
@@ -51,6 +53,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
@@ -60,6 +63,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -69,6 +73,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
@@ -95,6 +100,9 @@ public class SitemgmtService extends ApiService {
 	@Autowired
 	private TrendReportRepository trendReportRepository;
 
+	@Autowired
+	private PolicyRepository policyRepository;
+	
 	/**
 	 *
 	 * Get Category List
@@ -163,15 +171,24 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
+	 *getPolicyManagement
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 29.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param PageSizeParameter
+	 * @return GetPolicyManagementResponse
 	 */
-	public void getPolicyManagement () {
-
+	public GetPolicyManagementResponse getPolicyManagement (PageSizeParameter parameters) {
+		GetPolicyManagementResponse results = new GetPolicyManagementResponse();
+		// Integer skip = parameters.getPageSize() * (parameters.getPageNum() - 1);
+		/*Pageable pageable = new Pageable();
+		pageable.setPage(parameters.getPageNum());
+		pageable.setSize(parameters.getPageSize());*/
+		/*QPageRequest request = new QPageRequest(parameters.getPageNum()-1, parameters.getPageSize());
+		Page<Policy> result = policyRepository.findAll(request);
+		results.setRecCnt(policyRepository.count());
+		results.setVpolicyList(result);*/
+		return results;
 	}
 
 	/**

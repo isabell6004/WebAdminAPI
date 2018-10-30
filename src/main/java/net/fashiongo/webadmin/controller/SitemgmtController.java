@@ -29,6 +29,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
@@ -39,6 +40,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -129,16 +131,17 @@ public class SitemgmtController {
 
 	/**
 	 *
+	 *getPolicyManagement
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 29.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param PageSizeParameter
+	 * @return GetPolicyManagementResponse
 	 */
 	@RequestMapping(value="getpolicymanagement", method=RequestMethod.POST)
-	public void getPolicyManagement () {
-
+	public JsonResponse<GetPolicyManagementResponse> getPolicyManagement (@RequestBody PageSizeParameter parameters) {
+		GetPolicyManagementResponse result = sitemgmtService.getPolicyManagement(parameters);
+		return new JsonResponse<GetPolicyManagementResponse>(true, null, 0, result);
 	}
 
 	/**
