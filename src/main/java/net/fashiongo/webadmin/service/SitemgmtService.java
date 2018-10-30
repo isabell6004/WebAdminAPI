@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
 //import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -27,6 +25,8 @@ import net.fashiongo.webadmin.dao.primary.PolicyRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCatalogSendQueueRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCatalogSendRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
@@ -66,7 +66,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParam
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetAddDelPolicyManagementParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
@@ -99,6 +98,8 @@ import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.model.primary.VendorCatalog;
+import net.fashiongo.webadmin.model.primary.VendorCatalogSendQueue;
+import net.fashiongo.webadmin.model.primary.VendorCatalogSendRequest;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
 
 /**
@@ -137,6 +138,12 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private VendorCatalogRepository vendorCatalogRepository;
+	
+	@Autowired
+	private VendorCatalogSendQueueRepository vendorCatalogSendQueueRepository;
+	
+	@Autowired
+	private VendorCatalogSendRequestRepository vendorCatalogSendRequestRepository;
 
 	@Autowired
 	private PolicyRepository policyRepository;
@@ -1275,19 +1282,101 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional("primaryTransactionManager")
 	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
+		ResultCode result = new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+		VendorCatalogSendQueue vcsq = new VendorCatalogSendQueue();
+		Integer fgCatalogId = null;
 		
 		if(parameters.getCatalogsendqueueid() <= 0) {
-			VendorCatalog vc = new VendorCatalog();
-			vc.setVendorID(0);
-			vc.setCaltalogName(parameters.getSubject());
-			vc.setCreatedOn(LocalDateTime.now());
-			vc.setModifiedOn(LocalDateTime.now());
+			VendorCatalog vc = this.saveVendorCatalog(parameters);
 			
-			this.vendorCatalogRepository.save(vc);
+			fgCatalogId = vc.getCatalogID();
+			vcsq.setCatalogID(vc.getCatalogID());
+			vcsq.setIsThisToAllRetailer(true);
 		}else {
-			
+			vcsq = this.vendorCatalogSendQueueRepository.findOneByCatalogSendQueueID(parameters.getCatalogsendqueueid());
+			if(vcsq != null) {
+				fgCatalogId = vcsq.getCatalogID();
+			}
 		}
-		return null;
+		this.saveVendorCatalogSendQueue(vcsq, parameters);
+		this.saveCatalogRequests(parameters, fgCatalogId);
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Save CatalogRequests
+	 * 
+	 * @since 2018. 10. 30.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @param fgCatalogId
+	 */
+	private void saveCatalogRequests(SetFGCatalogParameter parameters, Integer fgCatalogId) {
+		VendorCatalogSendQueue vcsq = this.vendorCatalogSendQueueRepository.findFirstByOrderByCatalogSendQueueIDDesc();
+		
+		if(parameters.getVendorcode() != null) {
+			List<VendorCatalogSendRequest> requests = this.vendorCatalogSendRequestRepository.findByCatalogSendRequestIDIn(parameters.getVendorcode());
+			if(!CollectionUtils.isEmpty(requests)) {
+				for(VendorCatalogSendRequest request: requests) {
+					request.setCatalogSendQueueID(vcsq.getCatalogSendQueueID());
+					request.setfGCatalogID(fgCatalogId);
+				}
+				this.vendorCatalogSendRequestRepository.saveAll(requests);
+			}
+		}else {
+			VendorCatalogSendRequest request = new VendorCatalogSendRequest();
+			request.setfGCatalogID(null);
+			request.setCatalogSendQueueID(null);
+			
+			this.vendorCatalogSendRequestRepository.save(request);
+		}
+	}
+	
+	/**
+	 * 
+	 * Save VendorCatalog
+	 * 
+	 * @since 2018. 10. 30.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	private VendorCatalog saveVendorCatalog(SetFGCatalogParameter parameters) {
+		VendorCatalog vc = new VendorCatalog();
+		vc.setVendorID(0);
+		vc.setCaltalogName(parameters.getSubject());
+		vc.setCreatedOn(LocalDateTime.now());
+		vc.setModifiedOn(LocalDateTime.now());
+		
+		this.vendorCatalogRepository.save(vc);
+		
+		return vc;
+	}
+	
+	/**
+	 * 
+	 * Save VendorCatalogSendQueue
+	 * 
+	 * @since 2018. 10. 30.
+	 * @author Incheol Jung
+	 * @param vcsq
+	 * @param parameters
+	 */
+	private void saveVendorCatalogSendQueue(VendorCatalogSendQueue vcsq, SetFGCatalogParameter parameters) {
+		vcsq.setSubject(parameters.getSubject());
+		vcsq.setContents(parameters.getContents());
+		vcsq.setCreatedOn(LocalDateTime.now());
+		vcsq.setModifiedOn(LocalDateTime.now());
+		vcsq.setScheduledSendOn(null);
+		vcsq.setSentOn(LocalDateTime.now());
+		vcsq.setActive(true);
+		vcsq.setIsThisToAllRetailer(true);
+		vcsq.setIsTestEmail(false);
+		vcsq.setIncludedVendors(parameters.getIncludedvendors());
+		this.vendorCatalogSendQueueRepository.save(vcsq);
 	}
 }
