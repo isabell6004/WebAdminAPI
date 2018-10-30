@@ -14,8 +14,8 @@ spring:
     active: "local"
   # Primary DB
   datasource:
-    username: sa
-    password: msqLsa6301
+    username: FGWebAdminAPIUser
+    password: APIUser6301
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     # Connection pool for Primary DB
     type: com.zaxxer.hikari.HikariDataSource
@@ -25,8 +25,8 @@ spring:
       connectionTimeout: 250
   # FG Pay DB
   datasource2:
-    username: sa
-    password: msqLsa6301
+    username: FGWebAdminAPIUser
+    password: APIUser6301
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     # Connection pool for FG Pay DB
     type: com.zaxxer.hikari.HikariDataSource
@@ -36,8 +36,8 @@ spring:
       connectionTimeout: 250
   # FG EM DB
   datasource3:
-    username: sa
-    password: msqLsa6301
+    username: FGWebAdminAPIUser
+    password: APIUser6301
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     # Connection pool for FG EM DB
     type: com.zaxxer.hikari.HikariDataSource
@@ -83,16 +83,10 @@ spring:
     host: 10.10.0.145
   datasource:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
-    username: sa
-    password: msqLsa6301
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
-    username: sa
-    password: msqLsa6301
   datasource3:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
-    username: sa
-    password: msqLsa6301
         
 logging:
   config: classpath:log4j2-local.xml
