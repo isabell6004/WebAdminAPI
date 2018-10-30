@@ -4,10 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import io.swagger.annotations.ApiModelProperty;
 
-/**
- * @author Nayeon Kim
- */
-public class GetFeaturedItemCountParameter {
+public class StartDateParameter {
 	@ApiModelProperty(required = false, example="2018-10")
 	private String sDate;
 

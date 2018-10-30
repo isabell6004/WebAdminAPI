@@ -71,6 +71,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
@@ -634,7 +635,7 @@ public class SitemgmtService extends ApiService {
 	 *
 	 * @since 2018. 10. 25.
 	 * @author Nayeon Kim
-	 * @param GetFeaturedItemCountParameter
+	 * @param StartDateParameter
 	 * @return GetFeaturedItemCountResponse
 	 */
 	@SuppressWarnings("unchecked")
@@ -648,6 +649,28 @@ public class SitemgmtService extends ApiService {
 		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItem.class);
 		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
 		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
+		return result;
+	}
+	
+	/**
+	 *
+	 * Get Featured Item List Day
+	 *
+	 * @since 2018. 10. 30.
+	 * @author Nayeon Kim
+	 * @param StartDateParameter
+	 * @return GetFeaturedItemListDayResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetFeaturedItemListDayResponse getFeaturedItemListDay(String sDate) {
+		GetFeaturedItemListDayResponse result = new GetFeaturedItemListDayResponse();
+		String spName = "up_wa_GetFeaturedItemListDay";
+		List<Object> params = new ArrayList<Object>();
+		
+		params.add(sDate);
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItem.class);
+		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(0));
 		return result;
 	}
 	
