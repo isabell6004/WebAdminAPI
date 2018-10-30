@@ -243,15 +243,40 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 *
+	 * getPolicyDetail
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetPolicyDetailParameter
+	 * @return GetPolicyDetailResponse
 	 */
-	public void getPolicyDetail () {
-
+	@SuppressWarnings("unchecked")
+	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
+		GetPolicyDetailResponse result = new GetPolicyDetailResponse();
+		String spName = "up_GetPage";
+		String filter = " 1=1";
+		
+		if(StringUtils.isNotEmpty(parameters.getSearchItem()) && StringUtils.isNotEmpty(parameters.getSearchTxt())) {
+			filter += " And " + parameters.getSearchItem() + " like '%" + parameters.getSearchTxt() + "%'";
+		}
+		if(parameters.getPolicyID() > 0) {
+			filter += " And PolicyID="+parameters.getPolicyID();
+		}
+		
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		params.add("PolicyAgreement");
+		params.add("PolicyAgreementID, PolicyID, WholeSalerID, CompanyName, RetailerID, AgreedOn, AgreedByName, AgreedByID, IPAddress, Agreed");
+		params.add(filter);
+		params.add("PolicyAgreementID desc");
+		params.add(true);
+		params.add(null);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, PolicyDetail.class);
+		result.setTotal(((List<Total>) _result.get(0)).get(0));
+		result.setPolicyDetail((List<PolicyDetail>)_result.get(1));
+		
+		return result;
 	}
 
 	/**
