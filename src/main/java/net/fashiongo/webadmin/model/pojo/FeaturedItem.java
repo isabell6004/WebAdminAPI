@@ -51,7 +51,7 @@ public class FeaturedItem {
 	@JsonProperty("ModifiedOn")
 	private LocalDateTime modifiedOn;
 	@JsonProperty("RowIndex")
-	private BigInteger rowIndex;
+	private Long rowIndex;
 	
 	public Integer getFeaturedItemID() {
 		return featuredItemID;
@@ -173,10 +173,10 @@ public class FeaturedItem {
 	public void setModifiedOn(LocalDateTime modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
-	public BigInteger getRowIndex() {
+	public Long getRowIndex() {
 		return rowIndex;
 	}
-	public void setRowIndex(BigInteger rowIndex) {
+	public void setRowIndex(Long rowIndex) {
 		this.rowIndex = rowIndex;
 	}
 }
