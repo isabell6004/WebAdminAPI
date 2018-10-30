@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.JsonObject;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
@@ -35,6 +33,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetAddDelPolicyManagementParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
@@ -152,16 +151,17 @@ public class SitemgmtController {
 
 	/**
 	 *
+	 *setAddDelPolicyManagement
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 30.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetAddDelPolicyManagementParameter
+	 * @return ResultCode
 	 */
 	@RequestMapping(value="setpolicymanagement", method=RequestMethod.POST)
-	public void setAddDelPolicyManagement () {
-
+	public JsonResponse<String> setAddDelPolicyManagement (@RequestBody SetAddDelPolicyManagementParameter parameters) {
+		ResultCode result = sitemgmtService.setAddDelPolicyManagement(parameters.getSetType(), parameters.getPolicy());
+		return new JsonResponse<String>(true, result.getResultMsg(), result.getResultCode(), null);
 	}
 
 	/**

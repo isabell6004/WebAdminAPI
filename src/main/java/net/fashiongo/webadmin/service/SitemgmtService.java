@@ -59,6 +59,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParam
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetAddDelPolicyManagementParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
@@ -199,15 +200,53 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
+	 *setAddDelPolicyManagement
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 30.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetAddDelPolicyManagementParameter
+	 * @return ResultCode
 	 */
-	public void setAddDelPolicyManagement () {
-
+	@Transactional("primaryTransactionManager")
+	public ResultCode setAddDelPolicyManagement (String type, Policy objPolicy) {
+		Policy pc = new Policy();
+		String sessionUserID = "";
+		switch(type) {
+		case "Upd":
+			if(objPolicy.getPolicyID() < 1) {
+				pc.setPolicyTitle(objPolicy.getPolicyTitle());
+				pc.setPolicyContents(objPolicy.getPolicyContents());
+				pc.setForVendor(objPolicy.getForVendor());
+				pc.setForRetailer(objPolicy.getForRetailer());
+				pc.setEffectiveOn(objPolicy.getEffectiveOn());
+				pc.setCreatedBy(sessionUserID);
+				pc.setCreatedOn(objPolicy.getCreatedOn());
+				pc.setModifiedBy(sessionUserID);
+				pc.setModifiedOn(objPolicy.getModifiedOn());
+				pc.setActive(objPolicy.getActive());
+				policyRepository.save(pc);
+			} else {
+				pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
+				pc.setPolicyTitle(objPolicy.getPolicyTitle());
+				pc.setPolicyContents(objPolicy.getPolicyContents());
+				pc.setForVendor(objPolicy.getForVendor());
+				pc.setForRetailer(objPolicy.getForRetailer());
+				pc.setEffectiveOn(objPolicy.getEffectiveOn());
+				pc.setModifiedBy(sessionUserID);
+				pc.setModifiedOn(objPolicy.getModifiedOn());
+				pc.setActive(objPolicy.getActive());
+				policyRepository.save(pc);
+			}
+			break;
+		case "Act":
+			pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
+			pc.setModifiedBy(sessionUserID);
+			pc.setModifiedOn(objPolicy.getModifiedOn());
+			pc.setActive(objPolicy.getActive());
+			policyRepository.save(pc);
+			break;
+		}
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 
 	/**
