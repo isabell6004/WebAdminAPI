@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -114,6 +115,10 @@ public class ShowSchedulePromotionPlan implements Serializable {
 	@Column(name = "ModifiedBy")
 	@JsonProperty("")
 	private String modifiedBy;
+
+	@Transient
+	@JsonProperty("isDeletable")
+	private Boolean isDeletable;
 
 	public ShowSchedulePromotionPlan() {
 	}
@@ -219,6 +224,26 @@ public class ShowSchedulePromotionPlan implements Serializable {
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	public Boolean getIsDeletable() {
+		return isDeletable == null ? true : isDeletable;
+	}
+
+	public void setIsDeletable(Boolean isDeletable) {
+		this.isDeletable = isDeletable;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public void setOnline(boolean isOnline) {
+		this.isOnline = isOnline;
+	}
+
+	public void setOffline(boolean isOffline) {
+		this.isOffline = isOffline;
 	}
 
 	@Override

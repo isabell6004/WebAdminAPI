@@ -43,7 +43,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximumPoolSize: 100
-      connectionTestQuery: Select top 1 * from Stripe_Charges
+      connectionTestQuery: Select top 1 * from [EM.Billing]
       connectionTimeout: 250
   jpa:
     show-sql: true

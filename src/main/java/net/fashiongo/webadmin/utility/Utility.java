@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -86,5 +87,17 @@ public class Utility {
 		}
 		
 		return weekid;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 29.
+	 * @author Reo
+	 * @param string
+	 * @return
+	 */
+	public static boolean isNullOrEmpty(@Nullable String string) {
+	    return string == null || string.length() == 0;
 	}
 }
