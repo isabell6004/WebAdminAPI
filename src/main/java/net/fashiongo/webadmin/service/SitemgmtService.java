@@ -215,30 +215,20 @@ public class SitemgmtService extends ApiService {
 		String sessionUserID = Utility.getUsername();
 		switch(type) {
 		case "Upd":
-			if(objPolicy.getPolicyID() < 1) {
-				pc.setPolicyTitle(objPolicy.getPolicyTitle());
-				pc.setPolicyContents(objPolicy.getPolicyContents());
-				pc.setForVendor(objPolicy.getForVendor());
-				pc.setForRetailer(objPolicy.getForRetailer());
-				pc.setEffectiveOn(objPolicy.getEffectiveOn());
+			if(objPolicy.getPolicyID() > 0) pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
+			pc.setPolicyTitle(objPolicy.getPolicyTitle());
+			pc.setPolicyContents(objPolicy.getPolicyContents());
+			pc.setForVendor(objPolicy.getForVendor());
+			pc.setForRetailer(objPolicy.getForRetailer());
+			pc.setEffectiveOn(objPolicy.getEffectiveOn());
+			if (objPolicy.getPolicyID() < 1) {
 				pc.setCreatedBy(sessionUserID);
 				pc.setCreatedOn(objPolicy.getCreatedOn());
-				pc.setModifiedBy(sessionUserID);
-				pc.setModifiedOn(objPolicy.getModifiedOn());
-				pc.setActive(objPolicy.getActive());
-				policyRepository.save(pc);
-			} else {
-				pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
-				pc.setPolicyTitle(objPolicy.getPolicyTitle());
-				pc.setPolicyContents(objPolicy.getPolicyContents());
-				pc.setForVendor(objPolicy.getForVendor());
-				pc.setForRetailer(objPolicy.getForRetailer());
-				pc.setEffectiveOn(objPolicy.getEffectiveOn());
-				pc.setModifiedBy(sessionUserID);
-				pc.setModifiedOn(objPolicy.getModifiedOn());
-				pc.setActive(objPolicy.getActive());
-				policyRepository.save(pc);
 			}
+			pc.setModifiedBy(sessionUserID);
+			pc.setModifiedOn(objPolicy.getModifiedOn());
+			pc.setActive(objPolicy.getActive());
+			policyRepository.save(pc);
 			break;
 		case "Act":
 			pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
