@@ -44,10 +44,12 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportSortParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.StartDateParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
@@ -456,11 +458,11 @@ public class SitemgmtController {
 	 *
 	 * @since 2018. 10. 25.
 	 * @author Nayeon Kim
-	 * @return GetFeaturedItemCountParameter
+	 * @return StartDateParameter
 	 * @return GetFeaturedItemCountResponse
 	 */
 	@RequestMapping(value = "getfeatureditemcount", method = RequestMethod.POST)
-	public JsonResponse<GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody GetFeaturedItemCountParameter parameters) {
+	public JsonResponse<GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody StartDateParameter parameters) {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());	
 		return new JsonResponse<GetFeaturedItemCountResponse>(true, null, result);
 	}
@@ -591,8 +593,20 @@ public class SitemgmtController {
 	@RequestMapping(value = "delfeatureditem", method = RequestMethod.POST)
 	public void gelFeaturedItem() {}
 	
+	/**
+	 *
+	 * Get Featured Item List Day
+	 *
+	 * @since 2018. 10. 30.
+	 * @author Nayeon Kim
+	 * @param StartDateParameter
+	 * @return GetFeaturedItemListDayResponse
+	 */
 	@RequestMapping(value = "getfeatureditemlistday", method = RequestMethod.POST)
-	public void getFeaturedItemListDay() {}
+    public JsonResponse<GetFeaturedItemListDayResponse> getFeaturedItemListDay(@RequestBody StartDateParameter parameters) {
+			GetFeaturedItemListDayResponse result = sitemgmtService.getFeaturedItemListDay(parameters.getsDate());  
+           return new JsonResponse<GetFeaturedItemListDayResponse>(true, null, result);
+    }
 	
 	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
 	public void getProductDetail() {}
