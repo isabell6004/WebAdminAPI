@@ -13,13 +13,13 @@ public class GetPolicyManagementResponse {
 	private Long recCnt;
 	
 	@JsonProperty("VPolicyList")
-	private Page<Policy> vpolicyList;
+	private List<Policy> vpolicyList;
 
 	public Long getRecCnt() {
 		return recCnt;
 	}
 
-	public Page<Policy> getVpolicyList() {
+	public List<Policy> getVpolicyList() {
 		return vpolicyList;
 	}
 
@@ -27,7 +27,7 @@ public class GetPolicyManagementResponse {
 		this.recCnt = recCnt;
 	}
 
-	public void setVpolicyList(Page<Policy> vpolicyList) {
+	public void setVpolicyList(List<Policy> vpolicyList) {
 		this.vpolicyList = vpolicyList;
 	}
 	

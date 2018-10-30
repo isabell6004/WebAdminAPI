@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 //import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -40,6 +44,7 @@ import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
 import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.PatternInfo;
+import net.fashiongo.webadmin.model.pojo.PolicyDetail;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.StyleInfo;
@@ -55,11 +60,11 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetAddDelPolicyManagementParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
@@ -70,6 +75,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
@@ -178,7 +184,7 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 *getPolicyManagement
+	 * getPolicyManagement
 	 *
 	 * @since 2018. 10. 29.
 	 * @author Dahye
@@ -187,20 +193,16 @@ public class SitemgmtService extends ApiService {
 	 */
 	public GetPolicyManagementResponse getPolicyManagement (PageSizeParameter parameters) {
 		GetPolicyManagementResponse results = new GetPolicyManagementResponse();
-		// Integer skip = parameters.getPageSize() * (parameters.getPageNum() - 1);
-		/*Pageable pageable = new Pageable();
-		pageable.setPage(parameters.getPageNum());
-		pageable.setSize(parameters.getPageSize());*/
-		/*QPageRequest request = new QPageRequest(parameters.getPageNum()-1, parameters.getPageSize());
-		Page<Policy> result = policyRepository.findAll(request);
+		Pageable req = PageRequest.of(parameters.getPageNum()-1, parameters.getPageSize(), new Sort(Direction.DESC, "EffectiveOn"));
+		Page<Policy> result = policyRepository.findAll(req);
 		results.setRecCnt(policyRepository.count());
-		results.setVpolicyList(result);*/
+		results.setVpolicyList(result.getContent());
 		return results;
 	}
 
 	/**
 	 *
-	 *setAddDelPolicyManagement
+	 * setAddDelPolicyManagement
 	 *
 	 * @since 2018. 10. 30.
 	 * @author Dahye
