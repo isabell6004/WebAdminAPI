@@ -406,7 +406,7 @@ public class SitemgmtController {
 	 * @param SetCategoryListOrderParameter
 	 * @return
 	 */
-	@RequestMapping(value = "setcategorylistOrder", method = RequestMethod.POST)
+	@RequestMapping(value = "setcategorylistorder", method = RequestMethod.POST)
 	public JsonResponse<List<CategoryListOrder>> setCategoryListOrder(@RequestBody SetCategoryListOrderParameter parameters) {
 		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
 		
