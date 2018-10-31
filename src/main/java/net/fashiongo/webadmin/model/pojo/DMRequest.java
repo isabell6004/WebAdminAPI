@@ -5,28 +5,49 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DMRequest implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private BigInteger row;
+	@JsonProperty("CatalogSendRequestID")
 	private Integer catalogSendRequestID;
+	@JsonProperty("CatalogSendQueueID")
 	private Integer catalogSendQueueID;
+	@JsonProperty("FGCatalogID")
 	private Integer fGCatalogID;
+	@JsonProperty("CatalogSortNo")
 	private Integer catalogSortNo;
+	@JsonProperty("CreatedOn")
 	private LocalDateTime createdOn;
+	@JsonProperty("ModifiedOn")
 	private LocalDateTime modifiedOn;
+	@JsonProperty("Active")
 	private Boolean active;
+	@JsonProperty("WholeSalerID")
 	private Integer wholeSalerID;
+	@JsonProperty("CompanyTypeCD")
 	private String companyTypeCD;
+	@JsonProperty("CompanyName")
 	private String companyName;
+	@JsonProperty("SentOn")
 	private LocalDateTime sentOn;
+	@JsonProperty("CatalogID")
 	private Integer catalogID;
+	@JsonProperty("UrlPath")
 	private String urlPath;
+	@JsonProperty("DirName")
 	private String dirName;
+	@JsonProperty("C1")
 	private String c1;
+	@JsonProperty("C2")
 	private String c2;
+	@JsonProperty("C3")
 	private String c3;
+	@JsonProperty("C4")
 	private String c4;
+	@JsonProperty("TotalCount")
 	private Integer totalCount;
 	
 	public BigInteger getRow() {
