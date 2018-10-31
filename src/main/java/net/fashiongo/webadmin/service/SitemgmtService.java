@@ -849,6 +849,7 @@ public class SitemgmtService extends ApiService {
 		GetTrendReport2Response result = new GetTrendReport2Response();
 		String spName = "up_wa_GetAdminTrendReport2";
 		List<Object> params = new ArrayList<Object>();
+		
 		params.add(prameters.getPagenum());
 		params.add(prameters.getPagesize());
 		params.add(prameters.getSearchtxt());
@@ -858,6 +859,7 @@ public class SitemgmtService extends ApiService {
 		params.add(prameters.getOrderbygubn());
 		params.add(prameters.getActive());
 		params.add(prameters.getCuratedType());
+		
 		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportList.class);
 		result.setTotal((List<Total>) _result.get(0));
 		result.setTrendReportList((List<TrendReportList>) _result.get(1));

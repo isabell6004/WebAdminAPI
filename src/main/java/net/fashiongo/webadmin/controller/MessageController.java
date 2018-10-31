@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
 import net.fashiongo.webadmin.service.MessageService;
@@ -122,4 +125,24 @@ public class MessageController {
 		Integer result = messageService.setVendorNewsInActive(parameters);
 		return new JsonResponse<Integer>(true, null, result, null);		
 	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 31.
+	 * @author Reo
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value="getretailernews", method=RequestMethod.POST)
+	public JsonResponse<GetRetailerNewsResponse> getRetailerNews(@RequestBody GetRetailerNewsParameter parameter) {
+		JsonResponse<GetRetailerNewsResponse> results = new JsonResponse<GetRetailerNewsResponse>(true, null, null);
+		
+		GetRetailerNewsResponse _result = messageService.getRetailerNews(parameter);
+		results.setData(_result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
 }
