@@ -25,9 +25,10 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -51,10 +52,11 @@ import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
@@ -174,30 +176,32 @@ public class SitemgmtController {
 
 	/**
 	 *
+	 * getPolicyDetail
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 30.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetPolicyDetailParameter
+	 * @return GetPolicyDetailResponse
 	 */
 	@RequestMapping(value="getpolicydetail", method=RequestMethod.POST)
-	public void getPolicyDetail () {
-
+	public JsonResponse<GetPolicyDetailResponse> getPolicyDetail (@RequestBody GetPolicyDetailParameter parameters) {
+		GetPolicyDetailResponse result = sitemgmtService.getPolicyDetail(parameters);
+		return new JsonResponse<GetPolicyDetailResponse>(true, null, 0, result);
 	}
 
 	/**
 	 *
+	 * getPolicyManagementDetail
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 31.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetPolicyManagementDetailParameter
+	 * @return GetPolicyManagementDetailResponse
 	 */
 	@RequestMapping(value="getpolicymanagementdetail", method=RequestMethod.POST)
-	public void getPolicyManagementDetail () {
-
+	public JsonResponse<GetPolicyManagementDetailResponse> getPolicyManagementDetail (@RequestBody GetPolicyManagementDetailParameter parameters) {
+		GetPolicyManagementDetailResponse result = sitemgmtService.getPolicyManagementDetail(parameters);
+		return new JsonResponse<GetPolicyManagementDetailResponse>(true, null, 0, result);
 	}
 
 	/**
