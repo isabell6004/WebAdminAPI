@@ -28,6 +28,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -50,6 +51,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
@@ -181,8 +183,9 @@ public class SitemgmtController {
 	 * @return
 	 */
 	@RequestMapping(value="getpolicydetail", method=RequestMethod.POST)
-	public void getPolicyDetail () {
-
+	public JsonResponse<GetPolicyDetailResponse> getPolicyDetail (@RequestBody GetPolicyDetailParameter parameters) {
+		GetPolicyDetailResponse result = sitemgmtService.getPolicyDetail(parameters);
+		return new JsonResponse<GetPolicyDetailResponse>(true, null, 0, result);
 	}
 
 	/**

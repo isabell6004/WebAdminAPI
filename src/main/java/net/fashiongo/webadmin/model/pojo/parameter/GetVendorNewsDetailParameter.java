@@ -3,7 +3,11 @@ package net.fashiongo.webadmin.model.pojo.parameter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
-
+/**
+ * 
+ * @author DAHYE
+ *
+ */
 public class GetVendorNewsDetailParameter {
 	@ApiModelProperty(required = false, example = "1")
 	@JsonProperty("newsid")
