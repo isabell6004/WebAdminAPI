@@ -7,7 +7,11 @@ import org.springframework.data.domain.Page;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import net.fashiongo.webadmin.model.primary.Policy;
-
+/**
+ * 
+ * @author DAHYE
+ *
+ */
 public class GetPolicyManagementResponse {
 	@JsonProperty("RecCnt")
 	private Long recCnt;

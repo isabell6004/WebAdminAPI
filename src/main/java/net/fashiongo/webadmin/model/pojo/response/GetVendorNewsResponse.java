@@ -6,7 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorNews;
-
+/**
+ * 
+ * @author DAHYE
+ *
+ */
 public class GetVendorNewsResponse {
 	@JsonProperty("Table")
 	private List<Total> total;
