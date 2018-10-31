@@ -744,6 +744,7 @@ public class SitemgmtController {
 		
 		ResultCode _result = sitemgmtService.setFGCatalog(parameters);
 		results.setCode(_result.getResultCode());
+		results.setMessage(_result.getResultMsg());
 		
 		return results;
 	}

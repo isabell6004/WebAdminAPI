@@ -1419,7 +1419,7 @@ public class SitemgmtService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
-		ResultCode result = new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+		ResultCode result = new ResultCode(true, 1, "Sent Successfully!");
 		VendorCatalogSendQueue vcsq = new VendorCatalogSendQueue();
 		Integer fgCatalogId = null;
 		
