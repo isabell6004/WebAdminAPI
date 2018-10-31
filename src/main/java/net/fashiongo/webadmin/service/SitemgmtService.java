@@ -52,6 +52,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -64,6 +65,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
@@ -733,6 +735,57 @@ public class SitemgmtService extends ApiService {
 		this.todayDealRepository.save(todayDeal);
 		
 		return 1;
+	}
+	
+	/**
+	 * 
+	 * Get FeaturedItem Search
+	 * 
+	 * @since 2018. 10. 30.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
+	public GetFeaturedItemSearchResponse getFeaturedItemSearch(GetFeaturedItemSearchParameter parameters) {
+		String spName = "up_wa_GetFeaturedItemsSearch";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		params.add(parameters.getFgCat());
+		params.add(parameters.getVendorID());
+		params.add(parameters.getSelectedCategoryID());
+		params.add(parameters.getFromDate());
+		params.add(parameters.getToDate());
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getBodySizeIDs());
+		params.add(parameters.getPatternIDs());
+		params.add(parameters.getLengthIDs());
+		params.add(parameters.getStyleIDs());
+		params.add(parameters.getFabricIDs());
+		params.add(parameters.getColorNames());
+		params.add(parameters.getSearchItemText());
+		params.add("ProductDescription");
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getOrderBy());
+		params.add(parameters.getVendorOrderBy());
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getSearchAndOr());
+		params.add(parameters.getKeyword());
+		params.add(parameters.getStyleNo());
+		params.add(parameters.getVendorDateFrom());
+		params.add(parameters.getVendorDateTo());
+		params.add(parameters.getNeverUsed());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequest.class);
+		//result.setDmList((List<DMRequest>) _result.get(0));
+		return null;
 	}
 	
 	/**
