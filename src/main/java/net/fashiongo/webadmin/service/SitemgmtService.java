@@ -70,6 +70,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -88,6 +89,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
@@ -286,7 +288,7 @@ public class SitemgmtService extends ApiService {
 	 *
 	 * getPolicyDetail
 	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 30.
 	 * @author Dahye
 	 * @param GetPolicyDetailParameter
 	 * @return GetPolicyDetailResponse
@@ -322,15 +324,18 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
+	 *getPolicyManagementDetail
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 31.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetPolicyManagementDetailParameter
+	 * @return GetPolicyManagementDetailResponse
 	 */
-	public void getPolicyManagementDetail () {
-
+	public GetPolicyManagementDetailResponse getPolicyManagementDetail (GetPolicyManagementDetailParameter parameters) {
+		GetPolicyManagementDetailResponse result = new GetPolicyManagementDetailResponse();
+		Policy policy = policyRepository.findOneByPolicyIDOrderByEffectiveOn(parameters.getPolicyID());
+		result.setPolicy(policy);
+		return result;
 	}
 
 	/**
