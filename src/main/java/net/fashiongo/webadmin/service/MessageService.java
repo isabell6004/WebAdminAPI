@@ -15,13 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
 import net.fashiongo.webadmin.model.pojo.Message;
+import net.fashiongo.webadmin.model.pojo.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorNews;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
@@ -210,6 +213,35 @@ public class MessageService extends ApiService {
         params.add(parameters.getArrayNewsID());
         jdbcHelper.executeSP(spName, params, VendorNewsDetail.class);
 		return 1;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 31.
+	 * @author Reo
+	 * @param parameter
+	 * @return
+	 */
+	public GetRetailerNewsResponse getRetailerNews(GetRetailerNewsParameter parameter) {
+		GetRetailerNewsResponse result = new GetRetailerNewsResponse();
+		
+		String spName = "up_wa_GetRetailerNews";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameter.getPageNum());
+		params.add(parameter.getPageSize());
+		params.add(parameter.getNewsTitle());
+		params.add(parameter.getActive());
+		params.add(parameter.getPeriod());
+		params.add(parameter.getFromDate());
+		params.add(parameter.getToDate());
+		params.add(parameter.getOrderBy());
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, RetailerNews.class);
+		
+		result.setRecCnt((List<Total>) _result.get(0));
+		result.setCodeDataList((List<RetailerNews>) _result.get(1));
+		result.setSuccess(true);
+		return result;
 	}
 
 }

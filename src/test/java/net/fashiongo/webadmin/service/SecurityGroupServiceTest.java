@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import net.fashiongo.webadmin.model.pojo.MapUserGroup;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityGroupPermissions;
+import net.fashiongo.webadmin.model.pojo.SecurityUserData;
+import net.fashiongo.webadmin.model.pojo.SecurityUserPermission;
 import net.fashiongo.webadmin.model.pojo.SecurityUsers;
 import net.fashiongo.webadmin.model.pojo.UserMappingVendor;
 import net.fashiongo.webadmin.model.pojo.UserMappingVendorAssigned;
@@ -28,6 +33,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
@@ -35,6 +41,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsRes
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.SetCreateSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
@@ -296,5 +303,31 @@ public class SecurityGroupServiceTest {
 		
 		ResultCode result = securityGroupService.setdeletesecuritygroups(param.getData());
 		assertTrue(result.getResultCode().equals(0) || result.getResultCode().equals(1));
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 31.
+	 * @author Reo
+	 * @throws JsonProcessingException
+	 * @throws ParseException
+	 */
+	@Ignore
+	@Test
+	public void testsetCreateSecurityUsers() throws JsonProcessingException, ParseException
+	{
+		SetSecurityUserParameter parameters = new SetSecurityUserParameter();
+		SecurityUserData sud = new SecurityUserData();
+		List<SecurityUserPermission> lsud = new ArrayList<SecurityUserPermission>();
+		
+		parameters.setData(sud);
+		parameters.setUpdata(lsud);
+		
+		SetCreateSecurityUserResponse result = securityGroupService.setCreateSecurityUser(parameters);
+		if (result != null) {
+			assertTrue(result.getResultCode().getSuccess());
+			assertTrue(result.getResultCode2().getSuccess());
+		}
 	}
 }
