@@ -25,12 +25,16 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
@@ -40,6 +44,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportSortParameter;
@@ -50,16 +55,21 @@ import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
+import net.fashiongo.webadmin.model.primary.CommunicationReason;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
@@ -173,44 +183,47 @@ public class SitemgmtController {
 
 	/**
 	 *
+	 * getPolicyDetail
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 30.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetPolicyDetailParameter
+	 * @return GetPolicyDetailResponse
 	 */
 	@RequestMapping(value="getpolicydetail", method=RequestMethod.POST)
-	public void getPolicyDetail () {
-
+	public JsonResponse<GetPolicyDetailResponse> getPolicyDetail (@RequestBody GetPolicyDetailParameter parameters) {
+		GetPolicyDetailResponse result = sitemgmtService.getPolicyDetail(parameters);
+		return new JsonResponse<GetPolicyDetailResponse>(true, null, 0, result);
 	}
 
 	/**
 	 *
+	 * getPolicyManagementDetail
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 31.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetPolicyManagementDetailParameter
+	 * @return GetPolicyManagementDetailResponse
 	 */
 	@RequestMapping(value="getpolicymanagementdetail", method=RequestMethod.POST)
-	public void getPolicyManagementDetail () {
-
+	public JsonResponse<GetPolicyManagementDetailResponse> getPolicyManagementDetail (@RequestBody GetPolicyManagementDetailParameter parameters) {
+		GetPolicyManagementDetailResponse result = sitemgmtService.getPolicyManagementDetail(parameters);
+		return new JsonResponse<GetPolicyManagementDetailResponse>(true, null, 0, result);
 	}
 
 	/**
 	 *
+	 * getCommunicationReasonAll
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 31.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetcommunicationreasonallParameter
+	 * @return CommunicationReason
 	 */
 	@RequestMapping(value="getcommunicationreasonall", method=RequestMethod.POST)
-	public void getCommunicationReasonAll () {
-
+	public JsonResponse<List<CommunicationReason>> getCommunicationReasonAll () {
+		List<CommunicationReason> result = sitemgmtService.getCommunicationReasonAll();
+		return new JsonResponse<List<CommunicationReason>>(true, null, 0, result);
 	}
 
 	/**
@@ -477,6 +490,7 @@ public class SitemgmtController {
 	@RequestMapping(value="getproductattributes", method=RequestMethod.POST)
 	public JsonResponse<GetProductAttributesResponse> getProductAttributes(@RequestBody GetProductAttributesParameter parameters) {
 		JsonResponse<GetProductAttributesResponse> results = new JsonResponse<GetProductAttributesResponse>(false, null, 0, null);
+		
 		GetProductAttributesResponse result = sitemgmtService.getProductAttributes(parameters);
 		results.setData(result);
 		results.setSuccess(true);
@@ -607,14 +621,50 @@ public class SitemgmtController {
            return new JsonResponse<GetFeaturedItemListDayResponse>(true, null, result);
     }
 	
+	/**
+	 *
+	 * Get Product Detail
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetProductDetailParameter
+	 * @return GetProductDetailResponse
+	 */
 	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
-	public void getProductDetail() {}
+	public JsonResponse<GetProductDetailResponse> getProductDetail(@RequestBody GetProductDetailParameter parameters) {
+		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
+		return new JsonResponse<GetProductDetailResponse>(true, null, result);
+	}
 	
+	/**
+	 *
+	 * Get TrendReport Default
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReportDefaultParameter
+	 * @return GetTrendReportDefaultResponse
+	 */
 	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
-	public void getTrendReportDefault() {}
+	public JsonResponse<GetTrendReportDefaultResponse> getTrendReportDefault(@RequestBody GetTrendReportDefaultParameter parameters) {
+		GetTrendReportDefaultResponse result = sitemgmtService.getTrendReportDefault(parameters);
+		return new JsonResponse<GetTrendReportDefaultResponse>(true, null, result);
+	}
 	
+	/**
+	 *
+	 * Get TrendReport V2
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReport2Parameter
+	 * @return GetTrendReport2Response
+	 */
 	@RequestMapping(value = "gettrendreport2", method = RequestMethod.POST)
-	public void getTrendReport2() {}
+	public JsonResponse<GetTrendReport2Response> getTrendReport2(@RequestBody GetTrendReport2Parameter parameters) {
+		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
+		return new JsonResponse<GetTrendReport2Response>(true, null, result);
+	}
 	
 	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
 	public void getItems2() {}
@@ -708,6 +758,26 @@ public class SitemgmtController {
 		
 		ResultCode _result = sitemgmtService.setFGCatalog(parameters);
 		results.setCode(_result.getResultCode());
+		results.setMessage(_result.getResultMsg());
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 31.
+	 * @author Reo
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value = "setproductattributesmapping", method = RequestMethod.POST)
+	public JsonResponse<ResultCode> setProductAttributesMapping(@RequestBody SetProductAttributesMappingParameter parameter) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
+		
+		ResultCode result = sitemgmtService.setProductAttributesMapping(parameter);
+		results.setData(result);
+		results.setSuccess(true);
 		
 		return results;
 	}

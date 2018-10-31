@@ -13,7 +13,11 @@ import javax.persistence.Table;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+/**
+ * 
+ * @author DAHYE
+ *
+ */
 @Entity
 @Table(name = "Policy")
 public class Policy {

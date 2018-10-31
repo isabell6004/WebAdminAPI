@@ -9,8 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 /**
 * @author Nayeon Kim
 */
-public class GetSpotCheckParameter {
-    @ApiModelProperty(required = false, example="10")
+public class SpotIDParameter {
+	@ApiModelProperty(required = false, example="10")
     @JsonProperty("SpotID")
     private String spotID;
 

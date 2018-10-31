@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.model.primary;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -16,7 +17,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "VendorCatalog_SendRequest")
-public class VendorCatalogSendRequest {
+public class VendorCatalogSendRequest implements Serializable{
+	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,7 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 import net.fashiongo.webadmin.model.primary.Policy;
-
+/**
+ * 
+ * @author DAHYE
+ *
+ */
 public class SetAddDelPolicyManagementParameter {
 	@JsonProperty("obj")
 	private Policy policy;

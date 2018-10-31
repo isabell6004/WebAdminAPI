@@ -10,6 +10,11 @@ import net.fashiongo.webadmin.model.primary.CodeLength;
 import net.fashiongo.webadmin.model.primary.CodePattern;
 import net.fashiongo.webadmin.model.primary.CodeStyle;
 
+/**
+ * 
+ * @author Reo
+ *
+ */
 public class SetProductAttributesParameter {
 	@JsonProperty("tabno")
 	private Integer tabNo;
