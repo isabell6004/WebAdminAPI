@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import net.fashiongo.webadmin.common.JdbcHelper;
+import net.fashiongo.common.dal.JdbcHelper;
 
 public class ApiService {
 	protected final Logger logger = LogManager.getLogger();

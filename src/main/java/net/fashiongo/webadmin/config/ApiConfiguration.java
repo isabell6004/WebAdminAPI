@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import net.fashiongo.webadmin.common.JdbcHelper;
+import net.fashiongo.common.dal.JdbcHelper;
 
 @Configuration
 public class ApiConfiguration {
