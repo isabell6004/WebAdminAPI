@@ -21,6 +21,7 @@ import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
@@ -47,6 +48,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportSortParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.StartDateParameter;
+import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
@@ -224,16 +226,17 @@ public class SitemgmtController {
 
 	/**
 	 *
+	 * deleteCommunicationReason
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 31.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param DeleteCommunicationReasonParameter
+	 * @return DeleteCommunicationReasonResponse
 	 */
 	@RequestMapping(value="deletecommunicationreason", method=RequestMethod.POST)
-	public void deleteCommunicationReason () {
-
+	public JsonResponse<DeleteCommunicationReasonResponse> deleteCommunicationReason (@RequestBody DeleteCommunicationReasonParameter parameters) {
+		DeleteCommunicationReasonResponse result = sitemgmtService.deleteCommunicationReason(parameters);
+		return new JsonResponse<DeleteCommunicationReasonResponse>(true, null, 0, result);
 	}
 
 	/**

@@ -57,13 +57,14 @@ import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
 import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.PatternInfo;
-import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.PolicyDetail;
+import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ProductColors;
 import net.fashiongo.webadmin.model.pojo.ProductImage;
 import net.fashiongo.webadmin.model.pojo.ProductInfo;
 import net.fashiongo.webadmin.model.pojo.ProductSelectCheck;
 import net.fashiongo.webadmin.model.pojo.ProductSize;
+import net.fashiongo.webadmin.model.pojo.Result;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.StyleInfo;
@@ -74,14 +75,15 @@ import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
+import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -94,6 +96,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
+import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
@@ -387,15 +390,22 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
+	 * deleteCommunicationReason
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 31.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param DeleteCommunicationReasonParameter
+	 * @return DeleteCommunicationReasonResponse
 	 */
-	public void deleteCommunicationReason () {
-
+	@SuppressWarnings("unchecked")
+	public DeleteCommunicationReasonResponse deleteCommunicationReason (DeleteCommunicationReasonParameter parameters) {
+		DeleteCommunicationReasonResponse result = new DeleteCommunicationReasonResponse();
+		String spName = "up_wa_DelCommunicationReason";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getReasonIDs());
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Result.class);
+		result.setResult((List<Result>) _result.get(0));
+		return result;
 	}
 
 	/**
