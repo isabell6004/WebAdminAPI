@@ -1281,6 +1281,26 @@ public class SitemgmtService extends ApiService {
 	}
 	
 	/**
+	 * Get DMRequestSendList2
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+//	public JSONObject getDMRequestSendList2(GetDMRequestSendListParameter parameters) {
+//		JSONObject result = new JSONObject();
+//		List<DMRequestDetail> subList = null;
+//		
+//		String spName = "up_wa_DMSendList_Migration";
+//		List<Object> params = new ArrayList<Object>();
+//		params.add(parameters.getDmIds().toString());
+//		
+//		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
+//		return result;
+//	}
+	
+	/**
 	 * 
 	 * Get DMDetail
 	 * 
