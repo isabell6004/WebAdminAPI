@@ -53,6 +53,11 @@ import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.PatternInfo;
 import net.fashiongo.webadmin.model.pojo.PolicyDetail;
+import net.fashiongo.webadmin.model.pojo.ProductColors;
+import net.fashiongo.webadmin.model.pojo.ProductImage;
+import net.fashiongo.webadmin.model.pojo.ProductInfo;
+import net.fashiongo.webadmin.model.pojo.ProductSelectCheck;
+import net.fashiongo.webadmin.model.pojo.ProductSize;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.StyleInfo;
@@ -67,6 +72,7 @@ import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
@@ -93,6 +99,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailRespo
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
@@ -730,6 +737,33 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 	
+	/**
+	 *
+	 * Get Product Detail
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetProductDetailParameter
+	 * @return GetProductDetailResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetProductDetailResponse getProductDetail(GetProductDetailParameter prameters) {
+		GetProductDetailResponse result = new GetProductDetailResponse();
+		String spName = "up_wa_GetProductDetail";
+		List<Object> params = new ArrayList<Object>();
+
+		params.add(prameters.getProductID());
+		params.add(prameters.getTrendReportID());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, ProductInfo.class, ProductImage.class, ProductColors.class, ProductSize.class, ProductSelectCheck.class);
+		result.setProductInfolist((List<ProductInfo>) _result.get(0));
+		result.setProductImagelist((List<ProductImage>) _result.get(1));
+		result.setProductColorslist((List<ProductColors>) _result.get(2));
+		result.setProductSizelist((List<ProductSize>) _result.get(3));
+		result.setProductSelectChecklist((List<ProductSelectCheck>) _result.get(4));
+		return result;
+	}
+   
 	/**
 	 *
 	 * Set Trend Report Sort
