@@ -260,17 +260,11 @@ public class SecurityGroupService extends ApiService {
 	public ResultCode setSecurityGroupPermissionsAllUsers(Integer groupID, List<GroupData> p) {
 		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 		
-		if(groupID.equals(0) || CollectionUtils.isEmpty(p)) {
-			result.setSuccess(false);
-			result.setResultCode(-1);
-			result.setResultMsg("No data selected!");
-			
-			return result;
-		}
 		try {
-			securityPermissionGroupRepository.deleteByGroupID(groupID);
-			this.saveSecurityPermissionGroup(groupID, p);
-			this.callProcSetPermission(groupID);
+			result = this.setSecurityGroupPermissions(groupID, p);
+			if(!result.getResultCode().equals(-1)) {
+				this.callProcSetPermission(groupID);
+			}
 		} catch(Exception ex) {
 			result = new ResultCode(false, 0, ex.getMessage());
 			return result;
@@ -395,7 +389,19 @@ public class SecurityGroupService extends ApiService {
 	 */
 	@Transactional
 	public ResultCode setSecurityGroupPermissions(Integer groupID, List<GroupData> p) {
-		return null;
+		ResultCode result = new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+		
+		if(groupID.equals(0) || CollectionUtils.isEmpty(p)) {
+			result.setSuccess(false);
+			result.setResultCode(-1);
+			result.setResultMsg("No data selected!");
+			
+			return result;
+		}
+		
+		securityPermissionGroupRepository.deleteByGroupID(groupID);
+		this.saveSecurityPermissionGroup(groupID, p);
+		return result;
 	}
 	
 	/**

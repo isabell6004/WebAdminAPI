@@ -11,15 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.DelCategoryAdItemParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.DelSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchVendorParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSpotCheckParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SpotIDParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdDetailResponse;
@@ -90,7 +89,7 @@ public class AdController {
 	 * @return GetSpotCheckResponse
 	 */
 	@RequestMapping(value = "getspotcheck", method = RequestMethod.POST)
-	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody GetSpotCheckParameter parameters) {
+	public JsonResponse<GetSpotCheckResponse> getSpotCheck(@RequestBody SpotIDParameter parameters) {
 		GetSpotCheckResponse result = adService.getSpotCheck(parameters.getSpotID());
 		return new JsonResponse<GetSpotCheckResponse>(true, null, 0, result);
 	}
@@ -105,7 +104,7 @@ public class AdController {
 	 * @return 
 	 */
 	@RequestMapping(value = "delspotsetting", method = RequestMethod.POST)
-	public JsonResponse<String> delSpotSetting(@RequestBody DelSpotSettingParameter parameters) {
+	public JsonResponse<String> delSpotSetting(@RequestBody SpotIDParameter parameters) {
 		ResultCode result = adService.delSpotSetting(parameters.getSpotID());
 		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
