@@ -29,10 +29,10 @@ import net.fashiongo.webadmin.model.pojo.response.show.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowParticipatingVendorsResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowPromotionPlanResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowScheduleListResponse;
-import net.fashiongo.webadmin.model.primary.ListShow;
-import net.fashiongo.webadmin.model.primary.MapShowSchedulePromotionPlanVendor;
 import net.fashiongo.webadmin.model.primary.ShowSchedule;
-import net.fashiongo.webadmin.model.primary.ShowSchedulePromotionPlan;
+import net.fashiongo.webadmin.model.primary.show.ListShow;
+import net.fashiongo.webadmin.model.primary.show.MapShowSchedulePromotionPlanVendor;
+import net.fashiongo.webadmin.model.primary.show.ShowSchedulePromotionPlan;
 import net.fashiongo.webadmin.service.SitemgmtShowService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -50,7 +50,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * getShowList
+	 * get Show List
 	 * 
 	 * @since 2018. 10. 15.
 	 * @author Sanghyup Kim
@@ -71,7 +71,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * set ShowInfo
 	 * 
 	 * @since 2018. 10. 15.
 	 * @author Sanghyup Kim
@@ -96,7 +96,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * get Show
 	 * 
 	 * @since 2018. 10. 15.
 	 * @author Sanghyup Kim
@@ -116,7 +116,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * get ShowSchedules
 	 * 
 	 * @since 2018. 10. 15.
 	 * @author Sanghyup Kim
@@ -137,7 +137,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * set Show
 	 * 
 	 * @since 2018. 10. 16.
 	 * @author Sanghyup Kim
@@ -203,7 +203,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * set ShowSchedule
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -250,7 +250,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * get ShowPromotionPlans
 	 * 
 	 * @since 2018. 10. 18.
 	 * @author Sanghyup Kim
@@ -272,7 +272,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * get ShowParticipating Vendors
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -294,7 +294,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * get ShowScheduleList
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -312,7 +312,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * set ShowParticipating Vendor
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -333,25 +333,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
-	 * 
-	 * @since 2018. 10. 11.
-	 * @author Sanghyup Kim
-	 * @param
-	 * @return
-	 */
-	@RequestMapping(value = "show", method = RequestMethod.POST)
-	@ApiOperation("site management > show info. - get shows")
-	public JsonResponse<Object> getShows() {
-
-		JsonResponse<Object> results = new JsonResponse<Object>();
-
-		return results;
-	}
-
-	/**
-	 * 
-	 * 
+	 * get ShowPromotionPlan
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -371,7 +353,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * set ShowPromotionPlan
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -388,13 +370,13 @@ public class SitemgmtShowController {
 		results.setSuccess(result.getSuccess());
 		results.setMessage(result.getMessage());
 		results.setData(result.getData());
-		
+
 		return results;
 	}
 
 	/**
 	 * 
-	 * 
+	 * get ShowSchedule
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -414,7 +396,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * get ShowParticipating Vendor
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -436,7 +418,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * delete ShowParticipating Vendor
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -458,7 +440,7 @@ public class SitemgmtShowController {
 
 	/**
 	 * 
-	 * 
+	 * delete ShowPromotionPlan
 	 * 
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
@@ -474,6 +456,24 @@ public class SitemgmtShowController {
 
 		results.setSuccess(result.getSuccess());
 		results.setMessage(result.getMessage());
+
+		return results;
+	}
+
+	/**
+	 * n/a get Shows
+	 * 
+	 * @since 2018. 10. 11.
+	 * @author Sanghyup Kim
+	 * @param
+	 * @return
+	 */
+	@Deprecated
+	@RequestMapping(value = "show", method = RequestMethod.POST)
+	@ApiOperation("site management > show info. - get shows")
+	public JsonResponse<Object> getShows() {
+
+		JsonResponse<Object> results = new JsonResponse<Object>();
 
 		return results;
 	}

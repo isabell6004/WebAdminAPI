@@ -6,7 +6,7 @@ package net.fashiongo.webadmin.model.pojo.response.show;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import net.fashiongo.webadmin.model.primary.ShowSchedulePromotionPlan;
+import net.fashiongo.webadmin.model.primary.show.ShowSchedulePromotionPlan;
 
 /**
  * @author Sanghyup Kim

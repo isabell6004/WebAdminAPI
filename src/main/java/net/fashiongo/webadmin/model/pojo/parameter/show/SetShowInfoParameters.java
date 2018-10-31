@@ -7,6 +7,9 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Convert;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -129,7 +132,8 @@ public class SetShowInfoParameters {
 	}
 
 	public Boolean getActive() {
-		return active;
+//		return active;
+		return (active == null ? false : active);
 	}
 
 	public void setActive(Boolean active) {

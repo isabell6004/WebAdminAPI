@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import net.fashiongo.webadmin.common.SingleValueResult;
-import net.fashiongo.webadmin.model.primary.ListShow;
+import net.fashiongo.webadmin.model.primary.show.ListShow;
 
 /**
  * @author Sanghyup Kim

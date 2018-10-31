@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import net.fashiongo.webadmin.model.primary.ListShow;
+import net.fashiongo.webadmin.model.primary.show.ListShow;
 
 /**
  * @author Sanghyup

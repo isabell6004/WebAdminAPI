@@ -16,10 +16,10 @@ import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.common.SingleValueResult;
 import net.fashiongo.webadmin.dao.primary.ListShowRepository;
-import net.fashiongo.webadmin.dao.primary.MapShowSchedulePromotionPlanVendorRepository;
-import net.fashiongo.webadmin.dao.primary.MapShowScheduleWholeSalerRepository;
-import net.fashiongo.webadmin.dao.primary.ShowSchedulePromotionPlanRepository;
-import net.fashiongo.webadmin.dao.primary.ShowScheduleRepository;
+import net.fashiongo.webadmin.dao.primary.show.MapShowSchedulePromotionPlanVendorRepository;
+import net.fashiongo.webadmin.dao.primary.show.MapShowScheduleWholeSalerRepository;
+import net.fashiongo.webadmin.dao.primary.show.ShowSchedulePromotionPlanRepository;
+import net.fashiongo.webadmin.dao.primary.show.ShowScheduleRepository;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.show.DelShowParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.show.GetShowListParameters;
@@ -35,11 +35,11 @@ import net.fashiongo.webadmin.model.pojo.response.show.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowParticipatingVendorsResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowPromotionPlanResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowScheduleListResponse;
-import net.fashiongo.webadmin.model.primary.ListShow;
-import net.fashiongo.webadmin.model.primary.MapShowSchedulePromotionPlanVendor;
-import net.fashiongo.webadmin.model.primary.MapShowScheduleWholeSaler;
 import net.fashiongo.webadmin.model.primary.ShowSchedule;
-import net.fashiongo.webadmin.model.primary.ShowSchedulePromotionPlan;
+import net.fashiongo.webadmin.model.primary.show.ListShow;
+import net.fashiongo.webadmin.model.primary.show.MapShowSchedulePromotionPlanVendor;
+import net.fashiongo.webadmin.model.primary.show.MapShowScheduleWholeSaler;
+import net.fashiongo.webadmin.model.primary.show.ShowSchedulePromotionPlan;
 
 /**
  * 
@@ -83,8 +83,8 @@ public class SitemgmtShowService extends ApiService {
 		final Integer active = parameters.getActive();
 		final String location = parameters.getLocation();
 		String orderBy = parameters.getOrderBy();
-		if (orderBy == "")
-			orderBy = null;
+//		if (orderBy == "")
+//			orderBy = null;
 		final String showName = parameters.getShowName();
 
 		final LocalDateTime fromDate = parameters.getFromDate();
@@ -116,7 +116,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Get Show List
+	 * set ShowInfo
 	 * 
 	 * @since 2018. 10. 15.
 	 * @author Sanghyup Kim
@@ -136,9 +136,9 @@ public class SitemgmtShowService extends ApiService {
 		final String showName = parameters.getShowName();
 		final String url = parameters.getShowUrl();
 		Boolean active = parameters.getActive();
-		if (active == null) {
-			active = false;
-		}
+//		if (active == null) {
+//			active = false;
+//		}
 
 		final String showCode = null;
 
@@ -311,14 +311,14 @@ public class SitemgmtShowService extends ApiService {
 		final Integer active = parameters.getActive();
 
 		String showName = parameters.getShowName();
-		if (showName == "")
-			showName = null;
+//		if (showName == "")
+//			showName = null;
 		String location = parameters.getLocation();
-		if (location == "")
-			location = null;
+//		if (location == "")
+//			location = null;
 		String orderBy = parameters.getOrderBy();
-		if (orderBy == "")
-			orderBy = null;
+//		if (orderBy == "")
+//			orderBy = null;
 
 		LocalDateTime dateFrom = null;
 		LocalDateTime dateTo = null;
@@ -362,7 +362,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Get Show List
+	 * set Show
 	 * 
 	 * @since 2018. 10. 16.
 	 * @author Sanghyup Kim
@@ -375,9 +375,9 @@ public class SitemgmtShowService extends ApiService {
 
 		Integer showID = parameters.getShowId();
 		Boolean active = parameters.getActive();
-		if (active == null) {
-			active = false;
-		}
+//		if (active == null) {
+//			active = false;
+//		}
 		String location = parameters.getLocation();
 		String showName = parameters.getShowName();
 		String url = parameters.getUrl();
@@ -416,7 +416,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Get Show List
+	 * set DeleteShow
 	 * 
 	 * @since 2018. 10. 16.
 	 * @author Sanghyup Kim
@@ -428,8 +428,11 @@ public class SitemgmtShowService extends ApiService {
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
-		int size = showScheduleRepository.findByShowID(showID).size();
-		if (size > 0) {
+//		int size = showScheduleRepository.findByShowID(showID).size();
+//		if (size > 0) {
+		List<ShowSchedule> showScheduleList = showScheduleRepository.findByShowID(showID);
+
+		if (!CollectionUtils.isEmpty(showScheduleList)) {
 			result.setMessage("Unable to delete show. There are still schedules linked to this show.");
 			return result;
 		}
@@ -456,8 +459,11 @@ public class SitemgmtShowService extends ApiService {
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
-		int size = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID).size();
-		if (size > 0) {
+//		int size = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID).size();
+//		if (size > 0) {
+		List<ShowSchedulePromotionPlan> showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID);
+
+		if (!CollectionUtils.isEmpty(showSchedulePromotionPlanList) ) {
 			result.setMessage(
 					"Unable to delete schedule. Either the Show Schedule date has passed or there are still plans/vendors linked to this schedule.");
 			return result;
@@ -507,9 +513,9 @@ public class SitemgmtShowService extends ApiService {
 		LocalDateTime dateTo2 = instant.atZone(defaultZoneId).toLocalDateTime();
 
 		Integer listOrder = parameters.getListOrder();
-		if (listOrder == null) {
-			listOrder = 0;
-		}
+//		if (listOrder == null) {
+//			listOrder = 0;
+//		}
 		Boolean active = parameters.getActive();
 		if (active == null) {
 			active = false;
@@ -573,7 +579,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Get Show detail
+	 * get ShowCategories -combobox
 	 * 
 	 * @since 2018. 10. 18.
 	 * @author Sanghyup Kim
@@ -601,7 +607,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Get Show detail
+	 * get ShowPromotionPlans
 	 * 
 	 * @since 2018. 10. 18.
 	 * @author Sanghyup Kim
@@ -673,7 +679,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Get Show detail
+	 * get ShowPromotionPlan
 	 * 
 	 * @since 2018. 10. 25.
 	 * @author Sanghyup Kim
@@ -692,7 +698,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Get Show detail
+	 * get ShowParticipatingVendor
 	 * 
 	 * @since 2018. 10. 25.
 	 * @author Sanghyup Kim
@@ -711,7 +717,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Set Show List
+	 * set ShowParticipatingVendor
 	 * 
 	 * @since 2018. 10. 16.
 	 * @author Sanghyup Kim
@@ -743,7 +749,8 @@ public class SitemgmtShowService extends ApiService {
 		mapShowSchedulePromotionPlanVendor.setRackCount(parameters.getRackCount());
 		mapShowSchedulePromotionPlanVendor.setFee(parameters.getFee());
 
-		mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository.save(mapShowSchedulePromotionPlanVendor);
+		mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository
+				.save(mapShowSchedulePromotionPlanVendor);
 		mapID = mapShowSchedulePromotionPlanVendor.getMapID();
 
 		// MapShowScheduleWholeSaler save
@@ -767,10 +774,9 @@ public class SitemgmtShowService extends ApiService {
 		return result;
 	}
 
-
 	/**
 	 * 
-	 * Set Show List
+	 * set ShowPromotionPlan
 	 * 
 	 * @since 2018. 10. 16.
 	 * @author Sanghyup Kim
@@ -780,7 +786,7 @@ public class SitemgmtShowService extends ApiService {
 	public ResultResponse<Integer> setShowPromotionPlan(SetShowPromotionPlanParameters parameters) {
 		Integer planID = parameters.getPlanId();
 		Integer showScheduleID = parameters.getShowScheduleId();
-		
+
 		LocalDateTime modifiedOn = LocalDateTime.now();
 		String modifiedBy = parameters.getModifiedBy();
 		LocalDateTime createdOn = modifiedOn;
@@ -790,26 +796,24 @@ public class SitemgmtShowService extends ApiService {
 		LocalDateTime commissionEffectiveFrom = parameters.getCommissionEffectiveFrom();
 		LocalDateTime commissionEffectiveTo = parameters.getCommissionEffectiveTo();
 		String planName = parameters.getPlanName();
-		
+
 		ShowSchedulePromotionPlan showSchedulePromotionPlan;
 		if (planID != 0) {
 			showSchedulePromotionPlan = showSchedulePromotionPlanRepository.findOneByPlanID(planID);
 			if (showSchedulePromotionPlan != null) {
 				showSchedulePromotionPlan.setModifiedOn(modifiedOn);
 				showSchedulePromotionPlan.setModifiedBy(modifiedBy);
-			}
-			else {
+			} else {
 				showSchedulePromotionPlan = new ShowSchedulePromotionPlan();
 
 				showSchedulePromotionPlan.setPlanID(planID);
 				showSchedulePromotionPlan.setCreatedOn(createdOn);
 				showSchedulePromotionPlan.setCreatedBy(createdBy);
-			}			
+			}
+		} else {
+			showSchedulePromotionPlan = new ShowSchedulePromotionPlan();
 		}
-		else {
-			showSchedulePromotionPlan = new ShowSchedulePromotionPlan();					
-		}
-		
+
 		showSchedulePromotionPlan.setPlanID(planID);
 		showSchedulePromotionPlan.setShowScheduleID(showScheduleID);
 		showSchedulePromotionPlan.setIsOnline(isOnline);
@@ -817,10 +821,10 @@ public class SitemgmtShowService extends ApiService {
 		showSchedulePromotionPlan.setCommissionEffectiveFrom(commissionEffectiveFrom);
 		showSchedulePromotionPlan.setCommissionEffectiveTo(commissionEffectiveTo);
 		showSchedulePromotionPlan.setPlanName(planName);
-		
+
 		showSchedulePromotionPlan = showSchedulePromotionPlanRepository.save(showSchedulePromotionPlan);
 		planID = showSchedulePromotionPlan.getPlanID();
-		
+
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 		result.setResultWrapper(true, 1, planID, MSG_SAVE_SUCCESS, planID);
@@ -830,7 +834,7 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Delete ShowPromotionPlan
+	 * set Delete ShowPromotionPlan
 	 * 
 	 * @since 2018. 10. 16.
 	 * @author Sanghyup Kim
@@ -843,16 +847,18 @@ public class SitemgmtShowService extends ApiService {
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 		Boolean hasPlanDatePassed = false;
-		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository.findOneByPlanID(planID);
+		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
+				.findOneByPlanID(planID);
 		if (showSchedulePromotionPlan != null) {
-			LocalDateTime commissionEffectiveFrom = showSchedulePromotionPlan.getCommissionEffectiveFrom(); 
+			LocalDateTime commissionEffectiveFrom = showSchedulePromotionPlan.getCommissionEffectiveFrom();
 //			LocalDateTime commissionEffectiveTo = showSchedulePromotionPlan.getCommissionEffectiveTo();
 			LocalDateTime currentDateTime = LocalDateTime.now();
 			int planDateCompare = currentDateTime.compareTo(commissionEffectiveFrom);
 			hasPlanDatePassed = planDateCompare >= 0 ? true : false;
 		}
-		
-		List<MapShowSchedulePromotionPlanVendor> mapShowSchedulePromotionPlanVendorList = mapShowSchedulePromotionPlanVendorRepository.findByPlanID(planID);
+
+		List<MapShowSchedulePromotionPlanVendor> mapShowSchedulePromotionPlanVendorList = mapShowSchedulePromotionPlanVendorRepository
+				.findByPlanID(planID);
 		Boolean planHasVendors = !CollectionUtils.isEmpty(mapShowSchedulePromotionPlanVendorList);
 		if (planHasVendors || hasPlanDatePassed) {
 			result.setMessage(
@@ -866,11 +872,10 @@ public class SitemgmtShowService extends ApiService {
 
 		return result;
 	}
-	
 
 	/**
 	 * 
-	 * Delete ShowParticipatingVendor
+	 * set Delete ShowParticipatingVendor
 	 * 
 	 * @since 2018. 10. 16.
 	 * @author Sanghyup Kim
@@ -884,22 +889,23 @@ public class SitemgmtShowService extends ApiService {
 
 		Boolean hasPlanDatePassed = false;
 
-		MapShowSchedulePromotionPlanVendor mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository.findOneByMapID(mapID);
+		MapShowSchedulePromotionPlanVendor mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository
+				.findOneByMapID(mapID);
 		if (mapShowSchedulePromotionPlanVendor != null) {
 			int planID = mapShowSchedulePromotionPlanVendor.getPlanID();
 
-			ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository.findOneByPlanID(planID);
+			ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
+					.findOneByPlanID(planID);
 			if (showSchedulePromotionPlan != null) {
-				LocalDateTime commissionEffectiveFrom = showSchedulePromotionPlan.getCommissionEffectiveFrom(); 
+				LocalDateTime commissionEffectiveFrom = showSchedulePromotionPlan.getCommissionEffectiveFrom();
 				LocalDateTime currentDateTime = LocalDateTime.now();
 				int planDateCompare = currentDateTime.compareTo(commissionEffectiveFrom);
 				hasPlanDatePassed = planDateCompare >= 0 ? true : false;
 			}
 		}
-		
+
 		if (hasPlanDatePassed) {
-			result.setMessage(
-					"Unable to delete vendor since it is already passed the Commission Effective From date");
+			result.setMessage("Unable to delete vendor since it is already passed the Commission Effective From date");
 			return result;
 		}
 

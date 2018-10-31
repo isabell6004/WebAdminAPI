@@ -66,7 +66,8 @@ public class SetShowParameters {
 	}
 
 	public Boolean getActive() {
-		return active;
+//		return active;
+		return (active == null ? false : active);
 	}
 
 	public void setActive(Boolean active) {
