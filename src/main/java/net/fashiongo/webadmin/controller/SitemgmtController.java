@@ -34,6 +34,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
@@ -64,7 +66,9 @@ import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
@@ -635,11 +639,35 @@ public class SitemgmtController {
 		return new JsonResponse<GetProductDetailResponse>(true, null, result);
 	}
 	
+	/**
+	 *
+	 * Get TrendReport Default
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReportDefaultParameter
+	 * @return GetTrendReportDefaultResponse
+	 */
 	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
-	public void getTrendReportDefault() {}
+	public JsonResponse<GetTrendReportDefaultResponse> getTrendReportDefault(@RequestBody GetTrendReportDefaultParameter parameters) {
+		GetTrendReportDefaultResponse result = sitemgmtService.getTrendReportDefault(parameters);
+		return new JsonResponse<GetTrendReportDefaultResponse>(true, null, result);
+	}
 	
+	/**
+	 *
+	 * Get TrendReport V2
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReport2Parameter
+	 * @return GetTrendReport2Response
+	 */
 	@RequestMapping(value = "gettrendreport2", method = RequestMethod.POST)
-	public void getTrendReport2() {}
+	public JsonResponse<GetTrendReport2Response> getTrendReport2(@RequestBody GetTrendReport2Parameter parameters) {
+		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
+		return new JsonResponse<GetTrendReport2Response>(true, null, result);
+	}
 	
 	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
 	public void getItems2() {}
@@ -733,6 +761,7 @@ public class SitemgmtController {
 		
 		ResultCode _result = sitemgmtService.setFGCatalog(parameters);
 		results.setCode(_result.getResultCode());
+		results.setMessage(_result.getResultMsg());
 		
 		return results;
 	}

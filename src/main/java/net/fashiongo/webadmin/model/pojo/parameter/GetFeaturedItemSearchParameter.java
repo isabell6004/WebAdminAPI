@@ -64,6 +64,10 @@ public class GetFeaturedItemSearchParameter {
 	@ApiModelProperty(required = true, example = "0")
 	@JsonProperty("SearchAndOr")
 	private String searchAndOr;
+	
+	@ApiModelProperty(required = true, example = "0")
+	@JsonProperty("Keyword")
+	private String keyword;
 
 	@ApiModelProperty(required = true, example = "0")
 	@JsonProperty("VendorOrderBy")
@@ -210,6 +214,14 @@ public class GetFeaturedItemSearchParameter {
 
 	public void setSearchAndOr(String searchAndOr) {
 		this.searchAndOr = searchAndOr;
+	}
+
+	public String getKeyword() {
+		return keyword.isEmpty() ? null : Utility.ReplaceString(keyword);
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 
 	public String getVendorOrderBy() {

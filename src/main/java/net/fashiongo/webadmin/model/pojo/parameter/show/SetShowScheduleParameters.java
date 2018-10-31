@@ -93,7 +93,8 @@ public class SetShowScheduleParameters {
 	}
 
 	public Boolean getActive() {
-		return active;
+//		return active;
+		return (active == null ? false : active);
 	}
 
 	public void setActive(Boolean active) {
@@ -101,7 +102,8 @@ public class SetShowScheduleParameters {
 	}
 
 	public Integer getListOrder() {
-		return listOrder;
+//		return listOrder;
+		return (listOrder == null ? 0 : listOrder);
 	}
 
 	public void setListOrder(Integer listOrder) {

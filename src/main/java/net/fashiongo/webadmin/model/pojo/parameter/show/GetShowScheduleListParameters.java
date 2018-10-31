@@ -3,6 +3,8 @@
  */
 package net.fashiongo.webadmin.model.pojo.parameter.show;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -85,7 +87,8 @@ public class GetShowScheduleListParameters {
 	}
 
 	public String getShowName() {
-		return showName;
+//		return showName;
+		return (StringUtils.isEmpty(showName) ? null : showName);
 	}
 
 	public void setShowName(String showName) {
@@ -93,7 +96,8 @@ public class GetShowScheduleListParameters {
 	}
 
 	public String getLocation() {
-		return location;
+//		return location;
+		return (StringUtils.isEmpty(location) ? null : location);
 	}
 
 	public void setLocation(String location) {
@@ -109,7 +113,8 @@ public class GetShowScheduleListParameters {
 	}
 
 	public String getOrderBy() {
-		return orderBy;
+//		return orderBy;
+		return (StringUtils.isEmpty(orderBy) ? null : orderBy);
 	}
 
 	public void setOrderBy(String orderBy) {

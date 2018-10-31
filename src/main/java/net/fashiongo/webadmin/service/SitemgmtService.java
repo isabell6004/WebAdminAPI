@@ -71,7 +71,9 @@ import net.fashiongo.webadmin.model.pojo.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
+import net.fashiongo.webadmin.model.pojo.TrendReportDefault;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
+import net.fashiongo.webadmin.model.pojo.TrendReportList;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
@@ -80,6 +82,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
@@ -87,6 +90,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
@@ -101,6 +106,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
@@ -112,7 +118,9 @@ import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
@@ -803,6 +811,61 @@ public class SitemgmtService extends ApiService {
    
 	/**
 	 *
+	 * Get TrendReport Default
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReportDefaultParameter
+	 * @return GetTrendReportDefaultResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetTrendReportDefaultResponse getTrendReportDefault(GetTrendReportDefaultParameter prameters) {
+		GetTrendReportDefaultResponse result = new GetTrendReportDefaultResponse();
+		String spName = "up_wa_GetAdminTrendReportDefault";
+		List<Object> params = new ArrayList<Object>();
+
+		params.add(prameters.getPagenum());
+		params.add(prameters.getPagesize());
+		params.add(prameters.getOrderby());
+		params.add(prameters.getOrderbygubn());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportDefault.class);
+        result.setTotal((List<Total>) _result.get(0));
+        result.setTrendReportDefault((List<TrendReportDefault>) _result.get(1));
+        return result;
+	}
+	
+	/**
+	 *
+	 * Get TrendReport V2
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReport2Parameter
+	 * @return GetTrendReport2Response
+	 */
+	@SuppressWarnings("unchecked")
+	public GetTrendReport2Response getTrendReport2(GetTrendReport2Parameter prameters) {
+		GetTrendReport2Response result = new GetTrendReport2Response();
+		String spName = "up_wa_GetAdminTrendReport2";
+		List<Object> params = new ArrayList<Object>();
+		params.add(prameters.getPagenum());
+		params.add(prameters.getPagesize());
+		params.add(prameters.getSearchtxt());
+		params.add(prameters.getFromdate());
+		params.add(prameters.getTodate());
+		params.add(prameters.getOrderby());
+		params.add(prameters.getOrderbygubn());
+		params.add(prameters.getActive());
+		params.add(prameters.getCuratedType());
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportList.class);
+		result.setTotal((List<Total>) _result.get(0));
+		result.setTrendReportList((List<TrendReportList>) _result.get(1));
+		return result;
+	}
+	
+	/**
+	 *
 	 * Set Trend Report Sort
 	 *
 	 * @since 2018. 10. 29.
@@ -1265,6 +1328,57 @@ public class SitemgmtService extends ApiService {
 	
 	/**
 	 * 
+	 * Get FeaturedItem Search
+	 * 
+	 * @since 2018. 10. 30.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
+	public GetFeaturedItemSearchResponse getFeaturedItemSearch(GetFeaturedItemSearchParameter parameters) {
+		String spName = "up_wa_GetFeaturedItemsSearch";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		params.add(parameters.getFgCat());
+		params.add(parameters.getVendorID());
+		params.add(parameters.getSelectedCategoryID());
+		params.add(parameters.getFromDate());
+		params.add(parameters.getToDate());
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getBodySizeIDs());
+		params.add(parameters.getPatternIDs());
+		params.add(parameters.getLengthIDs());
+		params.add(parameters.getStyleIDs());
+		params.add(parameters.getFabricIDs());
+		params.add(parameters.getColorNames());
+		params.add(parameters.getSearchItemText());
+		params.add("ProductDescription");
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getOrderBy());
+		params.add(parameters.getVendorOrderBy());
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getSearchAndOr());
+		params.add(parameters.getKeyword());
+		params.add(parameters.getStyleNo());
+		params.add(parameters.getVendorDateFrom());
+		params.add(parameters.getVendorDateTo());
+		params.add(parameters.getNeverUsed());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequest.class);
+		//result.setDmList((List<DMRequest>) _result.get(0));
+		return null;
+	}
+	
+	/**
+	 * 
 	 * Get DMRequest
 	 * 
 	 * @since 2018. 10. 29.
@@ -1352,6 +1466,26 @@ public class SitemgmtService extends ApiService {
 	}
 	
 	/**
+	 * Get DMRequestSendList2
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+//	public JSONObject getDMRequestSendList2(GetDMRequestSendListParameter parameters) {
+//		JSONObject result = new JSONObject();
+//		List<DMRequestDetail> subList = null;
+//		
+//		String spName = "up_wa_DMSendList_Migration";
+//		List<Object> params = new ArrayList<Object>();
+//		params.add(parameters.getDmIds().toString());
+//		
+//		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
+//		return result;
+//	}
+	
+	/**
 	 * 
 	 * Get DMDetail
 	 * 
@@ -1380,7 +1514,7 @@ public class SitemgmtService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
-		ResultCode result = new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+		ResultCode result = new ResultCode(true, 1, "Sent Successfully!");
 		VendorCatalogSendQueue vcsq = new VendorCatalogSendQueue();
 		Integer fgCatalogId = null;
 		
