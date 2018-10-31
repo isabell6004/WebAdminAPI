@@ -868,20 +868,6 @@ public class SitemgmtService extends ApiService {
 		
         switch (parameter.getTabNo())
         {
-            case 1://"Pattern":
-                DataSrc = "Code_Pattern";
-                ColumnList = "PatternID As CodeID,PatternName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
-                {
-                    Filter = Filter + " and PatternName like '%" + parameter.getAttrName() + "%'";
-                }
-                if (parameter.getActive() != null)
-                {
-                    rActive = parameter.getActive();
-                    Filter = Filter + " and Active = '" + rActive + "'";
-                }
-                OrderBy = "PatternName";
-                break;
             case 2:// "Length":
                 DataSrc = "Code_Length";
                 ColumnList = "LengthID As CodeID,LengthName As CodeName,Active";
@@ -924,7 +910,7 @@ public class SitemgmtService extends ApiService {
                 }
                 OrderBy = "FabricName";
                 break;
-            case 5:// "Fabric":
+            case 5:// "Category Mapping":
                 switch (parameter.getPrevTab())
                 {
                     case 1:
@@ -952,6 +938,20 @@ public class SitemgmtService extends ApiService {
                         OrderBy = "FabricName";
                         break;
                 }
+                break;
+            default://"Pattern":
+            	DataSrc = "Code_Pattern";
+                ColumnList = "PatternID As CodeID,PatternName As CodeName,Active";
+                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                {
+                    Filter = Filter + " and PatternName like '%" + parameter.getAttrName() + "%'";
+                }
+                if (parameter.getActive() != null)
+                {
+                    rActive = parameter.getActive();
+                    Filter = Filter + " and Active = '" + rActive + "'";
+                }
+                OrderBy = "PatternName";
                 break;
         }
         
