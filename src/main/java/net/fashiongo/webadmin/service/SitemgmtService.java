@@ -71,6 +71,7 @@ import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
+import net.fashiongo.webadmin.model.pojo.TrendReportList;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
@@ -85,6 +86,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailPara
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
@@ -110,6 +112,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListRespon
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
@@ -791,6 +794,32 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
    
+	/**
+	 *
+	 * Get TrendReport Default
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReportDefaultParameter
+	 * @return GetTrendReportDefaultResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetTrendReportDefaultResponse getTrendReportDefault(GetTrendReportDefaultParameter prameters) {
+		GetTrendReportDefaultResponse result = new GetTrendReportDefaultResponse();
+		String spName = "up_wa_GetAdminTrendReportDefault";
+		List<Object> params = new ArrayList<Object>();
+
+		params.add(prameters.getPagenum());
+		params.add(prameters.getPagesize());
+		params.add(prameters.getOrderby());
+		params.add(prameters.getOrderbygubn());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportList.class);
+		result.setTotal((List<Total>) _result.get(0));
+		result.setTrendReportList((List<TrendReportList>) _result.get(1));
+		return result;
+	}
+	
 	/**
 	 *
 	 * Set Trend Report Sort

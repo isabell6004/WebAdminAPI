@@ -33,6 +33,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
@@ -63,6 +64,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListRespon
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
@@ -632,8 +634,20 @@ public class SitemgmtController {
 		return new JsonResponse<GetProductDetailResponse>(true, null, result);
 	}
 	
+	/**
+	 *
+	 * Get TrendReport Default
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReportDefaultParameter
+	 * @return GetTrendReportDefaultResponse
+	 */
 	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
-	public void getTrendReportDefault() {}
+	public JsonResponse<GetTrendReportDefaultResponse> getTrendReportDefault(@RequestBody GetTrendReportDefaultParameter parameters) {
+		GetTrendReportDefaultResponse result = sitemgmtService.getTrendReportDefault(parameters);
+		return new JsonResponse<GetTrendReportDefaultResponse>(true, null, result);
+	}
 	
 	@RequestMapping(value = "gettrendreport2", method = RequestMethod.POST)
 	public void getTrendReport2() {}
