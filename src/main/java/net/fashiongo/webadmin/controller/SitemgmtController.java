@@ -54,6 +54,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
@@ -592,9 +593,22 @@ public class SitemgmtController {
 		return results;
 	}
 
+	/**
+	 * Get FeaturedItemSearch
+	 * 
+	 * @since 2018. 11. 01.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
 	@RequestMapping(value = "getfeatureditemsearch", method = RequestMethod.POST)
-	public void getFeaturedItemSearch(@RequestBody GetFeaturedItemSearchParameter parameters) {
+	public JsonResponse<GetFeaturedItemSearchResponse> getFeaturedItemSearch(@RequestBody GetFeaturedItemSearchParameter parameters) {
+		JsonResponse<GetFeaturedItemSearchResponse> results = new JsonResponse<GetFeaturedItemSearchResponse>(true, null, null);
 		
+		GetFeaturedItemSearchResponse _result = sitemgmtService.getFeaturedItemSearch(parameters);
+		results.setData(_result);
+		
+		return results;
 	}
 	
 	@RequestMapping(value = "getfeatureditemsearchvendor", method = RequestMethod.POST)

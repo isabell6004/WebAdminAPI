@@ -9,11 +9,11 @@ import io.swagger.annotations.ApiModelProperty;
 import net.fashiongo.webadmin.common.Utility;
 
 public class GetFeaturedItemSearchParameter {
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "1")
 	@JsonProperty("pagenum")
 	private String pageNum;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "10")
 	@JsonProperty("pagesize")
 	private String pageSize;
 
@@ -61,7 +61,7 @@ public class GetFeaturedItemSearchParameter {
 	@JsonProperty("ColorNames")
 	private String colorNames;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "And")
 	@JsonProperty("SearchAndOr")
 	private String searchAndOr;
 	
