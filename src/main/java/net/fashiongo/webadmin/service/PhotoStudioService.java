@@ -8,11 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import net.fashiongo.webadmin.common.PagedResult;
 import net.fashiongo.webadmin.common.QueryParam;
 import net.fashiongo.webadmin.common.SingleValueResult;
@@ -52,6 +47,11 @@ import net.fashiongo.webadmin.model.photostudio.PhotoOrderDetail;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PhotoStudioService extends ApiService {
@@ -715,6 +715,60 @@ public class PhotoStudioService extends ApiService {
 		return result;
 	}
 	
+	public List<PhotoModel> getAvailableModels(String theDate) {
+		Map<String, Object> result = new HashMap<String, Object> ();
+		List<Object> params = new ArrayList<Object>();
+		params.add(theDate);
+		
+		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetAvailableModels", params, PhotoModel.class);
+
+		List<PhotoModel> photoModels = (List<PhotoModel>) r.get(0);
+		Map<String, List<PhotoImage>> imagesMap = new HashMap<String, List<PhotoImage>>(); //key: calendarID + ModelID
+		Map<Integer, List<String>> nextAvailableMap = new HashMap<Integer, List<String>>(); //key: ModelID
+		
+		List<PhotoModel> models = new ArrayList<PhotoModel>();
+		
+		for (PhotoModel photoModel : photoModels) {
+			String imageKey = String.valueOf(photoModel.getCalendarID()) + String.valueOf(photoModel.getModelID());
+			List<PhotoImage> imageList = imagesMap.get(imageKey);
+			if(imageList != null) {
+				PhotoImage photoImage = new PhotoImage();
+				photoImage.setImageUrl(photoModel.getImageUrl());
+				photoImage.setListOrder(photoModel.getListOrder());
+				imageList.add(photoImage);
+				imagesMap.put(imageKey, imageList);
+			}else {
+				imageList = new ArrayList<PhotoImage>();
+				PhotoImage photoImage = new PhotoImage();
+				photoImage.setImageUrl(photoModel.getImageUrl());
+				photoImage.setListOrder(photoModel.getListOrder());
+				imageList.add(photoImage);
+				imagesMap.put(imageKey, imageList);
+				
+				if(photoModel.getIsToday().intValue() == 0 ) {
+					//Today's models
+					models.add(photoModel);
+				}else if(photoModel.getIsToday().intValue() == 1) {
+					//Today's models next Available
+					List<String> nextAvailableList = nextAvailableMap.get(photoModel.getModelID());
+					if(nextAvailableList == null) {
+						nextAvailableList = new ArrayList<String>();
+					}
+					nextAvailableList.add(photoModel.getTheDate());
+					nextAvailableMap.put(photoModel.getModelID(), nextAvailableList);
+					
+				}
+			}
+		}
+		
+		for(PhotoModel photoModel : models) {
+			photoModel.setPhotoImages(imagesMap.get(String.valueOf(photoModel.getCalendarID()) + String.valueOf(photoModel.getModelID())));
+			photoModel.setNextAvailableDates(nextAvailableMap.get(photoModel.getModelID()));
+		}
+
+		return models;
+	}
+	
 	public String updatePhotoOrder(PhotoOrder photoOrder) {
 		List<Object> params = new ArrayList<Object>();
 		if(photoOrder.getOrderID() == null) {
@@ -775,15 +829,24 @@ public class PhotoStudioService extends ApiService {
 	}
 	
 	public Integer saveActionLog(LogPhotoAction logPhotoAction) {
-		LocalDateTime date = LocalDateTime.now();
-		String username = Utility.getUsername();
-
-		logPhotoAction.setCreatedBy(username);
-		logPhotoAction.setCreatedOnDate(date);
-		logPhotoActionRepository.save(logPhotoAction);
-
-		return logPhotoAction.getActionID();
+		
+		List<Object> params = new ArrayList<Object>();
+		params.add(logPhotoAction.getActionType());
+		params.add(logPhotoAction.getOrderID());
+		params.add(logPhotoAction.getItemQty());
+		params.add(logPhotoAction.getDroppedBy());
+		params.add(Utility.getUsername());
+		
+		List<Object> outputparams = new ArrayList<Object>();
+		outputparams.add(0);
+		List<Object> result = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_SaveActionLog", params, outputparams);
+		
+		List<Object> outputs= (List<Object>) result.get(0);
+		Integer orderStatusID = outputs.get(0) == null || Integer.parseInt(String.valueOf(outputs.get(0))) == 0 ? null : Integer.parseInt(String.valueOf(outputs.get(0)));
+		
+		return orderStatusID;
 	}
+
 	
 	public Map<String, Object> getReports(Map<String, Object> parmMap) {
 		
@@ -831,23 +894,21 @@ public class PhotoStudioService extends ApiService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public PhotoCredit getCredit(String wholeSalerCompanyName) {
+	public BigDecimal getCreditBalance(Integer wholeSalerID) {
 		List<Object> params = new ArrayList<Object>();
-		params.add(1);
-		params.add(1);
-		params.add(0);
-		params.add(wholeSalerCompanyName);
+		params.add(wholeSalerID);
 		
-		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCreditList", params, SingleValueResult.class, PhotoCredit.class);
+		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCreditBalance", params, SingleValueResult.class, PhotoCredit.class);
 		
 		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
 		List<PhotoCredit> rs2 = (List<PhotoCredit>)_results.get(1);
 
-		if(rs2.size() > 0) {
-			return rs2.get(0);
+		BigDecimal photoCreditBalance = BigDecimal.ZERO;
+		if(rs2.size() > 0 && rs2.get(0) != null) {
+			photoCreditBalance = rs2.get(0).getPhotoCreditBalance();
 		}
 		
-		return null;
+		return photoCreditBalance;
 	}
 	
 	@SuppressWarnings("unchecked")

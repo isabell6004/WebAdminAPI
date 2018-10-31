@@ -1,20 +1,8 @@
 package net.fashiongo.webadmin.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.common.JsonResponse;
 import net.fashiongo.webadmin.common.PagedResult;
@@ -33,6 +21,19 @@ import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 import net.fashiongo.webadmin.service.PhotoStudioService;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Andy
@@ -399,6 +400,23 @@ public class PhotoStudioController {
 		return response;
 	}
 	
+	@GetMapping("/calendar/availablemodels/{theDate}")
+	public JsonResponse<?> getAvailableModels(@PathVariable("theDate") String theDate) {
+		logger.debug("PhotoStudioController.getAvailableModels() called!!!");
+		JsonResponse<List<PhotoModel>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<PhotoModel> result = photoStudioService.getAvailableModels(theDate);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getAvailableModels()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
 	@PostMapping(value = "order/update")
 	public JsonResponse<?> updatePhotoOrder(@RequestBody PhotoOrder photoOrder) {
 		logger.debug("PhotoStudioController.updatePhotoOrder() called!!!");
@@ -453,11 +471,12 @@ public class PhotoStudioController {
 	@PostMapping(value = "/order/action/save")
 	public JsonResponse<?> saveActionLog(@RequestBody LogPhotoAction logPhotoAction) {
 		logger.debug("PhotoStudioController.saveActionLog() called!!!");
-		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+		JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
 
 		try {
-			photoStudioService.saveActionLog(logPhotoAction);
+			Integer result = photoStudioService.saveActionLog(logPhotoAction);
 			response.setSuccess(true);
+			response.setData(result);
 		} catch (Exception ex) {
 			logger.error("Error: PhotoStudioController.saveActionLog():", ex);
 		}
@@ -515,17 +534,17 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@GetMapping("/credit/{wholeSalerCompanyName}")
-	public JsonResponse<?> getCredit(@PathVariable("wholeSalerCompanyName") String wholeSalerCompanyName) {
-		logger.debug("PhotoStudioController.getCredit() called!!!");
-		JsonResponse<PhotoCredit> response = new JsonResponse<>(false, null, null);
+	@GetMapping("/credit/balance/{wholeSalerID}")
+	public JsonResponse<?> getCreditBalance(@PathVariable("wholeSalerID") Integer wholeSalerID) {
+		logger.debug("PhotoStudioController.getCreditBalance() called!!!");
+		JsonResponse<BigDecimal> response = new JsonResponse<>(false, null, null);
 
 		try {
-			PhotoCredit  result = photoStudioService.getCredit(wholeSalerCompanyName);
+			BigDecimal photoCreditBalance = photoStudioService.getCreditBalance(wholeSalerID);
 			response.setSuccess(true);
-			response.setData(result);
+			response.setData(photoCreditBalance);
 		} catch (Exception ex) {
-			logger.error("Exception Error: PhotoStudioController.getCredit()：", ex);
+			logger.error("Exception Error: PhotoStudioController.getCreditBalance()：", ex);
 			response.setMessage(ex.getMessage());
 		}
 

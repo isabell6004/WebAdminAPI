@@ -22,9 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "Photo_OrderDetail")
 public class PhotoOrderDetail implements IPersistent, Serializable {
 	
-	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String DEFAULT_TIME = " 00:00:00";
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "OrderDetailID")

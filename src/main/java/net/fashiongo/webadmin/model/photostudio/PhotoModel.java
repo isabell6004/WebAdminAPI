@@ -3,6 +3,8 @@ package net.fashiongo.webadmin.model.photostudio;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -25,6 +27,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PhotoModel implements IPersistent, Serializable {
 
+	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ModelID")
@@ -310,7 +314,7 @@ public class PhotoModel implements IPersistent, Serializable {
 	@Transient
 	private String nextPhotoshoot;
 	public String getNextPhotoshoot() {
-		return _nextPhotoshoot != null ? _nextPhotoshoot.toString() : "";
+		return _nextPhotoshoot != null ? _nextPhotoshoot.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 	
 	@Transient
@@ -325,6 +329,13 @@ public class PhotoModel implements IPersistent, Serializable {
 	}
 	
 	@Transient
+	@Column(name = "ListOrder")
+	private Integer listOrder;
+	public Integer getListOrder() {
+		return listOrder;
+	}
+	
+	@Transient
 	@Column(name = "IsBooked")
 	private Boolean isBooked;
 	public Boolean getIsBooked() {
@@ -333,5 +344,57 @@ public class PhotoModel implements IPersistent, Serializable {
 
 	public void setIsBooked(Boolean isBooked) {
 		this.isBooked = isBooked;
+	}
+	
+	@Transient
+	List<String> nextAvailableDates;
+	public List<String> getNextAvailableDates() {
+		return nextAvailableDates == null ? new ArrayList<String>() : nextAvailableDates;
+	}
+
+	public void setNextAvailableDates(List<String> nextAvailableDates) {
+		this.nextAvailableDates = nextAvailableDates;
+	}
+	
+	@Transient
+	@JsonIgnore
+	@Column(name = "TheDate", updatable = false)
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _theDate;
+	public LocalDateTime get_theDate() {
+		return _theDate;
+	}
+
+	public void set_theDate(LocalDateTime _theDate) {
+		this._theDate = _theDate;
+	}
+
+	@Transient
+	private String theDate;
+	public String getTheDate() {
+		return _theDate != null ? _theDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+	}
+	
+	@Transient
+	@Column(name = "CalendarID")
+	private Integer calendarID;
+	public Integer getCalendarID() {
+		return calendarID;
+	}
+
+	public void setCalendarID(Integer calendarID) {
+		this.calendarID = calendarID;
+	}
+	
+	@JsonIgnore
+	@Transient
+	@Column(name = "IsToday")
+	private Integer isToday;
+	public Integer getIsToday() {
+		return isToday;
+	}
+
+	public void setIsToday(Integer isToday) {
+		this.isToday = isToday;
 	}
 }

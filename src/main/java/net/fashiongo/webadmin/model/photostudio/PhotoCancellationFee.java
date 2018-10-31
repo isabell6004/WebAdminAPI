@@ -26,8 +26,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class PhotoCancellationFee implements IPersistent, Serializable {
 	
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String EFFECTIVE_FROM_TIME = " 00:00:00";
-	private static final String EFFECTIVE_TO_TIME = " 23:59:59";
+	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
+	private static final String FROM_TIME = " 00:00:00";
+	private static final String TO_TIME = " 23:59:59";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,11 +77,11 @@ public class PhotoCancellationFee implements IPersistent, Serializable {
 	@Transient
 	private String fromEffectiveDate;
 	public String getFromEffectiveDate() {
-		return _fromEffectiveDate != null ? _fromEffectiveDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _fromEffectiveDate != null ? _fromEffectiveDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	public void setFromEffectiveDate(String fromEffectiveDate) {
-		this.fromEffectiveDate = StringUtils.isNotEmpty(fromEffectiveDate) ? fromEffectiveDate + EFFECTIVE_FROM_TIME : null;
+		this.fromEffectiveDate = StringUtils.isNotEmpty(fromEffectiveDate) ? fromEffectiveDate + FROM_TIME : null;
 		this.set_fromEffectiveDate(StringUtils.isNotEmpty(this.fromEffectiveDate) ? LocalDateTime.parse(this.fromEffectiveDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
@@ -99,11 +100,11 @@ public class PhotoCancellationFee implements IPersistent, Serializable {
 	@Transient
 	private String toEffectiveDate;
 	public String getToEffectiveDate() {
-		return _toEffectiveDate != null ? _toEffectiveDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _toEffectiveDate != null ? _toEffectiveDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	public void setToEffectiveDate(String toEffectiveDate) {
-		this.toEffectiveDate = StringUtils.isNotEmpty(toEffectiveDate) ? toEffectiveDate + EFFECTIVE_TO_TIME: null;
+		this.toEffectiveDate = StringUtils.isNotEmpty(toEffectiveDate) ? toEffectiveDate + TO_TIME: null;
 		this.set_toEffectiveDate(StringUtils.isNotEmpty(this.toEffectiveDate) ? LocalDateTime.parse(this.toEffectiveDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 

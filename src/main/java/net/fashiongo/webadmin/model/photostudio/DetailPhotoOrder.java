@@ -26,7 +26,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class DetailPhotoOrder {
 	
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String DEFAULT_TIME = " 00:00:00";
+	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
+	private static final String DEFAULT_TIME = " 18:00:00";
 
 	@JsonIgnore
 	@Column(name = "CheckOutDate")
@@ -43,13 +44,7 @@ public class DetailPhotoOrder {
 	@Transient
 	private String checkOutDate;
 	public String getCheckOutDate() {
-		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setCheckOutDate(String checkOutDate) {
-		this.checkOutDate = StringUtils.isNotEmpty(checkOutDate) ? checkOutDate : null;
-		this.set_photoshootDate(StringUtils.isNotEmpty(this.checkOutDate) ? LocalDateTime.parse(this.checkOutDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
-
+		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	@JsonIgnore
@@ -67,11 +62,11 @@ public class DetailPhotoOrder {
 	@Transient
 	private String photoshootDate;
 	public String getPhotoshootDate() {
-		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	public void setPhotoshootDate(String photoshootDate) {
-		this.photoshootDate = StringUtils.isNotEmpty(photoshootDate) ? photoshootDate : null;
+		this.photoshootDate = StringUtils.isNotEmpty(photoshootDate) ? photoshootDate + DEFAULT_TIME: null;
 		this.set_photoshootDate(StringUtils.isNotEmpty(this.photoshootDate) ? LocalDateTime.parse(this.photoshootDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 	
@@ -90,12 +85,7 @@ public class DetailPhotoOrder {
 	@Transient
 	private String dropOffDate;
 	public String getDropOffDate() {
-		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setDropOffDate(String dropOffDate) {
-		this.dropOffDate = StringUtils.isNotEmpty(dropOffDate) ? dropOffDate : null;
-		this.set_dropOffDate(StringUtils.isNotEmpty(this.dropOffDate) ? LocalDateTime.parse(this.dropOffDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 	
 	@Id
@@ -374,13 +364,6 @@ public class DetailPhotoOrder {
 	@Transient
 	private String cancelledOn;
 	public String getCancelledOn() {
-		return _cancelledOn != null ? _cancelledOn.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _cancelledOn != null ? _cancelledOn.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
-
-	public void setCancelledOn(String cancelledOn) {
-		this.cancelledOn = StringUtils.isNotEmpty(cancelledOn) ? cancelledOn + DEFAULT_TIME : null;
-		this.set_cancelledOn(StringUtils.isNotEmpty(this.cancelledOn) ? LocalDateTime.parse(this.cancelledOn, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
-	}
-	
-	
 }

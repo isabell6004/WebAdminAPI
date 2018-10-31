@@ -26,8 +26,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class PhotoCredit implements IPersistent, Serializable {
 	
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String EFFECTIVE_FROM_TIME = " 00:00:00";
-	private static final String EFFECTIVE_TO_TIME = " 23:59:59";
+	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
+	private static final String FROM_TIME = " 00:00:00";
+	private static final String TO_TIME = " 23:59:59";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -126,11 +127,11 @@ public class PhotoCredit implements IPersistent, Serializable {
 	@Transient
 	private String fromDate;
 	public String getFromDate() {
-		return _fromDate != null ? _fromDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _fromDate != null ? _fromDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	public void setFromDate(String fromDate) {
-		this.fromDate = StringUtils.isNotEmpty(fromDate) ? fromDate + EFFECTIVE_FROM_TIME : null;
+		this.fromDate = StringUtils.isNotEmpty(fromDate) ? fromDate + FROM_TIME : null;
 		this.set_fromDate(StringUtils.isNotEmpty(this.fromDate) ? LocalDateTime.parse(this.fromDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
@@ -149,11 +150,11 @@ public class PhotoCredit implements IPersistent, Serializable {
 	@Transient
 	private String toDate;
 	public String getToDate() {
-		return _toDate != null ? _toDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _toDate != null ? _toDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	public void setToDate(String toDate) {
-		this.toDate = StringUtils.isNotEmpty(toDate) ? toDate + EFFECTIVE_TO_TIME : null;
+		this.toDate = StringUtils.isNotEmpty(toDate) ? toDate + TO_TIME : null;
 		this.set_toDate(StringUtils.isNotEmpty(this.toDate) ? LocalDateTime.parse(this.toDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
 	}
 
@@ -240,18 +241,7 @@ public class PhotoCredit implements IPersistent, Serializable {
 	@Transient
 	private String theDate;
 	public String getTheDate() {
-		return _theDate != null ? _theDate.toString() : null;
-	}
-	
-	@Transient
-	@Column(name = "Balance")
-	private BigDecimal balance;
-	public BigDecimal getBalance() {
-		return balance;
-	}
-
-	public void setBalance(BigDecimal balance) {
-		this.balance = balance;
+		return _theDate != null ? _theDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 	
 	@Transient

@@ -14,19 +14,22 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
 import net.fashiongo.common.dal.IPersistent;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
 @Table(name = "Photo_Order")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PhotoOrder implements IPersistent, Serializable {
 	
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String DEFAULT_TIME = " 00:00:00";
+	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
+	private static final String DEFAULT_TIME = " 18:00:00";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -245,12 +248,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Transient
 	private String checkOutDate;
 	public String getCheckOutDate() {
-		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setCheckOutDate(String checkOutDate) {
-		this.checkOutDate = StringUtils.isNotEmpty(checkOutDate) ? checkOutDate + DEFAULT_TIME : null;
-		this.set_checkOutDate(StringUtils.isNotEmpty(this.checkOutDate) ? LocalDateTime.parse(this.checkOutDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	@JsonIgnore
@@ -268,12 +266,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Transient
 	private String dropOffDate;
 	public String getDropOffDate() {
-		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setDropOffDate(String dropOffDate) {
-		this.dropOffDate = StringUtils.isNotEmpty(dropOffDate) ? dropOffDate + DEFAULT_TIME : null;
-		this.set_dropOffDate(StringUtils.isNotEmpty(this.dropOffDate) ? LocalDateTime.parse(this.dropOffDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	@JsonIgnore
@@ -291,12 +284,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Transient
 	private String prepDate;
 	public String getPrepDate() {
-		return _prepDate != null ? _prepDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setPrepDate(String prepDate) {
-		this.prepDate = StringUtils.isNotEmpty(prepDate) ? prepDate + DEFAULT_TIME : null;
-		this.set_prepDate(StringUtils.isNotEmpty(this.prepDate) ? LocalDateTime.parse(this.prepDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _prepDate != null ? _prepDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	@JsonIgnore
@@ -314,7 +302,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Transient
 	private String photoshootDate;
 	public String getPhotoshootDate() {
-		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	public void setPhotoshootDate(String photoshootDate) {
@@ -337,12 +325,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Transient
 	private String retouchDate;
 	public String getRetouchDate() {
-		return _retouchDate != null ? _retouchDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setRetouchDate(String retouchDate) {
-		this.retouchDate = StringUtils.isNotEmpty(retouchDate) ? retouchDate + DEFAULT_TIME : null;
-		this.set_retouchDate(StringUtils.isNotEmpty(this.retouchDate) ? LocalDateTime.parse(this.retouchDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _retouchDate != null ? _retouchDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	@JsonIgnore
@@ -360,12 +343,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Transient
 	private String uploadDate;
 	public String getUploadDate() {
-		return _uploadDate != null ? _uploadDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setUploadDate(String uploadDate) {
-		this.uploadDate = StringUtils.isNotEmpty(uploadDate) ? uploadDate + DEFAULT_TIME : null;
-		this.set_uploadDate(StringUtils.isNotEmpty(this.uploadDate) ? LocalDateTime.parse(this.uploadDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _uploadDate != null ? _uploadDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	@Column(name = "SpecialRequest")
@@ -463,13 +441,9 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Transient
 	private String cancelledOn;
 	public String getCancelledOn() {
-		return _cancelledOn != null ? _cancelledOn.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _cancelledOn != null ? _cancelledOn.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
-	public void setCancelledOn(String cancelledOn) {
-		this.cancelledOn = StringUtils.isNotEmpty(cancelledOn) ? cancelledOn + DEFAULT_TIME : null;
-		this.set_cancelledOn(StringUtils.isNotEmpty(this.cancelledOn) ? LocalDateTime.parse(this.cancelledOn, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
-	}
 	@JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)

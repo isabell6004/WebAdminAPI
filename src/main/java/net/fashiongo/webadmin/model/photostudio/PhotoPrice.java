@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class PhotoPrice implements IPersistent, Serializable {
 	
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
+	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
 	private static final String EFFECTIVE_FROM_TIME = " 00:00:00";
 	private static final String EFFECTIVE_TO_TIME = " 23:59:59";
 
@@ -86,7 +87,7 @@ public class PhotoPrice implements IPersistent, Serializable {
 	@Transient
 	private String fromEffectiveDate;
 	public String getFromEffectiveDate() {
-		return _fromEffectiveDate != null ? _fromEffectiveDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _fromEffectiveDate != null ? _fromEffectiveDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	public void setFromEffectiveDate(String fromEffectiveDate) {
@@ -109,7 +110,7 @@ public class PhotoPrice implements IPersistent, Serializable {
 	@Transient
 	private String toEffectiveDate;
 	public String getToEffectiveDate() {
-		return _toEffectiveDate != null ? _toEffectiveDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _toEffectiveDate != null ? _toEffectiveDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	public void setToEffectiveDate(String toEffectiveDate) {

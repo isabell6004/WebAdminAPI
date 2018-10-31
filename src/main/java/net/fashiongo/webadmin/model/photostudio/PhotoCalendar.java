@@ -28,8 +28,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PhotoCalendar implements IPersistent, Serializable {
 	
-	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String DEFAULT_TIME = " 00:00:00";
+	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,14 +57,9 @@ public class PhotoCalendar implements IPersistent, Serializable {
 	@Transient
 	private String theDate;
 	public String getTheDate() {
-		return _theDate != null ? _theDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+		return _theDate != null ? _theDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
-	public void setTheDate(String theDate) {
-		this.theDate = StringUtils.isNotEmpty(theDate) ? theDate + DEFAULT_TIME: null;
-		this.set_theDate(StringUtils.isNotEmpty(this.theDate) ? LocalDateTime.parse(this.theDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
-	}
-	
 	@Column(name = "Available")
 	private Boolean available;
 	public Boolean getAvailable() {
@@ -76,7 +70,7 @@ public class PhotoCalendar implements IPersistent, Serializable {
 		this.available = available;
 	}
 
-	@Column(name = "IsHoliday")
+	@Column(name = "IsHoliday", insertable=false, updatable=false)
 	private Boolean isHoliday;
 	public Boolean getIsHoliday() {
 		return isHoliday;
@@ -86,7 +80,7 @@ public class PhotoCalendar implements IPersistent, Serializable {
 		this.isHoliday = isHoliday;
 	}
 
-	@Column(name = "IsModelShot")
+	@Column(name = "IsModelShot", insertable=false, updatable=false)
 	private Boolean isModelShot;
 	public Boolean getIsModelShot() {
 		return isModelShot;
@@ -96,7 +90,7 @@ public class PhotoCalendar implements IPersistent, Serializable {
 		this.isModelShot = isModelShot;
 	}
 
-	@Column(name = "DateName")
+	@Column(name = "DateName", insertable=false, updatable=false)
 	private String dateName;
 	public String getDateName() {
 		return dateName;

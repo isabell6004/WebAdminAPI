@@ -25,8 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class SimplePhotoOrder {
 	
-	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String DEFAULT_TIME = " 00:00:00";
+	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
 
 	@Id
 	@Column(name = "OrderID")
@@ -54,12 +53,7 @@ public class SimplePhotoOrder {
 	@Transient
 	private String photoshootDate;
 	public String getPhotoshootDate() {
-		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setPhotoshootDate(String photoshootDate) {
-		this.photoshootDate = StringUtils.isNotEmpty(photoshootDate) ? photoshootDate + DEFAULT_TIME : null;
-		this.set_photoshootDate(StringUtils.isNotEmpty(this.photoshootDate) ? LocalDateTime.parse(this.photoshootDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 	
 	@JsonIgnore
@@ -77,12 +71,7 @@ public class SimplePhotoOrder {
 	@Transient
 	private String checkOutDate;
 	public String getCheckOutDate() {
-		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setCheckOutDate(String checkOutDate) {
-		this.checkOutDate = StringUtils.isNotEmpty(checkOutDate) ? checkOutDate + DEFAULT_TIME : null;
-		this.set_photoshootDate(StringUtils.isNotEmpty(this.checkOutDate) ? LocalDateTime.parse(this.checkOutDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 	
 	@Column(name = "PONumber")
@@ -210,12 +199,7 @@ public class SimplePhotoOrder {
 	@Transient
 	private String dropOffDate;
 	public String getDropOffDate() {
-		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
-	}
-
-	public void setDropOffDate(String dropOffDate) {
-		this.dropOffDate = StringUtils.isNotEmpty(dropOffDate) ? dropOffDate + DEFAULT_TIME : null;
-		this.set_dropOffDate(StringUtils.isNotEmpty(this.dropOffDate) ? LocalDateTime.parse(this.dropOffDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
+		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
 	@Column(name = "TotalAmount")
