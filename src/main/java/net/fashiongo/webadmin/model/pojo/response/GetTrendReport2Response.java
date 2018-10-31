@@ -5,17 +5,17 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import net.fashiongo.webadmin.model.pojo.Total;
-import net.fashiongo.webadmin.model.pojo.TrendReportDefault;
+import net.fashiongo.webadmin.model.pojo.TrendReportList;
 
 /**
 * @author Nayeon Kim
 */
-public class GetTrendReportDefaultResponse {
+public class GetTrendReport2Response {
 	@JsonProperty("Table")
 	private List<Total> total;
 	
 	@JsonProperty("Table1")
-	private List<TrendReportDefault> trendReportDefault;
+	private List<TrendReportList> trendReportList;
 
 	public List<Total> getTotal() {
 		return total;
@@ -25,11 +25,11 @@ public class GetTrendReportDefaultResponse {
 		this.total = total;
 	}
 
-	public List<TrendReportDefault> getTrendReportDefault() {
-		return trendReportDefault;
+	public List<TrendReportList> getTrendReportList() {
+		return trendReportList;
 	}
 
-	public void setTrendReportDefault(List<TrendReportDefault> trendReportDefault) {
-		this.trendReportDefault = trendReportDefault;
+	public void setTrendReportList(List<TrendReportList> trendReportList) {
+		this.trendReportList = trendReportList;
 	}
 }

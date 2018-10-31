@@ -70,6 +70,7 @@ import net.fashiongo.webadmin.model.pojo.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
+import net.fashiongo.webadmin.model.pojo.TrendReportDefault;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.TrendReportList;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
@@ -86,6 +87,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailPara
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
@@ -111,6 +113,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
@@ -814,6 +817,35 @@ public class SitemgmtService extends ApiService {
 		params.add(prameters.getOrderby());
 		params.add(prameters.getOrderbygubn());
 
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportDefault.class);
+        result.setTotal((List<Total>) _result.get(0));
+        result.setTrendReportDefault((List<TrendReportDefault>) _result.get(1));
+        return result;
+	}
+	
+	/**
+	 *
+	 * Get TrendReport V2
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetTrendReport2Parameter
+	 * @return GetTrendReport2Response
+	 */
+	@SuppressWarnings("unchecked")
+	public GetTrendReport2Response getTrendReport2(GetTrendReport2Parameter prameters) {
+		GetTrendReport2Response result = new GetTrendReport2Response();
+		String spName = "up_wa_GetAdminTrendReport2";
+		List<Object> params = new ArrayList<Object>();
+		params.add(prameters.getPagenum());
+		params.add(prameters.getPagesize());
+		params.add(prameters.getSearchtxt());
+		params.add(prameters.getFromdate());
+		params.add(prameters.getTodate());
+		params.add(prameters.getOrderby());
+		params.add(prameters.getOrderbygubn());
+		params.add(prameters.getActive());
+		params.add(prameters.getCuratedType());
 		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportList.class);
 		result.setTotal((List<Total>) _result.get(0));
 		result.setTrendReportList((List<TrendReportList>) _result.get(1));

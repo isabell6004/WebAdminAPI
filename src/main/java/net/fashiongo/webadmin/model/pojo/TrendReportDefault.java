@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
 * @author Nayeon Kim
 */
-public class TrendReportList {
+public class TrendReportDefault {
 	private Long row;
 	
 	@JsonProperty("TrendReportID")
@@ -18,18 +18,6 @@ public class TrendReportList {
 	
 	@JsonProperty("Image")
 	private String image;
-	
-	@JsonProperty("SquareImage")
-	private String squareImage;
-	
-	@JsonProperty("MiniImage")
-	private String MiniImage;
-	
-	@JsonProperty("CuratedType")
-	private Integer curatedType;
-	
-	@JsonProperty("TRDescription")
-	private String tRDescription;
 	
 	@JsonProperty("DateFrom")
 	private LocalDateTime dateFrom;
@@ -48,15 +36,6 @@ public class TrendReportList {
 	
 	@JsonProperty("ItemCount")
 	private Integer itemCount;
-	
-	@JsonProperty("KMMImage1")
-	private String kMMImage1;
-	
-	@JsonProperty("KMMImage2")
-	private String kMMImage2;
-	
-	@JsonProperty("Sticky")
-	private Boolean sticky;
 
 	public Long getRow() {
 		return row;
@@ -88,38 +67,6 @@ public class TrendReportList {
 
 	public void setImage(String image) {
 		this.image = image;
-	}
-
-	public String getSquareImage() {
-		return squareImage;
-	}
-
-	public void setSquareImage(String squareImage) {
-		this.squareImage = squareImage;
-	}
-
-	public String getMiniImage() {
-		return MiniImage;
-	}
-
-	public void setMiniImage(String miniImage) {
-		MiniImage = miniImage;
-	}
-
-	public Integer getCuratedType() {
-		return curatedType;
-	}
-
-	public void setCuratedType(Integer curatedType) {
-		this.curatedType = curatedType;
-	}
-
-	public String gettRDescription() {
-		return tRDescription;
-	}
-
-	public void settRDescription(String tRDescription) {
-		this.tRDescription = tRDescription;
 	}
 
 	public LocalDateTime getDateFrom() {
@@ -168,29 +115,5 @@ public class TrendReportList {
 
 	public void setItemCount(Integer itemCount) {
 		this.itemCount = itemCount;
-	}
-
-	public String getkMMImage1() {
-		return kMMImage1;
-	}
-
-	public void setkMMImage1(String kMMImage1) {
-		this.kMMImage1 = kMMImage1;
-	}
-
-	public String getkMMImage2() {
-		return kMMImage2;
-	}
-
-	public void setkMMImage2(String kMMImage2) {
-		this.kMMImage2 = kMMImage2;
-	}
-
-	public Boolean getSticky() {
-		return sticky;
-	}
-
-	public void setSticky(Boolean sticky) {
-		this.sticky = sticky;
 	}
 }
