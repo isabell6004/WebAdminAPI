@@ -1,8 +1,11 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -62,16 +65,26 @@ public class GetDMRequestParameter implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public LocalDateTime getDatefrom() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-        return StringUtils.isEmpty(this.datefrom) ? null : LocalDateTime.parse(this.datefrom, formatter);
+	public Date getDatefrom() {
+        Date date = null;
+        try {
+        	date = StringUtils.isEmpty(this.datefrom) ? null : new SimpleDateFormat("M/d/yyyy HH:mm:ss").parse(this.datefrom);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        return date;
 	}
 	public void setDatefrom(String datefrom) {
 		this.datefrom = datefrom;
 	}
-	public LocalDateTime getDateto() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-        return StringUtils.isEmpty(this.dateto) ? null : LocalDateTime.parse(this.dateto, formatter);
+	public Date getDateto() {
+		Date date = null;
+		try {
+			date = StringUtils.isEmpty(this.datefrom) ? null : new SimpleDateFormat("M/d/yyyy HH:mm:ss").parse(this.dateto);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        return date;
 	}
 	public void setDateto(String dateto) {
 		this.dateto = dateto;

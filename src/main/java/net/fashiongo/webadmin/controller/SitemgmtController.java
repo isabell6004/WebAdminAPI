@@ -29,6 +29,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -41,6 +42,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportSortParameter;
@@ -56,6 +58,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailRespo
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
@@ -483,6 +486,7 @@ public class SitemgmtController {
 	@RequestMapping(value="getproductattributes", method=RequestMethod.POST)
 	public JsonResponse<GetProductAttributesResponse> getProductAttributes(@RequestBody GetProductAttributesParameter parameters) {
 		JsonResponse<GetProductAttributesResponse> results = new JsonResponse<GetProductAttributesResponse>(false, null, 0, null);
+		
 		GetProductAttributesResponse result = sitemgmtService.getProductAttributes(parameters);
 		results.setData(result);
 		results.setSuccess(true);
@@ -613,8 +617,20 @@ public class SitemgmtController {
            return new JsonResponse<GetFeaturedItemListDayResponse>(true, null, result);
     }
 	
+	/**
+	 *
+	 * Get Product Detail
+	 *
+	 * @since 2018. 10. 31.
+	 * @author Nayeon Kim
+	 * @param GetProductDetailParameter
+	 * @return GetProductDetailResponse
+	 */
 	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
-	public void getProductDetail() {}
+	public JsonResponse<GetProductDetailResponse> getProductDetail(@RequestBody GetProductDetailParameter parameters) {
+		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
+		return new JsonResponse<GetProductDetailResponse>(true, null, result);
+	}
 	
 	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
 	public void getTrendReportDefault() {}
@@ -714,6 +730,25 @@ public class SitemgmtController {
 		
 		ResultCode _result = sitemgmtService.setFGCatalog(parameters);
 		results.setCode(_result.getResultCode());
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 31.
+	 * @author Reo
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value = "setproductattributesmapping", method = RequestMethod.POST)
+	public JsonResponse<ResultCode> setProductAttributesMapping(@RequestBody SetProductAttributesMappingParameter parameter) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
+		
+		ResultCode result = sitemgmtService.setProductAttributesMapping(parameter);
+		results.setData(result);
+		results.setSuccess(true);
 		
 		return results;
 	}
