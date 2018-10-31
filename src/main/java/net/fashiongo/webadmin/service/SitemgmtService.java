@@ -1373,7 +1373,7 @@ public class SitemgmtService extends ApiService {
 	private VendorCatalog saveVendorCatalog(SetFGCatalogParameter parameters) {
 		VendorCatalog vc = new VendorCatalog();
 		vc.setVendorID(0);
-		vc.setCaltalogName(parameters.getSubject());
+		vc.setCatalogName(parameters.getSubject());
 		vc.setCreatedOn(LocalDateTime.now());
 		vc.setModifiedOn(LocalDateTime.now());
 		
