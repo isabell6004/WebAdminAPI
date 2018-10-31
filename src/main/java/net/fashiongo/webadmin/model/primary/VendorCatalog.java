@@ -27,7 +27,7 @@ public class VendorCatalog implements Serializable{
 	
 	private Integer vendorID;
 	
-	private String caltalogName;
+	private String catalogName;
 	
 	private LocalDateTime createdOn;
 	
@@ -49,12 +49,12 @@ public class VendorCatalog implements Serializable{
 		this.vendorID = vendorID;
 	}
 
-	public String getCaltalogName() {
-		return caltalogName;
+	public String getCatalogName() {
+		return catalogName;
 	}
 
-	public void setCaltalogName(String caltalogName) {
-		this.caltalogName = caltalogName;
+	public void setCatalogName(String catalogName) {
+		this.catalogName = catalogName;
 	}
 
 	public LocalDateTime getCreatedOn() {
