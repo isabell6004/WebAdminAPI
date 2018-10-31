@@ -1,6 +1,9 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,9 +19,9 @@ public class SetFGCatalogParameter implements Serializable {
 	private String subject;
 	@ApiModelProperty(required = false, example="<html></html>")
 	private String contents;
-	@ApiModelProperty(required = false, example="Soul Thread")
+	@ApiModelProperty(required = false, example="Myesper Apparel,Nicole Lee USA,Cutie Patootie Clothing")
 	private String includedvendors;
-	@ApiModelProperty(required = false, example="10327")
+	@ApiModelProperty(required = false, example="10493,10492,10491")
 	private String vendorcode;
 	@ApiModelProperty(required = false, example="")
 	private String catalogsendqueueid;
@@ -41,8 +44,8 @@ public class SetFGCatalogParameter implements Serializable {
 	public void setIncludedvendors(String includedvendors) {
 		this.includedvendors = includedvendors;
 	}
-	public String getVendorcode() {
-		return StringUtils.isEmpty(this.vendorcode) ? null : this.vendorcode;
+	public List<Integer> getVendorcode() {
+		return StringUtils.isEmpty(this.vendorcode) ? null : Arrays.stream(this.vendorcode.split(",")).map(Integer::parseInt).collect(Collectors.toList());
 	}
 	public void setVendorcode(String vendorcode) {
 		this.vendorcode = vendorcode;
