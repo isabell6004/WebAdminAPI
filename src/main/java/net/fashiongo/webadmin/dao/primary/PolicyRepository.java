@@ -13,4 +13,5 @@ import net.fashiongo.webadmin.model.primary.Policy;
 public interface PolicyRepository extends CrudRepository<Policy, Integer> {
 	Policy findOneByPolicyID(Integer policyID);
 	Page<Policy> findAll(Pageable request);
+	Policy findOneByPolicyIDOrderByEffectiveOn(Integer policyID);
 }
