@@ -7,7 +7,9 @@ import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+/**
+ * @author Jiwon Kim
+ */
 public class BiddingList2 {
 
 
