@@ -303,10 +303,10 @@ public class SitemgmtService extends ApiService {
 		params.add("PolicyAgreementID desc");
 		params.add(true);
 		params.add(null);
-		List<Object> _result = jdbcHelper.executeSP(spName, params, PolicyDetail.class);
-		result.setTotal(((List<Total>) _result.get(0)).get(0));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, PolicyDetail.class);
+		result.setTotal((List<Total>) _result.get(0));
 		result.setPolicyDetail((List<PolicyDetail>)_result.get(1));
-		
+				
 		return result;
 	}
 
