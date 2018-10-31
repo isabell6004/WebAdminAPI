@@ -27,6 +27,7 @@ import net.fashiongo.webadmin.dao.primary.CodeFabricRepository;
 import net.fashiongo.webadmin.dao.primary.CodeLengthRepository;
 import net.fashiongo.webadmin.dao.primary.CodePatternRepository;
 import net.fashiongo.webadmin.dao.primary.CodeStyleRepository;
+import net.fashiongo.webadmin.dao.primary.CommunicationReasonRepository;
 import net.fashiongo.webadmin.dao.primary.PolicyRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
@@ -66,11 +67,11 @@ import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 //import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -90,8 +91,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -105,6 +106,7 @@ import net.fashiongo.webadmin.model.primary.CodeLength;
 import net.fashiongo.webadmin.model.primary.CodePattern;
 import net.fashiongo.webadmin.model.primary.CodeStyle;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import net.fashiongo.webadmin.model.primary.CommunicationReason;
 import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
@@ -158,6 +160,9 @@ public class SitemgmtService extends ApiService {
 
 	@Autowired
 	private PolicyRepository policyRepository;
+	
+	@Autowired
+	private CommunicationReasonRepository communicationReasonRepository;
 	
 	/**
 	 *
@@ -340,15 +345,16 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
+	 * getCommunicationReasonAll
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 31.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetcommunicationreasonallParameter
+	 * @return CommunicationReason
 	 */
-	public void getCommunicationReasonAll () {
-
+	public List<CommunicationReason> getCommunicationReasonAll () {
+		List<CommunicationReason> result = communicationReasonRepository.findAll();
+		return result;
 	}
 
 	/**

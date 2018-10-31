@@ -62,6 +62,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
+import net.fashiongo.webadmin.model.primary.CommunicationReason;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
@@ -205,16 +206,17 @@ public class SitemgmtController {
 
 	/**
 	 *
+	 * getCommunicationReasonAll
 	 *
-	 *
-	 * @since 2018. 10. 22.
+	 * @since 2018. 10. 31.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param GetcommunicationreasonallParameter
+	 * @return CommunicationReason
 	 */
 	@RequestMapping(value="getcommunicationreasonall", method=RequestMethod.POST)
-	public void getCommunicationReasonAll () {
-
+	public JsonResponse<List<CommunicationReason>> getCommunicationReasonAll () {
+		List<CommunicationReason> result = sitemgmtService.getCommunicationReasonAll();
+		return new JsonResponse<List<CommunicationReason>>(true, null, 0, result);
 	}
 
 	/**
