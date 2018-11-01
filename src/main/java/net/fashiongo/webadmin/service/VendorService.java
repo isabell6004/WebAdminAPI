@@ -10,7 +10,6 @@ import net.fashiongo.webadmin.dao.primary.VendorListRepository;
 import net.fashiongo.webadmin.model.pojo.ProductColor;
 import net.fashiongo.webadmin.model.pojo.ProductSummary;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetProductColorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 
@@ -56,16 +55,14 @@ public class VendorService extends ApiService {
 		return result;
 	}
 	
-	public GetProductColorResponse getProductColor(Integer productId) {
-		GetProductColorResponse result = new GetProductColorResponse();
+	public List<ProductColor> getProductColor(Integer productId) {
 		String spName = "up_wa_GetProductColors";
 		List<Object> params = new ArrayList<Object>();
 		
 		params.add(productId);
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, ProductColor.class);
-		result.setColors((List<ProductColor>) _result.get(0));
 		
-		return result;
+		return (List<ProductColor>) _result.get(0);
 	}
 }
