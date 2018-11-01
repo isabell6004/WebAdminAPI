@@ -289,6 +289,21 @@ public class PhotoStudioController {
 		return response;
 	}
 	
+	@PostMapping(value = "/model/delete/{modelID}")
+	public JsonResponse deleteModel(@PathVariable("modelID") Integer modelID) {
+		logger.debug("PhotoStudioController.deleteModel() called!!!");
+		JsonResponse<String> response = new JsonResponse<>(false, null, null);
+		try {
+			String errMsg = photoStudioService.deleteModel(modelID);
+			response.setSuccess(StringUtils.isEmpty(errMsg));
+			response.setMessage(errMsg);
+		} catch (Exception e) {
+			logger.error("Error: PhotoStudioController.deleteModel():", e);
+		}
+		
+		return response;
+	}
+	
 	@GetMapping("/calendar")
 	public JsonResponse<?> getPhotoCalendar(@RequestParam Map<String, String> parmMap) {
 		logger.debug("PhotoStudioController.getPhotoCalendar() called!!!");
@@ -417,7 +432,7 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@PostMapping(value = "order/update")
+	@PostMapping(value = "/order/update")
 	public JsonResponse<?> updatePhotoOrder(@RequestBody PhotoOrder photoOrder) {
 		logger.debug("PhotoStudioController.updatePhotoOrder() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);

@@ -304,6 +304,10 @@ public class PhotoOrder implements IPersistent, Serializable {
 	public String getPhotoshootDate() {
 		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
+	
+	public String getPhotoshootDateTime() {
+		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null;
+	}
 
 	public void setPhotoshootDate(String photoshootDate) {
 		this.photoshootDate = StringUtils.isNotEmpty(photoshootDate) ? photoshootDate + DEFAULT_TIME : null;

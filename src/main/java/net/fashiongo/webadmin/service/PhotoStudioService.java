@@ -547,6 +547,22 @@ public class PhotoStudioService extends ApiService {
 		return photoModel;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public String deleteModel(Integer modelID) {
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(modelID);
+		params.add(Utility.getUsername());
+		
+		List<Object> outputparams = new ArrayList<Object>();
+		outputparams.add("");
+		List<Object> result = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_DeleteModel", params, outputparams);
+		
+		List<Object> outputs= (List<Object>) result.get(0);
+		
+		return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
+	}
+	
 	public List<PhotoCalendar> getPhotoCalendar(Map<String, String> parmMap) {
 		List<Object> params = new ArrayList<Object>();
 		params.add(parmMap.get("year"));
@@ -776,7 +792,7 @@ public class PhotoStudioService extends ApiService {
 		}
 		
 		params.add(photoOrder.getOrderID());
-		params.add(photoOrder.get_photoshootDate());
+		params.add(photoOrder.getPhotoshootDateTime());
 		params.add(photoOrder.getModelID());
 		params.add(photoOrder.getAdditionalDiscountAmount());
 		params.add(photoOrder.getInHouseNote());
