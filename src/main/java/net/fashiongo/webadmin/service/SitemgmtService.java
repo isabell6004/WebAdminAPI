@@ -913,13 +913,16 @@ public class SitemgmtService extends ApiService {
 	 * @author Nayeon Kim
 	 * @return List<TrendReportKmmImage>
 	 */
-	public List<TrendReportKmmImage> getLastKMMData() {
-		List<TrendReportKmmImage> result = new ArrayList<TrendReportKmmImage>();
-		List<TrendReport> trendReport = trendReportRepository.findAllByCuratedTypeOrderByTrendReportIDDesc(4);
-		if (!CollectionUtils.isEmpty(trendReport)) {
-			result = trendReport.stream().map(c -> new TrendReportKmmImage(c.getSquareImage(), c.getImage(),
-					c.getMiniImage(), c.getkMMImage1(), c.getkMMImage2())).collect(Collectors.toList());
-		}
+	public TrendReportKmmImage getLastKMMData() {
+		TrendReportKmmImage result = new TrendReportKmmImage();
+		TrendReport trendReport = trendReportRepository.findTopByCuratedTypeOrderByTrendReportIDDesc(4);
+		
+		result.setSquareImage(trendReport.getSquareImage());
+		result.setImage(trendReport.getImage());
+		result.setMiniImage(trendReport.getMiniImage());
+		result.setkMMImage1(trendReport.getkMMImage1());
+		result.setkMMImage2(trendReport.getkMMImage2());
+		
 		return result;
 	}
 	
@@ -1593,6 +1596,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional("primaryTransactionManager")
 	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
 		ResultCode result = new ResultCode(true, 1, "Sent Successfully!");
 		VendorCatalogSendQueue vcsq = new VendorCatalogSendQueue();
@@ -1625,7 +1629,6 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @param fgCatalogId
 	 */
-	@Transactional("primaryTransactionManager")
 	private void saveCatalogRequests(SetFGCatalogParameter parameters, Integer fgCatalogId) {
 		VendorCatalogSendQueue vcsq = this.vendorCatalogSendQueueRepository.findFirstByOrderByCatalogSendQueueIDDesc();
 		
@@ -1656,7 +1659,6 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	@Transactional("primaryTransactionManager")
 	private VendorCatalog saveVendorCatalog(SetFGCatalogParameter parameters) {
 		VendorCatalog vc = new VendorCatalog();
 		vc.setVendorID(0);
@@ -1678,7 +1680,6 @@ public class SitemgmtService extends ApiService {
 	 * @param vcsq
 	 * @param parameters
 	 */
-	@Transactional("primaryTransactionManager")
 	private void saveVendorCatalogSendQueue(VendorCatalogSendQueue vcsq, SetFGCatalogParameter parameters) {
 		vcsq.setSubject(parameters.getSubject());
 		vcsq.setContents(parameters.getContents());

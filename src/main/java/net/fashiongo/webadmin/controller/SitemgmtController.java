@@ -710,10 +710,6 @@ public class SitemgmtController {
 	@RequestMapping(value = "gettrendreportitem", method = RequestMethod.POST)
 	public void getTrendReportItem() {}
 	
-//	@Deprecated
-//	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
-//	public JsonResponse<String>  setAddDelTrendReportMap() { return null; }
-	
 	/**
 	 *
 	 * Set Trend Report Sort
@@ -738,9 +734,9 @@ public class SitemgmtController {
 	 * @return List<TrendReportKmmImage>
 	 */
 	@RequestMapping(value = "getlastkmmdata", method = RequestMethod.POST)
-	public JsonResponse<List<TrendReportKmmImage>> getLastKMMData() {
-		List<TrendReportKmmImage> result = sitemgmtService.getLastKMMData();
-		return new JsonResponse<List<TrendReportKmmImage>>(true, null, result);
+	public JsonResponse<TrendReportKmmImage> getLastKMMData() {
+		TrendReportKmmImage result = sitemgmtService.getLastKMMData();
+		return new JsonResponse<TrendReportKmmImage>(true, null, result);
 	}
 	
 	/**
