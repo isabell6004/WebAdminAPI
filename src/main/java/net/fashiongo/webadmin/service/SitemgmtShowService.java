@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +43,7 @@ import net.fashiongo.webadmin.model.primary.show.MapShowScheduleWholeSaler;
 import net.fashiongo.webadmin.model.primary.show.ShowSchedulePromotionPlan;
 
 /**
+ * Site Management Show Service
  * 
  * @author Sanghyup Kim
  */
@@ -75,14 +77,12 @@ public class SitemgmtShowService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public GetShowListResponse getShowList(GetShowListParameters parameters) {
 
-		List<Object> params = new ArrayList<Object>();
-
 		// add parameters
 		final Integer pageNum = parameters.getPageNum();
 		final Integer pageSize = parameters.getPageSize();
 		final Integer active = parameters.getActive();
 		final String location = parameters.getLocation();
-		String orderBy = parameters.getOrderBy();
+		final String orderBy = parameters.getOrderBy();
 //		if (orderBy == "")
 //			orderBy = null;
 		final String showName = parameters.getShowName();
@@ -90,19 +90,20 @@ public class SitemgmtShowService extends ApiService {
 		final LocalDateTime fromDate = parameters.getFromDate();
 		final LocalDateTime toDate = parameters.getToDate();
 
-		params.add(pageNum);
-		params.add(pageSize);
-		params.add(showName);
-		params.add(location);
-		params.add(active);
-		params.add(orderBy);
-
-		params.add(fromDate);
-		params.add(toDate);
+		List<Object> params = new ArrayList<Object>();
+		Collections.addAll(params,
+				new Object[] { pageNum, pageSize, showName, location, active, orderBy, fromDate, toDate });
+		/*
+		 * params.add(pageNum); params.add(pageSize); params.add(showName);
+		 * params.add(location); params.add(active); params.add(orderBy);
+		 * params.add(fromDate); params.add(toDate);
+		 */
 
 		final String spName = "up_wa_GetAdminShowList";
 
 		GetShowListResponse resultSet = new GetShowListResponse();
+
+		// -----------------------------------------------------------
 		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class, ListShow.class);
 
 		final List<SingleValueResult> singleValueResultList = (List<SingleValueResult>) _result.get(0);
@@ -127,6 +128,7 @@ public class SitemgmtShowService extends ApiService {
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
+		// add parameters
 		final String crud = parameters.getCrud();
 		final String sType = parameters.getSType();
 
@@ -135,7 +137,7 @@ public class SitemgmtShowService extends ApiService {
 		final String location = parameters.getLocation();
 		final String showName = parameters.getShowName();
 		final String url = parameters.getShowUrl();
-		Boolean active = parameters.getActive();
+		final Boolean active = parameters.getActive();
 //		if (active == null) {
 //			active = false;
 //		}
@@ -157,6 +159,8 @@ public class SitemgmtShowService extends ApiService {
 			switch (crud) {
 			case "I": // insert
 				listShow = new ListShow();
+
+				// -----------------------------------------------------------
 				ListShow listShow2 = listShowRepository.findTopByOrderByShowIDDesc();
 				if (listShow2 != null) {
 					showID = listShow2.getShowID() + 1;
@@ -174,6 +178,7 @@ public class SitemgmtShowService extends ApiService {
 
 				break;
 			case "U": // update
+				// -----------------------------------------------------------
 				listShow = listShowRepository.findOneByShowID(showID);
 				if (listShow != null) {
 					listShow.setActive(active);
@@ -188,6 +193,7 @@ public class SitemgmtShowService extends ApiService {
 
 				break;
 			case "A": // active/inactive
+				// -----------------------------------------------------------
 				listShow = listShowRepository.findOneByShowID(showID);
 				if (listShow != null) {
 					listShow.setActive(active);
@@ -198,6 +204,7 @@ public class SitemgmtShowService extends ApiService {
 
 				break;
 			case "D": // delete
+				// -----------------------------------------------------------
 				listShowRepository.deleteById(showID);
 				result.setResultWrapper(true, 1, showID, MSG_DELETE_SUCCESS, 1);
 
@@ -222,11 +229,13 @@ public class SitemgmtShowService extends ApiService {
 				showSchedule.setMobileImage(mobileImage);
 				showSchedule.setTitleImage(titleImage);
 
+				// -----------------------------------------------------------
 				showScheduleRepository.save(showSchedule);
 				result.setResultWrapper(true, 1, showSchedule.getShowScheduleID(), MSG_INSERT_SUCCESS, 1);
 
 				break;
 			case "U": // update
+				// -----------------------------------------------------------
 				showSchedule = showScheduleRepository.findOneByShowScheduleID(showScheduleID);
 				if (showSchedule != null) {
 					showSchedule.setShowID(showID);
@@ -238,6 +247,7 @@ public class SitemgmtShowService extends ApiService {
 					showSchedule.setMobileImage(mobileImage);
 					showSchedule.setTitleImage(titleImage);
 
+					// -----------------------------------------------------------
 					showScheduleRepository.save(showSchedule);
 					result.setResultWrapper(true, 1, showScheduleID, MSG_UPDATE_SUCCESS, 1);
 				}
@@ -248,12 +258,14 @@ public class SitemgmtShowService extends ApiService {
 				if (showSchedule != null) {
 					showSchedule.setActive(active);
 
+					// -----------------------------------------------------------
 					showScheduleRepository.save(showSchedule);
 					result.setResultWrapper(true, 1, showScheduleID, MSG_CHANGE_SUCCESS, 1);
 				}
 
 				break;
 			case "D": // delete
+				// -----------------------------------------------------------
 				showScheduleRepository.deleteById(showScheduleID);
 				result.setResultWrapper(true, 1, showScheduleID, MSG_DELETE_SUCCESS, 1);
 
@@ -285,6 +297,7 @@ public class SitemgmtShowService extends ApiService {
 
 		ResultResponse<ListShow> result = new ResultResponse<ListShow>();
 
+		// -----------------------------------------------------------
 		ListShow listShow = listShowRepository.findOneByShowID(showID);
 		result.setData(listShow);
 		return result;
@@ -302,21 +315,19 @@ public class SitemgmtShowService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public GetShowScheduleListResponse getShowScheduleList(GetShowScheduleListParameters parameters) {
 
-		List<Object> params = new ArrayList<Object>();
-
 		// add parameters
 		final Integer showId = parameters.getShowId();
 		final Integer pageNum = parameters.getPageNum();
 		final Integer pageSize = parameters.getPageSize();
 		final Integer active = parameters.getActive();
 
-		String showName = parameters.getShowName();
+		final String showName = parameters.getShowName();
 //		if (showName == "")
 //			showName = null;
-		String location = parameters.getLocation();
+		final String location = parameters.getLocation();
 //		if (location == "")
 //			location = null;
-		String orderBy = parameters.getOrderBy();
+		final String orderBy = parameters.getOrderBy();
 //		if (orderBy == "")
 //			orderBy = null;
 
@@ -334,19 +345,20 @@ public class SitemgmtShowService extends ApiService {
 			dateTo = LocalDateTime.parse(parameters.getDateTo(), dtFormatter);
 		}
 
-		params.add(pageNum);
-		params.add(pageSize);
-		params.add(showId);
-		params.add(showName);
-		params.add(location);
-		params.add(active);
-		params.add(orderBy);
-		params.add(dateFrom);
-		params.add(dateTo);
+		List<Object> params = new ArrayList<Object>();
+		Collections.addAll(params,
+				new Object[] { pageNum, pageSize, showId, showName, location, active, orderBy, dateFrom, dateTo });
 
+		/*
+		 * params.add(pageNum); params.add(pageSize); params.add(showId);
+		 * params.add(showName); params.add(location); params.add(active);
+		 * params.add(orderBy); params.add(dateFrom); params.add(dateTo);
+		 */
 		final String spName = "up_wa_GetAdminShowSchedule2";
 
 		GetShowScheduleListResponse resultSet = new GetShowScheduleListResponse();
+
+		// -----------------------------------------------------------
 		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class, ShowSchedule.class);
 
 		final List<SingleValueResult> singleValueResultList = (List<SingleValueResult>) _result.get(0);
@@ -373,17 +385,19 @@ public class SitemgmtShowService extends ApiService {
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
+		// add parameters
 		Integer showID = parameters.getShowId();
-		Boolean active = parameters.getActive();
+		final Boolean active = parameters.getActive();
 //		if (active == null) {
 //			active = false;
 //		}
-		String location = parameters.getLocation();
-		String showName = parameters.getShowName();
-		String url = parameters.getUrl();
+		final String location = parameters.getLocation();
+		final String showName = parameters.getShowName();
+		final String url = parameters.getUrl();
 
 		ListShow listShow;
 		if (showID > 0) { // update
+			// -----------------------------------------------------------
 			listShow = listShowRepository.findOneByShowID(showID);
 			if (listShow != null) {
 				listShow.setActive(active);
@@ -391,10 +405,13 @@ public class SitemgmtShowService extends ApiService {
 				listShow.setShowName(showName);
 				listShow.setUrl(url);
 
+				// -----------------------------------------------------------
 				listShowRepository.save(listShow);
 			}
 		} else { // insert
 			listShow = new ListShow();
+
+			// -----------------------------------------------------------
 			ListShow listShow2 = listShowRepository.findTopByOrderByShowIDDesc();
 			if (listShow2 != null) {
 				showID = listShow2.getShowID() + 1;
@@ -406,6 +423,7 @@ public class SitemgmtShowService extends ApiService {
 			listShow.setShowName(showName);
 			listShow.setUrl(url);
 
+			// -----------------------------------------------------------
 			listShowRepository.save(listShow);
 		}
 
@@ -424,12 +442,13 @@ public class SitemgmtShowService extends ApiService {
 	 * @return
 	 */
 	public ResultResponse<Integer> setDeleteShow(DelShowParameter parameters) {
-		Integer showID = parameters.getShowID();
+		final Integer showID = parameters.getShowID();
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 //		int size = showScheduleRepository.findByShowID(showID).size();
 //		if (size > 0) {
+		// -----------------------------------------------------------
 		List<ShowSchedule> showScheduleList = showScheduleRepository.findByShowID(showID);
 
 		if (!CollectionUtils.isEmpty(showScheduleList)) {
@@ -437,6 +456,7 @@ public class SitemgmtShowService extends ApiService {
 			return result;
 		}
 
+		// -----------------------------------------------------------
 		listShowRepository.deleteById(showID);
 
 		result.setResultWrapper(true, 1, showID, MSG_DELETE_SUCCESS, showID);
@@ -455,20 +475,23 @@ public class SitemgmtShowService extends ApiService {
 	 */
 	public ResultResponse<Integer> setDeleteShowSchedule(DelShowParameter parameters) {
 //		Integer showID = parameters.getShowID();
-		Integer showScheduleID = parameters.getShowScheduleID();
+		final Integer showScheduleID = parameters.getShowScheduleID();
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 //		int size = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID).size();
 //		if (size > 0) {
-		List<ShowSchedulePromotionPlan> showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID);
+		// -----------------------------------------------------------
+		List<ShowSchedulePromotionPlan> showSchedulePromotionPlanList = showSchedulePromotionPlanRepository
+				.findByShowScheduleID(showScheduleID);
 
-		if (!CollectionUtils.isEmpty(showSchedulePromotionPlanList) ) {
+		if (!CollectionUtils.isEmpty(showSchedulePromotionPlanList)) {
 			result.setMessage(
 					"Unable to delete schedule. Either the Show Schedule date has passed or there are still plans/vendors linked to this schedule.");
 			return result;
 		}
 
+		// -----------------------------------------------------------
 		showScheduleRepository.deleteById(showScheduleID);
 
 		result.setResultWrapper(true, 1, showScheduleID, MSG_DELETE_SUCCESS, showScheduleID);
@@ -490,11 +513,11 @@ public class SitemgmtShowService extends ApiService {
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 		Integer showScheduleID = parameters.getShowScheduleId();
-		Integer showID = parameters.getShowId();
+		final Integer showID = parameters.getShowId();
 
-		String bannerImage = parameters.getBannerImage();
-		String mobileImage = parameters.getMobileImage();
-		String titleImage = parameters.getTitleImage();
+		final String bannerImage = parameters.getBannerImage();
+		final String mobileImage = parameters.getMobileImage();
+		final String titleImage = parameters.getTitleImage();
 
 		SimpleDateFormat dt = new SimpleDateFormat("MM/dd/yyyy");
 
@@ -510,19 +533,20 @@ public class SitemgmtShowService extends ApiService {
 		LocalDateTime dateFrom2 = instant.atZone(defaultZoneId).toLocalDateTime();
 
 		instant = dateTo.toInstant();
-		LocalDateTime dateTo2 = instant.atZone(defaultZoneId).toLocalDateTime();
+		final LocalDateTime dateTo2 = instant.atZone(defaultZoneId).toLocalDateTime();
 
-		Integer listOrder = parameters.getListOrder();
+		final Integer listOrder = parameters.getListOrder();
 //		if (listOrder == null) {
 //			listOrder = 0;
 //		}
-		Boolean active = parameters.getActive();
-		if (active == null) {
-			active = false;
-		}
+		final Boolean active = parameters.getActive();
+//		if (active == null) {
+//			active = false;
+//		}
 
 		ShowSchedule showSchedule;
 		if (showScheduleID > 0) { // update
+			// -----------------------------------------------------------
 			showSchedule = showScheduleRepository.findOneByShowScheduleID(showScheduleID);
 			if (showSchedule != null) {
 				showSchedule.setActive(active);
@@ -534,6 +558,7 @@ public class SitemgmtShowService extends ApiService {
 				showSchedule.setShowID(showID);
 				showSchedule.setTitleImage(titleImage);
 
+				// -----------------------------------------------------------
 				showScheduleRepository.save(showSchedule);
 			}
 		} else { // insert
@@ -550,6 +575,7 @@ public class SitemgmtShowService extends ApiService {
 			showSchedule.setShowID(showID);
 			showSchedule.setTitleImage(titleImage);
 
+			// -----------------------------------------------------------
 			ShowSchedule showSchedule2 = showScheduleRepository.save(showSchedule);
 			showScheduleID = showSchedule2.getShowScheduleID();
 		}
@@ -572,6 +598,7 @@ public class SitemgmtShowService extends ApiService {
 
 		ResultResponse<ShowSchedule> result = new ResultResponse<ShowSchedule>();
 
+		// -----------------------------------------------------------
 		ShowSchedule showSchedule = showScheduleRepository.findOneByShowScheduleID(showScheduleID);
 		result.setData(showSchedule);
 		return result;
@@ -588,14 +615,17 @@ public class SitemgmtShowService extends ApiService {
 	 */
 	public GetShowCategoriesResponse getShowCategories(GetShowParameter parameters) {
 
-		Integer showID = parameters.getShowID();
+		final Integer showID = parameters.getShowID();
 		List<ListShow> showCategoryList;
 		if (showID == null) {
+			// -----------------------------------------------------------
 			showCategoryList = listShowRepository.findAllByOrderByShowNameAsc();
 		} else {
 			if (showID == 0) {
+				// -----------------------------------------------------------
 				showCategoryList = listShowRepository.findAllByOrderByShowNameAsc();
 			} else {
+				// -----------------------------------------------------------
 				showCategoryList = listShowRepository.findByShowID(showID);
 			}
 		}
@@ -620,16 +650,18 @@ public class SitemgmtShowService extends ApiService {
 		 * parameters.getPageSize(); Integer showID = parameters.getShowID(); Integer
 		 * planID = parameters.getPlanID();
 		 */
-		Integer showScheduleID = parameters.getShowScheduleID();
+		final Integer showScheduleID = parameters.getShowScheduleID();
 
 		List<ShowSchedulePromotionPlan> showSchedulePromotionPlanList;
 		if (showScheduleID == null) {
+			// -----------------------------------------------------------
 			showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
 		} else {
 //			if (showScheduleID == 0) {
 //				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
 //			}
 //			else {
+			// -----------------------------------------------------------
 			showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findByShowScheduleID(showScheduleID);
 //			}
 		}
@@ -648,22 +680,23 @@ public class SitemgmtShowService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public GetShowParticipatingVendorsResponse getShowParticipatingVendors(GetShowParameter parameters) {
 
-		List<Object> params = new ArrayList<Object>();
-
 		// add parameters
 		final Integer pageNum = parameters.getPageNum();
 		final Integer pageSize = parameters.getPageSize();
 		final Integer showScheduleID = parameters.getShowScheduleID();
 		final Integer planID = parameters.getPlanID();
 
-		params.add(pageNum);
-		params.add(pageSize);
-		params.add(showScheduleID);
-		params.add(planID);
-
+		List<Object> params = new ArrayList<Object>();
+		Collections.addAll(params, new Object[] { pageNum, pageSize, showScheduleID, planID });
+		/*
+		 * params.add(pageNum); params.add(pageSize); params.add(showScheduleID);
+		 * params.add(planID);
+		 */
 		final String spName = "up_wa_GetShowVendor";
 
 		GetShowParticipatingVendorsResponse resultSet = new GetShowParticipatingVendorsResponse();
+
+		// -----------------------------------------------------------
 		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class,
 				MapShowSchedulePromotionPlanVendor.class);
 
@@ -690,6 +723,7 @@ public class SitemgmtShowService extends ApiService {
 
 		GetShowPromotionPlanResponse result = new GetShowPromotionPlanResponse();
 
+		// -----------------------------------------------------------
 		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
 				.findOneByPlanID(planID);
 		result.setShowSchedulePromotionPlan(showSchedulePromotionPlan);
@@ -709,6 +743,7 @@ public class SitemgmtShowService extends ApiService {
 
 		ResultResponse<MapShowSchedulePromotionPlanVendor> result = new ResultResponse<MapShowSchedulePromotionPlanVendor>();
 
+		// -----------------------------------------------------------
 		MapShowSchedulePromotionPlanVendor mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository
 				.findOneByMapID(mapID);
 		result.setData(mapShowSchedulePromotionPlanVendor);
@@ -726,13 +761,15 @@ public class SitemgmtShowService extends ApiService {
 	 */
 	public ResultResponse<Integer> setShowParticipatingVendor(SetShowParticipatingVendorParameters parameters) {
 		Integer mapID = parameters.getMapId();
-		Integer planID = parameters.getPlanId();
-		Integer wholeSalerID = parameters.getWholesalerId();
+		final Integer planID = parameters.getPlanId();
+		final Integer wholeSalerID = parameters.getWholesalerId();
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 		// mapShowSchedulePromotionPlanVendor save
 		MapShowSchedulePromotionPlanVendor mapShowSchedulePromotionPlanVendor;
+
+		// -----------------------------------------------------------
 		List<MapShowSchedulePromotionPlanVendor> mapShowSchedulePromotionPlanVendorList = mapShowSchedulePromotionPlanVendorRepository
 				.findByPlanIDAndWholeSalerID(planID, wholeSalerID);
 //		if (mapShowSchedulePromotionPlanVendorList.size() > 0) {			
@@ -749,14 +786,18 @@ public class SitemgmtShowService extends ApiService {
 		mapShowSchedulePromotionPlanVendor.setRackCount(parameters.getRackCount());
 		mapShowSchedulePromotionPlanVendor.setFee(parameters.getFee());
 
+		// -----------------------------------------------------------
 		mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository
 				.save(mapShowSchedulePromotionPlanVendor);
 		mapID = mapShowSchedulePromotionPlanVendor.getMapID();
 
 		// MapShowScheduleWholeSaler save
+		// -----------------------------------------------------------
 		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
 				.findOneByPlanID(planID);
 		Integer showScheduleID = showSchedulePromotionPlan.getShowScheduleID();
+
+		// -----------------------------------------------------------
 		List<MapShowScheduleWholeSaler> mapShowScheduleWholeSalerList = mapShowScheduleWholeSalerRepository
 				.findByShowScheduleIDAndWholeSalerID(showScheduleID, wholeSalerID);
 
@@ -766,6 +807,8 @@ public class SitemgmtShowService extends ApiService {
 			mapShowScheduleWholeSaler.setMapID(0);
 			mapShowScheduleWholeSaler.setShowScheduleID(showScheduleID);
 			mapShowScheduleWholeSaler.setWholeSalerID(wholeSalerID);
+
+			// -----------------------------------------------------------
 			mapShowScheduleWholeSalerRepository.save(mapShowScheduleWholeSaler);
 		}
 
@@ -785,20 +828,21 @@ public class SitemgmtShowService extends ApiService {
 	 */
 	public ResultResponse<Integer> setShowPromotionPlan(SetShowPromotionPlanParameters parameters) {
 		Integer planID = parameters.getPlanId();
-		Integer showScheduleID = parameters.getShowScheduleId();
+		final Integer showScheduleID = parameters.getShowScheduleId();
 
-		LocalDateTime modifiedOn = LocalDateTime.now();
-		String modifiedBy = parameters.getModifiedBy();
-		LocalDateTime createdOn = modifiedOn;
-		String createdBy = modifiedBy;
-		Boolean isOnline = parameters.getIsOnline();
-		Boolean isOffline = parameters.getIsOffline();
-		LocalDateTime commissionEffectiveFrom = parameters.getCommissionEffectiveFrom();
-		LocalDateTime commissionEffectiveTo = parameters.getCommissionEffectiveTo();
-		String planName = parameters.getPlanName();
+		final LocalDateTime modifiedOn = LocalDateTime.now();
+		final String modifiedBy = parameters.getModifiedBy();
+		final LocalDateTime createdOn = modifiedOn;
+		final String createdBy = modifiedBy;
+		final Boolean isOnline = parameters.getIsOnline();
+		final Boolean isOffline = parameters.getIsOffline();
+		final LocalDateTime commissionEffectiveFrom = parameters.getCommissionEffectiveFrom();
+		final LocalDateTime commissionEffectiveTo = parameters.getCommissionEffectiveTo();
+		final String planName = parameters.getPlanName();
 
 		ShowSchedulePromotionPlan showSchedulePromotionPlan;
 		if (planID != 0) {
+			// -----------------------------------------------------------
 			showSchedulePromotionPlan = showSchedulePromotionPlanRepository.findOneByPlanID(planID);
 			if (showSchedulePromotionPlan != null) {
 				showSchedulePromotionPlan.setModifiedOn(modifiedOn);
@@ -822,6 +866,7 @@ public class SitemgmtShowService extends ApiService {
 		showSchedulePromotionPlan.setCommissionEffectiveTo(commissionEffectiveTo);
 		showSchedulePromotionPlan.setPlanName(planName);
 
+		// -----------------------------------------------------------
 		showSchedulePromotionPlan = showSchedulePromotionPlanRepository.save(showSchedulePromotionPlan);
 		planID = showSchedulePromotionPlan.getPlanID();
 
@@ -842,11 +887,13 @@ public class SitemgmtShowService extends ApiService {
 	 * @return
 	 */
 	public ResultResponse<Integer> setDeleteShowPromotionPlan(DelShowParameter parameters) {
-		Integer planID = parameters.getPlanId();
+		final Integer planID = parameters.getPlanId();
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 		Boolean hasPlanDatePassed = false;
+
+		// -----------------------------------------------------------
 		ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
 				.findOneByPlanID(planID);
 		if (showSchedulePromotionPlan != null) {
@@ -857,6 +904,7 @@ public class SitemgmtShowService extends ApiService {
 			hasPlanDatePassed = planDateCompare >= 0 ? true : false;
 		}
 
+		// -----------------------------------------------------------
 		List<MapShowSchedulePromotionPlanVendor> mapShowSchedulePromotionPlanVendorList = mapShowSchedulePromotionPlanVendorRepository
 				.findByPlanID(planID);
 		Boolean planHasVendors = !CollectionUtils.isEmpty(mapShowSchedulePromotionPlanVendorList);
@@ -866,6 +914,7 @@ public class SitemgmtShowService extends ApiService {
 			return result;
 		}
 
+		// -----------------------------------------------------------
 		showSchedulePromotionPlanRepository.deleteById(planID);
 
 		result.setResultWrapper(true, 1, planID, MSG_DELETE_SUCCESS, planID);
@@ -883,17 +932,19 @@ public class SitemgmtShowService extends ApiService {
 	 * @return
 	 */
 	public ResultResponse<Integer> setDeleteShowParticipatingVendor(DelShowParameter parameters) {
-		Integer mapID = parameters.getMapId();
+		final Integer mapID = parameters.getMapId();
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
 
 		Boolean hasPlanDatePassed = false;
 
+		// -----------------------------------------------------------
 		MapShowSchedulePromotionPlanVendor mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository
 				.findOneByMapID(mapID);
 		if (mapShowSchedulePromotionPlanVendor != null) {
 			int planID = mapShowSchedulePromotionPlanVendor.getPlanID();
 
+			// -----------------------------------------------------------
 			ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
 					.findOneByPlanID(planID);
 			if (showSchedulePromotionPlan != null) {
@@ -909,6 +960,7 @@ public class SitemgmtShowService extends ApiService {
 			return result;
 		}
 
+		// -----------------------------------------------------------
 		mapShowSchedulePromotionPlanVendorRepository.deleteById(mapID);
 
 		result.setResultWrapper(true, 1, mapID, MSG_DELETE_SUCCESS, mapID);
