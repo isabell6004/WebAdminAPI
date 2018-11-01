@@ -1528,6 +1528,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional("primaryTransactionManager")
 	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
 		ResultCode result = new ResultCode(true, 1, "Sent Successfully!");
 		VendorCatalogSendQueue vcsq = new VendorCatalogSendQueue();
@@ -1560,7 +1561,6 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @param fgCatalogId
 	 */
-	@Transactional("primaryTransactionManager")
 	private void saveCatalogRequests(SetFGCatalogParameter parameters, Integer fgCatalogId) {
 		VendorCatalogSendQueue vcsq = this.vendorCatalogSendQueueRepository.findFirstByOrderByCatalogSendQueueIDDesc();
 		
@@ -1591,7 +1591,6 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	@Transactional("primaryTransactionManager")
 	private VendorCatalog saveVendorCatalog(SetFGCatalogParameter parameters) {
 		VendorCatalog vc = new VendorCatalog();
 		vc.setVendorID(0);
@@ -1613,7 +1612,6 @@ public class SitemgmtService extends ApiService {
 	 * @param vcsq
 	 * @param parameters
 	 */
-	@Transactional("primaryTransactionManager")
 	private void saveVendorCatalogSendQueue(VendorCatalogSendQueue vcsq, SetFGCatalogParameter parameters) {
 		vcsq.setSubject(parameters.getSubject());
 		vcsq.setContents(parameters.getContents());
