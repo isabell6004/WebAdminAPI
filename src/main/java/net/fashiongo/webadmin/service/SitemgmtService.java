@@ -100,6 +100,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParamete
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
@@ -111,8 +113,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
@@ -423,28 +425,39 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 *
+	 * setCommunicationReasonActive
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonActiveParameter
+	 * @return Integer
 	 */
-	public void setCommunicationReasonActive () {
-
+	public Integer setCommunicationReasonActive (SetCommunicationReasonActiveParameter parameters) {
+		if(parameters.getReasonID() < 1) return -1;
+		CommunicationReason result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
+		result.setActive(parameters.getActive());
+		communicationReasonRepository.save(result);		
+		return 1;
 	}
 
 	/**
 	 *
-	 *
+	 * setCommunicationReason
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonParameter
+	 * @return Integer
 	 */
-	public void setCommunicationReason () {
-
+	public Integer setCommunicationReason (SetCommunicationReasonParameter parameters) {
+		CommunicationReason result = new CommunicationReason();
+		if(parameters.getReasonID() > 0) result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
+		else result.setReasonID(0);
+		result.setReason(parameters.getReason());
+		result.setParentID(parameters.getParentID());
+		result.setActive(parameters.getActive());
+		communicationReasonRepository.save(result);
+		return 1;
 	}
 
 	/**
@@ -898,13 +911,16 @@ public class SitemgmtService extends ApiService {
 	 * @author Nayeon Kim
 	 * @return List<TrendReportKmmImage>
 	 */
-	public List<TrendReportKmmImage> getLastKMMData() {
-		List<TrendReportKmmImage> result = new ArrayList<TrendReportKmmImage>();
-		List<TrendReport> trendReport = trendReportRepository.findAllByCuratedTypeOrderByTrendReportIDDesc(4);
-		if (!CollectionUtils.isEmpty(trendReport)) {
-			result = trendReport.stream().map(c -> new TrendReportKmmImage(c.getSquareImage(), c.getImage(),
-					c.getMiniImage(), c.getkMMImage1(), c.getkMMImage2())).collect(Collectors.toList());
-		}
+	public TrendReportKmmImage getLastKMMData() {
+		TrendReportKmmImage result = new TrendReportKmmImage();
+		TrendReport trendReport = trendReportRepository.findTopByCuratedTypeOrderByTrendReportIDDesc(4);
+		
+		result.setSquareImage(trendReport.getSquareImage());
+		result.setImage(trendReport.getImage());
+		result.setMiniImage(trendReport.getMiniImage());
+		result.setkMMImage1(trendReport.getkMMImage1());
+		result.setkMMImage2(trendReport.getkMMImage2());
+		
 		return result;
 	}
 	

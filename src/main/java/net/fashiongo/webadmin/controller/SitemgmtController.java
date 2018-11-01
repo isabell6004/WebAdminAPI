@@ -42,6 +42,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddDelPolicyManagementParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
@@ -246,30 +248,32 @@ public class SitemgmtController {
 
 	/**
 	 *
-	 *
+	 * setCommunicationReasonActive
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonActiveParameter
+	 * @return Integer
 	 */
 	@RequestMapping(value="setcommunicationreasonactive", method=RequestMethod.POST)
-	public void setCommunicationReasonActive () {
-
+	public JsonResponse<String> setCommunicationReasonActive (@RequestBody SetCommunicationReasonActiveParameter parameters) {
+		Integer result = sitemgmtService.setCommunicationReasonActive(parameters);
+		return new JsonResponse<String>(true, null, result, null);
 	}
 
 	/**
 	 *
-	 *
+	 * setCommunicationReason
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonParameter
+	 * @return Integer
 	 */
 	@RequestMapping(value="setcommunicationreason", method=RequestMethod.POST)
-	public void setCommunicationReason () {
-
+	public JsonResponse<String> setCommunicationReason (@RequestBody SetCommunicationReasonParameter parameters) {
+		Integer result = sitemgmtService.setCommunicationReason(parameters);
+		return new JsonResponse<String>(true, null, result, null);
 	}
 
 	/**
@@ -689,10 +693,6 @@ public class SitemgmtController {
 	@RequestMapping(value = "gettrendreportitem", method = RequestMethod.POST)
 	public void getTrendReportItem() {}
 	
-//	@Deprecated
-//	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
-//	public JsonResponse<String>  setAddDelTrendReportMap() { return null; }
-	
 	/**
 	 *
 	 * Set Trend Report Sort
@@ -717,9 +717,9 @@ public class SitemgmtController {
 	 * @return List<TrendReportKmmImage>
 	 */
 	@RequestMapping(value = "getlastkmmdata", method = RequestMethod.POST)
-	public JsonResponse<List<TrendReportKmmImage>> getLastKMMData() {
-		List<TrendReportKmmImage> result = sitemgmtService.getLastKMMData();
-		return new JsonResponse<List<TrendReportKmmImage>>(true, null, result);
+	public JsonResponse<TrendReportKmmImage> getLastKMMData() {
+		TrendReportKmmImage result = sitemgmtService.getLastKMMData();
+		return new JsonResponse<TrendReportKmmImage>(true, null, result);
 	}
 	
 	/**

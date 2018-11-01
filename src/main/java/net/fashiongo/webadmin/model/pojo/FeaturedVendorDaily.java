@@ -7,27 +7,27 @@ import javax.persistence.Column;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FeaturedVendorDaily {
-	@JsonProperty("FeaturedItemID")
+	@JsonProperty("BuyerRate")
 	@Column(name = "BuyerRate")
 	private BigDecimal buyerRate;
 	
-	@JsonProperty("FeaturedItemID")
+	@JsonProperty("CheckOutAmount")
 	@Column(name = "CheckOutAmount")
 	private BigDecimal checkOutAmount;
 	
-	@JsonProperty("FeaturedItemID")
+	@JsonProperty("CheckOutQty")
 	@Column(name = "CheckOutQty")
 	private BigDecimal checkOutQty;
 	
-	@JsonProperty("FeaturedItemID")
+	@JsonProperty("TotalADAmount")
 	@Column(name = "TotalADAmount")
 	private BigDecimal totalADAmount;
 	
-	@JsonProperty("FeaturedItemID")
+	@JsonProperty("VendorRate")
 	@Column(name = "VendorRate")
 	private BigDecimal vendorRate;
 	
-	@JsonProperty("FeaturedItemID")
+	@JsonProperty("WholeSalerID")
 	@Column(name = "WholeSalerID")
 	private Integer wholeSalerID;
 
