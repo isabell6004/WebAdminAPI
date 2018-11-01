@@ -95,6 +95,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParamete
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
@@ -106,8 +108,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
@@ -418,28 +420,39 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 *
+	 * setCommunicationReasonActive
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonActiveParameter
+	 * @return Integer
 	 */
-	public void setCommunicationReasonActive () {
-
+	public Integer setCommunicationReasonActive (SetCommunicationReasonActiveParameter parameters) {
+		if(parameters.getReasonID() < 1) return -1;
+		CommunicationReason result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
+		result.setActive(parameters.getActive());
+		communicationReasonRepository.save(result);		
+		return 1;
 	}
 
 	/**
 	 *
-	 *
+	 * setCommunicationReason
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonParameter
+	 * @return Integer
 	 */
-	public void setCommunicationReason () {
-
+	public Integer setCommunicationReason (SetCommunicationReasonParameter parameters) {
+		CommunicationReason result = new CommunicationReason();
+		if(parameters.getReasonID() > 0) result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
+		else result.setReasonID(0);
+		result.setReason(parameters.getReason());
+		result.setParentID(parameters.getParentID());
+		result.setActive(parameters.getActive());
+		communicationReasonRepository.save(result);
+		return 1;
 	}
 
 	/**

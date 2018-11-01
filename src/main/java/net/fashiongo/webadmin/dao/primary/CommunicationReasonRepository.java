@@ -12,4 +12,6 @@ import net.fashiongo.webadmin.model.primary.CommunicationReason;
  */
 public interface CommunicationReasonRepository extends CrudRepository<CommunicationReason, Integer> {
 	List<CommunicationReason> findAll();
+	CommunicationReason findOneByReasonID(Integer reasonID);
+	
 }
