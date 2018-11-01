@@ -3,6 +3,8 @@ package net.fashiongo.webadmin.model.pojo.parameter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -17,47 +19,43 @@ public class GetFeaturedItemSearchParameter {
 	@JsonProperty("pagesize")
 	private String pageSize;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("fgcat")
 	private String fgCat;
 
-	@ApiModelProperty(required = true, example = "0")
-	@JsonProperty("ccid")
-	private String collectionCategoryID;
-
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("vendorid")
 	private String vendorID;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("selectedcategoryid")
 	private String selectedCategoryID;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("searchitemtxt")
 	private String searchItemText;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("BodySizeIDs")
 	private String bodySizeIDs;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("PatternIDs")
 	private String patternIDs;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = " ")
 	@JsonProperty("LengthIDs")
 	private String lengthIDs;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("StyleIDs")
 	private String styleIDs;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("FabricIDs")
 	private String fabricIDs;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("ColorNames")
 	private String colorNames;
 
@@ -65,39 +63,39 @@ public class GetFeaturedItemSearchParameter {
 	@JsonProperty("SearchAndOr")
 	private String searchAndOr;
 	
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("Keyword")
 	private String keyword;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("VendorOrderBy")
 	private String vendorOrderBy;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("OrderBy")
 	private String orderBy;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("StyleNo")
 	private String styleNo;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("NeverUsed")
 	private String neverUsed;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("VendorDateFrom")
 	private String vendorDateFrom;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("VendorDateTo")
 	private String vendorDateTo;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("FromDate")
 	private String fromDate;
 
-	@ApiModelProperty(required = true, example = "0")
+	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("ToDate")
 	private String toDate;
 
@@ -120,24 +118,15 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getFgCat() {
-		return fgCat.isEmpty() ? null : fgCat;
+		return StringUtils.isEmpty(fgCat) ? null : fgCat;
 	}
 
 	public void setFgCat(String fgCat) {
 		this.fgCat = fgCat;
 	}
 
-	public Integer getCollectionCategoryID() {
-		Integer ccid = collectionCategoryID.isEmpty() ? 0 : Integer.parseInt(collectionCategoryID);
-		return ccid;
-	}
-
-	public void setCollectionCategoryID(String collectionCategoryID) {
-		this.collectionCategoryID = collectionCategoryID;
-	}
-
 	public String getVendorID() {
-		return vendorID;
+		return StringUtils.isEmpty(vendorID) ? null : vendorID;
 	}
 
 	public void setVendorID(String vendorID) {
@@ -145,7 +134,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getSelectedCategoryID() {
-		return selectedCategoryID;
+		return StringUtils.isEmpty(selectedCategoryID) ? null : selectedCategoryID;
 	}
 
 	public void setSelectedCategoryID(String selectedCategoryID) {
@@ -153,7 +142,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getSearchItemText() {
-		return searchItemText.isEmpty() ? null : Utility.ReplaceString(searchItemText);
+		return StringUtils.isEmpty(searchItemText) ? null : Utility.ReplaceString(searchItemText);
 	}
 
 	public void setSearchItemText(String searchItemText) {
@@ -161,7 +150,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getBodySizeIDs() {
-		return bodySizeIDs.isEmpty() ? null : Utility.ReplaceString(bodySizeIDs);
+		return StringUtils.isEmpty(bodySizeIDs) ? null : Utility.ReplaceString(bodySizeIDs);
 	}
 
 	public void setBodySizeIDs(String bodySizeIDs) {
@@ -169,7 +158,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getPatternIDs() {
-		return patternIDs.isEmpty() ? null : Utility.ReplaceString(patternIDs);
+		return StringUtils.isEmpty(patternIDs) ? null : Utility.ReplaceString(patternIDs);
 	}
 
 	public void setPatternIDs(String patternIDs) {
@@ -177,7 +166,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getLengthIDs() {
-		return lengthIDs.isEmpty() ? null : Utility.ReplaceString(lengthIDs);
+		return StringUtils.isEmpty(lengthIDs) ? null : Utility.ReplaceString(lengthIDs);
 	}
 
 	public void setLengthIDs(String lengthIDs) {
@@ -185,7 +174,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getStyleIDs() {
-		return styleIDs.isEmpty() ? null : Utility.ReplaceString(styleIDs);
+		return StringUtils.isEmpty(styleIDs) ? null : Utility.ReplaceString(styleIDs);
 	}
 
 	public void setStyleIDs(String styleIDs) {
@@ -193,7 +182,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getFabricIDs() {
-		return fabricIDs.isEmpty() ? null : Utility.ReplaceString(fabricIDs);
+		return StringUtils.isEmpty(fabricIDs) ? null : Utility.ReplaceString(fabricIDs);
 	}
 
 	public void setFabricIDs(String fabricIDs) {
@@ -201,7 +190,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getColorNames() {
-		return colorNames.isEmpty() ? null : Utility.ReplaceString(colorNames);
+		return StringUtils.isEmpty(colorNames) ? null : Utility.ReplaceString(colorNames);
 	}
 
 	public void setColorNames(String colorNames) {
@@ -209,7 +198,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getSearchAndOr() {
-		return searchAndOr.isEmpty() ? null : Utility.ReplaceString(searchAndOr);
+		return StringUtils.isEmpty(searchAndOr) ? null : Utility.ReplaceString(searchAndOr);
 	}
 
 	public void setSearchAndOr(String searchAndOr) {
@@ -217,7 +206,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getKeyword() {
-		return keyword.isEmpty() ? null : Utility.ReplaceString(keyword);
+		return StringUtils.isEmpty(keyword) ? null : Utility.ReplaceString(keyword);
 	}
 
 	public void setKeyword(String keyword) {
@@ -225,7 +214,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getVendorOrderBy() {
-		return vendorOrderBy.isEmpty() ? null : Utility.ReplaceString(vendorOrderBy);
+		return StringUtils.isEmpty(vendorOrderBy) ? null : Utility.ReplaceString(vendorOrderBy);
 	}
 
 	public void setVendorOrderBy(String vendorOrderBy) {
@@ -233,7 +222,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getOrderBy() {
-		return orderBy.isEmpty() ? null : Utility.ReplaceString(orderBy);
+		return StringUtils.isEmpty(orderBy) ? null : Utility.ReplaceString(orderBy);
 	}
 
 	public void setOrderBy(String orderBy) {
@@ -241,7 +230,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getStyleNo() {
-		return styleNo.isEmpty() ? null : Utility.ReplaceString(styleNo);
+		return StringUtils.isEmpty(styleNo) ? null :  Utility.ReplaceString(styleNo);
 	}
 
 	public void setStyleNo(String styleNo) {
@@ -249,7 +238,7 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public String getNeverUsed() {
-		return neverUsed.isEmpty() ? null : Utility.ReplaceString(neverUsed);
+		return StringUtils.isEmpty(neverUsed) ? null : Utility.ReplaceString(neverUsed);
 	}
 
 	public void setNeverUsed(String neverUsed) {
@@ -257,6 +246,10 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public LocalDateTime getVendorDateFrom() {
+		if (StringUtils.isEmpty(vendorDateFrom)) {
+			return null;
+		}
+		
 		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, hh:mm:ss");
 		return LocalDateTime.parse(vendorDateFrom, dtFormatter);
 	}
@@ -266,6 +259,10 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public LocalDateTime getVendorDateTo() {
+		if (StringUtils.isEmpty(vendorDateTo)) {
+			return null;
+		}
+		
 		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, hh:mm:ss");
 		return LocalDateTime.parse(vendorDateTo, dtFormatter);
 	}
@@ -275,6 +272,10 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public LocalDateTime getFromDate() {
+		if (StringUtils.isEmpty(fromDate)) {
+			return null;
+		}
+		
 		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, hh:mm:ss");
 		return LocalDateTime.parse(fromDate, dtFormatter);
 	}
@@ -284,6 +285,10 @@ public class GetFeaturedItemSearchParameter {
 	}
 
 	public LocalDateTime getToDate() {
+		if (StringUtils.isEmpty(toDate)) {
+			return null;
+		}
+		
 		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, hh:mm:ss");
 		return LocalDateTime.parse(toDate, dtFormatter);
 	}
