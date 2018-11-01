@@ -2,11 +2,17 @@ package net.fashiongo.webadmin.model.pojo;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CategoryReport implements Serializable{
 	private static final long serialVersionUID = 1L;
+	@JsonProperty("ParentCategoryID")
 	private Integer parentCategoryID;
+	@JsonProperty("CategoryID")
 	private Integer categoryID;
+	@JsonProperty("CategoryName")
 	private String categoryName;
+	@JsonProperty("Lvl")
 	private Integer lvl;
 	
 	public CategoryReport() {}

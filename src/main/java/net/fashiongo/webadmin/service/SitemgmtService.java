@@ -42,6 +42,7 @@ import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
+import net.fashiongo.webadmin.model.pojo.CategoryAdCount;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
@@ -54,6 +55,7 @@ import net.fashiongo.webadmin.model.pojo.DMRequestDetail;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
 import net.fashiongo.webadmin.model.pojo.FeaturedItem;
 import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
+import net.fashiongo.webadmin.model.pojo.FeaturedVendorDaily;
 import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.PatternInfo;
@@ -67,6 +69,7 @@ import net.fashiongo.webadmin.model.pojo.ProductSize;
 import net.fashiongo.webadmin.model.pojo.Result;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.SelectData;
 import net.fashiongo.webadmin.model.pojo.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
@@ -75,6 +78,8 @@ import net.fashiongo.webadmin.model.pojo.TrendReportDefault;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.TrendReportList;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
+import net.fashiongo.webadmin.model.pojo.VendorCount;
+import net.fashiongo.webadmin.model.pojo.VendorData1;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
@@ -862,6 +867,7 @@ public class SitemgmtService extends ApiService {
 		GetTrendReport2Response result = new GetTrendReport2Response();
 		String spName = "up_wa_GetAdminTrendReport2";
 		List<Object> params = new ArrayList<Object>();
+		
 		params.add(prameters.getPagenum());
 		params.add(prameters.getPagesize());
 		params.add(prameters.getSearchtxt());
@@ -871,6 +877,7 @@ public class SitemgmtService extends ApiService {
 		params.add(prameters.getOrderbygubn());
 		params.add(prameters.getActive());
 		params.add(prameters.getCuratedType());
+		
 		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportList.class);
 		result.setTotal((List<Total>) _result.get(0));
 		result.setTrendReportList((List<TrendReportList>) _result.get(1));
@@ -1319,6 +1326,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional("primaryTransactionManager")
 	public Integer setNewTodayDeal(SetNewTodayDealParameter parameters) {
 		TodayDeal todayDeal = new TodayDeal();
 		todayDeal.setTitle("");
@@ -1348,7 +1356,9 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public GetFeaturedItemSearchResponse getFeaturedItemSearch(GetFeaturedItemSearchParameter parameters) {
+		GetFeaturedItemSearchResponse result = new GetFeaturedItemSearchResponse();
 		String spName = "up_wa_GetFeaturedItemsSearch";
 
 		List<Object> params = new ArrayList<Object>();
@@ -1385,9 +1395,15 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getVendorDateTo());
 		params.add(parameters.getNeverUsed());
 		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequest.class);
-		//result.setDmList((List<DMRequest>) _result.get(0));
-		return null;
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class,
+				VendorCount.class, VendorData1.class, FeaturedVendorDaily.class);
+		result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
+		result.setSelectData((List<SelectData>) _result.get(1));
+		result.setVendorCount((List<VendorCount>) _result.get(2));
+		result.setVendorData1((List<VendorData1>) _result.get(3));
+		result.setFeaturedVendorDaily((List<FeaturedVendorDaily>) _result.get(4));
+		
+		return result;
 	}
 	
 	/**
@@ -1525,7 +1541,6 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	@Transactional("primaryTransactionManager")
 	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
 		ResultCode result = new ResultCode(true, 1, "Sent Successfully!");
 		VendorCatalogSendQueue vcsq = new VendorCatalogSendQueue();
@@ -1558,6 +1573,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @param fgCatalogId
 	 */
+	@Transactional("primaryTransactionManager")
 	private void saveCatalogRequests(SetFGCatalogParameter parameters, Integer fgCatalogId) {
 		VendorCatalogSendQueue vcsq = this.vendorCatalogSendQueueRepository.findFirstByOrderByCatalogSendQueueIDDesc();
 		
@@ -1588,6 +1604,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional("primaryTransactionManager")
 	private VendorCatalog saveVendorCatalog(SetFGCatalogParameter parameters) {
 		VendorCatalog vc = new VendorCatalog();
 		vc.setVendorID(0);
@@ -1609,6 +1626,7 @@ public class SitemgmtService extends ApiService {
 	 * @param vcsq
 	 * @param parameters
 	 */
+	@Transactional("primaryTransactionManager")
 	private void saveVendorCatalogSendQueue(VendorCatalogSendQueue vcsq, SetFGCatalogParameter parameters) {
 		vcsq.setSubject(parameters.getSubject());
 		vcsq.setContents(parameters.getContents());

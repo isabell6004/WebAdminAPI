@@ -5,6 +5,10 @@ import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author Incheol Jung
+ */
 public class ProductSummary implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@JsonProperty("ProductID")
