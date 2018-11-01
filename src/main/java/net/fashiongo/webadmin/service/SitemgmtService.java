@@ -100,6 +100,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParamete
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
@@ -423,28 +425,39 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 *
+	 * setCommunicationReasonActive
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonActiveParameter
+	 * @return Integer
 	 */
-	public void setCommunicationReasonActive () {
-
+	public Integer setCommunicationReasonActive (SetCommunicationReasonActiveParameter parameters) {
+		if(parameters.getReasonID() < 1) return -1;
+		CommunicationReason result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
+		result.setActive(parameters.getActive());
+		communicationReasonRepository.save(result);		
+		return 1;
 	}
 
 	/**
 	 *
-	 *
+	 * setCommunicationReason
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonParameter
+	 * @return Integer
 	 */
-	public void setCommunicationReason () {
-
+	public Integer setCommunicationReason (SetCommunicationReasonParameter parameters) {
+		CommunicationReason result = new CommunicationReason();
+		if(parameters.getReasonID() > 0) result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
+		else result.setReasonID(0);
+		result.setReason(parameters.getReason());
+		result.setParentID(parameters.getParentID());
+		result.setActive(parameters.getActive());
+		communicationReasonRepository.save(result);
+		return 1;
 	}
 
 	/**
@@ -1313,6 +1326,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional("primaryTransactionManager")
 	public Integer setNewTodayDeal(SetNewTodayDealParameter parameters) {
 		TodayDeal todayDeal = new TodayDeal();
 		todayDeal.setTitle("");
@@ -1527,7 +1541,6 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	@Transactional("primaryTransactionManager")
 	public ResultCode setFGCatalog(SetFGCatalogParameter parameters) {
 		ResultCode result = new ResultCode(true, 1, "Sent Successfully!");
 		VendorCatalogSendQueue vcsq = new VendorCatalogSendQueue();
@@ -1560,6 +1573,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @param fgCatalogId
 	 */
+	@Transactional("primaryTransactionManager")
 	private void saveCatalogRequests(SetFGCatalogParameter parameters, Integer fgCatalogId) {
 		VendorCatalogSendQueue vcsq = this.vendorCatalogSendQueueRepository.findFirstByOrderByCatalogSendQueueIDDesc();
 		
@@ -1590,6 +1604,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional("primaryTransactionManager")
 	private VendorCatalog saveVendorCatalog(SetFGCatalogParameter parameters) {
 		VendorCatalog vc = new VendorCatalog();
 		vc.setVendorID(0);
@@ -1611,6 +1626,7 @@ public class SitemgmtService extends ApiService {
 	 * @param vcsq
 	 * @param parameters
 	 */
+	@Transactional("primaryTransactionManager")
 	private void saveVendorCatalogSendQueue(VendorCatalogSendQueue vcsq, SetFGCatalogParameter parameters) {
 		vcsq.setSubject(parameters.getSubject());
 		vcsq.setContents(parameters.getContents());
