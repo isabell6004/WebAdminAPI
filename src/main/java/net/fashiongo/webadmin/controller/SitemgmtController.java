@@ -591,7 +591,7 @@ public class SitemgmtController {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, null);
 		
 		Integer _result = sitemgmtService.setNewTodayDeal(parameters);
-		results.setData(_result);
+		results.setCode(_result);
 		
 		return results;
 	}
