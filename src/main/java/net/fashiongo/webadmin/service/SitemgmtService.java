@@ -911,13 +911,16 @@ public class SitemgmtService extends ApiService {
 	 * @author Nayeon Kim
 	 * @return List<TrendReportKmmImage>
 	 */
-	public List<TrendReportKmmImage> getLastKMMData() {
-		List<TrendReportKmmImage> result = new ArrayList<TrendReportKmmImage>();
-		List<TrendReport> trendReport = trendReportRepository.findAllByCuratedTypeOrderByTrendReportIDDesc(4);
-		if (!CollectionUtils.isEmpty(trendReport)) {
-			result = trendReport.stream().map(c -> new TrendReportKmmImage(c.getSquareImage(), c.getImage(),
-					c.getMiniImage(), c.getkMMImage1(), c.getkMMImage2())).collect(Collectors.toList());
-		}
+	public TrendReportKmmImage getLastKMMData() {
+		TrendReportKmmImage result = new TrendReportKmmImage();
+		TrendReport trendReport = trendReportRepository.findTopByCuratedTypeOrderByTrendReportIDDesc(4);
+		
+		result.setSquareImage(trendReport.getSquareImage());
+		result.setImage(trendReport.getImage());
+		result.setMiniImage(trendReport.getMiniImage());
+		result.setkMMImage1(trendReport.getkMMImage1());
+		result.setkMMImage2(trendReport.getkMMImage2());
+		
 		return result;
 	}
 	
