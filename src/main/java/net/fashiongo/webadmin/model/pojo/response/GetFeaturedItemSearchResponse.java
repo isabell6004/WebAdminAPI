@@ -10,6 +10,9 @@ import net.fashiongo.webadmin.model.pojo.SelectData;
 import net.fashiongo.webadmin.model.pojo.VendorCount;
 import net.fashiongo.webadmin.model.pojo.VendorData1;
 
+/**
+* @author Junghwan Lee
+*/
 public class GetFeaturedItemSearchResponse {
 	@JsonProperty("Table")
 	private List<CategoryAdCount> categoryAdCount;
