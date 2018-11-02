@@ -9,6 +9,4 @@ import net.fashiongo.webadmin.model.primary.AdVendor;
  */
 public interface AdVendorRepository extends CrudRepository<AdVendor, Integer> {
 	AdVendor findTopBySpotID(Integer spotID);
-	
-	AdVendor findByAdID(Integer adID);
 }

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.ProductColor;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductColorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetProductColorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.service.VendorService;
@@ -59,10 +59,10 @@ public class VendorController {
 	}
 	
 	@RequestMapping(value="getproductcolor", method=RequestMethod.POST)
-	public JsonResponse<List<ProductColor>> getProductColor(@RequestBody GetProductColorParameter parameters) {
-		JsonResponse<List<ProductColor>> result = new JsonResponse<List<ProductColor>>(true, null, null);
+	public JsonResponse<GetProductColorResponse> getProductColor(@RequestBody GetProductColorParameter parameters) {
+		JsonResponse<GetProductColorResponse> result = new JsonResponse<GetProductColorResponse>(true, null, null);
 		
-		List<ProductColor> _result = vendorService.getProductColor(parameters.getProductid());	
+		GetProductColorResponse _result = vendorService.getProductColor(parameters.getProductid());	
 		result.setData(_result);
 		
 		return result; 

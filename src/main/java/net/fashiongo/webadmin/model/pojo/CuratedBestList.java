@@ -7,9 +7,7 @@ import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-/**
- * @author Jiwon Kim
- */
+
 public class CuratedBestList {
 
 
@@ -46,10 +44,6 @@ public class CuratedBestList {
 	@JsonProperty("PictureGeneral")
 	@Column(name = "PictureGeneral")
 	private String pictureGeneral;
-	@JsonProperty("Active")
-	@Column(name = "Active")
-	private Integer active;
-	
 	public Integer getCollectionCategoryItemID() {
 		return collectionCategoryItemID;
 	}
@@ -122,6 +116,9 @@ public class CuratedBestList {
 	public void setActive(Integer active) {
 		this.active = active;
 	}
+	@JsonProperty("Active")
+	@Column(name = "Active")
+	private Integer active;
 
 	
     

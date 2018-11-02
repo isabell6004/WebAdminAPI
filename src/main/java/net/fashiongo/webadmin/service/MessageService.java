@@ -12,22 +12,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.fashiongo.webadmin.dao.primary.TblRetailerNewsRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
 import net.fashiongo.webadmin.model.pojo.Message;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.VendorNews;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
+import net.fashiongo.webadmin.utility.Utility;
 
 /**
  * 
@@ -40,6 +46,9 @@ public class MessageService extends ApiService {
 	
 	@Autowired
 	VendorNewsViewRepository vendorNewsViewRepository;
+	
+	@Autowired
+	TblRetailerNewsRepository tblRetailerNewsRepository;
 	
 	/**
 	 * 
@@ -223,19 +232,19 @@ public class MessageService extends ApiService {
 	 * @param parameter
 	 * @return
 	 */
-	public GetRetailerNewsResponse getRetailerNews(GetRetailerNewsParameter parameter) {
+	public GetRetailerNewsResponse getRetailerNews(GetRetailerNewsParameter parameters) {
 		GetRetailerNewsResponse result = new GetRetailerNewsResponse();
 		
 		String spName = "up_wa_GetRetailerNews";
 		List<Object> params = new ArrayList<Object>();
-		params.add(parameter.getPageNum());
-		params.add(parameter.getPageSize());
-		params.add(parameter.getNewsTitle());
-		params.add(parameter.getActive());
-		params.add(parameter.getPeriod());
-		params.add(parameter.getFromDate());
-		params.add(parameter.getToDate());
-		params.add(parameter.getOrderBy());
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		params.add(parameters.getNewsTitle());
+		params.add(parameters.getActive());
+		params.add(parameters.getPeriod());
+		params.add(parameters.getFromDate());
+		params.add(parameters.getToDate());
+		params.add(parameters.getOrderBy());
 		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, RetailerNews.class);
 		
 		result.setRecCnt((List<Total>) _result.get(0));
@@ -244,4 +253,88 @@ public class MessageService extends ApiService {
 		return result;
 	}
 
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 1.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public TblRetailerNews getRetailerNewsDetail(GetRetailerNewsDetailParameter parameters) {
+		TblRetailerNews result = tblRetailerNewsRepository.findOneByNewsID(parameters.getNewsID());
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 1.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setRetailerNews(SetRetailerNewsParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		net.fashiongo.webadmin.utility.Utility utl = new net.fashiongo.webadmin.utility.Utility();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		
+		if(utl.isNullOrEmpty(parameters.getNewsTitle()) || parameters.getNewsTitle().length() < 1) {
+			result.setResultCode(-2);
+			result.setSuccess(false);
+		} else if(parameters.getNewsTitle().length() > 100) {
+			result.setResultCode(-3);
+			result.setSuccess(false);
+		} else {
+			TblRetailerNews retailerNews = tblRetailerNewsRepository.findOneByNewsID(parameters.getNewsID());
+			
+			if(retailerNews == null) {
+				retailerNews = new TblRetailerNews();
+				retailerNews.setStartingDate(now);
+			}
+			
+			if(parameters.getToDate() != null) {
+				parameters.setToDate(((LocalDateTime) parameters.getToDate()).plusDays(1).plusSeconds(-1));
+			}
+			
+			retailerNews.setNewsTitle(parameters.getNewsTitle());
+			retailerNews.setNewsContent(parameters.getNewsContent());
+			retailerNews.setActive(utl.isNullOrEmpty(parameters.getActive().toString()) ? "N" : parameters.getActive() == true ? "Y" : "N");
+			retailerNews.setFromDate(parameters.getFromDate());
+			retailerNews.setToDate(parameters.getToDate());
+			retailerNews.setLastUser(Utility.getUserInfo().getUsername());
+			retailerNews.setLastModifiedDateTime(now);
+			retailerNews.setSortNo(parameters.getSortNo());
+			tblRetailerNewsRepository.save(retailerNews);
+			
+			result.setResultCode(1);
+			result.setSuccess(true);
+			result.setResultMsg(MSG_SAVE_SUCCESS);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 2.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode delRetailerNews(List<Integer> parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		
+		tblRetailerNewsRepository.deleteByNewsIDIn(parameters);
+		
+		result.setResultCode(1);
+		result.setSuccess(true);
+		result.setResultMsg(MSG_DELETE_SUCCESS);
+		return result;
+	}
 }

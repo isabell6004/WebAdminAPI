@@ -16,8 +16,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchVendorParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SaveCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SpotIDParameter;
@@ -27,7 +25,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchVendorResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
 import net.fashiongo.webadmin.service.AdService;
@@ -240,46 +237,6 @@ public class AdController {
 		GetCategoryAdItemSearchVendorResponse result = adService.GetCategoryAdItemSearchVendor(parameters);
 		results.setData(result);
 		results.setSuccess(true);
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Get Category Ad List
-	 * 
-	 * @since 2018. 10. 30.
-	 * @author Jiwon Kim
-	 * @param GetCategoryAdListParameter
-	 * @return GetCategoryAdList
-	 */
-	@RequestMapping(value = "getcategoryadlist", method = RequestMethod.POST)
-	public JsonResponse<GetCategoryAdListResponse> GetCategoryAdList(@RequestBody GetCategoryAdListParameter parameters) {
-		JsonResponse<GetCategoryAdListResponse> results = new JsonResponse<GetCategoryAdListResponse>(false, null, 0, null);
-		GetCategoryAdListResponse result = adService.GetCategoryAdList(parameters);
-		results.setData(result);
-		results.setSuccess(true);
-		return results;
-	}
-	
-	
-	/**
-	 * 
-	 * Save Category Ad Item For Bid Vendor
-	 * 
-	 * @since 2018. 10. 31.
-	 * @author Jiwon Kim
-	 * @param SaveCategoryAdItemForBidVendorParameter
-	 * @return SaveCategoryAdItemForBidVendor
-	 */
-	@RequestMapping(value = "savecategoryaditemforbidvendor", method = RequestMethod.POST)
-	public JsonResponse<String> SaveCategoryAdItemForBidVendor(@RequestBody SaveCategoryAdItemForBidVendorParameter parameters) {
-		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-		ResultCode result = adService.SaveCategoryAdItemForBidVendor(parameters);
-
-		results.setSuccess(result.getSuccess());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		
 		return results;
 	}
 }

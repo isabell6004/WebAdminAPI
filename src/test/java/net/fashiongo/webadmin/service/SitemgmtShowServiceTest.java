@@ -74,13 +74,6 @@ public class SitemgmtShowServiceTest {
 	@Test
 	public final void testGetShowList() {
 //		fail("Not yet implemented"); // TODO
-		GetShowListParameters p= testGetShowListParameters();
-		GetShowListResponse r = sitemgmtShowService.getShowList(p);
-		
-		assertFalse(CollectionUtils.isEmpty(r.getShowList()));
-	}
-
-	private GetShowListParameters testGetShowListParameters() {
 		GetShowListParameters p = new GetShowListParameters();
 		p.setPageNum(1);
 		p.setPageSize(10);
@@ -90,9 +83,12 @@ public class SitemgmtShowServiceTest {
 		p.setShowName("");
 		p.setFromDate(null);
 		p.setToDate(null);
-
-		return p;
+		
+		GetShowListResponse r = sitemgmtShowService.getShowList(p);
+		
+		assertFalse(CollectionUtils.isEmpty(r.getShowList()));
 	}
+
 	/**
 	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowInfo(net.fashiongo.webadmin.model.pojo.parameter.show.SetShowInfoParameters)}.
 	 */
@@ -126,12 +122,7 @@ public class SitemgmtShowServiceTest {
 	@Test
 	public final void testGetShowDetail() {
 //		fail("Not yet implemented"); // TODO
-
-		GetShowListParameters param = testGetShowListParameters();
-		GetShowListResponse res = sitemgmtShowService.getShowList(param);
-		Integer showId = res.getShowList().get(0).getShowID();
-		
-		ResultResponse<ListShow> r = sitemgmtShowService.getShowDetail(showId);
+		ResultResponse<ListShow> r = sitemgmtShowService.getShowDetail(1);
 		
 		assertNotNull(r.getData());
 	}
@@ -143,17 +134,6 @@ public class SitemgmtShowServiceTest {
 	public final void testGetShowScheduleList() {
 //		fail("Not yet implemented"); // TODO
 		
-		GetShowScheduleListParameters p = testGetShowScheduleListParameters();
-		
-		GetShowScheduleListResponse r = sitemgmtShowService.getShowScheduleList(p);
-		
-		assertFalse(CollectionUtils.isEmpty(r.getShowScheduleList()));
-		
-	}
-
-	
-	private GetShowScheduleListParameters testGetShowScheduleListParameters() {
-
 		GetShowScheduleListParameters p = new GetShowScheduleListParameters();
 		p.setPageNum(1);
 		p.setPageSize(10);
@@ -166,9 +146,12 @@ public class SitemgmtShowServiceTest {
 		p.setDateFrom("");
 		p.setDateTo("");
 		
-		return p;
+		GetShowScheduleListResponse r = sitemgmtShowService.getShowScheduleList(p);
+		
+		assertFalse(CollectionUtils.isEmpty(r.getShowScheduleList()));
+		
 	}
-	
+
 	/**
 	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShow(net.fashiongo.webadmin.model.pojo.parameter.show.SetShowParameters)}.
 	 */
@@ -250,14 +233,9 @@ public class SitemgmtShowServiceTest {
 	@Test
 	public final void testGetShowScheduleDetail() {
 //		fail("Not yet implemented"); // TODO
-//		GetShowScheduleListParameters param = testGetShowScheduleListParameters();
-//		GetShowScheduleListResponse res = sitemgmtShowService.getShowScheduleList(param);
-//		Integer showScheduleId = res.getShowScheduleList().get(0).getShowScheduleID();
-		Integer showScheduleId = 1;
-		ResultResponse<ShowSchedule> r = sitemgmtShowService.getShowScheduleDetail(showScheduleId);
+		ResultResponse<ShowSchedule> r = sitemgmtShowService.getShowScheduleDetail(1);
 		
-//		assertNotNull(r.getData());
-		assertNotNull(r);
+		assertNotNull(r.getData());
 	}
 
 	/**
@@ -280,17 +258,11 @@ public class SitemgmtShowServiceTest {
 	@Test
 	public final void testGetShowPromotionPlans() {
 //		fail("Not yet implemented"); // TODO
-//		GetShowScheduleListParameters param = testGetShowScheduleListParameters();
-//		GetShowScheduleListResponse res = sitemgmtShowService.getShowScheduleList(param);
-//		Integer showScheduleId = res.getShowScheduleList().get(0).getShowScheduleID();
-
-		Integer showScheduleId = 1;
 		GetShowParameter p = new GetShowParameter();
-		p.setShowScheduleID(showScheduleId);
+		p.setShowScheduleID(1);
 		List<ShowSchedulePromotionPlan> r = sitemgmtShowService.getShowPromotionPlans(p);
 		
-//		assertFalse(CollectionUtils.isEmpty(r));
-		assertNotNull(r);
+		assertFalse(CollectionUtils.isEmpty(r));
 	}
 
 	/**
@@ -306,8 +278,7 @@ public class SitemgmtShowServiceTest {
 		p.setPlanID(1);
 		
 		GetShowParticipatingVendorsResponse r = sitemgmtShowService.getShowParticipatingVendors(p);
-//		assertFalse(CollectionUtils.isEmpty(r.getShowSchedulePromotionPlanVendorList()));
-		assertNotNull(r.getShowSchedulePromotionPlanVendorList());
+		assertFalse(CollectionUtils.isEmpty(r.getShowSchedulePromotionPlanVendorList()));
 
 	}
 

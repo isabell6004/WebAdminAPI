@@ -14,14 +14,12 @@ import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
 import net.fashiongo.webadmin.dao.primary.CodeBodySizeRepository;
 import net.fashiongo.webadmin.dao.primary.CollectionCategoryItemRepository;
-import net.fashiongo.webadmin.dao.primary.MapAdVendorItemRepository;
 import net.fashiongo.webadmin.model.pojo.AdSettingList;
 import net.fashiongo.webadmin.model.pojo.AdSettingSubList;
 import net.fashiongo.webadmin.model.pojo.BidList;
 import net.fashiongo.webadmin.model.pojo.BiddingList;
 import net.fashiongo.webadmin.model.pojo.BiddingList2;
 import net.fashiongo.webadmin.model.pojo.CategoryAdCount;
-import net.fashiongo.webadmin.model.pojo.CategoryList;
 import net.fashiongo.webadmin.model.pojo.CollectionCategory;
 import net.fashiongo.webadmin.model.pojo.CuratedBestList;
 import net.fashiongo.webadmin.model.pojo.CuratedList;
@@ -35,8 +33,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemSearchVendorParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SaveCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
@@ -45,14 +41,11 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemSearchVendorResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.AdVendor;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
-import net.fashiongo.webadmin.model.primary.MapAdVendorItem;
-import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 
 @Service
 public class AdService extends ApiService {
@@ -67,8 +60,6 @@ public class AdService extends ApiService {
 	private CodeBodySizeRepository codeBodySizeRepository;
 	@Autowired
 	private CollectionCategoryItemRepository collectionCategoryItemRepository;
-	@Autowired
-	private MapAdVendorItemRepository mapAdVendorItemRepository;
 
 	/**
 	 * 
@@ -431,83 +422,4 @@ public class AdService extends ApiService {
 		
 		return result;
 	}
-	
-	
-	/**
-	 * 
-	 * Get Category Ad List
-	 * 
-	 * @since 2018. 10. 30.
-	 * @author Jiwon Kim
-	 * @param GetCategoryAdListParameter
-	 * @return GetCategoryAdList
-	 */
-	public GetCategoryAdListResponse GetCategoryAdList(GetCategoryAdListParameter parameters) {
-		GetCategoryAdListResponse result = new GetCategoryAdListResponse();
-		String spName = "up_wa_GetCategoryAdList";
-		List<Object> params = new ArrayList<Object>();
-        params.add(parameters.getCategoryDate());
-
-        List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryList.class, BiddingList2.class, CuratedBestList.class);
-		List<CategoryList> categoryList = (List<CategoryList>) _result.get(0);
-		List<BiddingList2> biddingList = (List<BiddingList2>) _result.get(1);
-		List<CuratedBestList> curatedBestList = (List<CuratedBestList>) _result.get(2);
-		
-		result.setCategoryList(categoryList);
-		result.setBiddingList(biddingList);
-		result.setCuratedBestList(curatedBestList);
-		
-		return result;
-	}
-	
-	
-	/**
-	 * 
-	 * Save Category Ad Item For Bid Vendor
-	 * 
-	 * @since 2018. 10. 31.
-	 * @author Jiwon Kim
-	 * @param SaveCategoryAdItemForBidVendorParameter
-	 * @return SaveCategoryAdItemForBidVendor
-	 */
-	@Transactional(value = "primaryTransactionManager")
-	public ResultCode SaveCategoryAdItemForBidVendor(SaveCategoryAdItemForBidVendorParameter parameters) {
-		
-		List<MapAdVendorItem> delMapAdVendorItemList = mapAdVendorItemRepository.findByAdID(parameters.getAdID());
-		if (delMapAdVendorItemList.size()==0)
-		{
-			return new ResultCode(false, -1, "Saved failed!");
-		}
-		else
-		{
-			mapAdVendorItemRepository.deleteAll(delMapAdVendorItemList);
-			AdVendor advendor = adVendorRepository.findByAdID(parameters.getAdID());
-			advendor.setVendorCategoryID(parameters.getVendorCategoryID());
-			adVendorRepository.save(advendor);
-			
-		}
-				
-//		findByAdid	
-//		AdPage adPage = new AdPage();
-//		Integer pageID = parameters.getPageID();
-//		String pageName = parameters.getPageName();
-//		
-//		if (pageID == null) { // new (insert)
-//			AdPage adPage2 = adPageRepository.findTopByOrderByPageIDDesc();
-//			if (adPage2 != null) {
-//				pageID = adPage2.getPageID() + 1;
-//				adPage.setPageID(pageID);
-//				adPage.setPageName(pageName);
-//				adPageRepository.save(adPage);
-//			}
-//		} else { // not null (update)
-//			AdPage adPage2 = adPageRepository.findOneByPageID(pageID);
-//			adPage2.setPageName(pageName);
-//			// adPage2.setPageUrl(pageUrl);
-//			adPageRepository.save(adPage2);
-//		}
-		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
-	}
-	
-	
 }

@@ -4,23 +4,15 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class TodayDealCalendarDetail implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Column(name="TodayDealID")
 	private Integer todayDealID;
-	@JsonProperty("Dom")
 	private Integer dom;
-	@JsonProperty("CompanyName")
 	private String companyName;
-	@JsonProperty("FromDate")
 	private String fromDate;
-	@JsonProperty("Active")
 	private Boolean active;
-	@JsonProperty("WholeSalerID")
 	private Integer wholeSalerID;
-	@JsonProperty("CreatedByVendor")
 	private Boolean createdByVendor;
 	
 	public Integer getTodayDealID() {

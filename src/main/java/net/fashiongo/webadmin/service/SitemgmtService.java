@@ -42,7 +42,6 @@ import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
-import net.fashiongo.webadmin.model.pojo.CategoryAdCount;
 import net.fashiongo.webadmin.model.pojo.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.CategoryReport;
@@ -55,7 +54,6 @@ import net.fashiongo.webadmin.model.pojo.DMRequestDetail;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
 import net.fashiongo.webadmin.model.pojo.FeaturedItem;
 import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
-import net.fashiongo.webadmin.model.pojo.FeaturedVendorDaily;
 import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.PatternInfo;
@@ -69,7 +67,6 @@ import net.fashiongo.webadmin.model.pojo.ProductSize;
 import net.fashiongo.webadmin.model.pojo.Result;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.SelectData;
 import net.fashiongo.webadmin.model.pojo.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
@@ -78,8 +75,6 @@ import net.fashiongo.webadmin.model.pojo.TrendReportDefault;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.TrendReportList;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
-import net.fashiongo.webadmin.model.pojo.VendorCount;
-import net.fashiongo.webadmin.model.pojo.VendorData1;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
@@ -88,7 +83,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
@@ -101,8 +95,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParamete
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
@@ -114,9 +106,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
@@ -427,39 +418,28 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 * setCommunicationReasonActive
+	 *
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param SetCommunicationReasonActiveParameter
-	 * @return Integer
+	 * @param
+	 * @return
 	 */
-	public Integer setCommunicationReasonActive (SetCommunicationReasonActiveParameter parameters) {
-		if(parameters.getReasonID() < 1) return -1;
-		CommunicationReason result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
-		result.setActive(parameters.getActive());
-		communicationReasonRepository.save(result);		
-		return 1;
+	public void setCommunicationReasonActive () {
+
 	}
 
 	/**
 	 *
-	 * setCommunicationReason
+	 *
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param SetCommunicationReasonParameter
-	 * @return Integer
+	 * @param
+	 * @return
 	 */
-	public Integer setCommunicationReason (SetCommunicationReasonParameter parameters) {
-		CommunicationReason result = new CommunicationReason();
-		if(parameters.getReasonID() > 0) result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
-		else result.setReasonID(0);
-		result.setReason(parameters.getReason());
-		result.setParentID(parameters.getParentID());
-		result.setActive(parameters.getActive());
-		communicationReasonRepository.save(result);
-		return 1;
+	public void setCommunicationReason () {
+
 	}
 
 	/**
@@ -913,16 +893,13 @@ public class SitemgmtService extends ApiService {
 	 * @author Nayeon Kim
 	 * @return List<TrendReportKmmImage>
 	 */
-	public TrendReportKmmImage getLastKMMData() {
-		TrendReportKmmImage result = new TrendReportKmmImage();
-		TrendReport trendReport = trendReportRepository.findTopByCuratedTypeOrderByTrendReportIDDesc(4);
-		
-		result.setSquareImage(trendReport.getSquareImage());
-		result.setImage(trendReport.getImage());
-		result.setMiniImage(trendReport.getMiniImage());
-		result.setkMMImage1(trendReport.getkMMImage1());
-		result.setkMMImage2(trendReport.getkMMImage2());
-		
+	public List<TrendReportKmmImage> getLastKMMData() {
+		List<TrendReportKmmImage> result = new ArrayList<TrendReportKmmImage>();
+		List<TrendReport> trendReport = trendReportRepository.findAllByCuratedTypeOrderByTrendReportIDDesc(4);
+		if (!CollectionUtils.isEmpty(trendReport)) {
+			result = trendReport.stream().map(c -> new TrendReportKmmImage(c.getSquareImage(), c.getImage(),
+					c.getMiniImage(), c.getkMMImage1(), c.getkMMImage2())).collect(Collectors.toList());
+		}
 		return result;
 	}
 	
@@ -1331,7 +1308,6 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	@Transactional("primaryTransactionManager")
 	public Integer setNewTodayDeal(SetNewTodayDealParameter parameters) {
 		TodayDeal todayDeal = new TodayDeal();
 		todayDeal.setTitle("");
@@ -1361,9 +1337,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public GetFeaturedItemSearchResponse getFeaturedItemSearch(GetFeaturedItemSearchParameter parameters) {
-		GetFeaturedItemSearchResponse result = new GetFeaturedItemSearchResponse();
 		String spName = "up_wa_GetFeaturedItemsSearch";
 
 		List<Object> params = new ArrayList<Object>();
@@ -1400,67 +1374,11 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getVendorDateTo());
 		params.add(parameters.getNeverUsed());
 		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class,
-				VendorCount.class, VendorData1.class, FeaturedVendorDaily.class);
-		result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
-		result.setSelectData((List<SelectData>) _result.get(1));
-		result.setVendorCount((List<VendorCount>) _result.get(2));
-		result.setVendorData1((List<VendorData1>) _result.get(3));
-		result.setFeaturedVendorDaily((List<FeaturedVendorDaily>) _result.get(4));
-		
-		return result;
+		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequest.class);
+		//result.setDmList((List<DMRequest>) _result.get(0));
+		return null;
 	}
 	
-	/**
-	 * 
-	 * Get FeaturedItem Search Vendor
-	 * 
-	 * @since 2018. 11. 1.
-	 * @author Junghwan Lee
-	 * @param parameters
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public GetFeaturedItemSearchVendorResponse getFeaturedItemSearchVendor(GetFeaturedItemSearchVendorParameter parameters) {
-		GetFeaturedItemSearchVendorResponse result = new GetFeaturedItemSearchVendorResponse();
-		String spName = "up_wa_GetFeaturedItemsSearchVendor";
-
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getPageNum());
-		params.add(parameters.getPageSize());
-		params.add(parameters.getFgCat());
-		params.add(parameters.getVendorID());
-		params.add(parameters.getSelectedCategoryID());
-		params.add(parameters.getFromDate());
-		params.add(parameters.getToDate());
-		params.add(null);
-		params.add(null);
-		params.add(parameters.getBodySizeIDs());
-		params.add(parameters.getPatternIDs());
-		params.add(parameters.getLengthIDs());
-		params.add(parameters.getStyleIDs());
-		params.add(parameters.getFabricIDs());
-		params.add(parameters.getColorNames());
-		params.add(parameters.getSearchItemText());
-		params.add("ProductDescription");
-		params.add(null);
-		params.add(null);
-		params.add(null);
-		params.add(null);
-		params.add(null);
-		params.add(null);
-		params.add(null);
-		params.add(null);
-		params.add(parameters.getSearchAndOr());
-		params.add(parameters.getKeyword());
-		params.add(parameters.getStyleNo());
-		params.add(parameters.getNeverUsed());
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class);
-		result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
-		result.setSelectData((List<SelectData>) _result.get(1));
-		return result;
-	}	
 	/**
 	 * 
 	 * Get DMRequest

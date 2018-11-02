@@ -27,7 +27,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
@@ -43,8 +42,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddDelPolicyManagementParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
@@ -59,8 +56,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
@@ -250,32 +245,30 @@ public class SitemgmtController {
 
 	/**
 	 *
-	 * setCommunicationReasonActive
+	 *
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param SetCommunicationReasonActiveParameter
-	 * @return Integer
+	 * @param
+	 * @return
 	 */
 	@RequestMapping(value="setcommunicationreasonactive", method=RequestMethod.POST)
-	public JsonResponse<String> setCommunicationReasonActive (@RequestBody SetCommunicationReasonActiveParameter parameters) {
-		Integer result = sitemgmtService.setCommunicationReasonActive(parameters);
-		return new JsonResponse<String>(true, null, result, null);
+	public void setCommunicationReasonActive () {
+
 	}
 
 	/**
 	 *
-	 * setCommunicationReason
+	 *
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param SetCommunicationReasonParameter
-	 * @return Integer
+	 * @param
+	 * @return
 	 */
 	@RequestMapping(value="setcommunicationreason", method=RequestMethod.POST)
-	public JsonResponse<String> setCommunicationReason (@RequestBody SetCommunicationReasonParameter parameters) {
-		Integer result = sitemgmtService.setCommunicationReason(parameters);
-		return new JsonResponse<String>(true, null, result, null);
+	public void setCommunicationReason () {
+
 	}
 
 	/**
@@ -597,46 +590,18 @@ public class SitemgmtController {
 		JsonResponse<Integer> results = new JsonResponse<Integer>(true, null, null);
 		
 		Integer _result = sitemgmtService.setNewTodayDeal(parameters);
-		results.setCode(_result);
+		results.setData(_result);
 		
 		return results;
 	}
 
-	/**
-	 * Get FeaturedItemSearch
-	 * 
-	 * @since 2018. 11. 01.
-	 * @author Junghwan Lee
-	 * @param parameters
-	 * @return
-	 */
 	@RequestMapping(value = "getfeatureditemsearch", method = RequestMethod.POST)
-	public JsonResponse<GetFeaturedItemSearchResponse> getFeaturedItemSearch(@RequestBody GetFeaturedItemSearchParameter parameters) {
-		JsonResponse<GetFeaturedItemSearchResponse> results = new JsonResponse<GetFeaturedItemSearchResponse>(true, null, null);
+	public void getFeaturedItemSearch(@RequestBody GetFeaturedItemSearchParameter parameters) {
 		
-		GetFeaturedItemSearchResponse _result = sitemgmtService.getFeaturedItemSearch(parameters);
-		results.setData(_result);
-		
-		return results;
 	}
 	
-	/**
-	 * Get FeaturedItemSearch Vendor
-	 * 
-	 * @since 2018. 11. 01.
-	 * @author Junghwan Lee
-	 * @param parameters
-	 * @return
-	 */
 	@RequestMapping(value = "getfeatureditemsearchvendor", method = RequestMethod.POST)
-	public JsonResponse<GetFeaturedItemSearchVendorResponse> getFeaturedItemSearchVendor(@RequestBody GetFeaturedItemSearchVendorParameter parameters) {
-		JsonResponse<GetFeaturedItemSearchVendorResponse> results = new JsonResponse<GetFeaturedItemSearchVendorResponse>(true, null, null);
-		
-		GetFeaturedItemSearchVendorResponse _result = sitemgmtService.getFeaturedItemSearchVendor(parameters);
-		results.setData(_result);
-		
-		return results;
-	}
+	public void getFeaturedItemSearchVendor() {}
 	
 	@RequestMapping(value = "setfeatureditem", method = RequestMethod.POST)
 	public void getFeaturedItem() {}
@@ -710,6 +675,10 @@ public class SitemgmtController {
 	@RequestMapping(value = "gettrendreportitem", method = RequestMethod.POST)
 	public void getTrendReportItem() {}
 	
+//	@Deprecated
+//	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
+//	public JsonResponse<String>  setAddDelTrendReportMap() { return null; }
+	
 	/**
 	 *
 	 * Set Trend Report Sort
@@ -734,9 +703,9 @@ public class SitemgmtController {
 	 * @return List<TrendReportKmmImage>
 	 */
 	@RequestMapping(value = "getlastkmmdata", method = RequestMethod.POST)
-	public JsonResponse<TrendReportKmmImage> getLastKMMData() {
-		TrendReportKmmImage result = sitemgmtService.getLastKMMData();
-		return new JsonResponse<TrendReportKmmImage>(true, null, result);
+	public JsonResponse<List<TrendReportKmmImage>> getLastKMMData() {
+		List<TrendReportKmmImage> result = sitemgmtService.getLastKMMData();
+		return new JsonResponse<List<TrendReportKmmImage>>(true, null, result);
 	}
 	
 	/**

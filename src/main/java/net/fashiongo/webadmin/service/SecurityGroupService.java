@@ -554,7 +554,6 @@ public class SecurityGroupService extends ApiService {
 	 * @throws JsonProcessingException 
 	 */
 	@SuppressWarnings({ "unchecked", "unused" })
-	@Transactional(value = "primaryTransactionManager")
 	private SetAspnetMembershipResponse setSaveAspnetMembership(SecurityUserCreate userData) throws JsonProcessingException {
 		SetAspnetMembershipResponse result = new SetAspnetMembershipResponse();
 		Boolean userByNameSuccess = true;
@@ -782,7 +781,7 @@ public class SecurityGroupService extends ApiService {
 	 */
 	private ResultCode setSaveSecurityPermission(Integer userID, List<SecurityUserPermission> permissionList) {
 		ResultCode result = new ResultCode(false, 0, null);
-    	securityPermissionRepository.deleteByUserIDIn(userID);
+    	securityPermissionRepository.deleteByUserID(userID);
     	
     	List<SecurityPermission> securityPermissionList = new ArrayList<SecurityPermission>();
     	for(SecurityUserPermission sup: permissionList) {
@@ -815,6 +814,7 @@ public class SecurityGroupService extends ApiService {
 	 * @throws JsonProcessingException
 	 * @throws ParseException 
 	 */
+	@Transactional(value = "primaryTransactionManager")
 	public SetCreateSecurityUserResponse setCreateSecurityUser(SetSecurityUserParameter jsonParameters) throws JsonProcessingException, ParseException {
 		SetAspnetMembershipResponse resultMembership = new SetAspnetMembershipResponse();
 		ResultCode resultSecurityGroup = new ResultCode(false, 0, null);

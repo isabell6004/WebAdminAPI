@@ -4,47 +4,26 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class InactiveTodayDealDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@JsonProperty("TodayDealID")
 	private Integer todayDealID;
-	@JsonProperty("Title")
 	private String title;
-	@JsonProperty("Description")
 	private String description;
-	@JsonProperty("FromDate")
 	private LocalDateTime fromDate;
-	@JsonProperty("ToDate")
 	private LocalDateTime toDate;
-	@JsonProperty("TodayDealPrice")
 	private BigDecimal todayDealPrice;
-	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
-	@JsonProperty("ModifiedOn")
 	private LocalDateTime modifiedOn;
-	@JsonProperty("ProductID")
 	private Integer productID;
-	@JsonProperty("ProductName")
 	private String productName;
-	@JsonProperty("ImageUrlRoot")
 	private String imageUrlRoot;
-	@JsonProperty("DirName")
 	private String dirName;
-	@JsonProperty("PictureGeneral")
 	private String pictureGeneral;
-	@JsonProperty("CompanyName")
 	private String companyName;
-	@JsonProperty("WholeSalerID")
 	private Integer wholeSalerID;
-	@JsonProperty("UnitPrice")
 	private BigDecimal unitPrice;
-	@JsonProperty("RevokedOn")
 	private LocalDateTime revokedOn;
-	@JsonProperty("RevokedBy")
 	private String revokedBy;
-	@JsonProperty("Notes")
 	private String notes;
 	
 	public Integer getTodayDealID() {
