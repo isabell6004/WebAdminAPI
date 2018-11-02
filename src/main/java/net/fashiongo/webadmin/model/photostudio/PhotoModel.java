@@ -191,14 +191,14 @@ public class PhotoModel implements IPersistent, Serializable {
 		this.hourlyPayRate = hourlyPayRate;
 	}
 
-	@Column(name = "StatusID")
-	private Integer statusID;
-	public Integer getStatusID() {
-		return statusID;
+	@Column(name = "IsDeleted")
+	private Boolean isDeleted = false;
+	public Boolean getIsDeleted() {
+		return isDeleted;
 	}
 
-	public void setStatusID(Integer statusID) {
-		this.statusID = statusID;
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	@Column(name = "Email")
