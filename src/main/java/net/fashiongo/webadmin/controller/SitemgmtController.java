@@ -27,6 +27,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
@@ -59,6 +60,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
@@ -618,8 +620,23 @@ public class SitemgmtController {
 		return results;
 	}
 	
+	/**
+	 * Get FeaturedItemSearch Vendor
+	 * 
+	 * @since 2018. 11. 01.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
 	@RequestMapping(value = "getfeatureditemsearchvendor", method = RequestMethod.POST)
-	public void getFeaturedItemSearchVendor() {}
+	public JsonResponse<GetFeaturedItemSearchVendorResponse> getFeaturedItemSearchVendor(@RequestBody GetFeaturedItemSearchVendorParameter parameters) {
+		JsonResponse<GetFeaturedItemSearchVendorResponse> results = new JsonResponse<GetFeaturedItemSearchVendorResponse>(true, null, null);
+		
+		GetFeaturedItemSearchVendorResponse _result = sitemgmtService.getFeaturedItemSearchVendor(parameters);
+		results.setData(_result);
+		
+		return results;
+	}
 	
 	@RequestMapping(value = "setfeatureditem", method = RequestMethod.POST)
 	public void getFeaturedItem() {}

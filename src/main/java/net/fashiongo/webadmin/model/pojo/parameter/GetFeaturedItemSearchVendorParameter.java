@@ -13,7 +13,7 @@ import net.fashiongo.webadmin.common.Utility;
 /**
 * @author Junghwan Lee
 */
-public class GetFeaturedItemSearchParameter {
+public class GetFeaturedItemSearchVendorParameter {
 	@ApiModelProperty(required = true, example = "1")
 	@JsonProperty("pagenum")
 	private String pageNum;
@@ -26,7 +26,7 @@ public class GetFeaturedItemSearchParameter {
 	@JsonProperty("fgcat")
 	private String fgCat;
 
-	@ApiModelProperty(required = true, example = "")
+	@ApiModelProperty(required = true, example = "1079")
 	@JsonProperty("vendorid")
 	private String vendorID;
 
@@ -71,28 +71,12 @@ public class GetFeaturedItemSearchParameter {
 	private String keyword;
 
 	@ApiModelProperty(required = true, example = "")
-	@JsonProperty("VendorOrderBy")
-	private String vendorOrderBy;
-
-	@ApiModelProperty(required = true, example = "")
-	@JsonProperty("OrderBy")
-	private String orderBy;
-
-	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("StyleNo")
 	private String styleNo;
 
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("NeverUsed")
 	private String neverUsed;
-
-	@ApiModelProperty(required = true, example = "")
-	@JsonProperty("VendorDateFrom")
-	private String vendorDateFrom;
-
-	@ApiModelProperty(required = true, example = "")
-	@JsonProperty("VendorDateTo")
-	private String vendorDateTo;
 
 	@ApiModelProperty(required = true, example = "")
 	@JsonProperty("FromDate")
@@ -216,22 +200,6 @@ public class GetFeaturedItemSearchParameter {
 		this.keyword = keyword;
 	}
 
-	public String getVendorOrderBy() {
-		return StringUtils.isEmpty(vendorOrderBy) ? null : Utility.ReplaceString(vendorOrderBy);
-	}
-
-	public void setVendorOrderBy(String vendorOrderBy) {
-		this.vendorOrderBy = vendorOrderBy;
-	}
-
-	public String getOrderBy() {
-		return StringUtils.isEmpty(orderBy) ? null : Utility.ReplaceString(orderBy);
-	}
-
-	public void setOrderBy(String orderBy) {
-		this.orderBy = orderBy;
-	}
-
 	public String getStyleNo() {
 		return StringUtils.isEmpty(styleNo) ? null :  Utility.ReplaceString(styleNo);
 	}
@@ -246,32 +214,6 @@ public class GetFeaturedItemSearchParameter {
 
 	public void setNeverUsed(String neverUsed) {
 		this.neverUsed = neverUsed;
-	}
-
-	public LocalDateTime getVendorDateFrom() {
-		if (StringUtils.isEmpty(vendorDateFrom)) {
-			return null;
-		}
-		
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, hh:mm:ss");
-		return LocalDateTime.parse(vendorDateFrom, dtFormatter);
-	}
-
-	public void setVendorDateFrom(String vendorDateFrom) {
-		this.vendorDateFrom = vendorDateFrom;
-	}
-
-	public LocalDateTime getVendorDateTo() {
-		if (StringUtils.isEmpty(vendorDateTo)) {
-			return null;
-		}
-		
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, hh:mm:ss");
-		return LocalDateTime.parse(vendorDateTo, dtFormatter);
-	}
-
-	public void setVendorDateTo(String vendorDateTo) {
-		this.vendorDateTo = vendorDateTo;
 	}
 
 	public LocalDateTime getFromDate() {
@@ -299,5 +241,4 @@ public class GetFeaturedItemSearchParameter {
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
-
 }

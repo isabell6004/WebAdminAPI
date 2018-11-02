@@ -88,6 +88,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
@@ -115,6 +116,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
@@ -1409,6 +1411,56 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * Get FeaturedItem Search Vendor
+	 * 
+	 * @since 2018. 11. 1.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public GetFeaturedItemSearchVendorResponse getFeaturedItemSearchVendor(GetFeaturedItemSearchVendorParameter parameters) {
+		GetFeaturedItemSearchVendorResponse result = new GetFeaturedItemSearchVendorResponse();
+		String spName = "up_wa_GetFeaturedItemsSearchVendor";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		params.add(parameters.getFgCat());
+		params.add(parameters.getVendorID());
+		params.add(parameters.getSelectedCategoryID());
+		params.add(parameters.getFromDate());
+		params.add(parameters.getToDate());
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getBodySizeIDs());
+		params.add(parameters.getPatternIDs());
+		params.add(parameters.getLengthIDs());
+		params.add(parameters.getStyleIDs());
+		params.add(parameters.getFabricIDs());
+		params.add(parameters.getColorNames());
+		params.add(parameters.getSearchItemText());
+		params.add("ProductDescription");
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getSearchAndOr());
+		params.add(parameters.getKeyword());
+		params.add(parameters.getStyleNo());
+		params.add(parameters.getNeverUsed());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class);
+		result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
+		result.setSelectData((List<SelectData>) _result.get(1));
+		return result;
+	}	
 	/**
 	 * 
 	 * Get DMRequest
