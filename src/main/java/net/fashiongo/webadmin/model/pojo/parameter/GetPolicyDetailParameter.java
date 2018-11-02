@@ -8,16 +8,9 @@ import io.swagger.annotations.ApiModelProperty;
  * @author DAHYE
  *
  */
-public class GetPolicyDetailParameter {
-	@ApiModelProperty(required = false, example="1")
-	@JsonProperty("pagenum")
-	private Integer pageNum;
+public class GetPolicyDetailParameter extends PageSizeParameter {
 
-	@ApiModelProperty(required = false, example="15")
-	@JsonProperty("pagesize")
-	private Integer pageSize;
-
-	@ApiModelProperty(required = false, example="CompanyName")
+	@ApiModelProperty(required = false, example="CmpanyName")
 	@JsonProperty("searchitem")
 	private String searchItem;
 
@@ -28,21 +21,10 @@ public class GetPolicyDetailParameter {
 	@ApiModelProperty(required = false, example="6")
 	@JsonProperty("policyid")
 	private Integer policyID;
-
-	public Integer getPageNum() {
-		return pageNum == null ? 1 : pageNum;
-	}
-
-	public void setPageNum(Integer pageNum) {
-		this.pageNum = pageNum;
-	}
-
+	
+	@Override
 	public Integer getPageSize() {
 		return pageSize == null ? 1000: pageSize;
-	}
-
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
 	}
 
 	public String getSearchItem() {

@@ -291,7 +291,7 @@ public class SitemgmtService extends ApiService {
 		GetPolicyManagementResponse results = new GetPolicyManagementResponse();
 		Pageable req = PageRequest.of(parameters.getPageNum()-1, parameters.getPageSize(), new Sort(Direction.DESC, "EffectiveOn"));
 		Page<Policy> result = policyRepository.findAll(req);
-		results.setRecCnt(policyRepository.count());
+		results.setRecCnt(result.getTotalElements());
 		results.setVpolicyList(result.getContent());
 		return results;
 	}

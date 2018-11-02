@@ -15,7 +15,7 @@ public class PageSizeParameter {
 	 
 	 @ApiModelProperty(required = false, example="15")
 	 @JsonProperty("pagesize")
-	 private Integer pageSize;
+	 protected Integer pageSize;
 
 	public Integer getPageNum() {
 		return pageNum == null ? 1 : pageNum;
