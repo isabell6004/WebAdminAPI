@@ -3,22 +3,29 @@
  */
 package net.fashiongo.webadmin.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.primary.SecurityGroup;
+import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
 import net.fashiongo.webadmin.service.MessageService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -135,14 +142,70 @@ public class MessageController {
 	 * @return
 	 */
 	@RequestMapping(value="getretailernews", method=RequestMethod.POST)
-	public JsonResponse<GetRetailerNewsResponse> getRetailerNews(@RequestBody GetRetailerNewsParameter parameter) {
+	public JsonResponse<GetRetailerNewsResponse> getRetailerNews(@RequestBody GetRetailerNewsParameter parameters) {
 		JsonResponse<GetRetailerNewsResponse> results = new JsonResponse<GetRetailerNewsResponse>(true, null, null);
 		
-		GetRetailerNewsResponse _result = messageService.getRetailerNews(parameter);
+		GetRetailerNewsResponse _result = messageService.getRetailerNews(parameters);
 		results.setData(_result);
 		results.setSuccess(true);
 		
 		return results;
 	}
 	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 1.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="getretailernewsdetail", method=RequestMethod.POST)
+	public JsonResponse<TblRetailerNews> getRetailerNewsDetail(@RequestBody GetRetailerNewsDetailParameter parameters) {
+		JsonResponse<TblRetailerNews> results = new JsonResponse<TblRetailerNews>(false, null, 0, null);
+		
+		TblRetailerNews result = messageService.getRetailerNewsDetail(parameters);
+		
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 1.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="setretailernews", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setRetailerNews(@RequestBody SetRetailerNewsParameter parameters) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+		
+		ResultCode result = messageService.setRetailerNews(parameters);
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 1.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="delretailernews", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> delRetailerNews(@RequestBody List<Integer> parameters) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+		
+		ResultCode result = messageService.delRetailerNews(parameters);
+		
+		results.setData(result);
+		
+		return results;
+	}
 }
