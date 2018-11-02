@@ -674,12 +674,14 @@ public class SitemgmtService extends ApiService {
 		if (category != null) {
 			final List<Category> CategoryList = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNotOrderByListOrderAsc(parentCategoryID, lvl, categoryID);
 			
-			for (Category cs : CategoryList) {
-				if (cs.getListOrder() >= listOrder) {
-					newListOrder++;
-					cs.setListOrder(newListOrder);
-					categoryRepository.save(cs);
+			if(!CollectionUtils.isEmpty(CategoryList)) {
+				for (Category cs : CategoryList) {
+					if (cs.getListOrder() >= listOrder) {
+						newListOrder++;
+						cs.setListOrder(newListOrder);
+					}
 				}
+				categoryRepository.saveAll(CategoryList);
 			}
 			
 			category.setParentCategoryID(parentCategoryID);
@@ -689,9 +691,11 @@ public class SitemgmtService extends ApiService {
 			if (lvl == 2) {
 				final List<Category> CategoryList2 = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNot(parentCategoryID, 3, categoryID);
 				
-				for (Category cc : CategoryList2) {
-					cc.setParentParentCategoryID(parentCategoryID);
-					categoryRepository.save(cc);
+				if(!CollectionUtils.isEmpty(CategoryList2)) {
+					for (Category cc : CategoryList2) {
+						cc.setParentParentCategoryID(parentCategoryID);
+					}
+					categoryRepository.saveAll(CategoryList2);
 				}
 			}
 		}
