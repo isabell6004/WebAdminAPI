@@ -9,8 +9,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * @author Andy
  *
@@ -31,7 +29,6 @@ public class VendorAutocomplete {
 		this.wholeSalerId = wholeSalerId;
 	}
 
-	@JsonProperty("CompanyName")
 	@Column(name = "CompanyName")
 	private String companyName;
 	public String getCompanyName() {
@@ -42,12 +39,12 @@ public class VendorAutocomplete {
 	}
 
 	@Column(name = "FirstName")
-	private String FirstName;
+	private String firstName;
 	public String getFirstName() {
-		return FirstName;
+		return firstName;
 	}
 	public void setFirstName(String firstName) {
-		FirstName = firstName;
+		this.firstName = firstName;
 	}
 
 	@Column(name = "LastName")
@@ -69,12 +66,12 @@ public class VendorAutocomplete {
 	}
 
 	@Column(name = "Phone")
-	private String phoneNumber;
-	public String getPhoneNumber() {
-		return phoneNumber;
+	private String phone;
+	public String getPhone() {
+		return phone;
 	}
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 }
