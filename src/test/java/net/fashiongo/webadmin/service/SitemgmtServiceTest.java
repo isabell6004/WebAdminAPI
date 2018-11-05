@@ -5,6 +5,8 @@ package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.*;
 
+import java.text.ParseException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,7 +17,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.response.*;
@@ -229,4 +233,63 @@ public class SitemgmtServiceTest {
 	@Test
 	public void testSetPaidCampaign() {
 	}
+	
+	/**
+	 * 
+	 * Test GetVendorList
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetVendorList() {
+		GetVendorListResponse result = sitemgmtService.getVendorList();
+		assertTrue(result.getVendorSummarylist().size() > 0);
+	}
+	
+	/**
+	 * 
+	 * Test GetTodaydeal
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 * @throws ParseException
+	 */
+	@Test
+	public void testGetTodaydeal() throws ParseException {
+		GetTodaydealParameter parameters = new GetTodaydealParameter();
+		parameters.setPagenum("1");
+		parameters.setPagesize("30");
+		parameters.setCompanytypeid1("true");
+		parameters.setCompanytypeid2("true");
+		parameters.setCompanytypeid3("true");
+		parameters.setCategoryid("");
+		parameters.setFromdate("11/1/2018, 12:00:00 AM");
+		parameters.setTodate("11/30/2018, 11:59:59 PM");
+		parameters.setActive("true");
+		parameters.setOrderby("");
+		
+		GetTodaydealResponse result = sitemgmtService.getTodaydeal(parameters);
+		if(result.getTotal()!= null) {
+			if(result.getTotal().getRecCnt() > 0) {
+				assertTrue(result.getTodayDealDetail().size() > 0);
+			}
+		}
+	}
+	
+	@Test
+	public void testGetTodayDealCalendarList() {
+		GetTodayDealCalendarListParameter parameters = new GetTodayDealCalendarListParameter();
+		parameters.setWholesalerid(0);
+		parameters.setSelectdate("11/5/2018");
+		
+		GetTodayDealCalendarListResponse result = sitemgmtService.getTodayDealCalendarList(parameters);
+		if(!CollectionUtils.isEmpty(result.getInactiveTodayDeals())) {
+			for(InactiveTodayDealDetail detail : result.getInactiveTodayDeals()) {
+				assertNotNull(detail.getTodayDealID());
+			}
+		}
+	}
+	
+	
 }
