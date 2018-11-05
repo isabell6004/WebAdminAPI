@@ -671,4 +671,136 @@ public class SitemgmtServiceTest {
 	public void testSetCommunicationReason() {
 		
 	}
+	
+	/**
+	 *
+	 * Test GetCategoryVendorList
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetCategoryVendorList() {
+
+	}
+
+	/**
+	 *
+	 * Test GetProductAttributesTotal
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetProductAttributesTotal() {
+
+	}
+
+	/**
+	 *
+	 * Test GetFeaturedItemCount
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetFeaturedItemCount() {
+
+	}
+
+	/**
+	 *
+	 * Test GetFeaturedItemListDay
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetFeaturedItemListDay() {
+
+	}
+
+	/**
+	 *
+	 * Test GetProductDetail
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetProductDetail() {
+
+	}
+
+	/**
+	 *
+	 * Test GetTrendReport2
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetTrendReport2() {
+
+	}
+
+	/**
+	 *
+	 * Test GetTrendReportItem
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetTrendReportItem() {
+
+	}
+
+	/**
+	 *
+	 * Test SetTrendReportSort
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testSetTrendReportSort() {
+
+	}
+
+	/**
+	 *
+	 * Test GetLastKMMData
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetLastKMMData() {
+
+	}
+
+	/**
+	 *
+	 * Test SetCategory
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testSetCategory() {
+
+	}
+
+	/**
+	 *
+	 * Test SetCategoryListOrder
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testSetCategoryListOrder() {
+
+	}
 }
