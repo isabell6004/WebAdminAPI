@@ -2,8 +2,6 @@ package net.fashiongo.webadmin.model.pojo.parameter;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -16,7 +14,7 @@ public class GetTrendReportItemParameter {
 	private String pagesize;
 	@ApiModelProperty(required = true, example="328")
 	private String trendreportid;
-	@JsonIgnore
+	@ApiModelProperty(hidden=true)
 	private String orderby;
 	
 	public Integer getPagenum() {
