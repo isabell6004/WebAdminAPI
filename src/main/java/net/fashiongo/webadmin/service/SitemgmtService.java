@@ -54,7 +54,6 @@ import net.fashiongo.webadmin.model.pojo.ColorListInfo;
 import net.fashiongo.webadmin.model.pojo.DMRequest;
 import net.fashiongo.webadmin.model.pojo.DMRequestDetail;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
-import net.fashiongo.webadmin.model.pojo.FeaturedItem;
 import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
 import net.fashiongo.webadmin.model.pojo.FeaturedVendorDaily;
 import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;

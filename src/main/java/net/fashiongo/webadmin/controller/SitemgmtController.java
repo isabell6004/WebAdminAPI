@@ -20,6 +20,7 @@ import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
+import net.fashiongo.webadmin.model.pojo.parameter.DelFeaturedItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
@@ -645,8 +646,22 @@ public class SitemgmtController {
 	@RequestMapping(value = "setfeatureditem", method = RequestMethod.POST)
 	public void getFeaturedItem() {}
 	
+	/**
+	 *
+	 * delete featured item
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Sanghyup Kim
+	 * @param 
+	 * @return 
+	 */
 	@RequestMapping(value = "delfeatureditem", method = RequestMethod.POST)
-	public void gelFeaturedItem() {}
+	public JsonResponse<Integer> delFeaturedItem(@RequestBody DelFeaturedItemParameter parameters) {
+		ResultResponse<Integer> result = sitemgmtService.delFeaturedItem(parameters);
+		
+		JsonResponse<Integer> results = new JsonResponse<>(true, null, result.getData());
+		return results;
+	}
 	
 	/**
 	 *
