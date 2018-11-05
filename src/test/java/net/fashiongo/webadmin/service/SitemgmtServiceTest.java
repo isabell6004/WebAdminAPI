@@ -3,14 +3,15 @@
  */
 package net.fashiongo.webadmin.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.ParseException;
 
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -25,17 +26,38 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import net.fashiongo.webadmin.model.pojo.CodeData;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.*;
-import net.fashiongo.webadmin.model.pojo.response.*;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
+import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
-import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * @author sanghyup
@@ -528,5 +550,25 @@ public class SitemgmtServiceTest {
 		if(!CollectionUtils.isEmpty(result)) {
 			assertTrue(result.get(92181) != null || result.get(92178) != null);
 		}
+	}
+	
+	/**
+	 * 
+	 * Test SetFGCatalog
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Ignore
+	@Test
+	public void testSetFGCatalog() {
+		SetFGCatalogParameter parameters = new SetFGCatalogParameter();
+		parameters.setSubject("Test Title");
+		parameters.setContents("<html></html>");
+		parameters.setIncludedvendors("SHUSHOP,STORIA");
+		parameters.setVendorcode("10526,10525");
+		
+		ResultCode result = sitemgmtService.setFGCatalog(parameters);
+		assertNotNull(result);
 	}
 }
