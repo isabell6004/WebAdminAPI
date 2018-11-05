@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.text.ParseException;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 import net.fashiongo.webadmin.model.pojo.CodeData;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.response.*;
@@ -282,6 +284,18 @@ public class SitemgmtServiceTest {
 	}
 	
 	/**
+	 * Test GetVendorList
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetVendorList() {
+		GetVendorListResponse result = sitemgmtService.getVendorList();
+		assertTrue(result.getVendorSummarylist().size() > 0);
+	}
+	
+	/**
 	 * 
 	 * Description Example
 	 * @since 2018. 11. 5.
@@ -333,6 +347,54 @@ public class SitemgmtServiceTest {
 		ResultCode result = sitemgmtService.setProductAttributesMapping(parameters);
 		if(result != null) {
 			assertTrue(result.getSuccess());
+		}
+	}
+	/**
+	 * Test GetTodaydeal
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 * @throws ParseException
+	 */
+	@Test
+	public void testGetTodaydeal() throws ParseException {
+		GetTodaydealParameter parameters = new GetTodaydealParameter();
+		parameters.setPagenum("1");
+		parameters.setPagesize("30");
+		parameters.setCompanytypeid1("true");
+		parameters.setCompanytypeid2("true");
+		parameters.setCompanytypeid3("true");
+		parameters.setCategoryid("");
+		parameters.setFromdate("11/1/2018, 12:00:00 AM");
+		parameters.setTodate("11/30/2018, 11:59:59 PM");
+		parameters.setActive("true");
+		parameters.setOrderby("");
+		
+		GetTodaydealResponse result = sitemgmtService.getTodaydeal(parameters);
+		if(result.getTotal()!= null) {
+			if(result.getTotal().getRecCnt() > 0) {
+				assertTrue(result.getTodayDealDetail().size() > 0);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetTodayDealCalendarList() {
+		GetTodayDealCalendarListParameter parameters = new GetTodayDealCalendarListParameter();
+		parameters.setWholesalerid(0);
+		parameters.setSelectdate("11/5/2018");
+		
+		GetTodayDealCalendarListResponse result = sitemgmtService.getTodayDealCalendarList(parameters);
+		if(!CollectionUtils.isEmpty(result.getInactiveTodayDeals())) {
+			for(InactiveTodayDealDetail detail : result.getInactiveTodayDeals()) {
+				assertNotNull(detail.getTodayDealID());
+			}
 		}
 	}
 }

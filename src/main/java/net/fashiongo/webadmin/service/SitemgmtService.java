@@ -75,6 +75,7 @@ import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.TrendReportDefault;
+import net.fashiongo.webadmin.model.pojo.TrendReportItem;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.TrendReportList;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
@@ -98,6 +99,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
@@ -130,6 +132,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportItemResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
@@ -267,13 +270,14 @@ public class SitemgmtService extends ApiService {
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setPaidCampaign(SetPaidCampaignParameter parameters) {
 		List<EmConfiguration> emConfigurationList = parameters.getObjList();
-		
-		for (EmConfiguration emConfiguration2 : emConfigurationList) {
-			EmConfiguration emConfiguration = new EmConfiguration();
-			emConfiguration.setConfigID(emConfiguration2.getConfigID());
-			emConfiguration.setConfigType(emConfiguration2.getConfigType());
-			emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
-			emConfigurationRepository.save(emConfiguration);
+		if (!CollectionUtils.isEmpty(emConfigurationList)) {
+			for (EmConfiguration emConfiguration2 : emConfigurationList) {
+				EmConfiguration emConfiguration = new EmConfiguration();
+				emConfiguration.setConfigID(emConfiguration2.getConfigID());
+				emConfiguration.setConfigType(emConfiguration2.getConfigType());
+				emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
+			}
+			emConfigurationRepository.saveAll(emConfigurationList);
 		}
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
@@ -887,6 +891,32 @@ public class SitemgmtService extends ApiService {
 		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportList.class);
 		result.setTotal((List<Total>) _result.get(0));
 		result.setTrendReportList((List<TrendReportList>) _result.get(1));
+		return result;
+	}
+	
+	/**
+	 *
+	 * Get TrendReport Item
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Nayeon Kim
+	 * @param GetTrendReportItemParameter
+	 * @return GetTrendReportItemResponse
+	 */
+	@SuppressWarnings("unchecked")
+	public GetTrendReportItemResponse getTrendReportItem(GetTrendReportItemParameter prameters) {
+		GetTrendReportItemResponse result = new GetTrendReportItemResponse();
+		String spName = "up_wa_GetTrendReportItem";
+		List<Object> params = new ArrayList<Object>();
+
+		params.add(prameters.getPagenum());
+		params.add(prameters.getPagesize());
+		params.add(prameters.getTrendreportid());
+		params.add(null);
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportItem.class);
+		result.setTotal((List<Total>) _result.get(0));
+		result.setTrendReportItem((List<TrendReportItem>) _result.get(1));
 		return result;
 	}
 	
