@@ -113,6 +113,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportMapParameter;
 import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
@@ -1850,4 +1851,28 @@ public class SitemgmtService extends ApiService {
 		return result;		
 	}
 
+
+	/**
+	 *
+	 * Set Trend Report Map
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Sanghyup Kim
+	 * @param SetTrendReportMapParameter
+	 * @return ResultCode
+	 */
+	public ResultCode setTrendReportMap(SetTrendReportMapParameter parameters) {
+		String spName = "up_wa_AddDelTrendReportItem";
+		List<Object> params = new ArrayList<Object>();
+
+		params.add(parameters.getSetType());
+		params.add(parameters.getMapId());
+		params.add(parameters.getTrendreportId());
+		params.add(parameters.getProductId());
+		params.add(parameters.getModifiedBy());
+
+		jdbcHelper.executeSP(spName, params);
+		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+	}
+	
 }
