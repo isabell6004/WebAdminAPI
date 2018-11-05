@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import net.fashiongo.webadmin.model.primary.ShowSchedule;
+import net.fashiongo.webadmin.model.primary.show.ShowSchedule;
 
 /**
  * @author Sanghyup

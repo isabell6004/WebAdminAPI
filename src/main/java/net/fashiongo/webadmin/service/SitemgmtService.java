@@ -28,6 +28,7 @@ import net.fashiongo.webadmin.dao.primary.CodeLengthRepository;
 import net.fashiongo.webadmin.dao.primary.CodePatternRepository;
 import net.fashiongo.webadmin.dao.primary.CodeStyleRepository;
 import net.fashiongo.webadmin.dao.primary.CommunicationReasonRepository;
+import net.fashiongo.webadmin.dao.primary.FeaturedItemRepository;
 import net.fashiongo.webadmin.dao.primary.MapFabricCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapLengthCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapPatternCategoryRepository;
@@ -82,6 +83,7 @@ import net.fashiongo.webadmin.model.pojo.VendorCount;
 import net.fashiongo.webadmin.model.pojo.VendorData1;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
+import net.fashiongo.webadmin.model.pojo.parameter.DelFeaturedItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
@@ -211,7 +213,10 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private MapFabricCategoryRepository mapFabricCategoryRepository;
-	
+
+	@Autowired
+	private FeaturedItemRepository featuredItemRepository;
+
 	/**
 	 *
 	 * Get Category List
@@ -267,13 +272,14 @@ public class SitemgmtService extends ApiService {
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setPaidCampaign(SetPaidCampaignParameter parameters) {
 		List<EmConfiguration> emConfigurationList = parameters.getObjList();
-		
-		for (EmConfiguration emConfiguration2 : emConfigurationList) {
-			EmConfiguration emConfiguration = new EmConfiguration();
-			emConfiguration.setConfigID(emConfiguration2.getConfigID());
-			emConfiguration.setConfigType(emConfiguration2.getConfigType());
-			emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
-			emConfigurationRepository.save(emConfiguration);
+		if (!CollectionUtils.isEmpty(emConfigurationList)) {
+			for (EmConfiguration emConfiguration2 : emConfigurationList) {
+				EmConfiguration emConfiguration = new EmConfiguration();
+				emConfiguration.setConfigID(emConfiguration2.getConfigID());
+				emConfiguration.setConfigType(emConfiguration2.getConfigType());
+				emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
+			}
+			emConfigurationRepository.saveAll(emConfigurationList);
 		}
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
@@ -674,12 +680,14 @@ public class SitemgmtService extends ApiService {
 		if (category != null) {
 			final List<Category> CategoryList = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNotOrderByListOrderAsc(parentCategoryID, lvl, categoryID);
 			
-			for (Category cs : CategoryList) {
-				if (cs.getListOrder() >= listOrder) {
-					newListOrder++;
-					cs.setListOrder(newListOrder);
-					categoryRepository.save(cs);
+			if(!CollectionUtils.isEmpty(CategoryList)) {
+				for (Category cs : CategoryList) {
+					if (cs.getListOrder() >= listOrder) {
+						newListOrder++;
+						cs.setListOrder(newListOrder);
+					}
 				}
+				categoryRepository.saveAll(CategoryList);
 			}
 			
 			category.setParentCategoryID(parentCategoryID);
@@ -689,9 +697,11 @@ public class SitemgmtService extends ApiService {
 			if (lvl == 2) {
 				final List<Category> CategoryList2 = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNot(parentCategoryID, 3, categoryID);
 				
-				for (Category cc : CategoryList2) {
-					cc.setParentParentCategoryID(parentCategoryID);
-					categoryRepository.save(cc);
+				if(!CollectionUtils.isEmpty(CategoryList2)) {
+					for (Category cc : CategoryList2) {
+						cc.setParentParentCategoryID(parentCategoryID);
+					}
+					categoryRepository.saveAll(CategoryList2);
 				}
 			}
 		}
@@ -1791,4 +1801,24 @@ public class SitemgmtService extends ApiService {
 		result.setSuccess(true);
 		return result;
 	}
+	
+
+	/**
+	 *
+	 * delete Featured Item
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Sanghyup Kim
+	 * @param 
+	 * @return 
+	 */
+	public ResultResponse<Integer> delFeaturedItem(DelFeaturedItemParameter parameters) {
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
+
+		Integer id = parameters.getFeaturedItemID();
+		featuredItemRepository.deleteById(id);
+		result.setResultWrapper(true, 1, id, MSG_DELETE_SUCCESS, id);
+		return result;		
+	}
+
 }

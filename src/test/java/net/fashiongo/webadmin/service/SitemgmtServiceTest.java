@@ -5,6 +5,10 @@ package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.text.ParseException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,7 +19,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.webadmin.model.pojo.CodeData;
+import net.fashiongo.webadmin.model.pojo.ProductAttribute;
+import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.response.*;
@@ -229,4 +238,211 @@ public class SitemgmtServiceTest {
 	@Test
 	public void testSetPaidCampaign() {
 	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 5.
+	 * @author Reo
+	 */
+	@Test
+	public void testGetProductAttributes() {
+		GetProductAttributesParameter parameters = new GetProductAttributesParameter();
+		parameters.setTabNo(5);
+		parameters.setPrevTab(1);
+		parameters.setCategoryID(8);
+		GetProductAttributesResponse result = sitemgmtService.getProductAttributes(parameters);
+		
+		if(result != null) {
+			List<CodeData> codeDataList = result.getCodeDataList();
+			if(!CollectionUtils.isEmpty(codeDataList)) {
+				assertNotNull(result.getCodeDataList());
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 5.
+	 * @author Reo
+	 */
+	@Ignore
+	@Test
+	public void testSetProductAttributes() {
+		SetProductAttributesParameter parameters = new SetProductAttributesParameter();
+		parameters.setTabNo(1);
+		parameters.setbType("save");
+		parameters.setCodeID(1);
+		parameters.setAttrName("Beadedtest");
+		parameters.setActive(true);
+		
+		ResultCode result = sitemgmtService.setProductAttributes(parameters);
+		if (result != null) {
+			assertTrue(result.getSuccess());
+		}
+	}
+	
+	/**
+	 * Test GetVendorList
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetVendorList() {
+		GetVendorListResponse result = sitemgmtService.getVendorList();
+		assertTrue(result.getVendorSummarylist().size() > 0);
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 5.
+	 * @author Reo
+	 */
+	@Ignore
+	@Test
+	public void testSetProductAttributesActive() {
+		SetProductAttributesParameter parameters = new SetProductAttributesParameter();
+		parameters.setTabNo(1);
+		parameters.setCodeID(1);
+		parameters.setActive(false);
+		
+		ResultCode result = sitemgmtService.setProductAttributesActive(parameters);
+		if(result != null) {
+			assertTrue(result.getSuccess());
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 5.
+	 * @author Reo
+	 */
+	@Ignore
+	@Test
+	public void testSetProductAttributesMapping() {
+		SetProductAttributesMappingParameter parameters = new SetProductAttributesMappingParameter();
+		parameters.setTabNo(1);
+		parameters.setCategoryID(8);
+		
+		List<ProductAttribute> productAttributeList = new ArrayList<ProductAttribute>();
+		//first row
+		ProductAttribute productAttribute = new ProductAttribute();
+		productAttribute.setCodeID(36);
+		productAttribute.setMapID(0);
+		productAttribute.setCategoryID(8);
+		productAttributeList.add(productAttribute);
+		
+		//second row
+		productAttribute = new ProductAttribute();
+		productAttribute.setCodeID(38);
+		productAttribute.setMapID(0);
+		productAttribute.setCategoryID(8);
+		productAttributeList.add(productAttribute);
+		
+		parameters.setProductAttributeList(productAttributeList);
+		ResultCode result = sitemgmtService.setProductAttributesMapping(parameters);
+		if(result != null) {
+			assertTrue(result.getSuccess());
+		}
+	}
+	/**
+	 * Test GetTodaydeal
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 * @throws ParseException
+	 */
+	@Test
+	public void testGetTodaydeal() throws ParseException {
+		GetTodaydealParameter parameters = new GetTodaydealParameter();
+		parameters.setPagenum("1");
+		parameters.setPagesize("30");
+		parameters.setCompanytypeid1("true");
+		parameters.setCompanytypeid2("true");
+		parameters.setCompanytypeid3("true");
+		parameters.setCategoryid("");
+		parameters.setFromdate("11/1/2018, 12:00:00 AM");
+		parameters.setTodate("11/30/2018, 11:59:59 PM");
+		parameters.setActive("true");
+		parameters.setOrderby("");
+		
+		GetTodaydealResponse result = sitemgmtService.getTodaydeal(parameters);
+		if(result.getTotal()!= null) {
+			if(result.getTotal().getRecCnt() > 0) {
+				assertTrue(result.getTodayDealDetail().size() > 0);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * Test GetTodayDealCalendarList
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetTodayDealCalendarList() {
+		GetTodayDealCalendarListParameter parameters = new GetTodayDealCalendarListParameter();
+		parameters.setWholesalerid(0);
+		parameters.setSelectdate("11/5/2018");
+		
+		GetTodayDealCalendarListResponse result = sitemgmtService.getTodayDealCalendarList(parameters);
+		if(!CollectionUtils.isEmpty(result.getInactiveTodayDeals())) {
+			assertNotNull(result.getInactiveTodayDeals().get(0).getTodayDealID());
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * Test GetTrendReportCategory
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetTrendReportCategory() {
+		GetTrendReportCategoryResponse result = sitemgmtService.getTrendReportCategory();
+		assertTrue(result.getCategoryList().size() > 0);
+	}
+	
+	/**
+	 * 
+	 * Test GetTodayDealCalendar
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetTodayDealCalendar() {
+		GetTodayDealCanlendarParameter parameters = new GetTodayDealCanlendarParameter();
+		parameters.setFromdate("2018-11-1");
+		parameters.setTodate("2018-11-30");
+		
+		GetTodayDealCalendarResponse result = sitemgmtService.getTodayDealCalendar(parameters);
+		if(!CollectionUtils.isEmpty(result.getCalendarDetails())) {
+			assertNotNull(result.getCalendarDetails().get(0).getTodayDealID());
+		}
+	}
+	
+	/**
+	 * 
+	 * Test GetVendorCategory
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test 
+	public void testGetVendorCategory() {
+		GetVendorCategoryResponse result = sitemgmtService.getVendorCategory(2858);
+		if(!CollectionUtils.isEmpty(result.getVendorCategorySummaryList())) {
+			assertNotNull(result.getVendorCategorySummaryList().get(0).getVendorCategoryID());
+		}
+	}
+	
 }

@@ -36,10 +36,10 @@ import net.fashiongo.webadmin.model.pojo.response.show.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowParticipatingVendorsResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowPromotionPlanResponse;
 import net.fashiongo.webadmin.model.pojo.response.show.GetShowScheduleListResponse;
-import net.fashiongo.webadmin.model.primary.ShowSchedule;
 import net.fashiongo.webadmin.model.primary.show.ListShow;
 import net.fashiongo.webadmin.model.primary.show.MapShowSchedulePromotionPlanVendor;
 import net.fashiongo.webadmin.model.primary.show.MapShowScheduleWholeSaler;
+import net.fashiongo.webadmin.model.primary.show.ShowSchedule;
 import net.fashiongo.webadmin.model.primary.show.ShowSchedulePromotionPlan;
 
 /**

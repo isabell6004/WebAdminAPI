@@ -12,7 +12,7 @@ public class GetRetailerNewsResponse {
 	private List<Total> recCnt;
 	
 	@JsonProperty("Table1")
-	private List<RetailerNews> codeDataList;
+	private List<RetailerNews> retailerNewsList;
 	
 	@JsonProperty("success")
 	private Boolean success;
@@ -24,13 +24,13 @@ public class GetRetailerNewsResponse {
 	public void setRecCnt(List<Total> recCnt) {
 		this.recCnt = recCnt;
 	}
-
-	public List<RetailerNews> getCodeDataList() {
-		return codeDataList;
+	
+	public List<RetailerNews> getRetailerNewsList() {
+		return retailerNewsList;
 	}
 
-	public void setCodeDataList(List<RetailerNews> codeDataList) {
-		this.codeDataList = codeDataList;
+	public void setRetailerNewsList(List<RetailerNews> retailerNewsList) {
+		this.retailerNewsList = retailerNewsList;
 	}
 
 	public Boolean getSuccess() {
