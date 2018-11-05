@@ -657,6 +657,10 @@ public class SecurityGroupService extends ApiService {
 				result.setSuccess(true);
 				result.setResultCode(1);
 				result.setResultMsg(MSG_SAVE_SUCCESS);
+			} else {
+				result.setSuccess(false);
+				result.setResultCode(-1);
+				result.setResultMsg("Failed to save. Please try again.");
 			}
 		}
 		return result;

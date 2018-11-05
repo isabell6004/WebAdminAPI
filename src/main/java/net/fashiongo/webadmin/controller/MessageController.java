@@ -145,8 +145,8 @@ public class MessageController {
 	public JsonResponse<GetRetailerNewsResponse> getRetailerNews(@RequestBody GetRetailerNewsParameter parameters) {
 		JsonResponse<GetRetailerNewsResponse> results = new JsonResponse<GetRetailerNewsResponse>(true, null, null);
 		
-		GetRetailerNewsResponse _result = messageService.getRetailerNews(parameters);
-		results.setData(_result);
+		GetRetailerNewsResponse result = messageService.getRetailerNews(parameters);
+		results.setData(result);
 		results.setSuccess(true);
 		
 		return results;

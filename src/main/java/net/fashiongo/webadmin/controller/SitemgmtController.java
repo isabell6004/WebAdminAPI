@@ -559,6 +559,8 @@ public class SitemgmtController {
 		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
 		
 		ResultCode result = sitemgmtService.setProductAttributes(parameter);
+		cacheService.GetRedisCacheEvict("BodySizeVendors", null);
+		
 		results.setData(result);
 		results.setSuccess(true);
 		
@@ -810,6 +812,7 @@ public class SitemgmtController {
 		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
 		
 		ResultCode result = sitemgmtService.setProductAttributesMapping(parameter);
+		cacheService.GetRedisCacheEvict("BodySizeVendors", null);
 		results.setData(result);
 		results.setSuccess(true);
 		
