@@ -118,20 +118,22 @@ public class GetTodaydealParameter implements Serializable{
 		return checkedCompanyNo;
 	}
 	
-	public LocalDateTime getFromdate() throws ParseException {
+	public Date getFromdate() throws ParseException {
 		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy, hh:mm:ss a",Locale.US);
+		SimpleDateFormat dt = new SimpleDateFormat("MM/d/yyyy, hh:mm:ss a",Locale.US);
 		if (StringUtils.isNotEmpty(this.fromdate) && !this.fromdate.equals("Invalid Date")) {
-			return LocalDateTime.parse(this.fromdate, dtFormatter);
+			return dt.parse(this.fromdate);
 		}
 		return null;
 	}
 	public void setFromdate(String fromdate) {
 		this.fromdate = fromdate;
 	}
-	public LocalDateTime getTodate() {
+	public Date getTodate() throws ParseException {
 		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy, hh:mm:ss a",Locale.US);
+		SimpleDateFormat dt = new SimpleDateFormat("MM/d/yyyy, hh:mm:ss a",Locale.US);
 		if (StringUtils.isNotEmpty(this.todate) && !this.todate.equals("Invalid Date")) {
-			return LocalDateTime.parse(this.todate, dtFormatter);
+			return dt.parse(this.todate);
 		}
 		return null;
 	}
