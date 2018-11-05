@@ -267,13 +267,14 @@ public class SitemgmtService extends ApiService {
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setPaidCampaign(SetPaidCampaignParameter parameters) {
 		List<EmConfiguration> emConfigurationList = parameters.getObjList();
-		
-		for (EmConfiguration emConfiguration2 : emConfigurationList) {
-			EmConfiguration emConfiguration = new EmConfiguration();
-			emConfiguration.setConfigID(emConfiguration2.getConfigID());
-			emConfiguration.setConfigType(emConfiguration2.getConfigType());
-			emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
-			emConfigurationRepository.save(emConfiguration);
+		if (!CollectionUtils.isEmpty(emConfigurationList)) {
+			for (EmConfiguration emConfiguration2 : emConfigurationList) {
+				EmConfiguration emConfiguration = new EmConfiguration();
+				emConfiguration.setConfigID(emConfiguration2.getConfigID());
+				emConfiguration.setConfigType(emConfiguration2.getConfigType());
+				emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
+			}
+			emConfigurationRepository.saveAll(emConfigurationList);
 		}
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
