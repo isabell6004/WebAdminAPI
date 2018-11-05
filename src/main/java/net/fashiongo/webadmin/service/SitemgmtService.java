@@ -55,6 +55,7 @@ import net.fashiongo.webadmin.model.pojo.DMRequest;
 import net.fashiongo.webadmin.model.pojo.DMRequestDetail;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
 import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
+import net.fashiongo.webadmin.model.pojo.FeaturedItemList;
 import net.fashiongo.webadmin.model.pojo.FeaturedVendorDaily;
 import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
@@ -75,6 +76,7 @@ import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.TrendReportDefault;
+import net.fashiongo.webadmin.model.pojo.TrendReportItem;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.TrendReportList;
 import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
@@ -99,6 +101,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
@@ -131,6 +134,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportItemResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
@@ -783,9 +787,9 @@ public class SitemgmtService extends ApiService {
 		
 		params.add(sDate);
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItem.class);
-		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
-		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItemList.class);
+		result.setFeaturedItemCount((List<FeaturedItemCount>) _result.get(0));
+		result.setFeaturedItemList((List<FeaturedItemList>) _result.get(1));
 		return result;
 	}
 	
@@ -806,8 +810,8 @@ public class SitemgmtService extends ApiService {
 		
 		params.add(sDate);
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItem.class);
-		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(0));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemList.class);
+		result.setFeaturedItemList((List<FeaturedItemList>) _result.get(0));
 		return result;
 	}
 	
@@ -894,6 +898,32 @@ public class SitemgmtService extends ApiService {
 		result.setTrendReportList((List<TrendReportList>) _result.get(1));
 		return result;
 	}
+	
+    /**
+    *
+    * Get TrendReport Item
+    *
+    * @since 2018. 11. 05.
+    * @author Nayeon Kim
+    * @param GetTrendReportItemParameter
+    * @return GetTrendReportItemResponse
+    */
+   @SuppressWarnings("unchecked")
+   public GetTrendReportItemResponse getTrendReportItem(GetTrendReportItemParameter prameters) {
+       GetTrendReportItemResponse result = new GetTrendReportItemResponse();
+       String spName = "up_wa_GetTrendReportItem";
+       List<Object> params = new ArrayList<Object>();
+
+       params.add(prameters.getPagenum());
+       params.add(prameters.getPagesize());
+       params.add(prameters.getTrendreportid());
+       params.add(null);
+
+       List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportItem.class);
+       result.setTotal((List<Total>) _result.get(0));
+       result.setTrendReportItem((List<TrendReportItem>) _result.get(1));
+       return result;
+   }
 	
 	/**
 	 *
