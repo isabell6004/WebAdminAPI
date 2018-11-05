@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * @author Nayeon Kim
  */
-public class FeaturedItem {
+public class FeaturedItemList {
 	@JsonProperty("FeaturedItemID")
 	private Integer featuredItemID;
 	@JsonProperty("FeaturedItemDate")
@@ -18,7 +18,7 @@ public class FeaturedItem {
 	@JsonProperty("WholeSalerID")
 	private Integer wholeSalerID;
 	@JsonProperty("WholeSalerName")
-	private String  wholeSalerName;
+	private String wholeSalerName;
 	@JsonProperty("ProductID")
 	private Integer productID;
 	@JsonProperty("ProductName")
