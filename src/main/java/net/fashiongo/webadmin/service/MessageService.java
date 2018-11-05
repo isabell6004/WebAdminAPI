@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.dao.primary.TblRetailerNewsRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
@@ -248,7 +249,7 @@ public class MessageService extends ApiService {
 		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, RetailerNews.class);
 		
 		result.setRecCnt((List<Total>) _result.get(0));
-		result.setCodeDataList((List<RetailerNews>) _result.get(1));
+		result.setRetailerNewsList((List<RetailerNews>) _result.get(1));
 		result.setSuccess(true);
 		return result;
 	}

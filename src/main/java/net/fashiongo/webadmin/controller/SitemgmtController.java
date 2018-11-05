@@ -20,7 +20,6 @@ import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
-import net.fashiongo.webadmin.model.pojo.parameter.DelFeaturedItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DelSocialMediaParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
@@ -38,6 +37,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
@@ -75,6 +75,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportItemResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
@@ -560,6 +561,8 @@ public class SitemgmtController {
 		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
 		
 		ResultCode result = sitemgmtService.setProductAttributes(parameter);
+		cacheService.GetRedisCacheEvict("BodySizeVendors", null);
+		
 		results.setData(result);
 		results.setSuccess(true);
 		
@@ -642,22 +645,8 @@ public class SitemgmtController {
 	@RequestMapping(value = "setfeatureditem", method = RequestMethod.POST)
 	public void getFeaturedItem() {}
 	
-	/**
-	 *
-	 * delete featured item
-	 *
-	 * @since 2018. 11. 05.
-	 * @author Sanghyup Kim
-	 * @param 
-	 * @return 
-	 */
 	@RequestMapping(value = "delfeatureditem", method = RequestMethod.POST)
-	public JsonResponse<Integer> delFeaturedItem(@RequestBody DelFeaturedItemParameter parameters) {
-		ResultResponse<Integer> result = sitemgmtService.delFeaturedItem(parameters);
-		
-		JsonResponse<Integer> results = new JsonResponse<>(true, null, result.getData());
-		return results;
-	}
+	public void gelFeaturedItem() {}
 	
 	/**
 	 *
@@ -722,8 +711,20 @@ public class SitemgmtController {
 	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
 	public void getItems2() {}
 	
+	/**
+	 *
+	 * Get TrendReport Item
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Nayeon Kim
+	 * @param GetTrendReportItemParameter
+	 * @return GetTrendReportItemResponse
+	 */
 	@RequestMapping(value = "gettrendreportitem", method = RequestMethod.POST)
-	public void getTrendReportItem() {}
+	public JsonResponse<GetTrendReportItemResponse> getTrendReportItem(@RequestBody GetTrendReportItemParameter parameters) {
+		GetTrendReportItemResponse result = sitemgmtService.getTrendReportItem(parameters);
+		return new JsonResponse<GetTrendReportItemResponse>(true, null, result);
+	}
 	
 	/**
 	 *
@@ -825,6 +826,7 @@ public class SitemgmtController {
 		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
 		
 		ResultCode result = sitemgmtService.setProductAttributesMapping(parameter);
+		cacheService.GetRedisCacheEvict("BodySizeVendors", null);
 		results.setData(result);
 		results.setSuccess(true);
 		

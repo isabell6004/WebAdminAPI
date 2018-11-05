@@ -104,38 +104,38 @@ public class GetTodaydealParameter implements Serializable{
         }
         if (this.getCompanytypeid2() == true)
         {
-        	checkedCompanyNo.concat("1,");
+        	checkedCompanyNo = checkedCompanyNo.concat("1,");
         }
         if (this.getCompanytypeid3() == true)
         {
-        	checkedCompanyNo.concat("3,");
+        	checkedCompanyNo = checkedCompanyNo.concat("3,");
         }
         if (this.getCompanytypeid1() == true || this.getCompanytypeid2() == true || this.getCompanytypeid3() == true)
         {
-        	checkedCompanyNo = checkedCompanyNo.substring(checkedCompanyNo.length()-2, checkedCompanyNo.length()-1);
+        	checkedCompanyNo = checkedCompanyNo.substring(0, checkedCompanyNo.length()-1);
         }
 		
 		return checkedCompanyNo;
 	}
 	
-	public Date getFromdate() throws ParseException {
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy, hh:mm:ss a",Locale.US);
+	public Date getFromdate() {
 		SimpleDateFormat dt = new SimpleDateFormat("MM/d/yyyy, hh:mm:ss a",Locale.US);
-		if (StringUtils.isNotEmpty(this.fromdate) && !this.fromdate.equals("Invalid Date")) {
-			return dt.parse(this.fromdate);
+		try {
+			return (StringUtils.isNotEmpty(this.fromdate) && !this.fromdate.equals("Invalid Date")) ?dt.parse(this.fromdate) : null;
+		} catch (ParseException e) {
+			return null;
 		}
-		return null;
 	}
 	public void setFromdate(String fromdate) {
 		this.fromdate = fromdate;
 	}
-	public Date getTodate() throws ParseException {
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy, hh:mm:ss a",Locale.US);
+	public Date getTodate() {
 		SimpleDateFormat dt = new SimpleDateFormat("MM/d/yyyy, hh:mm:ss a",Locale.US);
-		if (StringUtils.isNotEmpty(this.todate) && !this.todate.equals("Invalid Date")) {
-			return dt.parse(this.todate);
+		try {
+			return (StringUtils.isNotEmpty(this.todate) && !this.todate.equals("Invalid Date")) ? dt.parse(this.todate) : null;
+		} catch (ParseException e) {
+			return null;
 		}
-		return null;
 	}
 	public void setTodate(String todate) {
 		this.todate = todate;
