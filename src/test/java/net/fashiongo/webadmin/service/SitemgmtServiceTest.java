@@ -38,6 +38,8 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
@@ -53,7 +55,9 @@ import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportItemResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
@@ -741,7 +745,22 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetTrendReport2() {
+		GetTrendReport2Parameter parameters = new GetTrendReport2Parameter();
+		parameters.setPagenum("1");
+		parameters.setPagesize("10");
+		parameters.setSearchtxt("");
+		parameters.setFromdate("9/1/2018 00:00:00");
+		parameters.setTodate("9/30/2018 23:59:59");
+		parameters.setOrderby("DateFrom");
+		parameters.setOrderbygubn("Desc");
+		parameters.setActive("true");
+		parameters.setCuratedType("1");
+		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
 
+		if (result != null) {
+			assertTrue(result.getTrendReportList().size() > 0);
+
+		}
 	}
 
 	/**
@@ -753,7 +772,15 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetTrendReportItem() {
+		GetTrendReportItemParameter parameters = new GetTrendReportItemParameter();
+		parameters.setPagenum("1");
+		parameters.setPagesize("10");
+		parameters.setTrendreportid("328");
+		GetTrendReportItemResponse result = sitemgmtService.getTrendReportItem(parameters);
 
+		if (result != null) {
+			assertTrue(result.getTrendReportItem().size() > 0);
+		}
 	}
 
 	/**
@@ -765,7 +792,8 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testSetTrendReportSort() {
-
+		ResultCode result = sitemgmtService.setTrendReportSort("<ROOT></ROOT>");
+		assertNotNull(result);
 	}
 
 	/**
