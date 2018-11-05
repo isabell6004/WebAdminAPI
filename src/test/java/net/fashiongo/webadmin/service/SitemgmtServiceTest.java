@@ -6,11 +6,13 @@ package net.fashiongo.webadmin.service;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
 
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import net.fashiongo.webadmin.model.pojo.CodeData;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
@@ -485,5 +489,44 @@ public class SitemgmtServiceTest {
 		
 		Integer _result = sitemgmtService.setNewTodayDeal(parameters);
 		assertNotNull(_result);
+	}
+	
+	/**
+	 * 
+	 * Test GetDMRequest
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetDMRequest() {
+		GetDMRequestParameter parameters = new GetDMRequestParameter();
+		parameters.setPagenum("1");
+		parameters.setPagesize("20");
+		parameters.setCompanytypecd("2,1,3");
+		parameters.setStatus("Requested");
+
+		GetDMRequestResponse result = sitemgmtService.getDMRequest(parameters);
+		if(!CollectionUtils.isEmpty(result.getDmList())) {
+			assertNotNull(result.getDmList().get(0).getCatalogID());
+		}
+	}
+	
+	/**
+	 * 
+	 * Test GetDMRequestSendList
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetDMRequestSendList() {
+		GetDMRequestSendListParameter parameters = new GetDMRequestSendListParameter();
+		parameters.setDmIds(Arrays.asList(92181,92178));
+		
+		JSONObject result = sitemgmtService.getDMRequestSendList(parameters);
+		if(!CollectionUtils.isEmpty(result)) {
+			assertTrue(result.get(92181) != null || result.get(92178) != null);
+		}
 	}
 }
