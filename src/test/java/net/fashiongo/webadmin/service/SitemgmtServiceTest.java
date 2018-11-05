@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 
 import org.junit.After;
@@ -29,6 +31,7 @@ import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.response.*;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * @author sanghyup
@@ -444,5 +447,43 @@ public class SitemgmtServiceTest {
 			assertNotNull(result.getVendorCategorySummaryList().get(0).getVendorCategoryID());
 		}
 	}
+	/**
+	 * 
+	 * Test SetTodayDealCalendar
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Ignore
+	@Test
+	public void testSetTodayDealCalendar() {
+		SetTodayDealCalendarParameter parameters = new SetTodayDealCalendarParameter();
+		parameters.setTodayDealID(17612);
+		parameters.setFromDate("11/7/2018");
+		parameters.setActive(false);
+		parameters.setNotes("Test delete Notes");
+		
+		ResultCode _result = sitemgmtService.setTodayDealCalendar(parameters);
+		assertNotNull(_result);
+	}
 	
+	/**
+	 * 
+	 * Test SetNewTodayDeal
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Ignore
+	@Test
+	public void testSetNewTodayDeal() {
+		SetNewTodayDealParameter parameters = new SetNewTodayDealParameter();
+		parameters.setProductID(8487416);
+		parameters.setFromDate("2018-11-07 00:00:00");
+		parameters.setToDate("2018-11-07 00:00:00");
+		parameters.setTodayDealPrice(BigDecimal.valueOf(25));
+		
+		Integer _result = sitemgmtService.setNewTodayDeal(parameters);
+		assertNotNull(_result);
+	}
 }
