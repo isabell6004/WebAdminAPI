@@ -571,4 +571,104 @@ public class SitemgmtServiceTest {
 		ResultCode result = sitemgmtService.setFGCatalog(parameters);
 		assertNotNull(result);
 	}
+	
+	/**
+     * 
+     * testGetPolicyManagement
+     * 
+     * @since 2018. 11. 6.
+     * @author Dahye
+     */
+	@Test
+	public void testGetPolicyManagement() {
+		
+	}
+
+	/**
+     * 
+     * testSetAddDelPolicyManagement
+     * 
+     * @since 2018. 11. 6.
+     * @author Dahye
+     */
+	@Test
+	@Ignore
+	public void testSetAddDelPolicyManagement() {
+		
+	}
+
+	/**
+     * 
+     * testGetPolicyDetail
+     * 
+     * @since 2018. 11. 6.
+     * @author Dahye
+     */
+	@Test
+	public void testGetPolicyDetail() {
+		
+	}
+
+	/**
+     * 
+     * testGetPolicyManagementDetail
+     * 
+     * @since 2018. 11. 6.
+     * @author Dahye
+     */
+	@Test
+	public void testGetPolicyManagementDetail() {
+		
+	}
+
+	/**
+     * 
+     * testGetCommunicationReasonAll
+     * 
+     * @since 2018. 11. 6.
+     * @author Dahye
+     */
+	@Test
+	public void testGetCommunicationReasonAll() {
+		
+	}
+
+	/**
+     * 
+     * testDeleteCommunicationReason
+     * 
+     * @since 2018. 11. 6.
+     * @author Dahye
+     */
+	@Test
+	@Ignore
+	public void testDeleteCommunicationReason() {
+		
+	}
+
+	/**
+     * 
+     * testSetCommunicationReasonActive
+     * 
+     * @since 2018. 11. 6.
+     * @author Dahye
+     */
+	@Test
+	@Ignore
+	public void testSetCommunicationReasonActive() {
+		
+	}
+
+	/**
+     * 
+     * testSetCommunicationReason
+     * 
+     * @since 2018. 11. 6.
+     * @author Dahye
+     */
+	@Test
+	@Ignore
+	public void testSetCommunicationReason() {
+		
+	}
 }
