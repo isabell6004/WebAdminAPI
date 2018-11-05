@@ -104,15 +104,15 @@ public class GetTodaydealParameter implements Serializable{
         }
         if (this.getCompanytypeid2() == true)
         {
-        	checkedCompanyNo.concat("1,");
+        	checkedCompanyNo = checkedCompanyNo.concat("1,");
         }
         if (this.getCompanytypeid3() == true)
         {
-        	checkedCompanyNo.concat("3,");
+        	checkedCompanyNo = checkedCompanyNo.concat("3,");
         }
         if (this.getCompanytypeid1() == true || this.getCompanytypeid2() == true || this.getCompanytypeid3() == true)
         {
-        	checkedCompanyNo = checkedCompanyNo.substring(checkedCompanyNo.length()-2, checkedCompanyNo.length()-1);
+        	checkedCompanyNo = checkedCompanyNo.substring(0, checkedCompanyNo.length()-1);
         }
 		
 		return checkedCompanyNo;
