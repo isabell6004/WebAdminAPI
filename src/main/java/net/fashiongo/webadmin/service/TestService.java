@@ -6,13 +6,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.fgem.EmApplicationRepository;
+import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
 import net.fashiongo.webadmin.model.pojo.Message;
 import net.fashiongo.webadmin.model.pojo.Total;
 import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
@@ -30,6 +33,9 @@ public class TestService extends ApiService{
 	
 	@Autowired
 	EmApplicationRepository emApplicationRepository;
+	
+	@Autowired
+	TrendReportRepository trendReportRepository;
 	
 	/**
 	 * 
@@ -122,5 +128,25 @@ public class TestService extends ApiService{
 		WebAdminLoginUser user =  Utility.getUserInfo();
 		System.out.println("user.getFullname() == " + user.getFullname());
 		return "testService -> getSession";
+	}
+	
+	@Transactional("primaryTransactionManager")
+	public TrendReport TransactionTest(List<Integer> ids) {
+//		TrendReport tr = this.trendReportRepository.findOneByTrendReportID(24);
+//		tr.setTitle("incheol");
+//		this.trendReportRepository.save(tr);
+//		tr = this.trendReportRepository.findOneByTrendReportID(24);
+		
+		List<TrendReport> list = this.trendReportRepository.findByTrendReportIDIn(ids);
+		for(TrendReport tr:list) {
+			tr.setTitle("incheol!!!!!");
+		}
+		TrendReport tr = this.trendReportRepository.findOneByTrendReportID(ids.get(0));
+		
+		this.trendReportRepository.deleteByTrendReportIDIn(ids);
+//		this.trendReportRepository.saveAll(list);
+		
+		
+		return tr;
 	}
 }
