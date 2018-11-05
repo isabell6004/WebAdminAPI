@@ -1,6 +1,12 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -13,8 +19,13 @@ public class GetTodayDealCalendarListParameter implements Serializable{
 	@ApiModelProperty(required = false, example="0")
 	private Integer wholesalerid;
 	
-	public String getSelectdate() {
-		return selectdate;
+	public Date getSelectdate(){
+		SimpleDateFormat dt = new SimpleDateFormat("MM/d/yyyy",Locale.US);
+		try {
+			return StringUtils.isNotEmpty(this.selectdate) ? dt.parse(this.selectdate) : null;
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 	public void setSelectdate(String selectdate) {
 		this.selectdate = selectdate;

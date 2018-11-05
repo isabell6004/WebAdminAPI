@@ -118,24 +118,24 @@ public class GetTodaydealParameter implements Serializable{
 		return checkedCompanyNo;
 	}
 	
-	public Date getFromdate() throws ParseException {
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy, hh:mm:ss a",Locale.US);
+	public Date getFromdate() {
 		SimpleDateFormat dt = new SimpleDateFormat("MM/d/yyyy, hh:mm:ss a",Locale.US);
-		if (StringUtils.isNotEmpty(this.fromdate) && !this.fromdate.equals("Invalid Date")) {
-			return dt.parse(this.fromdate);
+		try {
+			return (StringUtils.isNotEmpty(this.fromdate) && !this.fromdate.equals("Invalid Date")) ?dt.parse(this.fromdate) : null;
+		} catch (ParseException e) {
+			return null;
 		}
-		return null;
 	}
 	public void setFromdate(String fromdate) {
 		this.fromdate = fromdate;
 	}
-	public Date getTodate() throws ParseException {
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy, hh:mm:ss a",Locale.US);
+	public Date getTodate() {
 		SimpleDateFormat dt = new SimpleDateFormat("MM/d/yyyy, hh:mm:ss a",Locale.US);
-		if (StringUtils.isNotEmpty(this.todate) && !this.todate.equals("Invalid Date")) {
-			return dt.parse(this.todate);
+		try {
+			return (StringUtils.isNotEmpty(this.todate) && !this.todate.equals("Invalid Date")) ? dt.parse(this.todate) : null;
+		} catch (ParseException e) {
+			return null;
 		}
-		return null;
 	}
 	public void setTodate(String todate) {
 		this.todate = todate;
