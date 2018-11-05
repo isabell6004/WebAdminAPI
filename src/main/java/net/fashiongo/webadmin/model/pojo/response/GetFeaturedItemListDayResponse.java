@@ -4,17 +4,17 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.fashiongo.webadmin.model.pojo.FeaturedItem;
+import net.fashiongo.webadmin.model.pojo.FeaturedItemList;
 
 public class GetFeaturedItemListDayResponse {
 	@JsonProperty("Table")
-	private List<FeaturedItem> featuredItemlist;
+	private List<FeaturedItemList> featuredItemList;
 
-	public List<FeaturedItem> getFeaturedItemlist() {
-		return featuredItemlist;
+	public List<FeaturedItemList> getFeaturedItemList() {
+		return featuredItemList;
 	}
 
-	public void setFeaturedItemlist(List<FeaturedItem> featuredItemlist) {
-		this.featuredItemlist = featuredItemlist;
+	public void setFeaturedItemList(List<FeaturedItemList> featuredItemList) {
+		this.featuredItemList = featuredItemList;
 	}
 }

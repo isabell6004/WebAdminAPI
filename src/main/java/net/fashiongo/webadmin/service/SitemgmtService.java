@@ -53,7 +53,7 @@ import net.fashiongo.webadmin.model.pojo.ColorListInfo;
 import net.fashiongo.webadmin.model.pojo.DMRequest;
 import net.fashiongo.webadmin.model.pojo.DMRequestDetail;
 import net.fashiongo.webadmin.model.pojo.FabricInfo;
-import net.fashiongo.webadmin.model.pojo.FeaturedItem;
+import net.fashiongo.webadmin.model.pojo.FeaturedItemList;
 import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
 import net.fashiongo.webadmin.model.pojo.FeaturedVendorDaily;
 import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
@@ -782,9 +782,9 @@ public class SitemgmtService extends ApiService {
 		
 		params.add(sDate);
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItem.class);
-		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
-		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItemList.class);
+		result.setFeaturedItemCount((List<FeaturedItemCount>) _result.get(0));
+		result.setFeaturedItemList((List<FeaturedItemList>) _result.get(1));
 		return result;
 	}
 	
@@ -805,8 +805,8 @@ public class SitemgmtService extends ApiService {
 		
 		params.add(sDate);
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItem.class);
-		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(0));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemList.class);
+		result.setFeaturedItemList((List<FeaturedItemList>) _result.get(0));
 		return result;
 	}
 	
