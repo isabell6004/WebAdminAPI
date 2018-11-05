@@ -37,6 +37,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParamete
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
@@ -74,6 +75,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportItemResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
@@ -707,8 +709,20 @@ public class SitemgmtController {
 	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
 	public void getItems2() {}
 	
+	/**
+	 *
+	 * Get TrendReport Item
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Nayeon Kim
+	 * @param GetTrendReportItemParameter
+	 * @return GetTrendReportItemResponse
+	 */
 	@RequestMapping(value = "gettrendreportitem", method = RequestMethod.POST)
-	public void getTrendReportItem() {}
+	public JsonResponse<GetTrendReportItemResponse> getTrendReportItem(@RequestBody GetTrendReportItemParameter parameters) {
+		GetTrendReportItemResponse result = sitemgmtService.getTrendReportItem(parameters);
+		return new JsonResponse<GetTrendReportItemResponse>(true, null, result);
+	}
 	
 	/**
 	 *
