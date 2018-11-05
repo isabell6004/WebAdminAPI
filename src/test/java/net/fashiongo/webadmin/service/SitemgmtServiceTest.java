@@ -380,7 +380,8 @@ public class SitemgmtServiceTest {
 	
 	/**
 	 * 
-	 * Description Example
+	 * Test GetTodayDealCalendarList
+	 * 
 	 * @since 2018. 11. 5.
 	 * @author Incheol Jung
 	 */
@@ -392,9 +393,56 @@ public class SitemgmtServiceTest {
 		
 		GetTodayDealCalendarListResponse result = sitemgmtService.getTodayDealCalendarList(parameters);
 		if(!CollectionUtils.isEmpty(result.getInactiveTodayDeals())) {
-			for(InactiveTodayDealDetail detail : result.getInactiveTodayDeals()) {
-				assertNotNull(detail.getTodayDealID());
-			}
+			assertNotNull(result.getInactiveTodayDeals().get(0).getTodayDealID());
 		}
 	}
+	
+	
+	/**
+	 * 
+	 * Test GetTrendReportCategory
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetTrendReportCategory() {
+		GetTrendReportCategoryResponse result = sitemgmtService.getTrendReportCategory();
+		assertTrue(result.getCategoryList().size() > 0);
+	}
+	
+	/**
+	 * 
+	 * Test GetTodayDealCalendar
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetTodayDealCalendar() {
+		GetTodayDealCanlendarParameter parameters = new GetTodayDealCanlendarParameter();
+		parameters.setFromdate("2018-11-1");
+		parameters.setTodate("2018-11-30");
+		
+		GetTodayDealCalendarResponse result = sitemgmtService.getTodayDealCalendar(parameters);
+		if(!CollectionUtils.isEmpty(result.getCalendarDetails())) {
+			assertNotNull(result.getCalendarDetails().get(0).getTodayDealID());
+		}
+	}
+	
+	/**
+	 * 
+	 * Test GetVendorCategory
+	 * 
+	 * @since 2018. 11. 5.
+	 * @author Incheol Jung
+	 */
+	@Test 
+	public void testGetVendorCategory() {
+		GetVendorCategoryResponse result = sitemgmtService.getVendorCategory(2858);
+		if(!CollectionUtils.isEmpty(result.getVendorCategorySummaryList())) {
+			assertNotNull(result.getVendorCategorySummaryList().get(0).getVendorCategoryID());
+		}
+	}
+	
 }
