@@ -487,7 +487,7 @@ public class PhotoStudioService extends ApiService {
 		
 		params.add(queryParam.getModelName());
 		params.add(queryParam.getNoteLeft());
-		params.add(queryParam.getStatusID());
+		params.add(queryParam.getActive());
 		
 		String dType = queryParam.getDtype();
 		Date df = queryParam.getDf();

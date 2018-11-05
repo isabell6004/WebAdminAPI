@@ -449,25 +449,6 @@ public class PhotoOrder implements IPersistent, Serializable {
 	}
 
 	@JsonIgnore
-	@Column(name = "CreatedOn", updatable = false)
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime createdOnDate;
-	public LocalDateTime getCreatedOnDate() {
-		return createdOnDate;
-	}
-
-	public void setCreatedOnDate(LocalDateTime createdOnDate) {
-		this.createdOnDate = createdOnDate;
-	}
-
-	@JsonIgnore
-	@Transient
-	private String createdOn;
-	public String getCreatedOn() {
-		return createdOnDate != null ? createdOnDate.toString() : null;
-	}
-
-	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 	public String getCreatedBy() {

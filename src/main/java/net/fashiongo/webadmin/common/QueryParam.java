@@ -924,14 +924,6 @@ private static final long serialVersionUID = 1L;
 		this.noteLeft = noteLeft;
 	}
 	
-	private Integer statusID;
-	public Integer getStatusID() {
-		return statusID;
-	}
-	public void setStatusID(Integer statusID) {
-		this.statusID = statusID;
-	}
-
 	private String modelType;
 	public String getModelType() {
 		return modelType;

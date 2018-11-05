@@ -397,4 +397,15 @@ public class PhotoModel implements IPersistent, Serializable {
 	public void setIsToday(Integer isToday) {
 		this.isToday = isToday;
 	}
+	
+	@Transient
+	@Column(name = "status")
+	private String status;
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
