@@ -28,6 +28,7 @@ import net.fashiongo.webadmin.dao.primary.CodeLengthRepository;
 import net.fashiongo.webadmin.dao.primary.CodePatternRepository;
 import net.fashiongo.webadmin.dao.primary.CodeStyleRepository;
 import net.fashiongo.webadmin.dao.primary.CommunicationReasonRepository;
+import net.fashiongo.webadmin.dao.primary.FeaturedItemRepository;
 import net.fashiongo.webadmin.dao.primary.MapFabricCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapLengthCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapPatternCategoryRepository;
@@ -82,6 +83,7 @@ import net.fashiongo.webadmin.model.pojo.VendorCount;
 import net.fashiongo.webadmin.model.pojo.VendorData1;
 import net.fashiongo.webadmin.model.pojo.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
+import net.fashiongo.webadmin.model.pojo.parameter.DelFeaturedItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
@@ -211,7 +213,10 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private MapFabricCategoryRepository mapFabricCategoryRepository;
-	
+
+	@Autowired
+	private FeaturedItemRepository featuredItemRepository;
+
 	/**
 	 *
 	 * Get Category List
@@ -1796,4 +1801,24 @@ public class SitemgmtService extends ApiService {
 		result.setSuccess(true);
 		return result;
 	}
+	
+
+	/**
+	 *
+	 * delete Featured Item
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Sanghyup Kim
+	 * @param 
+	 * @return 
+	 */
+	public ResultResponse<Integer> delFeaturedItem(DelFeaturedItemParameter parameters) {
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
+
+		Integer id = parameters.getFeaturedItemID();
+		featuredItemRepository.deleteById(id);
+		result.setResultWrapper(true, 1, id, MSG_DELETE_SUCCESS, id);
+		return result;		
+	}
+
 }
