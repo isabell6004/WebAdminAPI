@@ -4,6 +4,7 @@
 package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -30,25 +31,35 @@ import net.fashiongo.webadmin.model.pojo.CodeData;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
+import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -58,6 +69,8 @@ import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import net.fashiongo.webadmin.model.primary.CommunicationReason;
+import net.fashiongo.webadmin.model.primary.Policy;
 
 /**
  * @author sanghyup
@@ -581,7 +594,12 @@ public class SitemgmtServiceTest {
      */
 	@Test
 	public void testGetPolicyManagement() {
-		
+		PageSizeParameter param = new PageSizeParameter();
+		param.setPageNum(1);
+		param.setPageSize(10);
+		GetPolicyManagementResponse result = sitemgmtService.getPolicyManagement(param);
+		assertTrue(result.getVpolicyList().size() > 0);
+		assertTrue(result.getRecCnt() == result.getVpolicyList().size());
 	}
 
 	/**
@@ -594,7 +612,17 @@ public class SitemgmtServiceTest {
 	@Test
 	@Ignore
 	public void testSetAddDelPolicyManagement() {
-		
+		String type = "Upd";
+		Policy objPolicy = new Policy();
+		objPolicy.setPolicyID(6);
+		objPolicy.setPolicyTitle("FG Pay Implementaion Schedule");
+		objPolicy.setPolicyContents("Dear valued FashionGo vendors, <p><br>\\n\\n\\nPlease note that with the implementation of FG Pay on February 1st, 2018, any new orders placed ON OR AFTER February 1st, 2018 will NOT store any credit card information. Orders placed BEFORE February 1st, 2018 will have credit card information stored until February 28th, 2018. <p><br>\\n\\n\\nIf you have not yet received any information about the new payment gateway or if you have any questions about how FG Pay can improve your order processing, please be sure to contact the FashionGo team at marketing@fashiongo.net or at 213 745 2667. Our representatives would be more than happy to advise you!<p><br>\\n\\n\\nSincerely,<p><br>\\n\\n\\n-FashionGo Team-\\n\\n");
+		objPolicy.setEffectiveOn("1/30/2018");
+		objPolicy.setForVendor(true);
+		objPolicy.setForRetailer(false);
+		objPolicy.setActive(false);
+		ResultCode result = new ResultCode();
+		assertTrue(result.getSuccess());
 	}
 
 	/**
@@ -606,7 +634,14 @@ public class SitemgmtServiceTest {
      */
 	@Test
 	public void testGetPolicyDetail() {
+		GetPolicyDetailParameter param = new GetPolicyDetailParameter();
+		param.setPageNum(1);
+		param.setPageSize(10);
+		param.setSearchItem("CompanyName");
+		param.setPolicyID(6);
 		
+		GetPolicyDetailResponse result = sitemgmtService.getPolicyDetail(param);
+		assertTrue(result.getPolicyDetail().size() > 0);
 	}
 
 	/**
@@ -618,7 +653,10 @@ public class SitemgmtServiceTest {
      */
 	@Test
 	public void testGetPolicyManagementDetail() {
-		
+		GetPolicyManagementDetailParameter param = new GetPolicyManagementDetailParameter();
+		param.setPolicyID(6);
+		GetPolicyManagementDetailResponse result = sitemgmtService.getPolicyManagementDetail(param);
+		assertNotNull(result.getPolicy());
 	}
 
 	/**
@@ -630,7 +668,8 @@ public class SitemgmtServiceTest {
      */
 	@Test
 	public void testGetCommunicationReasonAll() {
-		
+		List<CommunicationReason> result = sitemgmtService.getCommunicationReasonAll();
+		assertTrue(result.size() > 0);
 	}
 
 	/**
@@ -643,7 +682,10 @@ public class SitemgmtServiceTest {
 	@Test
 	@Ignore
 	public void testDeleteCommunicationReason() {
-		
+		DeleteCommunicationReasonParameter param = new DeleteCommunicationReasonParameter();
+		param.setReasonIDs("45");
+		DeleteCommunicationReasonResponse result = sitemgmtService.deleteCommunicationReason(param);
+		assertNotNull(result.getResult().get(0));
 	}
 
 	/**
@@ -656,7 +698,11 @@ public class SitemgmtServiceTest {
 	@Test
 	@Ignore
 	public void testSetCommunicationReasonActive() {
-		
+		SetCommunicationReasonActiveParameter param = new SetCommunicationReasonActiveParameter();
+		param.setActive(true);
+		param.setReasonID(45);
+		Integer result = sitemgmtService.setCommunicationReasonActive(param);
+		assertSame(result, 1);
 	}
 
 	/**
@@ -669,6 +715,12 @@ public class SitemgmtServiceTest {
 	@Test
 	@Ignore
 	public void testSetCommunicationReason() {
-		
+		SetCommunicationReasonParameter param = new SetCommunicationReasonParameter();
+		param.setReasonID(0);
+		param.setParentID("41");
+		param.setReason("test1111");
+		param.setActive(true);
+		Integer result = sitemgmtService.setCommunicationReason(param);
+		assertSame(result, 1);
 	}
 }
