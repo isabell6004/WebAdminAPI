@@ -48,6 +48,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetFeaturedItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
@@ -644,8 +645,21 @@ public class SitemgmtController {
 		return results;
 	}
 	
+	/**
+	 * 
+	 * Set FeaturedItem
+	 * 
+	 * @since 2018. 11. 1.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
 	@RequestMapping(value = "setfeatureditem", method = RequestMethod.POST)
-	public void getFeaturedItem() {}
+	public JsonResponse<String> setFeaturedItem(@RequestBody SetFeaturedItemParameter parameters) {
+		ResultCode _result = sitemgmtService.setFeaturedItem(parameters);
+		
+		return new JsonResponse<String>(_result.getSuccess(), _result.getResultMsg(), _result.getResultCode(), null);
+	}
 	
 	/**
 	 *
