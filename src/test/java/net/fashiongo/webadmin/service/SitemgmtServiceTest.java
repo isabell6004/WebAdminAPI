@@ -36,6 +36,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListPara
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
@@ -55,6 +56,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
@@ -718,7 +720,11 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetFeaturedItemCount() {
+		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
 
+		if (!CollectionUtils.isEmpty(result.getFeaturedItemList())) {
+			assertNotNull(result.getFeaturedItemList().get(0).getFeaturedItemID());
+		}
 	}
 
 	/**
@@ -745,7 +751,14 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetProductDetail() {
+		GetProductDetailParameter parameters = new GetProductDetailParameter();
+		parameters.setProductID("9213809");
+		parameters.setTrendReportID("0");
+		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
 
+		if (!CollectionUtils.isEmpty(result.getProductInfolist())) {
+			assertNotNull(result.getProductInfolist().get(0).getProductID());
+		}
 	}
 
 	/**
