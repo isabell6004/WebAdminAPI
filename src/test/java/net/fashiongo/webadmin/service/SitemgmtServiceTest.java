@@ -33,16 +33,20 @@ import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
@@ -54,17 +58,22 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
 import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetTrendReportItemResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
@@ -561,7 +570,7 @@ public class SitemgmtServiceTest {
 		
 		JSONObject result = sitemgmtService.getDMRequestSendList(parameters);
 		if(!CollectionUtils.isEmpty(result)) {
-			assertTrue(result.get(92181) != null || result.get(92178) != null);
+			assertTrue(result.get("92181") != null || result.get("92178") != null);
 		}
 	}
 	
@@ -722,5 +731,181 @@ public class SitemgmtServiceTest {
 		param.setActive(true);
 		Integer result = sitemgmtService.setCommunicationReason(param);
 		assertSame(result, 1);
+	}
+	
+	/**
+	 *
+	 * Test GetCategoryVendorList
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetCategoryVendorList() {
+		GetCategoryVendorListParameter parameters = new GetCategoryVendorListParameter();
+		parameters.setCategoryid("");
+		parameters.setVendorname("entro");
+		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
+		if (result != null) {
+			assertTrue(result.getCategoryVendorList().size() > 0);
+		}
+	}
+
+	/**
+	 *
+	 * Test GetProductAttributesTotal
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetProductAttributesTotal() {
+
+	}
+
+	/**
+	 *
+	 * Test GetFeaturedItemCount
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetFeaturedItemCount() {
+		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
+
+		if (!CollectionUtils.isEmpty(result.getFeaturedItemList())) {
+			assertNotNull(result.getFeaturedItemList().get(0).getFeaturedItemID());
+		}
+	}
+
+	/**
+	 *
+	 * Test GetFeaturedItemListDay
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetFeaturedItemListDay() {
+		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
+		if (result != null) {
+			assertTrue(result.getFeaturedItemList().size() > 0);
+		}
+	}
+
+	/**
+	 *
+	 * Test GetProductDetail
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetProductDetail() {
+		GetProductDetailParameter parameters = new GetProductDetailParameter();
+		parameters.setProductID("9213809");
+		parameters.setTrendReportID("0");
+		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
+
+		if (!CollectionUtils.isEmpty(result.getProductInfolist())) {
+			assertNotNull(result.getProductInfolist().get(0).getProductID());
+		}
+	}
+
+	/**
+	 *
+	 * Test GetTrendReport2
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetTrendReport2() {
+		GetTrendReport2Parameter parameters = new GetTrendReport2Parameter();
+		parameters.setPagenum("1");
+		parameters.setPagesize("10");
+		parameters.setSearchtxt("");
+		parameters.setFromdate("9/1/2018 00:00:00");
+		parameters.setTodate("9/30/2018 23:59:59");
+		parameters.setOrderby("DateFrom");
+		parameters.setOrderbygubn("Desc");
+		parameters.setActive("true");
+		parameters.setCuratedType("1");
+		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
+
+		if (result != null) {
+			assertTrue(result.getTrendReportList().size() > 0);
+
+		}
+	}
+
+	/**
+	 *
+	 * Test GetTrendReportItem
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetTrendReportItem() {
+		GetTrendReportItemParameter parameters = new GetTrendReportItemParameter();
+		parameters.setPagenum("1");
+		parameters.setPagesize("10");
+		parameters.setTrendreportid("328");
+		GetTrendReportItemResponse result = sitemgmtService.getTrendReportItem(parameters);
+
+		if (result != null) {
+			assertTrue(result.getTrendReportItem().size() > 0);
+		}
+	}
+
+	/**
+	 *
+	 * Test SetTrendReportSort
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testSetTrendReportSort() {
+		ResultCode result = sitemgmtService.setTrendReportSort("<ROOT></ROOT>");
+		assertNotNull(result);
+	}
+
+	/**
+	 *
+	 * Test GetLastKMMData
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testGetLastKMMData() {
+
+	}
+
+	/**
+	 *
+	 * Test SetCategory
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testSetCategory() {
+
+	}
+
+	/**
+	 *
+	 * Test SetCategoryListOrder
+	 *
+	 * @since 2018. 11. 6.
+	 * @author Nayeon Kim
+	 */
+	@Test
+	public void testSetCategoryListOrder() {
+
 	}
 }

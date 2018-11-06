@@ -108,6 +108,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetFeaturedItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
@@ -145,6 +146,7 @@ import net.fashiongo.webadmin.model.primary.CodePattern;
 import net.fashiongo.webadmin.model.primary.CodeStyle;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
+import net.fashiongo.webadmin.model.primary.FeaturedItem;
 import net.fashiongo.webadmin.model.primary.MapFabricCategory;
 import net.fashiongo.webadmin.model.primary.MapLengthCategory;
 import net.fashiongo.webadmin.model.primary.MapPatternCategory;
@@ -1500,7 +1502,48 @@ public class SitemgmtService extends ApiService {
 		result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
 		result.setSelectData((List<SelectData>) _result.get(1));
 		return result;
-	}	
+	}
+	
+	/**
+	 * 
+	 * Set FeaturedItem
+	 * 
+	 * @since 2018. 11. 1.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode setFeaturedItem(SetFeaturedItemParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, "Save Failed!");
+		
+		FeaturedItem featuredItem = new FeaturedItem();
+		
+		featuredItem.setWholeSalerID(parameters.getWholeSalerID());
+		featuredItem.setFeaturedItemDate(parameters.getFromDate());
+		featuredItem.setWholeSalerName(parameters.getCompanyName());
+		featuredItem.setCreatedBy(Utility.getUsername());
+		featuredItem.setCreatedOn(LocalDateTime.now());
+		
+		if (parameters.getSetType().equals("BestAdd")) {
+			featuredItem.setBestItemUse(1);
+			featuredItemRepository.save(featuredItem);
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("Saved Successfully!");
+		} else if (parameters.getSetType().equals("Add")) {
+			featuredItem.setBestItemUse(0);
+			featuredItem.setProductID(parameters.getProductID());
+			featuredItem.setProductName(parameters.getProductName());
+			featuredItemRepository.save(featuredItem);
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("Saved Successfully!");
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * 
 	 * Get DMRequest
