@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author Reo
+ *
+ */
 public class SecurityUserManager {
 	@JsonProperty("data")
 	private List<SecurityUserData> securityUserDataList;
