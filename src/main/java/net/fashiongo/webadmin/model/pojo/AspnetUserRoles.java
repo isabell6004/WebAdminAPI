@@ -4,6 +4,11 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 
+/**
+ * 
+ * @author Reo
+ *
+ */
 public class AspnetUserRoles {
 	@Column(name = "TotalCount")
 	private Integer totalCount;

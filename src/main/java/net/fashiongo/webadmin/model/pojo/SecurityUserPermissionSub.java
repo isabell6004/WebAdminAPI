@@ -1,5 +1,10 @@
 package net.fashiongo.webadmin.model.pojo;
 
+/**
+ * 
+ * @author Reo
+ *
+ */
 public class SecurityUserPermissionSub {
 	private Boolean a;
 	private Boolean d;

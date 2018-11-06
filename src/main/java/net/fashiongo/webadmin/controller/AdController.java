@@ -20,6 +20,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SaveCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryAdItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SpotIDParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdCalendarResponse;
@@ -275,6 +276,28 @@ public class AdController {
 	public JsonResponse<String> SaveCategoryAdItemForBidVendor(@RequestBody SaveCategoryAdItemForBidVendorParameter parameters) {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result = adService.SaveCategoryAdItemForBidVendor(parameters);
+
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
+	}
+	
+	
+	/**
+	 * 
+	 * Set Category Ad Item
+	 * 
+	 * @since 2018. 11. 01.
+	 * @author Jiwon Kim
+	 * @param SetCategoryAdItemParameter
+	 * @return SetCategoryAdItem
+	 */
+	@RequestMapping(value = "setcategoryaditem", method = RequestMethod.POST)
+	public JsonResponse<String> SetCategoryAdItem(@RequestBody SetCategoryAdItemParameter parameters) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = adService.SetCategoryAdItem(parameters);
 
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());

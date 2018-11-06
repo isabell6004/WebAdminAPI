@@ -27,10 +27,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.webadmin.model.fgem.EmConfiguration;
+import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.CodeData;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
@@ -45,6 +48,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParam
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
@@ -53,6 +57,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveP
 import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
@@ -67,6 +72,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -80,6 +86,7 @@ import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorder
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
 import net.fashiongo.webadmin.model.primary.Policy;
+import net.fashiongo.webadmin.model.primary.TrendReport;
 
 /**
  * @author sanghyup
@@ -286,8 +293,41 @@ public class SitemgmtServiceTest {
 	 * @since 2018. 10. 22.
 	 * @author Nayeon Kim
 	 */
+	@Ignore
 	@Test
 	public void testSetPaidCampaign() {
+		SetPaidCampaignParameter parameters = new SetPaidCampaignParameter();
+		List<EmConfiguration> emConfigurationList = new ArrayList<EmConfiguration>();
+		EmConfiguration emConfiguration = new EmConfiguration();
+
+		emConfiguration.setConfigID(3);
+		emConfiguration.setConfigType("Reservation Cancellation Fee");
+		emConfiguration.setConfigValue("110");
+		emConfigurationList.add(emConfiguration);
+
+		emConfiguration.setConfigID(4);
+		emConfiguration.setConfigType("Campaign Schedule Time");
+		emConfiguration.setConfigValue("08:00:00");
+		emConfigurationList.add(emConfiguration);
+
+		emConfiguration.setConfigID(5);
+		emConfiguration.setConfigType("Email Unit Price");
+		emConfiguration.setConfigValue("0.2");
+		emConfigurationList.add(emConfiguration);
+
+		emConfiguration.setConfigID(6);
+		emConfiguration.setConfigType("MinimumSendingFee");
+		emConfiguration.setConfigValue("100.00");
+		emConfigurationList.add(emConfiguration);
+
+		emConfiguration.setConfigID(7);
+		emConfiguration.setConfigType("Reservation Cancellation Fee Percent");
+		emConfiguration.setConfigValue("50");
+		emConfigurationList.add(emConfiguration);
+
+		parameters.setObjList(emConfigurationList);
+		ResultCode result = sitemgmtService.setPaidCampaign(parameters);
+		assertTrue(result.getSuccess());
 	}
 	
 	/**
@@ -651,6 +691,9 @@ public class SitemgmtServiceTest {
 		
 		GetPolicyDetailResponse result = sitemgmtService.getPolicyDetail(param);
 		assertTrue(result.getPolicyDetail().size() > 0);
+		param.setSearchTxt("love");
+		result = sitemgmtService.getPolicyDetail(param);
+		assertTrue(result.getPolicyDetail().size() > 0);
 	}
 
 	/**
@@ -746,9 +789,7 @@ public class SitemgmtServiceTest {
 		parameters.setCategoryid("");
 		parameters.setVendorname("entro");
 		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
-		if (result != null) {
-			assertTrue(result.getCategoryVendorList().size() > 0);
-		}
+		assertTrue(result.getCategoryVendorList().size() > 0);
 	}
 
 	/**
@@ -760,7 +801,13 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetProductAttributesTotal() {
-
+		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
+		assertTrue(result.getPatternInfolist().size() > 0);
+		assertTrue(result.getLengthInfolist().size() > 0);
+		assertTrue(result.getStyleInfolist().size() > 0);
+		assertTrue(result.getFabricInfolist().size() > 0);
+		assertTrue(result.getBodySizeInfolist().size() > 0);
+		assertTrue(result.getColorListInfolist().size() > 0);
 	}
 
 	/**
@@ -773,7 +820,6 @@ public class SitemgmtServiceTest {
 	@Test
 	public void testGetFeaturedItemCount() {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
-
 		if (!CollectionUtils.isEmpty(result.getFeaturedItemList())) {
 			assertNotNull(result.getFeaturedItemList().get(0).getFeaturedItemID());
 		}
@@ -789,9 +835,7 @@ public class SitemgmtServiceTest {
 	@Test
 	public void testGetFeaturedItemListDay() {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
-		if (result != null) {
-			assertTrue(result.getFeaturedItemList().size() > 0);
-		}
+		assertNotNull(result.getFeaturedItemList());
 	}
 
 	/**
@@ -807,7 +851,6 @@ public class SitemgmtServiceTest {
 		parameters.setProductID("9213809");
 		parameters.setTrendReportID("0");
 		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
-
 		if (!CollectionUtils.isEmpty(result.getProductInfolist())) {
 			assertNotNull(result.getProductInfolist().get(0).getProductID());
 		}
@@ -833,11 +876,7 @@ public class SitemgmtServiceTest {
 		parameters.setActive("true");
 		parameters.setCuratedType("1");
 		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
-
-		if (result != null) {
-			assertTrue(result.getTrendReportList().size() > 0);
-
-		}
+		assertTrue(result.getTrendReportList().size() > 0);
 	}
 
 	/**
@@ -854,10 +893,7 @@ public class SitemgmtServiceTest {
 		parameters.setPagesize("10");
 		parameters.setTrendreportid("328");
 		GetTrendReportItemResponse result = sitemgmtService.getTrendReportItem(parameters);
-
-		if (result != null) {
-			assertTrue(result.getTrendReportItem().size() > 0);
-		}
+		assertTrue(result.getTrendReportItem().size() > 0);
 	}
 
 	/**
@@ -882,7 +918,14 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetLastKMMData() {
-
+		TrendReportKmmImage result = new TrendReportKmmImage();
+		TrendReport trendReport = new TrendReport();
+		trendReport.setSquareImage("KMM_SquareImage.jpg");
+		trendReport.setImage("KMM_WideImage.png");
+		trendReport.setMiniImage("KMM_MiniImage.png");
+		trendReport.setkMMImage1("KMM_homecoming.jpg");
+		trendReport.setkMMImage2("Unique vintage.png");
+		assertNotNull(result);
 	}
 
 	/**
@@ -904,8 +947,15 @@ public class SitemgmtServiceTest {
 	 * @since 2018. 11. 6.
 	 * @author Nayeon Kim
 	 */
+    @Ignore
 	@Test
 	public void testSetCategoryListOrder() {
-
+		SetCategoryListOrderParameter parameters = new SetCategoryListOrderParameter();
+		parameters.setCategoryid(386);
+		parameters.setParentcategoryid(99);
+		parameters.setListorder(101);
+		parameters.setLvl(3);
+		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
+		assertNotNull(result);
 	}
 }

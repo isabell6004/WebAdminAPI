@@ -2,13 +2,10 @@ package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.util.List;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import net.fashiongo.webadmin.model.pojo.CodeData;
-import net.fashiongo.webadmin.model.primary.CodeFabric;
-import net.fashiongo.webadmin.model.primary.CodeLength;
-import net.fashiongo.webadmin.model.primary.CodePattern;
-import net.fashiongo.webadmin.model.primary.CodeStyle;
 
 /**
  * 
@@ -67,11 +64,11 @@ public class SetProductAttributesParameter {
 	}
 
 	public Boolean getActive() {
-		return active;
+		return Boolean.TRUE.equals(active) ? true : false;
 	}
 
 	public void setActive(Boolean active) {
-		this.active = active;
+		this.active = Boolean.TRUE.equals(active) ? true : false;
 	}
 
 	public List<CodeData> getCodeDataList() {

@@ -570,13 +570,14 @@ public class SecurityGroupService extends ApiService {
 			
 			Integer userID = userData.getId() != null ? (userData.getId() > 0 ? userData.getId() : 0) : 0;
 			if (userID <= 0) {
+				//Call FG Service
 				String uri = "/membership/createMembership";
 				ObjectMapper mapper = new ObjectMapper();
 				JsonResponse<?> ret = httpClient.postObject(uri, mapper.writeValueAsString(userData));
 				
 				if (ret.isSuccess()) {
 					String guid = null;
-					String userByNameSpName = "aspnet_Membership_GetUserByName";
+					String userByNameSpName = "aspnet_Membership_GetUserByName";  //check membership user
 					
 					List<Object> userByNameParams = new ArrayList<Object>();
 					userByNameParams.add(appName);
@@ -589,7 +590,7 @@ public class SecurityGroupService extends ApiService {
 						userByNameSuccess = false;
 					} else {
 						guid = userByNameRes.getUserId();
-						String userRoleSpName = "aspnet_UsersInRoles_AddUsersToRoles";
+						String userRoleSpName = "aspnet_UsersInRoles_AddUsersToRoles";  //add aspnet user roles
 						
 						List<Object> userRoleParams = new ArrayList<Object>();
 						userRoleParams.add(appName);
@@ -617,7 +618,7 @@ public class SecurityGroupService extends ApiService {
 					userByNameSuccess = false;
 				}
 			} else {
-				String userByNameSpName = "aspnet_Membership_GetUserByName";
+				String userByNameSpName = "aspnet_Membership_GetUserByName";  //check membership user
 				
 				List<Object> userByNameParams = new ArrayList<Object>();
 				userByNameParams.add(appName);
@@ -632,7 +633,7 @@ public class SecurityGroupService extends ApiService {
 				su.setModifiedOn(now);
 			}
 			if (userByNameRes.getUserId() != null) {
-				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";
+				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";  //update membership user
 				
 				List<Object> membershipParams = new ArrayList<Object>();
 				membershipParams.add(appName);
@@ -785,8 +786,10 @@ public class SecurityGroupService extends ApiService {
 	 */
 	private ResultCode setSaveSecurityPermission(Integer userID, List<SecurityUserPermission> permissionList) {
 		ResultCode result = new ResultCode(false, 0, null);
+		//permission delete
     	securityPermissionRepository.deleteByUserID(userID);
     	
+    	//permission insert
     	List<SecurityPermission> securityPermissionList = new ArrayList<SecurityPermission>();
     	for(SecurityUserPermission sup: permissionList) {
     		for(SecurityUserPermissionSub sups: sup.getSub()) {
@@ -834,21 +837,21 @@ public class SecurityGroupService extends ApiService {
 		
 		Integer userID = userData.getId() != null ? (userData.getId() > 0 ? userData.getId() : 0) : 0;
 		Integer userPK = 0;
-		//Save AspnetMembership
+		//1) Save AspnetMembership
 		resultMembership = this.setSaveAspnetMembership(userData);
 		if (resultMembership.getSuccess()) {
 			userID = resultMembership.getUserID();
-			//Save SecurityGroup
+			//2) Save SecurityGroup
 			resultSecurityGroup = this.setSaveSecurityGroup(userID, groupNameList, delGroupNameList);
 			
 			if (resultSecurityGroup.getSuccess()) {
-				//Save SecurityLoginControl
+				//3) Save SecurityLoginControl
 			    resultLoginControl = this.setSaveSecurityLoginControl(userID, delAccesstimeList, accesstimeList);
 			}
 		     
 			userPK = userID;    
 		    if(resultLoginControl.getSuccess()) {
-		    	if(permissionList == null || permissionList.isEmpty()) {
+		    	if(CollectionUtils.isEmpty(permissionList)) {
 		    		userID = 0;
 		    	} else {
 		    		if (userID == 0) {
@@ -856,8 +859,8 @@ public class SecurityGroupService extends ApiService {
 		    		}
 		    	}
 		    	
-		    	if (userID != 0 && permissionList != null) {
-		    		//Save SecurityPermission
+		    	if (!userID.equals(0) && !CollectionUtils.isEmpty(permissionList)) {
+		    		//4) Save SecurityPermission
 		    		resultPermission = this.setSaveSecurityPermission(userID, permissionList);
 		    	}
 		    } else {

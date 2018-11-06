@@ -2,6 +2,11 @@ package net.fashiongo.webadmin.model.pojo;
 
 import java.util.List;
 
+/**
+ * 
+ * @author Reo
+ *
+ */
 public class SecurityUserPermission {
 	private Boolean a;
 	private Boolean d;

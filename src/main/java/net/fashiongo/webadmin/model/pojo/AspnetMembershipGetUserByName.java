@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author Reo
+ *
+ */
 public class AspnetMembershipGetUserByName {
 	@JsonProperty("Email")
 	private String Email;
