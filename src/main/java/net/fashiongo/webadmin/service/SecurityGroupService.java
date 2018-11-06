@@ -568,7 +568,7 @@ public class SecurityGroupService extends ApiService {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 			LocalDateTime now = LocalDateTime.now();
 			
-			Integer userID = userData.getID() != null ? (userData.getID() > 0 ? userData.getID() : 0) : 0;
+			Integer userID = userData.getId() != null ? (userData.getId() > 0 ? userData.getId() : 0) : 0;
 			if (userID <= 0) {
 				String uri = "/membership/createMembership";
 				ObjectMapper mapper = new ObjectMapper();
@@ -605,9 +605,9 @@ public class SecurityGroupService extends ApiService {
 						su.setUserName(userData.getUserName());
 						su.setUserGUID(guid);
 						su.setCreatedBy(userData.getCreatedBy());
-						su.setCreatedOn(userData.getCreatedOn());
+						su.setCreatedOn(now);
 						su.setModifiedBy(userData.getModifiedBy());
-						su.setModifiedOn(userData.getModifiedOn());
+						su.setModifiedOn(now);
 					}
 					
 				} else {
@@ -832,7 +832,7 @@ public class SecurityGroupService extends ApiService {
 		List<String> groupNameList = jsonParameters.getData().getGroupnames();
 		List<String> delGroupNameList = jsonParameters.getData().getDelgroupnames();
 		
-		Integer userID = userData.getID() != null ? (userData.getID() > 0 ? userData.getID() : 0) : 0;
+		Integer userID = userData.getId() != null ? (userData.getId() > 0 ? userData.getId() : 0) : 0;
 		Integer userPK = 0;
 		//Save AspnetMembership
 		resultMembership = this.setSaveAspnetMembership(userData);
