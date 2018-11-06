@@ -35,6 +35,7 @@ import net.fashiongo.webadmin.dao.primary.MapPatternCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapStyleCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.PolicyRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
+import net.fashiongo.webadmin.dao.primary.TrendReportContentsRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogSendQueueRepository;
@@ -116,6 +117,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingPa
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportMapParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportParameter;
 import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
@@ -156,10 +158,12 @@ import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
+import net.fashiongo.webadmin.model.primary.TrendReportContents;
 import net.fashiongo.webadmin.model.primary.VendorCatalog;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendQueue;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendRequest;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  *
@@ -224,6 +228,9 @@ public class SitemgmtService extends ApiService {
 
 	@Autowired
 	private FeaturedItemRepository featuredItemRepository;
+	
+	@Autowired
+	private TrendReportContentsRepository trendReportContentRepository;
 
 	/**
 	 *
@@ -947,6 +954,74 @@ public class SitemgmtService extends ApiService {
 
 		jdbcHelper.executeSP(spName, params);
 		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+	}
+	
+	@Transactional(value = "primaryTransactionManager")
+	public JsonResponse<String> setTrendReport(SetTrendReportParameter parameters) {
+		JsonResponse<String> result = new JsonResponse<String>(false, null, 0, 0, null);
+		TrendReport param = parameters.getTrendreport();
+
+		TrendReport tr = trendReportRepository.findOneByTrendReportID(param.getTrendReportID());
+
+		if (parameters.getType().equals("Del")) {
+			trendReportRepository.delete(tr);
+			result.setSuccess(true);
+			result.setCode(1);
+			result.setMessage("Deleted successfully!");
+		} else if (parameters.getType().equals("Act")) {
+			tr.setActive(param.getActive());
+			trendReportRepository.save(tr);
+			result.setSuccess(true);
+			result.setCode(1);
+			result.setMessage("Updated successfully!");
+		} else if (parameters.getType().equals("Ins")) {
+			if (param.getTrendReportID() < 1) {
+				tr = new TrendReport();
+				result.setMessage("Saved successfully!");
+			} else {
+				result.setMessage("Updated successfully!");
+			}
+
+			tr.setTitle(param.getTitle());
+			tr.setDateFrom(param.getDateFrom());
+			tr.setDateTo(param.getDateTo());
+			tr.setImage(param.getImage());
+			tr.setSquareImage(param.getSquareImage());
+			tr.setMiniImage(param.getMiniImage());
+			tr.setkMMImage1(param.getkMMImage1());
+			tr.setkMMImage2(param.getkMMImage2());
+			tr.setSticky(param.getSticky());
+			tr.setCuratedType(param.getCuratedType() == null ? 3 : param.getCuratedType());
+			tr.setCreatedOn(LocalDateTime.now());
+			tr.setCreatedBy(Utility.getUsername());
+			tr.setModifiedOn(LocalDateTime.now());
+			tr.setModifiedBy(Utility.getUsername());
+			tr.setListOrder(param.getListOrder());
+			tr.setActive(param.getActive());
+			tr.settRDescription(param.gettRDescription());
+			trendReportRepository.save(tr);
+
+			result.setSuccess(true);
+			result.setPk(tr.getTrendReportID());
+			result.setCode(1);
+
+			if (param.getTrendReportID() < 1 && param.getCuratedType() == 4) {
+				TrendReportContents trcb = trendReportContentRepository.findOneByTrendReportIDIsNull();
+				TrendReportContents trc = new TrendReportContents();
+
+				trc.setTrendReportID(tr.getTrendReportID());
+				trcb.getContents().replace("trend_report/kmm-top.jpg", "trend_report/" + param.getkMMImage1());
+				trcb.getContents().replace("trend_report/kmm-middle.jpg", "trend_report/" + param.getkMMImage2());
+				trc.setContents(trcb.getContents());
+				trc.setCreatedOn(LocalDateTime.now());
+				trc.setCreatedBy(Utility.getUsername());
+				trc.setModifiedOn(LocalDateTime.now());
+				trc.setModifieidBy(Utility.getUsername());
+				trendReportContentRepository.save(trc);
+			}
+		}
+
+		return result;
 	}
    
 	/**

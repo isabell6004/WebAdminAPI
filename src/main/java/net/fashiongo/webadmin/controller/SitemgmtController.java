@@ -56,6 +56,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingPa
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportMapParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportSortParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.StartDateParameter;
 import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
@@ -787,6 +788,20 @@ public class SitemgmtController {
 	public JsonResponse<String> setTrendReportSort(@RequestBody SetTrendReportSortParameter parameters) {
 		ResultCode result = sitemgmtService.setTrendReportSort(parameters.getxMLDatas());
 		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
+	}
+	
+	/**
+	 *
+	 * Set TrendReport
+	 *
+	 * @since 2018. 11. 06.
+	 * @author Junghwan Lee
+	 * @param SetTrendReportParameter
+	 * @return JsonResponse<String
+	 */
+	@RequestMapping(value = "settrendreport", method = RequestMethod.POST)
+	public JsonResponse<String> setTrendReport(@RequestBody SetTrendReportParameter parameters) {
+		return sitemgmtService.setTrendReport(parameters);
 	}
 	
 	/**
