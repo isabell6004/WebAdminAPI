@@ -1060,12 +1060,6 @@ public class SitemgmtService extends ApiService {
             case 5:// "Category Mapping":
                 switch (parameter.getPrevTab())
                 {
-                    case 1:
-                        DataSrc = "vwPatternCategory";
-                        ColumnList = "MapID,PatternID As CodeID,PatternName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
-                        Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
-                        OrderBy = "PatternName";
-                        break;
                     case 2:
                         DataSrc = "vwLengthCategory";
                         ColumnList = "MapID,LengthID As CodeID,LengthName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
@@ -1083,6 +1077,12 @@ public class SitemgmtService extends ApiService {
                         ColumnList = "MapID,FabricID As CodeID,FabricName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
                         Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
                         OrderBy = "FabricName";
+                        break;
+                    default:
+                    	DataSrc = "vwPatternCategory";
+                        ColumnList = "MapID,PatternID As CodeID,PatternName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
+                        Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
+                        OrderBy = "PatternName";
                         break;
                 }
                 break;
@@ -1228,50 +1228,6 @@ public class SitemgmtService extends ApiService {
 		
 		switch (parameter.getTabNo())
         {
-            case 1:  //Pattern
-            	List<CodePattern> newCodePatternList = new ArrayList<CodePattern>();
-            	if (parameter.getbType().equals("ADel")) {
-	            	for (CodeData cd: parameter.getCodeDataList()) {
-	            		CodePattern newCp = new CodePattern();
-		            	newCp.setPatternID(cd.getCodeID());
-	            		newCodePatternList.add(newCp);
-	            	}
-	            	codePatternRepository.deleteAll(newCodePatternList);
-	            	
-            		result.setResultCode(1);
-            		result.setSuccess(true);
-            		result.setResultMsg(MSG_DELETE_SUCCESS);
-            	} else {
-            		CodePattern newCp = new CodePattern();
-            		if (parameter.getbType().equals("Del")) {
-		            	newCp.setPatternID(parameter.getCodeID());
-	            		newCodePatternList.add(newCp);
-	            		codePatternRepository.delete(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_DELETE_SUCCESS);
-	            	} else if (parameter.getCodeID() > 0) {
-	            		newCp = codePatternRepository.findOneByPatternID(parameter.getCodeID());
-	    				newCp.setPatternName(parameter.getAttrName());
-	            		newCp.setActive(parameter.getActive());
-	            		codePatternRepository.save(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_UPDATE_SUCCESS);
-	            	} else {
-	            		newCp.setPatternID(parameter.getCodeID());
-	    				newCp.setPatternName(parameter.getAttrName());
-	            		newCp.setActive(parameter.getActive());
-	            		codePatternRepository.save(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_INSERT_SUCCESS);
-	            	}
-            	}
-            	break;
             case 2:  //Length
             	List<CodeLength> newCodeLengthList = new ArrayList<CodeLength>();
             	if (parameter.getbType().equals("ADel")) {
@@ -1397,6 +1353,50 @@ public class SitemgmtService extends ApiService {
 	            		newCf.setFabricName(parameter.getAttrName());
 	            		newCf.setActive(parameter.getActive());
 	            		codeFabricRepository.save(newCf);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_INSERT_SUCCESS);
+	            	}
+            	}
+            	break;
+            default:  //Pattern
+            	List<CodePattern> newCodePatternList = new ArrayList<CodePattern>();
+            	if (parameter.getbType().equals("ADel")) {
+	            	for (CodeData cd: parameter.getCodeDataList()) {
+	            		CodePattern newCp = new CodePattern();
+		            	newCp.setPatternID(cd.getCodeID());
+	            		newCodePatternList.add(newCp);
+	            	}
+	            	codePatternRepository.deleteAll(newCodePatternList);
+	            	
+            		result.setResultCode(1);
+            		result.setSuccess(true);
+            		result.setResultMsg(MSG_DELETE_SUCCESS);
+            	} else {
+            		CodePattern newCp = new CodePattern();
+            		if (parameter.getbType().equals("Del")) {
+		            	newCp.setPatternID(parameter.getCodeID());
+	            		newCodePatternList.add(newCp);
+	            		codePatternRepository.delete(newCp);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_DELETE_SUCCESS);
+	            	} else if (parameter.getCodeID() > 0) {
+	            		newCp = codePatternRepository.findOneByPatternID(parameter.getCodeID());
+	    				newCp.setPatternName(parameter.getAttrName());
+	            		newCp.setActive(parameter.getActive());
+	            		codePatternRepository.save(newCp);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_UPDATE_SUCCESS);
+	            	} else {
+	            		newCp.setPatternID(parameter.getCodeID());
+	    				newCp.setPatternName(parameter.getAttrName());
+	            		newCp.setActive(parameter.getActive());
+	            		codePatternRepository.save(newCp);
 	            		
 	            		result.setResultCode(1);
 	            		result.setSuccess(true);
