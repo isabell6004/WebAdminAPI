@@ -27,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.CodeData;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
@@ -54,6 +55,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonActiveP
 import net.fashiongo.webadmin.model.pojo.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
@@ -288,8 +290,41 @@ public class SitemgmtServiceTest {
 	 * @since 2018. 10. 22.
 	 * @author Nayeon Kim
 	 */
+	@Ignore
 	@Test
 	public void testSetPaidCampaign() {
+		SetPaidCampaignParameter parameters = new SetPaidCampaignParameter();
+		List<EmConfiguration> emConfigurationList = new ArrayList<EmConfiguration>();
+		EmConfiguration emConfiguration = new EmConfiguration();
+
+		emConfiguration.setConfigID(3);
+		emConfiguration.setConfigType("Reservation Cancellation Fee");
+		emConfiguration.setConfigValue("110");
+		emConfigurationList.add(emConfiguration);
+
+		emConfiguration.setConfigID(4);
+		emConfiguration.setConfigType("Campaign Schedule Time");
+		emConfiguration.setConfigValue("08:00:00");
+		emConfigurationList.add(emConfiguration);
+
+		emConfiguration.setConfigID(5);
+		emConfiguration.setConfigType("Email Unit Price");
+		emConfiguration.setConfigValue("0.2");
+		emConfigurationList.add(emConfiguration);
+
+		emConfiguration.setConfigID(6);
+		emConfiguration.setConfigType("MinimumSendingFee");
+		emConfiguration.setConfigValue("100.00");
+		emConfigurationList.add(emConfiguration);
+
+		emConfiguration.setConfigID(7);
+		emConfiguration.setConfigType("Reservation Cancellation Fee Percent");
+		emConfiguration.setConfigValue("50");
+		emConfigurationList.add(emConfiguration);
+
+		parameters.setObjList(emConfigurationList);
+		ResultCode result = sitemgmtService.setPaidCampaign(parameters);
+		assertTrue(result.getSuccess());
 	}
 	
 	/**
