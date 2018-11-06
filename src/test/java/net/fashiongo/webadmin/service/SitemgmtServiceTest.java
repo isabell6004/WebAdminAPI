@@ -651,6 +651,9 @@ public class SitemgmtServiceTest {
 		
 		GetPolicyDetailResponse result = sitemgmtService.getPolicyDetail(param);
 		assertTrue(result.getPolicyDetail().size() > 0);
+		param.setSearchTxt("love");
+		result = sitemgmtService.getPolicyDetail(param);
+		assertTrue(result.getPolicyDetail().size() > 0);
 	}
 
 	/**
