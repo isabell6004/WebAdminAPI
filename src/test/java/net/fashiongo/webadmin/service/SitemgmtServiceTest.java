@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
+import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.CodeData;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
@@ -47,6 +48,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParam
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
@@ -70,6 +72,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
@@ -798,7 +801,13 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetProductAttributesTotal() {
-
+		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
+		assertTrue(result.getPatternInfolist().size() > 0);
+		assertTrue(result.getLengthInfolist().size() > 0);
+		assertTrue(result.getStyleInfolist().size() > 0);
+		assertTrue(result.getFabricInfolist().size() > 0);
+		assertTrue(result.getBodySizeInfolist().size() > 0);
+		assertTrue(result.getColorListInfolist().size() > 0);
 	}
 
 	/**
@@ -938,8 +947,15 @@ public class SitemgmtServiceTest {
 	 * @since 2018. 11. 6.
 	 * @author Nayeon Kim
 	 */
+    @Ignore
 	@Test
 	public void testSetCategoryListOrder() {
-
+		SetCategoryListOrderParameter parameters = new SetCategoryListOrderParameter();
+		parameters.setCategoryid(386);
+		parameters.setParentcategoryid(99);
+		parameters.setListorder(101);
+		parameters.setLvl(3);
+		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
+		assertNotNull(result);
 	}
 }
