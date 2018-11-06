@@ -2,6 +2,10 @@ package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,10 +31,10 @@ public class GetRetailerNewsParameter implements Serializable {
 	private String period;
 	
 	@JsonProperty("fromdate")
-	private LocalDateTime fromDate;
+	private Date fromDate;
 	
 	@JsonProperty("todate")
-	private LocalDateTime toDate;
+	private Date toDate;
 	
 	@JsonProperty("orderby")
 	private String orderBy;
@@ -75,19 +79,20 @@ public class GetRetailerNewsParameter implements Serializable {
 		this.period = period;
 	}
 
-	public LocalDateTime getFromDate() {
+
+	public Date getFromDate() {
 		return fromDate;
 	}
 
-	public void setFromDate(LocalDateTime fromDate) {
+	public void setFromDate(Date fromDate) {
 		this.fromDate = fromDate;
 	}
 
-	public LocalDateTime getToDate() {
+	public Date getToDate() {
 		return toDate;
 	}
 
-	public void setToDate(LocalDateTime toDate) {
+	public void setToDate(Date toDate) {
 		this.toDate = toDate;
 	}
 
@@ -98,5 +103,5 @@ public class GetRetailerNewsParameter implements Serializable {
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
 	}
-	
+
 }
