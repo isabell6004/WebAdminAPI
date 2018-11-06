@@ -31,6 +31,7 @@ import net.fashiongo.webadmin.model.pojo.CodeData;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
@@ -80,6 +81,7 @@ import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorder
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
 import net.fashiongo.webadmin.model.primary.Policy;
+import net.fashiongo.webadmin.model.primary.TrendReport;
 
 /**
  * @author sanghyup
@@ -749,9 +751,7 @@ public class SitemgmtServiceTest {
 		parameters.setCategoryid("");
 		parameters.setVendorname("entro");
 		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
-		if (result != null) {
-			assertTrue(result.getCategoryVendorList().size() > 0);
-		}
+		assertTrue(result.getCategoryVendorList().size() > 0);
 	}
 
 	/**
@@ -776,7 +776,6 @@ public class SitemgmtServiceTest {
 	@Test
 	public void testGetFeaturedItemCount() {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
-
 		if (!CollectionUtils.isEmpty(result.getFeaturedItemList())) {
 			assertNotNull(result.getFeaturedItemList().get(0).getFeaturedItemID());
 		}
@@ -792,9 +791,7 @@ public class SitemgmtServiceTest {
 	@Test
 	public void testGetFeaturedItemListDay() {
 		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
-		if (result != null) {
-			assertTrue(result.getFeaturedItemList().size() > 0);
-		}
+		assertNotNull(result.getFeaturedItemList());
 	}
 
 	/**
@@ -810,7 +807,6 @@ public class SitemgmtServiceTest {
 		parameters.setProductID("9213809");
 		parameters.setTrendReportID("0");
 		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
-
 		if (!CollectionUtils.isEmpty(result.getProductInfolist())) {
 			assertNotNull(result.getProductInfolist().get(0).getProductID());
 		}
@@ -836,11 +832,7 @@ public class SitemgmtServiceTest {
 		parameters.setActive("true");
 		parameters.setCuratedType("1");
 		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
-
-		if (result != null) {
-			assertTrue(result.getTrendReportList().size() > 0);
-
-		}
+		assertTrue(result.getTrendReportList().size() > 0);
 	}
 
 	/**
@@ -857,10 +849,7 @@ public class SitemgmtServiceTest {
 		parameters.setPagesize("10");
 		parameters.setTrendreportid("328");
 		GetTrendReportItemResponse result = sitemgmtService.getTrendReportItem(parameters);
-
-		if (result != null) {
-			assertTrue(result.getTrendReportItem().size() > 0);
-		}
+		assertTrue(result.getTrendReportItem().size() > 0);
 	}
 
 	/**
@@ -885,7 +874,14 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetLastKMMData() {
-
+		TrendReportKmmImage result = new TrendReportKmmImage();
+		TrendReport trendReport = new TrendReport();
+		trendReport.setSquareImage("KMM_SquareImage.jpg");
+		trendReport.setImage("KMM_WideImage.png");
+		trendReport.setMiniImage("KMM_MiniImage.png");
+		trendReport.setkMMImage1("KMM_homecoming.jpg");
+		trendReport.setkMMImage2("Unique vintage.png");
+		assertNotNull(result);
 	}
 
 	/**
