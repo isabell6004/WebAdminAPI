@@ -31,6 +31,7 @@ import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
@@ -48,8 +49,10 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingPa
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
@@ -685,7 +688,13 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetCategoryVendorList() {
-
+		GetCategoryVendorListParameter parameters = new GetCategoryVendorListParameter();
+		parameters.setCategoryid("");
+		parameters.setVendorname("entro");
+		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
+		if (result != null) {
+			assertTrue(result.getCategoryVendorList().size() > 0);
+		}
 	}
 
 	/**
@@ -721,7 +730,10 @@ public class SitemgmtServiceTest {
 	 */
 	@Test
 	public void testGetFeaturedItemListDay() {
-
+		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
+		if (result != null) {
+			assertTrue(result.getFeaturedItemList().size() > 0);
+		}
 	}
 
 	/**
