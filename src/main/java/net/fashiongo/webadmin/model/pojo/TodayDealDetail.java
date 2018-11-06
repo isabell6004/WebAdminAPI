@@ -3,31 +3,51 @@ package net.fashiongo.webadmin.model.pojo;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 
  * @author Incheol Jung
  */
 public class TodayDealDetail implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
+	@JsonProperty("TodayDealID")
 	private Integer todayDealID;
+	@JsonProperty("Title")
 	private String title;
+	@JsonProperty("ProductID")
 	private Integer productID;
+	@JsonProperty("FromDate")
 	private LocalDateTime fromDate;
+	@JsonProperty("ToDate")
 	private LocalDateTime toDate;
+	@JsonProperty("TodayDealPrice")
 	private Integer todayDealPrice;
+	@JsonProperty("Active")
 	private Boolean active;
+	@JsonProperty("AppliedOn")
 	private LocalDateTime appliedOn;
+	@JsonProperty("ApprovedOn")
 	private LocalDateTime approvedOn;
+	@JsonProperty("UnitPrice")
 	private Integer unitPrice;
+	@JsonProperty("ProductName")
 	private String productName;
+	@JsonProperty("CompanyName")
 	private String companyName;
+	@JsonProperty("Status")
 	private String status;
+	@JsonProperty("CompanyTypeID")
 	private Integer companyTypeID;
+	@JsonProperty("CompanyTypeCode")
 	private String companyTypeCode;
+	@JsonProperty("CategoryID")
 	private Integer categoryID;
+	@JsonProperty("OrgCategoryID")
 	private Integer orgCategoryID;
+	@JsonProperty("CategoryName")
 	private String categoryName;
+	@JsonProperty("WholeSalerID")
 	private Integer wholeSalerID;
 	
 	public Integer getTodayDealID() {
