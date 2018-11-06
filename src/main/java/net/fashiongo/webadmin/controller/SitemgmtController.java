@@ -29,6 +29,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchVendorParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetItemsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
@@ -65,6 +66,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetItemsResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
@@ -553,6 +555,25 @@ public class SitemgmtController {
 	
 	/**
 	 * 
+	 * Get curated item
+	 * @since 2018. 11. 06.
+	 * @author Junghwan Lee
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
+	public JsonResponse<GetItemsResponse> getItems2(@RequestBody GetItemsParameter parameters) {
+		JsonResponse<GetItemsResponse> results = new JsonResponse<GetItemsResponse>(true, null, null);
+		
+		GetItemsResponse _result = sitemgmtService.GetItems2(parameters);
+		results.setData(_result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	/**
+	 * 
 	 * Description Example
 	 * @since 2018. 10. 29.
 	 * @author Reo
@@ -737,9 +758,6 @@ public class SitemgmtController {
 		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
 		return new JsonResponse<GetTrendReport2Response>(true, null, result);
 	}
-	
-	@RequestMapping(value = "getitems2", method = RequestMethod.POST)
-	public void getItems2() {}
 	
 	/**
 	 *

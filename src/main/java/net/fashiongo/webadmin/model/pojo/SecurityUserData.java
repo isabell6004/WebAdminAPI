@@ -3,20 +3,23 @@ package net.fashiongo.webadmin.model.pojo;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 
  * @author Reo
  *
  */
 public class SecurityUserData  implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	@JsonProperty("accesstimes")
 	private List<String> accesstimes;
+	@JsonProperty("delaccesstimes")
 	private List<String> delaccesstimes;
+	@JsonProperty("delgroupnames")
 	private List<String> delgroupnames;
+	@JsonProperty("groupnames")
 	private List<String> groupnames;
+	@JsonProperty("user")
 	private SecurityUserCreate user;
 
 	public List<String> getAccesstimes() {

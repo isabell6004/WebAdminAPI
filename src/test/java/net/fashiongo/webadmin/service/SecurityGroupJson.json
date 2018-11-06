@@ -1,0 +1,1205 @@
+{
+  "data": {
+    "user": {
+      "ID": 77,
+      "userName": "Daeun",
+      "fullName": "Tanimoto",
+      "role": "G",
+      "group": "Business Development",
+      "createdOn": "2015-10-19T10:49:43.683",
+      "createdBy": "eunmi",
+      "modifiedOn": "2018-10-31T10:42:24",
+      "modifiedBy": "krdev",
+      "access": "Mon ~ Fri 8:00AM ~ 7:00PM",
+      "exempt": false,
+      "active": true,
+      "assignedVendors": 1205,
+      "password": "",
+      "chk": false,
+      "assignedVendorList": "1205 vendors"
+    },
+    "groupnames": [
+      "Business Development"
+    ],
+    "delgroupnames": [
+      "Business Development"
+    ],
+    "accesstimes": [
+      "Mon 08:00 ~ 19:00",
+      "Tue 08:00 ~ 19:00",
+      "Wed 08:00 ~ 19:00",
+      "Thu 08:00 ~ 19:00",
+      "Fri 08:00 ~ 19:00"
+    ],
+    "delaccesstimes": [
+      "Mon 08:00 ~ 19:00",
+      "Tue 08:00 ~ 19:00",
+      "Wed 08:00 ~ 19:00",
+      "Thu 08:00 ~ 19:00",
+      "Fri 08:00 ~ 19:00"
+    ]
+  },
+  "updata": [
+    {
+      "rId": 0,
+      "rnm": "Administration",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 114,
+      "sub": [
+        {
+          "rId": 112,
+          "rnm": "Group Manager",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 115
+        },
+        {
+          "rId": 113,
+          "rnm": "User Manager",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 116
+        },
+        {
+          "rId": 114,
+          "rnm": "Menus",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 117
+        },
+        {
+          "rId": 115,
+          "rnm": "Login History",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 118
+        },
+        {
+          "rId": 116,
+          "rnm": "Resources",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 119
+        },
+        {
+          "rId": 117,
+          "rnm": "Access Code",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 120
+        },
+        {
+          "rId": 118,
+          "rnm": "Access IP",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 121
+        }
+      ],
+      "exp": false,
+      "cnt": 7,
+      "chkcnt_v": 0,
+      "chkcnt_e": 0,
+      "chkcnt_d": 0,
+      "chkcnt_a": 0
+    },
+    {
+      "rId": 0,
+      "rnm": "Site Management",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 122,
+      "sub": [
+        {
+          "rId": 120,
+          "rnm": "Today's Deal",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 124
+        },
+        {
+          "rId": 121,
+          "rnm": "FG Catalog",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 125
+        },
+        {
+          "rId": 122,
+          "rnm": "Category",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 126
+        },
+        {
+          "rId": 123,
+          "rnm": "Product Attributes",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 127
+        },
+        {
+          "rId": 124,
+          "rnm": "Show Info",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 128
+        },
+        {
+          "rId": 125,
+          "rnm": "FG Policy",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 129
+        },
+        {
+          "rId": 126,
+          "rnm": "Social Network Site",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 130
+        },
+        {
+          "rId": 128,
+          "rnm": "Communication Log",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 132
+        },
+        {
+          "rId": 131,
+          "rnm": "Notice to Buyers",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 137
+        },
+        {
+          "rId": 132,
+          "rnm": "Notice to Vendors",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 138
+        },
+        {
+          "rId": 172,
+          "rnm": "FG Policy Detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 188
+        },
+        {
+          "rId": 173,
+          "rnm": "Curated Collection",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 189
+        },
+        {
+          "rId": 175,
+          "rnm": "Featured Item",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 190
+        },
+        {
+          "rId": 178,
+          "rnm": "Collection Category Ad",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 192
+        },
+        {
+          "rId": 181,
+          "rnm": "Show Detail",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 196
+        }
+      ],
+      "exp": true,
+      "cnt": 15,
+      "chkcnt_v": 11,
+      "chkcnt_e": 11,
+      "chkcnt_d": 11,
+      "chkcnt_a": 11
+    },
+    {
+      "rId": 0,
+      "rnm": "Consolidation",
+      "v": true,
+      "e": true,
+      "d": true,
+      "a": true,
+      "mId": 133,
+      "sub": [
+        {
+          "rId": 129,
+          "rnm": "Consolidation",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 134
+        },
+        {
+          "rId": 130,
+          "rnm": "Consolidation detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 135
+        },
+        {
+          "rId": 164,
+          "rnm": "Drop Off Notification",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 178
+        }
+      ],
+      "exp": true,
+      "cnt": 3,
+      "chkcnt_v": 3,
+      "chkcnt_e": 3,
+      "chkcnt_d": 3,
+      "chkcnt_a": 3
+    },
+    {
+      "rId": 0,
+      "rnm": "Message",
+      "v": true,
+      "e": true,
+      "d": true,
+      "a": true,
+      "mId": 136,
+      "sub": [
+        {
+          "rId": 133,
+          "rnm": "Message for Buyers",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 139
+        },
+        {
+          "rId": 134,
+          "rnm": "Message for Vendors",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 140
+        },
+        {
+          "rId": 135,
+          "rnm": "Contact Us",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 141
+        }
+      ],
+      "exp": true,
+      "cnt": 3,
+      "chkcnt_v": 3,
+      "chkcnt_e": 3,
+      "chkcnt_d": 3,
+      "chkcnt_a": 3
+    },
+    {
+      "rId": 0,
+      "rnm": "Vendors",
+      "v": true,
+      "e": true,
+      "d": true,
+      "a": true,
+      "mId": 142,
+      "sub": [
+        {
+          "rId": 136,
+          "rnm": "Vendor List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 143
+        },
+        {
+          "rId": 137,
+          "rnm": "Vendor detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 144
+        },
+        {
+          "rId": 138,
+          "rnm": "Blocked Vendors",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 145
+        },
+        {
+          "rId": 139,
+          "rnm": "Banner Request",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 146
+        },
+        {
+          "rId": 140,
+          "rnm": "Forms",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 147
+        },
+        {
+          "rId": 141,
+          "rnm": "Credit Card Vendors",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 148
+        }
+      ],
+      "exp": true,
+      "cnt": 6,
+      "chkcnt_v": 6,
+      "chkcnt_e": 6,
+      "chkcnt_d": 6,
+      "chkcnt_a": 6
+    },
+    {
+      "rId": 0,
+      "rnm": "Buyers",
+      "v": true,
+      "e": true,
+      "d": true,
+      "a": true,
+      "mId": 149,
+      "sub": [
+        {
+          "rId": 142,
+          "rnm": "Buyer List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 150
+        },
+        {
+          "rId": 143,
+          "rnm": "Buyer detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 151
+        }
+      ],
+      "exp": true,
+      "cnt": 2,
+      "chkcnt_v": 2,
+      "chkcnt_e": 2,
+      "chkcnt_d": 2,
+      "chkcnt_a": 2
+    },
+    {
+      "rId": 0,
+      "rnm": "Rating",
+      "v": true,
+      "e": true,
+      "d": true,
+      "a": true,
+      "mId": 152,
+      "sub": [
+        {
+          "rId": 144,
+          "rnm": "Rating",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 153
+        }
+      ],
+      "exp": true,
+      "cnt": 1,
+      "chkcnt_v": 1,
+      "chkcnt_e": 1,
+      "chkcnt_d": 1,
+      "chkcnt_a": 1
+    },
+    {
+      "rId": 0,
+      "rnm": "Ads",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 154,
+      "sub": [
+        {
+          "rId": 145,
+          "rnm": "Banner AD",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 155
+        },
+        {
+          "rId": 146,
+          "rnm": "Item AD",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 156
+        },
+        {
+          "rId": 147,
+          "rnm": "AD Statistics",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 157
+        },
+        {
+          "rId": 148,
+          "rnm": "Generate Ad",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 158
+        },
+        {
+          "rId": 150,
+          "rnm": "Paid Campaign",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 160
+        },
+        {
+          "rId": 151,
+          "rnm": "Paid Campaign Detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 161
+        }
+      ],
+      "exp": true,
+      "cnt": 6,
+      "chkcnt_v": 4,
+      "chkcnt_e": 4,
+      "chkcnt_d": 4,
+      "chkcnt_a": 4
+    },
+    {
+      "rId": 0,
+      "rnm": "Bidding",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 162,
+      "sub": [
+        {
+          "rId": 152,
+          "rnm": "Bidding Main",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 163
+        },
+        {
+          "rId": 153,
+          "rnm": "Bidding History",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 164
+        },
+        {
+          "rId": 155,
+          "rnm": "Bidding Report",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 166
+        }
+      ],
+      "exp": false,
+      "cnt": 3,
+      "chkcnt_v": 0,
+      "chkcnt_e": 0,
+      "chkcnt_d": 0,
+      "chkcnt_a": 0
+    },
+    {
+      "rId": 0,
+      "rnm": "Statistics",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 167,
+      "sub": [
+        {
+          "rId": 156,
+          "rnm": "Hot Search",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 168
+        },
+        {
+          "rId": 157,
+          "rnm": "Best Item",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 169
+        },
+        {
+          "rId": 158,
+          "rnm": "Statistics",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 170
+        },
+        {
+          "rId": 159,
+          "rnm": "Web & Image Server",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 171
+        },
+        {
+          "rId": 160,
+          "rnm": "Vendor Statistics",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 172
+        },
+        {
+          "rId": 165,
+          "rnm": "Front Login History",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 180
+        },
+        {
+          "rId": 166,
+          "rnm": "Fashiongo KPI",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 181
+        },
+        {
+          "rId": 167,
+          "rnm": "Vendors KPI",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 182
+        },
+        {
+          "rId": 168,
+          "rnm": "Vendors General Info",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 183
+        }
+      ],
+      "exp": true,
+      "cnt": 9,
+      "chkcnt_v": 1,
+      "chkcnt_e": 1,
+      "chkcnt_d": 1,
+      "chkcnt_a": 1
+    },
+    {
+      "rId": 0,
+      "rnm": "Surist",
+      "v": true,
+      "e": true,
+      "d": true,
+      "a": true,
+      "mId": 173,
+      "sub": [
+        {
+          "rId": 161,
+          "rnm": "Item Edit",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 174
+        },
+        {
+          "rId": 162,
+          "rnm": "Shipping Address",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 175
+        },
+        {
+          "rId": 163,
+          "rnm": "Vendor",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 176
+        }
+      ],
+      "exp": true,
+      "cnt": 3,
+      "chkcnt_v": 3,
+      "chkcnt_e": 3,
+      "chkcnt_d": 3,
+      "chkcnt_a": 3
+    },
+    {
+      "rId": 0,
+      "rnm": "Site Setting",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 179,
+      "sub": [
+        {
+          "rId": 127,
+          "rnm": "Paid Campaign Setting",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 131
+        },
+        {
+          "rId": 149,
+          "rnm": "AD Spot Setting",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 159
+        },
+        {
+          "rId": 154,
+          "rnm": "Bidding Setting",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 165
+        },
+        {
+          "rId": 177,
+          "rnm": "Collection Category Setting",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 191
+        }
+      ],
+      "exp": false,
+      "cnt": 4,
+      "chkcnt_v": 0,
+      "chkcnt_e": 0,
+      "chkcnt_d": 0,
+      "chkcnt_a": 0
+    },
+    {
+      "rId": 0,
+      "rnm": "Payment Gateway",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 184,
+      "sub": [
+        {
+          "rId": 169,
+          "rnm": "Payment Status",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 185
+        },
+        {
+          "rId": 170,
+          "rnm": "Credit Card List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 186
+        },
+        {
+          "rId": 171,
+          "rnm": "Payout History",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 187
+        },
+        {
+          "rId": 180,
+          "rnm": "disputes",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 193
+        }
+      ],
+      "exp": true,
+      "cnt": 4,
+      "chkcnt_v": 3,
+      "chkcnt_e": 3,
+      "chkcnt_d": 3,
+      "chkcnt_a": 3
+    },
+    {
+      "rId": 0,
+      "rnm": "Kelly's Magic Monday",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 194,
+      "sub": [
+        {
+          "rId": 179,
+          "rnm": "Kelly's Magic Monday",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 195
+        }
+      ],
+      "exp": false,
+      "cnt": 1,
+      "chkcnt_v": 0,
+      "chkcnt_e": 0,
+      "chkcnt_d": 0,
+      "chkcnt_a": 0
+    },
+    {
+      "rId": 0,
+      "rnm": "Photo",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 197,
+      "sub": [
+        {
+          "rId": 182,
+          "rnm": "Photo Request List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 198
+        },
+        {
+          "rId": 203,
+          "rnm": "Photo Request New",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 199
+        },
+        {
+          "rId": 183,
+          "rnm": "Photo Request Detail",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 220
+        }
+      ],
+      "exp": false,
+      "cnt": 3,
+      "chkcnt_v": 0,
+      "chkcnt_e": 0,
+      "chkcnt_d": 0,
+      "chkcnt_a": 0
+    },
+    {
+      "rId": 0,
+      "rnm": "Billing",
+      "v": false,
+      "e": false,
+      "d": false,
+      "a": false,
+      "mId": 200,
+      "sub": [
+        {
+          "rId": 184,
+          "rnm": "Billing Account List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 201
+        },
+        {
+          "rId": 185,
+          "rnm": "Billing Account Detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 202
+        },
+        {
+          "rId": 186,
+          "rnm": "Billing Invoice List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 203
+        },
+        {
+          "rId": 187,
+          "rnm": "Billing Invoice Detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 204
+        },
+        {
+          "rId": 188,
+          "rnm": "Billing Receipt List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 205
+        },
+        {
+          "rId": 189,
+          "rnm": "Billing Receipt Detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 206
+        },
+        {
+          "rId": 190,
+          "rnm": "Billing Request List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 207
+        },
+        {
+          "rId": 191,
+          "rnm": "Billing Request Detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 208
+        },
+        {
+          "rId": 192,
+          "rnm": "Billing Unearned Revenue List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 209
+        },
+        {
+          "rId": 193,
+          "rnm": "Billing Unearned Revenue Detail",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 210
+        },
+        {
+          "rId": 194,
+          "rnm": "Billing Aging List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 211
+        },
+        {
+          "rId": 195,
+          "rnm": "Billing Setting",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 212
+        },
+        {
+          "rId": 196,
+          "rnm": "Billing Temp Invoice List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 213
+        },
+        {
+          "rId": 197,
+          "rnm": "Billing Overview",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 214
+        },
+        {
+          "rId": 198,
+          "rnm": "Billing Refund List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 215
+        },
+        {
+          "rId": 199,
+          "rnm": "Biling Discount List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 216
+        },
+        {
+          "rId": 200,
+          "rnm": "Billing Credit List",
+          "v": true,
+          "e": true,
+          "d": true,
+          "a": true,
+          "mId": 217
+        },
+        {
+          "rId": 201,
+          "rnm": "Billing Void Request List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 218
+        },
+        {
+          "rId": 202,
+          "rnm": "Billing Batch Update for Receipts",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 219
+        },
+        {
+          "rId": 204,
+          "rnm": "Billing Check Receipt List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 221
+        },
+        {
+          "rId": 205,
+          "rnm": "Billing Daily Aging List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 222
+        },
+        {
+          "rId": 206,
+          "rnm": "Billing Manual Input of Summary",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 223
+        },
+        {
+          "rId": 210,
+          "rnm": "Billing Invoice Item Overview",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 226
+        },
+        {
+          "rId": 209,
+          "rnm": "Billing Balance Overview",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 227
+        },
+        {
+          "rId": 212,
+          "rnm": "Billing Adjustments",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 230
+        },
+        {
+          "rId": 214,
+          "rnm": "Billing Contract List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 231
+        },
+        {
+          "rId": 213,
+          "rnm": "Billing Temp Invoice Item List",
+          "v": false,
+          "e": false,
+          "d": false,
+          "a": false,
+          "mId": 232
+        }
+      ],
+      "exp": true,
+      "cnt": 27,
+      "chkcnt_v": 12,
+      "chkcnt_e": 12,
+      "chkcnt_d": 12,
+      "chkcnt_a": 12
+    },
+    {
+      "rId": 0,
+      "rnm": "FG388QA",
+      "v": true,
+      "e": true,
+      "d": true,
+      "a": true,
+      "mId": 228,
+      "sub": [],
+      "exp": false,
+      "cnt": 0,
+      "chkcnt_v": 0,
+      "chkcnt_e": 0,
+      "chkcnt_d": 0,
+      "chkcnt_a": 0
+    }
+  ]
+}
