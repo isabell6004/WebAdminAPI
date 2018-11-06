@@ -201,12 +201,12 @@ public class PhotoStudioController {
 	@PostMapping(value = "/discount/save")
 	public JsonResponse<?> saveDiscount(@RequestBody PhotoDiscount photoDiscount) {
 		logger.debug("PhotoStudioController.saveDiscount() called!!!");
-		JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
+		JsonResponse<?> response = new JsonResponse<>(false, null, null);
 
 		try {
-			Integer result = photoStudioService.saveDiscount(photoDiscount);
-			response.setSuccess(true);
-			response.setData(result);
+			String message = photoStudioService.saveDiscount(photoDiscount);
+			response.setSuccess(StringUtils.isEmpty(message));
+			response.setMessage(message);
 		} catch (Exception ex) {
 			logger.error("Error: PhotoStudioController.saveDiscount():", ex);
 		}

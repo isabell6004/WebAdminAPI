@@ -52,14 +52,14 @@ public class PhotoCancellationFee implements IPersistent, Serializable {
 		this.cancelTypeName = cancelTypeName;
 	}
 
-	@Column(name = "ChargeRate")
-	private BigDecimal chargeRate;
-	public BigDecimal getChargeRate() {
-		return chargeRate;
+	@Column(name = "CancellationFeeRate")
+	private BigDecimal cancellationFeeRate;
+	public BigDecimal getCancellationFeeRate() {
+		return cancellationFeeRate;
 	}
 
-	public void setChargeRate(BigDecimal chargeRate) {
-		this.chargeRate = chargeRate;
+	public void setCancellationFeeRate(BigDecimal cancellationFeeRate) {
+		this.cancellationFeeRate = cancellationFeeRate;
 	}
 
 	@JsonIgnore

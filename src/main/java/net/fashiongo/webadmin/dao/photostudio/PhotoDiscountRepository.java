@@ -10,4 +10,5 @@ public interface PhotoDiscountRepository extends CrudRepository<PhotoDiscount, I
 		
 	List<PhotoDiscount> findAll();
 
+	boolean existsByDiscountCode(String discountCode);
 }
