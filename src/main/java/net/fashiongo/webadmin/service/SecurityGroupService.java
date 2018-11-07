@@ -767,10 +767,10 @@ public class SecurityGroupService extends ApiService {
 	    }
 	    if (newSecurityLoginControlList.size() > 0) {
 	        securityLoginControlRepository.saveAll(newSecurityLoginControlList);
-	        result.setResultCode(1);
-	        result.setSuccess(true);
-	        result.setResultMsg(MSG_SAVE_SUCCESS);
 	    }
+	    result.setResultCode(1);
+        result.setSuccess(true);
+        result.setResultMsg(MSG_SAVE_SUCCESS);
 	    
 	    return result;
 	}
