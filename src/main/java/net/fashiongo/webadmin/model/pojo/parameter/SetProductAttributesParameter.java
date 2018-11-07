@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.model.pojo.parameter;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -64,11 +65,11 @@ public class SetProductAttributesParameter {
 	}
 
 	public Boolean getActive() {
-		return Boolean.TRUE.equals(active) ? true : false;
+		return BooleanUtils.isTrue(active) ? true : false;
 	}
 
 	public void setActive(Boolean active) {
-		this.active = Boolean.TRUE.equals(active) ? true : false;
+		this.active = BooleanUtils.isTrue(active) ? true : false;
 	}
 
 	public List<CodeData> getCodeDataList() {
