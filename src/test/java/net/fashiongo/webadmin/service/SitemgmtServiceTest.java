@@ -610,7 +610,7 @@ public class SitemgmtServiceTest {
 		
 		JSONObject result = sitemgmtService.getDMRequestSendList(parameters);
 		if(!CollectionUtils.isEmpty(result)) {
-			assertTrue(result.get("92181") != null || result.get("92178") != null);
+			assertTrue(result.get(92181) != null || result.get(92178) != null);
 		}
 	}
 	
