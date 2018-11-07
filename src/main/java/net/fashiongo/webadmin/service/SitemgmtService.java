@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 //import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -1730,6 +1732,24 @@ public class SitemgmtService extends ApiService {
 	}
 
     /**
+	 * Get DMRequestSendListOrigin
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public JSONObject getDMRequestSendListOrigin(GetDMRequestSendListParameter parameters) {
+		JSONObject result = new JSONObject();
+		List<DMRequestDetail> subList = null;
+		
+		for(Integer catalogId : parameters.getDmIds()) {
+			result.put(catalogId.toString(), getDMDetail(catalogId));
+		}
+		return result;
+	}
+	
+	/**
 	 * Get DMRequestSendList
 	 * 
 	 * @since 2018. 10. 29.
@@ -1739,36 +1759,22 @@ public class SitemgmtService extends ApiService {
 	 */
 	public JSONObject getDMRequestSendList(GetDMRequestSendListParameter parameters) {
 		JSONObject result = new JSONObject();
-		List<DMRequestDetail> subList = null;
+		String spName = "up_wa_DMSendList_Migration";
+		List<Object> params = new ArrayList<Object>();
+		params.add(StringUtils.join(parameters.getDmIds(), ","));
 		
-		for(Integer catalogId : parameters.getDmIds()) {
-			subList = getDMDetail(catalogId);
-			if(!CollectionUtils.isEmpty(subList)) {
-				result.put(catalogId.toString(), getDMDetail(catalogId));
-			}
+		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
+		List<DMRequestDetail> subList = (List<DMRequestDetail>) _result.get(0);
+		
+		Map<Integer, List<DMRequestDetail>> HashMapDmList = subList.stream()
+				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
+
+		for (Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
+			result.put(entry.getKey(), entry.getValue());
 		}
+		
 		return result;
 	}
-	
-	/**
-	 * Get DMRequestSendList2
-	 * 
-	 * @since 2018. 10. 29.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-//	public JSONObject getDMRequestSendList2(GetDMRequestSendListParameter parameters) {
-//		JSONObject result = new JSONObject();
-//		List<DMRequestDetail> subList = null;
-//		
-//		String spName = "up_wa_DMSendList_Migration";
-//		List<Object> params = new ArrayList<Object>();
-//		params.add(parameters.getDmIds().toString());
-//		
-//		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
-//		return result;
-//	}
 	
 	/**
 	 * 

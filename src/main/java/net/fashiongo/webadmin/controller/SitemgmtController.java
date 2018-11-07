@@ -858,6 +858,25 @@ public class SitemgmtController {
 	
 	/**
 	 * 
+	 * Get DMRequestSendList
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getdmrequestsendlistOrigin", method = RequestMethod.POST)
+	public JsonResponse<JSONObject> getDMRequestSendListOrigin(@RequestBody GetDMRequestSendListParameter parameters) {
+		JsonResponse<JSONObject> results = new JsonResponse<JSONObject>(true, null, null);
+		
+		JSONObject _result = sitemgmtService.getDMRequestSendListOrigin(parameters);
+		results.setData(_result);
+		
+		return results;
+	}
+	
+	/**
+	 * 
 	 * Set FGCatalog
 	 * 
 	 * @since 2018. 10. 29.
