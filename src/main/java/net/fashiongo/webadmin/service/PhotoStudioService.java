@@ -50,6 +50,8 @@ import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,7 +107,8 @@ public class PhotoStudioService extends ApiService {
 	}
 	
 	public List<PhotoDiscount> getDiscounts() {
-		return photoDiscountRepository.findAll();
+		Sort sort = new Sort(Direction.DESC, "DiscountID");
+		return photoDiscountRepository.findAll(sort);
 	}
 
 	public String saveDiscount(PhotoDiscount photoDiscount) throws IllegalArgumentException, IllegalAccessException {
@@ -142,11 +145,15 @@ public class PhotoStudioService extends ApiService {
 		
 		LocalDateTime date = LocalDateTime.now();
 		String username = Utility.getUsername();
-
-		photoDiscount.setCreatedBy(username);
-		photoDiscount.setCreatedOnDate(date);
-		photoDiscountRepository.save(photoDiscount);
-
+		if(photoDiscount.getDiscountID() == null) {
+			photoDiscount.setCreatedBy(username);
+			photoDiscount.setCreatedOnDate(date);
+			photoDiscountRepository.save(photoDiscount);
+		}else {
+			photoDiscount.setModifiedBY(username);
+			photoDiscount.setModifiedOnDate(date);
+			jdbcTemplatePhotoStudio.update(photoDiscount.toUpdateQuery(""));
+		}
 		return null;
 	}
 
@@ -273,6 +280,7 @@ public class PhotoStudioService extends ApiService {
 		if(newCancellationFees == null || newCancellationFees.size() == 0) {
 			for(PhotoCancellationFee currentCancellationFee : currentCancellationFees) {
 				PhotoCancellationFee newCancellationFee = new PhotoCancellationFee();
+				newCancellationFee.setCancelTypeNo(currentCancellationFee.getCancelTypeNo());
 				newCancellationFee.setCancelTypeName(currentCancellationFee.getCancelTypeName());
 				newCancellationFees.add(newCancellationFee);
 			}

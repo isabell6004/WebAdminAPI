@@ -41,6 +41,16 @@ public class PhotoCancellationFee implements IPersistent, Serializable {
 	public void setCancelTypeID(Integer cancelTypeID) {
 		this.cancelTypeID = cancelTypeID;
 	}
+	
+	@Column(name = "CancelTypeNo")
+	private Integer cancelTypeNo;
+	public Integer getCancelTypeNo() {
+		return cancelTypeNo;
+	}
+
+	public void setCancelTypeNo(Integer cancelTypeNo) {
+		this.cancelTypeNo = cancelTypeNo;
+	}
 
 	@Column(name = "CancelTypeName")
 	private String cancelTypeName;

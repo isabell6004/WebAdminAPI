@@ -289,7 +289,7 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@PostMapping(value = "/model/delete/{modelID}")
+	@GetMapping(value = "/model/{modelID}/delete")
 	public JsonResponse deleteModel(@PathVariable("modelID") Integer modelID) {
 		logger.debug("PhotoStudioController.deleteModel() called!!!");
 		JsonResponse<String> response = new JsonResponse<>(false, null, null);
