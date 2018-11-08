@@ -233,6 +233,8 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private TrendReportContentsRepository trendReportContentRepository;
+	
+	private net.fashiongo.webadmin.utility.Utility uUtility;
 
 	/**
 	 *
@@ -1088,14 +1090,13 @@ public class SitemgmtService extends ApiService {
 		String Filter = " 1=1 ";
 		String OrderBy = null;
         Boolean rActive = null;
-        net.fashiongo.webadmin.utility.Utility utl = new net.fashiongo.webadmin.utility.Utility();
 		
         switch (parameter.getTabNo())
         {
             case 2:// "Length":
                 DataSrc = "Code_Length";
                 ColumnList = "LengthID As CodeID,LengthName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and LengthName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -1109,7 +1110,7 @@ public class SitemgmtService extends ApiService {
             case 3:// "Style":
                 DataSrc = "Code_Style";
                 ColumnList = "StyleID As CodeID,StyleName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and StyleName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -1123,7 +1124,7 @@ public class SitemgmtService extends ApiService {
             case 4:// "Fabric":
                 DataSrc = "Code_Fabric";
                 ColumnList = "FabricID As CodeID,FabricName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + "and FabricName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -1166,7 +1167,7 @@ public class SitemgmtService extends ApiService {
             default://"Pattern":
             	DataSrc = "Code_Pattern";
                 ColumnList = "PatternID As CodeID,PatternName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and PatternName like '%" + parameter.getAttrName() + "%'";
                 }
