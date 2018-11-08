@@ -1,7 +1,5 @@
 package net.fashiongo.webadmin.service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -11,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.dao.primary.TblRetailerNewsRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
@@ -279,11 +276,9 @@ public class MessageService extends ApiService {
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setRetailerNews(SetRetailerNewsParameter parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
-		net.fashiongo.webadmin.utility.Utility utl = new net.fashiongo.webadmin.utility.Utility();
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 		
-		if(utl.isNullOrEmpty(parameters.getNewsTitle()) || parameters.getNewsTitle().length() < 1) {
+		if(Utility.isNullOrEmpty(parameters.getNewsTitle()) || parameters.getNewsTitle().length() < 1) {
 			result.setResultCode(-2);
 			result.setSuccess(false);
 		} else if(parameters.getNewsTitle().length() > 100) {
@@ -303,7 +298,7 @@ public class MessageService extends ApiService {
 			
 			retailerNews.setNewsTitle(parameters.getNewsTitle());
 			retailerNews.setNewsContent(parameters.getNewsContent());
-			retailerNews.setActive(utl.isNullOrEmpty(parameters.getActive().toString()) ? "N" : parameters.getActive() == true ? "Y" : "N");
+			retailerNews.setActive(Utility.isNullOrEmpty(parameters.getActive().toString()) ? "N" : parameters.getActive() == true ? "Y" : "N");
 			retailerNews.setFromDate(parameters.getFromDate());
 			retailerNews.setToDate(parameters.getToDate());
 			retailerNews.setLastUser(Utility.getUserInfo().getUsername());
