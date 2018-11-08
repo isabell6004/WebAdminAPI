@@ -415,13 +415,13 @@ public class PhotoStudioController {
 		return response;
 	}
 	
-	@GetMapping("/calendar/availablemodels/{theDate}")
-	public JsonResponse<?> getAvailableModels(@PathVariable("theDate") String theDate) {
+	@GetMapping("/calendar/availablemodels/{orderID}/{theDate}")
+	public JsonResponse<?> getAvailableModels(@PathVariable("orderID") Integer orderID, @PathVariable("theDate") String theDate) {
 		logger.debug("PhotoStudioController.getAvailableModels() called!!!");
 		JsonResponse<List<PhotoModel>> response = new JsonResponse<>(false, null, null);
 
 		try {
-			List<PhotoModel> result = photoStudioService.getAvailableModels(theDate);
+			List<PhotoModel> result = photoStudioService.getAvailableModels(orderID, theDate);
 			response.setSuccess(true);
 			response.setData(result);
 		} catch (Exception ex) {

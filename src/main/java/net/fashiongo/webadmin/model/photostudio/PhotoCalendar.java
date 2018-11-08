@@ -206,4 +206,16 @@ public class PhotoCalendar implements IPersistent, Serializable {
 	public void setBookedCnt(Integer bookedCnt) {
 		this.bookedCnt = bookedCnt;
 	}
+	
+	@Transient
+	@Column(name = "IsDelayed")
+	private Boolean isDelayed;
+	public Boolean getIsDelayed() {
+		return isDelayed;
+	}
+
+	public void setIsDelayed(Boolean isDelayed) {
+		this.isDelayed = isDelayed;
+	}
+	
 }

@@ -139,7 +139,7 @@ public class PhotoStudioService extends ApiService {
 			return "Discount Amount is required.";
 		}
 		
-		if(photoDiscountRepository.existsByDiscountCode(photoDiscount.getDiscountCode())) {
+		if(photoDiscount.getDiscountID() == null && photoDiscountRepository.existsByDiscountCode(photoDiscount.getDiscountCode())) {
 			return "This Discount code [" + photoDiscount.getDiscountCode() + "] is already used.";
 		}
 		
@@ -599,6 +599,7 @@ public class PhotoStudioService extends ApiService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(parmMap.get("year"));
 		params.add(parmMap.get("month"));
+		params.add(parmMap.get("modelID"));
 
 		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetPhotoCalendar", params, PhotoCalendar.class);
 
@@ -763,9 +764,10 @@ public class PhotoStudioService extends ApiService {
 		return result;
 	}
 	
-	public List<PhotoModel> getAvailableModels(String theDate) {
+	public List<PhotoModel> getAvailableModels(Integer orderID, String theDate) {
 		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
+		params.add(orderID);
 		params.add(theDate);
 		
 		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetAvailableModels", params, PhotoModel.class);
