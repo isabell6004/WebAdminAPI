@@ -199,6 +199,16 @@ public class DetailPhotoOrder {
 		this.photoCreditUsedAmount = photoCreditUsedAmount;
 	}
 	
+	@Column(name = "AdditionalDiscountAmount")
+	private BigDecimal additionalDiscountAmount;
+	public BigDecimal getAdditionalDiscountAmount() {
+		return additionalDiscountAmount;
+	}
+
+	public void setAdditionalDiscountAmount(BigDecimal additionalDiscountAmount) {
+		this.additionalDiscountAmount = additionalDiscountAmount;
+	}
+
 	@Column(name = "DiscountID")
 	private Integer discountID;
 	public Integer getDiscountID() {

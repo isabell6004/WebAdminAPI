@@ -117,35 +117,36 @@ public class PhotoStudioService extends ApiService {
 			return "Status is required.";
 		}
 		
-		if(photoDiscount.getDiscountName() == null) {
-			return "Title is required.";
-		}
-		
-		if(photoDiscount.getDiscountCode() == null) {
-			return "Discount Code is required.";
-		}
-		
-		if(photoDiscount.getIsFirstTimeOrder() == null) {
-			return "First Time Order Only is required.";
-		}
-		
-		if(photoDiscount.getIsRequiredPriceQty() == null 
-				|| (photoDiscount.getIsRequiredPriceQty() != null && Boolean.TRUE.equals(photoDiscount.getIsRequiredPriceQty()) 
-				&& photoDiscount.getRequiredPrice() == null && photoDiscount.getRequiredQty() == null)) {
-			return "Required Price or Required Qty is required.";
-		}
-		
-		if(photoDiscount.getDiscountAmount() == null && photoDiscount.getDiscountRate() == null) {
-			return "Discount Amount is required.";
-		}
-		
-		if(photoDiscount.getDiscountID() == null && photoDiscountRepository.existsByDiscountCode(photoDiscount.getDiscountCode())) {
-			return "This Discount code [" + photoDiscount.getDiscountCode() + "] is already used.";
-		}
-		
 		LocalDateTime date = LocalDateTime.now();
 		String username = Utility.getUsername();
 		if(photoDiscount.getDiscountID() == null) {
+			
+			if(photoDiscount.getDiscountName() == null) {
+				return "Title is required.";
+			}
+			
+			if(photoDiscount.getDiscountCode() == null) {
+				return "Discount Code is required.";
+			}
+			
+			if(photoDiscount.getIsFirstTimeOrder() == null) {
+				return "First Time Order Only is required.";
+			}
+			
+			if(photoDiscount.getIsRequiredPriceQty() == null 
+					|| (photoDiscount.getIsRequiredPriceQty() != null && Boolean.TRUE.equals(photoDiscount.getIsRequiredPriceQty()) 
+					&& photoDiscount.getRequiredPrice() == null && photoDiscount.getRequiredQty() == null)) {
+				return "Required Price or Required Qty is required.";
+			}
+			
+			if(photoDiscount.getDiscountAmount() == null && photoDiscount.getDiscountRate() == null) {
+				return "Discount Amount is required.";
+			}
+			
+			if(photoDiscountRepository.existsByDiscountCode(photoDiscount.getDiscountCode())) {
+				return "This Discount code [" + photoDiscount.getDiscountCode() + "] is already used.";
+			}
+			
 			photoDiscount.setCreatedBy(username);
 			photoDiscount.setCreatedOnDate(date);
 			photoDiscountRepository.save(photoDiscount);
