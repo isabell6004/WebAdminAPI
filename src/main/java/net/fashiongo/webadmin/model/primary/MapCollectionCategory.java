@@ -24,10 +24,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "Map_CollectionCategory")
 @XmlRootElement
-@NamedQueries({ @NamedQuery(name = "MapCollectionCategory.findAll", query = "SELECT m FROM MapCollectionCategory m"),
+/*@NamedQueries({ @NamedQuery(name = "MapCollectionCategory.findAll", query = "SELECT m FROM MapCollectionCategory m"),
 		@NamedQuery(name = "MapCollectionCategory.findByMapID", query = "SELECT m FROM MapCollectionCategory m WHERE m.mapID = :mapID"),
 		@NamedQuery(name = "MapCollectionCategory.findByCollectionCategoryID", query = "SELECT m FROM MapCollectionCategory m WHERE m.collectionCategoryID = :collectionCategoryID"),
 		@NamedQuery(name = "MapCollectionCategory.findByCategoryID", query = "SELECT m FROM MapCollectionCategory m WHERE m.categoryID = :categoryID") })
+*/
 public class MapCollectionCategory implements Serializable {
 	private static final long serialVersionUID = 1L;
 

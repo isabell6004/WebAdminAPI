@@ -23,12 +23,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "Map_ShowSchedule_WholeSaler")
 @XmlRootElement
-@NamedQueries({
+/*@NamedQueries({
 		@NamedQuery(name = "MapShowScheduleWholeSaler.findAll", query = "SELECT m FROM MapShowScheduleWholeSaler m"),
 		@NamedQuery(name = "MapShowScheduleWholeSaler.findByMapID", query = "SELECT m FROM MapShowScheduleWholeSaler m WHERE m.mapID = :mapID"),
 		@NamedQuery(name = "MapShowScheduleWholeSaler.findByShowScheduleID", query = "SELECT m FROM MapShowScheduleWholeSaler m WHERE m.showScheduleID = :showScheduleID"),
 		@NamedQuery(name = "MapShowScheduleWholeSaler.findByWholeSalerID", query = "SELECT m FROM MapShowScheduleWholeSaler m WHERE m.wholeSalerID = :wholeSalerID"),
 		@NamedQuery(name = "MapShowScheduleWholeSaler.findByBooth", query = "SELECT m FROM MapShowScheduleWholeSaler m WHERE m.booth = :booth") })
+*/
 public class MapShowScheduleWholeSaler implements Serializable {
 
 	private static final long serialVersionUID = 1L;

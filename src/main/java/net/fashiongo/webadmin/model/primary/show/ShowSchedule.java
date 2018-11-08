@@ -29,7 +29,7 @@ import net.fashiongo.common.conversion.LocalDateTimeConverter;
 @Entity
 @Table(name = "ShowSchedule")
 @XmlRootElement
-@NamedQueries({ @NamedQuery(name = "ShowSchedule.findAll", query = "SELECT s FROM ShowSchedule s"),
+/*@NamedQueries({ @NamedQuery(name = "ShowSchedule.findAll", query = "SELECT s FROM ShowSchedule s"),
 		@NamedQuery(name = "ShowSchedule.findByShowScheduleID", query = "SELECT s FROM ShowSchedule s WHERE s.showScheduleID = :showScheduleID"),
 		@NamedQuery(name = "ShowSchedule.findByShowID", query = "SELECT s FROM ShowSchedule s WHERE s.showID = :showID"),
 		@NamedQuery(name = "ShowSchedule.findByBannerImage", query = "SELECT s FROM ShowSchedule s WHERE s.bannerImage = :bannerImage"),
@@ -39,6 +39,7 @@ import net.fashiongo.common.conversion.LocalDateTimeConverter;
 		@NamedQuery(name = "ShowSchedule.findByActive", query = "SELECT s FROM ShowSchedule s WHERE s.active = :active"),
 		@NamedQuery(name = "ShowSchedule.findByListOrder", query = "SELECT s FROM ShowSchedule s WHERE s.listOrder = :listOrder"),
 		@NamedQuery(name = "ShowSchedule.findByMobileImage", query = "SELECT s FROM ShowSchedule s WHERE s.mobileImage = :mobileImage") })
+*/
 public class ShowSchedule implements Serializable {
 
 	private static final long serialVersionUID = 1L;
