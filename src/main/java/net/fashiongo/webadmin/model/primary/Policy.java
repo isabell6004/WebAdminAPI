@@ -165,6 +165,11 @@ public class Policy {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+	
+	@JsonProperty("ModifiedBy")
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
 
 	@JsonProperty("modifiedby")
 	public void setModifiedBy(String modifiedBy) {
