@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author Reo
+ *
+ */
 public class SecurityUserCreate  implements Serializable {
 	/**
 	 * 

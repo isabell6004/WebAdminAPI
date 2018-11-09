@@ -39,6 +39,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SaveCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryAdItemParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdCalendarResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdDetailResponse;
@@ -51,8 +52,8 @@ import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
 import net.fashiongo.webadmin.model.primary.AdVendor;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
+import net.fashiongo.webadmin.model.primary.CollectionCategoryItem;
 import net.fashiongo.webadmin.model.primary.MapAdVendorItem;
-import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
 
 @Service
 public class AdService extends ApiService {
@@ -474,40 +475,53 @@ public class AdService extends ApiService {
 	public ResultCode SaveCategoryAdItemForBidVendor(SaveCategoryAdItemForBidVendorParameter parameters) {
 		
 		List<MapAdVendorItem> delMapAdVendorItemList = mapAdVendorItemRepository.findByAdID(parameters.getAdID());
-		if (delMapAdVendorItemList.size()==0)
-		{
-			return new ResultCode(false, -1, "Saved failed!");
-		}
-		else
+		if (delMapAdVendorItemList.size()>0)
 		{
 			mapAdVendorItemRepository.deleteAll(delMapAdVendorItemList);
 			AdVendor advendor = adVendorRepository.findByAdID(parameters.getAdID());
 			advendor.setVendorCategoryID(parameters.getVendorCategoryID());
 			adVendorRepository.save(advendor);
-			
 		}
-				
-//		findByAdid	
-//		AdPage adPage = new AdPage();
-//		Integer pageID = parameters.getPageID();
-//		String pageName = parameters.getPageName();
-//		
-//		if (pageID == null) { // new (insert)
-//			AdPage adPage2 = adPageRepository.findTopByOrderByPageIDDesc();
-//			if (adPage2 != null) {
-//				pageID = adPage2.getPageID() + 1;
-//				adPage.setPageID(pageID);
-//				adPage.setPageName(pageName);
-//				adPageRepository.save(adPage);
-//			}
-//		} else { // not null (update)
-//			AdPage adPage2 = adPageRepository.findOneByPageID(pageID);
-//			adPage2.setPageName(pageName);
-//			// adPage2.setPageUrl(pageUrl);
-//			adPageRepository.save(adPage2);
-//		}
+		List<MapAdVendorItem> mvil = new ArrayList<MapAdVendorItem>();
+		for (MapAdVendorItem mapAdVendorItem : parameters.getMapAdVendorItem()) {
+			MapAdVendorItem mvi = new MapAdVendorItem();
+			mvi.setAdID(mapAdVendorItem.getAdID());
+			mvi.setProductID(mapAdVendorItem.getProductID());
+			mvi.setListOrder(mapAdVendorItem.getListOrder());
+			mvil.add(mvi);
+		}
+		mapAdVendorItemRepository.saveAll(mvil);
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
+	
+	/**
+	 * 
+	 * Set Category Ad Item
+	 * 
+	 * @since 2018. 11. 01.
+	 * @author Jiwon Kim
+	 * @param SetCategoryAdItemParameter
+	 * @return SetCategoryAdItem
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode SetCategoryAdItem(SetCategoryAdItemParameter parameters) {
+		LocalDateTime createdOn = LocalDateTime.now();
+		
+		CollectionCategoryItem cci = new CollectionCategoryItem();
+		cci.setSpotID(parameters.getSpotID());
+		cci.setFromDate(parameters.getFromDate());
+		cci.setCollectionCategoryID(parameters.getCollectioncategoryid());
+		cci.setProductID(parameters.getProductID());
+		cci.setCreatedBy(Utility.getUsername());
+		cci.setCreatedOn(createdOn);
+		cci.setCollectionCategoryType(1);
+		cci.setWholeSalerID(parameters.getWholesalerID());
+		
+		collectionCategoryItemRepository.save(cci);
+		
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+	}
+	
 	
 	
 }

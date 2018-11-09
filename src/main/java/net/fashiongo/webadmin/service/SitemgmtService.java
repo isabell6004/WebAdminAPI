@@ -3,13 +3,13 @@ package net.fashiongo.webadmin.service;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-//import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
-//import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +35,7 @@ import net.fashiongo.webadmin.dao.primary.MapPatternCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapStyleCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.PolicyRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
+import net.fashiongo.webadmin.dao.primary.TrendReportContentsRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogSendQueueRepository;
@@ -115,6 +116,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingPa
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportMapParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportParameter;
 import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
@@ -156,10 +158,12 @@ import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.PolicyAgreement;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
+import net.fashiongo.webadmin.model.primary.TrendReportContents;
 import net.fashiongo.webadmin.model.primary.VendorCatalog;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendQueue;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendRequest;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  *
@@ -224,6 +228,11 @@ public class SitemgmtService extends ApiService {
 
 	@Autowired
 	private FeaturedItemRepository featuredItemRepository;
+	
+	@Autowired
+	private TrendReportContentsRepository trendReportContentRepository;
+	
+	private net.fashiongo.webadmin.utility.Utility uUtility;
 
 	/**
 	 *
@@ -948,6 +957,74 @@ public class SitemgmtService extends ApiService {
 		jdbcHelper.executeSP(spName, params);
 		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
 	}
+	
+	@Transactional(value = "primaryTransactionManager")
+	public JsonResponse<String> setTrendReport(SetTrendReportParameter parameters) {
+		JsonResponse<String> result = new JsonResponse<String>(false, null, 0, 0, null);
+		TrendReport param = parameters.getTrendreport();
+
+		TrendReport tr = trendReportRepository.findOneByTrendReportID(param.getTrendReportID());
+
+		if (parameters.getType().equals("Del")) {
+			trendReportRepository.delete(tr);
+			result.setSuccess(true);
+			result.setCode(1);
+			result.setMessage("Deleted successfully!");
+		} else if (parameters.getType().equals("Act")) {
+			tr.setActive(param.getActive());
+			trendReportRepository.save(tr);
+			result.setSuccess(true);
+			result.setCode(1);
+			result.setMessage("Updated successfully!");
+		} else if (parameters.getType().equals("Ins")) {
+			if (param.getTrendReportID() < 1) {
+				tr = new TrendReport();
+				result.setMessage("Saved successfully!");
+			} else {
+				result.setMessage("Updated successfully!");
+			}
+
+			tr.setTitle(param.getTitle());
+			tr.setDateFrom(param.getDateFrom());
+			tr.setDateTo(param.getDateTo());
+			tr.setImage(param.getImage());
+			tr.setSquareImage(param.getSquareImage());
+			tr.setMiniImage(param.getMiniImage());
+			tr.setkMMImage1(param.getkMMImage1());
+			tr.setkMMImage2(param.getkMMImage2());
+			tr.setSticky(param.getSticky());
+			tr.setCuratedType(param.getCuratedType() == null ? 3 : param.getCuratedType());
+			tr.setCreatedOn(LocalDateTime.now());
+			tr.setCreatedBy(Utility.getUsername());
+			tr.setModifiedOn(LocalDateTime.now());
+			tr.setModifiedBy(Utility.getUsername());
+			tr.setListOrder(param.getListOrder());
+			tr.setActive(param.getActive());
+			tr.settRDescription(param.gettRDescription());
+			trendReportRepository.save(tr);
+
+			result.setSuccess(true);
+			result.setPk(tr.getTrendReportID());
+			result.setCode(1);
+
+			if (param.getTrendReportID() < 1 && param.getCuratedType() == 4) {
+				TrendReportContents trcb = trendReportContentRepository.findOneByTrendReportIDIsNull();
+				TrendReportContents trc = new TrendReportContents();
+
+				trc.setTrendReportID(tr.getTrendReportID());
+				trcb.getContents().replace("trend_report/kmm-top.jpg", "trend_report/" + param.getkMMImage1());
+				trcb.getContents().replace("trend_report/kmm-middle.jpg", "trend_report/" + param.getkMMImage2());
+				trc.setContents(trcb.getContents());
+				trc.setCreatedOn(LocalDateTime.now());
+				trc.setCreatedBy(Utility.getUsername());
+				trc.setModifiedOn(LocalDateTime.now());
+				trc.setModifieidBy(Utility.getUsername());
+				trendReportContentRepository.save(trc);
+			}
+		}
+
+		return result;
+	}
    
 	/**
 	 *
@@ -1011,14 +1088,13 @@ public class SitemgmtService extends ApiService {
 		String Filter = " 1=1 ";
 		String OrderBy = null;
         Boolean rActive = null;
-        net.fashiongo.webadmin.utility.Utility utl = new net.fashiongo.webadmin.utility.Utility();
 		
         switch (parameter.getTabNo())
         {
             case 2:// "Length":
                 DataSrc = "Code_Length";
                 ColumnList = "LengthID As CodeID,LengthName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and LengthName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -1032,7 +1108,7 @@ public class SitemgmtService extends ApiService {
             case 3:// "Style":
                 DataSrc = "Code_Style";
                 ColumnList = "StyleID As CodeID,StyleName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and StyleName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -1046,7 +1122,7 @@ public class SitemgmtService extends ApiService {
             case 4:// "Fabric":
                 DataSrc = "Code_Fabric";
                 ColumnList = "FabricID As CodeID,FabricName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + "and FabricName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -1060,12 +1136,6 @@ public class SitemgmtService extends ApiService {
             case 5:// "Category Mapping":
                 switch (parameter.getPrevTab())
                 {
-                    case 1:
-                        DataSrc = "vwPatternCategory";
-                        ColumnList = "MapID,PatternID As CodeID,PatternName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
-                        Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
-                        OrderBy = "PatternName";
-                        break;
                     case 2:
                         DataSrc = "vwLengthCategory";
                         ColumnList = "MapID,LengthID As CodeID,LengthName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
@@ -1084,12 +1154,18 @@ public class SitemgmtService extends ApiService {
                         Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
                         OrderBy = "FabricName";
                         break;
+                    default:
+                    	DataSrc = "vwPatternCategory";
+                        ColumnList = "MapID,PatternID As CodeID,PatternName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
+                        Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
+                        OrderBy = "PatternName";
+                        break;
                 }
                 break;
             default://"Pattern":
             	DataSrc = "Code_Pattern";
                 ColumnList = "PatternID As CodeID,PatternName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and PatternName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -1228,50 +1304,6 @@ public class SitemgmtService extends ApiService {
 		
 		switch (parameter.getTabNo())
         {
-            case 1:  //Pattern
-            	List<CodePattern> newCodePatternList = new ArrayList<CodePattern>();
-            	if (parameter.getbType().equals("ADel")) {
-	            	for (CodeData cd: parameter.getCodeDataList()) {
-	            		CodePattern newCp = new CodePattern();
-		            	newCp.setPatternID(cd.getCodeID());
-	            		newCodePatternList.add(newCp);
-	            	}
-	            	codePatternRepository.deleteAll(newCodePatternList);
-	            	
-            		result.setResultCode(1);
-            		result.setSuccess(true);
-            		result.setResultMsg(MSG_DELETE_SUCCESS);
-            	} else {
-            		CodePattern newCp = new CodePattern();
-            		if (parameter.getbType().equals("Del")) {
-		            	newCp.setPatternID(parameter.getCodeID());
-	            		newCodePatternList.add(newCp);
-	            		codePatternRepository.delete(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_DELETE_SUCCESS);
-	            	} else if (parameter.getCodeID() > 0) {
-	            		newCp = codePatternRepository.findOneByPatternID(parameter.getCodeID());
-	    				newCp.setPatternName(parameter.getAttrName());
-	            		newCp.setActive(parameter.getActive());
-	            		codePatternRepository.save(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_UPDATE_SUCCESS);
-	            	} else {
-	            		newCp.setPatternID(parameter.getCodeID());
-	    				newCp.setPatternName(parameter.getAttrName());
-	            		newCp.setActive(parameter.getActive());
-	            		codePatternRepository.save(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_INSERT_SUCCESS);
-	            	}
-            	}
-            	break;
             case 2:  //Length
             	List<CodeLength> newCodeLengthList = new ArrayList<CodeLength>();
             	if (parameter.getbType().equals("ADel")) {
@@ -1397,6 +1429,50 @@ public class SitemgmtService extends ApiService {
 	            		newCf.setFabricName(parameter.getAttrName());
 	            		newCf.setActive(parameter.getActive());
 	            		codeFabricRepository.save(newCf);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_INSERT_SUCCESS);
+	            	}
+            	}
+            	break;
+            default:  //Pattern
+            	List<CodePattern> newCodePatternList = new ArrayList<CodePattern>();
+            	if (parameter.getbType().equals("ADel")) {
+	            	for (CodeData cd: parameter.getCodeDataList()) {
+	            		CodePattern newCp = new CodePattern();
+		            	newCp.setPatternID(cd.getCodeID());
+	            		newCodePatternList.add(newCp);
+	            	}
+	            	codePatternRepository.deleteAll(newCodePatternList);
+	            	
+            		result.setResultCode(1);
+            		result.setSuccess(true);
+            		result.setResultMsg(MSG_DELETE_SUCCESS);
+            	} else {
+            		CodePattern newCp = new CodePattern();
+            		if (parameter.getbType().equals("Del")) {
+		            	newCp.setPatternID(parameter.getCodeID());
+	            		newCodePatternList.add(newCp);
+	            		codePatternRepository.delete(newCp);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_DELETE_SUCCESS);
+	            	} else if (parameter.getCodeID() > 0) {
+	            		newCp = codePatternRepository.findOneByPatternID(parameter.getCodeID());
+	    				newCp.setPatternName(parameter.getAttrName());
+	            		newCp.setActive(parameter.getActive());
+	            		codePatternRepository.save(newCp);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_UPDATE_SUCCESS);
+	            	} else {
+	            		newCp.setPatternID(parameter.getCodeID());
+	    				newCp.setPatternName(parameter.getAttrName());
+	            		newCp.setActive(parameter.getActive());
+	            		codePatternRepository.save(newCp);
 	            		
 	            		result.setResultCode(1);
 	            		result.setSuccess(true);
@@ -1655,6 +1731,24 @@ public class SitemgmtService extends ApiService {
 	}
 
     /**
+	 * Get DMRequestSendListOrigin
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public JSONObject getDMRequestSendListOrigin(GetDMRequestSendListParameter parameters) {
+		JSONObject result = new JSONObject();
+		List<DMRequestDetail> subList = null;
+		
+		for(Integer catalogId : parameters.getDmIds()) {
+			result.put(catalogId.toString(), getDMDetail(catalogId));
+		}
+		return result;
+	}
+	
+	/**
 	 * Get DMRequestSendList
 	 * 
 	 * @since 2018. 10. 29.
@@ -1664,36 +1758,22 @@ public class SitemgmtService extends ApiService {
 	 */
 	public JSONObject getDMRequestSendList(GetDMRequestSendListParameter parameters) {
 		JSONObject result = new JSONObject();
-		List<DMRequestDetail> subList = null;
+		String spName = "up_wa_DMSendList_Migration";
+		List<Object> params = new ArrayList<Object>();
+		params.add(StringUtils.join(parameters.getDmIds(), ","));
 		
-		for(Integer catalogId : parameters.getDmIds()) {
-			subList = getDMDetail(catalogId);
-			if(!CollectionUtils.isEmpty(subList)) {
-				result.put(catalogId.toString(), getDMDetail(catalogId));
-			}
+		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
+		List<DMRequestDetail> subList = (List<DMRequestDetail>) _result.get(0);
+		
+		Map<Integer, List<DMRequestDetail>> HashMapDmList = subList.stream()
+				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
+
+		for (Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
+			result.put(entry.getKey(), entry.getValue());
 		}
+		
 		return result;
 	}
-	
-	/**
-	 * Get DMRequestSendList2
-	 * 
-	 * @since 2018. 10. 29.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-//	public JSONObject getDMRequestSendList2(GetDMRequestSendListParameter parameters) {
-//		JSONObject result = new JSONObject();
-//		List<DMRequestDetail> subList = null;
-//		
-//		String spName = "up_wa_DMSendList_Migration";
-//		List<Object> params = new ArrayList<Object>();
-//		params.add(parameters.getDmIds().toString());
-//		
-//		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
-//		return result;
-//	}
 	
 	/**
 	 * 
@@ -1962,3 +2042,4 @@ public class SitemgmtService extends ApiService {
 	}
 	
 }
+

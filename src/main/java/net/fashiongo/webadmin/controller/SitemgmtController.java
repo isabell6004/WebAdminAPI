@@ -56,6 +56,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingPa
 import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportMapParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetTrendReportSortParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.StartDateParameter;
 import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
@@ -791,6 +792,20 @@ public class SitemgmtController {
 	
 	/**
 	 *
+	 * Set TrendReport
+	 *
+	 * @since 2018. 11. 06.
+	 * @author Junghwan Lee
+	 * @param SetTrendReportParameter
+	 * @return JsonResponse<String
+	 */
+	@RequestMapping(value = "settrendreport", method = RequestMethod.POST)
+	public JsonResponse<String> setTrendReport(@RequestBody SetTrendReportParameter parameters) {
+		return sitemgmtService.setTrendReport(parameters);
+	}
+	
+	/**
+	 *
 	 * Get Last KMM Data
 	 *
 	 * @since 2018. 10. 29.
@@ -836,6 +851,25 @@ public class SitemgmtController {
 		JsonResponse<JSONObject> results = new JsonResponse<JSONObject>(true, null, null);
 		
 		JSONObject _result = sitemgmtService.getDMRequestSendList(parameters);
+		results.setData(_result);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Get DMRequestSendList
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value = "getdmrequestsendlistOrigin", method = RequestMethod.POST)
+	public JsonResponse<JSONObject> getDMRequestSendListOrigin(@RequestBody GetDMRequestSendListParameter parameters) {
+		JsonResponse<JSONObject> results = new JsonResponse<JSONObject>(true, null, null);
+		
+		JSONObject _result = sitemgmtService.getDMRequestSendListOrigin(parameters);
 		results.setData(_result);
 		
 		return results;

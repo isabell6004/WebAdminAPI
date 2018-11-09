@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "List_Show")
 @XmlRootElement
-@NamedQueries({ @NamedQuery(name = "ListShow.findAll", query = "SELECT l FROM ListShow l"),
+/*@NamedQueries({ @NamedQuery(name = "ListShow.findAll", query = "SELECT l FROM ListShow l"),
 		@NamedQuery(name = "ListShow.findByShowID", query = "SELECT l FROM ListShow l WHERE l.showID = :showID"),
 		@NamedQuery(name = "ListShow.findByShowName", query = "SELECT l FROM ListShow l WHERE l.showName = :showName"),
 		@NamedQuery(name = "ListShow.findByLocation", query = "SELECT l FROM ListShow l WHERE l.location = :location"),
@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		@NamedQuery(name = "ListShow.findByActive", query = "SELECT l FROM ListShow l WHERE l.active = :active"),
 		@NamedQuery(name = "ListShow.findByLogoFileName", query = "SELECT l FROM ListShow l WHERE l.logoFileName = :logoFileName"),
 		@NamedQuery(name = "ListShow.findByShowCode", query = "SELECT l FROM ListShow l WHERE l.showCode = :showCode") })
+*/
 public class ListShow implements Serializable {
 
 	private static final long serialVersionUID = 1L;

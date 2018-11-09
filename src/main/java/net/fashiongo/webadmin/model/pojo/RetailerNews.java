@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class RetailerNews {
 	@JsonProperty("row")
-	private Integer row;
+	private Long row;
 	
 	@JsonProperty("NewsID")
 	private Integer newsID;
@@ -31,11 +31,11 @@ public class RetailerNews {
 	@JsonProperty("Active")
 	private String active;
 
-	public Integer getRow() {
+	public Long getRow() {
 		return row;
 	}
 
-	public void setRow(Integer row) {
+	public void setRow(Long row) {
 		this.row = row;
 	}
 
