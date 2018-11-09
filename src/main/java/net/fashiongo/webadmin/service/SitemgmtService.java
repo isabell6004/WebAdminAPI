@@ -60,7 +60,6 @@ import net.fashiongo.webadmin.model.pojo.FeaturedVendorDaily;
 import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.PatternInfo;
-import net.fashiongo.webadmin.model.pojo.PolicyDetail;
 import net.fashiongo.webadmin.model.pojo.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.ProductColors;
 import net.fashiongo.webadmin.model.pojo.ProductImage;
@@ -154,6 +153,7 @@ import net.fashiongo.webadmin.model.primary.MapLengthCategory;
 import net.fashiongo.webadmin.model.primary.MapPatternCategory;
 import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 import net.fashiongo.webadmin.model.primary.Policy;
+import net.fashiongo.webadmin.model.primary.PolicyAgreement;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.model.primary.VendorCatalog;
@@ -382,9 +382,9 @@ public class SitemgmtService extends ApiService {
 		params.add("PolicyAgreementID desc");
 		params.add(true);
 		params.add(null);
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, PolicyDetail.class);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, PolicyAgreement.class);
 		result.setTotal((List<Total>) _result.get(0));
-		result.setPolicyDetail((List<PolicyDetail>)_result.get(1));
+		result.setPolicyDetail((List<PolicyAgreement>)_result.get(1));
 				
 		return result;
 	}
