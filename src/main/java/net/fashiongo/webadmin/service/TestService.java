@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.fgem.EmApplicationRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
-import net.fashiongo.webadmin.model.pojo.Message;
-import net.fashiongo.webadmin.model.pojo.Total;
-import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.message.Message;
+import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;

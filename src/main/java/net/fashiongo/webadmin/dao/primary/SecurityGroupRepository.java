@@ -3,9 +3,10 @@ package net.fashiongo.webadmin.dao.primary;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
-import javax.transaction.Transactional;
 
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
+
+import javax.transaction.Transactional;
 
 public interface SecurityGroupRepository extends CrudRepository<SecurityGroup, Integer>{
 	List<SecurityGroup> findAllByOrderByGroupNameAsc();

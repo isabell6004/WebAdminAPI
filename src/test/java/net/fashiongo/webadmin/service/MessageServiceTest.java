@@ -18,22 +18,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
-import net.fashiongo.webadmin.model.pojo.Message;
-
-import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.RetailerNews;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.message.Message;
+import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
+import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetailParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
-import net.fashiongo.webadmin.model.pojo.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 
 @RunWith(SpringRunner.class)

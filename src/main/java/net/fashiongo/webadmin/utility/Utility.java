@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 
 
 public class Utility {

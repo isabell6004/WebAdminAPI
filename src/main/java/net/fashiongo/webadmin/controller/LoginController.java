@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.parameter.AuthParameter;
+import net.fashiongo.webadmin.model.pojo.login.parameter.AuthParameter;
 import net.fashiongo.webadmin.service.LoginService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;

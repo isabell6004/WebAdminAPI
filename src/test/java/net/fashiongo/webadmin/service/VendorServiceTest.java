@@ -15,9 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
-import net.fashiongo.webadmin.model.pojo.ProductColor;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 
 /**

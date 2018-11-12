@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
-import net.fashiongo.webadmin.model.pojo.ProductColor;
-import net.fashiongo.webadmin.model.pojo.ProductSummary;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
+import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 
 /**

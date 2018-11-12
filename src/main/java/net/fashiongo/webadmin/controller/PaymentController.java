@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.common.JsonResponse;
-import net.fashiongo.webadmin.common.PagedResult;
-import net.fashiongo.webadmin.common.QueryParam;
 import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.dao.primary.DisputeDocumentRepository;
 import net.fashiongo.webadmin.model.fgpay.Dispute;
 import net.fashiongo.webadmin.model.fgpay.DisputeDetail;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 import net.fashiongo.webadmin.model.primary.DisputeDocument;
 import net.fashiongo.webadmin.service.PaymentService;
 

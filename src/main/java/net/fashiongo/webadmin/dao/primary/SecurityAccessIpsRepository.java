@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityAccessIpParameter;
 import net.fashiongo.webadmin.model.primary.SecurityAccessIp;;
 
 /**

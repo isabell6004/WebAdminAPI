@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
-import net.fashiongo.webadmin.model.pojo.response.GetCollectionCategoryListResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetCollectionCategoryListorderResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCollectionCategoryListorderParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetCollectionCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.SetCollectionCategoryListorderResponse;
 import net.fashiongo.webadmin.model.primary.CollectionCategory2;
-import net.fashiongo.webadmin.model.pojo.ResultResponse;
 import net.fashiongo.webadmin.service.SitemgmtCollectionCategoryService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 

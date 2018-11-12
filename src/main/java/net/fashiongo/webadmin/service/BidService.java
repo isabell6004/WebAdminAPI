@@ -5,16 +5,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import net.fashiongo.webadmin.model.pojo.BidSetting;
-import net.fashiongo.webadmin.model.pojo.BidSettingLastRecords;
-import net.fashiongo.webadmin.model.pojo.BidSettingLastWeek;
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.GetBidSettingLastRecordsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetBidSettingParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetBidSettingParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetBidSettingLastRecordsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetBidSettingLastWeekResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetBidSettingResponse;
+import net.fashiongo.webadmin.model.pojo.bid.BidSetting;
+import net.fashiongo.webadmin.model.pojo.bid.BidSettingLastRecords;
+import net.fashiongo.webadmin.model.pojo.bid.BidSettingLastWeek;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastRecordsParameter;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingParameter;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidSettingParameter;
+import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsResponse;
+import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastWeekResponse;
+import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 
 /**
  * 

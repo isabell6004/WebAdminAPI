@@ -21,9 +21,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
-import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.show.*;
-import net.fashiongo.webadmin.model.pojo.response.show.*;
+import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelShowParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowListParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowScheduleListParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowInfoParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowParticipatingVendorParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowPromotionPlanParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowScheduleParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowCategoriesResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowListResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowParticipatingVendorsResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowPromotionPlanResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.show.ListShow;
 import net.fashiongo.webadmin.model.primary.show.MapShowSchedulePromotionPlanVendor;
 import net.fashiongo.webadmin.model.primary.show.ShowSchedule;
@@ -69,7 +81,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowList(net.fashiongo.webadmin.model.pojo.parameter.show.GetShowListParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowList(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowListParameters)}.
 	 */
 	@Test
 	public final void testGetShowList() {
@@ -94,7 +106,7 @@ public class SitemgmtShowServiceTest {
 		return p;
 	}
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowInfo(net.fashiongo.webadmin.model.pojo.parameter.show.SetShowInfoParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowInfo(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowInfoParameters)}.
 	 */
 	@Test
 	@Ignore("Not yet implemented")
@@ -137,7 +149,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowScheduleList(net.fashiongo.webadmin.model.pojo.parameter.show.GetShowScheduleListParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowScheduleList(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowScheduleListParameters)}.
 	 */
 	@Test
 	public final void testGetShowScheduleList() {
@@ -170,7 +182,7 @@ public class SitemgmtShowServiceTest {
 	}
 	
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShow(net.fashiongo.webadmin.model.pojo.parameter.show.SetShowParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShow(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowParameters)}.
 	 */
 	@Test
 	@Ignore("Not yet implemented")
@@ -189,7 +201,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setDeleteShow(net.fashiongo.webadmin.model.pojo.parameter.show.DelShowParameter)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setDeleteShow(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelShowParameter)}.
 	 */
 	@Test
 	@Ignore("Not yet implemented")
@@ -205,7 +217,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setDeleteShowSchedule(net.fashiongo.webadmin.model.pojo.parameter.show.DelShowParameter)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setDeleteShowSchedule(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelShowParameter)}.
 	 */
 	@Test
 	@Ignore("Not yet implemented")
@@ -220,7 +232,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowSchedule(net.fashiongo.webadmin.model.pojo.parameter.show.SetShowScheduleParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowSchedule(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowScheduleParameters)}.
 	 * @throws Exception 
 	 */
 	@Test
@@ -261,7 +273,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowCategories(net.fashiongo.webadmin.model.pojo.parameter.show.GetShowParameter)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowCategories(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowParameter)}.
 	 */
 	@Test
 	public final void testGetShowCategories() {
@@ -275,7 +287,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowPromotionPlans(net.fashiongo.webadmin.model.pojo.parameter.show.GetShowParameter)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowPromotionPlans(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowParameter)}.
 	 */
 	@Test
 	public final void testGetShowPromotionPlans() {
@@ -294,7 +306,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowParticipatingVendors(net.fashiongo.webadmin.model.pojo.parameter.show.GetShowParameter)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowParticipatingVendors(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowParameter)}.
 	 */
 	@Test
 	public final void testGetShowParticipatingVendors() {
@@ -334,7 +346,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowParticipatingVendor(net.fashiongo.webadmin.model.pojo.parameter.show.SetShowParticipatingVendorParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowParticipatingVendor(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowParticipatingVendorParameters)}.
 	 */
 	@Test
 	@Ignore("Not yet implemented")
@@ -356,7 +368,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowPromotionPlan(net.fashiongo.webadmin.model.pojo.parameter.show.SetShowPromotionPlanParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setShowPromotionPlan(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowPromotionPlanParameters)}.
 	 */
 	@Test
 	@Ignore("Not yet implemented")
@@ -376,7 +388,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setDeleteShowPromotionPlan(net.fashiongo.webadmin.model.pojo.parameter.show.DelShowParameter)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setDeleteShowPromotionPlan(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelShowParameter)}.
 	 */
 	@Test
 	@Ignore("Not yet implemented")
@@ -390,7 +402,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setDeleteShowParticipatingVendor(net.fashiongo.webadmin.model.pojo.parameter.show.DelShowParameter)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#setDeleteShowParticipatingVendor(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelShowParameter)}.
 	 */
 	@Test
 	@Ignore("Not yet implemented")
