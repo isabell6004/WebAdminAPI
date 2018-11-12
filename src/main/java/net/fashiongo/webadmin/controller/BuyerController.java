@@ -38,4 +38,20 @@ public class BuyerController {
 		ResultCode result = userService.resetPassword(parameters);
 		return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
+	
+	/**
+	 * 
+	 * SetAdminRetailerReadYN
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="setadminretailerreadyn", method=RequestMethod.POST)
+	public void setAdminRetailerReadYN(@RequestBody Integer parameters) {
+		
+	}
+	
+	
 }
