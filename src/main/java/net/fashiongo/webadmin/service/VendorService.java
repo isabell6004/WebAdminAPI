@@ -5,15 +5,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
+import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCard;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 
 /**
@@ -78,8 +77,17 @@ public class VendorService extends ApiService {
 	 * @param 
 	 * @return 
 	 */
-	public void getVendorCreditCardList(Integer parameters) {
+	@SuppressWarnings("unchecked")
+	public GetVendorCreditCardListResponse getVendorCreditCardList(String orderby) {
+		String spName = "up_wa_GetVendorCreditCard";
+		List<Object> params = new ArrayList<Object>();
+		GetVendorCreditCardListResponse result = new GetVendorCreditCardListResponse();
+		params.add(orderby);
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorCreditCard.class);
 		
+		result.setVendorCreditCardList((List<VendorCreditCard>) _result.get(0));
+		return result;
 	}
 	
 	/**

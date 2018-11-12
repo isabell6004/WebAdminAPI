@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -78,8 +80,9 @@ public class VendorController {
 	 * @return 
 	 */
 	@RequestMapping(value="getvendorcreditcardList", method=RequestMethod.POST)
-	public void getVendorCreditCardList(@RequestBody Integer parameters) {
-		
+	public JsonResponse<GetVendorCreditCardListResponse> getVendorCreditCardList(@RequestBody GetVendorCreditCardListParameter parameters) {
+		GetVendorCreditCardListResponse result = vendorService.getVendorCreditCardList(parameters.getOrderBy());
+		return new JsonResponse<GetVendorCreditCardListResponse>(true, null, 0, result);
 	}
 	
 	/**
