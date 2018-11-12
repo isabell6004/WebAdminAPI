@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.fashiongo.webadmin.common.Utility;
+import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
 import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.AdVendorRepository;

@@ -1,3 +1,4 @@
+package net.fashiongo.webadmin.utility;
 //package net.fashiongo.webadmin.common;
 //
 //import java.lang.reflect.Field;

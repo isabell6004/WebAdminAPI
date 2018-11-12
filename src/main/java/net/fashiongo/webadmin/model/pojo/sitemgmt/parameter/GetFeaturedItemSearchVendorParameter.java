@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
-import net.fashiongo.webadmin.common.Utility;
+import net.fashiongo.webadmin.utility.Utility;
 
 /**
 * @author Junghwan Lee
