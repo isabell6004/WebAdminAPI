@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
@@ -64,5 +67,83 @@ public class VendorService extends ApiService {
 		List<Object> _result = jdbcHelper.executeSP(spName, params, ProductColor.class);
 		
 		return (List<ProductColor>) _result.get(0);
+	}
+	
+	/**
+	 * 
+	 * getVendorCreditCardList
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void getVendorCreditCardList(Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * getCreditCardType
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void getCreditCardType(Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * SetVendorCreditCard
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void setVendorCreditCard(Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * DelVendorCreditCard
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void delVendorCreditCard(Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * SetVendorRatingActive
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void setVendorRatingActive(Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * SetBuyerRatingActive
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	public void setBuyerRatingActive(Integer parameters) {
+		
 	}
 }

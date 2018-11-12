@@ -67,4 +67,90 @@ public class VendorController {
 		
 		return result; 
 	}
+	
+	/**
+	 * 
+	 * getVendorCreditCardList
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="getvendorcreditcardList", method=RequestMethod.POST)
+	public void getVendorCreditCardList(@RequestBody Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * getCreditCardType
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="getcreditcardtype", method=RequestMethod.POST)
+	public void getCreditCardType(@RequestBody Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * SetVendorCreditCard
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="setvendorcreditcard", method=RequestMethod.POST)
+	public void setVendorCreditCard(@RequestBody Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * DelVendorCreditCard
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="delvendorcreditcard", method=RequestMethod.POST)
+	public void delVendorCreditCard(@RequestBody Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * SetVendorRatingActive
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="setvendorratingactive", method=RequestMethod.POST)
+	public void setVendorRatingActive(@RequestBody Integer parameters) {
+		
+	}
+	
+	/**
+	 * 
+	 * SetBuyerRatingActive
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="setbuyerratingactive", method=RequestMethod.POST)
+	public void setBuyerRatingActive(@RequestBody Integer parameters) {
+		
+	}
+	
+
 }
