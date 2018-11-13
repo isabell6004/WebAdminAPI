@@ -836,7 +836,7 @@ public class PhotoStudioService extends ApiService {
 		params.add(Utility.getUsername());
 
 		List<Object> outputparams = new ArrayList<Object>();
-		outputparams.add(0);
+		outputparams.add("");
 		List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_UpdateOrder", params);
 		
 		List<Object> outputs= (List<Object>) r.get(0);
