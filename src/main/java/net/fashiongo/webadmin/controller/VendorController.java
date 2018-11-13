@@ -14,6 +14,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParamete
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
+import net.fashiongo.webadmin.model.primary.CreditCardType;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -95,8 +96,9 @@ public class VendorController {
 	 * @return 
 	 */
 	@RequestMapping(value="getcreditcardtype", method=RequestMethod.POST)
-	public void getCreditCardType(@RequestBody Integer parameters) {
-		
+	public JsonResponse<List<CreditCardType>> getCreditCardType() {
+		List<CreditCardType> result = vendorService.getCreditCardType();
+		return new JsonResponse<List<CreditCardType>>(true, null, 0, result);
 	}
 	
 	/**

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.fashiongo.webadmin.dao.primary.CreditCardTypeRepository;
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
@@ -13,6 +14,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCard;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
+import net.fashiongo.webadmin.model.primary.CreditCardType;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 
 /**
@@ -22,6 +24,9 @@ import net.fashiongo.webadmin.model.primary.VendorCompany;
 public class VendorService extends ApiService {
 	@Autowired
 	private VendorListRepository vendorListRepository;
+	
+	@Autowired
+	private CreditCardTypeRepository creditCardTypeRepository;
 	
 	/**
 	 * Get vendor list
@@ -99,8 +104,9 @@ public class VendorService extends ApiService {
 	 * @param 
 	 * @return 
 	 */
-	public void getCreditCardType(Integer parameters) {
+	public List<CreditCardType> getCreditCardType() {
 		
+		return creditCardTypeRepository.findAllByActiveTrueOrderByCreditCardTypeID();
 	}
 	
 	/**
