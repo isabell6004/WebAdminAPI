@@ -8,7 +8,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import net.fashiongo.webadmin.model.pojo.BidList;
+import net.fashiongo.webadmin.model.pojo.ad.BidList;
 
 /**
  * @author Jiwon Kim

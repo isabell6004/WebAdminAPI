@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.response.GetDashboardResponse;
+import net.fashiongo.webadmin.model.pojo.statics.response.GetDashboardResponse;
 import net.fashiongo.webadmin.service.StaticService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 

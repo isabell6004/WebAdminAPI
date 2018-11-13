@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 
 /**
  * 

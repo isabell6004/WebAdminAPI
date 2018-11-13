@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-import net.fashiongo.webadmin.model.pojo.MenuDS;
-import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.admin.MenuDS;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 
 /**
  * 

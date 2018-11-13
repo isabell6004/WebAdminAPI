@@ -10,21 +10,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.ProductColor;
-import net.fashiongo.webadmin.model.pojo.ResultCode;
+import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductColorParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
 import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
+import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 import net.fashiongo.webadmin.service.CacheService;
@@ -124,6 +130,20 @@ public class VendorController {
 	}
 	
 	/**
+	 * getVendorCreditCardList
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="getvendorcreditcardList", method=RequestMethod.POST)
+	public JsonResponse<GetVendorCreditCardListResponse> getVendorCreditCardList(@RequestBody GetVendorCreditCardListParameter parameters) {
+		GetVendorCreditCardListResponse result = vendorService.getVendorCreditCardList(parameters.getOrderBy());
+		return new JsonResponse<GetVendorCreditCardListResponse>(true, null, 0, result);
+	}
+	
+	/**
 	 * 
 	 * Description Example
 	 * @since 2018. 11. 12.
@@ -139,6 +159,19 @@ public class VendorController {
 		results.setData(result);
 		results.setSuccess(true);
 		return results;
+	}
+	
+	/**
+	 * getCreditCardType
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="getcreditcardtype", method=RequestMethod.POST)
+	public void getCreditCardType(@RequestBody Integer parameters) {
+		
 	}
 	
 	/**
@@ -174,6 +207,19 @@ public class VendorController {
 		results.setData(result);
 		
 		return results; 
+	}
+	
+	/**
+	 * SetVendorCreditCard
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="setvendorcreditcard", method=RequestMethod.POST)
+	public void setVendorCreditCard(@RequestBody Integer parameters) {
+		
 	}
 	
 	/**
@@ -217,6 +263,19 @@ public class VendorController {
 	}
 	
 	/**
+	 * DelVendorCreditCard
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="delvendorcreditcard", method=RequestMethod.POST)
+	public void delVendorCreditCard(@RequestBody Integer parameters) {
+		
+	}
+	
+	/**
 	 * 
 	 * Description Example
 	 * @since 2018. 11. 13.
@@ -255,6 +314,19 @@ public class VendorController {
 	}
 	
 	/**
+	 * SetVendorRatingActive
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="setvendorratingactive", method=RequestMethod.POST)
+	public void setVendorRatingActive(@RequestBody Integer parameters) {
+		
+	}
+	
+	/**
 	 * 
 	 * Description Example
 	 * @since 2018. 11. 13.
@@ -288,5 +360,17 @@ public class VendorController {
 		
 		results.setData(result);
 		return results;
+	}
+    /**
+	 * SetBuyerRatingActive
+	 * 
+	 * @since 2018. 11. 12.
+	 * @author Dahye
+	 * @param 
+	 * @return 
+	 */
+	@RequestMapping(value="setbuyerratingactive", method=RequestMethod.POST)
+	public void setBuyerRatingActive(@RequestBody Integer parameters) {
+		
 	}
 }

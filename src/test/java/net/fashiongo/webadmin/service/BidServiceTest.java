@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.GetBidSettingLastRecordsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetBidSettingLastWeekParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetBidSettingParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetBidSettingParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetBidSettingLastRecordsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetBidSettingLastWeekResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetBidSettingResponse;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastRecordsParameter;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastWeekParameter;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingParameter;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidSettingParameter;
+import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsResponse;
+import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastWeekResponse;
+import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
