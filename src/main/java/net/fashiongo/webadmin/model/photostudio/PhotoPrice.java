@@ -193,7 +193,6 @@ public class PhotoPrice implements IPersistent, Serializable {
 		this.modifiedBY = modifiedBY;
 	}
 	
-	@Transient
 	@Column(name = "PriceTypeName")
 	private String priceTypeName;
 	public String getPriceTypeName() {

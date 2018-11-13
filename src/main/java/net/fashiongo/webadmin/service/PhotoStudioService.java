@@ -731,6 +731,8 @@ public class PhotoStudioService extends ApiService {
 		params.add(queryParam.getOstsids());
 		
 		params.add(queryParam.getIsDelayed());
+		params.add(queryParam.getOnTime());
+		params.add(queryParam.getNotCancelled());
 		params.add(queryParam.getCancelledByFG());
 		params.add(queryParam.getCancelledByVendor());
 

@@ -1062,6 +1062,14 @@ private static final long serialVersionUID = 1L;
 	
 	//for model search end 
 	
+	private Integer onTime;
+	public Integer getOnTime() {
+		return onTime;
+	}
+	public void setOnTime(Integer onTime) {
+		this.onTime = onTime;
+	}
+
 	private Integer isDelayed;
 	public Integer getIsDelayed() {
 		return isDelayed;
@@ -1070,6 +1078,14 @@ private static final long serialVersionUID = 1L;
 		this.isDelayed = isDelayed;
 	}
 	
+	private Integer notCancelled;
+	public Integer getNotCancelled() {
+		return notCancelled;
+	}
+	public void setNotCancelled(Integer notCancelled) {
+		this.notCancelled = notCancelled;
+	}
+
 	private Integer cancelledByFG;
 	public Integer getCancelledByFG() {
 		return cancelledByFG;
