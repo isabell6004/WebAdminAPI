@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.sitemgmt;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.persistence.Column;
 
@@ -17,7 +18,7 @@ public class FeaturedVendorDaily {
 	
 	@JsonProperty("CheckOutQty")
 	@Column(name = "CheckOutQty")
-	private BigDecimal checkOutQty;
+	private Integer checkOutQty;
 	
 	@JsonProperty("TotalADAmount")
 	@Column(name = "TotalADAmount")
@@ -47,11 +48,11 @@ public class FeaturedVendorDaily {
 		this.checkOutAmount = checkOutAmount;
 	}
 
-	public BigDecimal getCheckOutQty() {
+	public Integer getCheckOutQty() {
 		return checkOutQty;
 	}
 
-	public void setCheckOutQty(BigDecimal checkOutQty) {
+	public void setCheckOutQty(Integer checkOutQty) {
 		this.checkOutQty = checkOutQty;
 	}
 
