@@ -1,21 +1,52 @@
 package net.fashiongo.webadmin.service;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.fashiongo.webadmin.dao.primary.CreditCardTypeRepository;
+import net.fashiongo.webadmin.utility.Utility;
+import net.fashiongo.webadmin.dao.primary.AspnetMembershipRepository;
+import net.fashiongo.webadmin.dao.primary.EntityActionLogRepository;
+import net.fashiongo.webadmin.dao.primary.FashiongoFormRepository;
+import net.fashiongo.webadmin.dao.primary.ListVendorImageTypeRepository;
+import net.fashiongo.webadmin.dao.primary.VendorAdminAccountRepository;
+import net.fashiongo.webadmin.dao.primary.VendorBlockedRepository;
+import net.fashiongo.webadmin.dao.primary.VendorImageRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
+import net.fashiongo.webadmin.dao.primary.VwVendorBlockedRepository;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
-import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCard;
+import net.fashiongo.webadmin.model.pojo.common.Result;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
+import net.fashiongo.webadmin.model.primary.AspnetMembership;
+import net.fashiongo.webadmin.model.primary.EntityActionLog;
+import net.fashiongo.webadmin.model.primary.FashiongoForm;
+import net.fashiongo.webadmin.model.primary.ListVendorImageType;
+import net.fashiongo.webadmin.model.primary.VendorAdminAccount;
+import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCard;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.CreditCardType;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.model.primary.VendorImageRequest;
+import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 
 /**
  * @author roy
@@ -27,6 +58,30 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private CreditCardTypeRepository creditCardTypeRepository;
+
+	@Autowired
+	private VwVendorBlockedRepository vwVendorBlockedRepository;
+	
+	@Autowired
+	private EntityActionLogRepository entityActionLogRepository;
+	
+	@Autowired
+	private VendorBlockedRepository vendorBlockedRepository;
+	
+	@Autowired
+	private VendorAdminAccountRepository vendorAdminAccountRepository;
+	
+	@Autowired
+	private AspnetMembershipRepository aspnetMembershipRepository;
+	
+	@Autowired
+	private ListVendorImageTypeRepository listVendorImageTypeRepository;
+	
+	@Autowired
+	private VendorImageRequestRepository vendorImageRequestRepository;
+	
+	@Autowired
+	private FashiongoFormRepository fashiongoFormRepository;
 	
 	/**
 	 * Get vendor list
@@ -75,6 +130,45 @@ public class VendorService extends ApiService {
 	
 	/**
 	 * 
+	 * Description Example
+	 * @since 2018. 11. 12.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 * @throws ParseException 
+	 */
+	public List<VwVendorBlocked> getVendorBlockList(GetVendorBlockListParameter parameters) throws ParseException {
+		List<VwVendorBlocked> result = null;
+		if(parameters.getSearchType().equals("ID")) {
+		    result = vwVendorBlockedRepository.findByBlockID(Integer.parseInt(parameters.getSearchKeyword()));
+		} else if(parameters.getSearchType().equals("Company")) {
+			result = vwVendorBlockedRepository.findByCompanyName(parameters.getSearchKeyword());
+		} else if(parameters.getSearchType().equals("Date")) {
+			result = vwVendorBlockedRepository.findByBlockedOn(LocalDateTime.parse(parameters.getSearchKeyword()));
+		} else if(parameters.getSearchType().equals("Reason")) {
+			result = vwVendorBlockedRepository.findByBlockReasonTitle(parameters.getSearchKeyword());
+		} else {
+			result = (List<VwVendorBlocked>) vwVendorBlockedRepository.findAll();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 12.
+	 * @author Reo
+	 * @param wholeSalerID
+	 * @return
+	 */
+	public List<EntityActionLog> getVendorBlockHistoryList(Integer wholeSalerID) {
+		List<EntityActionLog> result = entityActionLogRepository.findByEntityTypeIDAndEntityIDOrderByLogIDDesc(9, wholeSalerID);
+		
+        return result;
+	}
+	
+	/**
 	 * getVendorCreditCardList
 	 * 
 	 * @since 2018. 11. 12.
@@ -97,6 +191,42 @@ public class VendorService extends ApiService {
 	
 	/**
 	 * 
+	 * Description Example
+	 * @since 2018. 11. 12.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode delVendorBlock(DelVendorBlockParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		
+		vendorBlockedRepository.deleteByBlockID(parameters.getBlockID());
+		EntityActionLog eal = new EntityActionLog();
+		eal.setEntityTypeID(9);
+		eal.setEntityID(parameters.getWholeSalerID());
+		eal.setActionID(9002);
+		eal.setActedOn(LocalDateTime.now());
+		eal.setActedBy(Utility.getUsername());
+		entityActionLogRepository.save(eal);
+		
+		List<VendorAdminAccount> vendorAdminAccountList = vendorAdminAccountRepository.findByWholeSalerIDIn(parameters.getWholeSalerID());
+		List<AspnetMembership> aspnetMembershipList = new ArrayList<AspnetMembership>();
+		for(VendorAdminAccount vaa: vendorAdminAccountList) {
+			AspnetMembership ams = aspnetMembershipRepository.findOneByUserId(vaa.getUserGUID());
+			ams.setIsApproved(true);
+			ams.setIsLockedOut(false);
+			aspnetMembershipList.add(ams);
+		}
+		aspnetMembershipRepository.saveAll(aspnetMembershipList);
+		
+		result.setResultCode(1);
+		result.setSuccess(true);
+		result.setResultMsg(MSG_DELETE_SUCCESS);
+		return result;
+	}
+	
+	/**
 	 * getCreditCardType
 	 * 
 	 * @since 2018. 11. 12.
@@ -111,6 +241,48 @@ public class VendorService extends ApiService {
 	
 	/**
 	 * 
+	 * Description Example
+	 * @since 2018. 11. 13.
+	 * @author Reo
+	 * @return
+	 */
+	public List<ListVendorImageType> getVendorImageType() {
+		List<ListVendorImageType> result =  listVendorImageTypeRepository.findAllByOrderByVendorImageTypeID();
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 13.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public GetBannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters) {
+		GetBannerRequestResponse result = new GetBannerRequestResponse();
+		String spName = "up_wa_GetBannerImage";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		params.add(null);
+		params.add(parameters.getSearchKeyword());
+		params.add(parameters.getSearchType());
+		params.add(parameters.getSearchStatus());
+		params.add(null);
+		params.add(parameters.getFromDate());
+		params.add(parameters.getToDate());
+		params.add(parameters.getOrderby());
+		params.add(null);
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorImageRequest.class, Total.class);
+		result.setBannerImageList((List<VendorImageRequest>) _result.get(0));
+		result.setTotal((List<Total>) _result.get(1));
+		return result;
+	}
+	
+	/**
 	 * SetVendorCreditCard
 	 * 
 	 * @since 2018. 11. 12.
@@ -124,6 +296,50 @@ public class VendorService extends ApiService {
 	
 	/**
 	 * 
+	 * Description Example
+	 * @since 2018. 11. 13.
+	 * @author Reo
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setDenyBanner(SetDenyBannerParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		VendorImageRequest vir = vendorImageRequestRepository.findOneByImageRequestID(parameters.getImageRequestId());
+		vir.setRejectReason(parameters.getDenialReason());
+		vir.setDecidedOn(LocalDateTime.now());
+		vir.setDecidedBy(Utility.getUsername());
+		vir.setActive(false);
+		vir.setIsApproved(false);
+		vendorImageRequestRepository.save(vir);
+		
+		result.setResultCode(1);
+		result.setSuccess(true);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 13.
+	 * @author Reo
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setApproveBanner(SetDenyBannerParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		VendorImageRequest vir = vendorImageRequestRepository.findOneByImageRequestID(parameters.getImageRequestId());
+		vir.setDecidedOn(LocalDateTime.now());
+		vir.setDecidedBy(Utility.getUsername());
+		vir.setActive(false);
+		vir.setIsApproved(true);
+		vendorImageRequestRepository.save(vir);
+		
+		result.setResultCode(1);
+		result.setSuccess(true);
+		return result;
+	}
+	
+	/**
 	 * DelVendorCreditCard
 	 * 
 	 * @since 2018. 11. 12.
@@ -137,6 +353,47 @@ public class VendorService extends ApiService {
 	
 	/**
 	 * 
+	 * Description Example
+	 * @since 2018. 11. 13.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setRestoreBanner(SetDenyBannerParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		VendorImageRequest vir = vendorImageRequestRepository.findOneByImageRequestID(parameters.getImageRequestId());
+		vir.setDecidedOn(null);
+		vir.setDecidedBy(null);
+        vendorImageRequestRepository.save(vir);
+		
+		result.setResultCode(1);
+		result.setSuccess(true);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 13.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode delBannerRequest(SetDenyBannerParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		VendorImageRequest vir = new VendorImageRequest();
+		vir.setImageRequestID(parameters.getImageRequestId());
+		vendorImageRequestRepository.delete(vir);
+		
+		result.setResultCode(1);
+		result.setSuccess(true);
+		result.setResultMsg(MSG_DELETE_SUCCESS);
+		return result;
+	}
+	
+	/**
 	 * SetVendorRatingActive
 	 * 
 	 * @since 2018. 11. 12.
@@ -150,6 +407,67 @@ public class VendorService extends ApiService {
 	
 	/**
 	 * 
+	 * Description Example
+	 * @since 2018. 11. 13.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public GetVendorFormsListResponse getVendorFormsList(GetVendorFormsListParameter parameters) {
+		GetVendorFormsListResponse result = new GetVendorFormsListResponse();
+		String spName = "up_wa_GetVendorFormList";
+		List<Object> params = new ArrayList<Object>();
+
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FashiongoForm.class, Total.class);
+		result.setFashiongoFormList((List<FashiongoForm>) _result.get(0));
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 13.
+	 * @author Reo
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode SetVendorForms(SetVendorFormsParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		FashiongoForm fgForm = new FashiongoForm();
+		switch(parameters.getType()) {
+			case "Add":
+				fgForm.setFormName(parameters.getFormName());
+				fgForm.setMemo(parameters.getMemo());
+				fgForm.setAttachment(parameters.getAttachment());
+				fgForm.setCreatedBy(Utility.getUsername());
+				fgForm.setCreatedOn(LocalDateTime.now());
+				fgForm.setModifiedBy(Utility.getUsername());
+				fgForm.setModifiedOn(LocalDateTime.now());
+				fashiongoFormRepository.save(fgForm);
+				
+				result.setResultCode(1);
+				result.setSuccess(true);
+				result.setResultMsg(MSG_INSERT_SUCCESS);
+				break;
+			default:
+				fgForm = fashiongoFormRepository.findOneByFashionGoFormID(parameters.getFashionGoFormID());
+				fgForm.setFormName(parameters.getFormName());
+				fgForm.setMemo(parameters.getMemo());
+				fgForm.setAttachment(parameters.getAttachment());
+				fgForm.setModifiedBy(Utility.getUsername());
+				fgForm.setModifiedOn(LocalDateTime.now());
+				fashiongoFormRepository.save(fgForm);
+				
+				result.setResultCode(1);
+				result.setSuccess(true);
+				result.setResultMsg(MSG_UPDATE_SUCCESS);
+				break;
+		}
+		return result;
+	}
+	
+	/**
 	 * SetBuyerRatingActive
 	 * 
 	 * @since 2018. 11. 12.
@@ -159,5 +477,26 @@ public class VendorService extends ApiService {
 	 */
 	public void setBuyerRatingActive(Integer parameters) {
 		
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 14.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public ResultCode delVendorForm(DelVendorFormParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		String spName = "up_wa_DeleteFashionGoForm";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getFashionGoFormIDs());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Result.class);
+		result.setResultCode(1);
+		result.setResultMsg(MSG_DELETE_SUCCESS);
+		result.setSuccess(true);
+		return result;
 	}
 }
