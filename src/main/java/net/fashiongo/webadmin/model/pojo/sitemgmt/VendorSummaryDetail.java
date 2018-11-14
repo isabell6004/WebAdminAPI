@@ -7,14 +7,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class VendorSummaryDetail implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@JsonProperty("WholeSalerID")
-	private String wholeSalerID;
+	private Integer wholeSalerID;
 	@JsonProperty("CompanyName")
 	private String companyName;
-	public String getWholeSalerID() {
+	
+	public Integer getWholeSalerID() {
 		return wholeSalerID;
 	}
-	public void setWholeSalerID(String wholeSalerID) {
+	public void setWholeSalerID(Integer wholeSalerID) {
 		this.wholeSalerID = wholeSalerID;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	public String getCompanyName() {
 		return companyName;
