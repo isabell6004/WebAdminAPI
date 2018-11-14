@@ -219,6 +219,16 @@ public class DetailPhotoOrder {
 		this.discountID = discountID;
 	}
 	
+	@Column(name = "DiscountCode")
+	private String discountCode;
+	public String getDiscountCode() {
+		return discountCode;
+	}
+
+	public void setDiscountCode(String discountCode) {
+		this.discountCode = discountCode;
+	}
+	
 	@Column(name = "DiscountAmount")
 	private BigDecimal discountAmount;
 	public BigDecimal getDiscountAmount() {
