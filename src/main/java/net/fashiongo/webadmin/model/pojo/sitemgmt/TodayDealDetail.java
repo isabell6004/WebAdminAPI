@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.sitemgmt;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,7 +23,7 @@ public class TodayDealDetail implements Serializable{
 	@JsonProperty("ToDate")
 	private LocalDateTime toDate;
 	@JsonProperty("TodayDealPrice")
-	private Integer todayDealPrice;
+	private BigDecimal todayDealPrice;
 	@JsonProperty("Active")
 	private Boolean active;
 	@JsonProperty("AppliedOn")
@@ -30,7 +31,7 @@ public class TodayDealDetail implements Serializable{
 	@JsonProperty("ApprovedOn")
 	private LocalDateTime approvedOn;
 	@JsonProperty("UnitPrice")
-	private Integer unitPrice;
+	private BigDecimal unitPrice;
 	@JsonProperty("ProductName")
 	private String productName;
 	@JsonProperty("CompanyName")
@@ -80,12 +81,6 @@ public class TodayDealDetail implements Serializable{
 	public void setToDate(LocalDateTime toDate) {
 		this.toDate = toDate;
 	}
-	public Integer getTodayDealPrice() {
-		return todayDealPrice;
-	}
-	public void setTodayDealPrice(Integer todayDealPrice) {
-		this.todayDealPrice = todayDealPrice;
-	}
 	public Boolean getActive() {
 		return active;
 	}
@@ -104,10 +99,17 @@ public class TodayDealDetail implements Serializable{
 	public void setApprovedOn(LocalDateTime approvedOn) {
 		this.approvedOn = approvedOn;
 	}
-	public Integer getUnitPrice() {
+	
+	public BigDecimal getTodayDealPrice() {
+		return todayDealPrice;
+	}
+	public void setTodayDealPrice(BigDecimal todayDealPrice) {
+		this.todayDealPrice = todayDealPrice;
+	}
+	public BigDecimal getUnitPrice() {
 		return unitPrice;
 	}
-	public void setUnitPrice(Integer unitPrice) {
+	public void setUnitPrice(BigDecimal unitPrice) {
 		this.unitPrice = unitPrice;
 	}
 	public String getProductName() {
