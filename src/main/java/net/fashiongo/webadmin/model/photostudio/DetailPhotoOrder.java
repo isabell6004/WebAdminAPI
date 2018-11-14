@@ -46,7 +46,43 @@ public class DetailPhotoOrder {
 	public String getCheckOutDate() {
 		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
+	
+	@JsonIgnore
+	@Column(name = "DropOffDate")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _dropOffDate;
+	public LocalDateTime get_dropOffDate() {
+		return _dropOffDate;
+	}
 
+	public void set_dropOffDate(LocalDateTime _dropOffDate) {
+		this._dropOffDate = _dropOffDate;
+	}
+
+	@Transient
+	private String dropOffDate;
+	public String getDropOffDate() {
+		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+	}
+	
+	@JsonIgnore
+	@Column(name = "PrepDate")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _prepDate;
+	public LocalDateTime get_prepDate() {
+		return _prepDate;
+	}
+
+	public void set_prepDate(LocalDateTime _prepDate) {
+		this._prepDate = _prepDate;
+	}
+
+	@Transient
+	private String prepDate;
+	public String getPrepDate() {
+		return _prepDate != null ? _prepDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+	}
+	
 	@JsonIgnore
 	@Column(name = "PhotoshootDate")
 	@Convert(converter = LocalDateTimeConverter.class)
@@ -71,23 +107,41 @@ public class DetailPhotoOrder {
 	}
 	
 	@JsonIgnore
-	@Column(name = "DropOffDate")
+	@Column(name = "RetouchDate")
 	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _dropOffDate;
-	public LocalDateTime get_dropOffDate() {
-		return _dropOffDate;
+	private LocalDateTime _retouchDate;
+	public LocalDateTime get_retouchDate() {
+		return _retouchDate;
 	}
 
-	public void set_dropOffDate(LocalDateTime _dropOffDate) {
-		this._dropOffDate = _dropOffDate;
+	public void set_retouchDate(LocalDateTime _retouchDate) {
+		this._retouchDate = _retouchDate;
 	}
 
 	@Transient
-	private String dropOffDate;
-	public String getDropOffDate() {
-		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+	private String retouchDate;
+	public String getRetouchDate() {
+		return _retouchDate != null ? _retouchDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 	
+	@JsonIgnore
+	@Column(name = "UploadDate")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _uploadDate;
+	public LocalDateTime get_uploadDate() {
+		return _uploadDate;
+	}
+
+	public void set_uploadDate(LocalDateTime _uploadDate) {
+		this._uploadDate = _uploadDate;
+	}
+
+	@Transient
+	private String uploadDate;
+	public String getUploadDate() {
+		return _uploadDate != null ? _uploadDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+	}
+
 	@Id
 	@Column(name = "OrderID")
 	private Integer orderID;
