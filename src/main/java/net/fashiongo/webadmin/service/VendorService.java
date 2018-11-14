@@ -24,10 +24,12 @@ import net.fashiongo.webadmin.dao.primary.VendorListRepository;
 import net.fashiongo.webadmin.dao.primary.VwVendorBlockedRepository;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
+import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
@@ -476,5 +478,26 @@ public class VendorService extends ApiService {
 	 */
 	public void setBuyerRatingActive(Integer parameters) {
 		
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 14.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public ResultCode delVendorForm(DelVendorFormParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		String spName = "up_wa_DeleteFashionGoForm";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getFashionGoFormIDs());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Result.class);
+		result.setResultCode(1);
+		result.setResultMsg(MSG_DELETE_SUCCESS);
+		result.setSuccess(true);
+		return result;
 	}
 }

@@ -14,6 +14,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
@@ -372,5 +373,23 @@ public class VendorController {
 	@RequestMapping(value="setbuyerratingactive", method=RequestMethod.POST)
 	public void setBuyerRatingActive(@RequestBody Integer parameters) {
 		
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 14.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="delvendorform", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> delVendorForm(@RequestBody DelVendorFormParameter parameters) {
+        JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+		
+		ResultCode result = vendorService.delVendorForm(parameters);
+		
+		results.setData(result);
+		return results;
 	}
 }
