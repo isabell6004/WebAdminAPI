@@ -70,7 +70,7 @@ public class AdminService extends ApiService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public GetSecurityAccessCodesResponse GetSecurityAccessCodes(GetSecurityAccessCodesParameters parameters) {
+	public GetSecurityAccessCodesResponse getSecurityAccessCodes(GetSecurityAccessCodesParameters parameters) {
 		GetSecurityAccessCodesResponse result = new GetSecurityAccessCodesResponse();
 		String spName = "up_Security_GetAccessCode";
 		List<Object> params = new ArrayList<Object>();
@@ -96,7 +96,7 @@ public class AdminService extends ApiService {
 	 * @throws Exception 
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetSecurityAccessCode(SetSecurityAccessCodeParameters parameters) {
+	public ResultCode setSecurityAccessCode(SetSecurityAccessCodeParameters parameters) {
 		ResultCode result = new ResultCode(true, 0, "Saved successfully!");
 		
 		SecurityAccessCode securityAccessCode = new SecurityAccessCode();
@@ -132,7 +132,7 @@ public class AdminService extends ApiService {
 	 * @return
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetDeleteSecurityAccessCodes(List<Integer> idList) {
+	public ResultCode setDeleteSecurityAccessCodes(List<Integer> idList) {
 		ResultCode result = new ResultCode(true, 0, "Deleted successfully!");
 
 		for (Integer id : idList) {
@@ -164,12 +164,8 @@ public class AdminService extends ApiService {
 		params.add(parameters.getEndDate());
 			
 		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityLogs.class, SecurityLogsColumn.class);
-		List<SecurityLogs> securityLogs = (List<SecurityLogs>) _result.get(0);
-		List<SecurityLogsColumn> securityLogsColumn = (List<SecurityLogsColumn>) _result.get(1);
-
-		result.setSecurityLogs(securityLogs);
-		result.setSecurityLogsColumn(securityLogsColumn);
-		
+		result.setSecurityLogs((List<SecurityLogs>) _result.get(0));
+		result.setSecurityLogsColumn((List<SecurityLogsColumn>) _result.get(1));
 		return result;
 	}
 	
@@ -182,7 +178,7 @@ public class AdminService extends ApiService {
 	 * @return GetSecurityResourcesResponse
 	 */
 	@SuppressWarnings("unchecked")
-	public GetSecurityResourcesResponse GetSecurityResources (GetSecurityResourcesParameter parameters) {
+	public GetSecurityResourcesResponse getSecurityResources (GetSecurityResourcesParameter parameters) {
 		GetSecurityResourcesResponse result = new GetSecurityResourcesResponse();
 		String spName = "up_wa_Security_GetResource";
         List<Object> params = new ArrayList<Object>();
@@ -206,7 +202,7 @@ public class AdminService extends ApiService {
 	 * @return GetSecurityAccessIpsResponse
 	 */
 	@SuppressWarnings("unchecked")
-	public GetSecurityAccessIpsResponse GetSecurityAccessIps() {
+	public GetSecurityAccessIpsResponse getSecurityAccessIps() {
 		GetSecurityAccessIpsResponse result = new GetSecurityAccessIpsResponse();
 		String spName = "up_wa_Security_GetListIP";
 		
@@ -225,7 +221,7 @@ public class AdminService extends ApiService {
 	 * @return ResultCode
 	 */
 	@SuppressWarnings("unchecked")
-	public ResultCode SetSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {		
+	public ResultCode setSecurityAccessIp(SetSecurityAccessIpParameter parameters) throws Exception {		
 		SecurityAccessIp securityAccessIps = new SecurityAccessIp();
 		if (parameters.getIpid() != 0) {
 			securityAccessIps = securityAccessIpsRepository.findFirstByipid(parameters.getIpid());
@@ -247,7 +243,7 @@ public class AdminService extends ApiService {
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetDeleteSecurityAccessIps(List<Integer> idList) {
+	public ResultCode setDeleteSecurityAccessIps(List<Integer> idList) {
 		securityAccessIpsRepository.deleteByipidIn(idList);
 		return new ResultCode(true, idList.size(), MSG_DELETE_SUCCESS);
 	}
@@ -262,7 +258,7 @@ public class AdminService extends ApiService {
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetResource(Integer resourceID, boolean active) {
+	public ResultCode setResource(Integer resourceID, boolean active) {
 		SecurityResource sr = securityResourceRepository.findOneByResourceID(resourceID);
 		if(sr != null) {
 			sr.setActive(active);
@@ -280,7 +276,7 @@ public class AdminService extends ApiService {
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetSecurityResource(SetSecurityResourceParameter parameters) {
+	public ResultCode setSecurityResource(SetSecurityResourceParameter parameters) {
 		SecurityResource sr = new SecurityResource();
 		if(parameters.getResourceID() != 0) {
 			sr = securityResourceRepository.findOneByResourceID(parameters.getResourceID());
@@ -306,7 +302,7 @@ public class AdminService extends ApiService {
 	 * @return ResultCode
 	 */
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetDeleteSecurityResources(List<Integer> idList) {
+	public ResultCode setDeleteSecurityResources(List<Integer> idList) {
 		securityResourceRepository.deleteByResourceIDIn(idList);
 		return new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 	}
@@ -352,16 +348,9 @@ public class AdminService extends ApiService {
 		return result;
 	}
 	
-	/**
-	 * 
-	 * Set Security Resource
-	 * @since 2018. 10. 12.
-	 * @author Dahye Jeong
-	 * @param SetSecurityResourceParameter
-	 * @return ResultCode
-	 */
+
 	@Transactional("primaryTransactionManager")
-	public ResultCode SetSecurityMenu(SetSecurityMenuParameter parameters) {
+	public ResultCode setSecurityMenu(SetSecurityMenuParameter parameters) {
 		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		SecurityMenu ssm = new SecurityMenu();
 		

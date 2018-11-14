@@ -23,6 +23,7 @@ public class CORSFilter implements Filter{
     static Logger logger = LoggerFactory.getLogger(CORSFilter.class);
     @Value("${spring.profiles.active}")
     String activeProfile;
+    
     @Value("{client.uri}")
     String clientUri;
     

@@ -46,7 +46,7 @@ public class CommonServiceTest {
 	@Test
 	public void testGetMenuID() {
 		String pageName = "vendor-list";
-		Integer result = commonService.GetMenuID(pageName);
+		Integer result = commonService.getMenuID(pageName);
 		assertEquals(result.toString(), "143");
 	}
 
@@ -60,7 +60,7 @@ public class CommonServiceTest {
 	@Test
 	public void testGetServerHeartBeat() {
 		Long q = 1539669765324l;
-		String result = commonService.GetServerHeartBeat(q);
+		String result = commonService.getServerHeartBeat(q);
 		assertEquals(result.toString(), "Spring Boot");
 	}
 
@@ -74,7 +74,7 @@ public class CommonServiceTest {
 	@Test
 	public void testGetCountryStates() {
 		String countryAbbrev = "us";
-		JsonResponse<GetCountryStatesResponse> result = commonService.GetCountryStates(countryAbbrev);
+		JsonResponse<GetCountryStatesResponse> result = commonService.getCountryStates(countryAbbrev);
 		assertNotNull(result.getData());	
 	}
 
@@ -87,7 +87,7 @@ public class CommonServiceTest {
      */
 	@Test
 	public void testGetTopCategories() {
-		List<TopCategories> result = commonService.GetTopCategories();
+		List<TopCategories> result = commonService.getTopCategories();
 		assertNotNull(result);	
 	}
 	
@@ -100,7 +100,7 @@ public class CommonServiceTest {
 	 */
 	@Test
 	public void testGetBidAdPages() {
-		GetBidAdPagesResponse result = commonService.GetBidAdPages();
+		GetBidAdPagesResponse result = commonService.getBidAdPages();
 		assertNotNull(result.getAdPage());
 	}
 	
@@ -116,7 +116,7 @@ public class CommonServiceTest {
 		GetBidAdPageSpotsParameter parameter = new GetBidAdPageSpotsParameter();
 		parameter.setPageId(1);
 		
-		List<AdPageSpot> result = commonService.GetBidAdPageSpots(parameter.getPageId());
+		List<AdPageSpot> result = commonService.getBidAdPageSpots(parameter.getPageId());
 		assertNotNull(result);
 	}
 	
@@ -142,7 +142,7 @@ public class CommonServiceTest {
 	 */
 	@Test
 	public void testGetSecurityUser() {
-		List<SecurityUser> result = commonService.GetSecurityUser();
+		List<SecurityUser> result = commonService.getSecurityUser();
 		assertNotNull(result);	
 	}
 
@@ -153,7 +153,7 @@ public class CommonServiceTest {
 		parameters.setResourceName("");
 		parameters.setResourceParent("All");
 		parameters.setResourceType("All");
-		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
+		GetSecurityResourcesResponse result = adminService.getSecurityResources(parameters);
 		assertNotNull(result);	
 	}
 }

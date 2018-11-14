@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.model.primary.SecurityPermissionGroup;
 public interface SecurityMapUserGroupRepository extends CrudRepository<SecurityMapUserGroup, Integer>{
 	List<SecurityMapUserGroup> findByGroupIDIn(List<Integer> groupID);
 	SecurityMapUserGroup mapUserGroup(Integer usrId);
+	SecurityMapUserGroup findByUserIDAndGroupID(Integer userID, Integer groupID);
 	@Transactional
 	void deleteByUserIDIn(Integer userID);
 }

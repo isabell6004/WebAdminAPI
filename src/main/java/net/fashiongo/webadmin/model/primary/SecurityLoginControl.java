@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -20,6 +22,7 @@ public class SecurityLoginControl {
 	@Id
 	@Column(name = "ControlID")
 	@JsonProperty("ControlID")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer controlID;
 	
 	@Column(name = "UserID")
@@ -69,6 +72,7 @@ public class SecurityLoginControl {
 	public void setWeekday(Integer weekday) {
 		this.weekday = weekday;
 	}
+	
 
 	public Date getTimeFrom() {
 		return timeFrom;

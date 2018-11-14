@@ -32,7 +32,7 @@ public class UserService extends ApiService {
 	 * @return SecurityMenu
 	 */
 	@SuppressWarnings("unchecked")
-	public ResultCode ResetPassword(SetModifyPasswordParameter parameters) {
+	public ResultCode resetPassword(SetModifyPasswordParameter parameters) {
 		ObjectMapper mapper = new ObjectMapper();
 		ResultCode results = new ResultCode(true, 1, MSG_CHANGE_SUCCESS);
 		try {

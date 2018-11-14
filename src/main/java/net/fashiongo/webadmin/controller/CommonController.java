@@ -47,7 +47,7 @@ public class CommonController {
 	@RequestMapping(value="getsecuritygroups", method=RequestMethod.POST)
 	public JsonResponse<List<SecurityGroup>> GetSecurityGroups() {
 		JsonResponse<List<SecurityGroup>> results = new JsonResponse<List<SecurityGroup>>();
-		List<SecurityGroup> result  = securityGroupService.GetCommonSecurityGroup();
+		List<SecurityGroup> result  = securityGroupService.getCommonSecurityGroup();
 		results.setData(result);
 		return results;
 	}
@@ -60,9 +60,9 @@ public class CommonController {
 	 * @return JsonResponse<GetBidAdPagesResponse>
 	 */
 	@RequestMapping(value = "getbidadpages", method = RequestMethod.POST)
-	public JsonResponse<GetBidAdPagesResponse> GetBidAdPages() {
+	public JsonResponse<GetBidAdPagesResponse> getBidAdPages() {
 		JsonResponse<GetBidAdPagesResponse> results = new JsonResponse<GetBidAdPagesResponse>();
-		GetBidAdPagesResponse result = commonService.GetBidAdPages();
+		GetBidAdPagesResponse result = commonService.getBidAdPages();
 
 		results.setSuccess(true);
 		results.setData(result);
@@ -79,9 +79,9 @@ public class CommonController {
 	 * @return JsonResponse<List<AdPageSpot>>
 	 */
 	@RequestMapping(value = "getbidadpagespots", method = RequestMethod.POST)
-	public JsonResponse<List<AdPageSpot>> GetBidAdPageSpots(@RequestBody GetBidAdPageSpotsParameter parameter) {
+	public JsonResponse<List<AdPageSpot>> getBidAdPageSpots(@RequestBody GetBidAdPageSpotsParameter parameter) {
 		JsonResponse<List<AdPageSpot>> results = new JsonResponse<List<AdPageSpot>>();
-		List<AdPageSpot> result = commonService.GetBidAdPageSpots(parameter.getPageId());
+		List<AdPageSpot> result = commonService.getBidAdPageSpots(parameter.getPageId());
 		
 		results.setSuccess(true);
 		results.setData(result);
@@ -98,7 +98,7 @@ public class CommonController {
 	 */
 	@Deprecated
 	@RequestMapping(value = "getbidadpagespotscombined", method = RequestMethod.POST)
-	public JsonResponse<String> GetBidAdPageSpotsCombined() {
+	public JsonResponse<String> getBidAdPageSpotsCombined() {
 		JsonResponse<String> results = new JsonResponse<String>();
 		
 		return results;
@@ -114,8 +114,8 @@ public class CommonController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "getmenuid", method = RequestMethod.POST)
-	public JsonResponse<Integer> GetMenuID(@RequestBody GetMenuIDParameter parameters) {
-		Integer menuID = commonService.GetMenuID(parameters.getPageName());
+	public JsonResponse<Integer> getMenuID(@RequestBody GetMenuIDParameter parameters) {
+		Integer menuID = commonService.getMenuID(parameters.getPageName());
 		return new JsonResponse<Integer>(true, null, 0, menuID);
 	}
 	
@@ -128,8 +128,8 @@ public class CommonController {
 	 * @return "Spring Boot"
 	 */
 	@RequestMapping(value = "getserverheartbeat", method = RequestMethod.POST)
-	public JsonResponse<String> GetServerHeartBeat(@RequestBody GetServerHeartBeatParameter parameters) {
-		String result = commonService.GetServerHeartBeat(parameters.getQ());
+	public JsonResponse<String> getServerHeartBeat(@RequestBody GetServerHeartBeatParameter parameters) {
+		String result = commonService.getServerHeartBeat(parameters.getQ());
 		return new JsonResponse<String>(true, null, 0, result);
 	}
 	
@@ -142,9 +142,8 @@ public class CommonController {
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	@RequestMapping(value = "getcountrystates", method = RequestMethod.POST)
-	public JsonResponse<GetCountryStatesResponse> GetCountryStates(@RequestBody GetCountryStatesParameter parameters) {
-		JsonResponse<GetCountryStatesResponse> results = commonService.GetCountryStates(parameters.getCountryAbbrev());
-		
+	public JsonResponse<GetCountryStatesResponse> getCountryStates(@RequestBody GetCountryStatesParameter parameters) {
+		JsonResponse<GetCountryStatesResponse> results = commonService.getCountryStates(parameters.getCountryAbbrev());
 		return results;
 	}
 	
@@ -157,8 +156,8 @@ public class CommonController {
 	 * @return JsonResponse<GetCountryStatesResponse>
 	 */
 	@RequestMapping(value = "gettopcategories", method = RequestMethod.POST)
-	public JsonResponse<List<TopCategories>> GetTopCategories() {
-		List<TopCategories> categories = commonService.GetTopCategories();
+	public JsonResponse<List<TopCategories>> getTopCategories() {
+		List<TopCategories> categories = commonService.getTopCategories();
 		return new JsonResponse<List<TopCategories>>(true, null, 0, categories);
 	}
 	
@@ -171,14 +170,9 @@ public class CommonController {
 	 * @return List<SecurityUser>
 	 */
 	@RequestMapping(value="getsecurityusers", method=RequestMethod.POST)
-	public JsonResponse<List<SecurityUser>> GetSecurityUser() {
-		JsonResponse<List<SecurityUser>> results = new JsonResponse<List<SecurityUser>>(false, null, 0, null);
-		
-		List<SecurityUser> result = commonService.GetSecurityUser();
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
+	public JsonResponse<List<SecurityUser>> getSecurityUser() {
+		List<SecurityUser> result = commonService.getSecurityUser();
+		return new JsonResponse<List<SecurityUser>>(true, null, 0, result);
 	}
 	
 	
@@ -194,7 +188,7 @@ public class CommonController {
 	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
 	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
 		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, null);
-		GetSecurityResourcesResponse result = adminService.GetSecurityResources(parameters);
+		GetSecurityResourcesResponse result = adminService.getSecurityResources(parameters);
 		List<Resource> rs = result.getResource();
 		rs = rs.stream().sorted((o1,o2) -> o1.getResourceName().toLowerCase().compareTo(o2.getResourceName().toLowerCase())).collect(Collectors.toList());
 		result.setResource(rs);

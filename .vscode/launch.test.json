@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "WebAdminAPI",
+                "projectName": "WebAdminAPI",
+                "workingDirectory": "d:\\git6\\WebAdminAPI",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "WebAdminAPI",
+                "projectName": "WebAdminAPI",
+                "workingDirectory": "d:\\git6\\WebAdminAPI",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}

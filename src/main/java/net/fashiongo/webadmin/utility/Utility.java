@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,5 +49,55 @@ public class Utility {
 		ostr.write(returnStr.getBytes());
 		ostr.flush();
 		ostr.close();
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 23.
+	 * @author Reo
+	 * @param weekday
+	 * @return
+	 */
+	public static Integer GetWeekday(String weekday) {
+		Integer weekid = 1;
+		
+		switch (weekday) {
+		case "Sun":
+			weekid = 1;
+			break;
+		case "Mon":
+			weekid = 2;
+			break;
+		case "Tue":
+			weekid = 3;
+			break;
+		case "Wed":
+			weekid = 4;
+			break;
+		case "Thu":
+			weekid = 5;
+			break;
+		case "Fri":
+			weekid = 6;
+			break;
+		case "Sat":
+			weekid = 7;
+			break;
+		}
+		
+		return weekid;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 29.
+	 * @author Reo
+	 * @param string
+	 * @return
+	 */
+	public static boolean isNullOrEmpty(@Nullable String string) {
+	    return string == null || string.length() == 0;
 	}
 }

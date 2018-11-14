@@ -31,10 +31,10 @@ public class StaticController {
 	 * @return
 	 */
 	@RequestMapping(value="getdashboard", method=RequestMethod.POST)
-	public JsonResponse<GetDashboardResponse> GetDashboard() {
+	public JsonResponse<GetDashboardResponse> getDashboard() {
 		JsonResponse<GetDashboardResponse> results = new JsonResponse<GetDashboardResponse>(true, null, 0, null);
 		
-		GetDashboardResponse result = staticService.GetDashboard();
+		GetDashboardResponse result = staticService.getDashboard();
 		results.setData(result);
 		
 		return results;

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import net.fashiongo.webadmin.model.pojo.MapUserGroup;
 import net.fashiongo.webadmin.model.pojo.ResultCode;
 import net.fashiongo.webadmin.model.pojo.SecurityGroupPermissions;
+import net.fashiongo.webadmin.model.pojo.SecurityUserData;
+import net.fashiongo.webadmin.model.pojo.SecurityUserPermission;
 import net.fashiongo.webadmin.model.pojo.SecurityUsers;
 import net.fashiongo.webadmin.model.pojo.UserMappingVendor;
 import net.fashiongo.webadmin.model.pojo.UserMappingVendorAssigned;
@@ -28,6 +33,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter
 import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
@@ -35,6 +41,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsRes
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.response.SetCreateSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
@@ -56,7 +63,7 @@ public class SecurityGroupServiceTest {
 		GetSecurityUserGroupParameter parameters = new GetSecurityUserGroupParameter();
 		parameters.setUsrId(11);
 		
-		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.GetSecurityUserGroupAccessTimes(parameters);
+		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.getSecurityUserGroupAccessTimes(parameters);
 		if (result != null) {
 			for(MapUserGroup mug : result.getMapUserGroupList()) {
 				assertNotNull(mug.getGroupID());
@@ -81,7 +88,7 @@ public class SecurityGroupServiceTest {
 		parameters.setRole("G");
 		parameters.setVendorID(3064);
 		
-		GetSecurityUserResponse result = securityGroupService.GetSecurityUsers(parameters);
+		GetSecurityUserResponse result = securityGroupService.getSecurityUsers(parameters);
 		if (result != null) {
 			for(SecurityUsers su: result.getSecurityUserList()) {
 				assertNotNull(su.getUserID());
@@ -111,7 +118,7 @@ public class SecurityGroupServiceTest {
 		parameters.setVendorType(null);
 		parameters.setVendorKeyword(null);
 		
-		GetUserMappingVendorResponse result = securityGroupService.GetUserMappingVendor(parameters);
+		GetUserMappingVendorResponse result = securityGroupService.getUserMappingVendor(parameters);
 		if (result != null) {
 			for(UserMappingVendor umv: result.getUserMappingVendorList()) {
 				assertNotNull(umv.getWholeSalerID());
@@ -138,7 +145,7 @@ public class SecurityGroupServiceTest {
 		GetUserMappingVendorParameter parameters = new GetUserMappingVendorParameter();
 		parameters.setUserID(11);
 		
-		Integer result = securityGroupService.GetUserMappingVendorCount(parameters);
+		Integer result = securityGroupService.getUserMappingVendorCount(parameters);
 		if (result > 0) {
 			assertNotNull(result);
 			assertTrue(result > 0);
@@ -157,7 +164,7 @@ public class SecurityGroupServiceTest {
 		parameters.setUserID(11);
 		parameters.setActive(true);
 		
-		ResultCode result = securityGroupService.SetSecurityUserActive(parameters.getUserID(), parameters.getActive());
+		ResultCode result = securityGroupService.setSecurityUserActive(parameters.getUserID(), parameters.getActive());
 		if (result != null) {
 			assertTrue(result.getSuccess());
 		}
@@ -176,9 +183,31 @@ public class SecurityGroupServiceTest {
 		parameters.setSaveWholeSalerIDs(null);
 		parameters.setRemoveWholeSalerIDs(null);
 		
-		SetUserMappingVendorResponse result = securityGroupService.SetUserMappingVendor(parameters);
+		SetUserMappingVendorResponse result = securityGroupService.setUserMappingVendor(parameters);
 		if (result != null) {
 			assertTrue(result.isSuccess());
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 22.
+	 * @author Reo
+	 */
+	@Ignore
+	@Test
+	public void testSetDelSecurityUsers() {
+		DelSecurityUserParameter parameters = new DelSecurityUserParameter();
+		List<Integer> userList = new ArrayList<Integer>();
+		userList.add(0,  900);
+		parameters.setUserList(userList);
+        ResultCode result = new ResultCode(false, 0, null);
+		
+		result = securityGroupService.setDelSecurityUsers(parameters);
+		
+		if (result != null) {
+			assertTrue(result.getSuccess());
 		}
 	}
 	
@@ -213,7 +242,7 @@ public class SecurityGroupServiceTest {
 	 */
 	@Test
     public void testGetSecurityGroups() {
-		List<SecurityGroup> result  = securityGroupService.GetSecurityGroup();
+		List<SecurityGroup> result  = securityGroupService.getSecurityGroup();
 		if(!CollectionUtils.isEmpty(result)) {
 			assertNotNull(result.get(0).getGroupID());
 		}
@@ -274,5 +303,31 @@ public class SecurityGroupServiceTest {
 		
 		ResultCode result = securityGroupService.setdeletesecuritygroups(param.getData());
 		assertTrue(result.getResultCode().equals(0) || result.getResultCode().equals(1));
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 10. 31.
+	 * @author Reo
+	 * @throws JsonProcessingException
+	 * @throws ParseException
+	 */
+	@Ignore
+	@Test
+	public void testsetCreateSecurityUsers() throws JsonProcessingException, ParseException
+	{
+		SetSecurityUserParameter parameters = new SetSecurityUserParameter();
+		SecurityUserData sud = new SecurityUserData();
+		List<SecurityUserPermission> lsud = new ArrayList<SecurityUserPermission>();
+		
+		parameters.setData(sud);
+		parameters.setUpdata(lsud);
+		
+		SetCreateSecurityUserResponse result = securityGroupService.setCreateSecurityUser(parameters);
+		if (result != null) {
+			assertTrue(result.getResultCode().getSuccess());
+			assertTrue(result.getResultCode2().getSuccess());
+		}
 	}
 }
