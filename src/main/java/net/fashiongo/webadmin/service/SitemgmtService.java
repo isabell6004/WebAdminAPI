@@ -1645,6 +1645,7 @@ public class SitemgmtService extends ApiService {
 		featuredItem.setCreatedOn(LocalDateTime.now());
 		
 		if (parameters.getSetType().equals("BestAdd")) {
+			featuredItem.setProductID(0);
 			featuredItem.setBestItemUse(1);
 			featuredItemRepository.save(featuredItem);
 			result.setSuccess(true);
