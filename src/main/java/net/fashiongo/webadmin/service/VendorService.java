@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.fashiongo.webadmin.dao.primary.CreditCardTypeRepository;
-import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.dao.primary.AspnetMembershipRepository;
+import net.fashiongo.webadmin.dao.primary.CreditCardTypeRepository;
 import net.fashiongo.webadmin.dao.primary.EntityActionLogRepository;
 import net.fashiongo.webadmin.dao.primary.FashiongoFormRepository;
 import net.fashiongo.webadmin.dao.primary.ListVendorImageTypeRepository;
@@ -20,33 +19,34 @@ import net.fashiongo.webadmin.dao.primary.VendorBlockedRepository;
 import net.fashiongo.webadmin.dao.primary.VendorImageRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
 import net.fashiongo.webadmin.dao.primary.VwVendorBlockedRepository;
-import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
-import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
+import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
+import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCardList;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.AspnetMembership;
+import net.fashiongo.webadmin.model.primary.CreditCardType;
 import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.FashiongoForm;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
 import net.fashiongo.webadmin.model.primary.VendorAdminAccount;
-import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCard;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
-import net.fashiongo.webadmin.model.primary.CreditCardType;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.model.primary.VendorImageRequest;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
+import net.fashiongo.webadmin.utility.Utility;
 
 /**
  * @author roy
@@ -183,9 +183,9 @@ public class VendorService extends ApiService {
 		GetVendorCreditCardListResponse result = new GetVendorCreditCardListResponse();
 		params.add(orderby);
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorCreditCard.class);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorCreditCardList.class);
 		
-		result.setVendorCreditCardList((List<VendorCreditCard>) _result.get(0));
+		result.setVendorCreditCardList((List<VendorCreditCardList>) _result.get(0));
 		return result;
 	}
 	
