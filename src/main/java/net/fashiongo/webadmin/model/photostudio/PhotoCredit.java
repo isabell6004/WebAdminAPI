@@ -185,7 +185,6 @@ public class PhotoCredit implements IPersistent, Serializable {
 		return createdOnDate != null ? createdOnDate.toString() : null;
 	}
 
-	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
 	public String getCreatedBy() {
