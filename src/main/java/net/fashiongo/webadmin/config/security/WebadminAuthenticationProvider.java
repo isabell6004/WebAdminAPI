@@ -12,8 +12,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -71,8 +69,6 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 	
 	@Autowired
 	protected JdbcHelper jdbcHelper;
-	
-	final Logger logger = LogManager.getLogger();
 	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -182,17 +178,15 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 			if(!securityUser.getIpTimeExempt()) {
 				if(checkIPAddress(request)) {
 					boolean bAccessabletime = false;
-					Integer weekday = LocalDate.now().getDayOfWeek().getValue() + 1;
+					Integer weekday = ((LocalDate.now().getDayOfWeek().getValue() % 7) + 1);
 					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
-					logger.info("incheol!!! securityUser.getUserID() : " + securityUser.getUserID() + " weekday : " + weekday);
+					
 					if(!CollectionUtils.isEmpty(list)) {
 						String currentTime = new SimpleDateFormat("HH:mm").format(new Date());
 						bAccessabletime = ((list.get(0).getTimeFromTime().compareTo(currentTime)<=0) && (list.get(0).getTimeToTime().compareTo(currentTime)>=0));
 					}
 					
 					if(!bAccessabletime) {
-//						this.ResponseException(5,list.get(0).getTimeFromTime().toString() + " asd " + list.get(0).getTimeToTime().toString());
-//						logger.info(list.get(0).getTimeFromTime().toString() + " 11111 " + list.get(0).getTimeToTime().toString());
 						Loginable = this.checkAccessCode(accessCode);
 					}else {
 						Loginable = 1;
