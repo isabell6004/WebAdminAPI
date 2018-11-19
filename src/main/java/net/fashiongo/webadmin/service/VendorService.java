@@ -24,6 +24,7 @@ import net.fashiongo.webadmin.dao.primary.WholeSalerRatingRepository;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
@@ -31,6 +32,10 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
+
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
+
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
@@ -43,7 +48,11 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveP
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.AspnetMembership;
+
+import net.fashiongo.webadmin.model.primary.ContactUs;
+
 import net.fashiongo.webadmin.model.primary.CreditCardType;
+
 import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.FashiongoForm;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
