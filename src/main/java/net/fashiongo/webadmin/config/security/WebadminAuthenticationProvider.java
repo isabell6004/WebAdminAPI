@@ -184,7 +184,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					boolean bAccessabletime = false;
 					Integer weekday = LocalDate.now().getDayOfWeek().getValue() + 1;
 					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
-					
+					logger.info("incheol!!! securityUser.getUserID() : " + securityUser.getUserID() + " weekday : " + weekday);
 					if(!CollectionUtils.isEmpty(list)) {
 						String currentTime = new SimpleDateFormat("HH:mm").format(new Date());
 						bAccessabletime = ((list.get(0).getTimeFromTime().compareTo(currentTime)<=0) && (list.get(0).getTimeToTime().compareTo(currentTime)>=0));
@@ -192,7 +192,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					
 					if(!bAccessabletime) {
 //						this.ResponseException(5,list.get(0).getTimeFromTime().toString() + " asd " + list.get(0).getTimeToTime().toString());
-						logger.info(list.get(0).getTimeFromTime().toString() + " 11111 " + list.get(0).getTimeToTime().toString());
+//						logger.info(list.get(0).getTimeFromTime().toString() + " 11111 " + list.get(0).getTimeToTime().toString());
 						Loginable = this.checkAccessCode(accessCode);
 					}else {
 						Loginable = 1;
