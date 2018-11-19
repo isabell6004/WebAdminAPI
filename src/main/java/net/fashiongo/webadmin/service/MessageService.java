@@ -6,10 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.fashiongo.webadmin.dao.primary.ContactUsRepository;
 import net.fashiongo.webadmin.dao.primary.TblRetailerNewsRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
@@ -19,18 +25,24 @@ import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.message.VendorNews;
 import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetContactUsReplyParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
+import net.fashiongo.webadmin.model.primary.ContactUs;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 
 /**
@@ -47,6 +59,13 @@ public class MessageService extends ApiService {
 	
 	@Autowired
 	TblRetailerNewsRepository tblRetailerNewsRepository;
+	
+	@Autowired
+	ContactUsRepository contactUsRepository;
+	
+	@Autowired
+	@Qualifier("serviceJsonClient")
+	private HttpClient httpClient;
 	
 	/**
 	 * 
@@ -331,6 +350,77 @@ public class MessageService extends ApiService {
 		result.setResultCode(1);
 		result.setSuccess(true);
 		result.setResultMsg(MSG_DELETE_SUCCESS);
+		return result;
+	}
+	
+
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 16.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	public GetContactUsResponse getContactUs(GetContactUsParameter parameters) {
+		GetContactUsResponse result = new GetContactUsResponse();
+		String spName = "up_wa_GetContactUs";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPageSize());
+		params.add(parameters.getPageNum());
+		params.add(parameters.getSender());
+		params.add(parameters.getEmail());
+		params.add(parameters.getTopic());
+		params.add(parameters.getPeriod());
+		params.add(parameters.getFromDate());
+		params.add(parameters.getToDate());
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, ContactUs.class);
+		result.setTotal((List<Total>) _result.get(0));
+		result.setContactUsList((List<ContactUs>)_result.get(1));
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 19.
+	 * @author Reo
+	 * @return
+	 * @throws JsonProcessingException 
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setContactUsReply(SetContactUsReplyParameter parameters) throws JsonProcessingException {
+		ResultCode result = new ResultCode(false, 0, null);
+		ContactUs cu = contactUsRepository.findOneByContactID(parameters.getContactID());
+		cu.setReply(parameters.getReply());
+		cu.setRepliedOn(LocalDateTime.now());
+		cu.setRepliedBy(parameters.getRepliedBy());
+		contactUsRepository.save(cu);
+		
+		String EmailSignatureCS = "Customer Support Team$$E-mail: info@fashiongo.net$http:// www.fashiongo.net$765 E. 12th St., #306 Los Angeles, CA 90021$Tel: 213-745-2667";
+		String signature = EmailSignatureCS.replaceAll("$", "<br/>");
+		String message = String.format("<div>{0}</div><div style='margin-top:20px;'>{1}</div><div style='margin-top:20px;'><b>You wrote your inquiry on FashionGo.net at {2} as follows:</b></div><div style=''font-style:italic; color:#666666;''>{3}</div>", parameters.getReply(), signature, cu.getCreatedOn(), cu.getMessage());
+		String title = "Your FashionGo Inquiry";
+		String recipient = cu.getEmail();
+		String recipientName = cu.getName();
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("additionalInfo", "new {}");
+		jsonObj.put("message", message);
+		jsonObj.put("recipientEmailAddress", recipient);
+		jsonObj.put("recipientName", recipientName);
+		jsonObj.put("senderEmailAddress", "info@fashiongo.net");
+		jsonObj.put("senderName", "FashionGo Team");
+		jsonObj.put("subject", title);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		String uri = "/email/sendEmail";
+		JsonResponse<?> ret = httpClient.postObject(uri, mapper.writeValueAsString(jsonObj));
+		if (ret.isSuccess()) {
+			result.setResultCode(1);
+			result.setSuccess(true);
+		}
+		
 		return result;
 	}
 }
