@@ -187,7 +187,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					}
 					
 					if(!bAccessabletime) {
-						this.ResponseException(5,list.get(0).getTimeFromTime());
+						this.ResponseException(5,"test");
 						Loginable = this.checkAccessCode(accessCode);
 					}else {
 						Loginable = 1;
