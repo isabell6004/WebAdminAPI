@@ -10,29 +10,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
-import net.fashiongo.webadmin.model.primary.EntityActionLog;
-import net.fashiongo.webadmin.model.primary.ListVendorImageType;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorCreditcardParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.CreditCardType;
+import net.fashiongo.webadmin.model.primary.EntityActionLog;
+import net.fashiongo.webadmin.model.primary.ListVendorImageType;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 import net.fashiongo.webadmin.service.CacheService;
@@ -268,14 +265,15 @@ public class VendorController {
 	/**
 	 * DelVendorCreditCard
 	 * 
-	 * @since 2018. 11. 12.
+	 * @since 2018. 11. 19.
 	 * @author Dahye
-	 * @param 
+	 * @param DelVendorCreditcardParameter
 	 * @return 
 	 */
 	@RequestMapping(value="delvendorcreditcard", method=RequestMethod.POST)
-	public void delVendorCreditCard(@RequestBody Integer parameters) {
-		
+	public JsonResponse<String> delVendorCreditCard(@RequestBody DelVendorCreditcardParameter parameters) {
+		vendorService.delVendorCreditCard(parameters);
+		return new JsonResponse<String>();
 	}
 	
 	/**

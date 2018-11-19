@@ -33,6 +33,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
 import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCardList;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorCreditcardParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
@@ -342,13 +343,16 @@ public class VendorService extends ApiService {
 	/**
 	 * DelVendorCreditCard
 	 * 
-	 * @since 2018. 11. 12.
+	 * @since 2018. 11. 19.
 	 * @author Dahye
-	 * @param 
+	 * @param DelVendorCreditcardParameter
 	 * @return 
 	 */
-	public void delVendorCreditCard(Integer parameters) {
-		
+	public void delVendorCreditCard(DelVendorCreditcardParameter parameters) {
+		String spName = "up_wa_DeleteVendorCreditCard";
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getVendorCreditCardIDs());
+		jdbcHelper.executeSP(spName, params);
 	}
 	
 	/**
