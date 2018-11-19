@@ -1218,6 +1218,7 @@ public class SitemgmtService extends ApiService {
 			if(parameters.getActive() == false) {
 				todayDeal.setRevokedOn(LocalDateTime.now());
 				todayDeal.setRevokedBy(Utility.getUsername());
+				todayDeal.setNotes(parameters.getNotes());
 			}
 			
 			this.todayDealRepository.save(todayDeal);
