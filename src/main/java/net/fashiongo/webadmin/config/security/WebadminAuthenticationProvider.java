@@ -187,7 +187,7 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					}
 					
 					if(!bAccessabletime) {
-						this.ResponseException(5,"incheol@@@ " + list.get(0).getTimeFromTime() + "@@@" + list.get(0).getTimeToTime() + "@@@");
+						this.ResponseException(5,list.get(0).getTimeFromTime());
 						Loginable = this.checkAccessCode(accessCode);
 					}else {
 						Loginable = 1;
