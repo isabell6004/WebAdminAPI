@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.vendor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,15 +12,15 @@ import lombok.Data;
  *
  */
 @Data
-public class VendorCreditCard implements Serializable {
+public class VendorCreditCardList implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("VendorCreditCardID")
-	private String vendorCreditCardID;
+	private Integer vendorCreditCardID;
 
 	@JsonProperty("WholeSalerID")
-	private String wholeSalerID;
+	private Integer wholeSalerID;
 
 	@JsonProperty("CompanyName")
 	private String companyName;
@@ -28,7 +29,7 @@ public class VendorCreditCard implements Serializable {
 	private String wholeSalerIDGuid;
 
 	@JsonProperty("CardTypeID")
-	private String cardTypeID;
+	private Integer cardTypeID;
 
 	@JsonProperty("CreditCardName")
 	private String creditCardName;
@@ -49,7 +50,7 @@ public class VendorCreditCard implements Serializable {
 	private String streetNo;
 
 	@JsonProperty("ModifiedOn")
-	private String modifiedOn;
+	private LocalDateTime modifiedOn;
 
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
