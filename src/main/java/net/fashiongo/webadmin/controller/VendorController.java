@@ -26,6 +26,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetBuyerRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
@@ -368,14 +369,15 @@ public class VendorController {
     /**
 	 * SetBuyerRatingActive
 	 * 
-	 * @since 2018. 11. 12.
+	 * @since 2018. 11. 19.
 	 * @author Dahye
-	 * @param 
+	 * @param SetBuyerRatingActiveParameter
 	 * @return 
 	 */
 	@RequestMapping(value="setbuyerratingactive", method=RequestMethod.POST)
-	public void setBuyerRatingActive(@RequestBody Integer parameters) {
-		
+	public JsonResponse<String> setBuyerRatingActive(@RequestBody SetBuyerRatingActiveParameter parameters) {
+		Integer result = vendorService.setBuyerRatingActive(parameters);
+		return new JsonResponse<String>(true, null, result, null);
 	}
 	
 	/**
