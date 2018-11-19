@@ -12,6 +12,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -69,6 +71,8 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 	
 	@Autowired
 	protected JdbcHelper jdbcHelper;
+	
+	final Logger logger = LogManager.getLogger();
 	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -187,7 +191,8 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 					}
 					
 					if(!bAccessabletime) {
-						this.ResponseException(5,list.get(0).getTimeFromTime().toString() + " asd " + list.get(0).getTimeToTime().toString());
+//						this.ResponseException(5,list.get(0).getTimeFromTime().toString() + " asd " + list.get(0).getTimeToTime().toString());
+						logger.info(list.get(0).getTimeFromTime().toString() + " 11111 " + list.get(0).getTimeToTime().toString());
 						Loginable = this.checkAccessCode(accessCode);
 					}else {
 						Loginable = 1;
