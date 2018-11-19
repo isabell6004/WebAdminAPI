@@ -19,12 +19,14 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorCreditcardParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.CreditCardType;
@@ -317,14 +319,15 @@ public class VendorController {
 	/**
 	 * SetVendorRatingActive
 	 * 
-	 * @since 2018. 11. 12.
+	 * @since 2018. 11. 19.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param SetVendorRatingActiveParameter
+	 * @return DeleteCommunicationReasonResponse
 	 */
 	@RequestMapping(value="setvendorratingactive", method=RequestMethod.POST)
-	public void setVendorRatingActive(@RequestBody Integer parameters) {
-		
+	public JsonResponse<DeleteCommunicationReasonResponse> setVendorRatingActive(@RequestBody SetVendorRatingActiveParameter parameters) {
+		Integer result = vendorService.setVendorRatingActive(parameters);
+		return new JsonResponse<DeleteCommunicationReasonResponse>(true, null, result, null);
 	}
 	
 	/**

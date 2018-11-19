@@ -19,6 +19,7 @@ import net.fashiongo.webadmin.dao.primary.VendorBlockedRepository;
 import net.fashiongo.webadmin.dao.primary.VendorImageRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
 import net.fashiongo.webadmin.dao.primary.VwVendorBlockedRepository;
+import net.fashiongo.webadmin.dao.primary.WholeSalerRatingRepository;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.Total;
@@ -30,12 +31,14 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
 import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCardList;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorCreditcardParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.AspnetMembership;
@@ -47,6 +50,7 @@ import net.fashiongo.webadmin.model.primary.VendorAdminAccount;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.model.primary.VendorImageRequest;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
+import net.fashiongo.webadmin.model.primary.WholeSalerRating;
 import net.fashiongo.webadmin.utility.Utility;
 
 /**
@@ -83,6 +87,9 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private FashiongoFormRepository fashiongoFormRepository;
+	
+	@Autowired
+	private WholeSalerRatingRepository wholeSalerRatingRepository;
 	
 	/**
 	 * Get vendor list
@@ -400,13 +407,16 @@ public class VendorService extends ApiService {
 	/**
 	 * SetVendorRatingActive
 	 * 
-	 * @since 2018. 11. 12.
+	 * @since 2018. 11. 19.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param SetVendorRatingActiveParameter
+	 * @return DeleteCommunicationReasonResponse
 	 */
-	public void setVendorRatingActive(Integer parameters) {
-		
+	public Integer setVendorRatingActive(SetVendorRatingActiveParameter parameters) {
+		WholeSalerRating rating = wholeSalerRatingRepository.findOneByWholeSalerRatingID(parameters.getWid());
+		rating.setActive(parameters.getActive());
+		wholeSalerRatingRepository.save(rating);
+		return 1;
 	}
 	
 	/**
