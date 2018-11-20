@@ -782,27 +782,59 @@ public class PhotoStudioService extends ApiService {
 		List<PhotoModel> models = new ArrayList<PhotoModel>();
 		
 		for (PhotoModel photoModel : photoModels) {
+			if(photoModel.getModelID() == null) {
+				break;
+			}
 			String imageKey = String.valueOf(photoModel.getCalendarID()) + String.valueOf(photoModel.getModelID());
 			List<PhotoImage> imageList = imagesMap.get(imageKey);
 			if(imageList != null) {
-				PhotoImage photoImage = new PhotoImage();
-				photoImage.setImageUrl(photoModel.getImageUrl());
-				photoImage.setListOrder(photoModel.getListOrder());
-				imageList.add(photoImage);
-				imagesMap.put(imageKey, imageList);
+				if(photoModel.getImageUrl() != null) {
+					PhotoImage photoImage = new PhotoImage();
+					photoImage.setImageUrl(photoModel.getImageUrl());
+					photoImage.setListOrder(photoModel.getListOrder());
+					imageList.add(photoImage);
+					imagesMap.put(imageKey, imageList);
+				}
 			}else {
-				imageList = new ArrayList<PhotoImage>();
-				PhotoImage photoImage = new PhotoImage();
-				photoImage.setImageUrl(photoModel.getImageUrl());
-				photoImage.setListOrder(photoModel.getListOrder());
-				imageList.add(photoImage);
-				imagesMap.put(imageKey, imageList);
+				if(photoModel.getImageUrl() != null) {
+					imageList = new ArrayList<PhotoImage>();
+					PhotoImage photoImage = new PhotoImage();
+					photoImage.setImageUrl(photoModel.getImageUrl());
+					photoImage.setListOrder(photoModel.getListOrder());
+					imageList.add(photoImage);
+					imagesMap.put(imageKey, imageList);
+				}
 				
 				if(photoModel.getIsToday().intValue() == 0 ) {
 					//Today's models
 					models.add(photoModel);
 				}else if(photoModel.getIsToday().intValue() == 1) {
 					//Today's models next Available
+					List<String> nextAvailableList = nextAvailableMap.get(photoModel.getModelID());
+					if(nextAvailableList == null) {
+						nextAvailableList = new ArrayList<String>();
+					}
+					nextAvailableList.add(photoModel.getTheDate());
+					nextAvailableMap.put(photoModel.getModelID(), nextAvailableList);
+					
+				}
+			}
+		}
+		
+		// for flat mode next Available
+		if(models.size() == 0 && photoModels.size() > 0) {
+			for (PhotoModel photoModel : photoModels) {
+				if(photoModel.getModelID() != null) {
+					break;
+				}
+					
+				if(models.size() == 0 ) {
+					//Today's 
+					models.add(photoModel);
+				}
+				
+				if(photoModel.getIsToday().intValue() == 1) {
+					//Today's next Available
 					List<String> nextAvailableList = nextAvailableMap.get(photoModel.getModelID());
 					if(nextAvailableList == null) {
 						nextAvailableList = new ArrayList<String>();
@@ -958,10 +990,9 @@ public class PhotoStudioService extends ApiService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(wholeSalerID);
 		
-		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCreditBalance", params, SingleValueResult.class, PhotoCredit.class);
+		List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCreditBalance", params, PhotoCredit.class);
 		
-		List<SingleValueResult> rs1 = (List<SingleValueResult>)_results.get(0);
-		List<PhotoCredit> rs2 = (List<PhotoCredit>)_results.get(1);
+		List<PhotoCredit> rs2 = (List<PhotoCredit>)_results.get(0);
 
 		BigDecimal photoCreditBalance = BigDecimal.ZERO;
 		if(rs2.size() > 0 && rs2.get(0) != null) {

@@ -386,7 +386,6 @@ public class PhotoModel implements IPersistent, Serializable {
 		this.calendarID = calendarID;
 	}
 	
-	@JsonIgnore
 	@Transient
 	@Column(name = "IsToday")
 	private Integer isToday;
