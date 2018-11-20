@@ -35,7 +35,7 @@ public class GetDMRequestParameter implements Serializable {
 	@ApiModelProperty(required = false, example="")
 	private String orderby;
 	@ApiModelProperty(required = false, example="0")
-	private String vendorStatus;
+	private String vendorstatus;
 	
 	public Integer getPagenum() {
 		return StringUtils.isEmpty(this.pagenum) ? 1 : Integer.parseInt(this.pagenum);
@@ -97,11 +97,10 @@ public class GetDMRequestParameter implements Serializable {
 	public void setOrderby(String orderby) {
 		this.orderby = orderby;
 	}
-	
-	public Integer getVendorStatus() {
-		return StringUtils.isEmpty(this.vendorStatus) ? 0 : Integer.parseInt(this.vendorStatus);
+	public Integer getVendorstatus() {
+		return StringUtils.isEmpty(this.vendorstatus) ? 0 : Integer.parseInt(this.vendorstatus);
 	}
-	public String setVendorStatus(String vendorStatus) {
-		return this.vendorStatus = vendorStatus;
+	public void setVendorstatus(String vendorstatus) {
+		this.vendorstatus = vendorstatus;
 	}
 }

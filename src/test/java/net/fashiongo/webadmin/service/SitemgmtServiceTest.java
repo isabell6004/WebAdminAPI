@@ -587,7 +587,7 @@ public class SitemgmtServiceTest {
 		GetDMRequestParameter parameters = new GetDMRequestParameter();
 		parameters.setPagenum("1");
 		parameters.setPagesize("20");
-		parameters.setVendorStatus("0");
+		parameters.setVendorstatus("0");
 		parameters.setCompanytypecd("2,1,3");
 		parameters.setStatus("Requested");
 

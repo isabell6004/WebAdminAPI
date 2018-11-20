@@ -1682,7 +1682,7 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getPagenum());
 		params.add(parameters.getPagesize());
 		params.add(parameters.getStatus());
-		params.add(parameters.getVendorStatus());
+		params.add(parameters.getVendorstatus());
 		params.add(parameters.getWholesalerid());
 		params.add(parameters.getCompanytypecd());
 		params.add(parameters.getDatefrom());
