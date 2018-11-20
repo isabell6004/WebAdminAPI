@@ -292,9 +292,9 @@ public class MessageService extends ApiService {
 				retailerNews.setStartingDate(now);
 			}
 			
-			if(parameters.getToDate() != null) {
-				parameters.setToDate(((LocalDateTime) parameters.getToDate()).plusDays(1).plusSeconds(-1));
-			}
+//			if(parameters.getToDate() != null) {
+//				parameters.setToDate(((LocalDateTime) parameters.getToDate()).plusDays(1).plusSeconds(-1));
+//			}
 			
 			retailerNews.setNewsTitle(parameters.getNewsTitle());
 			retailerNews.setNewsContent(parameters.getNewsContent());
