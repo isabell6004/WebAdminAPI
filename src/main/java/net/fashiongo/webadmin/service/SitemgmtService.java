@@ -330,24 +330,45 @@ public class SitemgmtService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode setAddDelPolicyManagement (String type, Policy objPolicy) {
+		ResultCode result = new ResultCode(false, 0, null);
 		Policy pc = new Policy();
 		String sessionUserID = Utility.getUsername();
 		switch(type) {
 		case "Upd":
-			if(objPolicy.getPolicyID() > 0) pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
-			pc.setPolicyTitle(objPolicy.getPolicyTitle());
-			pc.setPolicyContents(objPolicy.getPolicyContents());
-			pc.setForVendor(objPolicy.getForVendor());
-			pc.setForRetailer(objPolicy.getForRetailer());
-			pc.setEffectiveOn(objPolicy.getEffectiveOn());
-			if (objPolicy.getPolicyID() < 1) {
+			Integer policyID = objPolicy.getPolicyID() == null ? 0 : objPolicy.getPolicyID();
+			if(policyID < 1) {
+				pc.setPolicyTitle(objPolicy.getPolicyTitle());
+				pc.setPolicyContents(objPolicy.getPolicyContents());
+				pc.setForVendor(objPolicy.getForVendor());
+				pc.setForRetailer(objPolicy.getForRetailer());
+				pc.setEffectiveOn(objPolicy.getEffectiveOn());
 				pc.setCreatedBy(sessionUserID);
 				pc.setCreatedOn(objPolicy.getCreatedOn());
+				pc.setModifiedBy(sessionUserID);
+				pc.setModifiedOn(objPolicy.getModifiedOn());
+				pc.setActive(objPolicy.getActive());
+				
+				result.setResultCode(1);
+				result.setSuccess(true);
+				result.setResultMsg(MSG_INSERT_SUCCESS);
+			} else {
+				pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
+				pc.setPolicyID(objPolicy.getPolicyID());
+				pc.setPolicyTitle(objPolicy.getPolicyTitle());
+				if(StringUtils.isEmpty(objPolicy.getPolicyContents())) {
+				    pc.setPolicyContents(objPolicy.getPolicyContents());
+				}
+				pc.setForVendor(objPolicy.getForVendor());
+				pc.setForRetailer(objPolicy.getForRetailer());
+				pc.setEffectiveOn(objPolicy.getEffectiveOn());
+				pc.setModifiedBy(sessionUserID);
+				pc.setModifiedOn(objPolicy.getModifiedOn());
+				pc.setActive(objPolicy.getActive());
+				
+				result.setResultCode(1);
+				result.setSuccess(true);
+				result.setResultMsg(MSG_UPDATE_SUCCESS);
 			}
-			pc.setModifiedBy(sessionUserID);
-			pc.setModifiedOn(objPolicy.getModifiedOn());
-			pc.setActive(objPolicy.getActive());
-			policyRepository.save(pc);
 			break;
 		case "Act":
 			pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
@@ -355,9 +376,15 @@ public class SitemgmtService extends ApiService {
 			pc.setModifiedOn(objPolicy.getModifiedOn());
 			pc.setActive(objPolicy.getActive());
 			policyRepository.save(pc);
+			
+			result.setResultCode(1);
+			result.setSuccess(true);
+			result.setResultMsg(MSG_UPDATE_SUCCESS);
 			break;
 		}
-		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+		policyRepository.save(pc);
+		
+		return result;
 	}
 
 	/**
