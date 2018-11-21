@@ -768,7 +768,6 @@ public class PhotoStudioService extends ApiService {
 	}
 	
 	public List<PhotoModel> getAvailableModels(Integer orderID, String theDate) {
-		Map<String, Object> result = new HashMap<String, Object> ();
 		List<Object> params = new ArrayList<Object>();
 		params.add(orderID);
 		params.add(theDate);
@@ -830,11 +829,11 @@ public class PhotoStudioService extends ApiService {
 					
 				if(models.size() == 0 ) {
 					//Today's 
-					models.add(photoModel);
+					models.add(new PhotoModel());
 				}
 				
 				if(photoModel.getIsToday().intValue() == 1) {
-					//Today's next Available
+					//next Available
 					List<String> nextAvailableList = nextAvailableMap.get(photoModel.getModelID());
 					if(nextAvailableList == null) {
 						nextAvailableList = new ArrayList<String>();
