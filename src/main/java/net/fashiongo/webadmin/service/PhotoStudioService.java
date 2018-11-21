@@ -829,7 +829,7 @@ public class PhotoStudioService extends ApiService {
 					
 				if(models.size() == 0 ) {
 					//Today's 
-					models.add(photoModel);
+					models.add(new PhotoModel());
 				}
 				
 				if(photoModel.getIsToday().intValue() == 1) {
