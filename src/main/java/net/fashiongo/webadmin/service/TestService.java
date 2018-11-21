@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import net.fashiongo.webadmin.dao.fgem.EmApplicationRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
-import net.fashiongo.webadmin.model.pojo.message.Message;
 import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.message.VwWaMessage;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.primary.TrendReport;
@@ -96,8 +96,8 @@ public class TestService extends ApiService{
 		String spName = "up_wa_GetAdminMessage";
         List<Object> params = new ArrayList<Object>();
         
-        params.add(parameters.getPagenum());
         params.add(parameters.getPagesize());
+        params.add(parameters.getPagenum());
         params.add(parameters.getParent());
         params.add(parameters.getSendertypeid());
         params.add(parameters.getRecipienttypeid());
@@ -109,10 +109,10 @@ public class TestService extends ApiService{
         params.add(parameters.getTodate());
         params.add(parameters.getStatus());
         
-        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, Message.class);
+        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, VwWaMessage.class);
         
         result.setTotal((List<Total>)_result.get(0));
-		result.setMessagelist((List<Message>) _result.get(1));
+		result.setMessagelist((List<VwWaMessage>) _result.get(1));
 		
 		return "testService -> callProc";
 	}

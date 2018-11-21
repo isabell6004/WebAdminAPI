@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,13 +23,17 @@ import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParame
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetContactUsReplyParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageReadYNParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
+import net.fashiongo.webadmin.model.primary.MessageCategory;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
@@ -249,6 +254,76 @@ public class MessageController {
 		ResultCode result = messageService.setContactUsReply(parameters);
 		
 		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 20.
+	 * @author Reo
+	 * @return
+	 */
+	@RequestMapping(value="getmessagecategory", method=RequestMethod.POST)
+	public JsonResponse<List<MessageCategory>> getMessageCategory() {
+		JsonResponse<List<MessageCategory>> results = new JsonResponse<List<MessageCategory>>();
+		List<MessageCategory> result = messageService.getMessageCategory();
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 21.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="setmessage", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setMessage(@RequestBody SetMessageParameter parameters) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+		
+		ResultCode result = messageService.setMessage(parameters);
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 21.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="setmessagereadyn", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setMessageReadYN(@RequestBody SetMessageReadYNParameter parameters) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+
+		ResultCode result = messageService.setMessageReadYN(parameters);
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 21.
+	 * @author Reo
+	 * @param topReferenceID
+	 * @return
+	 */
+	@RequestMapping(value="getmessagereply", method=RequestMethod.GET)
+	public JsonResponse<GetMessageReplyResponse> getMessageReply(@RequestParam(value="referenceid") Integer topReferenceID) {
+        JsonResponse<GetMessageReplyResponse> results = new JsonResponse<GetMessageReplyResponse>(true, null, null);
+		
+        GetMessageReplyResponse result = messageService.getMessageReply(topReferenceID);
+		results.setData(result);
+		
 		return results;
 	}
 }

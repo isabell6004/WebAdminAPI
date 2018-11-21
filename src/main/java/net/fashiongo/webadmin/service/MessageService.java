@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
@@ -16,14 +17,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.fashiongo.webadmin.dao.primary.ContactUsRepository;
+import net.fashiongo.webadmin.dao.primary.MessageCategoryRepository;
+import net.fashiongo.webadmin.dao.primary.MessageMapRepository;
+import net.fashiongo.webadmin.dao.primary.MessageRepository;
 import net.fashiongo.webadmin.dao.primary.TblRetailerNewsRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.message.Message;
+import net.fashiongo.webadmin.model.pojo.message.MessageReply;
 import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.message.VendorNews;
+import net.fashiongo.webadmin.model.pojo.message.VwWaMessage;
 import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
@@ -32,12 +37,18 @@ import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParame
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetContactUsReplyParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageReadYNParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.primary.ContactUs;
+import net.fashiongo.webadmin.model.primary.Message;
+import net.fashiongo.webadmin.model.primary.MessageCategory;
+import net.fashiongo.webadmin.model.primary.MessageMap;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
@@ -64,24 +75,33 @@ public class MessageService extends ApiService {
 	ContactUsRepository contactUsRepository;
 	
 	@Autowired
+	MessageCategoryRepository messageCategoryRepository;
+	
+	@Autowired
+	MessageRepository messageRepository;
+	
+	@Autowired
+	MessageMapRepository messageMapRepository;
+	
+	@Autowired
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
 	
 	/**
 	 * 
 	 * Description Example
-	 * @since 2018. 9. 19.
-	 * @author Incheol Jung
+	 * @since 2018. 11. 20.
+	 * @author Reo
 	 * @param parameters
-	 * @return 
+	 * @return
 	 */
 	public GetMessageResponse getMessage(GetMessageParameter parameters) {
 		GetMessageResponse result = new GetMessageResponse();
 		String spName = "up_wa_GetAdminMessage";
         List<Object> params = new ArrayList<Object>();
         
-        params.add(parameters.getPagenum());
         params.add(parameters.getPagesize());
+        params.add(parameters.getPagenum());
         params.add(parameters.getParent());
         params.add(parameters.getSendertypeid());
         params.add(parameters.getRecipienttypeid());
@@ -95,10 +115,10 @@ public class MessageService extends ApiService {
         params.add(parameters.getTodate());
         params.add(parameters.getStatus());
         
-        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, Message.class);
+        List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, VwWaMessage.class);
         
 		result.setTotal((List<Total>)_result.get(0));
-		result.setMessagelist((List<Message>) _result.get(1));
+		result.setMessagelist((List<VwWaMessage>) _result.get(1));
 		
 		return result;
 	}
@@ -420,6 +440,110 @@ public class MessageService extends ApiService {
 			result.setResultCode(1);
 			result.setSuccess(true);
 		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 20.
+	 * @author Reo
+	 * @return
+	 */
+	public List<MessageCategory> getMessageCategory() {
+		List<MessageCategory> result = messageCategoryRepository.findByActiveOrderBySortNoRetailerDesc(true);
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 20.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setMessage(SetMessageParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		Message msg = new Message();
+		msg.setSenderID(parameters.getSenderid());
+		msg.setCreatedBy(parameters.getCreatedby());
+		msg.setModifiedBy(parameters.getCreatedby());
+		msg.setSenderTypeID(3);
+		msg.setTitle(parameters.getTitle());
+		msg.setBody(parameters.getContent());
+		msg.setActive(true);
+		msg.setMessageGUID(UUID.randomUUID().toString());
+		msg.setAttachedFileName(parameters.getFilename());
+		msg.setAttachedFileName2(parameters.getFilename2());
+		msg.setAttachedFileName3(parameters.getFilename3());
+		msg.setReferenceID(parameters.getReferenceid());
+		msg.setUpdatedOn(LocalDateTime.now());
+		if(parameters.getTopreferenceid() > 0) {
+			msg.setTopReferenceID(parameters.getTopreferenceid());
+			
+			Message msgTop = messageRepository.findByMessageID(parameters.getTopreferenceid());
+			msgTop.setUpdatedOn(LocalDateTime.now());
+			msgTop.setHasNewReply(true);
+			messageRepository.save(msgTop);
+		}
+		
+		if(parameters.getTopic() > 0) msg.setMessageCategoryID(parameters.getTopic());
+		messageRepository.save(msg);
+		
+		MessageMap msgMap = new MessageMap();
+		msgMap.setMessageID(msg.getMessageID());
+		msgMap.setRecipientTypeID(parameters.getRecipienttypeid());
+		msgMap.setRecipientID(parameters.getRecipientid());
+		msgMap.setIsDeletedByRecipient(false);
+		messageMapRepository.save(msgMap);
+		
+		result.setResultCode(1);
+		result.setSuccess(true);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 21.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setMessageReadYN(SetMessageReadYNParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		MessageMap msgMap = messageMapRepository.findOneByMessageID(parameters.getMessageID());
+        if(parameters.getReadYn().equals(true)) {
+        	msgMap.setReadOn(LocalDateTime.now());
+        } else {
+        	msgMap.setReadOn(null);
+        }
+        messageMapRepository.save(msgMap);
+		
+        result.setResultMsg(LocalDateTime.now().toString());
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 21.
+	 * @author Reo
+	 * @param topReferenceID
+	 * @return
+	 */
+	public GetMessageReplyResponse getMessageReply(Integer topReferenceID) {
+		GetMessageReplyResponse result = new GetMessageReplyResponse();
+		String spName = "up_wa_GetMessageReply";
+		List<Object> params = new ArrayList<Object>();
+		params.add(topReferenceID);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, MessageReply.class);
+		result.setMessageReplyList((List<MessageReply>)_result.get(0));
 		
 		return result;
 	}
