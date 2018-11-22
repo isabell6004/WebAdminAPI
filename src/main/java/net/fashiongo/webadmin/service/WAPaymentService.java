@@ -6,10 +6,14 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.payment.CreditCardStatus;
+import net.fashiongo.webadmin.model.pojo.payment.OrderPaymentStatus;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.model.primary.PaymentStatus;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 
@@ -74,14 +78,21 @@ public class WAPaymentService extends ApiService {
 	/**
 	 * GetPendingPaymentTransaction
 	 * 
-	 * @since 2018. 11. 20.
+	 * @since 2018. 11. 22.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetPendingPaymentTransactionParameter
+	 * @return GetPendingPaymentTransactionResponse
 	 */
-	public void getPendingPaymentTransaction() {
-		
-		
+	@SuppressWarnings("unchecked")
+	public GetPendingPaymentTransactionResponse getPendingPaymentTransaction(GetPendingPaymentTransactionParameter param) {
+		GetPendingPaymentTransactionResponse result = new GetPendingPaymentTransactionResponse();
+		String spName = "up_wa_pay_GetPendingPaymentTransaction";
+		List<Object> params = new ArrayList<Object>();
+		params.add(param.getCreditcardid());
+		List<Object> _results = jdbcHelper.executeSP(spName, params, CreditCardStatus.class, OrderPaymentStatus.class);
+		result.setCreditCardStatusList((List<CreditCardStatus>) _results.get(0));
+		result.setOrderPaymentStatusList((List<OrderPaymentStatus>) _results.get(1));
+		return result;
 	}
 	
 	/**

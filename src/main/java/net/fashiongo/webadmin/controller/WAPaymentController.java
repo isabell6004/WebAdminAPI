@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.service.WAPaymentService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -55,15 +58,15 @@ public class WAPaymentController {
 	/**
 	 * GetPendingPaymentTransaction
 	 * 
-	 * @since 2018. 11. 20.
+	 * @since 2018. 11. 22.
 	 * @author Dahye
-	 * @param 
+	 * @param GetPendingPaymentTransactionParameter
 	 * @return 
 	 */
 	@RequestMapping(value = "getpendingpaymenttransaction", method = RequestMethod.POST)
-	public JsonResponse<String> getPendingPaymentTransaction() {
-		
-		return new JsonResponse<>();
+	public JsonResponse<GetPendingPaymentTransactionResponse> getPendingPaymentTransaction(@RequestBody GetPendingPaymentTransactionParameter parameters) {
+		GetPendingPaymentTransactionResponse result = waPaymentService.getPendingPaymentTransaction(parameters);
+		return new JsonResponse<GetPendingPaymentTransactionResponse>(true, null, 0, result);
 	}
 	
 	/**
