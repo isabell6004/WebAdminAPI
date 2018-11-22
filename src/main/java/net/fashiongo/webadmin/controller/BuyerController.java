@@ -1,13 +1,17 @@
 package net.fashiongo.webadmin.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.primary.RetailerCompany;
 import net.fashiongo.webadmin.service.BuyerService;
 import net.fashiongo.webadmin.service.UserService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -53,5 +57,20 @@ public class BuyerController {
 		
 	}
 	
-	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 22.
+	 * @author Reo
+	 * @param companyName
+	 * @return
+	 */
+	@RequestMapping(value="getretailerlistforcompanyname", method=RequestMethod.GET)
+	public JsonResponse<List<RetailerCompany>> GetRetailerListForCompanyName(@RequestParam(value="keyword") String companyName) {
+		JsonResponse<List<RetailerCompany>> results = new JsonResponse<List<RetailerCompany>>();
+		List<RetailerCompany> result = buyerService.GetRetailerListForCompanyName(companyName);
+		
+		results.setData(result);
+		return results;
+	}
 }

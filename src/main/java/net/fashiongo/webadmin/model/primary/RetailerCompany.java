@@ -35,6 +35,10 @@ public class RetailerCompany {
 	@JsonProperty("EMail")
 	@Column(name = "EMail")
 	private String eMail;
+	
+	@JsonProperty("Active")
+	@Column(name = "Active")
+	private String active;
 
 	public Integer getRetailerID() {
 		return retailerID;
@@ -74,6 +78,14 @@ public class RetailerCompany {
 
 	public void seteMail(String eMail) {
 		this.eMail = eMail;
+	}
+
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
 	}
 	
 	
