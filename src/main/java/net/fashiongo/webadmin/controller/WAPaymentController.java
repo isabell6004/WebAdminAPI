@@ -1,10 +1,13 @@
 package net.fashiongo.webadmin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.service.WAPaymentService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -40,13 +43,13 @@ public class WAPaymentController {
 	 * 
 	 * @since 2018. 11. 20.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetPaymentStatusListParameter
+	 * @return GetPaymentStatusListResponse
 	 */
 	@RequestMapping(value = "getPaymentStatusList", method = RequestMethod.POST)
-	public JsonResponse<String> getPaymentStatusList() {
-		
-		return new JsonResponse<>();
+	public JsonResponse<GetPaymentStatusListResponse> getPaymentStatusList(@RequestBody GetPaymentStatusListParameter parameters) {
+		GetPaymentStatusListResponse result = waPaymentService.getPaymentStatusList(parameters);
+		return new JsonResponse<GetPaymentStatusListResponse>(true, null, 0, result);
 	}
 	
 	/**

@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
+import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.model.primary.PaymentStatus;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
-import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * 
@@ -44,12 +45,30 @@ public class WAPaymentService extends ApiService {
 	 * 
 	 * @since 2018. 11. 20.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetPaymentStatusListParameter
+	 * @return GetPaymentStatusListResponse
 	 */
-	public void getPaymentStatusList() {
-		
-		
+	@SuppressWarnings("unchecked")
+	public GetPaymentStatusListResponse getPaymentStatusList(GetPaymentStatusListParameter param) {
+		GetPaymentStatusListResponse result = new GetPaymentStatusListResponse();
+		String spName = "up_wa_pay_GetPaymentStatusList";
+		List<Object> params = new ArrayList<Object>();
+		params.add(param.getPageNum());
+		params.add(param.getPageSize());
+		params.add(param.getWholeSalerID());
+		params.add(param.getPaymentStatusID());
+		params.add(param.getFromDate());
+		params.add(param.getToDate());
+		params.add(param.getPoNumber());
+		params.add(param.getConsolidationID());
+		params.add(param.getBuyerName());
+		params.add(param.getTransactionType());
+		params.add(param.getSearchSuccess());
+		params.add(param.getOrderBy());
+		List<Object> _results = jdbcHelper.executeSP(spName, params, PaymentStatusList.class, Total.class);
+		result.setPaymentStatusList((List<PaymentStatusList>) _results.get(0));
+		result.setTotal((List<Total>) _results.get(1));
+		return result;
 	}
 	
 	/**
