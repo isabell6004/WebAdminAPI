@@ -1,17 +1,19 @@
 package net.fashiongo.webadmin.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
+import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
 import net.fashiongo.webadmin.service.WAPaymentService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -75,12 +77,12 @@ public class WAPaymentController {
 	 * @since 2018. 11. 20.
 	 * @author Dahye
 	 * @param 
-	 * @return 
+	 * @return CodeCreditCardType
 	 */
 	@RequestMapping(value = "getCreditCardType", method = RequestMethod.POST)
-	public JsonResponse<String> getCreditCardType() {
-		
-		return new JsonResponse<>();
+	public JsonResponse<List<CodeCreditCardType>> getCreditCardType() {
+		List<CodeCreditCardType> result = waPaymentService.getCreditCardType();
+		return new JsonResponse<List<CodeCreditCardType>>(true, null, 0, result);
 	}
 	
 	/**

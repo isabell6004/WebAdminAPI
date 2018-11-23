@@ -14,6 +14,7 @@ import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTran
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
+import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
 import net.fashiongo.webadmin.model.primary.PaymentStatus;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 
@@ -101,11 +102,15 @@ public class WAPaymentService extends ApiService {
 	 * @since 2018. 11. 20.
 	 * @author Dahye
 	 * @param 
-	 * @return 
+	 * @return CodeCreditCardType
 	 */
-	public void getCreditCardType() {
-		
-		
+	public List<CodeCreditCardType> getCreditCardType() {
+		List<CodeCreditCardType> result = new ArrayList<CodeCreditCardType>();
+		String spName = "up_wa_Pay_GetCreditCardType";
+		List<Object> params = new ArrayList<Object>();
+		List<Object> _results = jdbcHelper.executeSP(spName, params, CodeCreditCardType.class);
+		result = (List<CodeCreditCardType>) _results.get(0);
+		return result;
 	}
 	
 	/**
