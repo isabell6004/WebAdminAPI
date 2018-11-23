@@ -218,4 +218,13 @@ public class PhotoCalendar implements IPersistent, Serializable {
 		this.isDelayed = isDelayed;
 	}
 	
+	@Column(name = "minUnit")
+	private BigDecimal minUnit;
+	public BigDecimal getMinUnit() {
+		return minUnit;
+	}
+
+	public void setMinUnit(BigDecimal minUnit) {
+		this.minUnit = minUnit;
+	}
 }
