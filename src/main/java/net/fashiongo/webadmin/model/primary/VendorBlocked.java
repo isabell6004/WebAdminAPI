@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.model.primary;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -37,10 +39,10 @@ public class VendorBlocked implements Serializable {
 	private Integer blockReasonID;
 	
 	@JsonProperty("BlockedOn")
-	private Integer blockedOn;
+	private LocalDateTime blockedOn;
 	
 	@JsonProperty("BlockedBy")
-	private Integer blockedBy;
+	private String blockedBy;
 
 	public Integer getBlockID() {
 		return blockID;
@@ -66,21 +68,24 @@ public class VendorBlocked implements Serializable {
 		this.blockReasonID = blockReasonID;
 	}
 
-	public Integer getBlockedOn() {
+	public LocalDateTime getBlockedOn() {
 		return blockedOn;
 	}
 
-	public void setBlockedOn(Integer blockedOn) {
+	public void setBlockedOn(LocalDateTime blockedOn) {
 		this.blockedOn = blockedOn;
 	}
 
-	public Integer getBlockedBy() {
+	public String getBlockedBy() {
 		return blockedBy;
 	}
 
-	public void setBlockedBy(Integer blockedBy) {
+	public void setBlockedBy(String blockedBy) {
 		this.blockedBy = blockedBy;
 	}
-	
-	
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 }
