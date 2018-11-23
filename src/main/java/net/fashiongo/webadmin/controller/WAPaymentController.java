@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTran
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
+import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
 import net.fashiongo.webadmin.service.WAPaymentService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -94,9 +95,9 @@ public class WAPaymentController {
 	 * @return 
 	 */
 	@RequestMapping(value = "getCreditCardStatus", method = RequestMethod.POST)
-	public JsonResponse<String> getCreditCardStatus() {
-		
-		return new JsonResponse<>();
+	public JsonResponse<List<CardStatus>> getCreditCardStatus() {
+		List<CardStatus> result = waPaymentService.getCreditCardStatus();
+		return new JsonResponse<List<CardStatus>>(true, null, 0, result);
 	}
 	
 	/**
