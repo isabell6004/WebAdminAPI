@@ -32,6 +32,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParamet
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetBuyerRatingActiveParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorCreditCardParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
@@ -218,19 +219,6 @@ public class VendorController {
 	}
 	
 	/**
-	 * SetVendorCreditCard
-	 * 
-	 * @since 2018. 11. 12.
-	 * @author Dahye
-	 * @param 
-	 * @return 
-	 */
-	@RequestMapping(value="setvendorcreditcard", method=RequestMethod.POST)
-	public void setVendorCreditCard(@RequestBody Integer parameters) {
-		
-	}
-	
-	/**
 	 * 
 	 * Description Example
 	 * @since 2018. 11. 13.
@@ -398,6 +386,24 @@ public class VendorController {
         JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
 		
 		ResultCode result = vendorService.delVendorForm(parameters);
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 23.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="setvendorcreditcard", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setVendorCreditCard(@RequestBody SetVendorCreditCardParameter parameters) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+		
+		ResultCode result = vendorService.setVendorCreditCard(parameters);
 		
 		results.setData(result);
 		return results;
