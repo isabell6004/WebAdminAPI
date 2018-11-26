@@ -28,6 +28,7 @@ import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParame
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
@@ -244,6 +245,22 @@ public class MessageServiceTest {
 		ResultCode result = messageService.delRetailerNews(parameters);
 		if(result != null) {
 			assertTrue(result.getSuccess());
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * 
+	 * @since 2018. 11. 26.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetMessageReply() {
+		GetMessageReplyResponse result = messageService.getMessageReply(4131283);
+		
+		if(!CollectionUtils.isEmpty(result.getMessageReplyList())) {
+			assertNotNull(result.getMessageReplyList().get(0).getMessageID());
 		}
 	}
 }
