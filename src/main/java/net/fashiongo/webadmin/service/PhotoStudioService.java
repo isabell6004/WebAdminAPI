@@ -668,7 +668,9 @@ public class PhotoStudioService extends ApiService {
 			//delete
 			if(oldmapPhotoCalendarModels.size() > 0) {
 				for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
-					jdbcTemplatePhotoStudio.update(oldMapPhotoCalendarModel.toDeleteQuery());
+					oldMapPhotoCalendarModel.setAvailableUnit(BigDecimal.ZERO);
+					oldMapPhotoCalendarModel.setIsDelete(true);
+					jdbcTemplatePhotoStudio.update(oldMapPhotoCalendarModel.toUpdateQuery(""));
 				}
 			}
 		}

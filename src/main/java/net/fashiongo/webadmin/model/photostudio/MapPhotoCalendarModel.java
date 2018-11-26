@@ -58,4 +58,13 @@ public class MapPhotoCalendarModel implements IPersistent, Serializable {
 		this.availableUnit = availableUnit;
 	}
 	
+	@Column(name = "IsDelete")
+	private Boolean isDelete;
+	public Boolean getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(Boolean isDelete) {
+		this.isDelete = isDelete;
+	}
 }
