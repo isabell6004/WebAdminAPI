@@ -640,14 +640,14 @@ public class SitemgmtService extends ApiService {
 
 		switch (setType) {
 		case "Add":
-			this.saveCategory(category, objCategory);
+			result.setPk(this.saveCategory(category, objCategory));
 			result.setResultWrapper(true, 1, category.getCategoryID(), MSG_SAVE_SUCCESS, null);
 
 			break;
 
 		case "Upd":
 			category = categoryRepository.findOneByCategoryID(categoryID);
-			this.saveCategory(category, objCategory);
+			result.setPk(this.saveCategory(category, objCategory));
 			result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
 
 			break;
@@ -685,7 +685,7 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 	
-	private void saveCategory(Category category, Category objCategory) {
+	private Integer saveCategory(Category category, Category objCategory) {
 		category.setCategoryName(objCategory.getCategoryName());
 		category.setCategoryDescription(objCategory.getCategoryDescription());
 		category.setParentCategoryID(objCategory.getParentCategoryID());
@@ -697,6 +697,8 @@ public class SitemgmtService extends ApiService {
 		category.setListOrder(objCategory.getListOrder());
 		category.setActive(objCategory.getActive());
 		categoryRepository.save(category); // Save, Update
+		
+		return category.getCategoryID();
 	}
 
 	/**
