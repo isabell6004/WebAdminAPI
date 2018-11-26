@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.dao.primary.AspnetMembershipRepository;
 import net.fashiongo.webadmin.dao.primary.BuyerRatingActiveRepository;
@@ -17,6 +19,8 @@ import net.fashiongo.webadmin.dao.primary.FashiongoFormRepository;
 import net.fashiongo.webadmin.dao.primary.ListVendorImageTypeRepository;
 import net.fashiongo.webadmin.dao.primary.VendorAdminAccountRepository;
 import net.fashiongo.webadmin.dao.primary.VendorBlockedRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCompanyCardRepository;
+import net.fashiongo.webadmin.dao.primary.VendorCreditCardRepository;
 import net.fashiongo.webadmin.dao.primary.VendorImageRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
 import net.fashiongo.webadmin.dao.primary.VwVendorBlockedRepository;
@@ -44,6 +48,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorCreditcardPar
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetBuyerRatingActiveParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorCreditCardParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
@@ -59,6 +64,8 @@ import net.fashiongo.webadmin.model.primary.ListVendorImageType;
 import net.fashiongo.webadmin.model.primary.RetailerRating;
 import net.fashiongo.webadmin.model.primary.VendorAdminAccount;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.model.primary.VendorCompanyCard;
+import net.fashiongo.webadmin.model.primary.VendorCreditCard;
 import net.fashiongo.webadmin.model.primary.VendorImageRequest;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 import net.fashiongo.webadmin.model.primary.WholeSalerRating;
@@ -104,6 +111,12 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private BuyerRatingActiveRepository buyerRatingActiveRepository;
+	
+	@Autowired
+	private VendorCreditCardRepository vendorCreditCardRepository;
+	
+	@Autowired
+	private VendorCompanyCardRepository vendorCompanyCardRepository;
 	
 	/**
 	 * Get vendor list
@@ -303,19 +316,7 @@ public class VendorService extends ApiService {
 		result.setTotal((List<Total>) _result.get(1));
 		return result;
 	}
-	
-	/**
-	 * SetVendorCreditCard
-	 * 
-	 * @since 2018. 11. 12.
-	 * @author Dahye
-	 * @param 
-	 * @return 
-	 */
-	public void setVendorCreditCard(Integer parameters) {
-		
-	}
-	
+
 	/**
 	 * 
 	 * Description Example
@@ -528,6 +529,90 @@ public class VendorService extends ApiService {
 		result.setResultCode(1);
 		result.setResultMsg(MSG_DELETE_SUCCESS);
 		result.setSuccess(true);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 23.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode setVendorCreditCard(SetVendorCreditCardParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		
+		VendorCreditCard vcc = new VendorCreditCard();
+		VendorCompanyCard vccard = new VendorCompanyCard();
+		String guid = null;
+		
+		switch(parameters.getType()) {
+			case "Add":
+				vcc.setWholeSalerID(parameters.getVendorID());
+				vcc.setCardTypeID(parameters.getVendorCreditCardID());
+				vcc.setLast4Digit(parameters.getCreditCard());
+				vcc.setAttachment(parameters.getAttachment());
+				vcc.setIsRecurring(parameters.getRecurring());
+				vcc.setZipcode(parameters.getZipcode());
+				vcc.setState(parameters.getState());
+				vcc.setCity(parameters.getCity());
+				vcc.setStreetNo(parameters.getStreet());
+				vcc.setCreatedOn(LocalDateTime.now());
+				vcc.setCreatedBy(Utility.getUsername());
+				vcc.setModifiedOn(LocalDateTime.now());
+				vcc.setModifiedBy(Utility.getUsername());
+				vendorCreditCardRepository.save(vcc);
+				
+				vccard = vendorCompanyCardRepository.findOneBywholeSalerId(parameters.getVendorID());
+				if(vccard != null) {
+				    guid = vccard.getWholeSalerGUID();
+				}
+				
+				vccard.setChargedByCreditCard(true);
+				vendorCompanyCardRepository.save(vccard);
+				
+				if(!StringUtils.isEmpty(guid)) {
+					result.setResultCode(1);
+					result.setResultMsg(guid);
+				} else {
+					result.setResultCode(0);
+					result.setResultMsg(null);
+				}
+			    break;
+			default:
+				vcc = vendorCreditCardRepository.findOneByVendorCreditCardID(parameters.getVendorCreditCardID());
+				vcc.setWholeSalerID(parameters.getVendorID());
+				vcc.setCardTypeID(parameters.getVendorCreditCardID());
+				vcc.setLast4Digit(parameters.getCreditCard());
+				vcc.setAttachment(parameters.getAttachment());
+				vcc.setIsRecurring(parameters.getRecurring());
+				vcc.setZipcode(parameters.getZipcode());
+				vcc.setState(parameters.getState());
+				vcc.setCity(parameters.getCity());
+				vcc.setStreetNo(parameters.getStreet());
+				vcc.setModifiedOn(LocalDateTime.now());
+				vcc.setModifiedBy(Utility.getUsername());
+				vendorCreditCardRepository.save(vcc);
+				
+				vccard = vendorCompanyCardRepository.findOneBywholeSalerId(parameters.getVendorID());
+				if(vccard != null) {
+				    guid = vccard.getWholeSalerGUID();
+				}
+				
+				vccard.setChargedByCreditCard(true);
+				vendorCompanyCardRepository.save(vccard);
+				
+				if(!StringUtils.isEmpty(guid)) {
+					result.setResultCode(1);
+					result.setResultMsg(guid);
+				} else {
+					result.setResultCode(0);
+					result.setResultMsg(null);
+				}
+				break;
+		}
 		return result;
 	}
 }

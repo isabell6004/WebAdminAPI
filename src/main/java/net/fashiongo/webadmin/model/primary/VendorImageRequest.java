@@ -30,6 +30,10 @@ public class VendorImageRequest implements Serializable {
 	@Column(name = "WholeSalerID")
 	private Integer wholeSalerID;
 	
+	@JsonProperty("CompanyName")
+	@Column(name = "CompanyName")
+	private String companyName;
+	
 	@JsonProperty("VendorImageTypeID")
 	@Column(name = "VendorImageTypeID")
 	private Integer vendorImageTypeID;
@@ -80,6 +84,14 @@ public class VendorImageRequest implements Serializable {
 
 	public void setImageRequestID(Integer imageRequestID) {
 		this.imageRequestID = imageRequestID;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public Integer getWholeSalerID() {
