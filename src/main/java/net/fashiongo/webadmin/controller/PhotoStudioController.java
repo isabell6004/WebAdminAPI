@@ -19,6 +19,8 @@ import net.fashiongo.webadmin.model.photostudio.PhotoModel;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
 import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
+import net.fashiongo.webadmin.model.photostudio.ReportCsvDaily;
+import net.fashiongo.webadmin.model.photostudio.ReportCsvMonthly;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
 import net.fashiongo.webadmin.service.PhotoStudioService;
 
@@ -527,6 +529,40 @@ public class PhotoStudioController {
 			response.setData(result);
 		} catch (Exception ex) {
 			logger.error("Exception Error: PhotoStudioController.getReports()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/reports/daily/csv")
+	public JsonResponse<?> getReportsDailyCsv(@RequestParam Map<String, Object> parmMap) {
+		logger.debug("PhotoStudioController.getReportsDailyCsv() called!!!");
+		JsonResponse<List<ReportCsvDaily>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<ReportCsvDaily> result = photoStudioService.getReportsDailyCsv(parmMap);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getReportsDailyCsv()：", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/reports/monthly/csv")
+	public JsonResponse<?> getReportsMonthlyCsv(@RequestParam Map<String, Object> parmMap) {
+		logger.debug("PhotoStudioController.getReportsMonthlyCsv() called!!!");
+		JsonResponse<List<ReportCsvMonthly>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<ReportCsvMonthly> result = photoStudioService.getReportsMonthlyCsv(parmMap);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch (Exception ex) {
+			logger.error("Exception Error: PhotoStudioController.getReportsMonthlyCsv()：", ex);
 			response.setMessage(ex.getMessage());
 		}
 
