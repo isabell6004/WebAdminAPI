@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
@@ -103,15 +105,15 @@ public class WAPaymentController {
 	/**
 	 * getAllSavedCreditCardInfo
 	 * 
-	 * @since 2018. 11. 20.
+	 * @since 2018. 11. 26.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetAllSavedCreditCardInfoParameter
+	 * @return GetAllSavedCreditCardInfoResponse
 	 */
 	@RequestMapping(value = "getAllSavedCreditCardInfo", method = RequestMethod.POST)
-	public JsonResponse<String> getAllSavedCreditCardInfo() {
-		
-		return new JsonResponse<>();
+	public JsonResponse<GetAllSavedCreditCardInfoResponse> getAllSavedCreditCardInfo(@RequestBody GetAllSavedCreditCardInfoParameter param) {
+		GetAllSavedCreditCardInfoResponse result = waPaymentService.getAllSavedCreditCardInfo(param);
+		return new JsonResponse<GetAllSavedCreditCardInfoResponse>(true, null, 0, result);
 	}
 	
 	/**

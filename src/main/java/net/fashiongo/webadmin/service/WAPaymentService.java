@@ -5,12 +5,17 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import net.fashiongo.webadmin.model.pojo.admin.AspnetUserRoles;
 import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.payment.CreditCardInfo;
 import net.fashiongo.webadmin.model.pojo.payment.CreditCardStatus;
 import net.fashiongo.webadmin.model.pojo.payment.OrderPaymentStatus;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
+import net.fashiongo.webadmin.model.pojo.payment.TotalCount;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
@@ -105,6 +110,7 @@ public class WAPaymentService extends ApiService {
 	 * @param 
 	 * @return CodeCreditCardType
 	 */
+	@SuppressWarnings("unchecked")
 	public List<CodeCreditCardType> getCreditCardType() {
 		List<CodeCreditCardType> result = new ArrayList<CodeCreditCardType>();
 		String spName = "up_wa_Pay_GetCreditCardType";
@@ -122,6 +128,7 @@ public class WAPaymentService extends ApiService {
 	 * @param 
 	 * @return 
 	 */
+	@SuppressWarnings("unchecked")
 	public List<CardStatus> getCreditCardStatus() {
 		List<CardStatus> result = new ArrayList<CardStatus>();
 		String spName = "up_wa_Pay_GetCreditCardStatus";
@@ -134,14 +141,33 @@ public class WAPaymentService extends ApiService {
 	/**
 	 * getAllSavedCreditCardInfo
 	 * 
-	 * @since 2018. 11. 20.
+	 * @since 2018. 11. 26.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetAllSavedCreditCardInfoParameter
+	 * @return GetAllSavedCreditCardInfoResponse
 	 */
-	public void getAllSavedCreditCardInfo() {
-		
-		
+	@SuppressWarnings("unchecked")
+	public GetAllSavedCreditCardInfoResponse getAllSavedCreditCardInfo(GetAllSavedCreditCardInfoParameter param) {
+		GetAllSavedCreditCardInfoResponse result = new GetAllSavedCreditCardInfoResponse();
+		String spName = "up_wa_Pay_GetCreditCardList";
+		List<Object> params = new ArrayList<Object>();
+		params.add(param.getPageNum());
+		params.add(param.getPageSize());
+		params.add(param.getCardID());
+		params.add(param.getDefaultCard());
+		params.add(param.getCardTypeID());
+		params.add(param.getCardStatusID());
+		params.add(param.getBillingID());
+		params.add(param.getCreditCountry());
+		params.add(param.getCreditState());
+		params.add(param.getBuyer());
+		params.add(param.getReferenceID());
+		params.add(param.getOrderBy());
+		params.add(param.getOrderGubn());
+		List<Object> _results = jdbcHelper.executeSP(spName, params, CreditCardInfo.class, TotalCount.class);
+		result.setCreditCardInfo((List<CreditCardInfo>) _results.get(0));
+		result.setTotalList((List<TotalCount>) _results.get(1));
+		return result;		
 	}
 	
 	/**
