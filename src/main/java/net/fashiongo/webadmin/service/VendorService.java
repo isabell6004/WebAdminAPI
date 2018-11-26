@@ -540,6 +540,7 @@ public class VendorService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setVendorCreditCard(SetVendorCreditCardParameter parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
 		
@@ -553,7 +554,7 @@ public class VendorService extends ApiService {
 				vcc.setCardTypeID(parameters.getVendorCreditCardID());
 				vcc.setLast4Digit(parameters.getCreditCard());
 				vcc.setAttachment(parameters.getAttachment());
-				vcc.setRecurring(parameters.getRecurring());
+				vcc.setIsRecurring(parameters.getRecurring());
 				vcc.setZipcode(parameters.getZipcode());
 				vcc.setState(parameters.getState());
 				vcc.setCity(parameters.getCity());
@@ -586,7 +587,7 @@ public class VendorService extends ApiService {
 				vcc.setCardTypeID(parameters.getVendorCreditCardID());
 				vcc.setLast4Digit(parameters.getCreditCard());
 				vcc.setAttachment(parameters.getAttachment());
-				vcc.setRecurring(parameters.getRecurring());
+				vcc.setIsRecurring(parameters.getRecurring());
 				vcc.setZipcode(parameters.getZipcode());
 				vcc.setState(parameters.getState());
 				vcc.setCity(parameters.getCity());

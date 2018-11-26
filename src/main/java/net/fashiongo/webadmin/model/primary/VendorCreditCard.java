@@ -3,6 +3,8 @@ package net.fashiongo.webadmin.model.primary;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -20,6 +22,7 @@ import lombok.Data;
 @Data
 public class VendorCreditCard {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("VendorCreditCardID")
 	private Integer vendorCreditCardID;
 
@@ -60,6 +63,8 @@ public class VendorCreditCard {
 	private String attachment;
 
 	@JsonProperty("IsRecurring")
-	private Boolean recurring;
+	private Boolean isRecurring;
+	
+	
 
 }

@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.vendor.parameter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -12,7 +14,7 @@ public class SetVendorCreditCardParameter {
 	private String type;
 	
 	@JsonProperty("VendorCreditCardID")
-	private Integer vendorCreditCardID;
+	private String vendorCreditCardID;
 	
 	@JsonProperty("vendorID")
 	private Integer vendorID;
@@ -50,10 +52,10 @@ public class SetVendorCreditCardParameter {
 	}
 
 	public Integer getVendorCreditCardID() {
-		return vendorCreditCardID;
+		return StringUtils.isEmpty(vendorCreditCardID) ? 0 : Integer.parseInt(vendorCreditCardID);
 	}
 
-	public void setVendorCreditCardID(Integer vendorCreditCardID) {
+	public void setVendorCreditCardID(String vendorCreditCardID) {
 		this.vendorCreditCardID = vendorCreditCardID;
 	}
 
