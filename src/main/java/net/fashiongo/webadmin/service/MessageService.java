@@ -28,6 +28,7 @@ import net.fashiongo.webadmin.model.pojo.message.MessageReply;
 import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.message.VendorNews;
+import net.fashiongo.webadmin.model.pojo.message.VendorRating;
 import net.fashiongo.webadmin.model.pojo.message.VwWaMessage;
 import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
@@ -36,6 +37,7 @@ import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetail
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorRatingParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetContactUsReplyParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageReadYNParameter;
@@ -44,6 +46,7 @@ import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyRespons
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetVendorRatingResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.primary.ContactUs;
 import net.fashiongo.webadmin.model.primary.Message;
@@ -546,5 +549,46 @@ public class MessageService extends ApiService {
 		result.setMessageReplyList((List<MessageReply>)_result.get(0));
 		
 		return result;
+	}
+	
+	/**
+	 * getVendorRating
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author dahye
+	 * @param GetVendorRatingParameter
+	 * @return GetVendorRatingResponse
+	 */
+	public GetVendorRatingResponse getVendorRating(GetVendorRatingParameter param) {
+		GetVendorRatingResponse result = new GetVendorRatingResponse();
+		String spName = "up_wa_GetVendorInfoRating";
+		List<Object> params = new ArrayList<Object>();
+		params.add(param.getWholeSalerID());
+		params.add(param.getRetailerID());
+		params.add(param.getPageNum());
+		params.add(param.getPageSize());
+		params.add(param.getActive());
+		params.add(param.getAdditional());
+		params.add(param.getFromDate());
+		params.add(param.getToDate());
+		params.add(param.getOrderby());
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, VendorRating.class);
+		result.setRecCnt((List<Total>) _result.get(0));
+		result.setVendorRatingList((List<VendorRating>) _result.get(1));
+		return result;
+	}
+	
+
+	
+	/**
+	 * getRetailerRating
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author dahye
+	 * @param 
+	 * @return 
+	 */
+	public void getRetailerRating() {
+		
 	}
 }

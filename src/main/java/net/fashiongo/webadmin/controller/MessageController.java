@@ -22,6 +22,7 @@ import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetail
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorRatingParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetContactUsReplyParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageReadYNParameter;
@@ -31,10 +32,9 @@ import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyRespons
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetDMRequestResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetVendorRatingResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.primary.MessageCategory;
-import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
 import net.fashiongo.webadmin.service.MessageService;
@@ -325,5 +325,33 @@ public class MessageController {
 		results.setData(result);
 		
 		return results;
+	}
+	
+	/**
+	 * getVendorRating
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author dahye
+	 * @param GetVendorRatingParameter
+	 * @return GetVendorRatingResponse
+	 */
+	@RequestMapping(value="getvendorrating", method=RequestMethod.POST)
+	public JsonResponse<GetVendorRatingResponse> getVendorRating(@RequestBody GetVendorRatingParameter param) {
+		GetVendorRatingResponse result = messageService.getVendorRating(param);
+		return new JsonResponse<GetVendorRatingResponse>(true, null, 0, result);
+	}
+	
+	/**
+	 * getRetailerRating
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author dahye
+	 * @param GetVendorRatingParameter
+	 * @return 
+	 */
+	@RequestMapping(value="", method=RequestMethod.GET)
+	public JsonResponse<String> getRetailerRating(@RequestBody GetVendorRatingParameter param) {
+		
+		return null;
 	}
 }
