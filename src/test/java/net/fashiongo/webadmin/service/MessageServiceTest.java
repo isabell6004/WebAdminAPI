@@ -18,19 +18,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.message.VwWaMessage;
 import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetContactUsReplyParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
@@ -245,5 +251,42 @@ public class MessageServiceTest {
 		if(result != null) {
 			assertTrue(result.getSuccess());
 		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 26.
+	 * @author Reo
+	 */
+	@Test
+	public void testGetContactUs() {
+		GetContactUsParameter parameters = new GetContactUsParameter();
+		parameters.setPageNum(0);
+		parameters.setPageSize(20);
+		parameters.setTopic(null);
+		GetContactUsResponse result = messageService.getContactUs(parameters);
+		if(!CollectionUtils.isEmpty(result.getContactUsList())) {
+			assertNotNull(result.getContactUsList());
+			assertNotNull(result.getTotal());
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 26.
+	 * @author Reo
+	 * @throws JsonProcessingException 
+	 */
+	@Ignore
+	@Test
+	public void testSetContactUsReply() throws JsonProcessingException {
+		SetContactUsReplyParameter parameters = new SetContactUsReplyParameter();
+		parameters.setContactID(18849);
+		parameters.setRepliedBy("krdev");
+		parameters.setReply("test2222");
+		ResultCode result = messageService.setContactUsReply(parameters);
+		assertTrue(result.getResultCode() > 0);
 	}
 }
