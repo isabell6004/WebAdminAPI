@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPayoutHistoryParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.SetRestorePendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPayoutHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
@@ -136,12 +138,12 @@ public class WAPaymentController {
 	 * 
 	 * @since 2018. 11. 20.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetPayoutHistoryParameter
+	 * @return GetPayoutHistoryResponse
 	 */
 	@RequestMapping(value = "getpayouthistory", method = RequestMethod.POST)
-	public JsonResponse<String> getPayoutHistory() {
-		
-		return new JsonResponse<>();
+	public JsonResponse<GetPayoutHistoryResponse> getPayoutHistory(@RequestBody GetPayoutHistoryParameter param) {
+		GetPayoutHistoryResponse result = waPaymentService.getPayoutHistory(param);
+		return new JsonResponse<GetPayoutHistoryResponse>(true, null, 0, result);
 	}
 }

@@ -18,14 +18,17 @@ import net.fashiongo.webadmin.model.pojo.payment.CreditCardStatus;
 import net.fashiongo.webadmin.model.pojo.payment.OrderPayment;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusID;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
+import net.fashiongo.webadmin.model.pojo.payment.PayoutHistory;
 import net.fashiongo.webadmin.model.pojo.payment.TotalCount;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPayoutHistoryParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.SetRestorePendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPayoutHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
@@ -244,11 +247,24 @@ public class WAPaymentService extends ApiService {
 	 * 
 	 * @since 2018. 11. 20.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetPayoutHistoryParameter
+	 * @return GetPayoutHistoryResponse
 	 */
-	public void getPayoutHistory() {
-		
-		
+	public GetPayoutHistoryResponse getPayoutHistory(GetPayoutHistoryParameter param) {
+		GetPayoutHistoryResponse result = new GetPayoutHistoryResponse();
+		String spName = "up_wa_pay_GetPayoutList";
+		List<Object> params = new ArrayList<Object>();
+		params.add(param.getPagenum());
+		params.add(param.getPagesize());
+		params.add(param.getWholesalerid());
+		params.add(param.getFromdate());
+		params.add(param.getTodate());
+		params.add(param.getPayoutstatus());
+		params.add(param.getPayoutschedule());
+		params.add(param.getOrderby());
+		List<Object> _results = jdbcHelper.executeSP(spName, params, Total.class, PayoutHistory.class);
+		result.setTotal((List<Total>) _results.get(0));
+		result.setPayoutList((List<PayoutHistory>) _results.get(1));
+		return result;		
 	}
 }
