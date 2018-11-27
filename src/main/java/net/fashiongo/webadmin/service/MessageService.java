@@ -26,6 +26,7 @@ import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.MessageReply;
 import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
+import net.fashiongo.webadmin.model.pojo.message.RetailerRating;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.message.VendorNews;
 import net.fashiongo.webadmin.model.pojo.message.VendorRating;
@@ -45,6 +46,7 @@ import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParame
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerRatingResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorRatingResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
@@ -585,10 +587,25 @@ public class MessageService extends ApiService {
 	 * 
 	 * @since 2018. 11. 27.
 	 * @author dahye
-	 * @param 
+	 * @param GetVendorRatingParameter
 	 * @return 
 	 */
-	public void getRetailerRating() {
-		
+	public GetRetailerRatingResponse getRetailerRating(GetVendorRatingParameter param) {
+		GetRetailerRatingResponse result = new GetRetailerRatingResponse();
+		String spName = "up_wa_GetRetailerRating";
+		List<Object> params = new ArrayList<Object>();
+		params.add(param.getRetailerID());
+		params.add(param.getWholeSalerID());
+		params.add(param.getPageNum());
+		params.add(param.getPageSize());
+		params.add(param.getActive());
+		params.add(param.getAdditional());
+		params.add(param.getFromDate());
+		params.add(param.getToDate());
+		params.add(param.getOrderby());
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, RetailerRating.class);
+		result.setRecCnt((List<Total>) _result.get(0));
+		result.setRetailerRatingList((List<RetailerRating>) _result.get(1));
+		return result;
 	}
 }

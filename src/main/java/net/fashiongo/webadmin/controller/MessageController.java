@@ -31,6 +31,7 @@ import net.fashiongo.webadmin.model.pojo.message.parameter.SetVendorNewsParamete
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerRatingResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorRatingResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
@@ -349,9 +350,9 @@ public class MessageController {
 	 * @param GetVendorRatingParameter
 	 * @return 
 	 */
-	@RequestMapping(value="", method=RequestMethod.GET)
-	public JsonResponse<String> getRetailerRating(@RequestBody GetVendorRatingParameter param) {
-		
-		return null;
+	@RequestMapping(value="getretailerrating", method=RequestMethod.POST)
+	public JsonResponse<GetRetailerRatingResponse> getRetailerRating(@RequestBody GetVendorRatingParameter param) {
+		GetRetailerRatingResponse result = messageService.getRetailerRating(param);
+		return new JsonResponse<GetRetailerRatingResponse>(true, null, 0, result);
 	}
 }
