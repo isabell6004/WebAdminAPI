@@ -400,13 +400,9 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="setvendorcreditcard", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setVendorCreditCard(@RequestBody SetVendorCreditCardParameter parameters) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
-		
+	public JsonResponse<String> setVendorCreditCard(@RequestBody SetVendorCreditCardParameter parameters) {
 		ResultCode result = vendorService.setVendorCreditCard(parameters);
-		
-		results.setData(result);
-		return results;
+		return new JsonResponse<String>(true, result.getResultMsg(), result.getResultCode(), null);
 	}
 }
 	
