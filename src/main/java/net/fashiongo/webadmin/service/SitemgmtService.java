@@ -689,7 +689,7 @@ public class SitemgmtService extends ApiService {
 		category.setCategoryName(objCategory.getCategoryName());
 		category.setCategoryDescription(objCategory.getCategoryDescription());
 		category.setParentCategoryID(objCategory.getParentCategoryID());
-		category.setParentParentCategoryID(objCategory.getParentCategoryID());
+		category.setParentParentCategoryID(objCategory.getParentParentCategoryID());
 		category.setLvl(objCategory.getLvl());
 		category.setTitleImage(objCategory.getTitleImage());
 		category.setIsLandingPage(objCategory.getIsLandingPage());
