@@ -8,11 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
+import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
 import net.fashiongo.webadmin.service.WAPaymentService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -94,23 +97,23 @@ public class WAPaymentController {
 	 * @return 
 	 */
 	@RequestMapping(value = "getCreditCardStatus", method = RequestMethod.POST)
-	public JsonResponse<String> getCreditCardStatus() {
-		
-		return new JsonResponse<>();
+	public JsonResponse<List<CardStatus>> getCreditCardStatus() {
+		List<CardStatus> result = waPaymentService.getCreditCardStatus();
+		return new JsonResponse<List<CardStatus>>(true, null, 0, result);
 	}
 	
 	/**
 	 * getAllSavedCreditCardInfo
 	 * 
-	 * @since 2018. 11. 20.
+	 * @since 2018. 11. 26.
 	 * @author Dahye
-	 * @param 
-	 * @return 
+	 * @param GetAllSavedCreditCardInfoParameter
+	 * @return GetAllSavedCreditCardInfoResponse
 	 */
 	@RequestMapping(value = "getAllSavedCreditCardInfo", method = RequestMethod.POST)
-	public JsonResponse<String> getAllSavedCreditCardInfo() {
-		
-		return new JsonResponse<>();
+	public JsonResponse<GetAllSavedCreditCardInfoResponse> getAllSavedCreditCardInfo(@RequestBody GetAllSavedCreditCardInfoParameter param) {
+		GetAllSavedCreditCardInfoResponse result = waPaymentService.getAllSavedCreditCardInfo(param);
+		return new JsonResponse<GetAllSavedCreditCardInfoResponse>(true, null, 0, result);
 	}
 	
 	/**
