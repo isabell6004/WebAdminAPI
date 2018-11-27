@@ -39,6 +39,24 @@ public class CommonReportsVo {
 	public void setCheckOutDate(String checkOutDate) {
 		this.checkOutDate = checkOutDate;
 	}
+	
+	@JsonIgnore
+	@Column(name = "photoshootDate")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _photoshootDate;
+	public LocalDateTime get_photoshootDate() {
+		return _photoshootDate;
+	}
+
+	public void set_photoshootDate(LocalDateTime _photoshootDate) {
+		this._photoshootDate = _photoshootDate;
+	}
+
+	@Transient
+	private String photoshootDate;
+	public String getPhotoshootDate() {
+		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+	}
 
 	@Column(name = "WholeSalerCompanyName")
 	private String wholeSalerCompanyName;
