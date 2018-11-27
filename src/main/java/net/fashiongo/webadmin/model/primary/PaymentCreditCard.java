@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.dao.primary;
+package net.fashiongo.webadmin.model.primary;
 
 import java.time.LocalDateTime;
 

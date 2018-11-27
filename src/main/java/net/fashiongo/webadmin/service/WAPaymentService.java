@@ -1,28 +1,40 @@
 package net.fashiongo.webadmin.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import net.fashiongo.webadmin.model.pojo.admin.AspnetUserRoles;
+import net.fashiongo.webadmin.dao.primary.EntityActionLogRepository;
+import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
+import net.fashiongo.webadmin.dao.primary.PaymentCreditCardRepository;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.payment.CreditCardInfo;
 import net.fashiongo.webadmin.model.pojo.payment.CreditCardStatus;
-import net.fashiongo.webadmin.model.pojo.payment.OrderPaymentStatus;
+import net.fashiongo.webadmin.model.pojo.payment.OrderPayment;
+import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusID;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
 import net.fashiongo.webadmin.model.pojo.payment.TotalCount;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.SetRestorePendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
+import net.fashiongo.webadmin.model.primary.EntityActionLog;
+import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
+import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
 import net.fashiongo.webadmin.model.primary.PaymentStatus;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.utility.Utility;
 
 /**
  * 
@@ -31,6 +43,15 @@ import net.fashiongo.webadmin.model.primary.VendorCompany;
  */
 @Service
 public class WAPaymentService extends ApiService {
+	
+	String sessionUserID = Utility.getUsername();
+	
+	@Autowired
+	private OrderPaymentStatusRepository orderPaymentStatusRepository;
+	@Autowired
+	private EntityActionLogRepository entityActionLogRepository;
+	@Autowired
+	private PaymentCreditCardRepository paymentCreditCardRepository;
 	/**
 	 * 
 	 * 
@@ -96,9 +117,9 @@ public class WAPaymentService extends ApiService {
 		String spName = "up_wa_pay_GetPendingPaymentTransaction";
 		List<Object> params = new ArrayList<Object>();
 		params.add(param.getCreditcardid());
-		List<Object> _results = jdbcHelper.executeSP(spName, params, CreditCardStatus.class, OrderPaymentStatus.class);
+		List<Object> _results = jdbcHelper.executeSP(spName, params, CreditCardStatus.class, OrderPayment.class);
 		result.setCreditCardStatusList((List<CreditCardStatus>) _results.get(0));
-		result.setOrderPaymentStatusList((List<OrderPaymentStatus>) _results.get(1));
+		result.setOrderPaymentStatusList((List<OrderPayment>) _results.get(1));
 		return result;
 	}
 	
@@ -175,12 +196,47 @@ public class WAPaymentService extends ApiService {
 	 * 
 	 * @since 2018. 11. 20.
 	 * @author Dahye
-	 * @param 
+	 * @param SetRestorePendingPaymentTransactionParameter
 	 * @return 
 	 */
-	public void setRestorePendingPaymentTransaction() {
+	@Transactional("primaryTransactionManager")
+	public ResultCode setRestorePendingPaymentTransaction(SetRestorePendingPaymentTransactionParameter param) {
+		LocalDateTime modifiedOn = LocalDateTime.now();
+		for(PaymentStatusID item: param.getPaymentStatusID()) {
+			OrderPaymentStatus a = orderPaymentStatusRepository.findOneByOrderPaymentStatusID(item.getOrderPaymentStatusID());
+			if(a.getOrderPaymentStatusID() > 0) {
+				a.setPaymentStatusID(item.getPaymentStatusID());
+				a.setPrePaymentStatusID(item.getPrePaymentStatusID());
+				a.setModifiedBy(sessionUserID);
+				a.setModifiedOn(modifiedOn);
+				orderPaymentStatusRepository.save(a);
+				
+				EntityActionLog b = new EntityActionLog();
+				b.setEntityTypeID(1);
+				b.setEntityID(1);
+				b.setActionID(7002);
+				b.setActedOn(modifiedOn);
+				b.setActedBy(sessionUserID);
+				b.setRemark("order payment status restored");
+				entityActionLogRepository.save(b);
+			}
+		}
+		PaymentCreditCard c = paymentCreditCardRepository.findOneByCreditCardID(param.getCreditcardid());
+		c.setCardStatusID(1);
+		c.setModifiedBy(sessionUserID);
+		c.setModifiedOn(modifiedOn);
+		paymentCreditCardRepository.save(c);
 		
+		EntityActionLog d = new EntityActionLog();
+		d.setEntityTypeID(1);
+		d.setEntityID(param.getCreditcardid());
+		d.setActionID(7001);
+		d.setActedOn(modifiedOn);
+		d.setActedBy(sessionUserID);
+		d.setRemark("credit card status changed");
+		entityActionLogRepository.save(d);
 		
+		return new ResultCode(true, 1, "Restore successfully!");
 	}
 	
 	/**

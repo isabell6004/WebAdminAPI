@@ -13,7 +13,7 @@ import lombok.Data;
  *
  */
 @Data
-public class OrderPaymentStatus {
+public class OrderPayment {
 	@JsonProperty("OrderPaymentStatusID") 
 	private Integer orderPaymentStatusID;
 	

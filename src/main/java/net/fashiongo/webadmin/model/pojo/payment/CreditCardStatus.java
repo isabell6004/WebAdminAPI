@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import net.fashiongo.webadmin.dao.primary.PaymentCreditCard;
+import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
 
 /**
  * 

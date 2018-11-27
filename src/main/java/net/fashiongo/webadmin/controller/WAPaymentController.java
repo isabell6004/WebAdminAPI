@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.SetRestorePendingPaymentTransactionParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
@@ -121,11 +122,11 @@ public class WAPaymentController {
 	 * 
 	 * @since 2018. 11. 20.
 	 * @author Dahye
-	 * @param 
+	 * @param SetRestorePendingPaymentTransactionParameter
 	 * @return 
 	 */
 	@RequestMapping(value = "setrestorependingpaymenttransaction", method = RequestMethod.POST)
-	public JsonResponse<String> setRestorePendingPaymentTransaction() {
+	public JsonResponse<String> setRestorePendingPaymentTransaction(@RequestBody SetRestorePendingPaymentTransactionParameter param) {
 		
 		return new JsonResponse<>();
 	}

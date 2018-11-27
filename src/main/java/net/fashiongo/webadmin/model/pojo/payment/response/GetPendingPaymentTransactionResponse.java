@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 import net.fashiongo.webadmin.model.pojo.payment.CreditCardStatus;
-import net.fashiongo.webadmin.model.pojo.payment.OrderPaymentStatus;
+import net.fashiongo.webadmin.model.pojo.payment.OrderPayment;
 
 /**
  * 
@@ -19,5 +19,5 @@ public class GetPendingPaymentTransactionResponse {
 	private List<CreditCardStatus> creditCardStatusList;
 	
 	@JsonProperty("Table1")
-	private List<OrderPaymentStatus> orderPaymentStatusList;
+	private List<OrderPayment> orderPaymentStatusList;
 }
