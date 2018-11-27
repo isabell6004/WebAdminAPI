@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -29,6 +30,11 @@ public class VendorImageRequest implements Serializable {
 	@JsonProperty("WholeSalerID")
 	@Column(name = "WholeSalerID")
 	private Integer wholeSalerID;
+	
+	@Transient
+	@JsonProperty("CompanyName")
+	@Column(name = "CompanyName")
+	private String companyName;
 	
 	@JsonProperty("VendorImageTypeID")
 	@Column(name = "VendorImageTypeID")
