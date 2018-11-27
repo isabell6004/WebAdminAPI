@@ -15,6 +15,6 @@ import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 public interface VwVendorBlockedRepository extends CrudRepository<VwVendorBlocked, Integer> {
 	List<VwVendorBlocked> findByBlockID(Integer searchKeyword);
 	List<VwVendorBlocked> findByCompanyName(String searchKeyword);
-	List<VwVendorBlocked> findByBlockedOn(LocalDateTime searchKeyword);
+	List<VwVendorBlocked> findByBlockedOnBetween(LocalDateTime fromDate, LocalDateTime toDate);
 	List<VwVendorBlocked> findByBlockReasonTitle(String searchKeyword);
 }
