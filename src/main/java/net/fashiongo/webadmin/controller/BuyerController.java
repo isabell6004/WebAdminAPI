@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerReadYNParameter;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.RetailerCompany;
@@ -45,20 +46,6 @@ public class BuyerController {
 	
 	/**
 	 * 
-	 * SetAdminRetailerReadYN
-	 * 
-	 * @since 2018. 11. 12.
-	 * @author Dahye
-	 * @param 
-	 * @return 
-	 */
-	@RequestMapping(value="setadminretailerreadyn", method=RequestMethod.POST)
-	public void setAdminRetailerReadYN(@RequestBody Integer parameters) {
-		
-	}
-	
-	/**
-	 * 
 	 * Description Example
 	 * @since 2018. 11. 22.
 	 * @author Reo
@@ -72,5 +59,19 @@ public class BuyerController {
 		
 		results.setData(result);
 		return results;
+	}
+	
+	/**
+	 * SetAdminRetailerReadYN
+	 * 
+	 * @since 2018. 11. 28.
+	 * @author Dahye
+	 * @param SetAdminRetailerReadYNParameter
+	 * @return Integer
+	 */
+	@RequestMapping(value="setadminretailerreadyn", method=RequestMethod.POST)
+	public JsonResponse<String> SetAdminRetailerReadYN(@RequestBody SetAdminRetailerReadYNParameter param) {
+		Integer result = buyerService.SetAdminRetailerReadYN(param.getObj(), param.getReadYN());
+		return new JsonResponse<String>(true, null, result, null);
 	}
 }

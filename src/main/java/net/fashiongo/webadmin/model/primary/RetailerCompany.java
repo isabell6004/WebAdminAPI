@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -39,6 +40,10 @@ public class RetailerCompany {
 	@JsonProperty("Active")
 	@Column(name = "Active")
 	private String active;
+	
+	@JsonIgnore
+	@Column(name = "IsOperatorRead")
+	private Boolean operatorRead;
 
 	public Integer getRetailerID() {
 		return retailerID;
@@ -87,6 +92,15 @@ public class RetailerCompany {
 	public void setActive(String active) {
 		this.active = active;
 	}
+
+	public Boolean getOperatorRead() {
+		return operatorRead;
+	}
+
+	public void setOperatorRead(Boolean operatorRead) {
+		this.operatorRead = operatorRead;
+	}
+	
 	
 	
 }

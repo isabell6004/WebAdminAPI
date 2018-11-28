@@ -13,4 +13,5 @@ import net.fashiongo.webadmin.model.primary.RetailerCompany;
  */
 public interface RetailerCompanyRepository extends CrudRepository<RetailerCompany, Integer> {
 	List<RetailerCompany> findByActiveAndCompanyNameStartingWithOrderByCompanyName(String active, String companyName);
+	RetailerCompany findOneByRetailerID(Integer retailerID);
 }
