@@ -23,10 +23,10 @@ public class GetBannerRequestParameter {
 	private String searchKeyword;
 	
 	@JsonProperty("FromDate")
-	private Date fromDate;
+	private String fromDate;
 	
 	@JsonProperty("ToDate")
-	private Date toDate;
+	private String toDate;
 	
 	@JsonProperty("searchstatus")
 	private String searchStatus;
@@ -63,20 +63,21 @@ public class GetBannerRequestParameter {
 	public void setSearchKeyword(String searchKeyword) {
 		this.searchKeyword = searchKeyword;
 	}
-	
-	public Date getFromDate() {
-		return fromDate == null ? null : fromDate;
+
+
+	public String getFromDate() {
+		return StringUtils.isEmpty(fromDate) ? null : fromDate + " 00:00:00";
 	}
 
-	public void setFromDate(Date fromDate) {
+	public void setFromDate(String fromDate) {
 		this.fromDate = fromDate;
 	}
 
-	public Date getToDate() {
-		return toDate == null ? null : toDate;
+	public String getToDate() {
+		return StringUtils.isEmpty(toDate) ? null : toDate + " 23:59:59";
 	}
 
-	public void setToDate(Date toDate) {
+	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
 

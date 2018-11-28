@@ -1,8 +1,11 @@
 package net.fashiongo.webadmin.service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -179,7 +182,10 @@ public class VendorService extends ApiService {
 		} else if(parameters.getSearchType().equals("Company")) {
 			result = vwVendorBlockedRepository.findByCompanyName(parameters.getSearchKeyword());
 		} else if(parameters.getSearchType().equals("Date")) {
-			result = vwVendorBlockedRepository.findByBlockedOn(LocalDateTime.parse(parameters.getSearchKeyword()));
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			LocalDateTime fromDate = LocalDateTime.parse(parameters.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME);
+			LocalDateTime toDate = LocalDateTime.parse(parameters.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME).plusDays(1).minusSeconds(1);
+			result = vwVendorBlockedRepository.findByBlockedOnBetween(fromDate, toDate);
 		} else if(parameters.getSearchType().equals("Reason")) {
 			result = vwVendorBlockedRepository.findByBlockReasonTitle(parameters.getSearchKeyword());
 		} else {
