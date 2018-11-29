@@ -488,8 +488,10 @@ public class PhotoStudioService extends ApiService {
 						mapPhotoImages.add(mapPhotoImage);
 					}else {
 						for(MapPhotoImage oldMapPhotoImage : oldMapPhotoImages) {
-							//do nothing
+							//do update
 							if(photoImage.getImageID().intValue() == oldMapPhotoImage.getImageID().intValue()) {
+								oldMapPhotoImage.setListOrder(photoImage.getListOrder());
+								jdbcTemplatePhotoStudio.update(oldMapPhotoImage.toUpdateQuery(""));
 								oldMapPhotoImages.remove(oldMapPhotoImage);
 								break;
 							}
