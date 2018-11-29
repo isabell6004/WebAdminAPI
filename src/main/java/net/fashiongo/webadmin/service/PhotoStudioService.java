@@ -16,6 +16,7 @@ import net.fashiongo.webadmin.dao.photostudio.LogPhotoActionRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCalendarModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCategoryPriceRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoImageRepository;
+import net.fashiongo.webadmin.dao.photostudio.PhotoBookingRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoCalendarRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoCancellationFeeRepository;
 import net.fashiongo.webadmin.dao.photostudio.PhotoCategoryRepository;
@@ -35,6 +36,7 @@ import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoCategoryPrice;
 import net.fashiongo.webadmin.model.photostudio.MapPhotoImage;
 import net.fashiongo.webadmin.model.photostudio.PhotoActionUser;
+import net.fashiongo.webadmin.model.photostudio.PhotoBooking;
 import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
 import net.fashiongo.webadmin.model.photostudio.PhotoCancellationFee;
 import net.fashiongo.webadmin.model.photostudio.PhotoCategory;
@@ -101,6 +103,9 @@ public class PhotoStudioService extends ApiService {
 	
 	@Autowired
 	private PhotoCreditRepository photoCreditRepository;
+	
+	@Autowired
+	private PhotoBookingRepository photoBookingRepository;
 	
 	public static final int IMAGE_MAPPING_TYPE_MODEL = 3;
 
@@ -643,17 +648,22 @@ public class PhotoStudioService extends ApiService {
 			List<MapPhotoCalendarModel> mapPhotoCalendarModels = photoCalendar.getMapPhotoCalendarModels();
 			List<MapPhotoCalendarModel> oldmapPhotoCalendarModels = mapPhotoCalendarModelRepository.findByCalendarID(photoCalendar.getCalendarID());
 			
+			List<MapPhotoCalendarModel> addMapPhotoCalendarModels = new ArrayList<MapPhotoCalendarModel>();
+			List<MapPhotoCalendarModel> updateMapPhotoCalendarModels = new ArrayList<MapPhotoCalendarModel>();
+			
 			for(MapPhotoCalendarModel mapPhotoCalendarModel : mapPhotoCalendarModels) {
 				mapPhotoCalendarModel.setCalendarID(photoCalendar.getCalendarID());
 				maxUnitPerDaySum = maxUnitPerDaySum.add(mapPhotoCalendarModel.getAvailableUnit());
 				if(mapPhotoCalendarModel.getModelScheduleID() == null) {
 					//add
-					mapPhotoCalendarModelRepository.save(mapPhotoCalendarModel);
+					addMapPhotoCalendarModels.add(mapPhotoCalendarModel);
+					//mapPhotoCalendarModelRepository.save(mapPhotoCalendarModel);
 				}else {
 					for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
 						//update
 						if(oldMapPhotoCalendarModel.getModelScheduleID().intValue() == mapPhotoCalendarModel.getModelScheduleID().intValue()) {
-							jdbcTemplatePhotoStudio.update(mapPhotoCalendarModel.toUpdateQuery(""));
+							//jdbcTemplatePhotoStudio.update(mapPhotoCalendarModel.toUpdateQuery(""));
+							updateMapPhotoCalendarModels.add(mapPhotoCalendarModel);
 							oldmapPhotoCalendarModels.remove(oldMapPhotoCalendarModel);
 							break;
 						}
@@ -661,18 +671,38 @@ public class PhotoStudioService extends ApiService {
 				}
 			}
 			
+			//booked info check for delete 
+			for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
+				List<PhotoBooking> photoBookings = photoBookingRepository.findByModelScheduleID(oldMapPhotoCalendarModel.getModelScheduleID());
+				for(PhotoBooking photoBooking : photoBookings) {
+					if(photoBooking.getBookedUnit().compareTo(BigDecimal.ZERO) > 0 ) {
+						PhotoModel photoModel = photoModelRepository.findOneByModelID(oldMapPhotoCalendarModel.getModelID());
+						return "The schedule of model (" + photoModel.getModelName() + ") is can't be deleted or changed for booked.";
+					}
+				}
+			}
+			
+			//do add
+			for(MapPhotoCalendarModel addMapPhotoCalendarModel : addMapPhotoCalendarModels) {
+				mapPhotoCalendarModelRepository.save(addMapPhotoCalendarModel);
+			}
+			
+			//do update
+			for(MapPhotoCalendarModel updateMapPhotoCalendarModel : updateMapPhotoCalendarModels) {
+				jdbcTemplatePhotoStudio.update(updateMapPhotoCalendarModel.toUpdateQuery(""));
+			}
+		
+			//do delete
+			for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
+				oldMapPhotoCalendarModel.setAvailableUnit(BigDecimal.ZERO);
+				oldMapPhotoCalendarModel.setIsDelete(true);
+				jdbcTemplatePhotoStudio.update(oldMapPhotoCalendarModel.toUpdateQuery(""));
+			}
+			
 			//update MaxUnitPerDay 
 			photoCalendar.setMaxUnitPerDay(maxUnitPerDaySum);
 			jdbcTemplatePhotoStudio.update(photoCalendar.toUpdateQuery(""));
 			
-			//delete
-			if(oldmapPhotoCalendarModels.size() > 0) {
-				for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
-					oldMapPhotoCalendarModel.setAvailableUnit(BigDecimal.ZERO);
-					oldMapPhotoCalendarModel.setIsDelete(true);
-					jdbcTemplatePhotoStudio.update(oldMapPhotoCalendarModel.toUpdateQuery(""));
-				}
-			}
 		}
 		
 		return Msg;
