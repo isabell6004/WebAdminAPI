@@ -227,4 +227,14 @@ public class PhotoCalendar implements IPersistent, Serializable {
 	public void setMinUnit(BigDecimal minUnit) {
 		this.minUnit = minUnit;
 	}
+	
+	@Transient
+	private Boolean isFromModelDetail;
+	public Boolean getIsFromModelDetail() {
+		return isFromModelDetail;
+	}
+
+	public void setIsFromModelDetail(Boolean isFromModelDetail) {
+		this.isFromModelDetail = isFromModelDetail;
+	}
 }

@@ -673,14 +673,23 @@ public class PhotoStudioService extends ApiService {
 				}
 			}
 			
-			//booked info check for delete 
-			for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
-				List<PhotoBooking> photoBookings = photoBookingRepository.findByModelScheduleID(oldMapPhotoCalendarModel.getModelScheduleID());
-				for(PhotoBooking photoBooking : photoBookings) {
-					if(photoBooking.getBookedUnit().compareTo(BigDecimal.ZERO) > 0 ) {
-						PhotoModel photoModel = photoModelRepository.findOneByModelID(oldMapPhotoCalendarModel.getModelID());
-						return "The schedule of model (" + photoModel.getModelName() + ") is can't be deleted or changed for booked.";
+			if(photoCalendar.getIsFromModelDetail() == null || photoCalendar.getIsFromModelDetail().equals(Boolean.FALSE)) {
+				//booked info check for delete 
+				for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
+					List<PhotoBooking> photoBookings = photoBookingRepository.findByModelScheduleID(oldMapPhotoCalendarModel.getModelScheduleID());
+					for(PhotoBooking photoBooking : photoBookings) {
+						if(photoBooking.getBookedUnit().compareTo(BigDecimal.ZERO) > 0 ) {
+							PhotoModel photoModel = photoModelRepository.findOneByModelID(oldMapPhotoCalendarModel.getModelID());
+							return "The schedule of model (" + photoModel.getModelName() + ") is can't be deleted or changed for booked.";
+						}
 					}
+				}
+				
+				//do delete
+				for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
+					oldMapPhotoCalendarModel.setAvailableUnit(BigDecimal.ZERO);
+					oldMapPhotoCalendarModel.setIsDelete(true);
+					jdbcTemplatePhotoStudio.update(oldMapPhotoCalendarModel.toUpdateQuery(""));
 				}
 			}
 			
@@ -692,13 +701,6 @@ public class PhotoStudioService extends ApiService {
 			//do update
 			for(MapPhotoCalendarModel updateMapPhotoCalendarModel : updateMapPhotoCalendarModels) {
 				jdbcTemplatePhotoStudio.update(updateMapPhotoCalendarModel.toUpdateQuery(""));
-			}
-		
-			//do delete
-			for(MapPhotoCalendarModel oldMapPhotoCalendarModel : oldmapPhotoCalendarModels) {
-				oldMapPhotoCalendarModel.setAvailableUnit(BigDecimal.ZERO);
-				oldMapPhotoCalendarModel.setIsDelete(true);
-				jdbcTemplatePhotoStudio.update(oldMapPhotoCalendarModel.toUpdateQuery(""));
 			}
 			
 			//update MaxUnitPerDay 
