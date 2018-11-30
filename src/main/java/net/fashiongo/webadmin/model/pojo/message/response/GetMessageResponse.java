@@ -7,8 +7,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.fashiongo.webadmin.model.pojo.message.Message;
 import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.message.VwWaMessage;
 
 /**
  * @author Incheol Jung
@@ -18,7 +18,7 @@ public class GetMessageResponse {
 	private List<Total> total;
 	
 	@JsonProperty("Table1")
-	private List<Message> messagelist;
+	private List<VwWaMessage> messagelist;
 	
 	public List<Total> getTotal() {
 		return total;
@@ -26,10 +26,11 @@ public class GetMessageResponse {
 	public void setTotal(List<Total> total) {
 		this.total = total;
 	}
-	public List<Message> getMessagelist() {
+	public List<VwWaMessage> getMessagelist() {
 		return messagelist;
 	}
-	public void setMessagelist(List<Message> messagelist) {
+	public void setMessagelist(List<VwWaMessage> messagelist) {
 		this.messagelist = messagelist;
 	}
+
 }

@@ -9,22 +9,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorRatingParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetContactUsReplyParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageReadYNParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerRatingResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetDMRequestResponse;
-import net.fashiongo.webadmin.model.primary.SecurityGroup;
+import net.fashiongo.webadmin.model.pojo.message.response.GetVendorRatingResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
+import net.fashiongo.webadmin.model.primary.MessageCategory;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
 import net.fashiongo.webadmin.service.MessageService;
@@ -207,5 +218,141 @@ public class MessageController {
 		results.setData(result);
 		
 		return results;
+	}
+	
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 16.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="getcontactus", method=RequestMethod.POST)
+	public JsonResponse<GetContactUsResponse> getContactUs(@RequestBody GetContactUsParameter parameters) {
+		JsonResponse<GetContactUsResponse> results = new JsonResponse<GetContactUsResponse>(true, null, null);
+		
+		GetContactUsResponse result = messageService.getContactUs(parameters);
+		results.setData(result);
+		
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 19.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 * @throws JsonProcessingException 
+	 */
+	@RequestMapping(value="setcontactusreply", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setContactUsReply(@RequestBody SetContactUsReplyParameter parameters) throws JsonProcessingException {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+		
+		ResultCode result = messageService.setContactUsReply(parameters);
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 20.
+	 * @author Reo
+	 * @return
+	 */
+	@RequestMapping(value="getmessagecategory", method=RequestMethod.POST)
+	public JsonResponse<List<MessageCategory>> getMessageCategory() {
+		JsonResponse<List<MessageCategory>> results = new JsonResponse<List<MessageCategory>>();
+		List<MessageCategory> result = messageService.getMessageCategory();
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 21.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="setmessage", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setMessage(@RequestBody SetMessageParameter parameters) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+		
+		ResultCode result = messageService.setMessage(parameters);
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 21.
+	 * @author Reo
+	 * @param parameters
+	 * @return
+	 */
+	@RequestMapping(value="setmessagereadyn", method=RequestMethod.POST)
+	public JsonResponse<ResultCode> setMessageReadYN(@RequestBody SetMessageReadYNParameter parameters) {
+		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+
+		ResultCode result = messageService.setMessageReadYN(parameters);
+		
+		results.setData(result);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 11. 21.
+	 * @author Reo
+	 * @param topReferenceID
+	 * @return
+	 */
+	@RequestMapping(value="getmessagereply", method=RequestMethod.GET)
+	public JsonResponse<GetMessageReplyResponse> getMessageReply(@RequestParam(value="referenceid") Integer topReferenceID) {
+        JsonResponse<GetMessageReplyResponse> results = new JsonResponse<GetMessageReplyResponse>(true, null, null);
+		
+        GetMessageReplyResponse result = messageService.getMessageReply(topReferenceID);
+		results.setData(result);
+		
+		return results;
+	}
+	
+	/**
+	 * getVendorRating
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author dahye
+	 * @param GetVendorRatingParameter
+	 * @return GetVendorRatingResponse
+	 */
+	@RequestMapping(value="getvendorrating", method=RequestMethod.POST)
+	public JsonResponse<GetVendorRatingResponse> getVendorRating(@RequestBody GetVendorRatingParameter param) {
+		GetVendorRatingResponse result = messageService.getVendorRating(param);
+		return new JsonResponse<GetVendorRatingResponse>(true, null, 0, result);
+	}
+	
+	/**
+	 * getRetailerRating
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author dahye
+	 * @param GetVendorRatingParameter
+	 * @return 
+	 */
+	@RequestMapping(value="getretailerrating", method=RequestMethod.POST)
+	public JsonResponse<GetRetailerRatingResponse> getRetailerRating(@RequestBody GetVendorRatingParameter param) {
+		GetRetailerRatingResponse result = messageService.getRetailerRating(param);
+		return new JsonResponse<GetRetailerRatingResponse>(true, null, 0, result);
 	}
 }
