@@ -208,7 +208,7 @@ public class SecurityGroupService extends ApiService {
 	public ResultCode setSecurityGroup(Integer groupID, String groupName, String description, boolean active) {
 		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		boolean isDuplicated = false;
-		SecurityGroup securityGroup = new SecurityGroup();
+		SecurityGroup securityGroup = null;
 		
 		try {
 			if(groupID.equals(0)) {
@@ -227,8 +227,10 @@ public class SecurityGroupService extends ApiService {
 			
 			if(!groupID.equals(0)) {
 				securityGroup = securityGroupRepository.findOneByGroupID(groupID);
+				securityGroupRepository.delete(securityGroup);
 			}
 			
+			securityGroup = new SecurityGroup();
 			securityGroup.setGroupName(groupName);
 			securityGroup.setDescription(description);
 			securityGroup.setActive(active);
