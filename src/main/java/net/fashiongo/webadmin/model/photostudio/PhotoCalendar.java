@@ -237,4 +237,14 @@ public class PhotoCalendar implements IPersistent, Serializable {
 	public void setIsFromModelDetail(Boolean isFromModelDetail) {
 		this.isFromModelDetail = isFromModelDetail;
 	}
+	
+	@Transient
+	private Boolean disabled;
+	public Boolean getDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(Boolean disabled) {
+		this.disabled = disabled;
+	}
 }
