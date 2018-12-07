@@ -142,6 +142,24 @@ public class DetailPhotoOrder {
 		return _uploadDate != null ? _uploadDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
 
+	@JsonIgnore
+	@Column(name = "BillingPeriod")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _billingPeriod;
+	public LocalDateTime get_billingPeriod() {
+		return _billingPeriod;
+	}
+
+	public void set_billingPeriod(LocalDateTime _billingPeriod) {
+		this._billingPeriod = _billingPeriod;
+	}
+
+	@Transient
+	private String billingPeriod;
+	public String getBillingPeriod() {
+		return _billingPeriod != null ? _billingPeriod.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+	}
+	
 	@Id
 	@Column(name = "OrderID")
 	private Integer orderID;
@@ -183,6 +201,16 @@ public class DetailPhotoOrder {
 		this.wholeSalerCompanyName = wholeSalerCompanyName;
 	}
 	
+	@Column(name = "Phone")
+	private String phone;
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 	public Integer getCategoryID() {
