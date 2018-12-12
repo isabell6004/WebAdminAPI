@@ -138,6 +138,12 @@ logging:
 server:
   port: 29911 
   
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.32:29041
+  fgWebAdminAPI_EndPoint: http://webadmin-api-photo-studio.fashiongo.net/api/
+  jwt:
+    develop:
+      check-token: true
 ---
 
 # Dev
