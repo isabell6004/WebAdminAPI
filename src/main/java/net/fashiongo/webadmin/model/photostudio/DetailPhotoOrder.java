@@ -468,4 +468,23 @@ public class DetailPhotoOrder {
 	public String getCancelledOn() {
 		return _cancelledOn != null ? _cancelledOn.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
 	}
+	
+	@Transient
+	@JsonIgnore
+	@Column(name = "PickupDate")
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime _pickupDate;
+	public LocalDateTime get_pickupDate() {
+		return _pickupDate;
+	}
+
+	public void set_pickupDate(LocalDateTime _pickupDate) {
+		this._pickupDate = _pickupDate;
+	}
+	
+	@Transient
+	private String pickupDate;
+	public String getPickupDate() {
+		return _pickupDate != null ? _pickupDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+	}
 }
