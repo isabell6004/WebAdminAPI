@@ -20,9 +20,11 @@ import net.fashiongo.webadmin.dao.primary.CreditCardTypeRepository;
 import net.fashiongo.webadmin.dao.primary.EntityActionLogRepository;
 import net.fashiongo.webadmin.dao.primary.FashiongoFormRepository;
 import net.fashiongo.webadmin.dao.primary.ListVendorImageTypeRepository;
+import net.fashiongo.webadmin.dao.primary.LogCommunicationRepository;
 import net.fashiongo.webadmin.dao.primary.VendorAdminAccountRepository;
 import net.fashiongo.webadmin.dao.primary.VendorBlockedRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCompanyCardRepository;
+import net.fashiongo.webadmin.dao.primary.VendorContractRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCreditCardRepository;
 import net.fashiongo.webadmin.dao.primary.VendorImageRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorListRepository;
@@ -42,10 +44,13 @@ import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
 
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
-
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.Country;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
+import net.fashiongo.webadmin.model.pojo.vendor.SecurityUserName;
+import net.fashiongo.webadmin.model.pojo.vendor.VendorContractDocumentHistory;
 import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCardList;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorCreditcardParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
@@ -55,20 +60,24 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorCreditCardPar
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.AspnetMembership;
 
 import net.fashiongo.webadmin.model.primary.ContactUs;
-
 import net.fashiongo.webadmin.model.primary.CreditCardType;
 
 import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.FashiongoForm;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
+import net.fashiongo.webadmin.model.primary.LogCommunication;
 import net.fashiongo.webadmin.model.primary.RetailerRating;
 import net.fashiongo.webadmin.model.primary.VendorAdminAccount;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.model.primary.VendorCompanyCard;
+import net.fashiongo.webadmin.model.primary.VendorCompanyType;
+import net.fashiongo.webadmin.model.primary.VendorContract;
 import net.fashiongo.webadmin.model.primary.VendorCreditCard;
+import net.fashiongo.webadmin.model.primary.VendorDetailDate;
 import net.fashiongo.webadmin.model.primary.VendorImageRequest;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 import net.fashiongo.webadmin.model.primary.WholeSalerRating;
@@ -120,6 +129,12 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private VendorCompanyCardRepository vendorCompanyCardRepository;
+	
+	@Autowired
+	private LogCommunicationRepository logCommunicationRepository;
+	
+	@Autowired
+	private VendorContractRepository vendorContractRepository;
 	
 	/**
 	 * Get vendor list
@@ -619,6 +634,76 @@ public class VendorService extends ApiService {
 				}
 				break;
 		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 14.
+	 * @author Reo
+	 * @param wholeSalerID
+	 * @return
+	 */
+	public List<LogCommunication> getVendorCommunicationList(Integer wholeSalerID) {
+		List<LogCommunication> result =  logCommunicationRepository.findByRetailerIDAndIsForVendorOrderByCommunicationIDDesc(wholeSalerID, true);
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 14.
+	 * @author Reo
+	 * @param wholeSalerID
+	 * @return
+	 */
+	public List<VendorContract> getVendorContract(Integer wholeSalerID) {
+		List<VendorContract> result = vendorContractRepository.findByWholeSalerIDOrderByVendorContractIDDesc(wholeSalerID);
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 14.
+	 * @author Reo
+	 * @param vendorContractID
+	 * @return
+	 */
+	public GetVendorContractDocumentHistoryResponse getVendorContractDocumentHistory(Integer vendorContractID) {
+		GetVendorContractDocumentHistoryResponse result = new GetVendorContractDocumentHistoryResponse();
+		String spName = "up_wa_GetVendorContractDocumentHistory";
+		List<Object> params = new ArrayList<Object>();
+		params.add(vendorContractID);
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorContractDocumentHistory.class);
+		result.setVendorContractDocumentHistoryList((List<VendorContractDocumentHistory>) _result.get(0));
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 14.
+	 * @author Reo
+	 * @param wholeSalerID
+	 * @return
+	 */
+	public GetVendorDetailInfoDataResponse getVendorDetailInfoData(Integer wholeSalerID) {
+		GetVendorDetailInfoDataResponse result = new GetVendorDetailInfoDataResponse();
+		String spName = "up_wa_GetVendorDetailInfoData";
+		List<Object> params = new ArrayList<Object>();
+		params.add(wholeSalerID);
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorDetailDate.class, SecurityUserName.class, VendorCompanyType.class, Country.class);
+		result.setSessionUsrID(Utility.getUsername());
+		result.setVendorDetailDateList((List<VendorDetailDate>) _result.get(0));
+		result.setUserName((List<SecurityUserName>) _result.get(1));
+		result.setVendorCompanyTypeList((List<VendorCompanyType>) _result.get(2));
+		result.setCountryList((List<Country>) _result.get(3));
 		return result;
 	}
 }

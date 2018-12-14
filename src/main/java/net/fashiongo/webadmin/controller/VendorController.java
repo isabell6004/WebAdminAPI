@@ -22,7 +22,7 @@ import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
 
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
-
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
@@ -36,10 +36,13 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorCreditCardPar
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.CreditCardType;
 import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
+import net.fashiongo.webadmin.model.primary.LogCommunication;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.model.primary.VendorContract;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.VendorService;
@@ -403,6 +406,78 @@ public class VendorController {
 	public JsonResponse<String> setVendorCreditCard(@RequestBody SetVendorCreditCardParameter parameters) {
 		ResultCode result = vendorService.setVendorCreditCard(parameters);
 		return new JsonResponse<String>(true, result.getResultMsg(), result.getResultCode(), null);
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 14.
+	 * @author Reo
+	 * @param wholeSalerID
+	 * @return
+	 */
+	@RequestMapping(value="getvendorcommunicationlist", method=RequestMethod.GET)
+	public JsonResponse<List<LogCommunication>> getVendorCommunicationList(@RequestParam(value="WholeSalerID") Integer wholeSalerID) {
+		JsonResponse<List<LogCommunication>> results = new JsonResponse<List<LogCommunication>>(false, null, 0, null);
+		List<LogCommunication> result = vendorService.getVendorCommunicationList(wholeSalerID);
+		
+		results.setData(result);
+		results.setSuccess(true);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 14.
+	 * @author Reo
+	 * @param wholeSalerID
+	 * @return
+	 */
+	@RequestMapping(value="getvendorcontract", method=RequestMethod.GET)
+	public JsonResponse<List<VendorContract>> getVendorContract(@RequestParam(value="WholeSalerID") Integer wholeSalerID) {
+		JsonResponse<List<VendorContract>> results = new JsonResponse<List<VendorContract>>(false, null, 0, null);
+		List<VendorContract> result = vendorService.getVendorContract(wholeSalerID);
+		
+		results.setData(result);
+		results.setSuccess(true);
+		return results;
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 14.
+	 * @author Reo
+	 * @param vendorContractID
+	 * @return
+	 */
+	@RequestMapping(value="getvendorcontractdocumenthistory", method=RequestMethod.GET)
+	public JsonResponse<GetVendorContractDocumentHistoryResponse> getVendorContractDocumentHistory(@RequestParam(value="VendorContractID") Integer vendorContractID) {
+		JsonResponse<GetVendorContractDocumentHistoryResponse> results = new JsonResponse<GetVendorContractDocumentHistoryResponse>(true, null, null);
+		
+		GetVendorContractDocumentHistoryResponse result = vendorService.getVendorContractDocumentHistory(vendorContractID);	
+		results.setData(result);
+		
+		return results; 
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 14.
+	 * @author Reo
+	 * @param wholeSalerID
+	 * @return
+	 */
+	@RequestMapping(value="getvendordetailinfodata", method=RequestMethod.GET)
+	public JsonResponse<GetVendorDetailInfoDataResponse> getVendorDetailInfoData(@RequestParam(value="WholeSalerID") Integer wholeSalerID) {
+		JsonResponse<GetVendorDetailInfoDataResponse> results = new JsonResponse<GetVendorDetailInfoDataResponse>(true, null, null);
+		
+		GetVendorDetailInfoDataResponse result = vendorService.getVendorDetailInfoData(wholeSalerID);	
+		results.setData(result);
+		
+		return results; 
 	}
 }
 	
