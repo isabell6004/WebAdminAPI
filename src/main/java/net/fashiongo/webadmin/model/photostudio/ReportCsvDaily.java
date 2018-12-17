@@ -70,16 +70,10 @@ public class ReportCsvDaily {
 		return pickupDate;
 	}
 
-	@Column(name = "BookingID")
-	private Integer bookingID;
-	public Integer getBookingID() {
-		return bookingID;
-	}
-
 	@Column(name = "ModelName")
-	private String ModelName;
+	private String modelName;
 	public String getModelName() {
-		return ModelName;
+		return modelName;
 	}
 
 	@Column(name = "Promo")
