@@ -30,9 +30,13 @@ import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
+import net.fashiongo.webadmin.model.primary.LogCommunication;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.model.primary.VendorContract;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 
 /**
@@ -292,4 +296,59 @@ public class VendorServiceTest {
 		assertTrue(result.getResultCode() > 0);
 	}
 
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 17.
+	 * @author Reo
+	 */
+	@Test
+	public void testGetVendorCommunicationList() {
+		Integer wholeSalerID = 3389;
+		List<LogCommunication> result =  vendorService.getVendorCommunicationList(wholeSalerID);
+		if(!CollectionUtils.isEmpty(result)) {
+			assertNotNull(result.get(0));
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 17.
+	 * @author Reo
+	 */
+	@Test
+	public void testGetVendorContract() {
+		Integer wholeSalerID = 3389;
+		List<VendorContract> result = vendorService.getVendorContract(wholeSalerID);
+		if(!CollectionUtils.isEmpty(result)) {
+			assertNotNull(result.get(0));
+		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 17.
+	 * @author Reo
+	 */
+	@Test
+	public void testGetVendorContractDocumentHistory() {
+		Integer vendorContractID = 10;
+		GetVendorContractDocumentHistoryResponse result = vendorService.getVendorContractDocumentHistory(vendorContractID);
+		assertTrue(result.getVendorContractDocumentHistoryList().size() > 0);
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * @since 2018. 12. 17.
+	 * @author Reo
+	 */
+	@Test
+	public void testGetVendorDetailInfoData() {
+		Integer wholeSalerID = 6849;
+		GetVendorDetailInfoDataResponse result = vendorService.getVendorDetailInfoData(wholeSalerID);
+		assertTrue(result.getVendorDetailDateList().size() > 0);
+	}
 }
