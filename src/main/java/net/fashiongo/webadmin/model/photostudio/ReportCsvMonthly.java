@@ -36,10 +36,10 @@ public class ReportCsvMonthly {
 		return dailyOrders;
 	}
 
-	@Column(name = "Avg Daily Order amouns")
-	private BigDecimal avgDailyOrderAmouns;
-	public BigDecimal getAvgDailyOrderAmouns() {
-		return avgDailyOrderAmouns;
+	@Column(name = "Avg Daily Order Amounts")
+	private BigDecimal avgDailyOrderAmounts;
+	public BigDecimal getAvgDailyOrderAmounts() {
+		return avgDailyOrderAmounts;
 	}
 
 	@Column(name = "Units")

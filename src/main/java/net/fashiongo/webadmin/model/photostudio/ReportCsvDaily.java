@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.model.photostudio;
 
 import javax.persistence.Column;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ReportCsvDaily {
 
 	@Column(name = "CheckOutDate")
@@ -28,10 +30,19 @@ public class ReportCsvDaily {
 		return categoryID;
 	}
 
+	@JsonIgnore
 	@Column(name = "PackageID")
-	private Integer packageID;
-	public Integer getPackageID() {
-		return packageID;
+	private Integer _packageID;
+	public Integer get_packageID() {
+		return _packageID;
+	}
+	public void set_packageID(Integer _packageID) {
+		this._packageID = _packageID;
+	}
+
+	private String packageID;
+	public String getPackageID() {
+		return _packageID == null ? "-" : String.valueOf(_packageID);
 	}
 
 	@Column(name = "FullStyle")
