@@ -47,6 +47,13 @@ public class FGServiceController {
 		return jsonClient.get(url);
 	}
 	
+	@RequestMapping(value = "/pdf/photostudio/order/dailysummary/{photoshootDate}", method = RequestMethod.GET)
+	public JsonResponse<String> getOrderSummaryPDF(HttpServletRequest request) {
+		String url = extractUri(request.getRequestURL().toString() + "?" + request.getQueryString());
+		logger.debug("called service url: " + url);
+		return jsonClient.get(url);
+	}
+	
 	private String extractUri(String url) {
 		return extractUri(url, null);
 	}
