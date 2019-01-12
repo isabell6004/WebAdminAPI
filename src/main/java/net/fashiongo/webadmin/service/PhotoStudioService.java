@@ -8,10 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.fashiongo.webadmin.common.PagedResult;
-import net.fashiongo.webadmin.common.QueryParam;
-import net.fashiongo.webadmin.common.SingleValueResult;
-import net.fashiongo.webadmin.common.Utility;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import net.fashiongo.webadmin.dao.photostudio.LogPhotoActionRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCalendarModelRepository;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCategoryPriceRepository;
@@ -51,13 +54,10 @@ import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.ReportCsvDaily;
 import net.fashiongo.webadmin.model.photostudio.ReportCsvMonthly;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
+import net.fashiongo.webadmin.utility.Utility;
 
 @Service
 public class PhotoStudioService extends ApiService {

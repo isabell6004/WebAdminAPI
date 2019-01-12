@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.fashiongo.common.JsonResponse;
-import net.fashiongo.webadmin.common.PagedResult;
-import net.fashiongo.webadmin.common.QueryParam;
-import net.fashiongo.webadmin.common.Utility;
 import net.fashiongo.webadmin.model.photostudio.DailySummaryVo;
 import net.fashiongo.webadmin.model.photostudio.LogPhotoAction;
 import net.fashiongo.webadmin.model.photostudio.PhotoCalendar;
@@ -22,7 +19,10 @@ import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
 import net.fashiongo.webadmin.model.photostudio.ReportCsvDaily;
 import net.fashiongo.webadmin.model.photostudio.ReportCsvMonthly;
 import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 import net.fashiongo.webadmin.service.PhotoStudioService;
+import net.fashiongo.webadmin.utility.Utility;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
