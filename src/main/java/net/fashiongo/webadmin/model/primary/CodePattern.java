@@ -9,6 +9,11 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ * @author Reo
+ *
+ */
 @Entity
 @Table(name = "Code_Pattern")
 public class CodePattern {

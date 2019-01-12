@@ -82,6 +82,9 @@ public class TodayDeal implements IPersistent, Serializable {
 	@Column(name = "RevokedBy")
 	private String revokedBy;
 	
+	@Column(name = "Notes")
+	private String notes;
+	
 	@Column(name = "CreatedByVendor")
 	private Boolean createdByVendor;
 
@@ -211,6 +214,16 @@ public class TodayDeal implements IPersistent, Serializable {
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+	
+	
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 	public Boolean getCreatedByVendor() {

@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.SetAddPageParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetAddSpotSettingParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetADSettingResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSpotCheckResponse;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddPageParameter;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddSpotSettingParameter;
+import net.fashiongo.webadmin.model.pojo.ad.response.GetADSettingResponse;
+import net.fashiongo.webadmin.model.pojo.ad.response.GetSpotCheckResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
 
 /**

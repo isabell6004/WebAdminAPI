@@ -31,10 +31,10 @@ import net.fashiongo.webadmin.dao.primary.SecurityListIPRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityLoginControlRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityLoginLogRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
-import net.fashiongo.webadmin.model.pojo.MenuDS;
-import net.fashiongo.webadmin.model.pojo.MenuPermission;
-import net.fashiongo.webadmin.model.pojo.SubMenu;
-import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.admin.MenuDS;
+import net.fashiongo.webadmin.model.pojo.admin.MenuPermission;
+import net.fashiongo.webadmin.model.pojo.admin.SubMenu;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.response.AuthuserResponse;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityLoginControl;
@@ -175,7 +175,7 @@ public class WebadminAuthenticationProvider extends ApiService implements Authen
 			if(!securityUser.getIpTimeExempt()) {
 				if(checkIPAddress(request)) {
 					boolean bAccessabletime = false;
-					Integer weekday = LocalDate.now().getDayOfWeek().getValue() + 1;
+					Integer weekday = ((LocalDate.now().getDayOfWeek().getValue() % 7) + 1);
 					List<SecurityLoginControl> list = securityLoginControlRepository.findByUserIDAndWeekday(securityUser.getUserID(), weekday);
 					
 					if(!CollectionUtils.isEmpty(list)) {

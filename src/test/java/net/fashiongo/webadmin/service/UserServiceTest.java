@@ -2,14 +2,15 @@ package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.SetModifyPasswordParameter;
+import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 /**
  * 
  * @author DAHYE
@@ -30,6 +31,7 @@ public class UserServiceTest {
      * @author Dahye
      */
 	@Test
+	@Ignore
 	public void testResetPassword() {
 		SetModifyPasswordParameter param = new SetModifyPasswordParameter();
 		param.setUserName("admingo");

@@ -11,15 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import net.fashiongo.webadmin.common.PagedResult;
-import net.fashiongo.webadmin.common.QueryParam;
-import net.fashiongo.webadmin.common.SingleValueResult;
 import net.fashiongo.webadmin.model.fgpay.Dispute;
 import net.fashiongo.webadmin.model.fgpay.DisputeDetail;
 import net.fashiongo.webadmin.model.fgpay.DisputeDetailInfo;
 import net.fashiongo.webadmin.model.fgpay.DisputeDocumentInfo;
 import net.fashiongo.webadmin.model.fgpay.DisputeHeaderInfo;
 import net.fashiongo.webadmin.model.fgpay.DisputeMergeOrderInfo;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 
 
 /**

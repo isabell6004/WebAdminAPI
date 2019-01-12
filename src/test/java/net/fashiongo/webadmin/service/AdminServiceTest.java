@@ -13,24 +13,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityAccessCodesParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityLogsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityMenus2Parameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityResourcesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetActiveSecurityMenusParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityAccessCodesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetDeleteSecurityMenusParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessCodeParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityAccessIpParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityMenuParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityResourceParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessCodesResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityAccessIpsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityLogsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityMenus2Response;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityParentMenusResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityResourcesResponse;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityAccessCodesParameters;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityLogsParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityMenus2Parameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetActiveSecurityMenusParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetDeleteSecurityAccessCodesParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetDeleteSecurityMenusParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityAccessCodeParameters;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityAccessIpParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityMenuParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityResourceParameter;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityAccessIpsResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityLogsResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityMenus2Response;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityParentMenusResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityResourcesResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 
 
 /**

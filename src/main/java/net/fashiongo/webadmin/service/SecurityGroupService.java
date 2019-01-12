@@ -25,36 +25,36 @@ import net.fashiongo.webadmin.dao.primary.SecurityMapUserGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityPermissionGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityPermissionRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
-import net.fashiongo.webadmin.model.pojo.AspnetMembershipGetUserByName;
-import net.fashiongo.webadmin.model.pojo.AspnetUserRoles;
-import net.fashiongo.webadmin.model.pojo.GroupData;
-import net.fashiongo.webadmin.model.pojo.LoginControl;
-import net.fashiongo.webadmin.model.pojo.MapUserGroup;
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.SecurityGroupPermissions;
-import net.fashiongo.webadmin.model.pojo.SecurityUserCreate;
-import net.fashiongo.webadmin.model.pojo.SecurityUserPermission;
-import net.fashiongo.webadmin.model.pojo.SecurityUserPermissionSub;
-import net.fashiongo.webadmin.model.pojo.SecurityUsers;
-import net.fashiongo.webadmin.model.pojo.SubGroupData;
-import net.fashiongo.webadmin.model.pojo.UserMappingVendor;
-import net.fashiongo.webadmin.model.pojo.UserMappingVendorAssigned;
-import net.fashiongo.webadmin.model.pojo.UserMappingVendorResult;
-import net.fashiongo.webadmin.model.pojo.parameter.DelSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserPermissionsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetUserMappingVendorParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.admin.AspnetMembershipGetUserByName;
+import net.fashiongo.webadmin.model.pojo.admin.AspnetUserRoles;
+import net.fashiongo.webadmin.model.pojo.admin.GroupData;
+import net.fashiongo.webadmin.model.pojo.admin.LoginControl;
+import net.fashiongo.webadmin.model.pojo.admin.MapUserGroup;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityGroupPermissions;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityUserCreate;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityUserPermission;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityUserPermissionSub;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityUsers;
+import net.fashiongo.webadmin.model.pojo.admin.SubGroupData;
+import net.fashiongo.webadmin.model.pojo.admin.UserMappingVendor;
+import net.fashiongo.webadmin.model.pojo.admin.UserMappingVendorAssigned;
+import net.fashiongo.webadmin.model.pojo.admin.UserMappingVendorResult;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.DelSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityGroupPermissionsParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserGroupParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserPermissionsParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetUserMappingVendorParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetUserMappingVendorParameter;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityGroupPermissionsResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserGroupAccesstimeResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.SetCreateSecurityUserResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.SetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.pojo.response.SetAspnetMembershipResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetCreateSecurityUserResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityLoginControl;
 import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
@@ -208,13 +208,13 @@ public class SecurityGroupService extends ApiService {
 	public ResultCode setSecurityGroup(Integer groupID, String groupName, String description, boolean active) {
 		ResultCode result = new ResultCode(true, 0, MSG_SAVE_SUCCESS);
 		boolean isDuplicated = false;
-		SecurityGroup securityGroup = null;
+		SecurityGroup securityGroup = new SecurityGroup();
 		
 		try {
 			if(groupID.equals(0)) {
 				isDuplicated = securityGroupRepository.existsByGroupName(groupName);
 			} else {
-				isDuplicated = securityGroupRepository.existsByGroupIDAndGroupName(groupID, groupName);
+				isDuplicated = securityGroupRepository.existsByGroupIDNotAndGroupName(groupID, groupName);
 			}
 			
 			if(isDuplicated) {
@@ -227,10 +227,9 @@ public class SecurityGroupService extends ApiService {
 			
 			if(!groupID.equals(0)) {
 				securityGroup = securityGroupRepository.findOneByGroupID(groupID);
-				securityGroupRepository.delete(securityGroup);
+//				securityGroupRepository.delete(securityGroup);
 			}
 			
-			securityGroup = new SecurityGroup();
 			securityGroup.setGroupName(groupName);
 			securityGroup.setDescription(description);
 			securityGroup.setActive(active);
@@ -568,15 +567,16 @@ public class SecurityGroupService extends ApiService {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 			LocalDateTime now = LocalDateTime.now();
 			
-			Integer userID = userData.getID() != null ? (userData.getID() > 0 ? userData.getID() : 0) : 0;
+			Integer userID = userData.getId() != null ? (userData.getId() > 0 ? userData.getId() : 0) : 0;
 			if (userID <= 0) {
+				//Call FG Service
 				String uri = "/membership/createMembership";
 				ObjectMapper mapper = new ObjectMapper();
 				JsonResponse<?> ret = httpClient.postObject(uri, mapper.writeValueAsString(userData));
 				
 				if (ret.isSuccess()) {
 					String guid = null;
-					String userByNameSpName = "aspnet_Membership_GetUserByName";
+					String userByNameSpName = "aspnet_Membership_GetUserByName";  //check membership user
 					
 					List<Object> userByNameParams = new ArrayList<Object>();
 					userByNameParams.add(appName);
@@ -589,7 +589,7 @@ public class SecurityGroupService extends ApiService {
 						userByNameSuccess = false;
 					} else {
 						guid = userByNameRes.getUserId();
-						String userRoleSpName = "aspnet_UsersInRoles_AddUsersToRoles";
+						String userRoleSpName = "aspnet_UsersInRoles_AddUsersToRoles";  //add aspnet user roles
 						
 						List<Object> userRoleParams = new ArrayList<Object>();
 						userRoleParams.add(appName);
@@ -605,9 +605,9 @@ public class SecurityGroupService extends ApiService {
 						su.setUserName(userData.getUserName());
 						su.setUserGUID(guid);
 						su.setCreatedBy(userData.getCreatedBy());
-						su.setCreatedOn(userData.getCreatedOn());
+						su.setCreatedOn(now);
 						su.setModifiedBy(userData.getModifiedBy());
-						su.setModifiedOn(userData.getModifiedOn());
+						su.setModifiedOn(now);
 					}
 					
 				} else {
@@ -617,7 +617,7 @@ public class SecurityGroupService extends ApiService {
 					userByNameSuccess = false;
 				}
 			} else {
-				String userByNameSpName = "aspnet_Membership_GetUserByName";
+				String userByNameSpName = "aspnet_Membership_GetUserByName";  //check membership user
 				
 				List<Object> userByNameParams = new ArrayList<Object>();
 				userByNameParams.add(appName);
@@ -632,7 +632,7 @@ public class SecurityGroupService extends ApiService {
 				su.setModifiedOn(now);
 			}
 			if (userByNameRes.getUserId() != null) {
-				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";
+				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";  //update membership user
 				
 				List<Object> membershipParams = new ArrayList<Object>();
 				membershipParams.add(appName);
@@ -657,6 +657,10 @@ public class SecurityGroupService extends ApiService {
 				result.setSuccess(true);
 				result.setResultCode(1);
 				result.setResultMsg(MSG_SAVE_SUCCESS);
+			} else {
+				result.setSuccess(false);
+				result.setResultCode(-1);
+				result.setResultMsg("Failed to save. Please try again.");
 			}
 		}
 		return result;
@@ -762,10 +766,10 @@ public class SecurityGroupService extends ApiService {
 	    }
 	    if (newSecurityLoginControlList.size() > 0) {
 	        securityLoginControlRepository.saveAll(newSecurityLoginControlList);
-	        result.setResultCode(1);
-	        result.setSuccess(true);
-	        result.setResultMsg(MSG_SAVE_SUCCESS);
 	    }
+	    result.setResultCode(1);
+        result.setSuccess(true);
+        result.setResultMsg(MSG_SAVE_SUCCESS);
 	    
 	    return result;
 	}
@@ -781,8 +785,10 @@ public class SecurityGroupService extends ApiService {
 	 */
 	private ResultCode setSaveSecurityPermission(Integer userID, List<SecurityUserPermission> permissionList) {
 		ResultCode result = new ResultCode(false, 0, null);
+		//permission delete
     	securityPermissionRepository.deleteByUserID(userID);
     	
+    	//permission insert
     	List<SecurityPermission> securityPermissionList = new ArrayList<SecurityPermission>();
     	for(SecurityUserPermission sup: permissionList) {
     		for(SecurityUserPermissionSub sups: sup.getSub()) {
@@ -828,23 +834,23 @@ public class SecurityGroupService extends ApiService {
 		List<String> groupNameList = jsonParameters.getData().getGroupnames();
 		List<String> delGroupNameList = jsonParameters.getData().getDelgroupnames();
 		
-		Integer userID = userData.getID() != null ? (userData.getID() > 0 ? userData.getID() : 0) : 0;
+		Integer userID = userData.getId() != null ? (userData.getId() > 0 ? userData.getId() : 0) : 0;
 		Integer userPK = 0;
-		//Save AspnetMembership
+		//1) Save AspnetMembership
 		resultMembership = this.setSaveAspnetMembership(userData);
 		if (resultMembership.getSuccess()) {
 			userID = resultMembership.getUserID();
-			//Save SecurityGroup
+			//2) Save SecurityGroup
 			resultSecurityGroup = this.setSaveSecurityGroup(userID, groupNameList, delGroupNameList);
 			
 			if (resultSecurityGroup.getSuccess()) {
-				//Save SecurityLoginControl
+				//3) Save SecurityLoginControl
 			    resultLoginControl = this.setSaveSecurityLoginControl(userID, delAccesstimeList, accesstimeList);
 			}
 		     
 			userPK = userID;    
 		    if(resultLoginControl.getSuccess()) {
-		    	if(permissionList == null || permissionList.isEmpty()) {
+		    	if(CollectionUtils.isEmpty(permissionList)) {
 		    		userID = 0;
 		    	} else {
 		    		if (userID == 0) {
@@ -852,8 +858,8 @@ public class SecurityGroupService extends ApiService {
 		    		}
 		    	}
 		    	
-		    	if (userID != 0 && permissionList != null) {
-		    		//Save SecurityPermission
+		    	if (!userID.equals(0) && !CollectionUtils.isEmpty(permissionList)) {
+		    		//4) Save SecurityPermission
 		    		resultPermission = this.setSaveSecurityPermission(userID, permissionList);
 		    	}
 		    } else {

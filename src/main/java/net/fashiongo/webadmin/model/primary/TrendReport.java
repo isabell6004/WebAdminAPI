@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.model.primary;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -16,7 +17,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "TrendReport")
-public class TrendReport {
+public class TrendReport implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -977082821336060207L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("TrendReportID")

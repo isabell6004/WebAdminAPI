@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.model.pojo.TotalRateTotal;
-import net.fashiongo.webadmin.model.pojo.VisitorStatic;
-import net.fashiongo.webadmin.model.pojo.response.GetDashboardResponse;
+import net.fashiongo.webadmin.model.pojo.statics.TotalRateTotal;
+import net.fashiongo.webadmin.model.pojo.statics.VisitorStatic;
+import net.fashiongo.webadmin.model.pojo.statics.response.GetDashboardResponse;
 /**
  * 
  * @author Incheol Jung

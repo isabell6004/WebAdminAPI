@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.config.security.AccountCredentials;
 import net.fashiongo.webadmin.config.security.TokenAuthenticationService;
 import net.fashiongo.webadmin.config.security.WebAdminUserAuthenticationToken;
-import net.fashiongo.webadmin.model.pojo.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 	

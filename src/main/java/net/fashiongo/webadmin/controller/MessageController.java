@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetRetailerNewsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetailParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetDMRequestResponse;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
@@ -145,8 +145,8 @@ public class MessageController {
 	public JsonResponse<GetRetailerNewsResponse> getRetailerNews(@RequestBody GetRetailerNewsParameter parameters) {
 		JsonResponse<GetRetailerNewsResponse> results = new JsonResponse<GetRetailerNewsResponse>(true, null, null);
 		
-		GetRetailerNewsResponse _result = messageService.getRetailerNews(parameters);
-		results.setData(_result);
+		GetRetailerNewsResponse result = messageService.getRetailerNews(parameters);
+		results.setData(result);
 		results.setSuccess(true);
 		
 		return results;

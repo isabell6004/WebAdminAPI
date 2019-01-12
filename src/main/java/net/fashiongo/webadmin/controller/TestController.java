@@ -1,13 +1,17 @@
 package net.fashiongo.webadmin.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.fashiongo.common.JsonResponse;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.service.TestService;
 
 @RestController
@@ -90,6 +94,15 @@ public class TestController {
 	public JsonResponse<String> getSession() {
 		JsonResponse<String> response = new JsonResponse<String>(false, null, null);
 		response.setData(testService.getSession());
+		response.setSuccess(true);
+		
+		return response;
+	}
+	
+	@RequestMapping(value="/testTransaction", method=RequestMethod.GET)
+	public JsonResponse<TrendReport> testTransaction(@RequestParam List<Integer> ids) {
+		JsonResponse<TrendReport> response = new JsonResponse<TrendReport>(false, null, null);
+		response.setData(testService.TransactionTest(ids));
 		response.setSuccess(true);
 		
 		return response;

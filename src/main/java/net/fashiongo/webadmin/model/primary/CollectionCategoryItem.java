@@ -26,10 +26,7 @@ import net.fashiongo.common.conversion.LocalDateTimeConverter;
 @Table(name = "CollectionCategoryItem")
 public class CollectionCategoryItem implements Serializable {
 
-	private static final long serialVersionUID = 1L;
 	@Id
-	@Basic(optional = false)
-	@NotNull
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@JsonProperty("CollectionCategoryItemID")
 	@Column(name = "CollectionCategoryItemID")
@@ -141,9 +138,6 @@ public class CollectionCategoryItem implements Serializable {
 		this.wholeSalerID = wholeSalerID;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 	
 	
 }

@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 
@@ -40,7 +41,7 @@ public class VendorNewsView implements Serializable {
 	private String newsContent;
 	
 	@Column(name = "NewsType")
-	@JsonProperty("NewsType")
+	@JsonIgnore
 	private String newsType;
 	
 	@Column(name = "StartingDate")

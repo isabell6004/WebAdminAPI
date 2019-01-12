@@ -3,13 +3,13 @@ package net.fashiongo.webadmin.service;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-//import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
-//import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import net.fashiongo.webadmin.common.Utility;
+import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.dao.primary.CodeFabricRepository;
@@ -28,101 +28,120 @@ import net.fashiongo.webadmin.dao.primary.CodeLengthRepository;
 import net.fashiongo.webadmin.dao.primary.CodePatternRepository;
 import net.fashiongo.webadmin.dao.primary.CodeStyleRepository;
 import net.fashiongo.webadmin.dao.primary.CommunicationReasonRepository;
+import net.fashiongo.webadmin.dao.primary.FeaturedItemRepository;
 import net.fashiongo.webadmin.dao.primary.MapFabricCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapLengthCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapPatternCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapStyleCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.PolicyRepository;
 import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
+import net.fashiongo.webadmin.dao.primary.TrendReportContentsRepository;
 import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogSendQueueRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogSendRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
-import net.fashiongo.webadmin.model.pojo.ActiveTodayDealDetail;
-import net.fashiongo.webadmin.model.pojo.BodySizeInfo;
-import net.fashiongo.webadmin.model.pojo.CategoryCount;
-import net.fashiongo.webadmin.model.pojo.CategoryListOrder;
-import net.fashiongo.webadmin.model.pojo.CategoryReport;
-import net.fashiongo.webadmin.model.pojo.CategoryVendor;
-import net.fashiongo.webadmin.model.pojo.CategoryVendorInfo;
-import net.fashiongo.webadmin.model.pojo.CodeData;
-import net.fashiongo.webadmin.model.pojo.ColorListInfo;
-import net.fashiongo.webadmin.model.pojo.DMRequest;
-import net.fashiongo.webadmin.model.pojo.DMRequestDetail;
-import net.fashiongo.webadmin.model.pojo.FabricInfo;
-import net.fashiongo.webadmin.model.pojo.FeaturedItem;
-import net.fashiongo.webadmin.model.pojo.FeaturedItemCount;
-import net.fashiongo.webadmin.model.pojo.InactiveTodayDealDetail;
-import net.fashiongo.webadmin.model.pojo.LengthInfo;
-import net.fashiongo.webadmin.model.pojo.PatternInfo;
-import net.fashiongo.webadmin.model.pojo.PolicyDetail;
-import net.fashiongo.webadmin.model.pojo.ProductAttribute;
-import net.fashiongo.webadmin.model.pojo.ProductColors;
-import net.fashiongo.webadmin.model.pojo.ProductImage;
-import net.fashiongo.webadmin.model.pojo.ProductInfo;
-import net.fashiongo.webadmin.model.pojo.ProductSelectCheck;
-import net.fashiongo.webadmin.model.pojo.ProductSize;
-import net.fashiongo.webadmin.model.pojo.Result;
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.StyleInfo;
-import net.fashiongo.webadmin.model.pojo.TodayDealCalendarDetail;
-import net.fashiongo.webadmin.model.pojo.TodayDealDetail;
-import net.fashiongo.webadmin.model.pojo.Total;
-import net.fashiongo.webadmin.model.pojo.TrendReportDefault;
-import net.fashiongo.webadmin.model.pojo.TrendReportKmmImage;
-import net.fashiongo.webadmin.model.pojo.TrendReportList;
-import net.fashiongo.webadmin.model.pojo.VendorCategorySummary;
-import net.fashiongo.webadmin.model.pojo.VendorSummary;
-import net.fashiongo.webadmin.model.pojo.VendorSummaryDetail;
-import net.fashiongo.webadmin.model.pojo.parameter.DeleteCommunicationReasonParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryListParameters;
-import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryVendorListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetDMRequestSendListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetFeaturedItemSearchParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetPolicyManagementDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductAttributesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetProductDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCalendarListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetTodayDealCanlendarParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetTodaydealParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReport2Parameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetTrendReportDefaultParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.PageSizeParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryListOrderParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetCategoryParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetFGCatalogParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetNewTodayDealParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetPaidCampaignParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesMappingParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetProductAttributesParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetTodayDealCalendarParameter;
-import net.fashiongo.webadmin.model.pojo.response.DeleteCommunicationReasonResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetCategoryListResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetCategoryVendorListResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetDMRequestResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemCountResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemSearchResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetFeaturedItemListDayResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetPaidCampaignResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetPolicyDetailResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementDetailResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetPolicyManagementResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetProductAttributesTotalResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetProductDetailResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarListResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetTodayDealCalendarResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetTodaydealResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetTrendReport2Response;
-import net.fashiongo.webadmin.model.pojo.response.GetTrendReportCategoryResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetTrendReportDefaultResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetVendorCategoryResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetVendorListResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ActiveTodayDealDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.CodeData;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.DMRequest;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.DMRequestDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedVendorDaily;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.InactiveTodayDealDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductAttribute;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductSelectCheck;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportDefault;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportItem;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportList;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorCategorySummary;
+import net.fashiongo.webadmin.model.pojo.ad.CategoryAdCount;
+import net.fashiongo.webadmin.model.pojo.ad.SelectData;
+import net.fashiongo.webadmin.model.pojo.ad.VendorCount;
+import net.fashiongo.webadmin.model.pojo.ad.VendorData1;
+import net.fashiongo.webadmin.model.pojo.common.Result;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.BodySizeInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryCount;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryReport;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryVendor;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryVendorInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ColorListInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.FabricInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedItemCount;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedItemList;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.LengthInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.PatternInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductColors;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductImage;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductSize;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.StyleInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TodayDealCalendarDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TodayDealDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorSummary;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorSummaryDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelFeaturedItemParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DeleteCommunicationReasonParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryVendorListParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetDMRequestParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetDMRequestSendListParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetFeaturedItemSearchParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetFeaturedItemSearchVendorParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetItemsParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetPolicyDetailParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetPolicyManagementDetailParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetProductDetailParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodayDealCalendarListParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodayDealCanlendarParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReport2Parameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReportDefaultParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReportItemParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.PageSizeParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCategoryListOrderParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCommunicationReasonActiveParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCommunicationReasonParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetFGCatalogParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetFeaturedItemParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetNewTodayDealParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetPaidCampaignParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetProductAttributesMappingParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTodayDealCalendarParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTrendReportMapParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTrendReportParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetCategoryVendorListResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetDMRequestResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetFeaturedItemCountResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetFeaturedItemListDayResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetFeaturedItemSearchResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetFeaturedItemSearchVendorResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetItemsResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetPaidCampaignResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetPolicyDetailResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetPolicyManagementDetailResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetPolicyManagementResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetProductAttributesTotalResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetProductDetailResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTodayDealCalendarListResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTodayDealCalendarResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReport2Response;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReportCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReportDefaultResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReportItemResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorCategoryResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.CodeFabric;
 import net.fashiongo.webadmin.model.primary.CodeLength;
@@ -130,17 +149,21 @@ import net.fashiongo.webadmin.model.primary.CodePattern;
 import net.fashiongo.webadmin.model.primary.CodeStyle;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
+import net.fashiongo.webadmin.model.primary.FeaturedItem;
 import net.fashiongo.webadmin.model.primary.MapFabricCategory;
 import net.fashiongo.webadmin.model.primary.MapLengthCategory;
 import net.fashiongo.webadmin.model.primary.MapPatternCategory;
 import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 import net.fashiongo.webadmin.model.primary.Policy;
+import net.fashiongo.webadmin.model.primary.PolicyAgreement;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
+import net.fashiongo.webadmin.model.primary.TrendReportContents;
 import net.fashiongo.webadmin.model.primary.VendorCatalog;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendQueue;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendRequest;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
+import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  *
@@ -202,7 +225,15 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private MapFabricCategoryRepository mapFabricCategoryRepository;
+
+	@Autowired
+	private FeaturedItemRepository featuredItemRepository;
 	
+	@Autowired
+	private TrendReportContentsRepository trendReportContentRepository;
+	
+	private net.fashiongo.webadmin.utility.Utility uUtility;
+
 	/**
 	 *
 	 * Get Category List
@@ -258,13 +289,14 @@ public class SitemgmtService extends ApiService {
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setPaidCampaign(SetPaidCampaignParameter parameters) {
 		List<EmConfiguration> emConfigurationList = parameters.getObjList();
-		
-		for (EmConfiguration emConfiguration2 : emConfigurationList) {
-			EmConfiguration emConfiguration = new EmConfiguration();
-			emConfiguration.setConfigID(emConfiguration2.getConfigID());
-			emConfiguration.setConfigType(emConfiguration2.getConfigType());
-			emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
-			emConfigurationRepository.save(emConfiguration);
+		if (!CollectionUtils.isEmpty(emConfigurationList)) {
+			for (EmConfiguration emConfiguration2 : emConfigurationList) {
+				EmConfiguration emConfiguration = new EmConfiguration();
+				emConfiguration.setConfigID(emConfiguration2.getConfigID());
+				emConfiguration.setConfigType(emConfiguration2.getConfigType());
+				emConfiguration.setConfigValue(emConfiguration2.getConfigValue());
+			}
+			emConfigurationRepository.saveAll(emConfigurationList);
 		}
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
@@ -282,7 +314,7 @@ public class SitemgmtService extends ApiService {
 		GetPolicyManagementResponse results = new GetPolicyManagementResponse();
 		Pageable req = PageRequest.of(parameters.getPageNum()-1, parameters.getPageSize(), new Sort(Direction.DESC, "EffectiveOn"));
 		Page<Policy> result = policyRepository.findAll(req);
-		results.setRecCnt(policyRepository.count());
+		results.setRecCnt(result.getTotalElements());
 		results.setVpolicyList(result.getContent());
 		return results;
 	}
@@ -298,24 +330,45 @@ public class SitemgmtService extends ApiService {
 	 */
 	@Transactional("primaryTransactionManager")
 	public ResultCode setAddDelPolicyManagement (String type, Policy objPolicy) {
+		ResultCode result = new ResultCode(false, 0, null);
 		Policy pc = new Policy();
 		String sessionUserID = Utility.getUsername();
 		switch(type) {
 		case "Upd":
-			if(objPolicy.getPolicyID() > 0) pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
-			pc.setPolicyTitle(objPolicy.getPolicyTitle());
-			pc.setPolicyContents(objPolicy.getPolicyContents());
-			pc.setForVendor(objPolicy.getForVendor());
-			pc.setForRetailer(objPolicy.getForRetailer());
-			pc.setEffectiveOn(objPolicy.getEffectiveOn());
-			if (objPolicy.getPolicyID() < 1) {
+			Integer policyID = objPolicy.getPolicyID() == null ? 0 : objPolicy.getPolicyID();
+			if(policyID < 1) {
+				pc.setPolicyTitle(objPolicy.getPolicyTitle());
+				pc.setPolicyContents(objPolicy.getPolicyContents());
+				pc.setForVendor(objPolicy.getForVendor());
+				pc.setForRetailer(objPolicy.getForRetailer());
+				pc.setEffectiveOn(objPolicy.getEffectiveOn());
 				pc.setCreatedBy(sessionUserID);
 				pc.setCreatedOn(objPolicy.getCreatedOn());
+				pc.setModifiedBy(sessionUserID);
+				pc.setModifiedOn(objPolicy.getModifiedOn());
+				pc.setActive(objPolicy.getActive());
+				
+				result.setResultCode(1);
+				result.setSuccess(true);
+				result.setResultMsg(MSG_INSERT_SUCCESS);
+			} else {
+				pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
+				pc.setPolicyID(objPolicy.getPolicyID());
+				pc.setPolicyTitle(objPolicy.getPolicyTitle());
+				if(StringUtils.isEmpty(objPolicy.getPolicyContents())) {
+				    pc.setPolicyContents(objPolicy.getPolicyContents());
+				}
+				pc.setForVendor(objPolicy.getForVendor());
+				pc.setForRetailer(objPolicy.getForRetailer());
+				pc.setEffectiveOn(objPolicy.getEffectiveOn());
+				pc.setModifiedBy(sessionUserID);
+				pc.setModifiedOn(objPolicy.getModifiedOn());
+				pc.setActive(objPolicy.getActive());
+				
+				result.setResultCode(1);
+				result.setSuccess(true);
+				result.setResultMsg(MSG_UPDATE_SUCCESS);
 			}
-			pc.setModifiedBy(sessionUserID);
-			pc.setModifiedOn(objPolicy.getModifiedOn());
-			pc.setActive(objPolicy.getActive());
-			policyRepository.save(pc);
 			break;
 		case "Act":
 			pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
@@ -323,9 +376,15 @@ public class SitemgmtService extends ApiService {
 			pc.setModifiedOn(objPolicy.getModifiedOn());
 			pc.setActive(objPolicy.getActive());
 			policyRepository.save(pc);
+			
+			result.setResultCode(1);
+			result.setSuccess(true);
+			result.setResultMsg(MSG_UPDATE_SUCCESS);
 			break;
 		}
-		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+		policyRepository.save(pc);
+		
+		return result;
 	}
 
 	/**
@@ -359,9 +418,9 @@ public class SitemgmtService extends ApiService {
 		params.add("PolicyAgreementID desc");
 		params.add(true);
 		params.add(null);
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, PolicyDetail.class);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, PolicyAgreement.class);
 		result.setTotal((List<Total>) _result.get(0));
-		result.setPolicyDetail((List<PolicyDetail>)_result.get(1));
+		result.setPolicyDetail((List<PolicyAgreement>)_result.get(1));
 				
 		return result;
 	}
@@ -418,28 +477,39 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 *
+	 * setCommunicationReasonActive
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonActiveParameter
+	 * @return Integer
 	 */
-	public void setCommunicationReasonActive () {
-
+	public Integer setCommunicationReasonActive (SetCommunicationReasonActiveParameter parameters) {
+		if(parameters.getReasonID() < 1) return -1;
+		CommunicationReason result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
+		result.setActive(parameters.getActive());
+		communicationReasonRepository.save(result);		
+		return 1;
 	}
 
 	/**
 	 *
-	 *
+	 * setCommunicationReason
 	 *
 	 * @since 2018. 10. 22.
 	 * @author Dahye
-	 * @param
-	 * @return
+	 * @param SetCommunicationReasonParameter
+	 * @return Integer
 	 */
-	public void setCommunicationReason () {
-
+	public Integer setCommunicationReason (SetCommunicationReasonParameter parameters) {
+		CommunicationReason result = new CommunicationReason();
+		if(parameters.getReasonID() > 0) result = communicationReasonRepository.findOneByReasonID(parameters.getReasonID());
+		else result.setReasonID(0);
+		result.setReason(parameters.getReason());
+		result.setParentID(parameters.getParentID());
+		result.setActive(parameters.getActive());
+		communicationReasonRepository.save(result);
+		return 1;
 	}
 
 	/**
@@ -570,14 +640,14 @@ public class SitemgmtService extends ApiService {
 
 		switch (setType) {
 		case "Add":
-			this.saveCategory(category, objCategory);
+			result.setPk(this.saveCategory(category, objCategory));
 			result.setResultWrapper(true, 1, category.getCategoryID(), MSG_SAVE_SUCCESS, null);
 
 			break;
 
 		case "Upd":
 			category = categoryRepository.findOneByCategoryID(categoryID);
-			this.saveCategory(category, objCategory);
+			result.setPk(this.saveCategory(category, objCategory));
 			result.setResultWrapper(true, 1, null, MSG_UPDATE_SUCCESS, null);
 
 			break;
@@ -615,11 +685,11 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 	
-	private void saveCategory(Category category, Category objCategory) {
+	private Integer saveCategory(Category category, Category objCategory) {
 		category.setCategoryName(objCategory.getCategoryName());
 		category.setCategoryDescription(objCategory.getCategoryDescription());
 		category.setParentCategoryID(objCategory.getParentCategoryID());
-		category.setParentParentCategoryID(objCategory.getParentCategoryID());
+		category.setParentParentCategoryID(objCategory.getParentParentCategoryID());
 		category.setLvl(objCategory.getLvl());
 		category.setTitleImage(objCategory.getTitleImage());
 		category.setIsLandingPage(objCategory.getIsLandingPage());
@@ -627,6 +697,8 @@ public class SitemgmtService extends ApiService {
 		category.setListOrder(objCategory.getListOrder());
 		category.setActive(objCategory.getActive());
 		categoryRepository.save(category); // Save, Update
+		
+		return category.getCategoryID();
 	}
 
 	/**
@@ -654,12 +726,14 @@ public class SitemgmtService extends ApiService {
 		if (category != null) {
 			final List<Category> CategoryList = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNotOrderByListOrderAsc(parentCategoryID, lvl, categoryID);
 			
-			for (Category cs : CategoryList) {
-				if (cs.getListOrder() >= listOrder) {
-					newListOrder++;
-					cs.setListOrder(newListOrder);
-					categoryRepository.save(cs);
+			if(!CollectionUtils.isEmpty(CategoryList)) {
+				for (Category cs : CategoryList) {
+					if (cs.getListOrder() >= listOrder) {
+						newListOrder++;
+						cs.setListOrder(newListOrder);
+					}
 				}
+				categoryRepository.saveAll(CategoryList);
 			}
 			
 			category.setParentCategoryID(parentCategoryID);
@@ -669,9 +743,11 @@ public class SitemgmtService extends ApiService {
 			if (lvl == 2) {
 				final List<Category> CategoryList2 = categoryRepository.findByParentCategoryIDAndLvlAndCategoryIDNot(parentCategoryID, 3, categoryID);
 				
-				for (Category cc : CategoryList2) {
-					cc.setParentParentCategoryID(parentCategoryID);
-					categoryRepository.save(cc);
+				if(!CollectionUtils.isEmpty(CategoryList2)) {
+					for (Category cc : CategoryList2) {
+						cc.setParentParentCategoryID(parentCategoryID);
+					}
+					categoryRepository.saveAll(CategoryList2);
 				}
 			}
 		}
@@ -754,9 +830,9 @@ public class SitemgmtService extends ApiService {
 		
 		params.add(sDate);
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItem.class);
-		result.setFeaturedItemCountlist((List<FeaturedItemCount>) _result.get(0));
-		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(1));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItemList.class);
+		result.setFeaturedItemCount((List<FeaturedItemCount>) _result.get(0));
+		result.setFeaturedItemList((List<FeaturedItemList>) _result.get(1));
 		return result;
 	}
 	
@@ -777,8 +853,8 @@ public class SitemgmtService extends ApiService {
 		
 		params.add(sDate);
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItem.class);
-		result.setFeaturedItemlist((List<FeaturedItem>) _result.get(0));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemList.class);
+		result.setFeaturedItemList((List<FeaturedItemList>) _result.get(0));
 		return result;
 	}
 	
@@ -866,6 +942,32 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 	
+    /**
+    *
+    * Get TrendReport Item
+    *
+    * @since 2018. 11. 05.
+    * @author Nayeon Kim
+    * @param GetTrendReportItemParameter
+    * @return GetTrendReportItemResponse
+    */
+   @SuppressWarnings("unchecked")
+   public GetTrendReportItemResponse getTrendReportItem(GetTrendReportItemParameter prameters) {
+       GetTrendReportItemResponse result = new GetTrendReportItemResponse();
+       String spName = "up_wa_GetTrendReportItem";
+       List<Object> params = new ArrayList<Object>();
+
+       params.add(prameters.getPagenum());
+       params.add(prameters.getPagesize());
+       params.add(prameters.getTrendreportid());
+       params.add(null);
+
+       List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportItem.class);
+       result.setTotal((List<Total>) _result.get(0));
+       result.setTrendReportItem((List<TrendReportItem>) _result.get(1));
+       return result;
+   }
+	
 	/**
 	 *
 	 * Set Trend Report Sort
@@ -884,6 +986,74 @@ public class SitemgmtService extends ApiService {
 		jdbcHelper.executeSP(spName, params);
 		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
 	}
+	
+	@Transactional(value = "primaryTransactionManager")
+	public JsonResponse<String> setTrendReport(SetTrendReportParameter parameters) {
+		JsonResponse<String> result = new JsonResponse<String>(false, null, 0, 0, null);
+		TrendReport param = parameters.getTrendreport();
+
+		TrendReport tr = trendReportRepository.findOneByTrendReportID(param.getTrendReportID());
+
+		if (parameters.getType().equals("Del")) {
+			trendReportRepository.delete(tr);
+			result.setSuccess(true);
+			result.setCode(1);
+			result.setMessage("Deleted successfully!");
+		} else if (parameters.getType().equals("Act")) {
+			tr.setActive(param.getActive());
+			trendReportRepository.save(tr);
+			result.setSuccess(true);
+			result.setCode(1);
+			result.setMessage("Updated successfully!");
+		} else if (parameters.getType().equals("Ins")) {
+			if (param.getTrendReportID() < 1) {
+				tr = new TrendReport();
+				result.setMessage("Saved successfully!");
+			} else {
+				result.setMessage("Updated successfully!");
+			}
+
+			tr.setTitle(param.getTitle());
+			tr.setDateFrom(param.getDateFrom());
+			tr.setDateTo(param.getDateTo());
+			tr.setImage(param.getImage());
+			tr.setSquareImage(param.getSquareImage());
+			tr.setMiniImage(param.getMiniImage());
+			tr.setkMMImage1(param.getkMMImage1());
+			tr.setkMMImage2(param.getkMMImage2());
+			tr.setSticky(param.getSticky());
+			tr.setCuratedType(param.getCuratedType() == null ? 3 : param.getCuratedType());
+			tr.setCreatedOn(LocalDateTime.now());
+			tr.setCreatedBy(Utility.getUsername());
+			tr.setModifiedOn(LocalDateTime.now());
+			tr.setModifiedBy(Utility.getUsername());
+			tr.setListOrder(param.getListOrder());
+			tr.setActive(param.getActive());
+			tr.settRDescription(param.gettRDescription());
+			trendReportRepository.save(tr);
+
+			result.setSuccess(true);
+			result.setPk(tr.getTrendReportID());
+			result.setCode(1);
+
+			if (param.getTrendReportID() < 1 && param.getCuratedType() == 4) {
+				TrendReportContents trcb = trendReportContentRepository.findOneByTrendReportIDIsNull();
+				TrendReportContents trc = new TrendReportContents();
+
+				trc.setTrendReportID(tr.getTrendReportID());
+				trcb.getContents().replace("trend_report/kmm-top.jpg", "trend_report/" + param.getkMMImage1());
+				trcb.getContents().replace("trend_report/kmm-middle.jpg", "trend_report/" + param.getkMMImage2());
+				trc.setContents(trcb.getContents());
+				trc.setCreatedOn(LocalDateTime.now());
+				trc.setCreatedBy(Utility.getUsername());
+				trc.setModifiedOn(LocalDateTime.now());
+				trc.setModifieidBy(Utility.getUsername());
+				trendReportContentRepository.save(trc);
+			}
+		}
+
+		return result;
+	}
    
 	/**
 	 *
@@ -893,13 +1063,16 @@ public class SitemgmtService extends ApiService {
 	 * @author Nayeon Kim
 	 * @return List<TrendReportKmmImage>
 	 */
-	public List<TrendReportKmmImage> getLastKMMData() {
-		List<TrendReportKmmImage> result = new ArrayList<TrendReportKmmImage>();
-		List<TrendReport> trendReport = trendReportRepository.findAllByCuratedTypeOrderByTrendReportIDDesc(4);
-		if (!CollectionUtils.isEmpty(trendReport)) {
-			result = trendReport.stream().map(c -> new TrendReportKmmImage(c.getSquareImage(), c.getImage(),
-					c.getMiniImage(), c.getkMMImage1(), c.getkMMImage2())).collect(Collectors.toList());
-		}
+	public TrendReportKmmImage getLastKMMData() {
+		TrendReportKmmImage result = new TrendReportKmmImage();
+		TrendReport trendReport = trendReportRepository.findTopByCuratedTypeOrderByTrendReportIDDesc(4);
+		
+		result.setSquareImage(trendReport.getSquareImage());
+		result.setImage(trendReport.getImage());
+		result.setMiniImage(trendReport.getMiniImage());
+		result.setkMMImage1(trendReport.getkMMImage1());
+		result.setkMMImage2(trendReport.getkMMImage2());
+		
 		return result;
 	}
 	
@@ -944,14 +1117,13 @@ public class SitemgmtService extends ApiService {
 		String Filter = " 1=1 ";
 		String OrderBy = null;
         Boolean rActive = null;
-        net.fashiongo.webadmin.utility.Utility utl = new net.fashiongo.webadmin.utility.Utility();
 		
         switch (parameter.getTabNo())
         {
             case 2:// "Length":
                 DataSrc = "Code_Length";
                 ColumnList = "LengthID As CodeID,LengthName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and LengthName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -965,7 +1137,7 @@ public class SitemgmtService extends ApiService {
             case 3:// "Style":
                 DataSrc = "Code_Style";
                 ColumnList = "StyleID As CodeID,StyleName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and StyleName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -979,7 +1151,7 @@ public class SitemgmtService extends ApiService {
             case 4:// "Fabric":
                 DataSrc = "Code_Fabric";
                 ColumnList = "FabricID As CodeID,FabricName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + "and FabricName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -993,12 +1165,6 @@ public class SitemgmtService extends ApiService {
             case 5:// "Category Mapping":
                 switch (parameter.getPrevTab())
                 {
-                    case 1:
-                        DataSrc = "vwPatternCategory";
-                        ColumnList = "MapID,PatternID As CodeID,PatternName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
-                        Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
-                        OrderBy = "PatternName";
-                        break;
                     case 2:
                         DataSrc = "vwLengthCategory";
                         ColumnList = "MapID,LengthID As CodeID,LengthName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
@@ -1017,12 +1183,18 @@ public class SitemgmtService extends ApiService {
                         Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
                         OrderBy = "FabricName";
                         break;
+                    default:
+                    	DataSrc = "vwPatternCategory";
+                        ColumnList = "MapID,PatternID As CodeID,PatternName As CodeName,Case When MapID > 0 Then Cast(1 As Bit) Else Cast(0 As Bit) End As Active";
+                        Filter = Filter + " and CategoryID = " + parameter.getCategoryID() + "";
+                        OrderBy = "PatternName";
+                        break;
                 }
                 break;
             default://"Pattern":
             	DataSrc = "Code_Pattern";
                 ColumnList = "PatternID As CodeID,PatternName As CodeName,Active";
-                if (!utl.isNullOrEmpty(parameter.getAttrName()))
+                if (!uUtility.isNullOrEmpty(parameter.getAttrName()))
                 {
                     Filter = Filter + " and PatternName like '%" + parameter.getAttrName() + "%'";
                 }
@@ -1075,6 +1247,7 @@ public class SitemgmtService extends ApiService {
 			if(parameters.getActive() == false) {
 				todayDeal.setRevokedOn(LocalDateTime.now());
 				todayDeal.setRevokedBy(Utility.getUsername());
+				todayDeal.setNotes(parameters.getNotes());
 			}
 			
 			this.todayDealRepository.save(todayDeal);
@@ -1106,6 +1279,47 @@ public class SitemgmtService extends ApiService {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public GetItemsResponse GetItems2(GetItemsParameter parameters) {
+		GetItemsResponse result = new GetItemsResponse();
+		String spName = "up_wa_GetItemsSearch2";
+		List<Object> params = new ArrayList<Object>();
+
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		params.add(parameters.getFgCat());
+		params.add(parameters.getVendorID());
+		params.add(parameters.getSelectedCategoryID());
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getBodySizeIDs());
+		params.add(parameters.getPatternIDs());
+		params.add(parameters.getLengthIDs());
+		params.add(parameters.getStyleIDs());
+		params.add(parameters.getFabricIDs());
+		params.add(parameters.getColorNames());
+		params.add(parameters.getSearchItemText());
+		params.add("ProductDescription");
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getSearchAndOr());
+		params.add(parameters.getKeyword());
+		params.add(parameters.getStyleNo());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class);
+        result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
+        result.setSelectData((List<SelectData>) _result.get(1));
+        return result;
+	}
+	
 	/**
 	 * 
 	 * Description Example
@@ -1120,50 +1334,6 @@ public class SitemgmtService extends ApiService {
 		
 		switch (parameter.getTabNo())
         {
-            case 1:  //Pattern
-            	List<CodePattern> newCodePatternList = new ArrayList<CodePattern>();
-            	if (parameter.getbType().equals("ADel")) {
-	            	for (CodeData cd: parameter.getCodeDataList()) {
-	            		CodePattern newCp = new CodePattern();
-		            	newCp.setPatternID(cd.getCodeID());
-	            		newCodePatternList.add(newCp);
-	            	}
-	            	codePatternRepository.deleteAll(newCodePatternList);
-	            	
-            		result.setResultCode(1);
-            		result.setSuccess(true);
-            		result.setResultMsg(MSG_DELETE_SUCCESS);
-            	} else {
-            		CodePattern newCp = new CodePattern();
-            		if (parameter.getbType().equals("Del")) {
-		            	newCp.setPatternID(parameter.getCodeID());
-	            		newCodePatternList.add(newCp);
-	            		codePatternRepository.delete(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_DELETE_SUCCESS);
-	            	} else if (parameter.getCodeID() > 0) {
-	            		newCp = codePatternRepository.findOneByPatternID(parameter.getCodeID());
-	    				newCp.setPatternName(parameter.getAttrName());
-	            		newCp.setActive(parameter.getActive());
-	            		codePatternRepository.save(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_UPDATE_SUCCESS);
-	            	} else {
-	            		newCp.setPatternID(parameter.getCodeID());
-	    				newCp.setPatternName(parameter.getAttrName());
-	            		newCp.setActive(parameter.getActive());
-	            		codePatternRepository.save(newCp);
-	            		
-	            		result.setResultCode(1);
-	            		result.setSuccess(true);
-	            		result.setResultMsg(MSG_INSERT_SUCCESS);
-	            	}
-            	}
-            	break;
             case 2:  //Length
             	List<CodeLength> newCodeLengthList = new ArrayList<CodeLength>();
             	if (parameter.getbType().equals("ADel")) {
@@ -1296,6 +1466,50 @@ public class SitemgmtService extends ApiService {
 	            	}
             	}
             	break;
+            default:  //Pattern
+            	List<CodePattern> newCodePatternList = new ArrayList<CodePattern>();
+            	if (parameter.getbType().equals("ADel")) {
+	            	for (CodeData cd: parameter.getCodeDataList()) {
+	            		CodePattern newCp = new CodePattern();
+		            	newCp.setPatternID(cd.getCodeID());
+	            		newCodePatternList.add(newCp);
+	            	}
+	            	codePatternRepository.deleteAll(newCodePatternList);
+	            	
+            		result.setResultCode(1);
+            		result.setSuccess(true);
+            		result.setResultMsg(MSG_DELETE_SUCCESS);
+            	} else {
+            		CodePattern newCp = new CodePattern();
+            		if (parameter.getbType().equals("Del")) {
+		            	newCp.setPatternID(parameter.getCodeID());
+	            		newCodePatternList.add(newCp);
+	            		codePatternRepository.delete(newCp);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_DELETE_SUCCESS);
+	            	} else if (parameter.getCodeID() > 0) {
+	            		newCp = codePatternRepository.findOneByPatternID(parameter.getCodeID());
+	    				newCp.setPatternName(parameter.getAttrName());
+	            		newCp.setActive(parameter.getActive());
+	            		codePatternRepository.save(newCp);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_UPDATE_SUCCESS);
+	            	} else {
+	            		newCp.setPatternID(parameter.getCodeID());
+	    				newCp.setPatternName(parameter.getAttrName());
+	            		newCp.setActive(parameter.getActive());
+	            		codePatternRepository.save(newCp);
+	            		
+	            		result.setResultCode(1);
+	            		result.setSuccess(true);
+	            		result.setResultMsg(MSG_INSERT_SUCCESS);
+	            	}
+            	}
+            	break;
         }
 		return result;
 	}
@@ -1308,6 +1522,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@Transactional("primaryTransactionManager")
 	public Integer setNewTodayDeal(SetNewTodayDealParameter parameters) {
 		TodayDeal todayDeal = new TodayDeal();
 		todayDeal.setTitle("");
@@ -1337,7 +1552,9 @@ public class SitemgmtService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public GetFeaturedItemSearchResponse getFeaturedItemSearch(GetFeaturedItemSearchParameter parameters) {
+		GetFeaturedItemSearchResponse result = new GetFeaturedItemSearchResponse();
 		String spName = "up_wa_GetFeaturedItemsSearch";
 
 		List<Object> params = new ArrayList<Object>();
@@ -1374,9 +1591,107 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getVendorDateTo());
 		params.add(parameters.getNeverUsed());
 		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequest.class);
-		//result.setDmList((List<DMRequest>) _result.get(0));
-		return null;
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class,
+				VendorCount.class, VendorData1.class, FeaturedVendorDaily.class);
+		result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
+		result.setSelectData((List<SelectData>) _result.get(1));
+		result.setVendorCount((List<VendorCount>) _result.get(2));
+		result.setVendorData1((List<VendorData1>) _result.get(3));
+		result.setFeaturedVendorDaily((List<FeaturedVendorDaily>) _result.get(4));
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get FeaturedItem Search Vendor
+	 * 
+	 * @since 2018. 11. 1.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public GetFeaturedItemSearchVendorResponse getFeaturedItemSearchVendor(GetFeaturedItemSearchVendorParameter parameters) {
+		GetFeaturedItemSearchVendorResponse result = new GetFeaturedItemSearchVendorResponse();
+		String spName = "up_wa_GetFeaturedItemsSearchVendor";
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(parameters.getPageNum());
+		params.add(parameters.getPageSize());
+		params.add(parameters.getFgCat());
+		params.add(parameters.getVendorID());
+		params.add(parameters.getSelectedCategoryID());
+		params.add(parameters.getFromDate());
+		params.add(parameters.getToDate());
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getBodySizeIDs());
+		params.add(parameters.getPatternIDs());
+		params.add(parameters.getLengthIDs());
+		params.add(parameters.getStyleIDs());
+		params.add(parameters.getFabricIDs());
+		params.add(parameters.getColorNames());
+		params.add(parameters.getSearchItemText());
+		params.add("ProductDescription");
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(null);
+		params.add(parameters.getSearchAndOr());
+		params.add(parameters.getKeyword());
+		params.add(parameters.getStyleNo());
+		params.add(parameters.getNeverUsed());
+		
+		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class);
+		result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
+		result.setSelectData((List<SelectData>) _result.get(1));
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Set FeaturedItem
+	 * 
+	 * @since 2018. 11. 1.
+	 * @author Junghwan Lee
+	 * @param parameters
+	 * @return
+	 */
+	@Transactional("primaryTransactionManager")
+	public ResultCode setFeaturedItem(SetFeaturedItemParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, "Save Failed!");
+		
+		FeaturedItem featuredItem = new FeaturedItem();
+		
+		featuredItem.setWholeSalerID(parameters.getWholeSalerID());
+		featuredItem.setFeaturedItemDate(parameters.getFromDate());
+		featuredItem.setWholeSalerName(parameters.getCompanyName());
+		featuredItem.setCreatedBy(Utility.getUsername());
+		featuredItem.setCreatedOn(LocalDateTime.now());
+		
+		if (parameters.getSetType().equals("BestAdd")) {
+			featuredItem.setProductID(0);
+			featuredItem.setBestItemUse(1);
+			featuredItemRepository.save(featuredItem);
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("Saved Successfully!");
+		} else if (parameters.getSetType().equals("Add")) {
+			featuredItem.setBestItemUse(0);
+			featuredItem.setProductID(parameters.getProductID());
+			featuredItem.setProductName(parameters.getProductName());
+			featuredItemRepository.save(featuredItem);
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("Saved Successfully!");
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -1396,6 +1711,7 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getPagenum());
 		params.add(parameters.getPagesize());
 		params.add(parameters.getStatus());
+		params.add(parameters.getVendorstatus());
 		params.add(parameters.getWholesalerid());
 		params.add(parameters.getCompanytypecd());
 		params.add(parameters.getDatefrom());
@@ -1447,6 +1763,24 @@ public class SitemgmtService extends ApiService {
 	}
 
     /**
+	 * Get DMRequestSendListOrigin
+	 * 
+	 * @since 2018. 10. 29.
+	 * @author Incheol Jung
+	 * @param parameters
+	 * @return
+	 */
+	public JSONObject getDMRequestSendListOrigin(GetDMRequestSendListParameter parameters) {
+		JSONObject result = new JSONObject();
+		List<DMRequestDetail> subList = null;
+		
+		for(Integer catalogId : parameters.getDmIds()) {
+			result.put(catalogId.toString(), getDMDetail(catalogId));
+		}
+		return result;
+	}
+	
+	/**
 	 * Get DMRequestSendList
 	 * 
 	 * @since 2018. 10. 29.
@@ -1456,36 +1790,22 @@ public class SitemgmtService extends ApiService {
 	 */
 	public JSONObject getDMRequestSendList(GetDMRequestSendListParameter parameters) {
 		JSONObject result = new JSONObject();
-		List<DMRequestDetail> subList = null;
+		String spName = "up_wa_DMSendList_Migration";
+		List<Object> params = new ArrayList<Object>();
+		params.add(StringUtils.join(parameters.getDmIds(), ","));
 		
-		for(Integer catalogId : parameters.getDmIds()) {
-			subList = getDMDetail(catalogId);
-			if(!CollectionUtils.isEmpty(subList)) {
-				result.put(catalogId.toString(), getDMDetail(catalogId));
-			}
+		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
+		List<DMRequestDetail> subList = (List<DMRequestDetail>) _result.get(0);
+		
+		Map<Integer, List<DMRequestDetail>> HashMapDmList = subList.stream()
+				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
+
+		for (Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
+			result.put(entry.getKey(), entry.getValue());
 		}
+		
 		return result;
 	}
-	
-	/**
-	 * Get DMRequestSendList2
-	 * 
-	 * @since 2018. 10. 29.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-//	public JSONObject getDMRequestSendList2(GetDMRequestSendListParameter parameters) {
-//		JSONObject result = new JSONObject();
-//		List<DMRequestDetail> subList = null;
-//		
-//		String spName = "up_wa_DMSendList_Migration";
-//		List<Object> params = new ArrayList<Object>();
-//		params.add(parameters.getDmIds().toString());
-//		
-//		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
-//		return result;
-//	}
 	
 	/**
 	 * 
@@ -1709,4 +2029,49 @@ public class SitemgmtService extends ApiService {
 		result.setSuccess(true);
 		return result;
 	}
+	
+
+	/**
+	 *
+	 * delete Featured Item
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Sanghyup Kim
+	 * @param 
+	 * @return 
+	 */
+	public ResultResponse<Integer> delFeaturedItem(DelFeaturedItemParameter parameters) {
+		ResultResponse<Integer> result = new ResultResponse<Integer>();
+
+		Integer id = parameters.getFeaturedItemID();
+		featuredItemRepository.deleteById(id);
+		result.setResultWrapper(true, 1, id, MSG_DELETE_SUCCESS, id);
+		return result;		
+	}
+
+
+	/**
+	 *
+	 * Set Trend Report Map
+	 *
+	 * @since 2018. 11. 05.
+	 * @author Sanghyup Kim
+	 * @param SetTrendReportMapParameter
+	 * @return ResultCode
+	 */
+	public ResultCode setTrendReportMap(SetTrendReportMapParameter parameters) {
+		String spName = "up_wa_AddDelTrendReportItem";
+		List<Object> params = new ArrayList<Object>();
+
+		params.add(parameters.getSetType());
+		params.add(parameters.getMapId());
+		params.add(parameters.getTrendreportId());
+		params.add(parameters.getProductId());
+		params.add(parameters.getModifiedBy());
+
+		jdbcHelper.executeSP(spName, params);
+		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+	}
+	
 }
+

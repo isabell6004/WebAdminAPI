@@ -3,11 +3,16 @@ package net.fashiongo.webadmin.service;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,31 +23,32 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.fashiongo.webadmin.model.pojo.MapUserGroup;
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.SecurityGroupPermissions;
-import net.fashiongo.webadmin.model.pojo.SecurityUserData;
-import net.fashiongo.webadmin.model.pojo.SecurityUserPermission;
-import net.fashiongo.webadmin.model.pojo.SecurityUsers;
-import net.fashiongo.webadmin.model.pojo.UserMappingVendor;
-import net.fashiongo.webadmin.model.pojo.UserMappingVendorAssigned;
-import net.fashiongo.webadmin.model.pojo.parameter.DelSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityGroupPermissionsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserGroupParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetUserMappingVendorParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetActiveGroupParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetUserMappingVendorParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetdeletesecuritygroupsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetsecuritygroupParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityGroupPermissionsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserGroupAccesstimeResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetSecurityUserResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetCreateSecurityUserResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.admin.MapUserGroup;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityGroupPermissions;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityUserData;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityUserPermission;
+import net.fashiongo.webadmin.model.pojo.admin.SecurityUsers;
+import net.fashiongo.webadmin.model.pojo.admin.UserMappingVendor;
+import net.fashiongo.webadmin.model.pojo.admin.UserMappingVendorAssigned;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.DelSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityGroupPermissionsParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserGroupParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetUserMappingVendorParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetActiveGroupParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityUserParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetUserMappingVendorParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetdeletesecuritygroupsParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.SetsecuritygroupParameter;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityGroupPermissionsResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserGroupAccesstimeResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.GetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.SetCreateSecurityUserResponse;
+import net.fashiongo.webadmin.model.pojo.admin.response.SetUserMappingVendorResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 
@@ -310,20 +316,30 @@ public class SecurityGroupServiceTest {
 	 * Description Example
 	 * @since 2018. 10. 31.
 	 * @author Reo
-	 * @throws JsonProcessingException
 	 * @throws ParseException
+	 * @throws org.json.simple.parser.ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
 	@Ignore
 	@Test
-	public void testsetCreateSecurityUsers() throws JsonProcessingException, ParseException
+	public void testsetCreateSecurityUsers() throws ParseException, FileNotFoundException, IOException, org.json.simple.parser.ParseException
 	{
 		SetSecurityUserParameter parameters = new SetSecurityUserParameter();
-		SecurityUserData sud = new SecurityUserData();
-		List<SecurityUserPermission> lsud = new ArrayList<SecurityUserPermission>();
+		
+		JSONParser parser = new JSONParser();
+		String path = SecurityGroupServiceTest.class.getResource("").getPath();
+		Object obj = parser.parse(new FileReader(path + "SecurityGroupJson.json"));  //read user infomation from json file
+		JSONObject jsonObj = (JSONObject) obj;
+		
+		//convert json string to model
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.findAndRegisterModules();
+		SecurityUserData sud = mapper.convertValue(jsonObj.get("data"),  SecurityUserData.class);
+		List<SecurityUserPermission> lsud = Arrays.asList(mapper.convertValue(jsonObj.get("updata"), SecurityUserPermission[].class));
 		
 		parameters.setData(sud);
 		parameters.setUpdata(lsud);
-		
 		SetCreateSecurityUserResponse result = securityGroupService.setCreateSecurityUser(parameters);
 		if (result != null) {
 			assertTrue(result.getResultCode().getSuccess());

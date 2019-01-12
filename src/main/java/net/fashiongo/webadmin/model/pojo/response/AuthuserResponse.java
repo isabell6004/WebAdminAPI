@@ -1,6 +1,6 @@
 package net.fashiongo.webadmin.model.pojo.response;
 
-import net.fashiongo.webadmin.model.pojo.MenuDS;
+import net.fashiongo.webadmin.model.pojo.admin.MenuDS;
 
 /**
  * 

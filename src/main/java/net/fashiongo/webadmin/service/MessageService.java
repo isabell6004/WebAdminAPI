@@ -1,7 +1,5 @@
 package net.fashiongo.webadmin.service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,21 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 import net.fashiongo.webadmin.dao.primary.TblRetailerNewsRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
-import net.fashiongo.webadmin.model.pojo.Message;
-import net.fashiongo.webadmin.model.pojo.ResultCode;
-import net.fashiongo.webadmin.model.pojo.RetailerNews;
-import net.fashiongo.webadmin.model.pojo.Total;
-import net.fashiongo.webadmin.model.pojo.VendorNews;
-import net.fashiongo.webadmin.model.pojo.parameter.DelVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetMessageParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetMessageResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetRetailerNewsResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.message.Message;
+import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
+import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.message.VendorNews;
+import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetailParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
@@ -248,7 +246,7 @@ public class MessageService extends ApiService {
 		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, RetailerNews.class);
 		
 		result.setRecCnt((List<Total>) _result.get(0));
-		result.setCodeDataList((List<RetailerNews>) _result.get(1));
+		result.setRetailerNewsList((List<RetailerNews>) _result.get(1));
 		result.setSuccess(true);
 		return result;
 	}
@@ -278,11 +276,9 @@ public class MessageService extends ApiService {
 	@Transactional(value = "primaryTransactionManager")
 	public ResultCode setRetailerNews(SetRetailerNewsParameter parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
-		net.fashiongo.webadmin.utility.Utility utl = new net.fashiongo.webadmin.utility.Utility();
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 		
-		if(utl.isNullOrEmpty(parameters.getNewsTitle()) || parameters.getNewsTitle().length() < 1) {
+		if(Utility.isNullOrEmpty(parameters.getNewsTitle()) || parameters.getNewsTitle().length() < 1) {
 			result.setResultCode(-2);
 			result.setSuccess(false);
 		} else if(parameters.getNewsTitle().length() > 100) {
@@ -296,13 +292,13 @@ public class MessageService extends ApiService {
 				retailerNews.setStartingDate(now);
 			}
 			
-			if(parameters.getToDate() != null) {
-				parameters.setToDate(((LocalDateTime) parameters.getToDate()).plusDays(1).plusSeconds(-1));
-			}
+//			if(parameters.getToDate() != null) {
+//				parameters.setToDate(((LocalDateTime) parameters.getToDate()).plusDays(1).plusSeconds(-1));
+//			}
 			
 			retailerNews.setNewsTitle(parameters.getNewsTitle());
 			retailerNews.setNewsContent(parameters.getNewsContent());
-			retailerNews.setActive(utl.isNullOrEmpty(parameters.getActive().toString()) ? "N" : parameters.getActive() == true ? "Y" : "N");
+			retailerNews.setActive(Utility.isNullOrEmpty(parameters.getActive().toString()) ? "N" : parameters.getActive() == true ? "Y" : "N");
 			retailerNews.setFromDate(parameters.getFromDate());
 			retailerNews.setToDate(parameters.getToDate());
 			retailerNews.setLastUser(Utility.getUserInfo().getUsername());

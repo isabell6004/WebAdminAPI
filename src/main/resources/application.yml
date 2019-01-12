@@ -81,6 +81,7 @@ waapi:
   
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.145:29001
+#  fgServiceAPI_EndPoint: http://localhost:19002
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:

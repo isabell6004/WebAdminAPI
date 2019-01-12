@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -165,6 +166,11 @@ public class Policy {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+	
+	@JsonProperty("ModifiedBy")
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
 
 	@JsonProperty("modifiedby")
 	public void setModifiedBy(String modifiedBy) {
@@ -173,7 +179,7 @@ public class Policy {
 
 	@JsonProperty("Active")
 	public Boolean getActive() {
-		return active;
+		return BooleanUtils.isTrue(active) ? true : false;
 	}
 
 	@JsonProperty("active")
