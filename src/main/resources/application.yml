@@ -182,6 +182,8 @@ spring:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
+  datasource4:
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PhotoStudio
     
   jpa:
     show-sql: false
