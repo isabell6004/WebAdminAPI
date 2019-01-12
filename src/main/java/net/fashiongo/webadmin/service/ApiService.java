@@ -6,13 +6,26 @@ package net.fashiongo.webadmin.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import net.fashiongo.common.dal.JdbcHelper;
 
 public class ApiService {
 	protected final Logger logger = LogManager.getLogger();
 	
 	@Autowired
+	protected JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	@Qualifier("photostudioJdbcTemplate")
+	protected JdbcTemplate jdbcTemplatePhotoStudio;
+
+	@Autowired
 	protected JdbcHelper jdbcHelper;
+
+	@Autowired
+	protected JdbcHelper jdbcHelperPhotoStudio;
 
 	// message constant
 	final String MSG_SAVE_SUCCESS = "Saved successfully!";

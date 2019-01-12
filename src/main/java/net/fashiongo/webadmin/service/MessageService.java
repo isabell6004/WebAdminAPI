@@ -317,7 +317,7 @@ public class MessageService extends ApiService {
 	/**
 	 * 
 	 * Description Example
-	 * @since 2018. 11. 1.
+	 * @since 2018. 11. 2.
 	 * @author Reo
 	 * @param parameters
 	 * @return

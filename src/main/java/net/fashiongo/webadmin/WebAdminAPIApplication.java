@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableCaching
-@ComponentScan({"net.fashiongo.webadmin","net.fashiongo.common.dal"})
+@ComponentScan({"net.fashiongo.webadmin", "net.fashiongo.common.dal"})
 public class WebAdminAPIApplication {
 	public static void main(String[] args) {
 //		ConfigurableApplicationContext context = SpringApplication.run(WebAdminAPIApplication.class, args);

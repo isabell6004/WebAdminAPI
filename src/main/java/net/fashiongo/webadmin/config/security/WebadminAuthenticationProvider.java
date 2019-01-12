@@ -26,7 +26,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityListIPRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityLoginControlRepository;
@@ -41,12 +40,13 @@ import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityLoginControl;
 import net.fashiongo.webadmin.model.primary.SecurityLoginLog;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
+import net.fashiongo.webadmin.service.ApiService;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 
 @Component
-public class WebadminAuthenticationProvider implements AuthenticationProvider {
+public class WebadminAuthenticationProvider extends ApiService implements AuthenticationProvider {
 	
 	@Autowired
 	@Qualifier("serviceJsonClient")
@@ -66,9 +66,6 @@ public class WebadminAuthenticationProvider implements AuthenticationProvider {
 	
 	@Autowired
 	private SecurityLoginLogRepository securityLoginLogRepository;
-	
-	@Autowired
-	protected JdbcHelper jdbcHelper;
 	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
