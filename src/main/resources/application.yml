@@ -73,9 +73,7 @@ spring:
     
     
 server:
-  port: 29901 
-
-waapi:
+  port: 29901
   servlet:
     context-path: /api
   
