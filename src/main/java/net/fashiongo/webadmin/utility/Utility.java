@@ -74,6 +74,15 @@ public class Utility {
 		
 		// vendor admin
 		psMap.put("getAdminLog", new Integer[]{36, 90, 126, 180});
+		
+		// photo order
+		psMap.put("getPhotoOrders", new Integer[] { 20, 40, 100 });
+
+		// photo Model
+		psMap.put("getModels", new Integer[] { 20, 40, 100 });
+
+		// photo Credit
+		psMap.put("getCredits", new Integer[] { 20, 40, 100 });
 	}
 	
 	
