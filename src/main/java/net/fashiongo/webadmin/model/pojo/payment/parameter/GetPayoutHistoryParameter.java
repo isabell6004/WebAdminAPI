@@ -21,10 +21,10 @@ public class GetPayoutHistoryParameter {
 	private Integer wholesalerid;
 	
 	@JsonProperty("fromdate")
-	private LocalDateTime fromdate;
+	private String fromdate;
 	
 	@JsonProperty("todate")
-	private LocalDateTime todate;
+	private String todate;
 	
 	@JsonProperty("payoutstatus")
 	private String payoutstatus;
@@ -47,12 +47,12 @@ public class GetPayoutHistoryParameter {
 		return wholesalerid;
 	}
 
-	public LocalDateTime getFromdate() {
-		return fromdate;
+	public String getFromdate() {
+		return StringUtils.isEmpty(fromdate) ? null : fromdate;
 	}
 
-	public LocalDateTime getTodate() {
-		return todate;
+	public String getTodate() {
+		return StringUtils.isEmpty(todate) ? null : todate;
 	}
 
 	public String getPayoutstatus() {
@@ -79,11 +79,11 @@ public class GetPayoutHistoryParameter {
 		this.wholesalerid = wholesalerid;
 	}
 
-	public void setFromdate(LocalDateTime fromdate) {
+	public void setFromdate(String fromdate) {
 		this.fromdate = fromdate;
 	}
 
-	public void setTodate(LocalDateTime todate) {
+	public void setTodate(String todate) {
 		this.todate = todate;
 	}
 
