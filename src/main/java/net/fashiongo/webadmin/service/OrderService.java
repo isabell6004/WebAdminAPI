@@ -34,7 +34,7 @@ public class OrderService {
 	 */
 	public JsonResponse getWebRequest(GetPrintPoUrlParameter parameters) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
-		String url = "" + parameters.getResultType() + "/po/" + parameters.getOrderSessionGUID() + "/" + parameters.getOids() + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForPdf() + "&withImage=" + parameters.getWithImage() + "&withVendorStyleNo=" + parameters.getWithVendorStyleNo();
+		String url = "/" + parameters.getResultType() + "/po/" + parameters.getOrderSessionGUID() + "/" + parameters.getOids() + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForPdf() + "&withImage=" + parameters.getWithImage() + "&withVendorStyleNo=" + parameters.getWithVendorStyleNo();
 		JSONObject jsonObj = new JSONObject();
 		JsonResponse<?> result = httpClient.get(url);
 		
