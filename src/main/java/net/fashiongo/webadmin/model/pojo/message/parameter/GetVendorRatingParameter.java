@@ -56,11 +56,11 @@ public class GetVendorRatingParameter {
 	}
 
 	public String getFromDate() {
-		return fromDate;
+		return StringUtils.isEmpty(fromDate) ? null : fromDate;
 	}
 
 	public String getToDate() {
-		return toDate;
+		return StringUtils.isEmpty(toDate) ? null : toDate;
 	}
 
 	public Boolean getActive() {
