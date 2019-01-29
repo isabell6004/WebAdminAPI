@@ -28,7 +28,7 @@ public class GetVendorRatingParameter {
 	private String toDate;
 
 	@JsonProperty("active")
-	private Boolean active;
+	private String active;
 	
 	@JsonProperty("additional")
 	private String additional;
@@ -64,7 +64,7 @@ public class GetVendorRatingParameter {
 	}
 
 	public Boolean getActive() {
-		return active == null ? true : active;
+		return StringUtils.isEmpty(active) ? false : active.equals("1");
 	}
 
 	public String getAdditional() {
@@ -103,7 +103,7 @@ public class GetVendorRatingParameter {
 		this.toDate = toDate;
 	}
 
-	public void setActive(Boolean active) {
+	public void setActive(String active) {
 		this.active = active;
 	}
 
