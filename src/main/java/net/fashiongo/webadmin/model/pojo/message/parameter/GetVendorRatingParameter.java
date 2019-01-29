@@ -1,8 +1,5 @@
 package net.fashiongo.webadmin.model.pojo.message.parameter;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,10 +22,10 @@ public class GetVendorRatingParameter {
 	private Integer pageSize;
 	
 	@JsonProperty("from")
-	private LocalDateTime fromDate;
+	private String fromDate;
 	
 	@JsonProperty("to")
-	private LocalDateTime toDate;
+	private String toDate;
 
 	@JsonProperty("active")
 	private Boolean active;
@@ -37,7 +34,7 @@ public class GetVendorRatingParameter {
 	private String additional;
 	
 	@JsonProperty("type")
-	private String type;
+	private Boolean type;
 	
 	@JsonProperty("orderby")
 	private String orderby;
@@ -58,11 +55,11 @@ public class GetVendorRatingParameter {
 		return pageSize == null ? 0 : pageSize;
 	}
 
-	public LocalDateTime getFromDate() {
+	public String getFromDate() {
 		return fromDate;
 	}
 
-	public LocalDateTime getToDate() {
+	public String getToDate() {
 		return toDate;
 	}
 
@@ -74,7 +71,7 @@ public class GetVendorRatingParameter {
 		return StringUtils.isEmpty(additional) ? "1=1" : additional;
 	}
 
-	public String getType() {
+	public Boolean getType() {
 		return type;
 	}
 
@@ -98,11 +95,11 @@ public class GetVendorRatingParameter {
 		this.pageSize = pageSize;
 	}
 
-	public void setFromDate(LocalDateTime fromDate) {
+	public void setFromDate(String fromDate) {
 		this.fromDate = fromDate;
 	}
 
-	public void setToDate(LocalDateTime toDate) {
+	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
 
@@ -114,7 +111,7 @@ public class GetVendorRatingParameter {
 		this.additional = additional;
 	}
 
-	public void setType(String type) {
+	public void setType(Boolean type) {
 		this.type = type;
 	}
 
