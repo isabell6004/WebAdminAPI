@@ -60,7 +60,7 @@ public class GetPayoutHistoryParameter {
 	}
 
 	public String getPayoutschedule() {
-		return StringUtils.isEmpty(payoutschedule) ? null : payoutschedule.equals("Manually") ? "Manual" : payoutschedule;
+		return StringUtils.isEmpty(payoutschedule) ? null : payoutschedule.equalsIgnoreCase("manually") ? "Manual" : payoutschedule;
 	}
 
 	public String getOrderby() {
