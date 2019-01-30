@@ -487,6 +487,8 @@ public class MessageService extends ApiService {
 		msg.setAttachedFileName3(parameters.getFilename3());
 		msg.setReferenceID(parameters.getReferenceid());
 		msg.setUpdatedOn(LocalDateTime.now());
+		msg.setCreatedOn(LocalDateTime.now());
+		
 		if(parameters.getTopreferenceid() > 0) {
 			msg.setTopReferenceID(parameters.getTopreferenceid());
 			
