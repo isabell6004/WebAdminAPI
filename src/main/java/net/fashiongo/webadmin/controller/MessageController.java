@@ -318,7 +318,7 @@ public class MessageController {
 	 * @param topReferenceID
 	 * @return
 	 */
-	@RequestMapping(value="getmessagereply", method=RequestMethod.GET)
+	@RequestMapping(value="getmessagereply/{referenceid}", method=RequestMethod.GET)
 	public JsonResponse<GetMessageReplyResponse> getMessageReply(@RequestParam(value="referenceid") Integer topReferenceID) {
         JsonResponse<GetMessageReplyResponse> results = new JsonResponse<GetMessageReplyResponse>(true, null, null);
 		
