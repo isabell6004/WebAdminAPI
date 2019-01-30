@@ -84,12 +84,14 @@ public class VwWaMessage {
 	@JsonProperty("RetailerEmail")
 	private String retailerEmail;
 	
-	
 	@JsonProperty("IsDeletedBySender")
 	private Boolean isDeletedBySender;
 	
 	@JsonProperty("IsDeletedByRecipient")
 	private Boolean isDeletedByRecipient;
+	
+	@JsonProperty("HasNewReply")
+	private Boolean hasNewReply;
 
 	public Integer getMapID() {
 		return mapID;
@@ -290,5 +292,12 @@ public class VwWaMessage {
 	public void setRecipientID(Integer recipientID) {
 		this.recipientID = recipientID;
 	}
-	
+
+	public Boolean getHasNewReply() {
+		return hasNewReply;
+	}
+
+	public void setHasNewReply(Boolean hasNewReply) {
+		this.hasNewReply = hasNewReply;
+	}
 }
