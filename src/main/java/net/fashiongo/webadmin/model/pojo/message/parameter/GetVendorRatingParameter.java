@@ -64,7 +64,7 @@ public class GetVendorRatingParameter {
 	}
 
 	public Boolean getActive() {
-		return StringUtils.isEmpty(active) ? false : active.equals("1");
+		return StringUtils.isEmpty(active) ? null : active.equals("1");
 	}
 
 	public String getAdditional() {
