@@ -185,7 +185,7 @@ public class VendorServiceTest {
 		GetBannerRequestResponse result = vendorService.getBannerRequest(parameters);
 		if(!CollectionUtils.isEmpty(result.getBannerImageList())) {
 			assertNotNull(result.getBannerImageList());
-			assertNotNull(result.getTotal());
+			assertNotNull(result.getTotalCount());
 		}
 	}
 	

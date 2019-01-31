@@ -50,6 +50,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.Country;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductSummary;
 import net.fashiongo.webadmin.model.pojo.vendor.SecurityUserName;
+import net.fashiongo.webadmin.model.pojo.vendor.TotalCount;
 import net.fashiongo.webadmin.model.pojo.vendor.VendorContractDocumentHistory;
 import net.fashiongo.webadmin.model.pojo.vendor.VendorCreditCardList;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorCreditcardParameter;
@@ -332,9 +333,9 @@ public class VendorService extends ApiService {
 		params.add(parameters.getOrderby());
 		params.add(null);
 		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorImageRequest.class, Total.class);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorImageRequest.class, TotalCount.class);
 		result.setBannerImageList((List<VendorImageRequest>) _result.get(0));
-		result.setTotal((List<Total>) _result.get(1));
+		result.setTotalCount((List<TotalCount>) _result.get(1));
 		return result;
 	}
 

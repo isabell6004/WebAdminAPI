@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.vendor.TotalCount;
 import net.fashiongo.webadmin.model.primary.VendorImageRequest;
 
 /**
@@ -17,7 +18,7 @@ public class GetBannerRequestResponse {
 	private List<VendorImageRequest> bannerImageList;
 	
 	@JsonProperty("Table1")
-	private List<Total> total;
+	private List<TotalCount> total;
 
 	public List<VendorImageRequest> getBannerImageList() {
 		return bannerImageList;
@@ -27,11 +28,11 @@ public class GetBannerRequestResponse {
 		this.bannerImageList = bannerImageList;
 	}
 
-	public List<Total> getTotal() {
+	public List<TotalCount> getTotalCount() {
 		return total;
 	}
 
-	public void setTotal(List<Total> total) {
+	public void setTotalCount(List<TotalCount> total) {
 		this.total = total;
 	}
 	
