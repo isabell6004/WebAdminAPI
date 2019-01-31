@@ -3,6 +3,8 @@ package net.fashiongo.webadmin.model.pojo.payment;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -21,6 +23,7 @@ public class OrderPayment {
 	private Integer referenceID;
 	
 	@JsonProperty("IsOrder")
+	@Column(name="IsOrder")
 	private Integer order;
 	
 	@JsonProperty("PaymentStatusID") 
