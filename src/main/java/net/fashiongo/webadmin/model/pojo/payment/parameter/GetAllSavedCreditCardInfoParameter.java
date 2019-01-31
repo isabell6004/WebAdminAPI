@@ -29,7 +29,7 @@ public class GetAllSavedCreditCardInfoParameter {
 
 	@ApiModelProperty(hidden=true)
 	@JsonProperty("isdefaultcard")
-	private Boolean defaultCard;
+	private String defaultCard;
 
 	@ApiModelProperty(hidden=true)
 	@JsonProperty("cardtypeid")
@@ -80,7 +80,7 @@ public class GetAllSavedCreditCardInfoParameter {
 	}
 
 	public Boolean getDefaultCard() {
-		return defaultCard;
+		return StringUtils.isEmpty(defaultCard) ? null : defaultCard.equals("1");
 	}
 
 	public Integer getCardTypeID() {
