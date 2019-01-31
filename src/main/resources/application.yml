@@ -83,7 +83,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_TF
     username: sa
     password: msqLsa6301
   datasource2:
@@ -105,7 +105,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_TF
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
