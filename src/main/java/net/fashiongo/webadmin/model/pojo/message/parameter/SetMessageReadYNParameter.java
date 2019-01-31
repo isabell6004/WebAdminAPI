@@ -13,6 +13,9 @@ public class SetMessageReadYNParameter {
 	
 	@JsonProperty("readyn")
 	private Boolean readYn;
+	
+	@JsonProperty("hasReplyYN")
+	private Boolean hasReplyYN;
 
 	public Integer getMessageID() {
 		return messageID;
@@ -29,6 +32,13 @@ public class SetMessageReadYNParameter {
 	public void setReadYn(Boolean readYn) {
 		this.readYn = readYn;
 	}
-	
+
+	public Boolean getHasReplyYN() {
+		return hasReplyYN == null ? false : hasReplyYN;
+	}
+
+	public void setHasReplyYN(Boolean hasReplyYN) {
+		this.hasReplyYN = hasReplyYN;
+	}
 	
 }

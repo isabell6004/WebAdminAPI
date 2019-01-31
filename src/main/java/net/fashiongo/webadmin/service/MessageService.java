@@ -501,12 +501,12 @@ public class MessageService extends ApiService {
 		if(parameters.getTopic() > 0) msg.setMessageCategoryID(parameters.getTopic());
 		messageRepository.save(msg);
 		
-		MessageMap msgMap = new MessageMap();
-		msgMap.setMessageID(msg.getMessageID());
-		msgMap.setRecipientTypeID(parameters.getRecipienttypeid());
-		msgMap.setRecipientID(parameters.getRecipientid());
-		msgMap.setIsDeletedByRecipient(false);
-		messageMapRepository.save(msgMap);
+//		MessageMap msgMap = new MessageMap();
+//		msgMap.setMessageID(msg.getMessageID());
+//		msgMap.setRecipientTypeID(parameters.getRecipienttypeid());
+//		msgMap.setRecipientID(parameters.getRecipientid());
+//		msgMap.setIsDeletedByRecipient(false);
+//		messageMapRepository.save(msgMap);
 		
 		result.setResultCode(1);
 		result.setSuccess(true);
@@ -525,12 +525,20 @@ public class MessageService extends ApiService {
 	public ResultCode setMessageReadYN(SetMessageReadYNParameter parameters) {
 		ResultCode result = new ResultCode(false, 0, null);
 		MessageMap msgMap = messageMapRepository.findOneByMessageID(parameters.getMessageID());
+		Message msg = messageRepository.findByMessageID(parameters.getMessageID());
+		
         if(parameters.getReadYn().equals(true)) {
-        	msgMap.setReadOn(LocalDateTime.now());
+        	if(parameters.getHasReplyYN().equals(false)) {
+        		msgMap.setReadOn(LocalDateTime.now());
+        	}
+        	msg.setHasNewReply(false);
         } else {
         	msgMap.setReadOn(null);
+        	msg.setHasNewReply(true);
         }
+        
         messageMapRepository.save(msgMap);
+        messageRepository.save(msg);
 		
         result.setResultMsg(LocalDateTime.now().toString());
 		return result;
