@@ -105,7 +105,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_TF
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_DEV
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
