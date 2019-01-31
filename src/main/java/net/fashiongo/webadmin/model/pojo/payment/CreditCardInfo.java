@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.model.pojo.payment;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -45,12 +47,14 @@ public class CreditCardInfo {
 	private Integer countryID;
 
 	@JsonProperty("IsDefaultCard")
+	@Column(name="IsDefaultCard")
 	private Boolean defaultCard;
 
 	@JsonProperty("CardStatusID")
 	private Integer cardStatusID;
 
 	@JsonProperty("IsDeleted")
+	@Column(name="IsDeleted")
 	private Boolean deleted;
 
 	@JsonProperty("CreatedOn")
