@@ -520,7 +520,7 @@ public class MessageService extends ApiService {
         }
 		
 		result.setResult(1);
-		result.setGuid(msg.getMessageGUID());
+		result.setGuid(msgGuid);
 		return result;
 	}
 	
