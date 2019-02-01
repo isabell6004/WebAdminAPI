@@ -25,6 +25,7 @@ import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
 import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.MessageReply;
+import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
 import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.message.RetailerRating;
 import net.fashiongo.webadmin.model.pojo.message.Total;
@@ -471,8 +472,8 @@ public class MessageService extends ApiService {
 	 * @return
 	 */
 	@Transactional(value = "primaryTransactionManager")
-	public ResultCode setMessage(SetMessageParameter parameters) {
-		ResultCode result = new ResultCode(false, 0, null);
+	public ResultMessage setMessage(SetMessageParameter parameters) {
+		ResultMessage result = new ResultMessage();
 		Message msg = new Message();
 		msg.setSenderID(parameters.getSenderid());
 		msg.setCreatedBy(parameters.getCreatedby());
@@ -501,15 +502,23 @@ public class MessageService extends ApiService {
 		if(parameters.getTopic() > 0) msg.setMessageCategoryID(parameters.getTopic());
 		messageRepository.save(msg);
 		
-//		MessageMap msgMap = new MessageMap();
-//		msgMap.setMessageID(msg.getMessageID());
-//		msgMap.setRecipientTypeID(parameters.getRecipienttypeid());
-//		msgMap.setRecipientID(parameters.getRecipientid());
-//		msgMap.setIsDeletedByRecipient(false);
-//		messageMapRepository.save(msgMap);
+		String[] idList = parameters.getRecipientidlist().split(",");
 		
-		result.setResultCode(1);
-		result.setSuccess(true);
+		for (String id : idList)
+        {
+            if (Integer.parseInt(id) > 0)
+            {
+            	MessageMap messageMap = new MessageMap();
+                messageMap.setMessageID(msg.getMessageID());
+                messageMap.setRecipientTypeID(parameters.getRecipienttypeid());
+                messageMap.setRecipientID(Integer.parseInt(id));
+                
+                messageMapRepository.save(messageMap);
+            }
+        }
+		
+		result.setResult(1);
+		result.setGuid(UUID.randomUUID());
 		return result;
 	}
 	

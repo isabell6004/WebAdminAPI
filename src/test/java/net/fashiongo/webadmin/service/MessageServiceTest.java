@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
 import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
@@ -323,8 +324,8 @@ public class MessageServiceTest {
 		parameters.setTopic("1");
 		parameters.setTopreferenceid(0);
 		
-		ResultCode result = messageService.setMessage(parameters);
-		assertTrue(result.getSuccess());
+		ResultMessage result = messageService.setMessage(parameters);
+		assertTrue(result.getResult()== 1);
 	}
 	
 	/**

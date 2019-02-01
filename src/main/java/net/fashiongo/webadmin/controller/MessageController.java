@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
 import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
@@ -283,10 +284,10 @@ public class MessageController {
 	 * @return
 	 */
 	@RequestMapping(value="setmessage", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setMessage(@RequestBody SetMessageParameter parameters) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
+	public JsonResponse<ResultMessage> setMessage(@RequestBody SetMessageParameter parameters) {
+		JsonResponse<ResultMessage> results = new JsonResponse<ResultMessage>(true, null, 0, null);
 		
-		ResultCode result = messageService.setMessage(parameters);
+		ResultMessage result = messageService.setMessage(parameters);
 		
 		results.setData(result);
 		return results;

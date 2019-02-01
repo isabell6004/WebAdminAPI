@@ -22,8 +22,8 @@ public class SetMessageParameter {
 	@JsonProperty("createdby")
 	private String createdby;
 	
-	@JsonProperty("recipientid")
-	private Integer recipientid;
+	@JsonProperty("recipientidlist")
+	private String recipientidlist;
 	
 	@JsonProperty("recipienttypeid")
 	private Integer recipienttypeid;
@@ -81,12 +81,12 @@ public class SetMessageParameter {
 		this.createdby = createdby;
 	}
 
-	public Integer getRecipientid() {
-		return recipientid;
+	public String getRecipientidlist() {
+		return recipientidlist;
 	}
 
-	public void setRecipientid(Integer recipientid) {
-		this.recipientid = recipientid;
+	public void setRecipientidlist(String recipientidlist) {
+		this.recipientidlist = recipientidlist;
 	}
 
 	public Integer getRecipienttypeid() {
