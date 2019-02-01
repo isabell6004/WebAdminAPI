@@ -512,6 +512,7 @@ public class MessageService extends ApiService {
                 messageMap.setMessageID(msg.getMessageID());
                 messageMap.setRecipientTypeID(parameters.getRecipienttypeid());
                 messageMap.setRecipientID(Integer.parseInt(id));
+                messageMap.setIsDeletedByRecipient(false);
                 
                 messageMapRepository.save(messageMap);
             }

@@ -317,8 +317,7 @@ public class MessageServiceTest {
 		SetMessageParameter parameters = new SetMessageParameter();
 		parameters.setSenderid(109);
 		parameters.setCreatedby("krdev");
-		parameters.setRecipientid(34694);
-		parameters.setRecipientid(1);
+		parameters.setRecipientidlist("1,0");
 		parameters.setTitle("test title");
 		parameters.setContent("test contents");
 		parameters.setTopic("1");
