@@ -1,7 +1,5 @@
 package net.fashiongo.webadmin.model.pojo.message;
 
-import java.util.UUID;
-
 public class ResultMessage {
 	int result;
 	String guid;
@@ -15,8 +13,8 @@ public class ResultMessage {
 	public String getGuid() {
 		return guid;
 	}
-	public void setGuid(UUID guid) {
-		this.guid = guid.toString();
+	public void setGuid(String guid) {
+		this.guid = guid;
 	}
 	
 }

@@ -474,40 +474,41 @@ public class MessageService extends ApiService {
 	@Transactional(value = "primaryTransactionManager")
 	public ResultMessage setMessage(SetMessageParameter parameters) {
 		ResultMessage result = new ResultMessage();
-		Message msg = new Message();
-		msg.setSenderID(parameters.getSenderid());
-		msg.setCreatedBy(parameters.getCreatedby());
-		msg.setModifiedBy(parameters.getCreatedby());
-		msg.setSenderTypeID(3);
-		msg.setTitle(parameters.getTitle());
-		msg.setBody(parameters.getContent());
-		msg.setActive(true);
-		msg.setMessageGUID(UUID.randomUUID().toString());
-		msg.setAttachedFileName(parameters.getFilename());
-		msg.setAttachedFileName2(parameters.getFilename2());
-		msg.setAttachedFileName3(parameters.getFilename3());
-		msg.setReferenceID(parameters.getReferenceid());
-		msg.setUpdatedOn(LocalDateTime.now());
-		msg.setCreatedOn(LocalDateTime.now());
-		
-		if(parameters.getTopreferenceid() > 0) {
-			msg.setTopReferenceID(parameters.getTopreferenceid());
-			
-			Message msgTop = messageRepository.findByMessageID(parameters.getTopreferenceid());
-			msgTop.setUpdatedOn(LocalDateTime.now());
-			msgTop.setHasNewReply(true);
-			messageRepository.save(msgTop);
-		}
-		
-		if(parameters.getTopic() > 0) msg.setMessageCategoryID(parameters.getTopic());
-		messageRepository.save(msg);
-		
 		String[] idList = parameters.getRecipientidlist().split(",");
+		String msgGuid = UUID.randomUUID().toString();
 		
 		for (String id : idList)
         {
             if (Integer.parseInt(id) > 0)
             {
+            	Message msg = new Message();
+        		msg.setSenderID(parameters.getSenderid());
+        		msg.setCreatedBy(parameters.getCreatedby());
+        		msg.setModifiedBy(parameters.getCreatedby());
+        		msg.setSenderTypeID(3);
+        		msg.setTitle(parameters.getTitle());
+        		msg.setBody(parameters.getContent());
+        		msg.setActive(true);
+        		msg.setMessageGUID(msgGuid);
+        		msg.setAttachedFileName(parameters.getFilename());
+        		msg.setAttachedFileName2(parameters.getFilename2());
+        		msg.setAttachedFileName3(parameters.getFilename3());
+        		msg.setReferenceID(parameters.getReferenceid());
+        		msg.setUpdatedOn(LocalDateTime.now());
+        		msg.setCreatedOn(LocalDateTime.now());
+        		
+        		if(parameters.getTopreferenceid() > 0) {
+        			msg.setTopReferenceID(parameters.getTopreferenceid());
+        			
+        			Message msgTop = messageRepository.findByMessageID(parameters.getTopreferenceid());
+        			msgTop.setUpdatedOn(LocalDateTime.now());
+        			msgTop.setHasNewReply(true);
+        			messageRepository.save(msgTop);
+        		}
+        		
+        		if(parameters.getTopic() > 0) msg.setMessageCategoryID(parameters.getTopic());
+        		messageRepository.save(msg);
+        		
             	MessageMap messageMap = new MessageMap();
                 messageMap.setMessageID(msg.getMessageID());
                 messageMap.setRecipientTypeID(parameters.getRecipienttypeid());
@@ -519,7 +520,7 @@ public class MessageService extends ApiService {
         }
 		
 		result.setResult(1);
-		result.setGuid(UUID.randomUUID());
+		result.setGuid(msg.getMessageGUID());
 		return result;
 	}
 	
