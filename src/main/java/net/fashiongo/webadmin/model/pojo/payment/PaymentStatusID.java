@@ -19,4 +19,7 @@ public class PaymentStatusID {
 	@JsonProperty("PrePaymentStatusID") 
 	private Integer prePaymentStatusID;
 	
+	public Integer getPaymentStatusID() {
+		return this.paymentStatusID != null ? this.paymentStatusID : 1;
+	}
 }
