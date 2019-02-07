@@ -47,7 +47,7 @@ import net.fashiongo.webadmin.utility.Utility;
 @Service
 public class WAPaymentService extends ApiService {
 	
-	String sessionUserID = Utility.getUsername();
+	
 	
 	@Autowired
 	private OrderPaymentStatusRepository orderPaymentStatusRepository;
@@ -205,6 +205,8 @@ public class WAPaymentService extends ApiService {
 	@Transactional("primaryTransactionManager")
 	public ResultCode setRestorePendingPaymentTransaction(SetRestorePendingPaymentTransactionParameter param) {
 		LocalDateTime modifiedOn = LocalDateTime.now();
+		String sessionUserID = Utility.getUsername();
+		
 		for(PaymentStatusID item: param.getPaymentStatusID()) {
 			OrderPaymentStatus a = orderPaymentStatusRepository.findOneByOrderPaymentStatusID(item.getOrderPaymentStatusID());
 			if(a.getOrderPaymentStatusID() > 0) {
