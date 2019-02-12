@@ -205,7 +205,7 @@ public class VwWaMessage {
 		this.categoryName = categoryName;
 	}
 	public String getMessageGUID() {
-		return messageGUID;
+		return messageGUID.toLowerCase();
 	}
 
 	public void setMessageGUID(String messageGUID) {
