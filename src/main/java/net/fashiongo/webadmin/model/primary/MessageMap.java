@@ -35,7 +35,7 @@ public class MessageMap {
 	
 	@Column(name = "ReadOn")
 	@JsonProperty("ReadOn")
-	private LocalDateTime ReadOn;
+	private LocalDateTime readOn;
 	
 	@Column(name = "IsDeletedByRecipient")
 	@JsonProperty("IsDeletedByRecipient")
@@ -70,11 +70,11 @@ public class MessageMap {
 	}
 
 	public LocalDateTime getReadOn() {
-		return ReadOn;
+		return readOn;
 	}
 
 	public void setReadOn(LocalDateTime readOn) {
-		ReadOn = readOn;
+		readOn = readOn;
 	}
 
 	public Boolean getIsDeletedByRecipient() {
