@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
@@ -550,6 +551,15 @@ public class MessageService extends ApiService {
         
         messageMapRepository.save(msgMap);
         messageRepository.save(msg);
+        
+        List<Message> messages = messageRepository.findByReferenceID(parameters.getMessageID());
+        List<Integer> messageIds = messages.stream().map(message -> message.getMessageID()).collect(Collectors.toList());
+        List<MessageMap> messageMaps = messageMapRepository.findByMessageIDInReadOnIsNull(messageIds);
+        for(MessageMap messageMap : messageMaps) {
+        	messageMap.setReadOn(LocalDateTime.now());
+        }
+        
+        messageMapRepository.saveAll(messageMaps);
 		
         result.setResultMsg(LocalDateTime.now().toString());
 		return result;
