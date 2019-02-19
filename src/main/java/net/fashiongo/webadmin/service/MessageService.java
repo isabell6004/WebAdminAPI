@@ -482,7 +482,7 @@ public class MessageService extends ApiService {
             if (Integer.parseInt(id) > 0)
             {
             	Message msg = new Message();
-        		msg.setSenderID(parameters.getSenderid());
+        		msg.setSenderID(0);
         		msg.setCreatedBy(parameters.getCreatedby());
         		msg.setModifiedBy(parameters.getCreatedby());
         		msg.setSenderTypeID(3);
