@@ -13,5 +13,5 @@ import net.fashiongo.webadmin.model.primary.MessageMap;
  */
 public interface MessageMapRepository extends CrudRepository<MessageMap, Integer> {
 	MessageMap findOneByMessageID(Integer messageID);
-	List<MessageMap> findByMessageIDInReadOnIsNull(List<Integer> messageIDs);
+	List<MessageMap> findByMessageIDInAndReadOnIsNull(List<Integer> messageIDs);
 }

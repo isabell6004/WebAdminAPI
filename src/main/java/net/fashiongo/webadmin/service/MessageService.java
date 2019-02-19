@@ -554,7 +554,7 @@ public class MessageService extends ApiService {
         
         List<Message> messages = messageRepository.findByReferenceID(parameters.getMessageID());
         List<Integer> messageIds = messages.stream().map(message -> message.getMessageID()).collect(Collectors.toList());
-        List<MessageMap> messageMaps = messageMapRepository.findByMessageIDInReadOnIsNull(messageIds);
+        List<MessageMap> messageMaps = messageMapRepository.findByMessageIDInAndReadOnIsNull(messageIds);
         for(MessageMap messageMap : messageMaps) {
         	messageMap.setReadOn(LocalDateTime.now());
         }
