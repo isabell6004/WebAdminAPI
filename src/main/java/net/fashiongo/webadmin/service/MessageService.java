@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -553,13 +554,15 @@ public class MessageService extends ApiService {
         messageRepository.save(msg);
         
         List<Message> messages = messageRepository.findByReferenceID(parameters.getMessageID());
-        List<Integer> messageIds = messages.stream().map(message -> message.getMessageID()).collect(Collectors.toList());
-        List<MessageMap> messageMaps = messageMapRepository.findByMessageIDInAndReadOnIsNull(messageIds);
-        for(MessageMap messageMap : messageMaps) {
-        	messageMap.setReadOn(LocalDateTime.now());
+        if(!CollectionUtils.isEmpty(messages)) {
+        	List<Integer> messageIds = messages.stream().map(message -> message.getMessageID()).collect(Collectors.toList());
+            List<MessageMap> messageMaps = messageMapRepository.findByMessageIDInAndReadOnIsNull(messageIds);
+            for(MessageMap messageMap : messageMaps) {
+            	messageMap.setReadOn(LocalDateTime.now());
+            }
+            
+            messageMapRepository.saveAll(messageMaps);
         }
-        
-        messageMapRepository.saveAll(messageMaps);
 		
         result.setResultMsg(LocalDateTime.now().toString());
 		return result;

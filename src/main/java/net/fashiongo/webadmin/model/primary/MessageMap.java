@@ -74,7 +74,7 @@ public class MessageMap {
 	}
 
 	public void setReadOn(LocalDateTime readOn) {
-		readOn = readOn;
+		this.readOn = readOn;
 	}
 
 	public Boolean getIsDeletedByRecipient() {
