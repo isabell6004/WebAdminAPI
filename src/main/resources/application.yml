@@ -79,7 +79,8 @@ server:
   
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.145:29001
-#  fgServiceAPI_EndPoint: http://localhost:19002
+# fgServiceAPI_EndPoint: http://localhost:19002
+  fgVendorAPI_EndPoint: http://10.10.0.145:28501
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
   jwt:
@@ -94,7 +95,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2_PhotoStudio
+    jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_V2
   datasource2:
     jdbc-url: jdbc:sqlserver://45.58.6.226;databaseName=FG_PAY
   datasource3:
@@ -175,7 +176,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_TF
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
@@ -187,6 +188,9 @@ spring:
     show-sql: false
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
+
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.145:29011
     
 logging:
   config: classpath:log4j2-stage.xml

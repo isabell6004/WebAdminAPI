@@ -1,7 +1,6 @@
 package net.fashiongo.webadmin.service;
 
 import static org.junit.Assert.assertNotNull;
-
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -19,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.message.Message;
+import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
 import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
 import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
@@ -27,13 +26,18 @@ import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetail
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageParameter;
+import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageReadYNParameter;
 import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
+import net.fashiongo.webadmin.model.primary.MessageCategory;
+import net.fashiongo.webadmin.model.primary.RetailerCompany;
+import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
-import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,22 +45,9 @@ public class MessageServiceTest {
 	
 	@Autowired
 	MessageService messageService;
-
-	@Test
-	public void testGetMessage() {
-		GetMessageParameter parameters = new GetMessageParameter();
-		parameters.setPagesize(20);
-		parameters.setPagenum(0);
-		parameters.setSendertypeid(1);
-		
-		GetMessageResponse result = messageService.getMessage(parameters);
-		
-		if(result != null) {
-			for(Message msg : result.getMessagelist()) {
-				assertNotNull(msg.getTitle());
-			}
-		}
-	}
+	
+	@Autowired 
+	BuyerService buyerService;
 	
 	/**
      * 
@@ -245,5 +236,112 @@ public class MessageServiceTest {
 		if(result != null) {
 			assertTrue(result.getSuccess());
 		}
+	}
+	
+	/**
+	 * 
+	 * Description Example
+	 * 
+	 * @since 2018. 11. 26.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetMessageReply() {
+		GetMessageReplyResponse result = messageService.getMessageReply(4131283);
+		
+		if(!CollectionUtils.isEmpty(result.getMessageReplyList())) {
+			assertNotNull(result.getMessageReplyList().get(0).getMessageID());
+		}
+	}
+	
+	/**
+	 * 
+	 * test GetMessageCategory
+	 * 
+	 * @since 2018. 11. 26.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetMessageCategory() {
+		List<MessageCategory> result = messageService.getMessageCategory();
+		if(!CollectionUtils.isEmpty(result)) {
+			assertNotNull(result.get(0).getMessageCategoryID());
+		}
+	}
+	
+	/**
+	 * 
+	 * test GetMessage
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetMessage() {
+		GetMessageParameter parameters = new GetMessageParameter();
+		parameters.setPagenum(1);
+		parameters.setPagesize(100);
+		parameters.setSendertypeid(1);
+		
+		GetMessageResponse result = messageService.getMessage(parameters);
+		if(!CollectionUtils.isEmpty(result.getMessagelist())) {
+			assertNotNull(result.getMessagelist().get(0).getMessageID());
+		}
+	}
+	
+	/**
+	 * 
+	 * test GetRetailerListForCompanyName
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author Incheol Jung
+	 */
+	@Test
+	public void testGetRetailerListForCompanyName() {
+		List<RetailerCompany> result = buyerService.GetRetailerListForCompanyName("fashion");
+		if(!CollectionUtils.isEmpty(result)) {
+			assertNotNull(result.get(0).getRetailerID());
+		}
+	}
+	
+	/**
+	 * 
+	 * test SetMessage
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author Incheol Jung
+	 */
+	@Ignore
+	@Test
+	public void testSetMessage() {
+		SetMessageParameter parameters = new SetMessageParameter();
+		parameters.setSenderid(109);
+		parameters.setCreatedby("krdev");
+		parameters.setRecipientidlist("1,0");
+		parameters.setTitle("test title");
+		parameters.setContent("test contents");
+		parameters.setTopic("1");
+		parameters.setTopreferenceid(0);
+		
+		ResultMessage result = messageService.setMessage(parameters);
+		assertTrue(result.getResult()== 1);
+	}
+	
+	/**
+	 * 
+	 * test setMessageReadYN
+	 * 
+	 * @since 2018. 11. 27.
+	 * @author Incheol Jung
+	 */
+	@Ignore
+	@Test
+	public void testsetMessageReadYN() {
+		SetMessageReadYNParameter parameters = new SetMessageReadYNParameter();
+		parameters.setMessageID(1);
+		parameters.setReadYn(false);
+		
+		ResultCode result = messageService.setMessageReadYN(parameters);
+		assertTrue(result.getSuccess());
 	}
 }

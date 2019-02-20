@@ -28,6 +28,9 @@ public class HttpClientConfig {
 	@Value("${webAdminapi.fgWebAdminAPI_EndPoint}")
 	private String fgWebAdminService;
 	
+	@Value("${webAdminapi.fgVendorAPI_EndPoint}")
+	private String fgVendorApiService;
+	
 	@Bean(name = "serviceJsonClient")
 	public HttpClient serviceJsonClient() {
 		HttpClient httpClient = new HttpClient(fgService, restTemplate());
@@ -37,6 +40,12 @@ public class HttpClientConfig {
 	@Bean(name = "webAdminJsonClient")
 	public HttpClient webAdminJsonClient() {
 		HttpClient httpClient = new HttpClient(fgWebAdminService, restTemplate());
+		return httpClient;
+	}
+	
+	@Bean(name = "vendorApiJsonClient")
+	public HttpClient vendorApiJsonClient() {
+		HttpClient httpClient = new HttpClient(fgVendorApiService, restTemplate());
 		return httpClient;
 	}
 	
