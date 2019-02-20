@@ -25,7 +25,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(
 		basePackages = "net.fashiongo.webadmin.dao.photostudio",
 		entityManagerFactoryRef = "photostudioEntityManager",
-		transactionManagerRef = "photostudioTransactionManager")
+		transactionManagerRef = "photostudioTransactionManager",
+        repositoryImplementationPostfix = "CustomImpl")
 public class FgPhotoStudio {
 	@Bean(name = "photostudioDataSource")
 	@ConfigurationProperties(prefix = "spring.datasource4")

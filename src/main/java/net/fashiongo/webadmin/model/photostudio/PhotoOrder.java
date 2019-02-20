@@ -4,15 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
 import net.fashiongo.common.dal.IPersistent;
@@ -496,4 +490,17 @@ public class PhotoOrder implements IPersistent, Serializable {
 	public void setModelID(Integer modelID) {
 		this.modelID = modelID;
 	}
+
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OrderID", referencedColumnName = "OrderID")
+    private List<PhotoOrderDetail> orderDetails;
+
+    public List<PhotoOrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<PhotoOrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
 }

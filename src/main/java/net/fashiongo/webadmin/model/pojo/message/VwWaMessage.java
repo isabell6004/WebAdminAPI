@@ -63,8 +63,8 @@ public class VwWaMessage {
 	@JsonProperty("CategoryName")
 	private String categoryName;
 	
-	@JsonProperty("MessgaeGUID")
-	private String messgaeGUID;
+	@JsonProperty("MessageGUID")
+	private String messageGUID;
 	
 	@JsonProperty("AttachedFileName")
 	private String attachedFileName;
@@ -204,13 +204,12 @@ public class VwWaMessage {
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
-
-	public String getMessgaeGUID() {
-		return messgaeGUID;
+	public String getMessageGUID() {
+		return messageGUID.toLowerCase();
 	}
 
-	public void setMessgaeGUID(String messgaeGUID) {
-		this.messgaeGUID = messgaeGUID;
+	public void setMessageGUID(String messageGUID) {
+		this.messageGUID = messageGUID;
 	}
 
 	public String getAttachedFileName() {

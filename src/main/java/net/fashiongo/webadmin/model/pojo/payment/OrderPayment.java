@@ -76,4 +76,7 @@ public class OrderPayment {
 	
 	@JsonProperty("OrderStatus")
 	private String orderStatus;
+	
+	@JsonProperty("isConsolidation")
+	private Boolean isConsolidation;
 }
