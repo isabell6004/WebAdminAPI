@@ -196,7 +196,7 @@ public class VendorService extends ApiService {
 		if(parameters.getSearchType().equals("ID")) {
 		    result = vwVendorBlockedRepository.findByBlockID(Integer.parseInt(parameters.getSearchKeyword()));
 		} else if(parameters.getSearchType().equals("Company")) {
-			result = vwVendorBlockedRepository.findByCompanyName(parameters.getSearchKeyword());
+			result = vwVendorBlockedRepository.findByCompanyNameContainingIgnoreCase(parameters.getSearchKeyword());
 		} else if(parameters.getSearchType().equals("Date")) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDateTime fromDate = LocalDateTime.parse(parameters.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME);
