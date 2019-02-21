@@ -87,5 +87,7 @@ public class PaymentStatusList {
 	@JsonProperty("DeclineCode")
 	private String declineCode;
 	
+	@JsonProperty("TransactionType") 
+	private Integer transactionType;
 }
 
