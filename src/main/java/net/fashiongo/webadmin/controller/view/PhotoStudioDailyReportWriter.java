@@ -75,7 +75,7 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getCatetoryName());
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderStatistic() == null ? 0 : orderDetailDailyReport.getOrderStatistic().getOrderCount());
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderStatistic() == null ? 0 : orderDetailDailyReport.getOrderStatistic().getTotalAamounts());
-            row.createCell(cellNumber++).setCellValue(0);
+            row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderDetailStatistic() == null ? 0 : orderDetailDailyReport.getOrderDetailStatistic().getStyleQuentity());
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderDetailStatistic() == null ? 0 : orderDetailDailyReport.getOrderDetailStatistic().getAdditionalColorSetQuentity());
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderDetailStatistic() == null ? 0 : orderDetailDailyReport.getOrderDetailStatistic().getAdditionalColorQuentity());
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderDetailStatistic() == null ? 0 : orderDetailDailyReport.getOrderDetailStatistic().getMovieClipsQuentity());
