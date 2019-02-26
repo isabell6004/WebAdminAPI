@@ -86,7 +86,7 @@ public class WAPaymentService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public GetPaymentStatusListResponse getPaymentStatusList(GetPaymentStatusListParameter param) {
 		GetPaymentStatusListResponse result = new GetPaymentStatusListResponse();
-		String spName = "up_wa_pay_GetPaymentStatusList";
+		String spName = "up_wa_pay_GetPaymentStatusList_v1";
 		List<Object> params = new ArrayList<Object>();
 		params.add(param.getPageNum());
 		params.add(param.getPageSize());
