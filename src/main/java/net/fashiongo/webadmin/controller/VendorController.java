@@ -3,12 +3,10 @@ package net.fashiongo.webadmin.controller;
 import java.text.ParseException;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.model.primary.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
@@ -37,13 +35,6 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveP
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
-import net.fashiongo.webadmin.model.primary.CreditCardType;
-import net.fashiongo.webadmin.model.primary.EntityActionLog;
-import net.fashiongo.webadmin.model.primary.ListVendorImageType;
-import net.fashiongo.webadmin.model.primary.LogCommunication;
-import net.fashiongo.webadmin.model.primary.VendorCompany;
-import net.fashiongo.webadmin.model.primary.VendorContract;
-import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -53,6 +44,7 @@ import net.fashiongo.webadmin.utility.JsonResponse;
  */
 @RestController
 @RequestMapping(value="/vendor", produces = "application/json")
+@Slf4j
 public class VendorController {
 	
 	@Autowired
@@ -479,5 +471,21 @@ public class VendorController {
 		
 		return results; 
 	}
+
+    @GetMapping(value = "/autocomplete/{prefix:.+}")
+    public JsonResponse<List<VendorAutocomplete>> getVendorsAutoomplete(@PathVariable("prefix") String prefix) {
+        JsonResponse<List<VendorAutocomplete>> response = new JsonResponse<>(false, null, null);
+
+        try {
+            List<VendorAutocomplete> vendors = vendorService.getVendorsAutoomplete(prefix);
+            response.setSuccess(true);
+            response.setData(vendors);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+
+        return response;
+    }
 }
 	

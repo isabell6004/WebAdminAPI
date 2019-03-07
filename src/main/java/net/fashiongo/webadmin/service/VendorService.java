@@ -8,28 +8,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.model.primary.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import net.fashiongo.webadmin.dao.primary.AspnetMembershipRepository;
-import net.fashiongo.webadmin.dao.primary.BuyerRatingActiveRepository;
-import net.fashiongo.webadmin.dao.primary.CreditCardTypeRepository;
-import net.fashiongo.webadmin.dao.primary.EntityActionLogRepository;
-import net.fashiongo.webadmin.dao.primary.FashiongoFormRepository;
-import net.fashiongo.webadmin.dao.primary.ListVendorImageTypeRepository;
-import net.fashiongo.webadmin.dao.primary.LogCommunicationRepository;
-import net.fashiongo.webadmin.dao.primary.VendorAdminAccountRepository;
-import net.fashiongo.webadmin.dao.primary.VendorBlockedRepository;
-import net.fashiongo.webadmin.dao.primary.VendorCompanyCardRepository;
-import net.fashiongo.webadmin.dao.primary.VendorContractRepository;
-import net.fashiongo.webadmin.dao.primary.VendorCreditCardRepository;
-import net.fashiongo.webadmin.dao.primary.VendorImageRequestRepository;
-import net.fashiongo.webadmin.dao.primary.VendorListRepository;
-import net.fashiongo.webadmin.dao.primary.VwVendorBlockedRepository;
-import net.fashiongo.webadmin.dao.primary.WholeSalerRatingRepository;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.Total;
@@ -62,26 +48,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveP
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
-import net.fashiongo.webadmin.model.primary.AspnetMembership;
 
-import net.fashiongo.webadmin.model.primary.ContactUs;
-import net.fashiongo.webadmin.model.primary.CreditCardType;
-
-import net.fashiongo.webadmin.model.primary.EntityActionLog;
-import net.fashiongo.webadmin.model.primary.FashiongoForm;
-import net.fashiongo.webadmin.model.primary.ListVendorImageType;
-import net.fashiongo.webadmin.model.primary.LogCommunication;
-import net.fashiongo.webadmin.model.primary.RetailerRating;
-import net.fashiongo.webadmin.model.primary.VendorAdminAccount;
-import net.fashiongo.webadmin.model.primary.VendorCompany;
-import net.fashiongo.webadmin.model.primary.VendorCompanyCard;
-import net.fashiongo.webadmin.model.primary.VendorCompanyType;
-import net.fashiongo.webadmin.model.primary.VendorContract;
-import net.fashiongo.webadmin.model.primary.VendorCreditCard;
-import net.fashiongo.webadmin.model.primary.VendorDetailDate;
-import net.fashiongo.webadmin.model.primary.VendorImageRequest;
-import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
-import net.fashiongo.webadmin.model.primary.WholeSalerRating;
 import net.fashiongo.webadmin.utility.Utility;
 
 /**
@@ -91,7 +58,10 @@ import net.fashiongo.webadmin.utility.Utility;
 public class VendorService extends ApiService {
 	@Autowired
 	private VendorListRepository vendorListRepository;
-	
+
+    @Autowired
+    private VendorAutocompleteRepository vendorAutocompleteRepository;
+
 	@Autowired
 	private CreditCardTypeRepository creditCardTypeRepository;
 
@@ -146,8 +116,18 @@ public class VendorService extends ApiService {
 	public List<VendorCompany> getVendorList() {
 		return vendorListRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
 	}
-	
-	/**
+
+    /**
+     * Get autocomplete search results in company name prefix
+     * created by Andy Min on 11/01/2018
+     * @param prefix
+     * @return
+     */
+    public List<VendorAutocomplete> getVendorsAutoomplete(String prefix) {
+        return vendorAutocompleteRepository.findByCompanyNameStartingWithOrEmailStartingWithAllIgnoreCase(prefix, prefix);
+    }
+
+    /**
 	 * 
 	 * Get ProductList
 	 * 
