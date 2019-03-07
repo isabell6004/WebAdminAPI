@@ -385,7 +385,8 @@ public class PhotoStudioController {
         JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
 
         try {
-            Map<String, Object> result = photoStudioService.getPhotoOrder(poNumber);
+            //Map<String, Object> result = photoStudioService.getPhotoOrder(poNumber);
+            Map<String, Object> result = photoStudioService.getPhotoOrderNotUsingSP(poNumber);
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -508,23 +509,6 @@ public class PhotoStudioController {
             response.setData(result);
         } catch (Exception ex) {
             logger.error("Exception Error: PhotoStudioController.getReports()：", ex);
-            response.setMessage(ex.getMessage());
-        }
-
-        return response;
-    }
-
-    @GetMapping("/reports/daily/csv")
-    public JsonResponse<?> getReportsDailyCsv(@RequestParam Map<String, Object> parmMap) {
-        logger.debug("PhotoStudioController.getReportsDailyCsv() called!!!");
-        JsonResponse<List<ReportCsvDaily>> response = new JsonResponse<>(false, null, null);
-
-        try {
-            List<ReportCsvDaily> result = photoStudioService.getReportsDailyCsv(parmMap);
-            response.setSuccess(true);
-            response.setData(result);
-        } catch (Exception ex) {
-            logger.error("Exception Error: PhotoStudioController.getReportsDailyCsv()：", ex);
             response.setMessage(ex.getMessage());
         }
 

@@ -35,7 +35,18 @@ public class VendorCompany implements Serializable {
 	@Column(name = "ShopActive")
 	private Boolean shopActive;
 
-	public Integer getWholeSalerId() {
+    @Column(name = "Phone")
+    private String phone;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getWholeSalerId() {
 		return wholeSalerId;
 	}
 

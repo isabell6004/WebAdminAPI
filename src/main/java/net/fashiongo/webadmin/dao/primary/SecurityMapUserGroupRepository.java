@@ -16,4 +16,6 @@ public interface SecurityMapUserGroupRepository extends CrudRepository<SecurityM
 	SecurityMapUserGroup findByUserIDAndGroupID(Integer userID, Integer groupID);
 	@Transactional
 	void deleteByUserIDIn(Integer userID);
+
+    List<SecurityMapUserGroup> findByGroupID(Integer groupId);
 }

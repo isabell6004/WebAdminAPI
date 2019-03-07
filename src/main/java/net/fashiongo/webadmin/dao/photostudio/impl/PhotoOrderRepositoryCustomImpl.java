@@ -1,18 +1,19 @@
 package net.fashiongo.webadmin.dao.photostudio.impl;
 
+import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.dao.photostudio.PhotoOrderStatisticCustom;
 import net.fashiongo.webadmin.model.photostudio.*;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by jinwoo on 2019. 2. 12..
@@ -115,7 +116,32 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderStatisticCustom
         List<Tuple> results = photostudioEntityManager.createQuery(criteriaQuery).getResultList();
 
         return OrderDetailStatistic.build(results);
+    }
 
+    @Override
+    public PhotoOrder getPhotoOrderInfoWithAdditionalInfo(String poNumber) {
 
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
+        QPhotoPackage photoPackage = QPhotoPackage.photoPackage;
+        QCodePhotoBackgroundColor codePhotoBackgroundColor = QCodePhotoBackgroundColor.codePhotoBackgroundColor;
+        QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+        QPhotoDiscount photoDiscount = QPhotoDiscount.photoDiscount;
+        QMapPhotoCalendarModel mapPhotoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
+        QPhotoModel photoModel = QPhotoModel.photoModel;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        PhotoOrder order = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.photoCategory, photoCategory).fetchJoin()
+                .innerJoin(photoOrder.photoBooking, photoBooking).fetchJoin()
+                .leftJoin(photoOrder.photoPackage, photoPackage).fetchJoin()
+                .leftJoin(photoOrder.codePhotoBackgroundColor, codePhotoBackgroundColor)
+                .leftJoin(photoBooking.mapPhotoCalendarModel, mapPhotoCalendarModel).fetchJoin()
+                .leftJoin(mapPhotoCalendarModel.photoModel, photoModel).fetchJoin()
+                .leftJoin(photoOrder.photoDiscount, photoDiscount).fetchJoin()
+                .where(photoOrder.poNumber.eq(poNumber))
+                .fetchOne();
+
+        return Optional.ofNullable(order).orElse(new PhotoOrder());
     }
 }

@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -707,4 +708,9 @@ public class VendorService extends ApiService {
 		result.setCountryList((List<Country>) _result.get(3));
 		return result;
 	}
+
+    public VendorCompany getVendorInfo(Integer wholeSalerID) {
+        Optional<VendorCompany> vendor = vendorListRepository.findById(wholeSalerID);
+        return vendor.get();
+    }
 }

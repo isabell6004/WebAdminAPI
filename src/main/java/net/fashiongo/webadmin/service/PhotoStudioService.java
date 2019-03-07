@@ -5,6 +5,8 @@ import net.fashiongo.webadmin.model.photostudio.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
+import net.fashiongo.webadmin.model.primary.SecurityUser;
+import net.fashiongo.webadmin.model.primary.VendorCompany;
 import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang.StringUtils;
@@ -775,6 +777,34 @@ public class PhotoStudioService extends ApiService {
         return result;
     }
 
+    @Autowired
+    private PhotoOrderDetailRepository photoOrderDetailRepository;
+
+    @Autowired
+    private VendorService vendorService;
+
+    @Autowired
+    private SecurityGroupService securityGroupService;
+
+    private final static Integer PHOTOSTUDIO_GROUP_NUMBER = 29;
+
+    public Map<String, Object> getPhotoOrderNotUsingSP(String poNumber) {
+
+        PhotoOrder photoOrder = photoOrderRepository.getPhotoOrderInfoWithAdditionalInfo(poNumber);
+        VendorCompany vendor = vendorService.getVendorInfo(photoOrder.getWholeSalerID());
+        List<LogPhotoAction> logPhotoActions = logPhotoActionRepository.getLogPhotoActions(photoOrder.getOrderID());
+        List<PhotoOrderDetail> photoOrderDetails = photoOrderDetailRepository.findByOrderID(photoOrder.getOrderID());
+        List<SecurityUser> securityUsers = securityGroupService.getSecurityUsersByGroupId(PHOTOSTUDIO_GROUP_NUMBER);
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("photoOrder", DetailPhotoOrder.build(photoOrder, vendor));
+        result.put("actionLogs", LogPhotoActionDto.build(logPhotoActions));
+        result.put("items", DetailOrderQuantity.build(photoOrderDetails));
+        result.put("photoStudioUsers", PhotoActionUser.build(securityUsers));
+        return result;
+    }
+
+
     public List<PhotoModel> getAvailableModels(Integer orderID, String theDate) {
         List<Object> params = new ArrayList<Object>();
         params.add(orderID);
@@ -980,21 +1010,6 @@ public class PhotoStudioService extends ApiService {
         }
 
         return result;
-    }
-
-    public List<ReportCsvDaily> getReportsDailyCsv(Map<String, Object> parmMap) {
-        int categoryID = Integer.parseInt(String.valueOf(parmMap.get("categoryID")));
-        ;
-
-        List<Object> params = new ArrayList<Object>();
-
-        params.add(parmMap.get("yyyymmdd"));
-        params.add(categoryID);
-
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReport_csv_daily", params, ReportCsvDaily.class);
-        List<ReportCsvDaily> reportCsvDailys = (List<ReportCsvDaily>) r.get(0);
-
-        return reportCsvDailys;
     }
 
     public List<ReportCsvMonthly> getReportsMonthlyCsv(Map<String, Object> parmMap) {
