@@ -53,7 +53,7 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Column(name = "PackageID", insertable = false, updatable = false)
     private Integer packageID;
 
-	@Column(name = "ColorID")
+	@Column(name = "ColorID", insertable=false, updatable=false)
     private Integer colorID;
 
 	@Column(name = "IsByStyle")

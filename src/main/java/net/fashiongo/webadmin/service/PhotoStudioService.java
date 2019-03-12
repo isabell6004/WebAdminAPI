@@ -757,25 +757,25 @@ public class PhotoStudioService extends ApiService {
         return result;
     }
 
-    public Map<String, Object> getPhotoOrder(String poNumber) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        List<Object> params = new ArrayList<Object>();
-        params.add(poNumber);
-
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, LogPhotoAction.class, PhotoOrderDetail.class, PhotoActionUser.class);
-
-        List<DetailPhotoOrder> photoOrders = (List<DetailPhotoOrder>) r.get(0);
-        List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(1);
-        List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) r.get(2);
-        List<PhotoActionUser> photoActionUsers = (List<PhotoActionUser>) r.get(3);
-
-        result.put("photoOrder", photoOrders.get(0));
-        result.put("actionLogs", logPhotoActions);
-        result.put("items", photoOrderDetails);
-        result.put("photoStudioUsers", photoActionUsers);
-
-        return result;
-    }
+//    public Map<String, Object> getPhotoOrder(String poNumber) {
+//        Map<String, Object> result = new HashMap<String, Object>();
+//        List<Object> params = new ArrayList<Object>();
+//        params.add(poNumber);
+//
+//        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, LogPhotoAction.class, PhotoOrderDetail.class, PhotoActionUser.class);
+//
+//        List<DetailPhotoOrder> photoOrders = (List<DetailPhotoOrder>) r.get(0);
+//        List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(1);
+//        List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) r.get(2);
+//        List<PhotoActionUser> photoActionUsers = (List<PhotoActionUser>) r.get(3);
+//
+//        result.put("photoOrder", photoOrders.get(0));
+//        result.put("actionLogs", logPhotoActions);
+//        result.put("items", photoOrderDetails);
+//        result.put("photoStudioUsers", photoActionUsers);
+//
+//        return result;
+//    }
 
     @Autowired
     private PhotoOrderDetailRepository photoOrderDetailRepository;
@@ -788,7 +788,7 @@ public class PhotoStudioService extends ApiService {
 
     private final static Integer PHOTOSTUDIO_GROUP_NUMBER = 29;
 
-    public Map<String, Object> getPhotoOrderNotUsingSP(String poNumber) {
+    public Map<String, Object> getPhotoOrder(String poNumber) {
 
         PhotoOrder photoOrder = photoOrderRepository.getPhotoOrderInfoWithAdditionalInfo(poNumber);
         VendorCompany vendor = vendorService.getVendorInfo(photoOrder.getWholeSalerID());

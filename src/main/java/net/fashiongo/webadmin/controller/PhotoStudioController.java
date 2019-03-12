@@ -386,7 +386,7 @@ public class PhotoStudioController {
 
         try {
             //Map<String, Object> result = photoStudioService.getPhotoOrder(poNumber);
-            Map<String, Object> result = photoStudioService.getPhotoOrderNotUsingSP(poNumber);
+            Map<String, Object> result = photoStudioService.getPhotoOrder(poNumber);
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {

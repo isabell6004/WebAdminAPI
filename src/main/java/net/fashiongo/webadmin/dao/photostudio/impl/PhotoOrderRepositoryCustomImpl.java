@@ -135,7 +135,7 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderStatisticCustom
                 .innerJoin(photoOrder.photoCategory, photoCategory).fetchJoin()
                 .innerJoin(photoOrder.photoBooking, photoBooking).fetchJoin()
                 .leftJoin(photoOrder.photoPackage, photoPackage).fetchJoin()
-                .leftJoin(photoOrder.codePhotoBackgroundColor, codePhotoBackgroundColor)
+                .leftJoin(photoOrder.codePhotoBackgroundColor, codePhotoBackgroundColor).fetchJoin()
                 .leftJoin(photoBooking.mapPhotoCalendarModel, mapPhotoCalendarModel).fetchJoin()
                 .leftJoin(mapPhotoCalendarModel.photoModel, photoModel).fetchJoin()
                 .leftJoin(photoOrder.photoDiscount, photoDiscount).fetchJoin()
