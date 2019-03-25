@@ -55,7 +55,7 @@
         <logger name="org.hibernate.SQL" level="INFO" additivity="false">
 			<AppenderRef ref="LOG_ROLLING" />
 		</logger>
-		<Logger name="net.fashiongo.webadmin" level="INFO" additivity="false">
+		<Logger name="net.fashiongo.webadmin" level="DEBUG" additivity="false">
             <AppenderRef ref="CONSOLE"/>
             <AppenderRef ref="LOG_ROLLING" />
         </Logger>

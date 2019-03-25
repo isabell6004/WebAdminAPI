@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import net.fashiongo.webadmin.dao.primary.*;
 import net.fashiongo.webadmin.model.primary.*;
@@ -687,4 +688,9 @@ public class VendorService extends ApiService {
 		result.setCountryList((List<Country>) _result.get(3));
 		return result;
 	}
+
+    public VendorCompany getVendorInfo(Integer wholeSalerID) {
+        Optional<VendorCompany> vendor = vendorListRepository.findById(wholeSalerID);
+        return vendor.get();
+    }
 }

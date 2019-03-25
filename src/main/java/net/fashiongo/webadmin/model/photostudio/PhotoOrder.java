@@ -7,7 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Fetch;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
 import net.fashiongo.common.dal.IPersistent;
 
@@ -19,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Entity
 @Table(name = "Photo_Order")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter
 public class PhotoOrder implements IPersistent, Serializable {
 	
 	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
@@ -29,203 +34,63 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "OrderID")
 	private Integer orderID;
-	public Integer getOrderID() {
-		return orderID;
-	}
-
-	public void setOrderID(Integer orderID) {
-		this.orderID = orderID;
-	}
 
 	@Column(name = "CartID")
 	private Integer cartID;
-	public Integer getCartID() {
-		return cartID;
-	}
-
-	public void setCartID(Integer cartID) {
-		this.cartID = cartID;
-	}
 
 	@Column(name = "WholeSalerID")
-	private Integer wholeSalerID;
-	public Integer getWholeSalerID() {
-		return wholeSalerID;
-	}
-
-	public void setWholeSalerID(Integer wholeSalerID) {
-		this.wholeSalerID = wholeSalerID;
-	}
+    private Integer wholeSalerID;
 
 	@Column(name = "WholeSalerCompanyName")
 	private String wholeSalerCompanyName;
-	public String getWholeSalerCompanyName() {
-		return wholeSalerCompanyName;
-	}
-
-	public void setWholeSalerCompanyName(String wholeSalerCompanyName) {
-		this.wholeSalerCompanyName = wholeSalerCompanyName;
-	}
 
 	@Column(name = "PONumber")
 	private String poNumber;
-	public String getPoNumber() {
-		return poNumber;
-	}
 
-	public void setPoNumber(String poNumber) {
-		this.poNumber = poNumber;
-	}
-	
-	@Column(name = "CategoryID")
-	private Integer categoryID;
-	public Integer getCategoryID() {
-		return categoryID;
-	}
+	@Column(name = "CategoryID", insertable = false, updatable = false)
+    private Integer categoryID;
 
-	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
-	}
+	@Column(name = "PackageID", insertable = false, updatable = false)
+    private Integer packageID;
 
-	@Column(name = "PackageID")
-	private Integer packageID;
-	public Integer getPackageID() {
-		return packageID;
-	}
-
-	public void setPackageID(Integer packageID) {
-		this.packageID = packageID;
-	}
-
-	@Column(name = "ColorID")
-	private Integer colorID;
-	public Integer getColorID() {
-		return colorID;
-	}
-
-	public void setColorID(Integer colorID) {
-		this.colorID = colorID;
-	}
+	@Column(name = "ColorID", insertable=false, updatable=false)
+    private Integer colorID;
 
 	@Column(name = "IsByStyle")
 	private Boolean isByStyle;
-	public Boolean getIsByStyle() {
-		return isByStyle;
-	}
 
-	public void setIsByStyle(Boolean isByStyle) {
-		this.isByStyle = isByStyle;
-	}
-
-	@Column(name = "BookingID")
+	@Column(name = "BookingID", insertable = false, updatable = false)
 	private Integer bookingID;
-	public Integer getBookingID() {
-		return bookingID;
-	}
-
-	public void setBookingID(Integer bookingID) {
-		this.bookingID = bookingID;
-	}
 
 	@Column(name = "OrderStatusID")
 	private Integer orderStatusID;
-	public Integer getOrderStatusID() {
-		return orderStatusID;
-	}
-
-	public void setOrderStatusID(Integer orderStatusID) {
-		this.orderStatusID = orderStatusID;
-	}
 
 	@Column(name = "TotalUnit")
 	private BigDecimal totalUnit;
-	public BigDecimal getTotalUnit() {
-		return totalUnit;
-	}
-
-	public void setTotalUnit(BigDecimal totalUnit) {
-		this.totalUnit = totalUnit;
-	}
 
 	@Column(name = "TotalQty")
 	private Integer totalQty;
-	public Integer getTotalQty() {
-		return totalQty;
-	}
-
-	public void setTotalQty(Integer totalQty) {
-		this.totalQty = totalQty;
-	}
 
 	@Column(name = "SubtotalAmount")
 	private BigDecimal subtotalAmount;
-	public BigDecimal getSubtotalAmount() {
-		return subtotalAmount;
-	}
-
-	public void setSubtotalAmount(BigDecimal subtotalAmount) {
-		this.subtotalAmount = subtotalAmount;
-	}
 
 	@Column(name = "TotalAmount", insertable=false, updatable=false)
 	private BigDecimal totalAmount;
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
-	}
 
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
-	}
-
-	@Column(name = "DiscountID")
+	@Column(name = "DiscountID", insertable = false, updatable = false)
 	private Integer discountID;
-	public Integer getDiscountID() {
-		return discountID;
-	}
-
-	public void setDiscountID(Integer discountID) {
-		this.discountID = discountID;
-	}
 
 	@Column(name = "DiscountAmount")
 	private BigDecimal discountAmount;
-	public BigDecimal getDiscountAmount() {
-		return discountAmount;
-	}
-
-	public void setDiscountAmount(BigDecimal discountAmount) {
-		this.discountAmount = discountAmount;
-	}
 
 	@Column(name = "DiscountCode")
 	private String discountCode;
-	public String getDiscountCode() {
-		return discountCode;
-	}
-
-	public void setDiscountCode(String discountCode) {
-		this.discountCode = discountCode;
-	}
 
 	@Column(name = "AdditionalDiscountAmount")
 	private BigDecimal additionalDiscountAmount;
-	public BigDecimal getAdditionalDiscountAmount() {
-		return additionalDiscountAmount;
-	}
-
-	public void setAdditionalDiscountAmount(BigDecimal additionalDiscountAmount) {
-		this.additionalDiscountAmount = additionalDiscountAmount;
-	}
 
 	@Column(name = "PhotoCreditUsedAmount")
 	private BigDecimal photoCreditUsedAmount;
-	public BigDecimal getPhotoCreditUsedAmount() {
-		return photoCreditUsedAmount;
-	}
-
-	public void setPhotoCreditUsedAmount(BigDecimal photoCreditUsedAmount) {
-		this.photoCreditUsedAmount = photoCreditUsedAmount;
-	}
 
 	@JsonIgnore
 	@Column(name = "CheckOutDate")
@@ -346,83 +211,30 @@ public class PhotoOrder implements IPersistent, Serializable {
 
 	@Column(name = "SpecialRequest")
 	private String specialRequest;
-	public String getSpecialRequest() {
-		return specialRequest;
-	}
-
-	public void setSpecialRequest(String specialRequest) {
-		this.specialRequest = specialRequest;
-	}
 
 	@Column(name = "InHouseNote")
 	private String inHouseNote;
-	public String getInHouseNote() {
-		return inHouseNote;
-	}
-
-	public void setInHouseNote(String inHouseNote) {
-		this.inHouseNote = inHouseNote;
-	}
 
 	@Column(name = "CancelTypeID")
 	private Integer cancelTypeID;
-	public Integer getCancelTypeID() {
-		return cancelTypeID;
-	}
-
-	public void setCancelTypeID(Integer cancelTypeID) {
-		this.cancelTypeID = cancelTypeID;
-	}
 
 	@Column(name = "CancellationFee")
 	private BigDecimal cancellationFee;
-	public BigDecimal getCancellationFee() {
-		return cancellationFee;
-	}
-
-	public void setCancellationFee(BigDecimal cancellationFee) {
-		this.cancellationFee = cancellationFee;
-	}
 
 	@Column(name = "CancellationFeeRate")
 	private BigDecimal cancellationFeeRate;
-	public BigDecimal getCancellationFeeRate() {
-		return cancellationFeeRate;
-	}
-
-	public void setCancellationFeeRate(BigDecimal cancellationFeeRate) {
-		this.cancellationFeeRate = cancellationFeeRate;
-	}
 
 	@Column(name = "CancelledByUserName")
 	private String cancelledByUserName;
-	public String getCancelledByUserName() {
-		return cancelledByUserName;
-	}
-
-	public void setCancelledByUserName(String cancelledByUserName) {
-		this.cancelledByUserName = cancelledByUserName;
-	}
 
 	@Column(name = "IsCancelledBy")
 	private Integer isCancelledBy;
-	public Integer getIsCancelledBy() {
-		return isCancelledBy;
-	}
-
-	public void setIsCancelledBy(Integer isCancelledBy) {
-		this.isCancelledBy = isCancelledBy;
-	}
 
 	@Column(name = "CancelNote")
 	private String cancelNote;
-	public String getCancelNote() {
-		return cancelNote;
-	}
 
-	public void setCancelNote(String cancelNote) {
-		this.cancelNote = cancelNote;
-	}
+    @Column(name = "IsSocialMediaPromotionAgree")
+    private Boolean isSocialMediaPromotionAgree;
 
 	@JsonIgnore
 	@Column(name = "CancelledOn")
@@ -445,27 +257,18 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@JsonIgnore
 	@Column(name = "CreatedBy")
 	private String createdBy;
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
 
 	@JsonIgnore
 	@Column(name = "ModifiedOn")
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime modifiedOnDate;
-	public LocalDateTime getModifiedOnDate() {
-		return modifiedOnDate;
-	}
 
-	public void setModifiedOnDate(LocalDateTime modifiedOnDate) {
-		this.modifiedOnDate = modifiedOnDate;
-	}
+    @JsonIgnore
+    @Column(name = "PickupDate")
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime pickupDate;
 
-	@JsonIgnore
+    @JsonIgnore
 	@Transient
 	private String modifiedOn;
 	public String getModifiedOn() {
@@ -474,33 +277,33 @@ public class PhotoOrder implements IPersistent, Serializable {
 
 	@Column(name = "ModifiedBY")
 	private String modifiedBY;
-	public String getModifiedBY() {
-		return modifiedBY;
-	}
 
-	public void setModifiedBY(String modifiedBY) {
-		this.modifiedBY = modifiedBY;
-	}
-	
 	@Transient
 	private Integer modelID;
-	public Integer getModelID() {
-		return modelID;
-	}
-	public void setModelID(Integer modelID) {
-		this.modelID = modelID;
-	}
-
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "OrderID", referencedColumnName = "OrderID")
     private List<PhotoOrderDetail> orderDetails;
 
-    public List<PhotoOrderDetail> getOrderDetails() {
-        return orderDetails;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID")
+    private PhotoCategory photoCategory;
 
-    public void setOrderDetails(List<PhotoOrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DiscountID", referencedColumnName = "DiscountID")
+    private PhotoDiscount photoDiscount;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BookingID", referencedColumnName = "BookingID")
+    private PhotoBooking photoBooking;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PackageID", referencedColumnName = "PackageID")
+    private PhotoPackage photoPackage;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ColorID", referencedColumnName = "ColorID")
+    private CodePhotoBackgroundColor codePhotoBackgroundColor;
+
+
 }

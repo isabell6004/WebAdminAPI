@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -877,5 +878,13 @@ public class SecurityGroupService extends ApiService {
 	    createUserRes.setResultCode2(resultPermission);
 		return createUserRes;
 	}
-	
+
+    public List<SecurityUser> getSecurityUsersByGroupId(Integer groupId) {
+        List<SecurityMapUserGroup> mapUserGroups = securityMapUserGroupRepository.findByGroupID(groupId);
+        List<Integer> userIds = mapUserGroups.stream().map((t)->(t.getUserID())).collect(Collectors.toList());
+        List<SecurityUser> securityUsers = securityUserRepository.findByUserIDIn(userIds);
+        return securityUsers;
+
+
+    }
 }
