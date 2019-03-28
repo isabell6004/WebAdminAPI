@@ -1,490 +1,200 @@
 /**
- * 
+ *
  */
 package net.fashiongo.webadmin.model.photostudio;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import net.fashiongo.webadmin.model.primary.VendorCompany;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
-import net.fashiongo.common.conversion.LocalDateTimeConverter;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Optional;
 
 /**
  * @author XiaoChuan.Gao
- *  SimplePhotoOrder: Order info for Order Detail page
+ *         SimplePhotoOrder: Order info for Order Detail page
  */
-
+@Setter
+@Getter
+@Builder
 public class DetailPhotoOrder {
-	
-	private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
-	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
-	private static final String DEFAULT_TIME = " 18:00:00";
 
-	@JsonIgnore
-	@Column(name = "CheckOutDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _checkOutDate;
-	public LocalDateTime get_checkOutDate() {
-		return _checkOutDate;
-	}
+    private static final String DATE_PATTERN_YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
+    private static final String DEFAULT_TIME = " 18:00:00";
 
-	public void set_checkOutDate(LocalDateTime _checkOutDate) {
-		this._checkOutDate = _checkOutDate;
-	}
+    private LocalDateTime checkOutDate;
 
-	@Transient
-	private String checkOutDate;
-	public String getCheckOutDate() {
-		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
-	
-	@JsonIgnore
-	@Column(name = "DropOffDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _dropOffDate;
-	public LocalDateTime get_dropOffDate() {
-		return _dropOffDate;
-	}
+    public String getCheckOutDate() {
+        return checkOutDate != null ? checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	public void set_dropOffDate(LocalDateTime _dropOffDate) {
-		this._dropOffDate = _dropOffDate;
-	}
+    private LocalDateTime dropOffDate;
 
-	@Transient
-	private String dropOffDate;
-	public String getDropOffDate() {
-		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
-	
-	@JsonIgnore
-	@Column(name = "PrepDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _prepDate;
-	public LocalDateTime get_prepDate() {
-		return _prepDate;
-	}
+    public String getDropOffDate() {
+        return dropOffDate != null ? dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	public void set_prepDate(LocalDateTime _prepDate) {
-		this._prepDate = _prepDate;
-	}
+    private LocalDateTime prepDate;
 
-	@Transient
-	private String prepDate;
-	public String getPrepDate() {
-		return _prepDate != null ? _prepDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
-	
-	@JsonIgnore
-	@Column(name = "PhotoshootDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _photoshootDate;
-	public LocalDateTime get_photoshootDate() {
-		return _photoshootDate;
-	}
+    public String getPrepDate() {
+        return prepDate != null ? prepDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	public void set_photoshootDate(LocalDateTime _photoshootDate) {
-		this._photoshootDate = _photoshootDate;
-	}
+    private LocalDateTime photoshootDate;
 
-	@Transient
-	private String photoshootDate;
-	public String getPhotoshootDate() {
-		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
+    public String getPhotoshootDate() {
+        return photoshootDate != null ? photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	public void setPhotoshootDate(String photoshootDate) {
-		this.photoshootDate = StringUtils.isNotEmpty(photoshootDate) ? photoshootDate + DEFAULT_TIME: null;
-		this.set_photoshootDate(StringUtils.isNotEmpty(this.photoshootDate) ? LocalDateTime.parse(this.photoshootDate, DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDDHHMMSS)) : null);
-	}
-	
-	@JsonIgnore
-	@Column(name = "RetouchDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _retouchDate;
-	public LocalDateTime get_retouchDate() {
-		return _retouchDate;
-	}
+    private LocalDateTime retouchDate;
 
-	public void set_retouchDate(LocalDateTime _retouchDate) {
-		this._retouchDate = _retouchDate;
-	}
+    public String getRetouchDate() {
+        return retouchDate != null ? retouchDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	@Transient
-	private String retouchDate;
-	public String getRetouchDate() {
-		return _retouchDate != null ? _retouchDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
-	
-	@JsonIgnore
-	@Column(name = "UploadDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _uploadDate;
-	public LocalDateTime get_uploadDate() {
-		return _uploadDate;
-	}
+    private LocalDateTime uploadDate;
 
-	public void set_uploadDate(LocalDateTime _uploadDate) {
-		this._uploadDate = _uploadDate;
-	}
+    public String getUploadDate() {
+        return uploadDate != null ? uploadDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	@Transient
-	private String uploadDate;
-	public String getUploadDate() {
-		return _uploadDate != null ? _uploadDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
+    public String getBillingPeriod() {
+        LocalDateTime chekoutDate = this.checkOutDate;
+        LocalDateTime billingPeriod = chekoutDate.plusMonths(1);
+        return billingPeriod != null ? billingPeriod.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	@JsonIgnore
-	@Column(name = "BillingPeriod")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _billingPeriod;
-	public LocalDateTime get_billingPeriod() {
-		return _billingPeriod;
-	}
+    private Integer orderID;
 
-	public void set_billingPeriod(LocalDateTime _billingPeriod) {
-		this._billingPeriod = _billingPeriod;
-	}
+    private String poNumber;
 
-	@Transient
-	private String billingPeriod;
-	public String getBillingPeriod() {
-		return _billingPeriod != null ? _billingPeriod.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
-	
-	@Id
-	@Column(name = "OrderID")
-	private Integer orderID;
-	public Integer getOrderID() {
-		return orderID;
-	}
+    private Integer wholeSalerID;
 
-	public void setOrderID(Integer orderID) {
-		this.orderID = orderID;
-	}
-	
-	@Column(name = "PONumber")
-	private String poNumber;
-	public String getPoNumber() {
-		return poNumber;
-	}
+    private String wholeSalerCompanyName;
 
-	public void setPoNumber(String poNumber) {
-		this.poNumber = poNumber;
-	}
+    private String phone;
 
-	@Column(name = "WholeSalerID")
-	private Integer wholeSalerID;
-	public Integer getWholeSalerID() {
-		return wholeSalerID;
-	}
+    private Integer categoryID;
 
-	public void setWholeSalerID(Integer wholeSalerID) {
-		this.wholeSalerID = wholeSalerID;
-	}
+    private String categoryName;
 
-	@Column(name = "WholeSalerCompanyName")
-	private String wholeSalerCompanyName;
-	public String getWholeSalerCompanyName() {
-		return wholeSalerCompanyName;
-	}
+    private String typeOfPhotoshoot;
 
-	public void setWholeSalerCompanyName(String wholeSalerCompanyName) {
-		this.wholeSalerCompanyName = wholeSalerCompanyName;
-	}
-	
-	@Column(name = "Phone")
-	private String phone;
-	public String getPhone() {
-		return phone;
-	}
+    private Integer totalQty;
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    private BigDecimal subtotalAmount;
 
-	@Column(name = "CategoryID")
-	private Integer categoryID;
-	public Integer getCategoryID() {
-		return categoryID;
-	}
+    private BigDecimal totalAmount;
 
-	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
-	}
-	
-	@Column(name = "CategoryName")
-	private String categoryName;
-	public String getCategoryName() {
-		return categoryName;
-	}
+    private BigDecimal photoCreditUsedAmount;
 
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
-	
-	@Column(name = "TypeOfPhotoshoot")
-	private String typeOfPhotoshoot;
-	public String getTypeOfPhotoshoot() {
-		return typeOfPhotoshoot;
-	}
+    private BigDecimal additionalDiscountAmount;
 
-	public void setTypeOfPhotoshoot(String typeOfPhotoshoot) {
-		this.typeOfPhotoshoot = typeOfPhotoshoot;
-	}
-	
-	@Column(name = "TotalQty")
-	private Integer totalQty;
-	public Integer getTotalQty() {
-		return totalQty;
-	}
+    private Integer discountID;
 
-	public void setTotalQty(Integer totalQty) {
-		this.totalQty = totalQty;
-	}
-	
-	@Column(name = "SubtotalAmount")
-	private BigDecimal subtotalAmount;
-	public BigDecimal getSubtotalAmount() {
-		return subtotalAmount;
-	}
+    private String discountCode;
 
-	public void setSubtotalAmount(BigDecimal subtotalAmount) {
-		this.subtotalAmount = subtotalAmount;
-	}
+    private BigDecimal discountAmount;
 
-	@Column(name = "TotalAmount")
-	private BigDecimal totalAmount;
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
-	}
+    private String discountName;
 
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
-	}
-	
-	@Column(name = "PhotoCreditUsedAmount")
-	private BigDecimal photoCreditUsedAmount;
-	public BigDecimal getPhotoCreditUsedAmount() {
-		return photoCreditUsedAmount;
-	}
+    private String inHouseNote;
 
-	public void setPhotoCreditUsedAmount(BigDecimal photoCreditUsedAmount) {
-		this.photoCreditUsedAmount = photoCreditUsedAmount;
-	}
-	
-	@Column(name = "AdditionalDiscountAmount")
-	private BigDecimal additionalDiscountAmount;
-	public BigDecimal getAdditionalDiscountAmount() {
-		return additionalDiscountAmount;
-	}
+    private String specialRequest;
 
-	public void setAdditionalDiscountAmount(BigDecimal additionalDiscountAmount) {
-		this.additionalDiscountAmount = additionalDiscountAmount;
-	}
+    private Boolean isByStyle;
 
-	@Column(name = "DiscountID")
-	private Integer discountID;
-	public Integer getDiscountID() {
-		return discountID;
-	}
+    private Integer orderStatusID;
 
-	public void setDiscountID(Integer discountID) {
-		this.discountID = discountID;
-	}
-	
-	@Column(name = "DiscountCode")
-	private String discountCode;
-	public String getDiscountCode() {
-		return discountCode;
-	}
+    private Integer modelID;
 
-	public void setDiscountCode(String discountCode) {
-		this.discountCode = discountCode;
-	}
-	
-	@Column(name = "DiscountAmount")
-	private BigDecimal discountAmount;
-	public BigDecimal getDiscountAmount() {
-		return discountAmount;
-	}
+    private String modelName;
 
-	public void setDiscountAmount(BigDecimal discountAmount) {
-		this.discountAmount = discountAmount;
-	}
-	
-	@Column(name = "DiscountName")
-	private String discountName;
-	public String getDiscountName() {
-		return discountName;
-	}
+    private String colorName;
 
-	public void setDiscountName(String discountName) {
-		this.discountName = discountName;
-	}
+    private Integer cancelTypeID;
 
-	@Column(name = "InHouseNote")
-	private String inHouseNote;
-	public String getInHouseNote() {
-		return inHouseNote;
-	}
+    private BigDecimal cancellationFee;
 
-	public void setInHouseNote(String inHouseNote) {
-		this.inHouseNote = inHouseNote;
-	}
+    private BigDecimal cancellationFeeRate;
 
-	@Column(name = "SpecialRequest")
-	private String specialRequest;
-	public String getSpecialRequest() {
-		return specialRequest;
-	}
+    private String cancelledByUserName;
 
-	public void setSpecialRequest(String specialRequest) {
-		this.specialRequest = specialRequest;
-	}
-	
-	@Column(name = "IsByStyle")
-	private Boolean isByStyle;
-	public Boolean getIsByStyle() {
-		return isByStyle;
-	}
+    private Integer isCancelledBy;
 
-	public void setIsByStyle(Boolean isByStyle) {
-		this.isByStyle = isByStyle;
-	}
-	
-	@Column(name = "OrderStatusID")
-	private Integer orderStatusID;
-	public Integer getOrderStatusID() {
-		return orderStatusID;
-	}
+    private String cancelNote;
 
-	public void setOrderStatusID(Integer orderStatusID) {
-		this.orderStatusID = orderStatusID;
-	}
-	
-	@Column(name = "ModelID")
-	private Integer modelID;
-	public Integer getModelID() {
-		return modelID;
-	}
+    private LocalDateTime cancelledOn;
 
-	public void setModelID(Integer modelID) {
-		this.modelID = modelID;
-	}
+    public String getCancelledOn() {
+        return cancelledOn != null ? cancelledOn.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	@Column(name = "ModelName")
-	private String modelName;
-	public String getModelName() {
-		return modelName;
-	}
+    private Boolean isSocialMediaPromotionAgree;
 
-	public void setModelName(String modelName) {
-		this.modelName = modelName;
-	}
-	
-	@Column(name = "CancelTypeID")
-	private Integer cancelTypeID;
-	public Integer getCancelTypeID() {
-		return cancelTypeID;
-	}
+    private String packageName;
 
-	public void setCancelTypeID(Integer cancelTypeID) {
-		this.cancelTypeID = cancelTypeID;
-	}
-	
-	@Column(name = "CancellationFee")
-	private BigDecimal cancellationFee;
-	public BigDecimal getCancellationFee() {
-		return cancellationFee;
-	}
+    private LocalDateTime pickupDate;
 
-	public void setCancellationFee(BigDecimal cancellationFee) {
-		this.cancellationFee = cancellationFee;
-	}
-	
-	@Column(name = "CancellationFeeRate")
-	private BigDecimal cancellationFeeRate;
-	public BigDecimal getCancellationFeeRate() {
-		return cancellationFeeRate;
-	}
+    public String getPickupDate() {
+        return pickupDate != null ? pickupDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	public void setCancellationFeeRate(BigDecimal cancellationFeeRate) {
-		this.cancellationFeeRate = cancellationFeeRate;
-	}
+    public static DetailPhotoOrder build(PhotoOrder photoOrder, VendorCompany vendor) {
 
-	@Column(name = "CancelledByUserName")
-	private String cancelledByUserName;
-	public String getCancelledByUserName() {
-		return cancelledByUserName;
-	}
+        return builder().orderID(photoOrder.getOrderID())
+                .checkOutDate(photoOrder.get_checkOutDate())
+                .dropOffDate(photoOrder.get_dropOffDate())
+                .prepDate(photoOrder.get_prepDate())
+                .photoshootDate(photoOrder.get_photoshootDate())
+                .retouchDate(photoOrder.get_retouchDate())
+                .uploadDate(photoOrder.get_uploadDate())
+                .pickupDate(photoOrder.getPickupDate())
+                .poNumber(photoOrder.getPoNumber())
+                .wholeSalerID(photoOrder.getWholeSalerID())
+                .wholeSalerCompanyName(photoOrder.getWholeSalerCompanyName())
+                .categoryID(photoOrder.getCategoryID())
+                .categoryName(photoOrder.getPhotoCategory().getCategoryName())
+                .typeOfPhotoshoot(photoOrder.getPhotoCategory().getTypeOfPhotoshoot())
+                .totalQty(photoOrder.getTotalQty())
+                .subtotalAmount(photoOrder.getSubtotalAmount())
+                .totalAmount(photoOrder.getTotalAmount())
+                .photoCreditUsedAmount(photoOrder.getPhotoCreditUsedAmount())
+                .additionalDiscountAmount(photoOrder.getAdditionalDiscountAmount())
+                .discountID(photoOrder.getDiscountID())
+                .discountAmount(photoOrder.getDiscountAmount())
+                .discountCode(photoOrder.getDiscountCode())
+                .discountName(photoOrder.getPhotoDiscount() != null ? photoOrder.getPhotoDiscount().getDiscountName() : null)
+                .inHouseNote(photoOrder.getInHouseNote())
+                .specialRequest(photoOrder.getSpecialRequest())
+                .isByStyle(photoOrder.getIsByStyle())
+                .orderStatusID(photoOrder.getOrderStatusID())
 
-	public void setCancelledByUserName(String cancelledByUserName) {
-		this.cancelledByUserName = cancelledByUserName;
-	}
+                .modelID(
+                        Optional.ofNullable(photoOrder.getPhotoBooking().getMapPhotoCalendarModel()).map(MapPhotoCalendarModel::getModelID).orElse(0)
+                )
+                .modelName(
+                        Optional.ofNullable(photoOrder.getPhotoBooking().getMapPhotoCalendarModel()).map(MapPhotoCalendarModel::getPhotoModel).map(PhotoModel::getModelName).orElse("")
+                )
+                .packageName(
+                        Optional.ofNullable(photoOrder.getPhotoPackage()).map(PhotoPackage::getName).orElse("")
+                )
+                .colorName(
+                        Optional.ofNullable(photoOrder.getCodePhotoBackgroundColor()).map(CodePhotoBackgroundColor::getPhotoColorName).orElse("")
+                )
+                .phone(vendor.getPhone())
+                .cancelTypeID(photoOrder.getCancelTypeID())
+                .cancelledByUserName(photoOrder.getCancelledByUserName())
+                .isCancelledBy(photoOrder.getIsCancelledBy())
+                .cancelNote(photoOrder.getCancelNote())
+                .cancelledOn(photoOrder.get_cancelledOn())
+                .cancellationFee(photoOrder.getCancellationFee())
+                .cancellationFeeRate(photoOrder.getCancellationFeeRate())
+                .isSocialMediaPromotionAgree(photoOrder.getIsSocialMediaPromotionAgree()).build();
 
-	@Column(name = "IsCancelledBy")
-	private Integer isCancelledBy;
-	public Integer getIsCancelledBy() {
-		return isCancelledBy;
-	}
-
-	public void setIsCancelledBy(Integer isCancelledBy) {
-		this.isCancelledBy = isCancelledBy;
-	}
-
-	@Column(name = "CancelNote")
-	private String cancelNote;
-	public String getCancelNote() {
-		return cancelNote;
-	}
-
-	public void setCancelNote(String cancelNote) {
-		this.cancelNote = cancelNote;
-	}
-
-	@JsonIgnore
-	@Column(name = "CancelledOn")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _cancelledOn;
-	public LocalDateTime get_cancelledOn() {
-		return _cancelledOn;
-	}
-
-	public void set_cancelledOn(LocalDateTime _cancelledOn) {
-		this._cancelledOn = _cancelledOn;
-	}
-
-	@Transient
-	private String cancelledOn;
-	public String getCancelledOn() {
-		return _cancelledOn != null ? _cancelledOn.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
-	
-	@Transient
-	@JsonIgnore
-	@Column(name = "PickupDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _pickupDate;
-	public LocalDateTime get_pickupDate() {
-		return _pickupDate;
-	}
-
-	public void set_pickupDate(LocalDateTime _pickupDate) {
-		this._pickupDate = _pickupDate;
-	}
-	
-	@Transient
-	private String pickupDate;
-	public String getPickupDate() {
-		return _pickupDate != null ? _pickupDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
+    }
 }
