@@ -48,21 +48,21 @@ public class PhotoStudioServiceTest {
 
     }
 
-    @Test
-    public void getPhotoOrder_NotUsingSP() {
-
-        String poNumber = "FGP20190226356";
-        Map<String, Object> orderInfo = photoStudioService.getPhotoOrderNotUsingSP(poNumber);
-
-        DetailPhotoOrder photoOrder = (DetailPhotoOrder) orderInfo.get("photoOrder");
-        List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) orderInfo.get("actionLogs");
-        List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) orderInfo.get("items");
-        List<PhotoActionUser> photoActionUsers = (List<PhotoActionUser>) orderInfo.get("photoStudioUsers");
-
-        log.debug("photo orders : {}", photoOrder.getCategoryName());
-        log.debug("log photo actions : {}", logPhotoActions.size());
-        log.debug("photo order details : {}", photoOrderDetails.size());
-        log.debug("photo action users : {}", photoActionUsers.size());
-
-    }
+//    @Test
+//    public void getPhotoOrder_NotUsingSP() {
+//
+//        String poNumber = "FGP20190226356";
+//        Map<String, Object> orderInfo = photoStudioService.getPhotoOrderNotUsingSP(poNumber);
+//
+//        DetailPhotoOrder photoOrder = (DetailPhotoOrder) orderInfo.get("photoOrder");
+//        List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) orderInfo.get("actionLogs");
+//        List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) orderInfo.get("items");
+//        List<PhotoActionUser> photoActionUsers = (List<PhotoActionUser>) orderInfo.get("photoStudioUsers");
+//
+//        log.debug("photo orders : {}", photoOrder.getCategoryName());
+//        log.debug("log photo actions : {}", logPhotoActions.size());
+//        log.debug("photo order details : {}", photoOrderDetails.size());
+//        log.debug("photo action users : {}", photoActionUsers.size());
+//
+//    }
 }
