@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
 import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
 import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
+import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.dao.primary.CodeBodySizeRepository;
 import net.fashiongo.webadmin.dao.primary.CollectionCategoryItemRepository;
 import net.fashiongo.webadmin.dao.primary.MapAdVendorItemRepository;
@@ -25,6 +25,7 @@ import net.fashiongo.webadmin.model.pojo.ad.CategoryList;
 import net.fashiongo.webadmin.model.pojo.ad.CollectionCategory;
 import net.fashiongo.webadmin.model.pojo.ad.CuratedBestList;
 import net.fashiongo.webadmin.model.pojo.ad.CuratedList;
+import net.fashiongo.webadmin.model.pojo.ad.FGListADCalendar;
 import net.fashiongo.webadmin.model.pojo.ad.SelectData;
 import net.fashiongo.webadmin.model.pojo.ad.VendorCount;
 import net.fashiongo.webadmin.model.pojo.ad.VendorData1;
@@ -34,6 +35,7 @@ import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdDetailParamet
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdListParameter;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryListAdCountParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.SaveCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddSpotSettingParameter;
@@ -44,6 +46,7 @@ import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdDetailResponse
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdListResponse;
+import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryListAdCountResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
@@ -54,6 +57,7 @@ import net.fashiongo.webadmin.model.primary.AdVendor;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
 import net.fashiongo.webadmin.model.primary.CollectionCategoryItem;
 import net.fashiongo.webadmin.model.primary.MapAdVendorItem;
+import net.fashiongo.webadmin.utility.Utility;
 
 @Service
 public class AdService extends ApiService {
@@ -70,6 +74,8 @@ public class AdService extends ApiService {
 	private CollectionCategoryItemRepository collectionCategoryItemRepository;
 	@Autowired
 	private MapAdVendorItemRepository mapAdVendorItemRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 
 	/**
 	 * 
@@ -248,6 +254,30 @@ public class AdService extends ApiService {
 		result.setBiddingList(biddingList);
 		result.setCuratedList(curatedList);
 
+		return result;
+	}
+	
+	/**
+	 * 
+	 * Get FG Category List Ad Info
+	 * 
+	 * @since 2019. 03. 29
+	 * @author David Lee
+	 * @param categoryDate
+	 * @return GetCategoryAdCalendar
+	 */
+	public GetFGCategoryListAdCountResponse GetFGCategoryAdCount(GetFGCategoryListAdCountParameter parameters) {
+		GetFGCategoryListAdCountResponse result = new GetFGCategoryListAdCountResponse();
+		String spName = "up_wa_GetFGCategoryAdCalendar";
+		List<Object> params = new ArrayList<Object>();
+		
+        params.add(parameters.getCategoryDate());
+        params.add(parameters.getCategoryID());
+        params.add(parameters.getLvl());
+
+		List<Object> _result = jdbcHelper.executeSP(spName, params, FGListADCalendar.class);
+		List<FGListADCalendar> AdCountList = (List<FGListADCalendar>) _result.get(0);
+		result.setFgCalendarList(AdCountList);
 		return result;
 	}
 	
