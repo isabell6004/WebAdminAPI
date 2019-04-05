@@ -23,7 +23,7 @@ public class MapPhotoCalendarModel implements IPersistent, Serializable {
 	@Column(name = "CalendarID")
 	private Integer calendarID;
 
-	@Column(name = "ModelID", insertable = false, updatable = false)
+	@Column(name = "ModelID")
 	private Integer modelID;
 
 	@Column(name = "AvailableUnit")
@@ -33,6 +33,6 @@ public class MapPhotoCalendarModel implements IPersistent, Serializable {
 	private Boolean isDelete;
 
     @ManyToOne
-    @JoinColumn(name = "ModelID", referencedColumnName = "ModelID")
+    @JoinColumn(name = "ModelID", referencedColumnName = "ModelID", insertable = false, updatable = false)
     private PhotoModel photoModel;
 }
