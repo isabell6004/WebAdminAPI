@@ -245,5 +245,5 @@ spring:
     properties.hibernate.generate_statistics: false
 
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.32:29071
-  fgWebAdminAPI_EndPoint: http://localhost:29961/api/
+  fgServiceAPI_EndPoint: http://10.10.0.145:29011
+  fgWebAdminAPI_EndPoint: https://qa-webadmin.fashiongo.net/api/
