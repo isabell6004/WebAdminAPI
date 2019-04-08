@@ -13,6 +13,10 @@ public class FGListADCalendar {
 	private Integer totalSetCount;
 	@JsonProperty("CategoryID")
 	private Integer categoryID;
+	@JsonProperty("DateIndex")
+	private Integer dateIndex;
+	@JsonProperty("CategoryName")
+	private String categoryName;
 	
 	public Integer getTotalSpotCount() {
 		return totalSpotCount;
@@ -25,5 +29,11 @@ public class FGListADCalendar {
 	}
 	public Integer getCategoryID() {
 		return categoryID;
+	}	
+	public Integer getDateIndex() {
+		return dateIndex;
+	}	
+	public String getCategoryName() {
+		return categoryName;
 	}	
 }

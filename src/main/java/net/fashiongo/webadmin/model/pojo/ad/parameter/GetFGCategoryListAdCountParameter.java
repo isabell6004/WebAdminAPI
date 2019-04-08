@@ -19,6 +19,10 @@ public class GetFGCategoryListAdCountParameter {
     @ApiModelProperty(required = false, example="1")
 	@JsonProperty("categoryID")
 	private Integer categoryID;
+    
+    @ApiModelProperty(required = false, example="31")
+	@JsonProperty("lastDate")
+    private Integer lastDate;
 
 	public String getCategoryDate() {
 		return categoryDate + "-01";
@@ -42,6 +46,14 @@ public class GetFGCategoryListAdCountParameter {
 
 	public void setCategoryID(Integer categoryID) {
 		this.categoryID = categoryID;
+	}
+
+	public Integer getLastDate() {
+		return lastDate;
+	}
+
+	public void setLastDate(Integer lastDate) {
+		this.lastDate = lastDate;
 	}
     
     

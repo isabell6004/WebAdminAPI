@@ -274,6 +274,7 @@ public class AdService extends ApiService {
         params.add(parameters.getCategoryDate());
         params.add(parameters.getCategoryID());
         params.add(parameters.getLvl());
+        params.add(parameters.getLastDate());
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, FGListADCalendar.class);
 		List<FGListADCalendar> AdCountList = (List<FGListADCalendar>) _result.get(0);

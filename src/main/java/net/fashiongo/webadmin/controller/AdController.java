@@ -155,12 +155,6 @@ public class AdController {
 		JsonResponse<GetFGCategoryListAdCountResponse> results = new JsonResponse<GetFGCategoryListAdCountResponse>(false, null, 0, null);
 		GetFGCategoryListAdCountResponse result = adService.GetFGCategoryAdCount(parameters);
 		
-		for(FGListADCalendar fad : result.getFgCalendarList()) {
-			System.out.println("############################ Value Test : "+fad.getCategoryID()
-					+", "+fad.getTotalSetCount()+","+fad.getTotalSoldCount()
-					+", "+fad.getTotalSpotCount());
-		}
-		
 		results.setData(result);
 		results.setSuccess(true);
 		
