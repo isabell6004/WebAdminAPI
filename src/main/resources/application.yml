@@ -246,4 +246,4 @@ spring:
 
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.32:29071
-  fgWebAdminAPI_EndPoint: https://localhost:29961/api/
+  fgWebAdminAPI_EndPoint: http://localhost:29961/api/
