@@ -246,4 +246,3 @@ spring:
 
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.145:29011
-  fgWebAdminAPI_EndPoint: https://qa-webadmin.fashiongo.net/api/
