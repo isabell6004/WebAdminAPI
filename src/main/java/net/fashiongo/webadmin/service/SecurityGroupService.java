@@ -787,7 +787,7 @@ public class SecurityGroupService extends ApiService {
 	private ResultCode setSaveSecurityPermission(Integer userID, List<SecurityUserPermission> permissionList) {
 		ResultCode result = new ResultCode(false, 0, null);
 		//permission delete
-    	securityPermissionRepository.deleteByUserID(userID);
+    	securityPermissionRepository.deleteByUserIDAndApplicationID(userID, 1);
     	
     	//permission insert
     	List<SecurityPermission> securityPermissionList = new ArrayList<SecurityPermission>();
