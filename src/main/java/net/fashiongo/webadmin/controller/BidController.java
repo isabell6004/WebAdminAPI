@@ -105,4 +105,17 @@ public class BidController {
 
 		return result;
 	}
+	
+	
+	@RequestMapping(value = "setacceptbids", method = RequestMethod.POST)
+	public JsonResponse<String> acceptBids() {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result = bidService.acceptBids();
+
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
+	}
 }

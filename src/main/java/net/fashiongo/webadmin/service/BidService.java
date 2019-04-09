@@ -1,10 +1,24 @@
 package net.fashiongo.webadmin.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import net.fashiongo.webadmin.dao.primary.AdBidLogRepository;
+import net.fashiongo.webadmin.dao.primary.AdBidRepository;
+import net.fashiongo.webadmin.dao.primary.AdBidSettingRepository;
+import net.fashiongo.webadmin.dao.primary.AdPurchaseRepository;
+import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
 import net.fashiongo.webadmin.model.pojo.bid.BidSetting;
 import net.fashiongo.webadmin.model.pojo.bid.BidSettingLastRecords;
 import net.fashiongo.webadmin.model.pojo.bid.BidSettingLastWeek;
@@ -15,6 +29,11 @@ import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsRe
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastWeekResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.primary.AdBid;
+import net.fashiongo.webadmin.model.primary.AdBidLog;
+import net.fashiongo.webadmin.model.primary.AdBidSetting;
+import net.fashiongo.webadmin.model.primary.AdPurchase;
+import net.fashiongo.webadmin.model.primary.AdVendor;
 
 /**
  * 
@@ -22,6 +41,19 @@ import net.fashiongo.webadmin.model.pojo.common.ResultCode;
  */
 @Service
 public class BidService extends ApiService {
+	
+	private static Logger logger = LoggerFactory.getLogger(BidService.class);
+
+	@Autowired
+	private AdBidSettingRepository adBidSettingRepository; 
+	@Autowired
+	private AdBidRepository adBidRepository;
+	@Autowired
+	private AdBidLogRepository adBidLogRepository;
+	@Autowired
+	private AdVendorRepository adVendorRepository;
+	@Autowired
+	private AdPurchaseRepository adPurchaseRepository;
 
 	/**
 	 * Get BidSetting LastRecords
@@ -129,4 +161,98 @@ public class BidService extends ApiService {
 		
 		return result;
 	}
+	
+	@Transactional("primaryTransactionManager")
+	public ResultCode acceptBids() {		
+		List<AdBidSetting> adBidSettingList = adBidSettingRepository.getFinalizeAdBidSettingTargetList();
+
+		LocalDateTime finalizedOn = LocalDateTime.now();
+        String sessionId = UUID.randomUUID().toString();
+        
+		try {
+			adBidSettingList.forEach(adBidSetting -> {
+				System.out.println("adBidSetting : " + adBidSetting);
+				
+				//  update Ad_Bid_Setting (finalizedOn, finalizedBy)
+				adBidSetting.setFinalizedOn(finalizedOn);
+				adBidSetting.setFinalizedBy("AUTO");
+				adBidSettingRepository.save(adBidSetting);
+				
+				List<AdBid> adBidList = adBidRepository.findByBidSettingIdAndStatusId(adBidSetting.getBidSettingId(), 1);
+				System.out.println("adBidList.size : " + adBidList.size());
+				
+				adBidList.forEach(adBid -> {
+
+					//  update Ad_Bid (finalizedBidAmount, finalizedOn, finalizedBy)
+					adBid.setBidAmount(
+							BigDecimal.valueOf(
+									Math.round((
+											adBid.getCurrentBidAmount().longValue()	
+											+ (adBid.getMaxBidAmount() == null || adBid.getMaxBidAmount().longValue() == 0L 
+												? adBid.getCurrentBidAmount().longValue() : adBid.getMaxBidAmount().longValue())) 
+											/ 2 / adBidSetting.getBidPriceUnit().longValue())
+									* adBidSetting.getBidPriceUnit().longValue()));
+					adBid.setFinalizedOn(finalizedOn);
+					adBid.setFinalizedBy("AUTO");
+					adBidRepository.save(adBid);
+					
+					//  insert Ad_Bid_Log
+					AdBidLog adBidLog = makeAdBidLog(adBid);
+					adBidLog.setCreatedOn(finalizedOn);
+					adBidLog.setCreatedBy("FINAL");
+					adBidLog.setOriginBidId(BigDecimal.valueOf(0));
+					adBidLogRepository.save(adBidLog);
+					
+					//  update Ad_Vendor (wholeSalerId, actualPrice, howToInput(2), howtoSell(2), active(1), modifiedOn, modifiedBy)
+					AdVendor adVendor = adVendorRepository.findTopBySpotIDAndFromDateAndWholeSalerIDIsNull(
+							adBidSetting.getSpotId(), Date.from(adBidSetting.getFromDate().atZone(ZoneId.systemDefault()).toInstant()));
+					adVendor.setWholeSalerID(adBid.getWholeSalerId());
+					adVendor.setActualPrice(adBid.getBidAmount());
+					adVendor.setHowToInput(2);
+					adVendor.setHowtoSell(2);
+					adVendor.setActive(true);
+					adVendor.setModifiedOn(Date.from(finalizedOn.atZone(ZoneId.systemDefault()).toInstant()));
+					adVendor.setModifiedBy("AUTO");
+					adVendorRepository.save(adVendor);
+					System.out.println("adVendor.getAdID() : " + adVendor.getAdID());
+
+					//  update Ad_Purchase (purchaseSessionId, wholeSalerId, purchaseAmount, purchaseTypeId(2), poNumber(FGAB-adId(10character)), createdOn, createdBy, modifiedOn, modifiedBy)
+					AdPurchase adPurchase = adPurchaseRepository.findTopByAdId(adVendor.getAdID());
+					if (adPurchase == null) {
+						adPurchase = new AdPurchase();
+						adPurchase.setAdId(adVendor.getAdID());
+					}
+					adPurchase.setPurchaseSessionId(sessionId);
+					adPurchase.setWholeSalerId(adBid.getWholeSalerId());
+					adPurchase.setPurchaseAmount(adBid.getBidAmount());
+					adPurchase.setPurchaseTypeId(2);
+					adPurchase.setPoNumber(String.format("FGAB-%010d", adVendor.getAdID()));
+					adPurchase.setCreatedOn(finalizedOn);
+					adPurchase.setCreatedBy("AUTO");				
+					adPurchase.setModifiedOn(finalizedOn);
+					adPurchase.setModifiedBy("AUTO");				
+					adPurchaseRepository.save(adPurchase);
+				});
+			});
+		} catch (Exception e) {
+			logger.error("acceptBids error :", e.getMessage());
+			throw e;
+		}
+		
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+	}
+	
+	private AdBidLog makeAdBidLog(AdBid adBid) {
+		AdBidLog adBidLog = new AdBidLog();
+		adBidLog.setBidId(adBid.getBidId());
+		adBidLog.setBidSettingId(adBid.getBidSettingId());
+		adBidLog.setWholeSalerId(adBid.getWholeSalerId());
+		adBidLog.setBidAmount(adBid.getBidAmount());
+		adBidLog.setBiddedOn(adBid.getBiddedOn());
+		adBidLog.setStatusId(adBid.getStatusId());
+		adBidLog.setMaxBidAmount(adBid.getMaxBidAmount());
+		adBidLog.setBiddedBy(adBid.getBiddedBy());
+		return adBidLog;
+	}
+	
 }
