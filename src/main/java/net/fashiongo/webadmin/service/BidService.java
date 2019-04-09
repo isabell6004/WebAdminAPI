@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import net.fashiongo.webadmin.dao.primary.AdBidRepository;
 import net.fashiongo.webadmin.dao.primary.AdBidSettingRepository;
 import net.fashiongo.webadmin.dao.primary.AdPurchaseRepository;
 import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
+import net.fashiongo.webadmin.dao.primary.EntityActionLogRepository;
 import net.fashiongo.webadmin.model.pojo.bid.BidSetting;
 import net.fashiongo.webadmin.model.pojo.bid.BidSettingLastRecords;
 import net.fashiongo.webadmin.model.pojo.bid.BidSettingLastWeek;
@@ -34,6 +36,7 @@ import net.fashiongo.webadmin.model.primary.AdBidLog;
 import net.fashiongo.webadmin.model.primary.AdBidSetting;
 import net.fashiongo.webadmin.model.primary.AdPurchase;
 import net.fashiongo.webadmin.model.primary.AdVendor;
+import net.fashiongo.webadmin.model.primary.EntityActionLog;
 
 /**
  * 
@@ -54,6 +57,8 @@ public class BidService extends ApiService {
 	private AdVendorRepository adVendorRepository;
 	@Autowired
 	private AdPurchaseRepository adPurchaseRepository;
+	@Autowired
+	private EntityActionLogRepository entityActionLogRepository;
 
 	/**
 	 * Get BidSetting LastRecords
@@ -253,6 +258,35 @@ public class BidService extends ApiService {
 		adBidLog.setMaxBidAmount(adBid.getMaxBidAmount());
 		adBidLog.setBiddedBy(adBid.getBiddedBy());
 		return adBidLog;
+	}
+	
+	@Transactional("primaryTransactionManager")
+	public ResultCode cancelBid(Integer bidId, String adminId) {
+		// update Ad_Bid
+		Optional<AdBid> optionalAdBid = adBidRepository.findById(bidId);
+		if (optionalAdBid.isPresent()) {
+			AdBid adBid = optionalAdBid.get();
+			adBid.setStatusId(7);
+			adBid.setFinalizedOn(LocalDateTime.now());
+			adBid.setFinalizedBy(adminId);
+			adBidRepository.save(adBid);
+		} else {
+			return new ResultCode(false, -1, "Bid not found.");
+		}
+		
+		// insert Entity_ActionLog (EntityTypeId(5), EntityId(bidId), ActionId(2001), ActedOn(now), ActedBy, Remark(bidding cancelled from webadmin))
+		EntityActionLog actionLog = new EntityActionLog();
+		actionLog.setEntityTypeID(5);
+		actionLog.setEntityID(bidId);
+		actionLog.setActionID(2001);
+		actionLog.setActedOn(LocalDateTime.now());
+		actionLog.setActedBy(adminId);
+		actionLog.setRemark("bidding cancelled from webadmin");
+		entityActionLogRepository.save(actionLog);
+		
+		// remove canceled bid from redis
+		
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 	
 }
