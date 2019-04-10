@@ -281,7 +281,7 @@ public class BidService extends ApiService {
 				addAdBidLog(adBid, finalizedOn, adminId);
 
 				//  update Ad_Vendor & Ad_Purchase
-				AdVendor adVendor = adVendorRepository.findTopBySpotIDAndFromDateAndWholeSalerIDIsNull(Integer.parseInt(spotId), adDate);
+				AdVendor adVendor = adVendorRepository.findTopBySpotIDAndFromDateAndWholeSalerID(Integer.parseInt(spotId), adDate, Integer.valueOf(0));
 				addToAdVendorAndAdPurchase(adVendor, adBid, sessionId, finalizedOn, adminId);
 			});
 		} catch (Exception e) {
@@ -333,11 +333,11 @@ public class BidService extends ApiService {
 			adPurchase = new AdPurchase();
 			adPurchase.setAdId(adVendor.getAdID());
 		}
-		adPurchase.setPurchaseSessionId(sessionId == null ? null : sessionId);
-		adPurchase.setWholeSalerId(adBid == null ? null : adBid.getWholeSalerId());
-		adPurchase.setPurchaseAmount(adBid == null ? null : adBid.getFinalizedBidAmount());
+		adPurchase.setPurchaseSessionId(sessionId == null ? "" : sessionId);
+		adPurchase.setWholeSalerId(adBid == null ? 0 : adBid.getWholeSalerId());
+		adPurchase.setPurchaseAmount(adBid == null ? BigDecimal.valueOf(0L) : adBid.getFinalizedBidAmount());
 		adPurchase.setPurchaseTypeId(2);
-		adPurchase.setPoNumber(adBid == null ? null : String.format("FGAB-%010d", adVendor.getAdID()));
+		adPurchase.setPoNumber(adBid == null ? "" : String.format("FGAB-%010d", adVendor.getAdID()));
 		adPurchase.setCreatedOn(finalizedOn);
 		adPurchase.setCreatedBy(finalizedBy);				
 		adPurchase.setModifiedOn(finalizedOn);
