@@ -300,7 +300,7 @@ public class BidService extends ApiService {
 		adBidLog.setBidId(adBid.getBidId());
 		adBidLog.setBidSettingId(adBid.getBidSettingId());
 		adBidLog.setWholeSalerId(adBid.getWholeSalerId());
-		adBidLog.setBidAmount(adBid.getBidAmount());
+		adBidLog.setBidAmount(adBid.getFinalizedBidAmount() == null ? adBid.getCurrentBidAmount() : adBid.getFinalizedBidAmount());
 		adBidLog.setBiddedOn(adBid.getBiddedOn());
 		adBidLog.setStatusId(adBid.getStatusId());
 		adBidLog.setMaxBidAmount(adBid.getMaxBidAmount());
@@ -313,7 +313,7 @@ public class BidService extends ApiService {
 	
 	private void addToAdVendorAndAdPurchase(AdVendor adVendor, AdBid adBid, String sessionId, LocalDateTime finalizedOn, String finalizedBy) {
 		adVendor.setWholeSalerID(adBid == null ? null : adBid.getWholeSalerId());
-		adVendor.setActualPrice(adBid == null ? null : adBid.getBidAmount());
+		adVendor.setActualPrice(adBid == null ? null : adBid.getFinalizedBidAmount());
 		adVendor.setHowToInput(adBid == null ? null : 2);
 		adVendor.setHowtoSell(adBid == null ? null : 2);
 		adVendor.setActive(adBid == null ? false : true);
@@ -329,7 +329,7 @@ public class BidService extends ApiService {
 		}
 		adPurchase.setPurchaseSessionId(sessionId == null ? null : sessionId);
 		adPurchase.setWholeSalerId(adBid == null ? null : adBid.getWholeSalerId());
-		adPurchase.setPurchaseAmount(adBid == null ? null : adBid.getBidAmount());
+		adPurchase.setPurchaseAmount(adBid == null ? null : adBid.getFinalizedBidAmount());
 		adPurchase.setPurchaseTypeId(2);
 		adPurchase.setPoNumber(adBid == null ? null : String.format("FGAB-%010d", adVendor.getAdID()));
 		adPurchase.setCreatedOn(finalizedOn);
@@ -341,12 +341,14 @@ public class BidService extends ApiService {
 	
 	@Transactional("primaryTransactionManager")
 	public ResultCode cancelBid(Integer bidId, String adminId) {
+		LocalDateTime finalizedOn = LocalDateTime.now();
+		
 		// update Ad_Bid
 		Optional<AdBid> optionalAdBid = adBidRepository.findById(bidId);
 		if (optionalAdBid.isPresent()) {
 			AdBid adBid = optionalAdBid.get();
 			adBid.setStatusId(7);
-			adBid.setFinalizedOn(LocalDateTime.now());
+			adBid.setFinalizedOn(finalizedOn);
 			adBid.setFinalizedBy(adminId);
 			adBidRepository.save(adBid);
 		} else {
@@ -358,7 +360,7 @@ public class BidService extends ApiService {
 		actionLog.setEntityTypeID(5);
 		actionLog.setEntityID(bidId);
 		actionLog.setActionID(2001);
-		actionLog.setActedOn(LocalDateTime.now());
+		actionLog.setActedOn(finalizedOn);
 		actionLog.setActedBy(adminId);
 		actionLog.setRemark("bidding cancelled from webadmin");
 		entityActionLogRepository.save(actionLog);
