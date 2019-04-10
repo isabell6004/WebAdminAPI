@@ -281,7 +281,7 @@ public class BidService extends ApiService {
 				addAdBidLog(adBid, finalizedOn, adminId);
 
 				//  update Ad_Vendor & Ad_Purchase
-				AdVendor adVendor = adVendorRepository.findTopBySpotIDAndFromDateAndWholeSalerID(Integer.parseInt(spotId), adDate, Integer.valueOf(0));
+				AdVendor adVendor = adVendorRepository.findTopBySpotIDAndFromDateAndWholeSalerIDIsNull(Integer.parseInt(spotId), adDate);
 				addToAdVendorAndAdPurchase(adVendor, adBid, sessionId, finalizedOn, adminId);
 			});
 		} catch (Exception e) {
