@@ -8,6 +8,7 @@ import net.fashiongo.webadmin.model.primary.AdBid;
 
 public interface AdBidRepository extends CrudRepository<AdBid, Integer> {
 	
-	public List<AdBid> findByBidSettingIdAndStatusId(Integer bidSettingId, Integer statusId);
+	List<AdBid> findByBidSettingIdAndStatusId(Integer bidSettingId, Integer statusId);
+	List<AdBid> findByBidIdInAndStatusId(List<Integer> bidIdList, Integer statusId);
 
 }

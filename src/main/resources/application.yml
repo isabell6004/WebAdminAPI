@@ -87,6 +87,11 @@ webAdminapi:
     develop:
       check-token: true
 
+bid-redis:
+  lock:
+    timeout-seconds:
+      acquire: 3
+      expire: 10
 ---
 
 # Local

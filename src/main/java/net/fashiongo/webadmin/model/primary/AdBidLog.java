@@ -50,7 +50,7 @@ public class AdBidLog {
 	private String biddedBy;
 	
 	@Column(name = "OriginBidId")
-	private BigDecimal originBidId;
+	private Integer originBidId;
 
 	public Integer getLogId() {
 		return logId;
@@ -140,11 +140,11 @@ public class AdBidLog {
 		this.biddedBy = biddedBy;
 	}
 
-	public BigDecimal getOriginBidId() {
+	public Integer getOriginBidId() {
 		return originBidId;
 	}
 
-	public void setOriginBidId(BigDecimal originBidId) {
+	public void setOriginBidId(Integer originBidId) {
 		this.originBidId = originBidId;
 	}
 	
