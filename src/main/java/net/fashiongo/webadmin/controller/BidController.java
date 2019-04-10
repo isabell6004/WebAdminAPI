@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastRecordsParameter;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastWeekParameter;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingParameter;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidAcceptParameter;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidCancelParameter;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidSettingParameter;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsResponse;
@@ -108,12 +109,30 @@ public class BidController {
 	}
 	
 	
-	@RequestMapping(value = "setacceptbids", method = RequestMethod.POST)
-	public JsonResponse<String> acceptBids() {
+	@RequestMapping(value = "setacceptbidsAuto", method = RequestMethod.POST)
+	public JsonResponse<String> acceptBidsAuto() {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result;
 		try {
 			result = bidService.acceptBids();
+		} catch (Exception e) {
+			results.setMessage("Accept Bid Auto Failed.");			
+			return results;
+		}
+
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
+	}
+	
+	@RequestMapping(value = "setacceptbids", method = RequestMethod.POST)
+	public JsonResponse<String> acceptBids(@RequestBody SetBidAcceptParameter parameter) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result;
+		try {
+			result = bidService.editBid(parameter.getSpotId(), parameter.getAddate(), parameter.getBidids(), parameter.getAdminid());
 		} catch (Exception e) {
 			results.setMessage("Accept Bid Failed.");			
 			return results;

@@ -48,6 +48,9 @@ public class AdBid {
 	
 	@Column(name = "CurrentBidAmount")
 	private BigDecimal currentBidAmount;
+	
+	@Column(name = "FinalizedBidAmount")
+	private BigDecimal finalizedBidAmount;
 
 	public Integer getBidId() {
 		return bidId;
@@ -135,6 +138,14 @@ public class AdBid {
 
 	public void setCurrentBidAmount(BigDecimal currentBidAmount) {
 		this.currentBidAmount = currentBidAmount;
+	}
+
+	public BigDecimal getFinalizedBidAmount() {
+		return finalizedBidAmount;
+	}
+
+	public void setFinalizedBidAmount(BigDecimal finalizedBidAmount) {
+		this.finalizedBidAmount = finalizedBidAmount;
 	}
 	
 }

@@ -15,5 +15,6 @@ public interface AdVendorRepository extends CrudRepository<AdVendor, Integer> {
 
 	AdVendor findTopBySpotID(Integer spotID);
 	AdVendor findTopBySpotIDAndFromDateAndWholeSalerIDIsNull(Integer spotID, Date fromDate);
+	AdVendor findTopBySpotIDAndFromDateAndWholeSalerID(Integer spotID, Date fromDate, Integer wholeSalerID);
 
 }
