@@ -195,6 +195,7 @@ public class BidService extends ApiService {
 				adBidList.forEach(adBid -> {
 					//  update Ad_Bid (finalizedBidAmount, finalizedOn, finalizedBy)
 					adBid.setFinalizedBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
+					adBid.setBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
 					adBid.setFinalizedOn(finalizedOn);
 					adBid.setFinalizedBy("AUTO");
 					adBidRepository.save(adBid);
@@ -277,6 +278,7 @@ public class BidService extends ApiService {
 					needUpdate = true;
 					adBid.setStatusId(1);
 					adBid.setFinalizedBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
+					adBid.setBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
 				}
 				adBid.setFinalizedOn(finalizedOn);
 				adBid.setFinalizedBy(adminId);
