@@ -207,6 +207,8 @@ public class BidService extends ApiService {
 							adBidSetting.getSpotId(), Date.from(adBidSetting.getFromDate().atZone(ZoneId.systemDefault()).toInstant()));
 					addToAdVendorAndAdPurchase(adVendor, adBid, sessionId, finalizedOn, "AUTO");
 				});
+
+				redisTemplate.opsForHash().delete(BIDDING_TOP_MAP_HASH, String.valueOf(adBidSetting.getBidSettingId()));
 			});
 		} catch (Exception e) {
 			logger.error("acceptBids error :", e.getMessage());
