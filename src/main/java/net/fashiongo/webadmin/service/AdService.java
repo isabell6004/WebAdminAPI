@@ -26,6 +26,7 @@ import net.fashiongo.webadmin.model.pojo.ad.CollectionCategory;
 import net.fashiongo.webadmin.model.pojo.ad.CuratedBestList;
 import net.fashiongo.webadmin.model.pojo.ad.CuratedList;
 import net.fashiongo.webadmin.model.pojo.ad.FGListADCalendar;
+import net.fashiongo.webadmin.model.pojo.ad.FGListADList;
 import net.fashiongo.webadmin.model.pojo.ad.SelectData;
 import net.fashiongo.webadmin.model.pojo.ad.VendorCount;
 import net.fashiongo.webadmin.model.pojo.ad.VendorData1;
@@ -35,6 +36,7 @@ import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdDetailParamet
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdListParameter;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryAdListParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryListAdCountParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.SaveCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddPageParameter;
@@ -46,6 +48,7 @@ import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdDetailResponse
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdListResponse;
+import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryAdListResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryListAdCountResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -488,6 +491,22 @@ public class AdService extends ApiService {
 		result.setCategoryList(categoryList);
 		result.setBiddingList(biddingList);
 		result.setCuratedBestList(curatedBestList);
+		
+		return result;
+	}
+	
+	public GetFGCategoryAdListResponse GetFGCategoryAdList(GetFGCategoryAdListParameter parameters) {
+		GetFGCategoryAdListResponse result = new GetFGCategoryAdListResponse();
+		String spName = "up_wa_GetFGCategoryAdList";
+		List<Object> params = new ArrayList<Object>();
+        params.add(parameters.getCategoryDate());
+        params.add(parameters.getCategoryId());
+		
+
+        List<Object> _result = jdbcHelper.executeSP(spName, params, FGListADList.class);
+		List<FGListADList> fgCategoryList = (List<FGListADList>) _result.get(0);
+		
+		result.setFgCategoryList(fgCategoryList);
 		
 		return result;
 	}
