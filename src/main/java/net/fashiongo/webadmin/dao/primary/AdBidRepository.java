@@ -10,5 +10,6 @@ public interface AdBidRepository extends CrudRepository<AdBid, Integer> {
 	
 	List<AdBid> findByBidSettingIdAndStatusId(Integer bidSettingId, Integer statusId);
 	List<AdBid> findByBidIdInAndStatusId(List<Integer> bidIdList, Integer statusId);
+	AdBid findFirstByBidSettingIdAndStatusIdOrderByBidAmountDescBiddedOnAsc(Integer bidSettingId, Integer statusId);
 
 }
