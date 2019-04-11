@@ -46,8 +46,8 @@ public class AdBid {
 	@Column(name = "BiddedBy")
 	private String biddedBy;
 	
-	@Column(name = "CurrentBidAmount")
-	private BigDecimal currentBidAmount;
+	@Column(name = "OriginBidAmount")
+	private BigDecimal originBidAmount;
 	
 	@Column(name = "FinalizedBidAmount")
 	private BigDecimal finalizedBidAmount;
@@ -132,12 +132,12 @@ public class AdBid {
 		this.biddedBy = biddedBy;
 	}
 
-	public BigDecimal getCurrentBidAmount() {
-		return currentBidAmount;
+	public BigDecimal getOriginBidAmount() {
+		return originBidAmount;
 	}
 
-	public void setCurrentBidAmount(BigDecimal currentBidAmount) {
-		this.currentBidAmount = currentBidAmount;
+	public void setOriginBidAmount(BigDecimal originBidAmount) {
+		this.originBidAmount = originBidAmount;
 	}
 
 	public BigDecimal getFinalizedBidAmount() {
