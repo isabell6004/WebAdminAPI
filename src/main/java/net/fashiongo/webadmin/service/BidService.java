@@ -371,7 +371,10 @@ public class BidService extends ApiService {
 
 			try {
 				// get cache instance
-				ListingAdBidSpot bidSpot = getFromCache(cacheHashKey);
+				ListingAdBidSpot bidSpot = getFromCache(cacheHashKey, () -> {
+					// check if db data exists when cache is empty
+					return getWinningBidsFromDB(adBidToCancel.getBidSettingId());
+				});
 
 				// if cache is empty or not in winning bids, update db and return true
 				if (CollectionUtils.isEmpty(bidSpot.getBidList()) || bidSpot.getBidList().stream().map(ListingAdBid::getBidId).noneMatch(currentBidId -> currentBidId.intValue() == bidId)) {
@@ -437,6 +440,29 @@ public class BidService extends ApiService {
 		entityActionLogRepository.save(actionLog);
 	}
 
+	private ListingAdBidSpot getWinningBidsFromDB(int bidSettingId) {
+		List<AdBid> adBidList = adBidRepository.findByBidSettingIdAndStatusIdOrderByBidAmountDescBiddedOnAsc(bidSettingId, 1);
+		ListingAdBidSpot newBidSpot = new ListingAdBidSpot();
+		if (CollectionUtils.isEmpty(adBidList)) {
+			newBidSpot.setBidList(new ArrayList<>());
+		} else {
+			newBidSpot.setBidList(adBidList.stream()
+					.map(adBid -> ListingAdBid.builder()
+							.bidSettingId(adBid.getBidSettingId())
+							.wid(adBid.getWholeSalerId())
+							.bidAmount(adBid.getBidAmount().longValue())
+							.maxBidAmount(adBid.getMaxBidAmount().longValue())
+							.biddedBy(adBid.getBiddedBy())
+							.biddedOn(adBid.getBiddedOn())
+							.bidId(adBid.getBidId())
+							.build())
+					.collect(Collectors.toList()));
+		}
+
+		logger.info("Load bidList from DB : {}", newBidSpot);
+		return newBidSpot;
+	}
+
 	private ListingAdBidSpot getFromCache(String cacheHashKey) {
 		return getFromCache(cacheHashKey, () -> {
 			ListingAdBidSpot newBidSpot = new ListingAdBidSpot();
@@ -446,8 +472,8 @@ public class BidService extends ApiService {
 	}
 
 	private ListingAdBidSpot getFromCache(String cacheHashKey, Supplier<ListingAdBidSpot> other) {
-		Object cacheBidList = redisTemplate.opsForHash().get(BIDDING_TOP_MAP_HASH, cacheHashKey);
-		return ((ListingAdBidSpot) Optional.ofNullable(cacheBidList).orElseGet(other)).copy();
+		ListingAdBidSpot listingAdBidSpot = (ListingAdBidSpot) redisTemplate.opsForHash().get(BIDDING_TOP_MAP_HASH, cacheHashKey);
+		return Optional.ofNullable(listingAdBidSpot).filter(bidSpot -> bidSpot.getBidList().size() != 0).orElseGet(other).copy();
 	}
 
 	private void setToCache(String cacheHashKey, ListingAdBidSpot bidSpot) {
