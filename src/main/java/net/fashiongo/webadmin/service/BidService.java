@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * 
  * @author JungHwan
@@ -387,7 +389,8 @@ public class BidService extends ApiService {
 				List<ListingAdBid> bidList = bidSpot.getBidList();
 				bidList.removeIf(listingAdBid -> listingAdBid.getBidId() == bidId);
 
-				AdBid newWinningBid = adBidRepository.findFirstByBidSettingIdAndStatusIdOrderByBidAmountDescBiddedOnAsc(bidSettingId, 2);
+				List<Integer> winnerWholesalerIds = bidList.stream().map(ListingAdBid::getWid).collect(toList());
+				AdBid newWinningBid = adBidRepository.findFirstByBidSettingIdAndStatusIdAndWholeSalerIdNotInOrderByBidAmountDescBiddedOnAscBidIdAsc(bidSettingId, 2, winnerWholesalerIds);
 
 				// if candidate not exists, update db & cache and return true
 				if (newWinningBid == null) {
