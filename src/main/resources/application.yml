@@ -250,4 +250,4 @@ spring:
     properties.hibernate.generate_statistics: false
 
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.145:29011
+  fgServiceAPI_EndPoint: http://10.10.0.32:29071
