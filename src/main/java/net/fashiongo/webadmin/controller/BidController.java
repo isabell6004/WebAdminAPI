@@ -109,7 +109,7 @@ public class BidController {
 	}
 	
 	
-	@RequestMapping(value = "setacceptbidsAuto", method = RequestMethod.POST)
+	@RequestMapping(value = "setacceptbidsAuto", method = RequestMethod.GET)
 	public JsonResponse<String> acceptBidsAuto() {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
 		ResultCode result;

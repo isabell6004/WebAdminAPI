@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.model.pojo.bid;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListingAdBidSpot implements Serializable {
 	private List<ListingAdBid> bidList;
@@ -11,6 +12,23 @@ public class ListingAdBidSpot implements Serializable {
 	}
 	public void setBidList(List<ListingAdBid> bidList) {
 		this.bidList = bidList;
+	}
+
+	public ListingAdBidSpot copy() {
+		ListingAdBidSpot listingAdBidSpot = new ListingAdBidSpot();
+		listingAdBidSpot.setBidList(bidList.stream()
+				.map(listingAdBid -> ListingAdBid.builder()
+						.bidId(listingAdBid.getBidId())
+						.wid(listingAdBid.getWid())
+						.bidSettingId(listingAdBid.getBidSettingId())
+						.bidAmount(listingAdBid.getBidAmount())
+						.maxBidAmount(listingAdBid.getMaxBidAmount())
+						.biddedBy(listingAdBid.getBiddedBy())
+						.biddedOn(listingAdBid.getBiddedOn())
+						.modified(false)
+						.build())
+				.collect(Collectors.toList()));
+		return listingAdBidSpot;
 	}
 
 	@Override

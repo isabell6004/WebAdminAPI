@@ -48,6 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, "/expired").permitAll()
 			.antMatchers(HttpMethod.POST, "/payment/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/payment/**").permitAll()
+			.antMatchers(HttpMethod.GET, "/bid/setacceptbidsAuto").hasIpAddress("127.0.0.1")
 			.antMatchers(HttpMethod.GET, 
 					"/v2/api-docs", 
 					"/configuration/ui", 

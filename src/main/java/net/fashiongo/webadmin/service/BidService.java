@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * 
  * @author JungHwan
@@ -51,8 +53,6 @@ public class BidService extends ApiService {
 	@Autowired
 	private AdPurchaseRepository adPurchaseRepository;
 	@Autowired
-	private AdPageSpotRepository adPageSpotRepository;
-	@Autowired
 	private EntityActionLogRepository entityActionLogRepository;
 	@Autowired
 	private RedissonClient redisson;
@@ -67,7 +67,6 @@ public class BidService extends ApiService {
 	private int REDIS_LOCK_EXPIRE_TIMEOUT_SECONDS;
 
 	// Bidding
-	public static final String BIDDING_TOP_LOCK_PREFIX = "bid_top_lock:";
 	public static final String BIDDING_TOP_MAP_HASH = "bid_top_spot";
 
 	/**
@@ -197,7 +196,8 @@ public class BidService extends ApiService {
 				
 				adBidList.forEach(adBid -> {
 					//  update Ad_Bid (finalizedBidAmount, finalizedOn, finalizedBy)
-					adBid.setFinalizedBidAmount(calculateBidAmount(adBid.getCurrentBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
+					adBid.setFinalizedBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
+					adBid.setBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
 					adBid.setFinalizedOn(finalizedOn);
 					adBid.setFinalizedBy("AUTO");
 					adBidRepository.save(adBid);
@@ -210,6 +210,8 @@ public class BidService extends ApiService {
 							adBidSetting.getSpotId(), Date.from(adBidSetting.getFromDate().atZone(ZoneId.systemDefault()).toInstant()));
 					addToAdVendorAndAdPurchase(adVendor, adBid, sessionId, finalizedOn, "AUTO");
 				});
+
+				redisTemplate.opsForHash().delete(BIDDING_TOP_MAP_HASH, String.valueOf(adBidSetting.getBidSettingId()));
 			});
 		} catch (Exception e) {
 			logger.error("acceptBids error :", e.getMessage());
@@ -277,7 +279,8 @@ public class BidService extends ApiService {
 					logger.info("Update Bidid : " + adBid.getBidId());
 					needUpdate = true;
 					adBid.setStatusId(1);
-					adBid.setFinalizedBidAmount(calculateBidAmount(adBid.getCurrentBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
+					adBid.setFinalizedBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
+					adBid.setBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
 				}
 				adBid.setFinalizedOn(finalizedOn);
 				adBid.setFinalizedBy(adminId);
@@ -300,11 +303,11 @@ public class BidService extends ApiService {
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 	
-	private BigDecimal calculateBidAmount(BigDecimal currentBidAmount, BigDecimal maxBidAmount, BigDecimal bidPriceUnit) {
+	private BigDecimal calculateBidAmount(BigDecimal bidAmount, BigDecimal maxBidAmount, BigDecimal bidPriceUnit) {
 		return BigDecimal.valueOf(
 				Math.round(
-						(currentBidAmount.longValue() 
-							+ (maxBidAmount == null || maxBidAmount.longValue() == 0L ? currentBidAmount.longValue() : maxBidAmount.longValue())
+						(bidAmount.longValue() 
+							+ (maxBidAmount == null || maxBidAmount.longValue() == 0L ? bidAmount.longValue() : maxBidAmount.longValue())
 						) / 2 / bidPriceUnit.longValue()
 				) * bidPriceUnit.longValue());
 	}
@@ -314,7 +317,7 @@ public class BidService extends ApiService {
 		adBidLog.setBidId(adBid.getBidId());
 		adBidLog.setBidSettingId(adBid.getBidSettingId());
 		adBidLog.setWholeSalerId(adBid.getWholeSalerId());
-		adBidLog.setBidAmount(adBid.getFinalizedBidAmount() == null ? adBid.getCurrentBidAmount() : adBid.getFinalizedBidAmount());
+		adBidLog.setBidAmount(adBid.getFinalizedBidAmount() == null ? adBid.getBidAmount() : adBid.getFinalizedBidAmount());
 		adBidLog.setBiddedOn(adBid.getBiddedOn());
 		adBidLog.setStatusId(adBid.getStatusId());
 		adBidLog.setMaxBidAmount(adBid.getMaxBidAmount());
@@ -352,8 +355,7 @@ public class BidService extends ApiService {
 		adPurchase.setModifiedBy(finalizedBy);				
 		adPurchaseRepository.save(adPurchase);
 	}
-	
-	@Transactional("primaryTransactionManager")
+
 	public ResultCode cancelBid(Integer bidId, String adminId) throws InterruptedException {
 		LocalDateTime finalizedOn = LocalDateTime.now();
 
@@ -361,9 +363,6 @@ public class BidService extends ApiService {
 		if (optionalAdBid.isPresent()) {
 			AdBid adBidToCancel = optionalAdBid.get();
 			int bidSettingId = adBidToCancel.getBidSettingId();
-			AdBidSetting adBidSetting = adBidSettingRepository.findById(bidSettingId).get();
-			AdPageSpot adPageSpot = adPageSpotRepository.findById(adBidSetting.getSpotId()).get();
-			int spotInstanceCount = adPageSpot.getSpotInstanceCount();
 			String cacheHashKey = String.valueOf(bidSettingId);
 
 			// acquire lock
@@ -376,25 +375,28 @@ public class BidService extends ApiService {
 
 			try {
 				// get cache instance
-				ListingAdBidSpot bidSpot = getFromCache(cacheHashKey);
+				ListingAdBidSpot bidSpot = getFromCache(cacheHashKey, () -> {
+					// check if db data exists when cache is empty
+					return getWinningBidsFromDB(adBidToCancel.getBidSettingId());
+				});
 
 				// if cache is empty or not in winning bids, update db and return true
-				if (CollectionUtils.isEmpty(bidSpot.getBidList()) || bidSpot.getBidList().stream().map(ListingAdBid::getBidId).noneMatch(currentBidId -> currentBidId == bidId)) {
-					updateAdStatus(adBidToCancel, "USER", 0, 7);
+				if (CollectionUtils.isEmpty(bidSpot.getBidList()) || bidSpot.getBidList().stream().map(ListingAdBid::getBidId).noneMatch(currentBidId -> currentBidId.intValue() == bidId)) {
+					updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
 
 					saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
 					return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 				}
 
 				List<ListingAdBid> bidList = bidSpot.getBidList();
-				List<Integer> currentWinningBidIds = bidList.stream().map(ListingAdBid::getBidId).collect(Collectors.toList());
 				bidList.removeIf(listingAdBid -> listingAdBid.getBidId() == bidId);
-				List<Integer> currentWinningWholesalerIds = bidList.stream().map(ListingAdBid::getWid).collect(Collectors.toList());
-				List<AdBidLog> adBidLogList = adBidLogRepository.findByBidSettingIdAndStatusIdAndOriginBidIdInAndWholeSalerIdNotIn(bidSettingId, 2, currentWinningBidIds, currentWinningWholesalerIds);
+
+				List<Integer> winnerWholesalerIds = bidList.stream().map(ListingAdBid::getWid).collect(toList());
+				AdBid newWinningBid = adBidRepository.findFirstByBidSettingIdAndStatusIdAndWholeSalerIdNotInOrderByBidAmountDescBiddedOnAscBidIdAsc(bidSettingId, 2, winnerWholesalerIds);
 
 				// if candidate not exists, update db & cache and return true
-				if (CollectionUtils.isEmpty(adBidLogList)) {
-					updateAdStatus(adBidToCancel, "USER", 0, 7);
+				if (newWinningBid == null) {
+					updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
 
 					// put cache instance after set bidId
 					setToCache(cacheHashKey, bidSpot);
@@ -402,51 +404,24 @@ public class BidService extends ApiService {
 					saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
 					return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 				}
-
-				List<AdBid> recentHighBids = adBidRepository.findByBidIdInAndStatusId(adBidLogList.stream().map(AdBidLog::getBidId).collect(Collectors.toList()), 2);
-
-				// if candidate not exists, update db & cache and return true
-				if (CollectionUtils.isEmpty(recentHighBids)) {
-					updateAdStatus(adBidToCancel, "USER", 0, 7);
-
-					// put cache instance after set bidId
-					setToCache(cacheHashKey, bidSpot);
-
-					saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
-					return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
-				}
-
-				// sort candidates
-				List<ListingAdBid> candidateList = new ArrayList<>();
-				for (AdBid adBid : recentHighBids) {
-					candidateList.add(ListingAdBid.of(adBid));
-				}
-				Collections.sort(candidateList);
 
 				// add to bidList and remove outbids
-				bidList.addAll(candidateList);
-				while (bidList.size() > spotInstanceCount) {
-					ListingAdBid bid = bidList.get(spotInstanceCount);
-					bidList.remove(bid);
-				}
+				bidList.add(ListingAdBid.of(newWinningBid));
 
 				// put cache instance after set bidId
 				bidSpot.setBidList(bidList);
 				setToCache(cacheHashKey, bidSpot);
 
 				// update Ad_Bid
-				adBidToCancel.setFinalizedOn(finalizedOn);
-				adBidToCancel.setFinalizedBy(adminId);
-				updateAdStatus(adBidToCancel, "USER", 0, 7);
+				updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
 
 				// update chosen candidate's status to winning status
-				ListingAdBid chosenListingAdBid = bidList.get(bidList.size() -1);
-				recentHighBids.stream()
-						.filter(adBid -> adBid.getBidId() == chosenListingAdBid.getBidId())
-						.forEach(adBid -> {
-							updateAdStatus(adBid, "AUTO", bidId, 1);
-							logger.info("Modified to status {} of bidId {}", 1, adBid.getBidId());
-						});
+				updateAdStatus(newWinningBid, "AUTO", bidId, 1);
+				logger.info("Modified to status {} of bidId {}", 1, newWinningBid.getBidId());
+
+				// insert Entity_ActionLog (EntityTypeId(5), EntityId(bidId), ActionId(2001), ActedOn(now), ActedBy, Remark(bidding cancelled from webadmin))
+				saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
+				return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 			} catch (Exception e) {
 				logger.error("cancelBid() error!", e);
 				return new ResultCode(false, -1, e.getMessage());
@@ -457,10 +432,6 @@ public class BidService extends ApiService {
 		} else {
 			return new ResultCode(false, -1, "Bid not found.");
 		}
-
-		// insert Entity_ActionLog (EntityTypeId(5), EntityId(bidId), ActionId(2001), ActedOn(now), ActedBy, Remark(bidding cancelled from webadmin))
-		saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
-		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 
 	private void saveCancelToEntityActionLog(Integer bidId, String adminId, LocalDateTime finalizedOn) {
@@ -474,6 +445,29 @@ public class BidService extends ApiService {
 		entityActionLogRepository.save(actionLog);
 	}
 
+	private ListingAdBidSpot getWinningBidsFromDB(int bidSettingId) {
+		List<AdBid> adBidList = adBidRepository.findByBidSettingIdAndStatusIdOrderByBidAmountDescBiddedOnAsc(bidSettingId, 1);
+		ListingAdBidSpot newBidSpot = new ListingAdBidSpot();
+		if (CollectionUtils.isEmpty(adBidList)) {
+			newBidSpot.setBidList(new ArrayList<>());
+		} else {
+			newBidSpot.setBidList(adBidList.stream()
+					.map(adBid -> ListingAdBid.builder()
+							.bidSettingId(adBid.getBidSettingId())
+							.wid(adBid.getWholeSalerId())
+							.bidAmount(adBid.getBidAmount().longValue())
+							.maxBidAmount(adBid.getMaxBidAmount().longValue())
+							.biddedBy(adBid.getBiddedBy())
+							.biddedOn(adBid.getBiddedOn())
+							.bidId(adBid.getBidId())
+							.build())
+					.collect(Collectors.toList()));
+		}
+
+		logger.info("Load bidList from DB : {}", newBidSpot);
+		return newBidSpot;
+	}
+
 	private ListingAdBidSpot getFromCache(String cacheHashKey) {
 		return getFromCache(cacheHashKey, () -> {
 			ListingAdBidSpot newBidSpot = new ListingAdBidSpot();
@@ -483,12 +477,19 @@ public class BidService extends ApiService {
 	}
 
 	private ListingAdBidSpot getFromCache(String cacheHashKey, Supplier<ListingAdBidSpot> other) {
-		Object cacheBidList = redisTemplate.opsForHash().get(BIDDING_TOP_MAP_HASH, cacheHashKey);
-		return (ListingAdBidSpot) Optional.ofNullable(cacheBidList).orElseGet(other);
+		ListingAdBidSpot listingAdBidSpot = (ListingAdBidSpot) redisTemplate.opsForHash().get(BIDDING_TOP_MAP_HASH, cacheHashKey);
+		return Optional.ofNullable(listingAdBidSpot).filter(bidSpot -> bidSpot.getBidList().size() != 0).orElseGet(other).copy();
 	}
 
 	private void setToCache(String cacheHashKey, ListingAdBidSpot bidSpot) {
 		redisTemplate.opsForHash().put(BIDDING_TOP_MAP_HASH, cacheHashKey, bidSpot);
+	}
+
+	private void updateAdStatus(AdBid adBid, String adLogCreateBy, int originalBidId, int statusId, LocalDateTime finalizedOn, String adminId) {
+		adBid.setStatusId(statusId);
+		adBid.setFinalizedOn(finalizedOn);
+		adBid.setFinalizedBy(adminId);
+		saveAdBidAndLog(adBid, adLogCreateBy, originalBidId);
 	}
 
 	private void updateAdStatus(AdBid adBid, String adLogCreateBy, int originalBidId, int statusId) {
@@ -506,7 +507,7 @@ public class BidService extends ApiService {
 		adBidLog.setBidId(adBid.getBidId());
 		adBidLog.setBidSettingId(adBid.getBidSettingId());
 		adBidLog.setWholeSalerId(adBid.getWholeSalerId());
-		adBidLog.setBidAmount(adBid.getCurrentBidAmount());
+		adBidLog.setBidAmount(adBid.getBidAmount());
 		adBidLog.setBiddedOn(adBid.getBiddedOn());
 		adBidLog.setStatusId(adBid.getStatusId());
 		adBidLog.setMaxBidAmount(adBid.getMaxBidAmount());

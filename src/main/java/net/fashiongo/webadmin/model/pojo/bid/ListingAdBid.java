@@ -17,12 +17,11 @@ public class ListingAdBid implements Comparable<ListingAdBid>, Serializable {
 	private int wid;
 	private long bidAmount;
 	private long maxBidAmount;
-	private long currentBidAmount;
 	private LocalDateTime biddedOn;
 	private String biddedBy;
 
 	/**
-	 * whether currentBidAmount changed or not
+	 * whether bidAmount changed or not
  	 */
 	private boolean modified = false;
 
@@ -56,12 +55,6 @@ public class ListingAdBid implements Comparable<ListingAdBid>, Serializable {
 	public void setMaxBidAmount(long maxBidAmount) {
 		this.maxBidAmount = maxBidAmount;
 	}
-	public long getCurrentBidAmount() {
-		return currentBidAmount;
-	}
-	public void setCurrentBidAmount(long currentBidAmount) {
-		this.currentBidAmount = currentBidAmount;
-	}
 	public LocalDateTime getBiddedOn() {
 		return biddedOn;
 	}
@@ -87,7 +80,6 @@ public class ListingAdBid implements Comparable<ListingAdBid>, Serializable {
 				.wid(adBid.getWholeSalerId())
 				.bidSettingId(adBid.getBidSettingId())
 				.bidAmount(adBid.getBidAmount().longValue())
-				.currentBidAmount(adBid.getCurrentBidAmount().longValue())
 				.maxBidAmount(adBid.getMaxBidAmount().longValue())
 				.biddedOn(adBid.getBiddedOn())
 				.biddedBy(adBid.getBiddedBy())
@@ -96,7 +88,7 @@ public class ListingAdBid implements Comparable<ListingAdBid>, Serializable {
 
 	@Override
 	public int compareTo(ListingAdBid o) {
-		int compare = Long.compare(o.currentBidAmount, this.currentBidAmount);
+		int compare = Long.compare(o.bidAmount, this.bidAmount);
 		if (compare == 0) {
 			return this.biddedOn.compareTo(o.biddedOn);
 		}
