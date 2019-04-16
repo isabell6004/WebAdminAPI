@@ -114,6 +114,9 @@ public class VendorService extends ApiService {
 	@Autowired
 	private VendorContractRepository vendorContractRepository;
 	
+	@Autowired
+	private VendorContentRepository vendorContentRepository;
+	
     @PersistenceContext(unitName = "primaryEntityManager")
     private EntityManager entityManager;
 	
@@ -741,5 +744,29 @@ public class VendorService extends ApiService {
         result.setTotal(total);
         result.setRecords(list==null ? new ArrayList<VendorContent>() : list);
         return result;
+	}
+
+	/**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-16
+     */
+	public void approveVendorContent(int id) throws Exception {
+		Optional<VendorContent> vendorContent = vendorContentRepository.findById(id);
+		if(!vendorContent.isPresent()) throw new Exception("It does not exist.");
+		if(vendorContent.get().getStatusId()==2) throw new Exception("It is already approved.");
+		vendorContent.get().setStatusId(2);
+		vendorContentRepository.save(vendorContent.get());
+	}
+
+	/**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-16
+     */
+	public void denyVendorContent(int id) throws Exception {
+		Optional<VendorContent> vendorContent = vendorContentRepository.findById(id);
+		if(!vendorContent.isPresent()) throw new Exception("It does not exist.");
+		if(vendorContent.get().getStatusId()==3) throw new Exception("It is already denied.");
+		vendorContent.get().setStatusId(3);
+		vendorContentRepository.save(vendorContent.get());
 	}
 }

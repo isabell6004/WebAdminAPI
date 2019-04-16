@@ -522,5 +522,39 @@ public class VendorController {
         }
         return response;
     }
+    
+    /**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-16
+     */
+    @PostMapping(value = "mediarequest/{vendorContentId}/approve")
+    public JsonResponse<String> approveMediaRequest(@PathVariable("vendorContentsId") String vendorContentId) {
+    	JsonResponse<String> response = new JsonResponse<>(false, null, null);
+    	try {
+    		vendorService.approveVendorContent(Integer.parseInt(vendorContentId));
+    		response.setSuccess(true);
+    	} catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
+    
+    /**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-16
+     */
+    @PostMapping(value = "mediarequest/{vendorContentsId}/deny")
+    public JsonResponse<String> denyMediaRequest(@PathVariable("vendorContentsId") String vendorContentId) {
+    	JsonResponse<String> response = new JsonResponse<>(false, null, null);
+    	try {
+    		vendorService.denyVendorContent(Integer.parseInt(vendorContentId));
+    		response.setSuccess(true);
+    	} catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
 }
 	
