@@ -93,19 +93,4 @@ public class VendorContent implements IPersistent, Serializable {
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
 	
-	@OneToMany(mappedBy = "vendorContent")
-	private List<VendorContentFile> vendorContentFiles = new ArrayList<>();
-	
-	@JoinColumn(name = "WholeSalerID", insertable = false, updatable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
-	private Vendor vendor;
-	
-//	@Override
-//	public String toString() {
-//		try {
-//			return new ObjectMapper().writeValueAsString(this);
-//		} catch (JsonProcessingException e) {
-//			return ReflectionToStringBuilder.toString(this);
-//		}
-//	}
 }

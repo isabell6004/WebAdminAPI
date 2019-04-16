@@ -44,16 +44,4 @@ public class VendorContentFile implements IPersistent, Serializable {
 	@Column(name = "ListOrder")
 	private Integer listOrder;
 	
-	@JoinColumn(name = "VendorContentID", insertable = false, updatable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
-	private VendorContent vendorContent;
-	
-//	@Override
-//	public String toString() {
-//		try {
-//			return new ObjectMapper().writeValueAsString(this);
-//		} catch (JsonProcessingException e) {
-//			return ReflectionToStringBuilder.toString(this);
-//		}
-//	}
 }
