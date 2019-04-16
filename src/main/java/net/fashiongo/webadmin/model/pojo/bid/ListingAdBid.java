@@ -3,8 +3,10 @@ package net.fashiongo.webadmin.model.pojo.bid;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.fashiongo.webadmin.model.primary.AdBid;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public class ListingAdBid implements Comparable<ListingAdBid> {
 	
@@ -12,7 +14,7 @@ public class ListingAdBid implements Comparable<ListingAdBid> {
 	private int bidSettingId;
 	private int wid;
 	private long bidAmount;
-	private long maxBidAmount;
+	private Long maxBidAmount;
 	private LocalDateTime biddedOn;
 	private String biddedBy;
 
@@ -25,7 +27,7 @@ public class ListingAdBid implements Comparable<ListingAdBid> {
 	public ListingAdBid() {
 	}
 
-	public ListingAdBid(int bidId, int bidSettingId, int wid, long bidAmount, long maxBidAmount, LocalDateTime biddedOn, String biddedBy) {
+	public ListingAdBid(int bidId, int bidSettingId, int wid, long bidAmount, Long maxBidAmount, LocalDateTime biddedOn, String biddedBy) {
 		this.bidId = bidId;
 		this.bidSettingId = bidSettingId;
 		this.wid = wid;
@@ -59,10 +61,10 @@ public class ListingAdBid implements Comparable<ListingAdBid> {
 	public void setBidAmount(long bidAmount) {
 		this.bidAmount = bidAmount;
 	}
-	public long getMaxBidAmount() {
+	public Long getMaxBidAmount() {
 		return maxBidAmount;
 	}
-	public void setMaxBidAmount(long maxBidAmount) {
+	public void setMaxBidAmount(Long maxBidAmount) {
 		this.maxBidAmount = maxBidAmount;
 	}
 	public LocalDateTime getBiddedOn() {
@@ -86,7 +88,9 @@ public class ListingAdBid implements Comparable<ListingAdBid> {
 
 	public static ListingAdBid of(AdBid adBid) {
 		return new ListingAdBid(adBid.getBidId(), adBid.getBidSettingId(), adBid.getWholeSalerId(),
-				adBid.getBidAmount().longValue(), adBid.getMaxBidAmount().longValue(), adBid.getBiddedOn(), adBid.getBiddedBy());
+				adBid.getBidAmount().longValue(),
+				Optional.ofNullable(adBid.getMaxBidAmount()).map(BigDecimal::longValue).orElse(null),
+				adBid.getBiddedOn(), adBid.getBiddedBy());
 	}
 
 	@Override
