@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.controller;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +10,9 @@ import net.fashiongo.webadmin.model.primary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import io.netty.util.internal.StringUtil;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
@@ -18,7 +21,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
 
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
@@ -32,7 +34,6 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardLis
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetBuyerRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorCreditCardParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.service.CacheService;
@@ -485,6 +486,40 @@ public class VendorController {
             response.setMessage(ex.getMessage());
         }
 
+        return response;
+    }
+    
+    /**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-15
+     */
+    @GetMapping(value = "mediarequests")
+    public JsonResponse<PagedResult<VendorContent>> getMediaRequests(
+    		@RequestParam(value="pagenum", required=false) String pagenum,
+    		@RequestParam(value="pagesize", required=false) String pagesize,
+    		@RequestParam(value="company", required=false) String company,
+    		@RequestParam(value="datefrom", required=false) String datefrom,
+    		@RequestParam(value="dateto", required=false) String dateto,
+    		@RequestParam(value="type", required=false) String type,
+    		@RequestParam(value="status", required=false) String status) {
+        JsonResponse<PagedResult<VendorContent>> response = new JsonResponse<>(false, null, null);
+        try {
+        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            PagedResult<VendorContent> result = vendorService.getVendorContents(
+            		StringUtil.isNullOrEmpty(pagenum) ? null : Integer.parseInt(pagenum),
+            		StringUtil.isNullOrEmpty(pagesize) ? null : Integer.parseInt(pagesize),
+            		company,
+            		StringUtil.isNullOrEmpty(datefrom) ? null : LocalDateTime.parse(datefrom, formatter),
+            		StringUtil.isNullOrEmpty(dateto) ? null : LocalDateTime.parse(dateto, formatter),
+            		StringUtil.isNullOrEmpty(type)? null : Integer.parseInt(type),
+            		StringUtil.isNullOrEmpty(status) ? null : Integer.parseInt(status));
+            
+            response.setSuccess(true);
+            response.setData(result);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
         return response;
     }
 }
