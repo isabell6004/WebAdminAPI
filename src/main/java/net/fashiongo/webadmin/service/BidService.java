@@ -57,8 +57,8 @@ public class BidService extends ApiService {
 	@Autowired
 	private RedissonClient redisson;
 	@Autowired
-	@Qualifier("redisStringKeyTemplate")
-	private RedisTemplate<String, Object> redisTemplate;
+	@Qualifier("redisListingAdBidSpotTemplate")
+	private RedisTemplate<String, Object> redisListingAdBidSpotTemplate;
 
 	@Value("${bid-redis.lock.timeout-seconds.acquire}")
 	private int REDIS_LOCK_ACQUIRE_TIMEOUT_SECONDS;
@@ -211,7 +211,7 @@ public class BidService extends ApiService {
 					addToAdVendorAndAdPurchase(adVendor, adBid, sessionId, finalizedOn, "AUTO");
 				});
 
-				redisTemplate.opsForHash().delete(BIDDING_TOP_MAP_HASH, String.valueOf(adBidSetting.getBidSettingId()));
+				redisListingAdBidSpotTemplate.opsForHash().delete(BIDDING_TOP_MAP_HASH, String.valueOf(adBidSetting.getBidSettingId()));
 			});
 		} catch (Exception e) {
 			logger.error("acceptBids error :", e.getMessage());
@@ -434,6 +434,14 @@ public class BidService extends ApiService {
 		}
 	}
 
+	public Object getListingAdBidSpotFromCache(Integer bidSettingId) {
+		if (bidSettingId == null || bidSettingId == 0) {
+			return redisListingAdBidSpotTemplate.boundHashOps(BIDDING_TOP_MAP_HASH).entries();
+		} else {
+			return getFromCache(String.valueOf(bidSettingId));
+		}
+	}
+
 	private void saveCancelToEntityActionLog(Integer bidId, String adminId, LocalDateTime finalizedOn) {
 		EntityActionLog actionLog = new EntityActionLog();
 		actionLog.setEntityTypeID(5);
@@ -452,15 +460,7 @@ public class BidService extends ApiService {
 			newBidSpot.setBidList(new ArrayList<>());
 		} else {
 			newBidSpot.setBidList(adBidList.stream()
-					.map(adBid -> ListingAdBid.builder()
-							.bidSettingId(adBid.getBidSettingId())
-							.wid(adBid.getWholeSalerId())
-							.bidAmount(adBid.getBidAmount().longValue())
-							.maxBidAmount(adBid.getMaxBidAmount().longValue())
-							.biddedBy(adBid.getBiddedBy())
-							.biddedOn(adBid.getBiddedOn())
-							.bidId(adBid.getBidId())
-							.build())
+					.map(ListingAdBid::of)
 					.collect(Collectors.toList()));
 		}
 
@@ -469,20 +469,18 @@ public class BidService extends ApiService {
 	}
 
 	private ListingAdBidSpot getFromCache(String cacheHashKey) {
-		return getFromCache(cacheHashKey, () -> {
-			ListingAdBidSpot newBidSpot = new ListingAdBidSpot();
-			newBidSpot.setBidList(new ArrayList<>());
-			return newBidSpot;
-		});
+		return getFromCache(cacheHashKey, ListingAdBidSpot::new);
 	}
 
 	private ListingAdBidSpot getFromCache(String cacheHashKey, Supplier<ListingAdBidSpot> other) {
-		ListingAdBidSpot listingAdBidSpot = (ListingAdBidSpot) redisTemplate.opsForHash().get(BIDDING_TOP_MAP_HASH, cacheHashKey);
-		return Optional.ofNullable(listingAdBidSpot).filter(bidSpot -> bidSpot.getBidList().size() != 0).orElseGet(other).copy();
+		ListingAdBidSpot listingAdBidSpot = (ListingAdBidSpot) redisListingAdBidSpotTemplate.opsForHash().get(BIDDING_TOP_MAP_HASH, cacheHashKey);
+		return Optional.ofNullable(listingAdBidSpot)
+				.filter(bidSpot -> bidSpot.getBidList() != null && bidSpot.getBidList().size() != 0)
+				.orElseGet(other).copy();
 	}
 
 	private void setToCache(String cacheHashKey, ListingAdBidSpot bidSpot) {
-		redisTemplate.opsForHash().put(BIDDING_TOP_MAP_HASH, cacheHashKey, bidSpot);
+		redisListingAdBidSpotTemplate.opsForHash().put(BIDDING_TOP_MAP_HASH, cacheHashKey, bidSpot);
 	}
 
 	private void updateAdStatus(AdBid adBid, String adLogCreateBy, int originalBidId, int statusId, LocalDateTime finalizedOn, String adminId) {

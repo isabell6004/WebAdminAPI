@@ -1,11 +1,19 @@
 package net.fashiongo.webadmin.model.pojo.bid;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-public class ListingAdBidSpot implements Serializable {
+public class ListingAdBidSpot {
 	private List<ListingAdBid> bidList;
+
+	public ListingAdBidSpot() {
+		this.bidList = new ArrayList<>();
+	}
+
+	public ListingAdBidSpot(List<ListingAdBid> bidList) {
+		this.bidList = bidList;
+	}
 
 	public List<ListingAdBid> getBidList() {
 		return bidList;
@@ -15,20 +23,9 @@ public class ListingAdBidSpot implements Serializable {
 	}
 
 	public ListingAdBidSpot copy() {
-		ListingAdBidSpot listingAdBidSpot = new ListingAdBidSpot();
-		listingAdBidSpot.setBidList(bidList.stream()
-				.map(listingAdBid -> ListingAdBid.builder()
-						.bidId(listingAdBid.getBidId())
-						.wid(listingAdBid.getWid())
-						.bidSettingId(listingAdBid.getBidSettingId())
-						.bidAmount(listingAdBid.getBidAmount())
-						.maxBidAmount(listingAdBid.getMaxBidAmount())
-						.biddedBy(listingAdBid.getBiddedBy())
-						.biddedOn(listingAdBid.getBiddedOn())
-						.modified(false)
-						.build())
-				.collect(Collectors.toList()));
-		return listingAdBidSpot;
+		return new ListingAdBidSpot(Optional.ofNullable(bidList)
+				.map(ArrayList::new) // copy to new ArrayList
+				.orElse(new ArrayList<>()));
 	}
 
 	@Override

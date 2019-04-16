@@ -1,23 +1,14 @@
 package net.fashiongo.webadmin.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastRecordsParameter;
-import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastWeekParameter;
-import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingParameter;
-import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidAcceptParameter;
-import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidCancelParameter;
-import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidSettingParameter;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.*;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastWeekResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.service.BidService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 
@@ -161,5 +152,11 @@ public class BidController {
 		results.setMessage(result.getResultMsg());
 		
 		return results;
+	}
+
+	@RequestMapping(value = {"getListingAdBidCache", "getListingAdBidCache/{bidSettingId}"}, method = RequestMethod.GET)
+	@ResponseBody
+	public Object getListingAdBidSpotFromCache(@PathVariable(name = "bidSettingId", required = false) Integer bidSettingId) {
+		return bidService.getListingAdBidSpotFromCache(bidSettingId);
 	}
 }

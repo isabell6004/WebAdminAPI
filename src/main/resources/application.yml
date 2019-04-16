@@ -88,6 +88,7 @@ webAdminapi:
       check-token: true
 
 bid-redis:
+  database: 3
   lock:
     timeout-seconds:
       acquire: 3
