@@ -59,6 +59,8 @@ public class AdSettingSubList {
 	private Integer maxPurchasable;
 	@JsonProperty("SpotItemCount")
 	private Integer spotItemCount;
+	@JsonProperty("IsBannerAd")
+	private Boolean isBannerAd;
 	
 	public Integer getSpotID() {
 		return spotID;
@@ -210,4 +212,11 @@ public class AdSettingSubList {
 	public void setSpotItemCount(Integer spotItemCount) {
 		this.spotItemCount = spotItemCount;
 	}
+	public Boolean getIsBannerAd() {
+		return isBannerAd;
+	}
+	public void setIsBannerAd(Boolean isBannerAd) {
+		this.isBannerAd = isBannerAd;
+	}
+	
 }
