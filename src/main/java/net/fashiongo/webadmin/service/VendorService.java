@@ -714,29 +714,28 @@ public class VendorService extends ApiService {
 		PagedResult<VendorContent> result = new PagedResult<>();
 		
 		//1. Build query
-		JPAQuery<VendorContent> q = new JPAQuery<VendorContent>(entityManager)
-        		.from(vendorContent)
-        		.innerJoin(vendorContentFile).on(vendorContent.vendorContentId.eq(vendorContentFile.vendorContentId)).fetchJoin()
-        		.innerJoin(vendor).on(vendorContent.wholeSalerId.eq(vendor.wholeSalerId)).fetchJoin();
+		JPAQuery<VendorContent> query = new JPAQuery<>(entityManager);
+		query.select(vendorContent);
+		query.from(vendorContent);
         
 		//2. Fill where conditions
-        if(!StringUtil.isNullOrEmpty(company)) q.where(vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")));
-        if(datefrom!=null) q.where(vendorContent.requestedOn.goe(datefrom));
-        if(dateto!=null) q.where(vendorContent.rejectedOn.loe(dateto));
-        if(type!=null) q.where(vendorContent.targetTypeId.eq(type));
-        if(status!=null) q.where(vendorContent.statusId.eq(status));
+        if(!StringUtil.isNullOrEmpty(company)) query.where(vendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")));
+        if(datefrom!=null) query.where(vendorContent.requestedOn.goe(datefrom));
+        if(dateto!=null) query.where(vendorContent.rejectedOn.loe(dateto));
+        if(type!=null) query.where(vendorContent.targetTypeId.eq(type));
+        if(status!=null) query.where(vendorContent.statusId.eq(status));
         
         //3. Get the count first
-        int totalCount = (int)q.fetchCount();
+        int totalCount = (int)query.fetchCount();
         
         //4. Set the page
         if(pagenum!=null && pagesize!=null) {
-        	q.offset(pagesize*(pagenum-1));
-        	q.limit(pagesize);
+        	query.offset(pagesize*(pagenum-1));
+        	query.limit(pagesize);
         }
         
         //5. Get the page
-        List<VendorContent> list = q.fetch();
+        List<VendorContent> list = query.fetch();
 
         //6. Return
         SingleValueResult total = new SingleValueResult();

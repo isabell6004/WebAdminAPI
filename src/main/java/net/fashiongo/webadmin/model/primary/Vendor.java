@@ -1,8 +1,6 @@
 package net.fashiongo.webadmin.model.primary;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

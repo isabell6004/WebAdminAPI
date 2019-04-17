@@ -93,4 +93,12 @@ public class VendorContent implements IPersistent, Serializable {
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
 	
+    @JoinColumn(name = "WholeSalerID", insertable = false, updatable = false)
+    @ManyToOne
+    private Vendor vendor;
+	
+    @JoinColumn(name = "VendorContentID")
+    @OneToMany
+    private List<VendorContentFile> vendorContentFiles = new ArrayList<>();
+	
 }
