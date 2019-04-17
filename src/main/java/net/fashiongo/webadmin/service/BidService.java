@@ -379,39 +379,36 @@ public class BidService extends ApiService {
 					// check if db data exists when cache is empty
 					return getWinningBidsFromDB(adBidToCancel.getBidSettingId());
 				});
+				List<ListingAdBid> bidList = bidSpot.getBidList();
 
 				List<AdBid> otherAdBidByWholesalerList = adBidRepository.findByBidSettingIdAndWholeSalerId(bidSettingId, adBidToCancel.getWholeSalerId()).stream()
-						.filter(adBid -> adBid.getBidId() < adBidToCancel.getBidId())
+						.filter(adBid -> adBid.getBidId() < bidId)
 						.collect(toList());
 
-				// if cache is empty or not in winning bids, update db and return true
-				if (CollectionUtils.isEmpty(bidSpot.getBidList()) || bidSpot.getBidList().stream().map(ListingAdBid::getBidId).noneMatch(currentBidId -> currentBidId.intValue() == bidId)) {
-					updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
-					for (AdBid adBid : otherAdBidByWholesalerList) {
-						updateAdStatus(adBid, "USER", adBidToCancel.getBidId(), 7);
-					}
+				// update Ad_Bid
+				updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
+				// insert Entity_ActionLog (EntityTypeId(5), EntityId(bidId), ActionId(2001), ActedOn(now), ActedBy, Remark(bidding cancelled from webadmin))
+				saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
+				for (AdBid adBid : otherAdBidByWholesalerList) {
+					updateAdStatus(adBid, "USER", adBidToCancel.getBidId(), 7);
+					saveCancelToEntityActionLog(adBid.getBidId(), adminId, finalizedOn);
+				}
 
-					saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
+				boolean removed = bidList.removeIf(listingAdBid -> listingAdBid.getBidId() == bidId ||
+						listingAdBid.getWid() == adBidToCancel.getWholeSalerId() && listingAdBid.getBidId() < bidId);
+
+				// if cache is empty or not in winning bids, update db and return true
+				if (!removed) {
 					return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 				}
 
-				List<ListingAdBid> bidList = bidSpot.getBidList();
 				List<Integer> winnerWholesalerIds = bidList.stream().map(ListingAdBid::getWid).collect(toList());
 				AdBid newWinningBid = adBidRepository.findFirstByBidSettingIdAndStatusIdAndWholeSalerIdNotInOrderByBidAmountDescBiddedOnAscBidIdAsc(bidSettingId, 2, winnerWholesalerIds);
 
-				bidList.removeIf(listingAdBid -> listingAdBid.getBidId() == bidId);
-
 				// if candidate not exists, update db & cache and return true
 				if (newWinningBid == null) {
-					updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
-					for (AdBid adBid : otherAdBidByWholesalerList) {
-						updateAdStatus(adBid, "USER", adBidToCancel.getBidId(), 7);
-					}
-
 					// put cache instance after set bidId
 					setToCache(cacheHashKey, bidSpot);
-
-					saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
 					return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 				}
 
@@ -419,21 +416,12 @@ public class BidService extends ApiService {
 				bidList.add(ListingAdBid.of(newWinningBid));
 
 				// put cache instance after set bidId
-				bidSpot.setBidList(bidList);
 				setToCache(cacheHashKey, bidSpot);
-
-				// update Ad_Bid
-				updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
-				for (AdBid adBid : otherAdBidByWholesalerList) {
-					updateAdStatus(adBid, "USER", adBidToCancel.getBidId(), 7);
-				}
 
 				// update chosen candidate's status to winning status
 				updateAdStatus(newWinningBid, "AUTO", bidId, 1);
 				logger.info("Modified to status {} of bidId {}", 1, newWinningBid.getBidId());
 
-				// insert Entity_ActionLog (EntityTypeId(5), EntityId(bidId), ActionId(2001), ActedOn(now), ActedBy, Remark(bidding cancelled from webadmin))
-				saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
 				return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 			} catch (Exception e) {
 				logger.error("cancelBid() error!", e);
