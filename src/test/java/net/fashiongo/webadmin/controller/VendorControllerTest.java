@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,27 @@ public class VendorControllerTest {
 	public void getMediaRequests() {
 		 JsonResponse<PagedResult<VendorContent>> response = vendorController.getMediaRequests("1", "10", null, null, null, null, null);
 		 log.debug(response.toString());
+	}
+	
+	@Test
+	public void approveMediaRequest() {
+//		 JsonResponse<String> response = vendorController.approveMediaRequest("1");
+//		 log.debug(response.toString());
+//		 Assert.assertTrue(response.isSuccess());
+//		 
+//		 response = vendorController.approveMediaRequest("1");
+//		 log.debug(response.toString());
+//		 Assert.assertFalse(response.isSuccess());
+	}
+	
+	@Test
+	public void denyeMediaRequest() {
+//		 JsonResponse<String> response = vendorController.denyMediaRequest("1");
+//		 log.debug(response.toString());
+//		 Assert.assertTrue(response.isSuccess());
+//		 
+//		 response = vendorController.denyMediaRequest("1");
+//		 log.debug(response.toString());
+//		 Assert.assertFalse(response.isSuccess());
 	}
 }
