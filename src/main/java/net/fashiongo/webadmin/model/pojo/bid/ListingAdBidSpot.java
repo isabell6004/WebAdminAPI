@@ -25,7 +25,7 @@ public class ListingAdBidSpot {
 	public ListingAdBidSpot copy() {
 		return new ListingAdBidSpot(Optional.ofNullable(bidList)
 				.map(ArrayList::new) // copy to new ArrayList
-				.orElse(new ArrayList<>()));
+				.orElseGet(ArrayList::new));
 	}
 
 	@Override
