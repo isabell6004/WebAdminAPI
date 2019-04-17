@@ -380,23 +380,33 @@ public class BidService extends ApiService {
 					return getWinningBidsFromDB(adBidToCancel.getBidSettingId());
 				});
 
+				List<AdBid> otherAdBidByWholesalerList = adBidRepository.findByBidSettingIdAndWholeSalerId(bidSettingId, adBidToCancel.getWholeSalerId()).stream()
+						.filter(adBid -> adBid.getBidId() < adBidToCancel.getBidId())
+						.collect(toList());
+
 				// if cache is empty or not in winning bids, update db and return true
 				if (CollectionUtils.isEmpty(bidSpot.getBidList()) || bidSpot.getBidList().stream().map(ListingAdBid::getBidId).noneMatch(currentBidId -> currentBidId.intValue() == bidId)) {
 					updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
+					for (AdBid adBid : otherAdBidByWholesalerList) {
+						updateAdStatus(adBid, "USER", adBidToCancel.getBidId(), 7);
+					}
 
 					saveCancelToEntityActionLog(bidId, adminId, finalizedOn);
 					return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 				}
 
 				List<ListingAdBid> bidList = bidSpot.getBidList();
-				bidList.removeIf(listingAdBid -> listingAdBid.getBidId() == bidId);
-
 				List<Integer> winnerWholesalerIds = bidList.stream().map(ListingAdBid::getWid).collect(toList());
 				AdBid newWinningBid = adBidRepository.findFirstByBidSettingIdAndStatusIdAndWholeSalerIdNotInOrderByBidAmountDescBiddedOnAscBidIdAsc(bidSettingId, 2, winnerWholesalerIds);
+
+				bidList.removeIf(listingAdBid -> listingAdBid.getBidId() == bidId);
 
 				// if candidate not exists, update db & cache and return true
 				if (newWinningBid == null) {
 					updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
+					for (AdBid adBid : otherAdBidByWholesalerList) {
+						updateAdStatus(adBid, "USER", adBidToCancel.getBidId(), 7);
+					}
 
 					// put cache instance after set bidId
 					setToCache(cacheHashKey, bidSpot);
@@ -414,6 +424,9 @@ public class BidService extends ApiService {
 
 				// update Ad_Bid
 				updateAdStatus(adBidToCancel, "USER", 0, 7, finalizedOn, adminId);
+				for (AdBid adBid : otherAdBidByWholesalerList) {
+					updateAdStatus(adBid, "USER", adBidToCancel.getBidId(), 7);
+				}
 
 				// update chosen candidate's status to winning status
 				updateAdStatus(newWinningBid, "AUTO", bidId, 1);
