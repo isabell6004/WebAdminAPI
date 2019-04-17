@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,8 +54,9 @@ public class AdController {
 	 * @return GetADSettingResponse
 	 */
 	@RequestMapping(value = "getadsetting", method = RequestMethod.POST)
-	public JsonResponse<GetADSettingResponse> getAdsetting() {
-		GetADSettingResponse result = adService.getAdsetting();
+	public JsonResponse<GetADSettingResponse> getAdsetting(@RequestBody JSONObject parameter) {
+		boolean showAll = (boolean) parameter.get("showAll");
+		GetADSettingResponse result = adService.getAdsetting(showAll);
 		return new JsonResponse<GetADSettingResponse>(true, null, 0, result);
 	}
 	

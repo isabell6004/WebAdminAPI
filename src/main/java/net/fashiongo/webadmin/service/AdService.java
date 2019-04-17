@@ -89,11 +89,12 @@ public class AdService extends ApiService {
 	 * @return GetADSettingResponse
 	 */
 	@SuppressWarnings("unchecked")
-	public GetADSettingResponse getAdsetting() {
+	public GetADSettingResponse getAdsetting(boolean showAll) {
 		GetADSettingResponse result = new GetADSettingResponse();
 		String spName = "up_wa_GetAdSetting";
 		
 		List<Object> params = new ArrayList<Object>();
+		params.add(showAll);
 		List<Object> _result = jdbcHelper.executeSP(spName, params, AdSettingSubList.class, AdSettingList.class);
 		result.setAdSettingSubList((List<AdSettingSubList>) _result.get(0));
 		result.setAdSettingList((List<AdSettingList>) _result.get(1));
