@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.service;
 
 import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.exception.BidAcceptAutoException;
 import net.fashiongo.webadmin.model.pojo.bid.*;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastRecordsParameter;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingParameter;
@@ -180,12 +181,13 @@ public class BidService extends ApiService {
 	public ResultCode acceptBids() {		
 		LocalDateTime finalizedOn = LocalDateTime.now();
         String sessionId = UUID.randomUUID().toString();
-        
-		try {
-			List<AdBidSetting> adBidSettingList = adBidSettingRepository.getFinalizeAdBidSettingTargetList();			
-			adBidSettingList.forEach(adBidSetting -> {
-				logger.info("adBidSetting : " + adBidSetting);
-				
+
+		List<AdBidSetting> adBidSettingList = adBidSettingRepository.getFinalizeAdBidSettingTargetList();			
+		adBidSettingList.forEach(adBidSetting -> {
+			logger.info("adBidSetting : " + adBidSetting);
+			Integer bidSettingId = adBidSetting.getBidSettingId();
+			
+			try {
 				//  update Ad_Bid_Setting (finalizedOn, finalizedBy)
 				adBidSetting.setFinalizedOn(finalizedOn);
 				adBidSetting.setFinalizedBy("AUTO");
@@ -212,11 +214,11 @@ public class BidService extends ApiService {
 				});
 
 				redisListingAdBidSpotTemplate.opsForHash().delete(BIDDING_TOP_MAP_HASH, String.valueOf(adBidSetting.getBidSettingId()));
-			});
-		} catch (Exception e) {
-			logger.error("acceptBids error :", e.getMessage());
-			throw e;
-		}
+			} catch (Exception e) {
+				logger.error("acceptBids error :", e.getMessage());			
+				throw new BidAcceptAutoException(e, bidSettingId);
+			}
+		});
 		
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
@@ -305,11 +307,11 @@ public class BidService extends ApiService {
 	
 	private BigDecimal calculateBidAmount(BigDecimal bidAmount, BigDecimal maxBidAmount, BigDecimal bidPriceUnit) {
 		return BigDecimal.valueOf(
-				Math.round(
+				Math.round(Math.ceil(
 						(bidAmount.longValue() 
 							+ (maxBidAmount == null || maxBidAmount.longValue() == 0L ? bidAmount.longValue() : maxBidAmount.longValue())
-						) / 2 / bidPriceUnit.longValue()
-				) * bidPriceUnit.longValue());
+						) / 2f / bidPriceUnit.longValue()
+				)) * bidPriceUnit.longValue());
 	}
 	
 	private void addAdBidLog(AdBid adBid, LocalDateTime finalizedOn, String finalizedBy) {
