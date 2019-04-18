@@ -1,21 +1,14 @@
 package net.fashiongo.webadmin.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastRecordsParameter;
-import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingLastWeekParameter;
-import net.fashiongo.webadmin.model.pojo.bid.parameter.GetBidSettingParameter;
-import net.fashiongo.webadmin.model.pojo.bid.parameter.SetBidSettingParameter;
+import net.fashiongo.webadmin.model.pojo.bid.parameter.*;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastWeekResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.service.BidService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 
@@ -104,5 +97,66 @@ public class BidController {
 		result.setData(_result);
 
 		return result;
+	}
+	
+	
+	@RequestMapping(value = "setacceptbidsAuto", method = RequestMethod.GET)
+	public JsonResponse<String> acceptBidsAuto() {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result;
+		try {
+			result = bidService.acceptBids();
+		} catch (Exception e) {
+			results.setMessage("Accept Bid Auto Failed.");			
+			return results;
+		}
+
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
+	}
+	
+	@RequestMapping(value = "setacceptbids", method = RequestMethod.POST)
+	public JsonResponse<String> acceptBids(@RequestBody SetBidAcceptParameter parameter) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result;
+		try {
+			result = bidService.editBid(parameter.getSpotId(), parameter.getAddate(), parameter.getBidids(), parameter.getAdminid());
+		} catch (Exception e) {
+			results.setMessage("Accept Bid Failed.");			
+			return results;
+		}
+
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
+	}
+	
+	@RequestMapping(value = "setcancelbid", method = RequestMethod.POST)
+	public JsonResponse<String> cancelBid(@RequestBody SetBidCancelParameter parameter) {
+		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
+		ResultCode result;
+		try {
+			result = bidService.cancelBid(parameter.getBidid(), parameter.getAdminid());
+		} catch (Exception e) {
+			results.setMessage("Cancel Bid Failed.");			
+			return results;
+		}
+
+		results.setSuccess(result.getSuccess());
+		results.setCode(result.getResultCode());
+		results.setMessage(result.getResultMsg());
+		
+		return results;
+	}
+
+	@RequestMapping(value = {"getListingAdBidCache", "getListingAdBidCache/{bidSettingId}"}, method = RequestMethod.GET)
+	@ResponseBody
+	public Object getListingAdBidSpotFromCache(@PathVariable(name = "bidSettingId", required = false) Integer bidSettingId) {
+		return bidService.getListingAdBidSpotFromCache(bidSettingId);
 	}
 }
