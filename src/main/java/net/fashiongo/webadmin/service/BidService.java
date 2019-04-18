@@ -307,11 +307,11 @@ public class BidService extends ApiService {
 	
 	private BigDecimal calculateBidAmount(BigDecimal bidAmount, BigDecimal maxBidAmount, BigDecimal bidPriceUnit) {
 		return BigDecimal.valueOf(
-				Math.round(
+				Math.round(Math.ceil(
 						(bidAmount.longValue() 
 							+ (maxBidAmount == null || maxBidAmount.longValue() == 0L ? bidAmount.longValue() : maxBidAmount.longValue())
-						) / 2 / bidPriceUnit.longValue()
-				) * bidPriceUnit.longValue());
+						) / 2f / bidPriceUnit.longValue()
+				)) * bidPriceUnit.longValue());
 	}
 	
 	private void addAdBidLog(AdBid adBid, LocalDateTime finalizedOn, String finalizedBy) {
