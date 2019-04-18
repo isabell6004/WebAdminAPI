@@ -528,7 +528,7 @@ public class VendorController {
      * @since 2019-04-16
      */
     @PostMapping(value = "mediarequest/{vendorContentId}/approve")
-    public JsonResponse<String> approveMediaRequest(@PathVariable("vendorContentsId") String vendorContentId) {
+    public JsonResponse<String> approveMediaRequest(@PathVariable("vendorContentId") String vendorContentId) {
     	JsonResponse<String> response = new JsonResponse<>(false, null, null);
     	try {
     		vendorService.approveVendorContent(Integer.parseInt(vendorContentId));
@@ -544,8 +544,8 @@ public class VendorController {
      * @author Kenny/Kyungwoo
      * @since 2019-04-16
      */
-    @PostMapping(value = "mediarequest/{vendorContentsId}/deny")
-    public JsonResponse<String> denyMediaRequest(@PathVariable("vendorContentsId") String vendorContentId) {
+    @PostMapping(value = "mediarequest/{vendorContentId}/deny")
+    public JsonResponse<String> denyMediaRequest(@PathVariable("vendorContentId") String vendorContentId) {
     	JsonResponse<String> response = new JsonResponse<>(false, null, null);
     	try {
     		vendorService.denyVendorContent(Integer.parseInt(vendorContentId));
