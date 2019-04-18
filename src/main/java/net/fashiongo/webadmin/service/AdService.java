@@ -79,6 +79,8 @@ public class AdService extends ApiService {
 	private MapAdVendorItemRepository mapAdVendorItemRepository;
 	@Autowired
 	private CategoryRepository categoryRepository;
+	@Autowired
+	private CacheService cacheService;
 
 	/**
 	 * 
@@ -542,6 +544,11 @@ public class AdService extends ApiService {
 			mvil.add(mvi);
 		}
 		mapAdVendorItemRepository.saveAll(mvil);
+
+		//cacheService.resetCache("ListAd","#"+parameters.getAdID().toString());
+		cacheService.GetRedisCacheEvict("ListAd","#"+parameters.getAdID().toString());
+		
+		
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 	
