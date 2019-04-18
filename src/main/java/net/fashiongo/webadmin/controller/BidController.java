@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
+import net.fashiongo.webadmin.exception.BidAcceptAutoException;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.*;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastWeekResponse;
@@ -107,7 +108,10 @@ public class BidController {
 		try {
 			result = bidService.acceptBids();
 		} catch (Exception e) {
-			results.setMessage("Accept Bid Auto Failed.");			
+			results.setMessage("Accept Bid Auto Failed.");
+			if (e instanceof BidAcceptAutoException) {
+				results.setCode(((BidAcceptAutoException)e).getBidSettingId());
+			}
 			return results;
 		}
 
