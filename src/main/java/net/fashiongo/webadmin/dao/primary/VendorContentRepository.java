@@ -1,7 +1,5 @@
 package net.fashiongo.webadmin.dao.primary;
 
-import java.util.Optional;
-
 import org.springframework.data.repository.CrudRepository;
 
 import net.fashiongo.webadmin.model.primary.VendorContent;

@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.model.primary.*;
@@ -545,10 +546,29 @@ public class VendorController {
      * @since 2019-04-16
      */
     @PostMapping(value = "mediarequest/{vendorContentId}/deny")
-    public JsonResponse<String> denyMediaRequest(@PathVariable("vendorContentId") String vendorContentId) {
+    public JsonResponse<String> denyMediaRequest(
+    		@PathVariable("vendorContentId") String vendorContentId,
+    		@RequestBody Map<String,String> body) {
     	JsonResponse<String> response = new JsonResponse<>(false, null, null);
     	try {
-    		vendorService.denyVendorContent(Integer.parseInt(vendorContentId));
+    		vendorService.denyVendorContent(Integer.parseInt(vendorContentId), body.get("reason"));
+    		response.setSuccess(true);
+    	} catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
+    
+    /**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-18
+     */
+    @GetMapping(value = "getassignedusers")
+    public JsonResponse<List<SecurityUser>> getAssignedUsers() {
+    	JsonResponse<List<SecurityUser>> response = new JsonResponse<>(false, null, null);
+    	try {
+    		response.setData(vendorService.getAssignedUsers());
     		response.setSuccess(true);
     	} catch (Exception ex) {
             log.error("Exception Error: ", ex);

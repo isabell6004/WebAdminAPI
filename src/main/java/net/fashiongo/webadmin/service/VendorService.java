@@ -117,6 +117,9 @@ public class VendorService extends ApiService {
 	@Autowired
 	private VendorContentRepository vendorContentRepository;
 	
+	@Autowired
+	private SecurityUserRepository securityUserRepository;
+	
     @PersistenceContext(unitName = "primaryEntityManager")
     private EntityManager entityManager;
 	
@@ -761,11 +764,20 @@ public class VendorService extends ApiService {
      * @author Kenny/Kyungwoo
      * @since 2019-04-16
      */
-	public void denyVendorContent(int id) throws Exception {
+	public void denyVendorContent(int id, String reason) throws Exception {
 		Optional<VendorContent> vendorContent = vendorContentRepository.findById(id);
 		if(!vendorContent.isPresent()) throw new Exception("It does not exist.");
 		if(vendorContent.get().getStatusId()==3) throw new Exception("It is already denied.");
 		vendorContent.get().setStatusId(3);
+		vendorContent.get().setRejectedReason(reason);
 		vendorContentRepository.save(vendorContent.get());
+	}
+
+	/**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-18
+     */
+	public List<SecurityUser> getAssignedUsers() {
+		return securityUserRepository.findAllMappedByVendor();
 	}
 }
