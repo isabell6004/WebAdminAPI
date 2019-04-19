@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
@@ -36,6 +37,7 @@ import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
 import net.fashiongo.webadmin.model.primary.LogCommunication;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.model.primary.VendorContent;
 import net.fashiongo.webadmin.model.primary.VendorContract;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 
@@ -350,5 +352,16 @@ public class VendorServiceTest {
 		Integer wholeSalerID = 6849;
 		GetVendorDetailInfoDataResponse result = vendorService.getVendorDetailInfoData(wholeSalerID);
 		assertTrue(result.getVendorDetailDateList().size() > 0);
+	}
+	
+	/**
+	 * @author Kenny/Kyungwoo
+	 * @since 2019-04-16
+	 */
+	@Test
+	public void testGetVendorContents() {
+		PagedResult<VendorContent> page = vendorService.getVendorContents(1, 10, null, null, null, null, null);
+		assertTrue(page.getTotal().getTotalCount()>=0);
+		assertTrue(page.getRecords().size()>=0);
 	}
 }

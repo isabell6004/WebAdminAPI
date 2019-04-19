@@ -1,13 +1,18 @@
 package net.fashiongo.webadmin.service;
 
+import static net.fashiongo.webadmin.model.primary.QVendor.vendor;
+import static net.fashiongo.webadmin.model.primary.QVendorContent.vendorContent;
+import static net.fashiongo.webadmin.model.primary.QVendorContentFile.vendorContentFile;
+
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import net.fashiongo.webadmin.dao.primary.*;
 import net.fashiongo.webadmin.model.primary.*;
@@ -15,12 +20,15 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 
+import io.netty.util.internal.StringUtil;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.message.Total;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
@@ -29,7 +37,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
 
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
@@ -46,7 +53,6 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParamete
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetBuyerRatingActiveParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorCreditCardParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 
@@ -107,6 +113,15 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private VendorContractRepository vendorContractRepository;
+	
+	@Autowired
+	private VendorContentRepository vendorContentRepository;
+	
+	@Autowired
+	private SecurityUserRepository securityUserRepository;
+	
+    @PersistenceContext(unitName = "primaryEntityManager")
+    private EntityManager entityManager;
 	
 	/**
 	 * Get vendor list
@@ -693,4 +708,85 @@ public class VendorService extends ApiService {
         Optional<VendorCompany> vendor = vendorListRepository.findById(wholeSalerID);
         return vendor.get();
     }
+
+    /**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-15
+     */
+	public PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company, LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer status) {
+		PagedResult<VendorContent> result = new PagedResult<>();
+		
+		//1. Build query
+		JPAQuery<VendorContent> query = new JPAQuery<>(entityManager);
+		query.select(vendorContent);
+		query.from(vendorContent);
+        
+		//2. Fill where conditions
+        if(!StringUtil.isNullOrEmpty(company)) query.where(vendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")));
+        if(datefrom!=null) query.where(vendorContent.requestedOn.goe(datefrom));
+        if(dateto!=null) query.where(vendorContent.requestedOn.loe(dateto));
+        if(type!=null) query.where(vendorContent.targetTypeId.eq(type));
+        if(status!=null) query.where(vendorContent.statusId.eq(status));
+        
+        
+        //3. Get the count first
+        int totalCount = (int)query.fetchCount();
+        
+        //4. Set the page
+        if(pagenum!=null && pagesize!=null) {
+        	query.offset(pagesize*(pagenum-1));
+        	query.limit(pagesize);
+        }
+        
+        //5. Get the page
+        List<VendorContent> list = query.fetch();
+
+        //6. Return
+        SingleValueResult total = new SingleValueResult();
+        total.setTotalCount(totalCount);
+        result.setTotal(total);
+        result.setRecords(list==null ? new ArrayList<VendorContent>() : list);
+        return result;
+	}
+
+	/**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-16
+     */
+	public void approveVendorContent(int id) throws Exception {
+		Optional<VendorContent> vendorContent = vendorContentRepository.findById(id);
+		if(!vendorContent.isPresent()) throw new Exception("It does not exist.");
+		if(vendorContent.get().getStatusId()==2) throw new Exception("It is already approved.");
+		
+		vendorContent.get().setStatusId(2);
+		vendorContent.get().setApprovedOn(LocalDateTime.now());
+		vendorContent.get().setApprovedBy(Utility.getUsername());
+		
+		vendorContentRepository.save(vendorContent.get());
+	}
+
+	/**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-16
+     */
+	public void denyVendorContent(int id, String reason) throws Exception {
+		Optional<VendorContent> vendorContent = vendorContentRepository.findById(id);
+		if(!vendorContent.isPresent()) throw new Exception("It does not exist.");
+		if(vendorContent.get().getStatusId()==3) throw new Exception("It is already denied.");
+		
+		vendorContent.get().setStatusId(3);
+		vendorContent.get().setRejectedOn(LocalDateTime.now());
+		vendorContent.get().setRejectedBy(Utility.getUsername());
+		
+		vendorContent.get().setRejectedReason(reason);
+		vendorContentRepository.save(vendorContent.get());
+	}
+
+	/**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-18
+     */
+	public List<SecurityUser> getAssignedUsers() {
+		return securityUserRepository.findAllMappedByVendor();
+	}
 }
