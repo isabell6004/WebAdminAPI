@@ -510,8 +510,8 @@ public class VendorController {
             		StringUtil.isNullOrEmpty(pagenum) ? null : Integer.parseInt(pagenum),
             		StringUtil.isNullOrEmpty(pagesize) ? null : Integer.parseInt(pagesize),
             		company,
-            		StringUtil.isNullOrEmpty(datefrom) ? null : LocalDateTime.parse(datefrom, formatter),
-            		StringUtil.isNullOrEmpty(dateto) ? null : LocalDateTime.parse(dateto, formatter),
+            		StringUtil.isNullOrEmpty(datefrom) ? null : LocalDateTime.parse(datefrom+" 00:00:00", formatter),
+            		StringUtil.isNullOrEmpty(dateto) ? null : LocalDateTime.parse(dateto+" 23:59:59", formatter),
             		StringUtil.isNullOrEmpty(type)? null : Integer.parseInt(type),
             		StringUtil.isNullOrEmpty(status) ? null : Integer.parseInt(status));
             
