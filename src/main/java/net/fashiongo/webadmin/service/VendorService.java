@@ -724,9 +724,10 @@ public class VendorService extends ApiService {
 		//2. Fill where conditions
         if(!StringUtil.isNullOrEmpty(company)) query.where(vendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")));
         if(datefrom!=null) query.where(vendorContent.requestedOn.goe(datefrom));
-        if(dateto!=null) query.where(vendorContent.rejectedOn.loe(dateto));
+        if(dateto!=null) query.where(vendorContent.requestedOn.loe(dateto));
         if(type!=null) query.where(vendorContent.targetTypeId.eq(type));
         if(status!=null) query.where(vendorContent.statusId.eq(status));
+        
         
         //3. Get the count first
         int totalCount = (int)query.fetchCount();
@@ -756,7 +757,11 @@ public class VendorService extends ApiService {
 		Optional<VendorContent> vendorContent = vendorContentRepository.findById(id);
 		if(!vendorContent.isPresent()) throw new Exception("It does not exist.");
 		if(vendorContent.get().getStatusId()==2) throw new Exception("It is already approved.");
+		
 		vendorContent.get().setStatusId(2);
+		vendorContent.get().setApprovedOn(LocalDateTime.now());
+		vendorContent.get().setApprovedBy(Utility.getUsername());
+		
 		vendorContentRepository.save(vendorContent.get());
 	}
 
@@ -768,7 +773,11 @@ public class VendorService extends ApiService {
 		Optional<VendorContent> vendorContent = vendorContentRepository.findById(id);
 		if(!vendorContent.isPresent()) throw new Exception("It does not exist.");
 		if(vendorContent.get().getStatusId()==3) throw new Exception("It is already denied.");
+		
 		vendorContent.get().setStatusId(3);
+		vendorContent.get().setRejectedOn(LocalDateTime.now());
+		vendorContent.get().setRejectedBy(Utility.getUsername());
+		
 		vendorContent.get().setRejectedReason(reason);
 		vendorContentRepository.save(vendorContent.get());
 	}
