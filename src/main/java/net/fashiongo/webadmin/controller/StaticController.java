@@ -85,6 +85,7 @@ public class StaticController {
 			@RequestParam(value="location") String location,
 			@RequestParam(value="state") String state,
 			@RequestParam(value="assignedUser") String assignedUser,
+			@RequestParam(value="contractTypeId") Integer contractTypeId,
 			@RequestParam(value="orderBy", required=false) String orderBy) {
 		//log.debug("===========================getVendorKpi");
 		
@@ -103,6 +104,7 @@ public class StaticController {
 		if(location!=null && !location.isEmpty()) params.add("location="+location);
 		if(state!=null && !state.isEmpty()) params.add("state="+state);
 		if(assignedUser!=null && !assignedUser.isEmpty()) params.add("assignedUser="+assignedUser);
+		if(contractTypeId!=null && contractTypeId!=0) params.add("contractTypeId="+contractTypeId);
 		if(orderBy!=null && !orderBy.isEmpty()) params.add("orderBy="+orderBy);
 		
 		//2. Call StatsAPI
