@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.model.primary.show;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -107,6 +109,19 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 	@Column(name = "DeleteFlag")
 	@JsonProperty("DeleteFlag")
 	private int deleteFlag;
+
+	@Transient
+	@Column(name = "CanceledBy")
+	@JsonProperty("CanceledBy")
+	private String canceledBy;
+
+	@JsonProperty("CancelDate")
+	@Column(name = "CancelDate")
+	private LocalDateTime cancelDate;
+	
+	@JsonProperty("Active")
+	@Column(name = "Active")
+	private Boolean active;
 
 	public MapShowSchedulePromotionPlanVendor() {
 	}
@@ -224,6 +239,30 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getCanceledBy() {
+		return canceledBy;
+	}
+
+	public void setCanceledBy(String canceledBy) {
+		this.canceledBy = canceledBy;
+	}
+
+	public LocalDateTime getCancelDate() {
+		return cancelDate;
+	}
+
+	public void setCancelDate(LocalDateTime cancelDate) {
+		this.cancelDate = cancelDate;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 	@Override

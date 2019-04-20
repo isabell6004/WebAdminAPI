@@ -967,4 +967,46 @@ public class SitemgmtShowService extends ApiService {
 
 		return result;
 	}
+	
+
+	public ResultResponse<Integer> setCancelShowParticipatingVendor(DelShowParameter parameters) {
+		final Integer mapID = parameters.getMapId();
+		final String userName = parameters.getUserName();
+		LocalDateTime currentDateTime = LocalDateTime.now();
+
+		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);
+
+		Boolean hasPlanDatePassed = false;
+
+		// -----------------------------------------------------------
+		MapShowSchedulePromotionPlanVendor mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository
+				.findOneByMapID(mapID);
+		if (mapShowSchedulePromotionPlanVendor != null) {
+			int planID = mapShowSchedulePromotionPlanVendor.getPlanID();
+
+			// -----------------------------------------------------------
+			ShowSchedulePromotionPlan showSchedulePromotionPlan = showSchedulePromotionPlanRepository
+					.findOneByPlanID(planID);
+			if (showSchedulePromotionPlan != null) {
+				LocalDateTime commissionEffectiveFrom = showSchedulePromotionPlan.getCommissionEffectiveFrom();
+				int planDateCompare = currentDateTime.compareTo(commissionEffectiveFrom);
+				hasPlanDatePassed = planDateCompare >= 0 ? true : false;
+			}
+		}
+
+		if (hasPlanDatePassed) {
+			result.setMessage("Unable to delete vendor since it is already passed the Commission Effective From date");
+			return result;
+		}
+
+		// -----------------------------------------------------------
+		mapShowSchedulePromotionPlanVendor.setCancelDate(currentDateTime);
+		mapShowSchedulePromotionPlanVendor.setCanceledBy(userName);
+		mapShowSchedulePromotionPlanVendor.setActive(false);
+		mapShowSchedulePromotionPlanVendorRepository.save(mapShowSchedulePromotionPlanVendor);
+
+		result.setResultWrapper(true, 1, mapID, MSG_DELETE_SUCCESS, mapID);
+
+		return result;
+	}
 }
