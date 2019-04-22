@@ -459,9 +459,7 @@ public class BidService extends ApiService {
 	private ListingAdBidSpot getWinningBidsFromDB(int bidSettingId) {
 		List<AdBid> adBidList = adBidRepository.findByBidSettingIdAndStatusIdOrderByBidAmountDescBiddedOnAsc(bidSettingId, 1);
 		ListingAdBidSpot newBidSpot = new ListingAdBidSpot();
-		if (CollectionUtils.isEmpty(adBidList)) {
-			newBidSpot.setBidList(new ArrayList<>());
-		} else {
+		if (!CollectionUtils.isEmpty(adBidList)) {
 			newBidSpot.setBidList(adBidList.stream()
 					.map(ListingAdBid::of)
 					.collect(Collectors.toList()));
