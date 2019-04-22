@@ -429,6 +429,21 @@ public class SitemgmtShowController {
 
 		return results;
 	}
+	
+
+	@RequestMapping(value = "show/participating-vendor/cancel", method = RequestMethod.POST)
+	@ApiOperation("site management > show info. - set show participating-vendor cancel")
+	public JsonResponse<Integer> cancelShowParticipatingVendor(@RequestBody DelShowParameter parameters) {
+
+		ResultResponse<Integer> result = siteMgmtShowService.setCancelShowParticipatingVendor(parameters);
+
+		JsonResponse<Integer> results = new JsonResponse<Integer>(result.getSuccess(), result.getMessage(),
+				result.getData());
+//		results.setSuccess(result.getSuccess());
+//		results.setMessage(result.getMessage());
+
+		return results;
+	}
 
 	/**
 	 * 
