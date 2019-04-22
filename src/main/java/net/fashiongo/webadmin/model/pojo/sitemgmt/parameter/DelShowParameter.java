@@ -24,7 +24,7 @@ public class DelShowParameter {
 	@JsonProperty("mapId")
 	private Integer mapId;
 
-	@ApiModelProperty(required = false, example = "123")
+	@ApiModelProperty(required = false, example = "admin")
 	@JsonProperty("userName")
 	private String userName;
 

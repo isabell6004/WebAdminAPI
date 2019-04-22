@@ -971,7 +971,7 @@ public class SitemgmtShowService extends ApiService {
 
 	public ResultResponse<Integer> setCancelShowParticipatingVendor(DelShowParameter parameters) {
 		final Integer mapID = parameters.getMapId();
-		final String userName = parameters.getUserName();
+		String userName = parameters.getUserName();
 		LocalDateTime currentDateTime = LocalDateTime.now();
 
 		ResultResponse<Integer> result = new ResultResponse<Integer>(false, -1, 0, null, null);

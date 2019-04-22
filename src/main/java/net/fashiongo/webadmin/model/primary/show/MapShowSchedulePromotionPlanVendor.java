@@ -110,7 +110,6 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 	@JsonProperty("DeleteFlag")
 	private int deleteFlag;
 
-	@Transient
 	@Column(name = "CanceledBy")
 	@JsonProperty("CanceledBy")
 	private String canceledBy;
