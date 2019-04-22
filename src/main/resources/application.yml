@@ -79,10 +79,10 @@ server:
   
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.145:29001
-# fgServiceAPI_EndPoint: http://localhost:19002
   fgVendorAPI_EndPoint: http://10.10.0.145:28501
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
+  statsAPI_EndPoint: http://10.10.0.145:19101
   jwt:
     develop:
       check-token: true
@@ -95,7 +95,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_dev
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
@@ -108,9 +108,10 @@ logging:
   path: logs/
 
 webAdminapi:
+  statsAPI_EndPoint: http://localhost:19101
   jwt:
     develop:
-      check-token: false
+      check-token: true
 
 ---
 
@@ -139,7 +140,8 @@ server:
   port: 29911 
   
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.32:29041
+#  fgServiceAPI_EndPoint: http://10.10.0.32:29041
+  fgServiceAPI_EndPoint: http://localhost:29001
   fgWebAdminAPI_EndPoint: http://webadmin-api-photo-studio.fashiongo.net/api/
   jwt:
     develop:
@@ -152,7 +154,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_Dev
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
@@ -176,11 +178,11 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
+    jdbc-url: jdbc:sqlserver://10.10.10.18;databaseName=FG_V2
   datasource2:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
+    jdbc-url: jdbc:sqlserver://10.10.10.18;databaseName=FG_PAY
   datasource3:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
+    jdbc-url: jdbc:sqlserver://10.10.10.18;databaseName=FG_EM
   datasource4:
     jdbc-url: jdbc:sqlserver://10.10.10.18;databaseName=FG_PhotoStudio
     
@@ -223,3 +225,26 @@ server:
 logging:
   config: classpath:log4j2-prod.xml
   path: /var/www/logs/
+  
+---
+# qa
+spring:
+  profiles: qa
+  redis:
+    host: 10.10.0.145
+  datasource:
+    jdbc-url: jdbc:sqlserver://10.10.10.17;databaseName=FG_V2
+  datasource2:
+    jdbc-url: jdbc:sqlserver://10.10.10.17;databaseName=FG_PAY
+  datasource3:
+    jdbc-url: jdbc:sqlserver://10.10.10.17;databaseName=FG_EM
+  datasource4:
+    jdbc-url: jdbc:sqlserver://10.10.10.17;databaseName=FG_PhotoStudio
+    
+  jpa:
+    show-sql: false
+    properties.hibernate.format_sql: false
+    properties.hibernate.generate_statistics: false
+
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.32:29071
