@@ -85,6 +85,7 @@ public class BidService extends ApiService {
 		List<Object> params = new ArrayList<Object>();
 
 		params.add(parameters.getSpotId());
+		params.add(parameters.getPageId());
 		params.add(parameters.getFromDate());
 		params.add(parameters.getToDate());
 		params.add(parameters.getWeekDay());
