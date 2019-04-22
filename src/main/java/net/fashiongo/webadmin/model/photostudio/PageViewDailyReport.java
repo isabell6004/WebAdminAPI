@@ -104,7 +104,7 @@ public class PageViewDailyReport {
 
     public Integer getTotalAdditionalColorCount() {
 
-        if(this.totalAdditionalColorCount == 0) {
+        if(this.totalAdditionalColorCount == null || this.totalAdditionalColorCount == 0) {
             return 0;
         }
 
@@ -117,7 +117,7 @@ public class PageViewDailyReport {
     }
 
     public Integer getTotalAdditionalColorSetCount() {
-        if(this.totalAdditionalColorSetCount == null) {
+        if(this.totalAdditionalColorSetCount == null || this.totalAdditionalColorSetCount == 0) {
             return 0;
         }
         return totalAdditionalColorSetCount;
