@@ -78,8 +78,7 @@ server:
     context-path: /api
   
 webAdminapi:
-# fgServiceAPI_EndPoint: http://10.10.0.145:29001
-  fgServiceAPI_EndPoint: http://localhost:29001
+  fgServiceAPI_EndPoint: http://10.10.0.145:29001
   fgVendorAPI_EndPoint: http://10.10.0.145:28501
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
 #  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
@@ -147,7 +146,8 @@ server:
   port: 29911 
   
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.32:29041
+#  fgServiceAPI_EndPoint: http://10.10.0.32:29041
+  fgServiceAPI_EndPoint: http://localhost:29001
   fgWebAdminAPI_EndPoint: http://webadmin-api-photo-studio.fashiongo.net/api/
   jwt:
     develop:
