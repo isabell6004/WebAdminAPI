@@ -12,7 +12,7 @@ import net.fashiongo.webadmin.model.primary.Message;
  * @author Reo
  *
  */
-public interface MessageRepository extends JpaRepository<Message, Integer> {
+public interface MessageRepository extends CrudRepository<Message, Integer> {
 	Message findByMessageID(Integer topReferenceID);
 	List<Message> findByReferenceID(Integer ReferenceID);
 }
