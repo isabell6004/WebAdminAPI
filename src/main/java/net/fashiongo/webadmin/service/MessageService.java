@@ -509,7 +509,7 @@ public class MessageService extends ApiService {
         		}
         		
         		if(parameters.getTopic() > 0) msg.setMessageCategoryID(parameters.getTopic());
-        		messageRepository.saveAndFlush(msg);
+        		messageRepository.save(msg);
         		
             	MessageMap messageMap = new MessageMap();
                 messageMap.setMessageID(msg.getMessageID());
