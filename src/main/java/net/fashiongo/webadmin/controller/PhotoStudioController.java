@@ -286,12 +286,12 @@ public class PhotoStudioController {
     }
 
     @GetMapping("/calendar")
-    public JsonResponse<?> getPhotoCalendar(@RequestParam Map<String, String> parmMap) {
+    public JsonResponse<List<PhotoCalendarResponse>> getPhotoCalendar(@RequestParam Map<String, String> parmMap) {
         logger.debug("PhotoStudioController.getPhotoCalendar() called!!!");
-        JsonResponse<List<PhotoCalendar>> response = new JsonResponse<>(false, null, null);
+        JsonResponse<List<PhotoCalendarResponse>> response = new JsonResponse<>(false, null, null);
 
         try {
-            List<PhotoCalendar> result = photoStudioService.getPhotoCalendar(parmMap);
+            List<PhotoCalendarResponse> result = photoStudioService.getPhotoCalendar(parmMap);
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
