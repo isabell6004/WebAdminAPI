@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.service;
 
 import net.fashiongo.webadmin.dao.photostudio.*;
+import net.fashiongo.webadmin.exception.NotFoundPhotostudioPhotoModel;
 import net.fashiongo.webadmin.model.photostudio.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -578,17 +580,73 @@ public class PhotoStudioService extends ApiService {
         return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
     }
 
-    public List<PhotoCalendar> getPhotoCalendar(Map<String, String> parmMap) {
-        List<Object> params = new ArrayList<Object>();
-        params.add(parmMap.get("year"));
-        params.add(parmMap.get("month"));
-        params.add(parmMap.get("modelID"));
+    public List<PhotoCalendarResponse> getPhotoCalendar(Map<String, String> parmMap) {
+        LocalDateTime now = LocalDateTime.now();
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetPhotoCalendar", params, PhotoCalendar.class);
+        int year = Optional.ofNullable(parmMap.get("year"))
+                .map(Integer::parseInt)
+                .orElse(now.getYear());
+        int month = Optional.ofNullable(parmMap.get("month"))
+                .map(Integer::parseInt)
+                .orElse(now.getMonthValue());
+        Integer modelId = Optional.ofNullable(parmMap.get("modelID"))
+                .map(Integer::parseInt)
+                .orElse(null);
 
-        List<PhotoCalendar> photoCalendars = (List<PhotoCalendar>) r.get(0);
+        PhotoModel photoModel = (modelId == null) ? null : Optional.ofNullable(photoModelRepository.findOneByModelID(modelId))
+                .orElseThrow(NotFoundPhotostudioPhotoModel::new);
 
-        return photoCalendars;
+        LocalDateTime inputDate = LocalDateTime.of(year, month, 1, 0, 0);
+
+        List<PhotoCalendarEntity> photoCalendarEntityList = photoCalendarRepository.getPhotoCalendarWithJoinDate(inputDate, inputDate.with(TemporalAdjusters.lastDayOfMonth()));
+        List<PhotoCalendarResponse> photoCalendarResponseList = photoCalendarEntityList.stream()
+                .map(photoCalendarEntity -> {
+                    PhotoCalendarResponse photoCalendarResponse = new PhotoCalendarResponse();
+
+                    photoCalendarResponse.setAvailable(photoCalendarEntity.getAvailable());
+                    photoCalendarResponse.setAvailableUnits(photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                            .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                            .map(mapPhotoCalendarModel -> mapPhotoCalendarModel.getAvailableUnit().subtract(mapPhotoCalendarModel.getPhotoBooking().stream()
+                                    .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
+                                    .map(PhotoBooking::getBookedUnit)
+                                    .reduce(BigDecimal.ZERO, BigDecimal::add)))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+                            .doubleValue());
+                    photoCalendarResponse.setCalendarID(photoCalendarEntity.getCalendarID());
+                    photoCalendarResponse.setDateName(photoCalendarEntity.getDateName());
+                    photoCalendarResponse.setDisabled(photoModel != null && photoModel.getType().equals("Plus") && !photoCalendarEntity.getDateName().equals("Friday")); // TODO: HARDCODED
+                    photoCalendarResponse.setIsDelayed(photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                            .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                            .anyMatch(mapPhotoCalendarModel -> mapPhotoCalendarModel.getPhotoBooking().stream()
+                                    .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
+                                    .map(PhotoBooking::getPhotoOrder)
+                                    .anyMatch(photoOrder -> (photoOrder.getOrderStatusID() == 1 && photoOrder.get_dropOffDate().isBefore(now))
+                                            || (photoOrder.getOrderStatusID() == 2 && photoOrder.get_prepDate().isBefore(now))
+                                            || (photoOrder.getOrderStatusID() == 3 && photoOrder.get_photoshootDate().isBefore(now))
+                                            || (photoOrder.getOrderStatusID() == 4 && photoOrder.get_retouchDate().isBefore(now))
+                                            || (photoOrder.getOrderStatusID() == 5 && photoOrder.get_uploadDate().isBefore(now)))));
+                    photoCalendarResponse.setBookedCnt(photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                            .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                            .filter(mapPhotoCalendarModel -> modelId == null || (mapPhotoCalendarModel.getModelID() != null && mapPhotoCalendarModel.getModelID().equals(modelId)))
+                            .map(mapPhotoCalendarModel -> mapPhotoCalendarModel.getPhotoBooking().stream()
+                                    .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
+                                    .count())
+                            .reduce(0L, Long::sum)
+                            .intValue());
+                    photoCalendarResponse.setIsHoliday(photoCalendarEntity.getIsHoliday());
+                    photoCalendarResponse.setIsModelShot(photoCalendarEntity.getIsModelShot());
+                    photoCalendarResponse.setMaxUnitPerDay(photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                            .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                            .map(MapPhotoCalendarModel::getAvailableUnit)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+                            .doubleValue());
+                    photoCalendarResponse.setTheDate(photoCalendarEntity.getTheDate().toLocalDate().toString());
+
+                    return photoCalendarResponse;
+                })
+                .collect(Collectors.toList());
+
+        return photoCalendarResponseList;
     }
 
     public Map<String, Object> getPhotoCalendarModelsOrders(Map<String, String> parmMap) {
