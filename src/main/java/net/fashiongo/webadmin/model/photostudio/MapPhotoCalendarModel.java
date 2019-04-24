@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.model.photostudio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -35,4 +36,8 @@ public class MapPhotoCalendarModel implements IPersistent, Serializable {
     @ManyToOne
     @JoinColumn(name = "ModelID", referencedColumnName = "ModelID", insertable = false, updatable = false)
     private PhotoModel photoModel;
+
+	@OneToMany
+	@JoinColumn(name = "ModelScheduleID", referencedColumnName = "ModelScheduleID")
+	private List<PhotoBooking> photoBooking;
 }
