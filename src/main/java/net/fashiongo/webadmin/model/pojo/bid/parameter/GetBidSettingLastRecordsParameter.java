@@ -13,6 +13,10 @@ public class GetBidSettingLastRecordsParameter {
 	@JsonProperty("spotid")
 	private Integer spotId;
 	
+	@ApiModelProperty(required = false, example="0")
+	@JsonProperty("pageid")
+	private Integer pageId;
+	
 	@ApiModelProperty(required = false, example="201610")
 	private String mth;
 	
@@ -33,6 +37,12 @@ public class GetBidSettingLastRecordsParameter {
 	}
 	public void setSpotId(Integer spotId) {
 		this.spotId = spotId;
+	}
+	public Integer getPageId() {
+		return pageId;
+	}
+	public void setPageId(Integer pageId) {
+		this.pageId = pageId;
 	}
 	public String getMth() {
 		return mth;

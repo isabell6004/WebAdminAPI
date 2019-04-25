@@ -85,6 +85,7 @@ public class BidService extends ApiService {
 		List<Object> params = new ArrayList<Object>();
 
 		params.add(parameters.getSpotId());
+		params.add(parameters.getPageId());
 		params.add(parameters.getFromDate());
 		params.add(parameters.getToDate());
 		params.add(parameters.getWeekDay());
@@ -457,11 +458,9 @@ public class BidService extends ApiService {
 	}
 
 	private ListingAdBidSpot getWinningBidsFromDB(int bidSettingId) {
-		List<AdBid> adBidList = adBidRepository.findByBidSettingIdAndStatusIdOrderByBidAmountDescBiddedOnAsc(bidSettingId, 1);
+		List<AdBid> adBidList = adBidRepository.findByBidSettingIdAndStatusIdOrderByBidAmountDescBiddedOnAscBidIdAsc(bidSettingId, 1);
 		ListingAdBidSpot newBidSpot = new ListingAdBidSpot();
-		if (CollectionUtils.isEmpty(adBidList)) {
-			newBidSpot.setBidList(new ArrayList<>());
-		} else {
+		if (!CollectionUtils.isEmpty(adBidList)) {
 			newBidSpot.setBidList(adBidList.stream()
 					.map(ListingAdBid::of)
 					.collect(Collectors.toList()));
