@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.dao.photostudio.impl;
 
 import com.querydsl.jpa.impl.JPAQuery;
+import net.fashiongo.webadmin.dao.photostudio.PhotoOrderRepositoryCustom;
 import net.fashiongo.webadmin.dao.photostudio.PhotoOrderStatisticCustom;
 import net.fashiongo.webadmin.model.photostudio.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -19,7 +20,7 @@ import java.util.*;
  * Created by jinwoo on 2019. 2. 12..
  */
 @Repository
-public class PhotoOrderRepositoryCustomImpl implements PhotoOrderStatisticCustom {
+public class PhotoOrderRepositoryCustomImpl implements PhotoOrderStatisticCustom, PhotoOrderRepositoryCustom {
 
     @PersistenceContext(unitName = "photostudioEntityManager")
     private EntityManager photostudioEntityManager;
@@ -143,5 +144,25 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderStatisticCustom
                 .fetchOne();
 
         return Optional.ofNullable(order).orElse(new PhotoOrder());
+    }
+
+    @Override
+    public PhotoOrder getPhotoOrderInfoWithBookAndModelAndCategory(int orderId) {
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+        QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
+        QMapPhotoCalendarModel photoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
+        QPhotoModel photoModel = QPhotoModel.photoModel;
+
+        JPAQuery<PhotoOrder> query = new JPAQuery<>(photostudioEntityManager)
+                .select(photoOrder)
+                .from(photoOrder)
+                .join(photoOrder.photoBooking, photoBooking).fetchJoin()
+                .join(photoOrder.photoCategory, photoCategory).fetchJoin()
+                .leftJoin(photoBooking.mapPhotoCalendarModel, photoCalendarModel).fetchJoin()
+                .leftJoin(photoCalendarModel.photoModel, photoModel).fetchJoin()
+                .where(photoOrder.orderID.eq(orderId));
+
+        return query.fetchOne();
     }
 }
