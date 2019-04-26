@@ -632,8 +632,9 @@ public class PhotoStudioService extends ApiService {
                             .map(mapPhotoCalendarModel -> mapPhotoCalendarModel.getPhotoBooking().stream()
                                     .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
                                     .count())
-                            .reduce(0L, Long::sum)
-                            .intValue());
+                            .reduce(Long::sum)
+                            .map(Long::intValue)
+                            .orElse(-1));
                     photoCalendarResponse.setIsHoliday(photoCalendarEntity.getIsHoliday());
                     photoCalendarResponse.setIsModelShot(photoCalendarEntity.getIsModelShot());
                     photoCalendarResponse.setMaxUnitPerDay(photoCalendarEntity.getMapPhotoCalendarModel().stream()
