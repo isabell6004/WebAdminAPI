@@ -14,6 +14,7 @@ public class ListingAdBid implements Comparable<ListingAdBid> {
 	private int bidSettingId;
 	private int wid;
 	private long bidAmount;
+	private long originalBidAmount;
 	private Long maxBidAmount;
 	private LocalDateTime biddedOn;
 	private String biddedBy;
@@ -27,11 +28,12 @@ public class ListingAdBid implements Comparable<ListingAdBid> {
 	public ListingAdBid() {
 	}
 
-	public ListingAdBid(int bidId, int bidSettingId, int wid, long bidAmount, Long maxBidAmount, LocalDateTime biddedOn, String biddedBy) {
+	public ListingAdBid(int bidId, int bidSettingId, int wid, long bidAmount, long originalBidAmount, Long maxBidAmount, LocalDateTime biddedOn, String biddedBy) {
 		this.bidId = bidId;
 		this.bidSettingId = bidSettingId;
 		this.wid = wid;
 		this.bidAmount = bidAmount;
+		this.originalBidAmount = originalBidAmount;
 		this.maxBidAmount = maxBidAmount;
 		this.biddedOn = biddedOn;
 		this.biddedBy = biddedBy;
@@ -85,12 +87,33 @@ public class ListingAdBid implements Comparable<ListingAdBid> {
 	public void setModified(boolean modified) {
 		this.modified = modified;
 	}
+	public long getOriginalBidAmount() {
+		return originalBidAmount;
+	}
+	public void setOriginalBidAmount(long originalBidAmount) {
+		this.originalBidAmount = originalBidAmount;
+	}
 
 	public static ListingAdBid of(AdBid adBid) {
 		return new ListingAdBid(adBid.getBidId(), adBid.getBidSettingId(), adBid.getWholeSalerId(),
 				adBid.getBidAmount().longValue(),
+				adBid.getOriginBidAmount().longValue(),
 				Optional.ofNullable(adBid.getMaxBidAmount()).map(BigDecimal::longValue).orElse(null),
 				adBid.getBiddedOn(), adBid.getBiddedBy());
+	}
+
+	public static AdBid adBid(ListingAdBid listingAdBid, int statusId) {
+		AdBid adBid = new AdBid();
+		adBid.setBidId(listingAdBid.getBidId());
+		adBid.setBidSettingId(listingAdBid.getBidSettingId());
+		adBid.setWholeSalerId(listingAdBid.getWid());
+		adBid.setBidAmount(BigDecimal.valueOf(listingAdBid.getBidAmount()));
+		adBid.setOriginBidAmount(BigDecimal.valueOf(listingAdBid.getOriginalBidAmount()));
+		adBid.setMaxBidAmount(Optional.ofNullable(listingAdBid.getMaxBidAmount()).map(BigDecimal::valueOf).orElse(null));
+		adBid.setBiddedOn(listingAdBid.getBiddedOn());
+		adBid.setBiddedBy(listingAdBid.getBiddedBy());
+		adBid.setStatusId(statusId);
+		return adBid;
 	}
 
 	@Override
@@ -135,6 +158,7 @@ public class ListingAdBid implements Comparable<ListingAdBid> {
 				", bidSettingId=" + bidSettingId +
 				", wid=" + wid +
 				", bidAmount=" + bidAmount +
+				", originalBidAmount=" + originalBidAmount +
 				", maxBidAmount=" + maxBidAmount +
 				", biddedOn=" + biddedOn +
 				", biddedBy='" + biddedBy + '\'' +
