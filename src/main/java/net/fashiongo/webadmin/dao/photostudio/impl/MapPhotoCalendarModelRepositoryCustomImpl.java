@@ -26,11 +26,13 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 	public List<MapPhotoCalendarModel> findAvailableMapByTheDate(LocalDate theDate) {
 		QMapPhotoCalendarModel mapPhotoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
 		QPhotoCalendarEntity photoCalendar = QPhotoCalendarEntity.photoCalendarEntity;
+		QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
 
 		JPAQuery<MapPhotoCalendarModel> query = new JPAQuery<>(photostudioEntityManager)
 				.select(mapPhotoCalendarModel)
 				.from(mapPhotoCalendarModel)
 				.join(mapPhotoCalendarModel.photoCalendarEntity, photoCalendar).fetchJoin()
+				.leftJoin(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()
 				.where(photoCalendar.theDate.eq(theDate.atTime(0, 0))
 						.and(photoCalendar.theDate.after(LocalDateTime.now()))
 						.and(photoCalendar.available.isTrue())

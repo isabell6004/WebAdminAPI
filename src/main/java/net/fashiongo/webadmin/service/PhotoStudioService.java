@@ -884,6 +884,14 @@ public class PhotoStudioService extends ApiService {
                 .filter(selectedDaysModel -> selectedDaysModel.getModelID() == null // TODO: HARDCODED
                         || (selectedDaysModel.getPhotoModel().getType().equals("Regular") && photoOrder.getPhotoCategory().getCategoryName().equals("Women Regular"))
                         || (selectedDaysModel.getPhotoModel().getType().equals("Plus") && photoOrder.getPhotoCategory().getCategoryName().equals("Women Plus Size")))
+                .filter(selectedDaysModel -> {
+                    BigDecimal selectedDaysAvailableUnit = selectedDaysModel.getAvailableUnit().subtract(selectedDaysModel.getPhotoBooking().stream()
+                            .filter(selectedDaysBooking -> selectedDaysBooking.getStatusID() == 0)
+                            .map(PhotoBooking::getBookedUnit)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add));
+
+                    return photoOrder.getTotalUnit().doubleValue() <= selectedDaysAvailableUnit.doubleValue();
+                })
                 .collect(Collectors.toList());
 
         List<Integer> selectedDaysAvailableModelIds = selectedDaysAvailableModels.stream()
@@ -932,7 +940,6 @@ public class PhotoStudioService extends ApiService {
         if (isFullModelShot) {
             // for full model shot
             availableModelsResponses = selectedDaysAvailableModels.stream()
-                    .filter(models -> models.getModelID() != null || models.getAvailableUnit().doubleValue() >= photoOrder.getTotalUnit().doubleValue())
                     .map(models -> {
                         AvailableModelsResponse response = new AvailableModelsResponse();
 
