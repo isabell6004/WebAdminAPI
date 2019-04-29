@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
+
+import io.netty.util.internal.StringUtil;
 import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
@@ -58,9 +65,11 @@ import net.fashiongo.webadmin.model.pojo.ad.CategoryAdCount;
 import net.fashiongo.webadmin.model.pojo.ad.SelectData;
 import net.fashiongo.webadmin.model.pojo.ad.VendorCount;
 import net.fashiongo.webadmin.model.pojo.ad.VendorData1;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.BodySizeInfo;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryCount;
@@ -149,6 +158,7 @@ import net.fashiongo.webadmin.model.primary.CodePattern;
 import net.fashiongo.webadmin.model.primary.CodeStyle;
 import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
+import net.fashiongo.webadmin.model.primary.EditorPickVendorContent;
 import net.fashiongo.webadmin.model.primary.FeaturedItem;
 import net.fashiongo.webadmin.model.primary.MapFabricCategory;
 import net.fashiongo.webadmin.model.primary.MapLengthCategory;
@@ -156,6 +166,7 @@ import net.fashiongo.webadmin.model.primary.MapPatternCategory;
 import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.PolicyAgreement;
+import net.fashiongo.webadmin.model.primary.QEditorPickVendorContent;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.model.primary.TrendReportContents;
@@ -233,6 +244,9 @@ public class SitemgmtService extends ApiService {
 	private TrendReportContentsRepository trendReportContentRepository;
 	
 	private net.fashiongo.webadmin.utility.Utility uUtility;
+	
+	@PersistenceContext(unitName = "primaryEntityManager")
+	private EntityManager entityManager;
 
 	/**
 	 *
@@ -2073,5 +2087,61 @@ public class SitemgmtService extends ApiService {
 		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
 	}
 	
-}
+	
+	/**
+	 * @author Kenny/Kyungwoo
+	 * @since 2019-04-29
+	 */
+	public PagedResult<EditorPickVendorContent> getEditorPickVendorContents(Integer pagenum, Integer pagesize,
+			String title, String vendorName, LocalDateTime startDate, LocalDateTime endDate, String orderBy) {
+		//0. Prepare Query types
+		QEditorPickVendorContent epvc = QEditorPickVendorContent.editorPickVendorContent;
+		PagedResult<EditorPickVendorContent> result = new PagedResult<>();
+		
+		//1. Build query
+		JPAQuery<EditorPickVendorContent> query = new JPAQuery<>(entityManager);
+		query
+		.select(epvc)
+		.from(epvc)
+		.where(epvc.vendor.isNotNull()
+				.and(epvc.vendorContent.isNotNull()));
+        
+		//2. Fill where conditions
+        if(!StringUtil.isNullOrEmpty(title)) query.where(epvc.editorTitle.likeIgnoreCase(Expressions.asString("%").concat(title).concat("%")));
+        if(!StringUtil.isNullOrEmpty(vendorName)) query.where(epvc.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(vendorName).concat("%")));
+        if(startDate!=null) query.where(epvc.startDate.goe(startDate));
+        if(endDate!=null) query.where(epvc.startDate.loe(endDate));
+        
+        //3. Get the count first
+        int totalCount = (int)query.fetchCount();
+        
+        //4. Set the page
+        if(pagenum!=null && pagesize!=null) {
+        	query.offset(pagesize*(pagenum-1));
+        	query.limit(pagesize);
+        }
+        //4-1. Set orderBy
+        if(orderBy!=null) {
+        	if(orderBy.equals("vendorAsc")) query.orderBy(epvc.vendor.companyName.asc());
+        	else if(orderBy.equals("vendorDesc")) query.orderBy(epvc.vendor.companyName.desc());
+        	else if(orderBy.equals("titleAsc")) query.orderBy(epvc.editorTitle.asc());
+        	else if(orderBy.equals("titleDesc")) query.orderBy(epvc.editorTitle.desc());
+        	else if(orderBy.equals("startDateAsc")) query.orderBy(epvc.startDate.asc());
+        	else if(orderBy.equals("startDateDesc")) query.orderBy(epvc.startDate.desc());
+        	else if(orderBy.equals("endDateAsc")) query.orderBy(epvc.endDate.asc());
+        	else if(orderBy.equals("endDateDesc")) query.orderBy(epvc.endDate.desc());
+        	else if(orderBy.equals("createdByAsc")) query.orderBy(epvc.createdBy.asc());
+        	else if(orderBy.equals("createdByDesc")) query.orderBy(epvc.createdBy.desc());
+        }
+        
+        //5. Get the page
+        List<EditorPickVendorContent> list = query.fetch();
 
+        //6. Return
+        SingleValueResult total = new SingleValueResult();
+        total.setTotalCount(totalCount);
+        result.setTotal(total);
+        result.setRecords(list==null ? new ArrayList<EditorPickVendorContent>() : list);
+        return result;
+	}
+}
