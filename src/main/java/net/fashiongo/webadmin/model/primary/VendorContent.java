@@ -15,8 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Where;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.fashiongo.common.dal.IPersistent;
@@ -29,7 +27,6 @@ import net.fashiongo.common.dal.IPersistent;
 @Table(name = "Vendor_Content")
 @Getter
 @Setter
-@Where(clause="Is_Deleted=0")
 public class VendorContent implements IPersistent, Serializable {
 	private static final long serialVersionUID = -213129874484795682L;
 
@@ -111,6 +108,6 @@ public class VendorContent implements IPersistent, Serializable {
 	}
 	
 	public String getBaseVideoUrl() {
-		return new StringBuilder("https://vimeo.com/").toString();
+		return "https://vimeo.com/";
 	}
 }

@@ -2,9 +2,11 @@ package net.fashiongo.webadmin.model.primary;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -65,13 +67,47 @@ public class EditorPickVendorContent implements IPersistent, Serializable {
 	@Column(name = "modified_by")
 	private String modifiedBy;
 	
-    @JoinColumn(name = "vendor_id", insertable = false, updatable = false)
-    @ManyToOne
-    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "vendor_id", insertable = false, updatable = false, nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Vendor vendor;
 	
     @JoinColumn(name = "vendor_content_id", insertable = false, updatable = false)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
     private VendorContent vendorContent;
+    
+    public boolean getStatus() {
+    	LocalDateTime now = LocalDateTime.now();
+    	if(startDate!=null && startDate.isAfter(now)) return false;
+    	else if(endDate!=null && endDate.isBefore(now)) return false;
+    	else if(!vendor.getActive()) return false;
+    	else if(!vendor.getShopActive()) return false;
+    	else if(!vendor.getOrderActive()) return false;
+    	else if(vendor.getVendorType()!=2) return false;
+    	else if(vendorContent==null) return false;
+    	else if(vendorContent.getStatusId()!=2) return false;
+    	else if(!vendorContent.getIsActive()) return false;
+    	else if(vendorContent.getIsDeleted()) return false;
+    	else return true;
+    }
+    
+    public String getStatusDescription() {
+    	ArrayList<String> descs = new ArrayList<>();
+    	
+    	LocalDateTime now = LocalDateTime.now();
+    	if(startDate!=null && startDate.isAfter(now)) descs.add("period is not started");
+    	if(endDate!=null && endDate.isBefore(now)) descs.add("period is ended");
+    	if(!vendor.getActive()) descs.add("vendor is not active");
+    	if(!vendor.getShopActive()) descs.add("vendor is not shopActive");
+    	if(!vendor.getOrderActive()) descs.add("vendor is not orderActive");
+    	if(vendor.getVendorType()!=2) descs.add("vendor is not Premium");
+    	if(vendorContent==null) descs.add("media does not exist");
+    	else {
+    		if(vendorContent.getStatusId()!=2) descs.add("media is not approved");
+    		if(!vendorContent.getIsActive()) descs.add("media is not active");
+    		if(vendorContent.getIsDeleted()) descs.add("media is deleted");
+    	}
+    	
+    	return String.join(", ", descs);
+    }
 }

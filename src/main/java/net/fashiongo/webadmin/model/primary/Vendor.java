@@ -32,4 +32,15 @@ public class Vendor implements IPersistent, Serializable {
 	@Column(name="CompanyName")
 	private String companyName;
 	
+	@Column(name="Active")
+	private Boolean active;
+	
+	@Column(name="ShopActive")
+	private Boolean shopActive;
+	
+	@Column(name="OrderActive")
+	private Boolean orderActive;
+	
+	@Column(name="Vendor_Type")
+	private Integer vendorType;
 }

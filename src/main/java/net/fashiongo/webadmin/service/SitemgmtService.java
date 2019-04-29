@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 
@@ -167,6 +168,8 @@ import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.PolicyAgreement;
 import net.fashiongo.webadmin.model.primary.QEditorPickVendorContent;
+import net.fashiongo.webadmin.model.primary.QVendor;
+import net.fashiongo.webadmin.model.primary.QVendorContent;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.model.primary.TrendReportContents;
@@ -2096,6 +2099,8 @@ public class SitemgmtService extends ApiService {
 			String title, String vendorName, LocalDateTime startDate, LocalDateTime endDate, String orderBy) {
 		//0. Prepare Query types
 		QEditorPickVendorContent epvc = QEditorPickVendorContent.editorPickVendorContent;
+		QVendor v = QVendor.vendor;
+		QVendorContent vc = QVendorContent.vendorContent;
 		PagedResult<EditorPickVendorContent> result = new PagedResult<>();
 		
 		//1. Build query
@@ -2103,14 +2108,16 @@ public class SitemgmtService extends ApiService {
 		query
 		.select(epvc)
 		.from(epvc)
-		.where(epvc.vendor.isNotNull()
-				.and(epvc.vendorContent.isNotNull()));
+		.innerJoin(epvc.vendor, v)
+		.innerJoin(epvc.vendorContent, vc);
         
 		//2. Fill where conditions
-        if(!StringUtil.isNullOrEmpty(title)) query.where(epvc.editorTitle.likeIgnoreCase(Expressions.asString("%").concat(title).concat("%")));
-        if(!StringUtil.isNullOrEmpty(vendorName)) query.where(epvc.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(vendorName).concat("%")));
-        if(startDate!=null) query.where(epvc.startDate.goe(startDate));
-        if(endDate!=null) query.where(epvc.startDate.loe(endDate));
+		BooleanExpression where = Expressions.asBoolean(true).isTrue();
+        if(!StringUtil.isNullOrEmpty(title)) where.and(epvc.editorTitle.likeIgnoreCase(Expressions.asString("%").concat(title).concat("%")));
+        if(!StringUtil.isNullOrEmpty(vendorName)) where.and(epvc.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(vendorName).concat("%")));
+        if(startDate!=null) where.and(epvc.startDate.goe(startDate));
+        if(endDate!=null) where.and(epvc.startDate.loe(endDate));
+        query.where(where);
         
         //3. Get the count first
         int totalCount = (int)query.fetchCount();

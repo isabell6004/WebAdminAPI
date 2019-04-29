@@ -1,9 +1,5 @@
 package net.fashiongo.webadmin.service;
 
-import static net.fashiongo.webadmin.model.primary.QVendor.vendor;
-import static net.fashiongo.webadmin.model.primary.QVendorContent.vendorContent;
-import static net.fashiongo.webadmin.model.primary.QVendorContentFile.vendorContentFile;
-
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 
@@ -714,19 +712,23 @@ public class VendorService extends ApiService {
      * @since 2019-04-15
      */
 	public PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company, LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer status) {
+		//0. Prepare Query type
+		QVendorContent vc = QVendorContent.vendorContent;
 		PagedResult<VendorContent> result = new PagedResult<>();
 		
 		//1. Build query
 		JPAQuery<VendorContent> query = new JPAQuery<>(entityManager);
-		query.select(vendorContent);
-		query.from(vendorContent);
+		query.select(vc);
+		query.from(vc);
         
 		//2. Fill where conditions
-        if(!StringUtil.isNullOrEmpty(company)) query.where(vendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")));
-        if(datefrom!=null) query.where(vendorContent.requestedOn.goe(datefrom));
-        if(dateto!=null) query.where(vendorContent.requestedOn.loe(dateto));
-        if(type!=null) query.where(vendorContent.targetTypeId.eq(type));
-        if(status!=null) query.where(vendorContent.statusId.eq(status));
+		BooleanExpression where = vc.isDeleted.eq(false);
+        if(!StringUtil.isNullOrEmpty(company)) where.and(vc.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")));
+        if(datefrom!=null) where.and(vc.requestedOn.goe(datefrom));
+        if(dateto!=null) where.and(vc.requestedOn.loe(dateto));
+        if(type!=null) where.and(vc.targetTypeId.eq(type));
+        if(status!=null) where.and(vc.statusId.eq(status));
+        query.where(where);
         
         
         //3. Get the count first
