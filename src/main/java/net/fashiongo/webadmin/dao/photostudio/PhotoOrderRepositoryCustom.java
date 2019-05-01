@@ -4,13 +4,15 @@ import net.fashiongo.webadmin.model.photostudio.OrderDetailStatistic;
 import net.fashiongo.webadmin.model.photostudio.OrderStatistic;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by jinwoo on 2019. 2. 12..
  */
-public interface PhotoOrderStatisticCustom {
+public interface PhotoOrderRepositoryCustom {
 
     Map<Integer, OrderStatistic> getValidOrderStatistic(Date start, Date end);
 
@@ -19,4 +21,16 @@ public interface PhotoOrderStatisticCustom {
     Map<Integer, OrderDetailStatistic> getValidOrderDetailStatistic(Date start, Date end);
 
     PhotoOrder getPhotoOrderInfoWithAdditionalInfo(String poNumber);
+
+    List<PhotoOrder> getValidOrderWithDetail(LocalDateTime start, LocalDateTime end);
+
+    List<PhotoOrder> getCancelOrderWithDetail(LocalDateTime start, LocalDateTime end);
+
+    List<PhotoOrder> getOrderWithDetail(LocalDateTime start, LocalDateTime end);
+
+    Map<Integer,List<PhotoOrder>> getOrderOfWholeSaler(List<Integer> wholeSalerIds);
+
+    List<PhotoOrder> getOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end);
+
+    List<PhotoOrder> getOrdersByPhotoshootDate(LocalDateTime start, LocalDateTime end);
 }

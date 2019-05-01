@@ -76,7 +76,25 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "MovieAmount")
 	private BigDecimal movieAmount;
 
-	@JsonIgnore
+    @Column(name = "ModelSwatchUnitPrice")
+    private BigDecimal modelSwatchUnitPrice;
+
+    @Column(name = "ModelSwatchQty")
+    private Integer modelSwatchQty;
+
+    @Column(name = "ModelSwatchAmount")
+    private BigDecimal modelSwatchAmount;
+
+    @Column(name = "ColorSwatchUnitPrice")
+    private BigDecimal colorSwatchUnitPrice;
+
+    @Column(name = "ColorSwatchQty")
+    private Integer colorSwatchQty;
+
+    @Column(name = "ColorSwatchAmount")
+    private BigDecimal colorSwatchAmount;
+
+    @JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime createdOnDate;

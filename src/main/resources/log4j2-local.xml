@@ -59,7 +59,7 @@
             <AppenderRef ref="CONSOLE"/>
             <AppenderRef ref="LOG_ROLLING" />
         </Logger>
-        <Logger name="net.fashiongo.webadmin.service" level="INFO" additivity="false">
+        <Logger name="net.fashiongo.webadmin.service" level="DEBUG" additivity="false">
             <AppenderRef ref="CONSOLE"/>
             <AppenderRef ref="LOG_ROLLING" />
         </Logger>
