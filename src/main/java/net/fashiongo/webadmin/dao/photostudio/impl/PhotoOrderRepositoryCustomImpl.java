@@ -248,4 +248,24 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
                 .collect(Collectors.toList());
         return orders;
     }
+
+    @Override
+    public PhotoOrder getPhotoOrderInfoWithBookAndModelAndCategory(int orderId) {
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+        QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
+        QMapPhotoCalendarModel photoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
+        QPhotoModel photoModel = QPhotoModel.photoModel;
+
+        JPAQuery<PhotoOrder> query = new JPAQuery<>(photostudioEntityManager)
+                .select(photoOrder)
+                .from(photoOrder)
+                .join(photoOrder.photoBooking, photoBooking).fetchJoin()
+                .join(photoOrder.photoCategory, photoCategory).fetchJoin()
+                .leftJoin(photoBooking.mapPhotoCalendarModel, photoCalendarModel).fetchJoin()
+                .leftJoin(photoCalendarModel.photoModel, photoModel).fetchJoin()
+                .where(photoOrder.orderID.eq(orderId));
+
+        return query.fetchOne();
+    }
 }

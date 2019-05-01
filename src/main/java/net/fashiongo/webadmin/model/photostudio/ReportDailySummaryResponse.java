@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class ReportDailySummaryResponse {
 
     private String date;
-//    private String photoshootDate;
     private Integer totalColorSet;
     private Integer totalColors;
     private Integer totalMovie;
@@ -44,19 +43,10 @@ public class ReportDailySummaryResponse {
         this.totalColorSwatch += Optional.ofNullable(detail.getColorSwatchQty()).orElse(0);
     }
 
-//    public static ReportDailySummaryResponse makeSummaryWithPhotoshootDate(String photoshootDate, List<PhotoOrder> orders) {
-//        return makeSummary(null, photoshootDate, orders);
-//    }
-//
-//    public static ReportDailySummaryResponse makeSummaryWithCheckoutDate(String checkOutDate, List<PhotoOrder> orders) {
-//        return makeSummary(checkOutDate, null, orders);
-//    }
-
     public static ReportDailySummaryResponse makeSummary(String date, List<PhotoOrder> orders) {
 
         ReportDailySummaryResponse response = ReportDailySummaryResponse.builder()
                 .date(date)
-//                .photoshootDate(photoshootDate)
                 .totalPONumbers(0)
                 .totalOrderAmount(BigDecimal.ZERO)
                 .totalStyles(0)

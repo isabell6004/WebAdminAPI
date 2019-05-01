@@ -14,6 +14,8 @@ import java.util.Map;
  */
 public interface PhotoOrderRepositoryCustom {
 
+    PhotoOrder getPhotoOrderInfoWithBookAndModelAndCategory(int orderId);
+
     Map<Integer, OrderStatistic> getValidOrderStatistic(Date start, Date end);
 
     Map<Integer, OrderStatistic> getCancelOrderStatistic(Date start, Date end);
