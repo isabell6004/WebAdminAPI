@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
@@ -636,8 +637,9 @@ public class PhotoStudioService extends ApiService {
                             .map(mapPhotoCalendarModel -> mapPhotoCalendarModel.getPhotoBooking().stream()
                                     .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
                                     .count())
-                            .reduce(0L, Long::sum)
-                            .intValue());
+                            .reduce(Long::sum)
+                            .map(Long::intValue)
+                            .orElse(-1));
                     photoCalendarResponse.setIsHoliday(photoCalendarEntity.getIsHoliday());
                     photoCalendarResponse.setIsModelShot(photoCalendarEntity.getIsModelShot());
                     photoCalendarResponse.setMaxUnitPerDay(photoCalendarEntity.getMapPhotoCalendarModel().stream()
@@ -868,90 +870,124 @@ public class PhotoStudioService extends ApiService {
     }
 
 
-    public List<PhotoModel> getAvailableModels(Integer orderID, String theDate) {
+    public List<AvailableModelsResponse> getAvailableModels(Integer orderID, String theDate) {
         List<Object> params = new ArrayList<Object>();
         params.add(orderID);
         params.add(theDate);
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetAvailableModels", params, PhotoModel.class);
+        LocalDate selectedDate = LocalDate.parse(theDate);
 
-        List<PhotoModel> photoModels = (List<PhotoModel>) r.get(0);
-        Map<String, List<PhotoImage>> imagesMap = new HashMap<String, List<PhotoImage>>(); //key: calendarID + ModelID
-        Map<Integer, List<String>> nextAvailableMap = new HashMap<Integer, List<String>>(); //key: ModelID
+        // get order info
+        PhotoOrder photoOrder = photoOrderRepository.getPhotoOrderInfoWithBookAndModelAndCategory(orderID);
+        MapPhotoCalendarModel orderModel = photoOrder.getPhotoBooking().getMapPhotoCalendarModel();
+        boolean isFullModelShot = orderModel.getModelID() != null;
 
-        List<PhotoModel> models = new ArrayList<PhotoModel>();
+        // get selected day's models
+        List<MapPhotoCalendarModel> selectedDaysAvailableModels = mapPhotoCalendarModelRepository.findAvailableMapByTheDate(selectedDate)
+                .stream()
+                .filter(selectedDaysModel -> (orderModel.getModelID() == null) == (selectedDaysModel.getModelID() == null))
+                .filter(selectedDaysModel -> selectedDaysModel.getModelID() == null // TODO: HARDCODED
+                        || (selectedDaysModel.getPhotoModel().getType().equals("Regular") && photoOrder.getPhotoCategory().getCategoryName().equals("Women Regular"))
+                        || (selectedDaysModel.getPhotoModel().getType().equals("Plus") && photoOrder.getPhotoCategory().getCategoryName().equals("Women Plus Size")))
+                .filter(selectedDaysModel -> {
+                    BigDecimal selectedDaysAvailableUnit = selectedDaysModel.getAvailableUnit().subtract(selectedDaysModel.getPhotoBooking().stream()
+                            .filter(selectedDaysBooking -> selectedDaysBooking.getStatusID() == 0)
+                            .map(PhotoBooking::getBookedUnit)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add));
 
-        for (PhotoModel photoModel : photoModels) {
-            if (photoModel.getModelID() == null) {
-                break;
+                    return photoOrder.getTotalUnit().doubleValue() <= selectedDaysAvailableUnit.doubleValue();
+                })
+                .collect(Collectors.toList());
+
+        List<Integer> selectedDaysAvailableModelIds = selectedDaysAvailableModels.stream()
+                .map(MapPhotoCalendarModel::getModelID)
+                .collect(Collectors.toList());
+
+        // get selected day's models' first image map
+        List<MapPhotoImage> selectedModelsFirstImageMaps = mapPhotoImageRepository.findModelImagesByModelIds(selectedDaysAvailableModelIds)
+                .stream()
+                // make Map<Integer, List<MapPhotoImage>>. key=(modelId), value=(MapPhotoImages of each model)
+                .collect(Collectors.toMap(MapPhotoImage::getReferenceID, mapPhotoImage -> {
+                    List<MapPhotoImage> imageIds = new ArrayList<>();
+                    imageIds.add(mapPhotoImage);
+                    return imageIds;
+                }, (mapPhotoImages, mapPhotoImages2) -> {
+                    mapPhotoImages.addAll(mapPhotoImages2);
+                    return mapPhotoImages;
+                }))
+                .values()
+                .stream()
+                .peek(mapPhotoImages -> mapPhotoImages.sort(Comparator.comparing(MapPhotoImage::getListOrder)))
+                // find first Image. There is no mapPhotoImage that it's size is 0.
+                .map(mapPhotoImages -> mapPhotoImages.get(0))
+                .collect(Collectors.toList());
+
+        // get selected day's models' first images
+        List<PhotoImage> selectedModelsFirstImages = photoImageRepository.findAllByImageIDIn(selectedModelsFirstImageMaps.stream()
+                .map(MapPhotoImage::getImageID)
+                .collect(Collectors.toList()));
+
+        // selected day's models' other available days(after now)
+        List<MapPhotoCalendarModel> selectedModelsOtherDays = mapPhotoCalendarModelRepository.findAvailableMapAfterNowByModelIdsAndNotTheDate(selectedDaysAvailableModelIds, selectedDate, isFullModelShot)
+                .stream()
+                .filter(selectedModelsOtherDay -> {
+                    BigDecimal otherDaysAvailableUnit = selectedModelsOtherDay.getAvailableUnit().subtract(selectedModelsOtherDay.getPhotoBooking().stream()
+                            .filter(otherDaysBooking -> otherDaysBooking.getStatusID() == 0)
+                            .map(PhotoBooking::getBookedUnit)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add));
+
+                    return photoOrder.getTotalUnit().doubleValue() <= otherDaysAvailableUnit.doubleValue();
+                })
+                .collect(Collectors.toList());
+
+        // make response
+        List<AvailableModelsResponse> availableModelsResponses;
+        if (isFullModelShot) {
+            // for full model shot
+            availableModelsResponses = selectedDaysAvailableModels.stream()
+                    .map(models -> {
+                        AvailableModelsResponse response = new AvailableModelsResponse();
+
+                        response.setModelId(models.getModelID());
+                        response.setModelName(Optional.ofNullable(models.getPhotoModel())
+                                .map(PhotoModel::getModelName)
+                                .orElse(null));
+                        response.setNextAvailableDates(selectedModelsOtherDays.stream()
+                                .filter(otherDays -> otherDays.getModelID().equals(models.getModelID()))
+                                .map(otherDays -> otherDays.getPhotoCalendarEntity().getTheDate().toLocalDate().toString())
+                                .collect(Collectors.toList()));
+                        response.setImageUrl(selectedModelsFirstImageMaps.stream()
+                                .filter(mapPhotoImage -> mapPhotoImage.getReferenceID().equals(models.getModelID()))
+                                .findFirst()
+                                .map(mapPhotoImage -> selectedModelsFirstImages.stream()
+                                        .filter(photoImage -> photoImage.getImageID().equals(mapPhotoImage.getImageID()))
+                                        .findFirst()
+                                        .map(PhotoImage::getImageUrl)
+                                        .orElse(null))
+                                .orElse(null));
+
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+        } else {
+            // for flat product shot
+            availableModelsResponses = new ArrayList<>(1);
+
+            AvailableModelsResponse response = new AvailableModelsResponse();
+
+            response.setNextAvailableDates(selectedModelsOtherDays.stream()
+                    .map(otherDays -> otherDays.getPhotoCalendarEntity().getTheDate().toLocalDate().toString())
+                    .collect(Collectors.toList()));
+
+            if (selectedDaysAvailableModels.size() == 0) {
+                // is today available
+                response.setIsToday(1);
             }
-            String imageKey = String.valueOf(photoModel.getCalendarID()) + String.valueOf(photoModel.getModelID());
-            List<PhotoImage> imageList = imagesMap.get(imageKey);
-            if (imageList != null) {
-                if (photoModel.getImageUrl() != null) {
-                    PhotoImage photoImage = new PhotoImage();
-                    photoImage.setImageUrl(photoModel.getImageUrl());
-                    photoImage.setListOrder(photoModel.getListOrder());
-                    imageList.add(photoImage);
-                    imagesMap.put(imageKey, imageList);
-                }
-            } else {
-                if (photoModel.getImageUrl() != null) {
-                    imageList = new ArrayList<PhotoImage>();
-                    PhotoImage photoImage = new PhotoImage();
-                    photoImage.setImageUrl(photoModel.getImageUrl());
-                    photoImage.setListOrder(photoModel.getListOrder());
-                    imageList.add(photoImage);
-                    imagesMap.put(imageKey, imageList);
-                }
 
-                if (photoModel.getIsToday().intValue() == 0) {
-                    //Today's models
-                    models.add(photoModel);
-                } else if (photoModel.getIsToday().intValue() == 1) {
-                    //Today's models next Available
-                    List<String> nextAvailableList = nextAvailableMap.get(photoModel.getModelID());
-                    if (nextAvailableList == null) {
-                        nextAvailableList = new ArrayList<String>();
-                    }
-                    nextAvailableList.add(photoModel.getTheDate());
-                    nextAvailableMap.put(photoModel.getModelID(), nextAvailableList);
-
-                }
-            }
+            availableModelsResponses.add(response);
         }
 
-        // for flat mode next Available
-        if (models.size() == 0 && photoModels.size() > 0) {
-            for (PhotoModel photoModel : photoModels) {
-                if (photoModel.getModelID() != null) {
-                    break;
-                }
-
-                if (models.size() == 0) {
-                    //Today's
-                    models.add(photoModel);
-                }
-
-                if (photoModel.getIsToday().intValue() == 1) {
-                    //next Available
-                    List<String> nextAvailableList = nextAvailableMap.get(photoModel.getModelID());
-                    if (nextAvailableList == null) {
-                        nextAvailableList = new ArrayList<String>();
-                    }
-                    nextAvailableList.add(photoModel.getTheDate());
-                    nextAvailableMap.put(photoModel.getModelID(), nextAvailableList);
-
-                }
-            }
-        }
-
-        for (PhotoModel photoModel : models) {
-            photoModel.setPhotoImages(imagesMap.get(String.valueOf(photoModel.getCalendarID()) + String.valueOf(photoModel.getModelID())));
-            photoModel.setNextAvailableDates(nextAvailableMap.get(photoModel.getModelID()));
-        }
-
-        return models;
+        return availableModelsResponses;
     }
 
     public String updatePhotoOrder(PhotoOrder photoOrder) {

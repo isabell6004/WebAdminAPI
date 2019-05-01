@@ -6,6 +6,6 @@ import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface MapPhotoCalendarModelRepository extends CrudRepository<MapPhotoCalendarModel, Integer>{
+public interface MapPhotoCalendarModelRepository extends CrudRepository<MapPhotoCalendarModel, Integer>, MapPhotoCalendarModelRepositoryCustom {
 	List<MapPhotoCalendarModel> findByCalendarID(Integer calendarID);
 }

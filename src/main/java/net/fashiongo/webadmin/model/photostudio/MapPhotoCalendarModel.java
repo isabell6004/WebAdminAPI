@@ -33,6 +33,10 @@ public class MapPhotoCalendarModel implements IPersistent, Serializable {
 	@Column(name = "IsDelete")
 	private Boolean isDelete;
 
+	@ManyToOne
+	@JoinColumn(name = "CalendarID", referencedColumnName = "CalendarID", insertable = false, updatable = false)
+	private PhotoCalendarEntity photoCalendarEntity;
+
     @ManyToOne
     @JoinColumn(name = "ModelID", referencedColumnName = "ModelID", insertable = false, updatable = false)
     private PhotoModel photoModel;
