@@ -119,6 +119,30 @@ webAdminapi:
     develop:
       check-token: true
 
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7
+    package2: 2, 8
+    package3: 3, 9
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
+
 ---
 
 # photo-studio

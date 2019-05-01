@@ -504,7 +504,11 @@ public class PhotoStudioController {
         JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
 
         try {
-            Map<String, Object> result = photoStudioService.getReports(parmMap);
+            int year = Integer.parseInt(String.valueOf(parmMap.get("year")));
+            int month = Integer.parseInt(String.valueOf(parmMap.get("month")));
+            int reportTypeId = Integer.parseInt(String.valueOf(parmMap.get("reportTypeId")));
+
+            Map<String, Object> result = photoStudioService.getReports(year, month, ReportType.typeOf(reportTypeId));
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -528,7 +532,10 @@ public class PhotoStudioController {
         JsonResponse<List<ReportCsvMonthly>> response = new JsonResponse<>(false, null, null);
 
         try {
-            List<ReportCsvMonthly> result = photoStudioService.getReportsMonthlyCsv(parmMap);
+            String yyyymmddString = String.valueOf(parmMap.get("yyyymmdd"));
+            int reportTypeId = Integer.parseInt(String.valueOf(parmMap.get("reportTypeId")));
+
+            List<ReportCsvMonthly> result = photoStudioService.getReportsMonthlyCsv(yyyymmddString, ReportType.typeOf(reportTypeId));
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {

@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.photostudio.*;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioPhotoModel;
 import net.fashiongo.webadmin.model.photostudio.*;
@@ -8,8 +9,11 @@ import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.service.photostudio.ReportTypeChecker;
 import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.Utility;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -27,6 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PhotoStudioService extends ApiService {
 
     @Autowired
@@ -1071,49 +1076,123 @@ public class PhotoStudioService extends ApiService {
     }
 
 
-    public Map<String, Object> getReports(Map<String, Object> parmMap) {
+    public Map<String, Object> getReports(int year, int month, ReportType reportType) {
 
-        int categoryID = Integer.parseInt(String.valueOf(parmMap.get("categoryID")));
-        ;
+        LocalDateTime start = DateUtils.getFirstDayOfMonthAsLocalDateTime(year, month);
+        LocalDateTime end = DateUtils.getLastDayOfMonthAsLocalDateTime(year, month);
 
+        List<PhotoOrder> orders = null;
         Map<String, Object> result = new HashMap<String, Object>();
-        List<Object> params = new ArrayList<Object>();
+        if (reportType == ReportType.DailySalesReport) {
+            orders = photoOrderRepository.getOrderWithDetail(start, end);
+            if(CollectionUtils.isEmpty(orders)) return new HashedMap<>();
 
-        params.add(parmMap.get("year"));
-        params.add(parmMap.get("month"));
-        params.add(categoryID);
+            List<PhotoOrder> validOrders = orders.stream().filter(x -> x.getIsCancelledBy() == null).collect(Collectors.toList());
+            List<ReportDailySummaryResponse> dailyDatas = makeDailyReportDataByCheckoutDate(validOrders);
+            if(CollectionUtils.isNotEmpty(dailyDatas)) dailyDatas.sort(Comparator.comparing(o -> o.getDate()));
+            result.put("dailyData", dailyDatas);
 
-        if (categoryID == 5) {
-            List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class);
-
-            List<CommonReportsVo> dailyData = (List<CommonReportsVo>) r.get(0);
-            List<CommonReportsVo> monthSummary = (List<CommonReportsVo>) r.get(1);
-
-            result.put("dailyData", dailyData);
-            result.put("monthSummary", monthSummary);
-
+            ReportMonthlySummaryResponse response = makeMonthlyReportData(start, orders);
+            result.put("monthSummary", response);
         } else {
-            List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class, CommonReportsVo.class);
-            List<CommonReportsVo> dailyVendorData = (List<CommonReportsVo>) r.get(0);
-            List<CommonReportsVo> dailyData = (List<CommonReportsVo>) r.get(1);
-            List<CommonReportsVo> monthSummary = (List<CommonReportsVo>) r.get(2);
+            orders = photoOrderRepository.getOrderWithDetailByPhotoshootDate(start, end);
+            if(CollectionUtils.isEmpty(orders)) return new HashedMap<>();
 
-            result.put("dailyVendorData", dailyVendorData);
-            result.put("dailyData", dailyData);
-            result.put("monthSummary", monthSummary);
+            List<PhotoOrder> validOrders = null;
+            List<PhotoOrder> ordersByType = null;
+            if(reportType == ReportType.AllPhotoshoot) {
+                validOrders = orders.stream().filter(x -> x.getIsCancelledBy() == null).collect(Collectors.toList());
+
+                ordersByType = orders;
+            } else {
+                validOrders = orders.stream().filter(
+                        x ->
+                                x.getIsCancelledBy() == null && ReportTypeChecker.checkReportType(reportType, x.getCategoryID(), x.getPackageID())
+                ).collect(Collectors.toList());
+
+                ordersByType = orders.stream().filter(x ->
+                        ReportTypeChecker.checkReportType(reportType, x.getCategoryID(), x.getPackageID())
+                ).collect(Collectors.toList());
+            }
+
+            List<ReportDailySummaryResponse> dailyDatas = makeDailyReportDataByPhotoShootDate(validOrders);
+            if(CollectionUtils.isNotEmpty(dailyDatas)) dailyDatas.sort(Comparator.comparing(o -> o.getDate()));
+            result.put("dailyData", dailyDatas);
+
+            List<ReportDailyVendorSummaryResponse> dailyVendorDatas = makeDailyVendorReportData(validOrders);
+            dailyVendorDatas.sort(Comparator.comparing(o -> o.getDate()));
+            result.put("dailyVendorData", dailyVendorDatas);
+
+            ReportMonthlySummaryResponse response = makeMonthlyReportData(start, ordersByType);
+            result.put("monthSummary", response);
         }
 
         return result;
     }
 
-    public List<ReportCsvMonthly> getReportsMonthlyCsv(Map<String, Object> parmMap) {
-        int categoryID = Integer.parseInt(String.valueOf(parmMap.get("categoryID")));
-        ;
+    private List<ReportDailyVendorSummaryResponse> makeDailyVendorReportData(List<PhotoOrder> validOrders) {
+        Map<String, List<PhotoOrder>> photoOrderMap = validOrders.stream().collect(Collectors.groupingBy(PhotoOrder::getPhotoshootDate));
+        List<ReportDailyVendorSummaryResponse> dailyVendorDatas = new ArrayList<>();
+        for (String photoshootDate : photoOrderMap.keySet()) {
+            List<PhotoOrder> orders = photoOrderMap.get(photoshootDate);
+            Map<String, List<PhotoOrder>> photoOrderMapByWholeSaler = orders.stream().collect(Collectors.groupingBy(PhotoOrder::getWholeSalerCompanyName));
+
+            for (String wholeSalerCompanyName : photoOrderMapByWholeSaler.keySet()) {
+                ReportDailyVendorSummaryResponse response = ReportDailyVendorSummaryResponse.makeSummary(photoshootDate, wholeSalerCompanyName, photoOrderMapByWholeSaler.get(wholeSalerCompanyName));
+                dailyVendorDatas.add(response);
+            }
+        }
+        return dailyVendorDatas;
+    }
+
+    private ReportMonthlySummaryResponse makeMonthlyReportData(LocalDateTime startDate, List<PhotoOrder> orders) {
+        ReportMonthlySummaryResponse response = ReportMonthlySummaryResponse.makeSummary(startDate, orders);
+        List<Integer> wholeSalerIds = orders.parallelStream().map(PhotoOrder::getWholeSalerID).collect(Collectors.toList());
+        Map<Integer, List<PhotoOrder>> oldOrders = photoOrderRepository.getOrderOfWholeSaler(wholeSalerIds);
+        response.makeOldOrdersSummary(oldOrders);
+        return response;
+    }
+
+    private List<ReportDailySummaryResponse> makeDailyReportDataByPhotoShootDate(List<PhotoOrder> validOrders) {
+        if(CollectionUtils.isEmpty(validOrders)) {
+            return new ArrayList<>();
+        }
+
+        Map<String, List<PhotoOrder>> photoOrderMap = validOrders.stream().collect(Collectors.groupingBy(PhotoOrder::getPhotoshootDate));
+        return makeDailyReportData(photoOrderMap);
+    }
+
+    private List<ReportDailySummaryResponse> makeDailyReportData(Map<String, List<PhotoOrder>> photoOrderMap) {
+        List<ReportDailySummaryResponse> dailyDatas = new ArrayList<>();
+        for (String date : photoOrderMap.keySet()) {
+            List<PhotoOrder> orders = photoOrderMap.get(date);
+            ReportDailySummaryResponse response = ReportDailySummaryResponse.makeSummary(date, orders);
+
+            List<Integer> wholeSalerIds = orders.parallelStream().map(PhotoOrder::getWholeSalerID).collect(Collectors.toList());
+            Map<Integer, List<PhotoOrder>> oldOrders = photoOrderRepository.getOrderOfWholeSaler(wholeSalerIds);
+            response.makeOldOrdersSummary(oldOrders);
+
+            dailyDatas.add(response);
+        }
+        return dailyDatas;
+    }
+
+    private List<ReportDailySummaryResponse> makeDailyReportDataByCheckoutDate(List<PhotoOrder> validOrders) {
+        if(CollectionUtils.isEmpty(validOrders)) {
+            return new ArrayList<>();
+        }
+
+        Map<String, List<PhotoOrder>> photoOrderMap = validOrders.stream().collect(Collectors.groupingBy(PhotoOrder::getCheckOutDate));
+        return makeDailyReportData(photoOrderMap);
+    }
+
+    public List<ReportCsvMonthly> getReportsMonthlyCsv(String yyyymmddString, ReportType reportType) {
+
+//        reportType
 
         List<Object> params = new ArrayList<Object>();
-
-        params.add(parmMap.get("yyyymmdd"));
-        params.add(categoryID);
+        params.add(yyyymmddString);
+//        params.add(categoryID);
 
         List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReport_csv_monthly", params, ReportCsvMonthly.class);
         List<ReportCsvMonthly> reportCsvMonthlys = (List<ReportCsvMonthly>) r.get(0);
@@ -1200,6 +1279,16 @@ public class PhotoStudioService extends ApiService {
         return bSuccess;
     }
 
+    public List<PhotoCart> getPhotoCarts(Date start, Date end) {
+        List<PhotoCart> photoCarts = photoCartRepository.findAllByCreatedOnBetween(start, end);
+        return photoCarts;
+    }
+
+    public List<PhotoBannerClickStatistic> getPhotoBannerClicks(Date start, Date end) {
+        List<PhotoBannerClickStatistic> photoBannerClickStatistics = photoBannerClickRepository.getClickStatistic(start, end);
+        return photoBannerClickStatistics;
+    }
+
     private final String DAILY_REPORT_REQUEST_DATE_PATTERN = "yyyyMMdd";
 
     public DailyReport getDailyReportToExcel(String date) {
@@ -1213,8 +1302,7 @@ public class PhotoStudioService extends ApiService {
             logger.debug("start : {}, end : {}");
         } catch (ParseException e) {
         }
-        List<PhotoCart> photoCarts = photoCartRepository.findAllByCreatedOnBetween(start, end);
-        List<PageViewDailyReport> pageViewDailyReports = PageViewDailyReport.build(photoCarts);
+        List<PageViewDailyReport> pageViewDailyReports = PageViewDailyReport.build(getPhotoCarts(start, end));
 
         List<PhotoCategory> photoCategories = photoCategoryRepository.findAll();
         Map<Integer, PhotoCategory> photoCategoryMap = photoCategories.stream().collect(
@@ -1226,8 +1314,7 @@ public class PhotoStudioService extends ApiService {
                 photoOrderRepository.getValidOrderDetailStatistic(start, end)
         );
 
-        List<PhotoBannerClickStatistic> photoBannerClickStatistics = photoBannerClickRepository.getClickStatistic(start, end);
-        List<ClickStatDailyReport> clickStatDailyReports = ClickStatDailyReport.build(photoBannerClickStatistics);
+        List<ClickStatDailyReport> clickStatDailyReports = ClickStatDailyReport.build(getPhotoBannerClicks(start, end));
 
         DailyReport dailyReport = new DailyReport();
         dailyReport.setPageViewDailyReports(pageViewDailyReports);
