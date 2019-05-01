@@ -87,6 +87,12 @@ webAdminapi:
     develop:
       check-token: true
 
+bid-redis:
+  database: 3
+  lock:
+    timeout-seconds:
+      acquire: 3
+      expire: 10
 ---
 
 # Local
@@ -196,6 +202,10 @@ webAdminapi:
     
 logging:
   config: classpath:log4j2-stage.xml
+
+bid-redis:
+  database: 4
+
 ---
 # Prod
 spring:

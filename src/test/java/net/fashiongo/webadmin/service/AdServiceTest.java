@@ -37,7 +37,7 @@ public class AdServiceTest {
 	 */
 	@Test
 	public void testGetAdsetting() {
-		GetADSettingResponse result = adService.getAdsetting();
+		GetADSettingResponse result = adService.getAdsetting(true);
 		assertNotNull(result.getAdSettingSubList());
 		assertNotNull(result.getAdSettingList());
 	}
