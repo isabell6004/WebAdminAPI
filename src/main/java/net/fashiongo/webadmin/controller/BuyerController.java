@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.controller;
 
 import java.util.List;
 
+import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerDetailParameter;
+import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerInfoParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,5 +75,35 @@ public class BuyerController {
 	public JsonResponse<String> SetAdminRetailerReadYN(@RequestBody SetAdminRetailerReadYNParameter param) {
 		Integer result = buyerService.SetAdminRetailerReadYN(param.getObj(), param.getReadYN());
 		return new JsonResponse<String>(true, null, result, null);
+	}
+
+	/**
+	 * Set tblRetailer's status, activeYn
+	 *
+	 * @param setAdminRetailerInfoParameter
+	 */
+	@RequestMapping(value = "setadminretailerinfo", method = RequestMethod.POST)
+	public JsonResponse<String> setAdminRetailerInfo(@RequestBody SetAdminRetailerInfoParameter setAdminRetailerInfoParameter) {
+		buyerService.setAdminRetailerInfo(setAdminRetailerInfoParameter.getRetailerList());
+		return new JsonResponse<>(true, "Saved successfully!", 1, null);
+	}
+
+	/**
+	 * Set tblRetailer's detail information
+	 *
+	 * @param setAdminRetailerDetailParameter
+	 */
+	@RequestMapping(value = "setadminretailerdetail", method = RequestMethod.POST)
+	public Integer setAdminRetailerDetail(@RequestBody SetAdminRetailerDetailParameter setAdminRetailerDetailParameter) {
+		try {
+			if ("Y".equalsIgnoreCase(setAdminRetailerDetailParameter.getRetailerDetail().getActive()) &&
+					setAdminRetailerDetailParameter.getRetailerDetail().getCurrentStatus() == 5) {
+				return -2;
+			}
+
+			return buyerService.setAdminRetailerDetail(setAdminRetailerDetailParameter);
+		} catch (RuntimeException e) {
+			return -99;
+		}
 	}
 }

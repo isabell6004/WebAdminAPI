@@ -7,12 +7,16 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 
  * @author Reo
  *
  */
+@Data
 @Entity
 @Table(name = "tblRetailer")
 public class RetailerCompany {
@@ -40,67 +44,45 @@ public class RetailerCompany {
 	@JsonProperty("Active")
 	@Column(name = "Active")
 	private String active;
-	
+
+	@JsonProperty("CurrentStatus")
+	@Column(name = "CurrentStatus")
+	private int currentStatus;
+
+	@JsonIgnore
+	@Column(name = "RetailerGUID")
+	private String retailerGuid;
+
+	@JsonIgnore
+	@Column(name = "USERID")
+	private String userID;
+
+	@JsonIgnore
+	@Column(name = "RetailerPermitNo")
+	private String retailerPermitNo;
+
+	@JsonIgnore
+	@Column(name = "TerminatedNote")
+	private String terminatedNote;
+
+	@JsonIgnore
+	@Column(name = "InHouseMemo")
+	private String inHouseMemo;
+
+	@JsonIgnore
+	@Column(name = "WebSite")
+	private String webSite;
+
+	@JsonIgnore
+	@Column(name = "LastUser")
+	private String lastUser;
+
+	@JsonIgnore
+	@Column(name = "LastModifiedDateTime")
+	private Date lastModifiedDateTime;
+
 	@JsonIgnore
 	@Column(name = "IsOperatorRead")
 	private Boolean operatorRead;
 
-	public Integer getRetailerID() {
-		return retailerID;
-	}
-
-	public void setRetailerID(Integer retailerID) {
-		this.retailerID = retailerID;
-	}
-
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String geteMail() {
-		return eMail;
-	}
-
-	public void seteMail(String eMail) {
-		this.eMail = eMail;
-	}
-
-	public String getActive() {
-		return active;
-	}
-
-	public void setActive(String active) {
-		this.active = active;
-	}
-
-	public Boolean getOperatorRead() {
-		return operatorRead;
-	}
-
-	public void setOperatorRead(Boolean operatorRead) {
-		this.operatorRead = operatorRead;
-	}
-	
-	
-	
 }
