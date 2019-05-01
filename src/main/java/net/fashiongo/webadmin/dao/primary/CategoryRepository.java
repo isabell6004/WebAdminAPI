@@ -21,6 +21,8 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
 	
 	List<Category> findByParentCategoryIDAndLvlOrderByListOrderAsc(Integer parentCategoryID, Integer lvl);
 	
+	List<Category> findByParentCategoryIDOrParentParentCategoryIDOrderByListOrderAsc(Integer parentCategoryID, Integer parentParentCategoryID);
+	
 	@Query(value="SELECT CategoryID FROM Category WHERE Lvl =:lvl", nativeQuery=true)
 	List<Integer> getCategoryIDWithLvl(@Param("lvl") Integer lvl);
 	

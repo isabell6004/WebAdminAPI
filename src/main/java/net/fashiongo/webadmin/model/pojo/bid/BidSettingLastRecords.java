@@ -70,6 +70,10 @@ public class BidSettingLastRecords {
 	@JsonProperty("SpotInstanceCount")
 	private Integer spotInstanceCount;
 
+	@JsonProperty("SpotDescription")
+	@Column(name = "SpotDescription")
+	private String spotDescription;
+
 	public Integer getSpotID() {
 		return spotID;
 	}
@@ -218,6 +222,14 @@ public class BidSettingLastRecords {
 
 	public void setSpotInstanceCount(Integer spotInstanceCount) {
 		this.spotInstanceCount = spotInstanceCount;
+	}
+
+	public String getSpotDescription() {
+		return spotDescription;
+	}
+
+	public void setSpotDescription(String spotDescription) {
+		this.spotDescription = spotDescription;
 	}
 	
 }
