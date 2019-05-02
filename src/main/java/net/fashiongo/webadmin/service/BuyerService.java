@@ -229,7 +229,7 @@ public class BuyerService extends ApiService {
 	}
 
 	private void logBuyerStatusChange(int retailerId, String statusBefore, String statusAfter, LocalDateTime now) {
-		String changeType = statusAfter;
+        String changeType = statusBefore + " > " + statusAfter;
 		if (statusBefore.startsWith("N") && statusAfter.startsWith("Y")) {
 			changeType = "Revive";
 		} else if ("Y1".equals(statusAfter)) {
