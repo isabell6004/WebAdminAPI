@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -171,12 +170,14 @@ public class BuyerService extends ApiService {
 			for (SetAdminRetailerDetailParameter.FraudNotice fraudNotice : setAdminRetailerDetailParam.getFraudNoticeList()) {
 				if (fraudNotice.isActive()) {
 					activeFraudExist = true;
-					Optional<FraudNotice> fraudNoticeOptional = fraudNoticeRepository.findById(fraudNotice.getFraudNoticeId());
-					fraudNoticeOptional.ifPresent(fNotice -> {
-						fNotice.setActive(true);
-						fraudNoticeRepository.save(fNotice);
-					});
 				}
+				Optional<FraudNotice> fraudNoticeOptional = fraudNoticeRepository.findById(fraudNotice.getFraudNoticeId());
+				fraudNoticeOptional.ifPresent(fNotice -> {
+					fNotice.setActive(fraudNotice.isActive());
+					fNotice.setModifiedOn(now);
+					fNotice.setModifiedBy(Utility.getUsername());
+					fraudNoticeRepository.save(fNotice);
+				});
 			}
 
 			if (activeFraudExist) {
@@ -186,7 +187,7 @@ public class BuyerService extends ApiService {
 				tblRetailer.setActive("Y");
 				tblRetailer.setCurrentStatus(3); // default current status
 
-				List<FraudNotice> fraudNoticeList = fraudNoticeRepository.findByRetailerIdAndActiveIsTrueOrderByFraudNoticeIdDesc(retailerDetail.getRetailerId());
+				List<FraudNotice> fraudNoticeList = fraudNoticeRepository.findByRetailerIdAndActiveIsFalseOrderByFraudNoticeIdDesc(retailerDetail.getRetailerId());
 				for (FraudNotice fraudNotice : fraudNoticeList) {
 					if (fraudNotice.getOriginalStatus() != null && fraudNotice.getOriginalStatus() != 5) {
 						tblRetailer.setCurrentStatus(fraudNotice.getOriginalStatus());
@@ -277,6 +278,8 @@ public class BuyerService extends ApiService {
     }
 
 	private void logBuyerStatusChange(int retailerId, String statusBefore, String statusAfter, LocalDateTime now) {
+		if (statusBefore.equals(statusAfter)) return;
+		
         String changeType = statusBefore + " > " + statusAfter;
 		if (statusBefore.startsWith("N") && statusAfter.startsWith("Y")) {
 			changeType = "Revive";

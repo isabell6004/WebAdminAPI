@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface FraudNoticeRepository extends CrudRepository<FraudNotice, Integer> {
-    List<FraudNotice> findByRetailerIdAndActiveIsTrueOrderByFraudNoticeIdDesc(int retailerId);
+    List<FraudNotice> findByRetailerIdAndActiveIsFalseOrderByFraudNoticeIdDesc(int retailerId);
 }
