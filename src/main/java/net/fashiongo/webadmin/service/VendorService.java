@@ -62,7 +62,7 @@ import net.fashiongo.webadmin.utility.Utility;
 @Service
 public class VendorService extends ApiService {
 	@Autowired
-	private VendorListRepository vendorListRepository;
+	private VendorRepository vendorRepository;
 
     @Autowired
     private VendorAutocompleteRepository vendorAutocompleteRepository;
@@ -127,8 +127,8 @@ public class VendorService extends ApiService {
 	 * @author roy
 	 * @return vendor list
 	 */
-	public List<VendorCompany> getVendorList() {
-		return vendorListRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
+	public List<Vendor> getVendorList() {
+		return vendorRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
 	}
 
     /**
@@ -702,8 +702,8 @@ public class VendorService extends ApiService {
 		return result;
 	}
 
-    public VendorCompany getVendorInfo(Integer wholeSalerID) {
-        Optional<VendorCompany> vendor = vendorListRepository.findById(wholeSalerID);
+    public Vendor getVendorInfo(Integer wholeSalerID) {
+        Optional<Vendor> vendor = vendorRepository.findById(wholeSalerID);
         return vendor.get();
     }
 
@@ -790,5 +790,13 @@ public class VendorService extends ApiService {
      */
 	public List<SecurityUser> getAssignedUsers() {
 		return securityUserRepository.findAllMappedByVendor();
+	}
+
+	/**
+     * @author Kenny/Kyungwoo
+     * @since 2019-05-02
+     */
+	public List<Vendor> getEditorsPickVendors() {
+		return vendorRepository.getEditorPickVendors();
 	}
 }

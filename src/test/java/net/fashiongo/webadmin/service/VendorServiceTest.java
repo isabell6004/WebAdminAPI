@@ -36,7 +36,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoData
 import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
 import net.fashiongo.webadmin.model.primary.LogCommunication;
-import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.model.primary.VendorContent;
 import net.fashiongo.webadmin.model.primary.VendorContract;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
@@ -61,11 +61,11 @@ public class VendorServiceTest {
 	 */
 	@Test
 	public void testGetVendorList() {
-		List<VendorCompany> vendorList = vendorService.getVendorList();
+		List<Vendor> vendorList = vendorService.getVendorList();
 		
 		assertTrue(vendorList.size() > 0);
 		
-		VendorCompany vendorCompany = vendorList.get(0);
+		Vendor vendorCompany = vendorList.get(0);
 		
 		assertNotNull(vendorCompany);
 		assertTrue(vendorCompany.getWholeSalerId() > 0);

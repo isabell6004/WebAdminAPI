@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -94,9 +95,12 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorListResponse
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
 import net.fashiongo.webadmin.model.primary.EditorPickVendorContent;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
+import net.fashiongo.webadmin.model.primary.Vendor;
+import net.fashiongo.webadmin.model.primary.VendorContent;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.SocialMediaService;
+import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
 /*
@@ -117,6 +121,9 @@ public class SitemgmtController {
 	
     @Autowired
     private CacheService cacheService;
+    
+	@Autowired
+	VendorService vendorService;
 
 	// ----------------------------------------------------
 	// collection category setting
@@ -972,5 +979,51 @@ public class SitemgmtController {
             response.setMessage(ex.getMessage());
         }
         return response;
-    }	
+    }
+    
+    /**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-29
+     */
+    @GetMapping(value = "editorsPick/{id}")
+    public JsonResponse<EditorPickVendorContent> getEditorsPick(@PathVariable("id") String id){
+    	JsonResponse<EditorPickVendorContent> response = new JsonResponse<>(false, null, null);
+    	try {
+    		EditorPickVendorContent result = sitemgmtService.getEditorPickVendorContent(StringUtil.isNullOrEmpty(id) ? null : Integer.parseInt(id));
+    		response.setSuccess(true);
+            response.setData(result);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
+    
+    @GetMapping(value = "editorsPick/vendors")
+    public JsonResponse<List<Vendor>> getEditorsPickVendors(){
+    	JsonResponse<List<Vendor>> response = new JsonResponse<>(false, null, null);
+    	try {
+    		List<Vendor> result = vendorService.getEditorsPickVendors();
+    		response.setSuccess(true);
+            response.setData(result);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
+    
+    @GetMapping(value = "editorsPick/vendor/{vendorId}")
+    public JsonResponse<List<VendorContent>> getEditorsPickVendorContents(@PathVariable("vendorId") Integer vendorId){
+    	JsonResponse<List<VendorContent>> response = new JsonResponse<>(false, null, null);
+    	try {
+    		List<VendorContent> result = sitemgmtService.getVendorContents(vendorId);
+    		response.setSuccess(true);
+            response.setData(result);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
 }

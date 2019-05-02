@@ -36,6 +36,7 @@ import net.fashiongo.webadmin.dao.primary.CodeLengthRepository;
 import net.fashiongo.webadmin.dao.primary.CodePatternRepository;
 import net.fashiongo.webadmin.dao.primary.CodeStyleRepository;
 import net.fashiongo.webadmin.dao.primary.CommunicationReasonRepository;
+import net.fashiongo.webadmin.dao.primary.EditorPickVendorContentRepository;
 import net.fashiongo.webadmin.dao.primary.FeaturedItemRepository;
 import net.fashiongo.webadmin.dao.primary.MapFabricCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapLengthCategoryRepository;
@@ -49,6 +50,7 @@ import net.fashiongo.webadmin.dao.primary.VendorCatalogRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogSendQueueRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogSendRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
+import net.fashiongo.webadmin.dao.primary.VendorContentRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ActiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CodeData;
@@ -177,6 +179,7 @@ import net.fashiongo.webadmin.model.primary.VendorCatalog;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendQueue;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendRequest;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
+import net.fashiongo.webadmin.model.primary.VendorContent;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
@@ -246,10 +249,13 @@ public class SitemgmtService extends ApiService {
 	@Autowired
 	private TrendReportContentsRepository trendReportContentRepository;
 	
-	private net.fashiongo.webadmin.utility.Utility uUtility;
+	@Autowired
+	private EditorPickVendorContentRepository editorPickVendorContentRepository;
+
+	@Autowired
+	private VendorContentRepository vendorContentRepository;
 	
-	@PersistenceContext(unitName = "primaryEntityManager")
-	private EntityManager entityManager;
+	private net.fashiongo.webadmin.utility.Utility uUtility;
 
 	/**
 	 *
@@ -2097,58 +2103,14 @@ public class SitemgmtService extends ApiService {
 	 */
 	public PagedResult<EditorPickVendorContent> getEditorPickVendorContents(Integer pagenum, Integer pagesize,
 			String title, String vendorName, LocalDateTime startDate, LocalDateTime endDate, String orderBy) {
-		//0. Prepare Query types
-		QEditorPickVendorContent epvc = QEditorPickVendorContent.editorPickVendorContent;
-		QVendor v = QVendor.vendor;
-		QVendorContent vc = QVendorContent.vendorContent;
-		PagedResult<EditorPickVendorContent> result = new PagedResult<>();
-		
-		//1. Build query
-		JPAQuery<EditorPickVendorContent> query = new JPAQuery<>(entityManager);
-		query
-		.select(epvc)
-		.from(epvc)
-		.innerJoin(epvc.vendor, v)
-		.innerJoin(epvc.vendorContent, vc);
-        
-		//2. Fill where conditions
-		BooleanExpression where = Expressions.asBoolean(true).isTrue();
-        if(!StringUtil.isNullOrEmpty(title)) where.and(epvc.editorTitle.likeIgnoreCase(Expressions.asString("%").concat(title).concat("%")));
-        if(!StringUtil.isNullOrEmpty(vendorName)) where.and(epvc.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(vendorName).concat("%")));
-        if(startDate!=null) where.and(epvc.startDate.goe(startDate));
-        if(endDate!=null) where.and(epvc.startDate.loe(endDate));
-        query.where(where);
-        
-        //3. Get the count first
-        int totalCount = (int)query.fetchCount();
-        
-        //4. Set the page
-        if(pagenum!=null && pagesize!=null) {
-        	query.offset(pagesize*(pagenum-1));
-        	query.limit(pagesize);
-        }
-        //4-1. Set orderBy
-        if(orderBy!=null) {
-        	if(orderBy.equals("vendorAsc")) query.orderBy(epvc.vendor.companyName.asc());
-        	else if(orderBy.equals("vendorDesc")) query.orderBy(epvc.vendor.companyName.desc());
-        	else if(orderBy.equals("titleAsc")) query.orderBy(epvc.editorTitle.asc());
-        	else if(orderBy.equals("titleDesc")) query.orderBy(epvc.editorTitle.desc());
-        	else if(orderBy.equals("startDateAsc")) query.orderBy(epvc.startDate.asc());
-        	else if(orderBy.equals("startDateDesc")) query.orderBy(epvc.startDate.desc());
-        	else if(orderBy.equals("endDateAsc")) query.orderBy(epvc.endDate.asc());
-        	else if(orderBy.equals("endDateDesc")) query.orderBy(epvc.endDate.desc());
-        	else if(orderBy.equals("createdByAsc")) query.orderBy(epvc.createdBy.asc());
-        	else if(orderBy.equals("createdByDesc")) query.orderBy(epvc.createdBy.desc());
-        }
-        
-        //5. Get the page
-        List<EditorPickVendorContent> list = query.fetch();
-
-        //6. Return
-        SingleValueResult total = new SingleValueResult();
-        total.setTotalCount(totalCount);
-        result.setTotal(total);
-        result.setRecords(list==null ? new ArrayList<EditorPickVendorContent>() : list);
-        return result;
+		return editorPickVendorContentRepository.getEditorPickVendorContents(pagenum, pagesize, title, vendorName, startDate, endDate, orderBy);
 	}
+
+	public EditorPickVendorContent getEditorPickVendorContent(Integer id) {
+		return editorPickVendorContentRepository.findOneByEditorPickVendorContentId(id);
+	}
+
+	public List<VendorContent> getVendorContents(Integer vendorId) {
+		return vendorContentRepository.findByWholeSalerIdAndStatusIdAndIsActiveAndIsDeleted(vendorId, 2/*Approved*/, true, false);
+	}	
 }

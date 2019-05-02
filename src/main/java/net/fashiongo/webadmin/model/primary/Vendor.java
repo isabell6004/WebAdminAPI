@@ -1,46 +1,47 @@
 package net.fashiongo.webadmin.model.primary;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-import net.fashiongo.common.dal.IPersistent;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 /**
- * @author Kenny/Kyungwoo
- * @since 2019-04-15
+ * @author roy
  */
+@Data
 @Entity
 @Table(name = "tblWholeSaler")
-@Getter
-@Setter
-public class Vendor implements IPersistent, Serializable {
-	private static final long serialVersionUID = -5598542682840377145L;
-
+public class Vendor {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="WholeSalerID")
+	@JsonProperty("WholeSalerID")
+	@Column(name = "WholeSalerID")
 	private Integer wholeSalerId;
 	
-	@Column(name="CompanyName")
+	@JsonProperty("CompanyName")
+	@Column(name = "CompanyName")
 	private String companyName;
 	
-	@Column(name="Active")
+	@JsonIgnore
+	@Column(name = "Active")
 	private Boolean active;
 	
-	@Column(name="ShopActive")
+	@JsonIgnore
+	@Column(name = "ShopActive")
 	private Boolean shopActive;
 	
-	@Column(name="OrderActive")
+	@JsonIgnore
+	@Column(name = "OrderActive")
 	private Boolean orderActive;
 	
+	@JsonIgnore
 	@Column(name="Vendor_Type")
 	private Integer vendorType;
+
+    @Column(name = "Phone")
+    private String phone;
 }

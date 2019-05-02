@@ -36,7 +36,7 @@ import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
 import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
 import net.fashiongo.webadmin.model.primary.PaymentStatus;
-import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.utility.Utility;
 
 /**
@@ -68,8 +68,8 @@ public class WAPaymentService extends ApiService {
 		GetPaymentStatusSearchOptionResponse result = new GetPaymentStatusSearchOptionResponse();
 		String spName = "up_wa_pay_GetPaymentStatusSearchOption";
 		List<Object> params = new ArrayList<Object>();
-		List<Object> _results = jdbcHelper.executeSP(spName, params, VendorCompany.class, PaymentStatus.class);
-		result.setVendorList((List<VendorCompany>) _results.get(0));
+		List<Object> _results = jdbcHelper.executeSP(spName, params, Vendor.class, PaymentStatus.class);
+		result.setVendorList((List<Vendor>) _results.get(0));
 		result.setPaymentStatusList((List<PaymentStatus>) _results.get(1));
 		return result;
 	}
