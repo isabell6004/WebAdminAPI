@@ -2,8 +2,8 @@ package net.fashiongo.webadmin.controller;
 
 import java.util.List;
 
-import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerDetailParameter;
-import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerInfoParameter;
+import net.fashiongo.webadmin.model.pojo.buyer.parameter.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerReadYNParameter;
-import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.RetailerCompany;
 import net.fashiongo.webadmin.service.BuyerService;
@@ -102,6 +100,24 @@ public class BuyerController {
 			}
 
 			return buyerService.setAdminRetailerDetail(setAdminRetailerDetailParameter);
+		} catch (RuntimeException e) {
+			return -99;
+		}
+	}
+
+	/**
+	 * Set tblRetailer's file attachment
+	 *
+	 * @param setAttachedFileParameter
+	 */
+	@RequestMapping(value = "setattachedfile", method = RequestMethod.POST)
+	public Integer setAttachedFile(@RequestBody SetAttachedFileParameter setAttachedFileParameter) {
+		try {
+			if (setAttachedFileParameter.getRetailerId() == null || StringUtils.isEmpty(setAttachedFileParameter.getFileType())) {
+				return -1;
+			}
+
+			return buyerService.setAttachedFile(setAttachedFileParameter);
 		} catch (RuntimeException e) {
 			return -99;
 		}

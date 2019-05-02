@@ -82,6 +82,22 @@ public class RetailerCompany {
 	private Date lastModifiedDateTime;
 
 	@JsonIgnore
+	@Column(name = "SellerPermitFileName")
+	private String sellerPermitFileName;
+
+	@JsonIgnore
+	@Column(name = "InvoiceFileName1")
+	private String invoiceFileName1;
+
+	@JsonIgnore
+	@Column(name = "InvoiceFileName2")
+	private String invoiceFileName2;
+
+	@JsonIgnore
+	@Column(name = "AdditionalDocumentFileName")
+	private String additionalDocumentFileName;
+
+	@JsonIgnore
 	@Column(name = "IsOperatorRead")
 	private Boolean operatorRead;
 

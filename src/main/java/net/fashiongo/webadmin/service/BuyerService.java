@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.service;
 import net.fashiongo.webadmin.dao.primary.*;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerDetailParameter;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerInfoParameter;
+import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAttachedFileParameter;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -206,6 +208,43 @@ public class BuyerService extends ApiService {
 		return 1;
 	}
 
+    @Transactional
+    public int setAttachedFile(SetAttachedFileParameter setAttachedFileParameter) {
+        LocalDateTime now = LocalDateTime.now();
+
+        RetailerCompany tblRetailer = retailerCompanyRepository.findById(setAttachedFileParameter.getRetailerId()).orElseThrow(() -> new RuntimeException("Retailer not exists."));
+
+        boolean sellerPermitUploaded = false;
+        switch (setAttachedFileParameter.getFileType().toLowerCase()) {
+            case "s":
+                tblRetailer.setSellerPermitFileName(setAttachedFileParameter.getFileName());
+				sellerPermitUploaded = true;
+                break;
+            case "in1":
+                tblRetailer.setInvoiceFileName1(setAttachedFileParameter.getFileName());
+                break;
+            case "in2":
+                tblRetailer.setInvoiceFileName2(setAttachedFileParameter.getFileName());
+                break;
+            case "o":
+                tblRetailer.setAdditionalDocumentFileName(setAttachedFileParameter.getFileName());
+                break;
+        }
+
+        // save tblRetailer
+        retailerCompanyRepository.save(tblRetailer);
+
+        // entity_actionLog
+        logEntityAction(tblRetailer.getRetailerID(), now);
+
+        // buyer status change log
+		if (sellerPermitUploaded) {
+			logBuyerStatusChange(tblRetailer.getRetailerID(), "DocumentUploaded", now);
+		}
+
+	    return 1;
+    }
+
 	private void setMembershipStatus(String guid, String active, LocalDateTime now) {
 		Optional<AspnetMembership> aspnetMembershipOptional = aspnetMembershipRepository.findById(guid);
 		aspnetMembershipOptional.ifPresent(aspnetMembership -> {
@@ -228,6 +267,15 @@ public class BuyerService extends ApiService {
 		entityActionLogRepository.save(entityActionLog);
 	}
 
+    private void logBuyerStatusChange(int retailerId, String changeType, LocalDateTime now) {
+		BuyerStatusChangeLog buyerStatusChangeLog = new BuyerStatusChangeLog();
+		buyerStatusChangeLog.setBuyerId(retailerId);
+		buyerStatusChangeLog.setBuyerStatusChangeTypeCode(changeType);
+		buyerStatusChangeLog.setCreatedOn(now);
+		buyerStatusChangeLog.setCreatedBy(Utility.getUsername());
+		buyerStatusChangeLogRepository.save(buyerStatusChangeLog);
+    }
+
 	private void logBuyerStatusChange(int retailerId, String statusBefore, String statusAfter, LocalDateTime now) {
         String changeType = statusBefore + " > " + statusAfter;
 		if (statusBefore.startsWith("N") && statusAfter.startsWith("Y")) {
@@ -240,12 +288,7 @@ public class BuyerService extends ApiService {
 			changeType = "Fraud";
 		}
 
-		BuyerStatusChangeLog buyerStatusChangeLog = new BuyerStatusChangeLog();
-		buyerStatusChangeLog.setBuyerId(retailerId);
-		buyerStatusChangeLog.setBuyerStatusChangeTypeCode(changeType);
-		buyerStatusChangeLog.setCreatedOn(now);
-		buyerStatusChangeLog.setCreatedBy(Utility.getUsername());
-		buyerStatusChangeLogRepository.save(buyerStatusChangeLog);
+		logBuyerStatusChange(retailerId, changeType, now);
 	}
 }
 
