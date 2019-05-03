@@ -1,6 +1,5 @@
 package net.fashiongo.webadmin.model.primary;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +14,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
-import net.fashiongo.common.dal.IPersistent;
+import lombok.Data;
 
 /**
  * @author Kenny/Kyungwoo
  * @since 2019-04-15
  */
+@Data
 @Entity
 @Table(name = "Vendor_Content")
-@Getter
-@Setter
-public class VendorContent implements IPersistent, Serializable {
-	private static final long serialVersionUID = -213129874484795682L;
+public class VendorContent {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

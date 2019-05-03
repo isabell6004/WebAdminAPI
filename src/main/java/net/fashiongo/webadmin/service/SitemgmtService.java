@@ -2112,5 +2112,46 @@ public class SitemgmtService extends ApiService {
 
 	public List<VendorContent> getVendorContents(Integer vendorId) {
 		return vendorContentRepository.findByWholeSalerIdAndStatusIdAndIsActiveAndIsDeleted(vendorId, 2/*Approved*/, true, false);
-	}	
+	}
+
+	public ResultCode saveEditorPickVendorContent(EditorPickVendorContent editorPickVendorContent) {
+		try {
+			//1. Validate
+			if(editorPickVendorContent==null) throw new Exception("No information to save!");
+			if(editorPickVendorContent.getEditorTitle()==null) throw new Exception("Empty title!");
+			if(editorPickVendorContent.getEditorDescription()==null) throw new Exception("Empty description!");
+			if(editorPickVendorContent.getVendorId()==null) throw new Exception("Empty vendor!");
+			if(editorPickVendorContent.getStartDate()==null)  throw new Exception("Empty starting period!");
+			if(editorPickVendorContent.getEndDate()==null)  throw new Exception("Empty Ending period!");
+			if(editorPickVendorContent.getVendorId()==null) throw new Exception("Empty vendor!");
+			if(editorPickVendorContent.getVendorContentId()==null) throw new Exception("Empty vendor content(video/media)!");
+			
+			//2. Post-process
+			editorPickVendorContent.setStartDate(editorPickVendorContent.getStartDate().withHour(0).withMinute(0).withSecond(0));			
+			editorPickVendorContent.setEndDate(editorPickVendorContent.getEndDate().withHour(23).withMinute(59).withSecond(59));
+			
+			String userName = Utility.getUsername();
+			if(editorPickVendorContent.getCreatedOn()==null) {
+				editorPickVendorContent.setCreatedOn(LocalDateTime.now());
+				editorPickVendorContent.setCreatedBy(userName);
+			}
+			editorPickVendorContent.setModifiedOn(LocalDateTime.now());
+			editorPickVendorContent.setModifiedBy(userName);
+			
+			//3. Save
+			editorPickVendorContentRepository.save(editorPickVendorContent);
+		} catch (Exception e) {
+			return new ResultCode(false, -1, e.getMessage());
+		}
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+	}
+	
+	public ResultCode deleteEditorPickVendorContent(EditorPickVendorContent editorPickVendorContent) {
+		try {
+			editorPickVendorContentRepository.delete(editorPickVendorContent);
+		} catch (Exception e) {
+			return new ResultCode(false, -1, e.getMessage());
+		}
+		return new ResultCode(true, 1, MSG_DELETE_SUCCESS);
+	}
 }
