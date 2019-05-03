@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.service;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.photostudio.*;
+import net.fashiongo.webadmin.exception.NotEnoughAvailableUnit;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioPhotoModel;
 import net.fashiongo.webadmin.model.photostudio.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
@@ -16,11 +17,18 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.transaction.TransactionManager;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -87,6 +95,10 @@ public class PhotoStudioService extends ApiService {
 
     @Autowired
     private PhotoBannerClickRepository photoBannerClickRepository;
+
+    @Autowired
+    @Qualifier("photostudioTransactionManager")
+    private PlatformTransactionManager transactionManager;
 
     public static final int IMAGE_MAPPING_TYPE_MODEL = 3;
 
@@ -990,27 +1002,85 @@ public class PhotoStudioService extends ApiService {
         return availableModelsResponses;
     }
 
-    public String updatePhotoOrder(PhotoOrder photoOrder) {
-        List<Object> params = new ArrayList<Object>();
-        if (photoOrder.getOrderID() == null) {
+    public String updatePhotoOrder(OrderUpdateRequest orderUpdateRequest) {
+        if (orderUpdateRequest.getOrderId() == null) {
+			return "OrderID does not exist!";
+		}
+
+        PhotoOrder photoOrder = Optional.ofNullable(photoOrderRepository.getPhotoOrderInfoWithBookAndModelAndCategory(orderUpdateRequest.getOrderId()))
+                .orElse(null);
+
+        if(photoOrder == null) {
             return "OrderID does not exist!";
         }
 
-        params.add(photoOrder.getOrderID());
-        params.add(photoOrder.getPhotoshootDateTime());
-        params.add(photoOrder.getModelID());
-        params.add(photoOrder.getAdditionalDiscountAmount());
-        params.add(photoOrder.getInHouseNote());
-        params.add(Utility.getUsername());
+        LocalDateTime now = LocalDateTime.now();
 
-        List<Object> outputparams = new ArrayList<Object>();
-        outputparams.add("");
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_UpdateOrder", params, outputparams);
+        String username = Utility.getUsername();
+		if(orderUpdateRequest.getPhotoshootDate() != null) {
+            if(!now.toLocalDate().isBefore(photoOrder.get_photoshootDate().toLocalDate())) {
+                return "The photo shoot date can be changed only before the original photo shoot date!";
+            }
 
-        List<Object> outputs = (List<Object>) r.get(0);
-        if (outputs != null && outputs.size() > 0) {
-            return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
-        }
+			List<Object> params = new ArrayList<Object>();
+			params.add(orderUpdateRequest.getOrderId());
+			params.add(orderUpdateRequest.getPhotoshootDate());
+            params.add(orderUpdateRequest.getModelId());
+            params.add(orderUpdateRequest.getAdditionalDiscountAmount());
+            params.add(orderUpdateRequest.getInHouseNote());
+			params.add(username);
+
+			List<Object> outputparams = new ArrayList<Object>();
+			outputparams.add("");
+			List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_UpdateOrder", params, outputparams);
+
+			List<Object> outputs = (List<Object>) r.get(0);
+			if (outputs != null && outputs.size() > 0) {
+				return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
+			}
+		} else {
+            if(!now.toLocalDate().isBefore(photoOrder.get_photoshootDate().toLocalDate())) {
+                return "The item qty can be changed only before the photo shoot date!";
+            }
+
+		    if (validateInputQty(orderUpdateRequest.getItems())) {
+		        return "The item qty cannot be lower than 0";
+            }
+
+            // Load Unit
+            boolean isFullModelShot = photoOrder.getPhotoCategory().getTypeOfPhotoshoot().equals("Full Model Shot"); // TODO HARDCODED
+            Map<Integer, PhotoUnit> photoUnitMap = photoUnitRepository.findAllEffectiveUnit(photoOrder.getCategoryID(), photoOrder.getPackageID(), isFullModelShot)
+                    .stream()
+                    .collect(Collectors.toMap(PhotoUnit::getPriceTypeID, photoUnit -> photoUnit));
+
+            List<PhotoOrderDetail> originalItems = photoOrderDetailRepository.findByOrderID(photoOrder.getOrderID());
+            List<PhotoOrderDetail> changedItems;
+            try {
+                 changedItems = updateOrderItemQty(photoOrder, originalItems, orderUpdateRequest.getItems(), photoUnitMap, now);
+            } catch (NotEnoughAvailableUnit e) {
+                return "There is no available unit";
+            }
+
+            photoOrder.setAdditionalDiscountAmount(orderUpdateRequest.getAdditionalDiscountAmount());
+            photoOrder.setInHouseNote(orderUpdateRequest.getInHouseNote());
+            photoOrder.setModifiedOnDate(now);
+            photoOrder.setModifiedBY(username);
+
+            photoOrder.getPhotoBooking().setBookedUnit(photoOrder.getTotalUnit());
+            photoOrder.getPhotoBooking().setModifiedOnDate(now);
+            photoOrder.getPhotoBooking().setModifiedBY(username);
+
+            TransactionTemplate template = new TransactionTemplate(transactionManager);
+            template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+            template.execute(new TransactionCallbackWithoutResult() {
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                    photoOrderRepository.save(photoOrder);
+                    photoBookingRepository.save(photoOrder.getPhotoBooking());
+                    photoOrderDetailRepository.saveAll(changedItems);
+                }
+            });
+		}
 
         return null;
     }
@@ -1333,4 +1403,165 @@ public class PhotoStudioService extends ApiService {
         return dailyReport;
     }
 
+    private List<PhotoOrderDetail> updateOrderItemQty(PhotoOrder photoOrder, List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems, Map<Integer, PhotoUnit> photoUnitMap, LocalDateTime now) {
+        List<PhotoOrderDetail> changedItems = new ArrayList<>(originalItems.size());
+
+        for (PhotoOrderDetail originalItem : originalItems) {
+            DetailOrderQuantity newItem = newItems.stream()
+                    .filter(item -> item.getOrderDetailID().equals(originalItem.getOrderDetailID()))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new);
+
+            if (equalsNullable(originalItem.getStyleQty(), newItem.getStyleQty())
+                && equalsNullable(originalItem.getColorQty(), newItem.getColorQty())
+                && equalsNullable(originalItem.getColorSetQty(), newItem.getColorSetQty())
+                && equalsNullable(originalItem.getMovieQty(), newItem.getMovieQty())
+                && equalsNullable(originalItem.getBaseColorSetQty(), newItem.getBaseColorSetQty())
+                && equalsNullable(originalItem.getModelSwatchQty(), newItem.getModelSwatchQty())
+                && equalsNullable(originalItem.getColorSwatchQty(), newItem.getColorSwatchQty())
+                && equalsNullable(originalItem.getMovieClipQty(), newItem.getMovieClipQty())) {
+                continue;
+            }
+
+            originalItem.setStyleQty(newItem.getStyleQty());
+            originalItem.setColorQty(newItem.getColorQty());
+            originalItem.setColorSetQty(newItem.getColorSetQty());
+            originalItem.setMovieQty(newItem.getMovieQty());
+            originalItem.setBaseColorSetQty(newItem.getBaseColorSetQty());
+            originalItem.setModelSwatchQty(newItem.getModelSwatchQty());
+            originalItem.setColorSwatchQty(newItem.getColorSwatchQty());
+            originalItem.setMovieClipQty(newItem.getMovieClipQty());
+            originalItem.setModifiedOnDate(now);
+            originalItem.setModifiedBY(Utility.getUsername());
+
+            changedItems.add(originalItem);
+        }
+
+        BigDecimal newTotalUnit = calculateTotalUnit(originalItems, photoUnitMap);
+
+        MapPhotoCalendarModel mapPhotoCalendarModel = photoOrder.getPhotoBooking().getMapPhotoCalendarModel();
+
+        BigDecimal totalAvailableUnit = mapPhotoCalendarModel.getAvailableUnit();
+        BigDecimal bookedUnit = mapPhotoCalendarModel.getPhotoBooking().stream()
+                .filter(booking -> booking.getStatusID() == 0)
+                .map(PhotoBooking::getBookedUnit)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal availableUnit = totalAvailableUnit.subtract(bookedUnit);
+        BigDecimal changedUnit = newTotalUnit.subtract(photoOrder.getTotalUnit());
+
+        if (availableUnit.subtract(changedUnit).doubleValue() < 0) {
+            throw new NotEnoughAvailableUnit();
+        }
+
+        // Update Order TotalUnit, TotalQty, SubtotalAmount, TotalAmount
+        photoOrder.setTotalUnit(newTotalUnit);
+        photoOrder.setTotalQty(calculateTotalQty(originalItems));
+        photoOrder.setSubtotalAmount(calculateSubtotalPrice(originalItems));
+
+        return changedItems;
+    }
+
+    private boolean equalsNullable(Integer int1, Integer int2) {
+        if (int1 == null && int2 == null) {
+            return true;
+        } else if (int1 == null || int2 == null) {
+            return false;
+        } else {
+            return int1.equals(int2);
+        }
+    }
+
+    private BigDecimal calculateTotalUnit(List<PhotoOrderDetail> photoOrderDetails, Map<Integer, PhotoUnit> photoUnitMap) {
+        BigDecimal totalUnit = BigDecimal.ZERO;
+
+        for (PhotoOrderDetail photoOrderDetail : photoOrderDetails) {
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(1)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getStyleQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(2)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorSetQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(3)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(4)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getMovieQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(5)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getBaseColorSetQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(6)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getModelSwatchQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(7)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getMovieClipQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(8)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorSwatchQty()).orElse(0))));
+		}
+
+        return totalUnit;
+    }
+
+    private BigDecimal calculateSubtotalPrice(List<PhotoOrderDetail> photoOrderDetails) {
+        BigDecimal totalUnit = BigDecimal.ZERO;
+
+        for (PhotoOrderDetail photoOrderDetail : photoOrderDetails) {
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getStyleUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getStyleQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getColorSetUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorSetQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getColorUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getMovieUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getMovieQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getBaseColorSetUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getBaseColorSetQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getModelSwatchUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getModelSwatchQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getMovieClipUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getMovieClipQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getColorSwatchUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorSwatchQty()).orElse(0))));
+        }
+
+        return totalUnit;
+    }
+
+    private int calculateTotalQty(List<PhotoOrderDetail> photoOrderDetails) {
+    	int totalQty = 0;
+
+    	for (PhotoOrderDetail photoOrderDetail : photoOrderDetails) {
+    		totalQty += Optional.ofNullable(photoOrderDetail.getStyleQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getColorQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getColorSetQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getMovieQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getBaseColorSetQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getModelSwatchQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getColorSwatchQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getMovieClipQty()).orElse(0);
+		}
+
+    	return totalQty;
+	}
+
+    private boolean validateInputQty(List<DetailOrderQuantity> items) {
+        return items.stream()
+                .anyMatch(item -> Optional.ofNullable(item.getStyleQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getColorQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getColorSetQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getMovieQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getBaseColorSetQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getColorSwatchQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getModelSwatchQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getMovieClipQty()).orElse(0) < 0);
+    }
 }

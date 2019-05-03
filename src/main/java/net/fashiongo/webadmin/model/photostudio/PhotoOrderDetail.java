@@ -40,13 +40,14 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "StyleName")
 	private String styleName;
 
+	// OLD
 	@Column(name = "StyleUnitPrice")
 	private BigDecimal styleUnitPrice;
 
 	@Column(name = "StyleQty")
 	private Integer styleQty;
 
-	@Column(name = "StyleAmount")
+	@Column(name = "StyleAmount", insertable = false, updatable = false)
 	private BigDecimal styleAmount;
 
 	@Column(name = "ColorSetUnitPrice")
@@ -55,7 +56,7 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "ColorSetQty")
 	private Integer colorSetQty;
 
-	@Column(name = "ColorSetAmount")
+	@Column(name = "ColorSetAmount", insertable = false, updatable = false)
 	private BigDecimal colorSetAmount;
 
 	@Column(name = "ColorUnitPrice")
@@ -64,7 +65,7 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "ColorQty")
 	private Integer colorQty;
 
-	@Column(name = "ColorAmount")
+	@Column(name = "ColorAmount", insertable = false, updatable = false)
 	private BigDecimal colorAmount;
 
 	@Column(name = "MovieUnitPrice")
@@ -73,16 +74,17 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "MovieQty")
 	private Integer movieQty;
 
-	@Column(name = "MovieAmount")
+	@Column(name = "MovieAmount", insertable = false, updatable = false)
 	private BigDecimal movieAmount;
 
+	// NEW
     @Column(name = "BaseColorSetUnitPrice")
     private BigDecimal baseColorSetUnitPrice;
 
     @Column(name = "BaseColorSetQty")
     private Integer baseColorSetQty;
 
-    @Column(name = "BaseColorSetAmount")
+    @Column(name = "BaseColorSetAmount", insertable = false, updatable = false)
     private BigDecimal baseColorSetAmount;
 
     @Column(name = "ColorSwatchUnitPrice")
@@ -91,7 +93,7 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
     @Column(name = "ColorSwatchQty")
     private Integer colorSwatchQty;
 
-    @Column(name = "ColorSwatchAmount")
+    @Column(name = "ColorSwatchAmount", insertable = false, updatable = false)
     private BigDecimal colorSwatchAmount;
 
     @Column(name = "ModelSwatchUnitPrice")
@@ -100,7 +102,7 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
     @Column(name = "ModelSwatchQty")
     private Integer modelSwatchQty;
 
-    @Column(name = "ModelSwatchAmount")
+    @Column(name = "ModelSwatchAmount", insertable = false, updatable = false)
     private BigDecimal modelSwatchAmount;
 
     @Column(name = "MovieClipUnitPrice")
@@ -109,7 +111,7 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
     @Column(name = "MovieClipQty")
     private Integer movieClipQty;
 
-    @Column(name = "MovieClipAmount")
+    @Column(name = "MovieClipAmount", insertable = false, updatable = false)
     private BigDecimal movieClipAmount;
 
     @JsonIgnore
