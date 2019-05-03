@@ -20,6 +20,7 @@ import java.util.Optional;
 @Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class ReportMonthlySummaryResponse {
 
