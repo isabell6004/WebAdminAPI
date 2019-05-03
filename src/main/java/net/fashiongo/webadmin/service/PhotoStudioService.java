@@ -1188,16 +1188,25 @@ public class PhotoStudioService extends ApiService {
 
     public List<ReportCsvMonthly> getReportsMonthlyCsv(String yyyymmddString, ReportType reportType) {
 
-//        reportType
+        LocalDateTime start = DateUtils.getLocalDateTimeFromyyyyMMdd(yyyymmddString);
+        LocalDateTime end = DateUtils.getLastDayOfMonthAsLocalDateTime(start);
 
-        List<Object> params = new ArrayList<Object>();
-        params.add(yyyymmddString);
-//        params.add(categoryID);
+        List<PhotoOrder> orders = photoOrderRepository.getValidOrderWithDetailByPhotoshootDate(start, end);
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReport_csv_monthly", params, ReportCsvMonthly.class);
-        List<ReportCsvMonthly> reportCsvMonthlys = (List<ReportCsvMonthly>) r.get(0);
-
-        return reportCsvMonthlys;
+        List<PhotoOrder> ordersByType = null;
+        if(reportType == ReportType.AllPhotoshoot) {
+            ordersByType = orders;
+        } else {
+            ordersByType = orders.stream().filter(x ->
+                    ReportTypeChecker.checkReportType(reportType, x.getCategoryID(), x.getPackageID())
+            ).collect(Collectors.toList());
+        }
+        List<ReportCsvMonthly> reportCsvMonthlyDatas = ReportCsvMonthly.makeSummary(ordersByType);
+        return reportCsvMonthlyDatas;
+//        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReport_csv_monthly", params, ReportCsvMonthly.class);
+//        List<ReportCsvMonthly> reportCsvMonthlys = (List<ReportCsvMonthly>) r.get(0);
+//
+//        return reportCsvMonthlys;
     }
 
     public Integer saveCredit(PhotoCredit photoCredit) {

@@ -1,9 +1,6 @@
 package net.fashiongo.webadmin.model.photostudio;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,55 +14,54 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@Builder
+@NoArgsConstructor
+@Builder(toBuilder = true)
 @ToString
 public class ReportDailySummaryResponse {
 
     private String date;
-    private Integer totalColorSet;
-    private Integer totalColors;
-    private Integer totalMovie;
-    private BigDecimal totalOrderAmount;
-    private Integer totalPONumbers;
-    private Integer totalStyles;
-    private Integer totalModelSwatch;
-    private Integer totalColorSwatch;
-    private Integer firstTimeVendor;
-    private BigDecimal totalUnits;
-    private Integer totalOrders;
+    private BigDecimal totalOrderAmount = BigDecimal.ZERO;
+    private Integer totalPONumbers = 0;
+    private BigDecimal totalUnits = BigDecimal.ZERO;
+    private Integer totalOrders = 0;
+
+    // old product
+    private Integer totalStyles = 0;
+    private Integer totalColorSet = 0;
+    private Integer totalColors = 0;
+    private Integer totalMovie = 0;
+
+    // new product
+    private Integer totalModelSwatch = 0;
+    private Integer totalColorSwatch = 0;
+    private Integer totalBaseColorSet = 0;
+    private Integer totalMovieClip = 0;
+
+    private Integer firstTimeVendor = 0;
 
     public void addStatistic(PhotoOrderDetail detail) {
         this.totalStyles += Optional.ofNullable(detail.getStyleQty()).orElse(0);
         this.totalColors += Optional.ofNullable(detail.getColorQty()).orElse(0);
         this.totalColorSet += Optional.ofNullable(detail.getColorSetQty()).orElse(0);
         this.totalMovie += Optional.ofNullable(detail.getMovieQty()).orElse(0);
+
         this.totalModelSwatch += Optional.ofNullable(detail.getModelSwatchQty()).orElse(0);
         this.totalColorSwatch += Optional.ofNullable(detail.getColorSwatchQty()).orElse(0);
+        this.totalBaseColorSet += Optional.ofNullable(detail.getBaseColorSetQty()).orElse(0);
+        this.totalMovieClip += Optional.ofNullable(detail.getMovieClipQty()).orElse(0);
     }
 
     public static ReportDailySummaryResponse makeSummary(String date, List<PhotoOrder> orders) {
 
-        ReportDailySummaryResponse response = ReportDailySummaryResponse.builder()
-                .date(date)
-                .totalPONumbers(0)
-                .totalOrderAmount(BigDecimal.ZERO)
-                .totalStyles(0)
-                .totalColors(0)
-                .totalColorSet(0)
-                .totalMovie(0)
-                .totalModelSwatch(0)
-                .totalColorSwatch(0)
-                .totalUnits(BigDecimal.ZERO)
-                .totalOrders(0)
-                .firstTimeVendor(0)
-                .build();
+        ReportDailySummaryResponse response = new ReportDailySummaryResponse().toBuilder().build();
 
+        response.setDate(date);
         response.setTotalPONumbers(orders.size());
         response.setTotalOrders(orders.size());
+
         for (PhotoOrder order : orders) {
             response.setTotalOrderAmount(response.getTotalOrderAmount().add(order.getTotalAmount()));
             response.setTotalUnits(response.getTotalUnits().add(order.getTotalUnit()));
-
             List<PhotoOrderDetail> details = order.getOrderDetails();
             details.stream().forEach(x -> {
                 response.addStatistic(x);
