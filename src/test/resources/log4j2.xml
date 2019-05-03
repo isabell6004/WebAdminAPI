@@ -48,7 +48,7 @@
     </Appenders>
     
     <Loggers>
-	    <Root level="INFO">
+	    <Root level="DEBUG">
 	    	<AppenderRef ref="CONSOLE"/>
 	    	<AppenderRef ref="LOG_ROLLING" />
 	    </Root>
@@ -56,10 +56,6 @@
 			<AppenderRef ref="LOG_ROLLING" />
 		</logger>
 		<Logger name="net.fashiongo.webadmin" level="DEBUG" additivity="false">
-            <AppenderRef ref="CONSOLE"/>
-            <AppenderRef ref="LOG_ROLLING" />
-        </Logger>
-        <Logger name="net.fashiongo.webadmin.service" level="DEBUG" additivity="false">
             <AppenderRef ref="CONSOLE"/>
             <AppenderRef ref="LOG_ROLLING" />
         </Logger>

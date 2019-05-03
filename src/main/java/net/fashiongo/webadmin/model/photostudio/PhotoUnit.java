@@ -193,7 +193,18 @@ public class PhotoUnit implements IPersistent, Serializable {
 	public void setModifiedBY(String modifiedBY) {
 		this.modifiedBY = modifiedBY;
 	}
-	
+
+	@Column(name = "PackageID")
+	private Integer packageId;
+
+	public Integer getPackageId() {
+		return packageId;
+	}
+
+	public void setPackageId(Integer packageId) {
+		this.packageId = packageId;
+	}
+
 	@Transient
 	private String photoShootTypeName;
 	public String getPhotoShootTypeName() {

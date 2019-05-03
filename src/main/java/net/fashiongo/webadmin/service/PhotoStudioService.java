@@ -1,29 +1,45 @@
 package net.fashiongo.webadmin.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.photostudio.*;
+import net.fashiongo.webadmin.exception.NotEnoughAvailableUnit;
+import net.fashiongo.webadmin.exception.NotFoundPhotostudioPhotoModel;
 import net.fashiongo.webadmin.model.photostudio.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.service.photostudio.ReportTypeChecker;
 import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.Utility;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.transaction.TransactionManager;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PhotoStudioService extends ApiService {
 
     @Autowired
@@ -79,6 +95,10 @@ public class PhotoStudioService extends ApiService {
 
     @Autowired
     private PhotoBannerClickRepository photoBannerClickRepository;
+
+    @Autowired
+    @Qualifier("photostudioTransactionManager")
+    private PlatformTransactionManager transactionManager;
 
     public static final int IMAGE_MAPPING_TYPE_MODEL = 3;
 
@@ -578,17 +598,74 @@ public class PhotoStudioService extends ApiService {
         return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
     }
 
-    public List<PhotoCalendar> getPhotoCalendar(Map<String, String> parmMap) {
-        List<Object> params = new ArrayList<Object>();
-        params.add(parmMap.get("year"));
-        params.add(parmMap.get("month"));
-        params.add(parmMap.get("modelID"));
+    public List<PhotoCalendarResponse> getPhotoCalendar(Map<String, String> parmMap) {
+        LocalDateTime now = LocalDateTime.now();
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetPhotoCalendar", params, PhotoCalendar.class);
+        int year = Optional.ofNullable(parmMap.get("year"))
+                .map(Integer::parseInt)
+                .orElse(now.getYear());
+        int month = Optional.ofNullable(parmMap.get("month"))
+                .map(Integer::parseInt)
+                .orElse(now.getMonthValue());
+        Integer modelId = Optional.ofNullable(parmMap.get("modelID"))
+                .map(Integer::parseInt)
+                .orElse(null);
 
-        List<PhotoCalendar> photoCalendars = (List<PhotoCalendar>) r.get(0);
+        PhotoModel photoModel = (modelId == null) ? null : Optional.ofNullable(photoModelRepository.findOneByModelID(modelId))
+                .orElseThrow(NotFoundPhotostudioPhotoModel::new);
 
-        return photoCalendars;
+        LocalDateTime inputDate = LocalDateTime.of(year, month, 1, 0, 0);
+
+        List<PhotoCalendarEntity> photoCalendarEntityList = photoCalendarRepository.getPhotoCalendarWithJoinDate(inputDate, inputDate.with(TemporalAdjusters.lastDayOfMonth()));
+        List<PhotoCalendarResponse> photoCalendarResponseList = photoCalendarEntityList.stream()
+                .map(photoCalendarEntity -> {
+                    PhotoCalendarResponse photoCalendarResponse = new PhotoCalendarResponse();
+
+                    photoCalendarResponse.setAvailable(photoCalendarEntity.getAvailable());
+                    photoCalendarResponse.setAvailableUnits(photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                            .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                            .map(mapPhotoCalendarModel -> mapPhotoCalendarModel.getAvailableUnit().subtract(mapPhotoCalendarModel.getPhotoBooking().stream()
+                                    .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
+                                    .map(PhotoBooking::getBookedUnit)
+                                    .reduce(BigDecimal.ZERO, BigDecimal::add)))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+                            .doubleValue());
+                    photoCalendarResponse.setCalendarID(photoCalendarEntity.getCalendarID());
+                    photoCalendarResponse.setDateName(photoCalendarEntity.getDateName());
+                    photoCalendarResponse.setDisabled(photoModel != null && photoModel.getType().equals("Plus") && !photoCalendarEntity.getDateName().equals("Friday")); // TODO: HARDCODED
+                    photoCalendarResponse.setIsDelayed(photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                            .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                            .anyMatch(mapPhotoCalendarModel -> mapPhotoCalendarModel.getPhotoBooking().stream()
+                                    .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
+                                    .map(PhotoBooking::getPhotoOrder)
+                                    .anyMatch(photoOrder -> (photoOrder.getOrderStatusID() == 1 && photoOrder.get_dropOffDate().isBefore(now))
+                                            || (photoOrder.getOrderStatusID() == 2 && photoOrder.get_prepDate().isBefore(now))
+                                            || (photoOrder.getOrderStatusID() == 3 && photoOrder.get_photoshootDate().isBefore(now))
+                                            || (photoOrder.getOrderStatusID() == 4 && photoOrder.get_retouchDate().isBefore(now))
+                                            || (photoOrder.getOrderStatusID() == 5 && photoOrder.get_uploadDate().isBefore(now)))));
+                    photoCalendarResponse.setBookedCnt(photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                            .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                            .filter(mapPhotoCalendarModel -> modelId == null || (mapPhotoCalendarModel.getModelID() != null && mapPhotoCalendarModel.getModelID().equals(modelId)))
+                            .map(mapPhotoCalendarModel -> mapPhotoCalendarModel.getPhotoBooking().stream()
+                                    .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
+                                    .count())
+                            .reduce(Long::sum)
+                            .map(Long::intValue)
+                            .orElse(-1));
+                    photoCalendarResponse.setIsHoliday(photoCalendarEntity.getIsHoliday());
+                    photoCalendarResponse.setIsModelShot(photoCalendarEntity.getIsModelShot());
+                    photoCalendarResponse.setMaxUnitPerDay(photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                            .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                            .map(MapPhotoCalendarModel::getAvailableUnit)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+                            .doubleValue());
+                    photoCalendarResponse.setTheDate(photoCalendarEntity.getTheDate().toLocalDate().toString());
+
+                    return photoCalendarResponse;
+                })
+                .collect(Collectors.toList());
+
+        return photoCalendarResponseList;
     }
 
     public Map<String, Object> getPhotoCalendarModelsOrders(Map<String, String> parmMap) {
@@ -805,113 +882,205 @@ public class PhotoStudioService extends ApiService {
     }
 
 
-    public List<PhotoModel> getAvailableModels(Integer orderID, String theDate) {
+    public List<AvailableModelsResponse> getAvailableModels(Integer orderID, String theDate) {
         List<Object> params = new ArrayList<Object>();
         params.add(orderID);
         params.add(theDate);
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetAvailableModels", params, PhotoModel.class);
+        LocalDate selectedDate = LocalDate.parse(theDate);
 
-        List<PhotoModel> photoModels = (List<PhotoModel>) r.get(0);
-        Map<String, List<PhotoImage>> imagesMap = new HashMap<String, List<PhotoImage>>(); //key: calendarID + ModelID
-        Map<Integer, List<String>> nextAvailableMap = new HashMap<Integer, List<String>>(); //key: ModelID
+        // get order info
+        PhotoOrder photoOrder = photoOrderRepository.getPhotoOrderInfoWithBookAndModelAndCategory(orderID);
+        MapPhotoCalendarModel orderModel = photoOrder.getPhotoBooking().getMapPhotoCalendarModel();
+        boolean isFullModelShot = orderModel.getModelID() != null;
 
-        List<PhotoModel> models = new ArrayList<PhotoModel>();
+        // get selected day's models
+        List<MapPhotoCalendarModel> selectedDaysAvailableModels = mapPhotoCalendarModelRepository.findAvailableMapByTheDate(selectedDate)
+                .stream()
+                .filter(selectedDaysModel -> (orderModel.getModelID() == null) == (selectedDaysModel.getModelID() == null))
+                .filter(selectedDaysModel -> selectedDaysModel.getModelID() == null // TODO: HARDCODED
+                        || (selectedDaysModel.getPhotoModel().getType().equals("Regular") && photoOrder.getPhotoCategory().getCategoryName().equals("Women Regular"))
+                        || (selectedDaysModel.getPhotoModel().getType().equals("Plus") && photoOrder.getPhotoCategory().getCategoryName().equals("Women Plus Size")))
+                .filter(selectedDaysModel -> {
+                    BigDecimal selectedDaysAvailableUnit = selectedDaysModel.getAvailableUnit().subtract(selectedDaysModel.getPhotoBooking().stream()
+                            .filter(selectedDaysBooking -> selectedDaysBooking.getStatusID() == 0)
+                            .map(PhotoBooking::getBookedUnit)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add));
 
-        for (PhotoModel photoModel : photoModels) {
-            if (photoModel.getModelID() == null) {
-                break;
+                    return photoOrder.getTotalUnit().doubleValue() <= selectedDaysAvailableUnit.doubleValue();
+                })
+                .collect(Collectors.toList());
+
+        List<Integer> selectedDaysAvailableModelIds = selectedDaysAvailableModels.stream()
+                .map(MapPhotoCalendarModel::getModelID)
+                .collect(Collectors.toList());
+
+        // get selected day's models' first image map
+        List<MapPhotoImage> selectedModelsFirstImageMaps = mapPhotoImageRepository.findModelImagesByModelIds(selectedDaysAvailableModelIds)
+                .stream()
+                // make Map<Integer, List<MapPhotoImage>>. key=(modelId), value=(MapPhotoImages of each model)
+                .collect(Collectors.toMap(MapPhotoImage::getReferenceID, mapPhotoImage -> {
+                    List<MapPhotoImage> imageIds = new ArrayList<>();
+                    imageIds.add(mapPhotoImage);
+                    return imageIds;
+                }, (mapPhotoImages, mapPhotoImages2) -> {
+                    mapPhotoImages.addAll(mapPhotoImages2);
+                    return mapPhotoImages;
+                }))
+                .values()
+                .stream()
+                .peek(mapPhotoImages -> mapPhotoImages.sort(Comparator.comparing(MapPhotoImage::getListOrder)))
+                // find first Image. There is no mapPhotoImage that it's size is 0.
+                .map(mapPhotoImages -> mapPhotoImages.get(0))
+                .collect(Collectors.toList());
+
+        // get selected day's models' first images
+        List<PhotoImage> selectedModelsFirstImages = photoImageRepository.findAllByImageIDIn(selectedModelsFirstImageMaps.stream()
+                .map(MapPhotoImage::getImageID)
+                .collect(Collectors.toList()));
+
+        // selected day's models' other available days(after now)
+        List<MapPhotoCalendarModel> selectedModelsOtherDays = mapPhotoCalendarModelRepository.findAvailableMapAfterNowByModelIdsAndNotTheDate(selectedDaysAvailableModelIds, selectedDate, isFullModelShot)
+                .stream()
+                .filter(selectedModelsOtherDay -> {
+                    BigDecimal otherDaysAvailableUnit = selectedModelsOtherDay.getAvailableUnit().subtract(selectedModelsOtherDay.getPhotoBooking().stream()
+                            .filter(otherDaysBooking -> otherDaysBooking.getStatusID() == 0)
+                            .map(PhotoBooking::getBookedUnit)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add));
+
+                    return photoOrder.getTotalUnit().doubleValue() <= otherDaysAvailableUnit.doubleValue();
+                })
+                .collect(Collectors.toList());
+
+        // make response
+        List<AvailableModelsResponse> availableModelsResponses;
+        if (isFullModelShot) {
+            // for full model shot
+            availableModelsResponses = selectedDaysAvailableModels.stream()
+                    .map(models -> {
+                        AvailableModelsResponse response = new AvailableModelsResponse();
+
+                        response.setModelId(models.getModelID());
+                        response.setModelName(Optional.ofNullable(models.getPhotoModel())
+                                .map(PhotoModel::getModelName)
+                                .orElse(null));
+                        response.setNextAvailableDates(selectedModelsOtherDays.stream()
+                                .filter(otherDays -> otherDays.getModelID().equals(models.getModelID()))
+                                .map(otherDays -> otherDays.getPhotoCalendarEntity().getTheDate().toLocalDate().toString())
+                                .collect(Collectors.toList()));
+                        response.setImageUrl(selectedModelsFirstImageMaps.stream()
+                                .filter(mapPhotoImage -> mapPhotoImage.getReferenceID().equals(models.getModelID()))
+                                .findFirst()
+                                .map(mapPhotoImage -> selectedModelsFirstImages.stream()
+                                        .filter(photoImage -> photoImage.getImageID().equals(mapPhotoImage.getImageID()))
+                                        .findFirst()
+                                        .map(PhotoImage::getImageUrl)
+                                        .orElse(null))
+                                .orElse(null));
+
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+        } else {
+            // for flat product shot
+            availableModelsResponses = new ArrayList<>(1);
+
+            AvailableModelsResponse response = new AvailableModelsResponse();
+
+            response.setNextAvailableDates(selectedModelsOtherDays.stream()
+                    .map(otherDays -> otherDays.getPhotoCalendarEntity().getTheDate().toLocalDate().toString())
+                    .collect(Collectors.toList()));
+
+            if (selectedDaysAvailableModels.size() == 0) {
+                // is today available
+                response.setIsToday(1);
             }
-            String imageKey = String.valueOf(photoModel.getCalendarID()) + String.valueOf(photoModel.getModelID());
-            List<PhotoImage> imageList = imagesMap.get(imageKey);
-            if (imageList != null) {
-                if (photoModel.getImageUrl() != null) {
-                    PhotoImage photoImage = new PhotoImage();
-                    photoImage.setImageUrl(photoModel.getImageUrl());
-                    photoImage.setListOrder(photoModel.getListOrder());
-                    imageList.add(photoImage);
-                    imagesMap.put(imageKey, imageList);
-                }
-            } else {
-                if (photoModel.getImageUrl() != null) {
-                    imageList = new ArrayList<PhotoImage>();
-                    PhotoImage photoImage = new PhotoImage();
-                    photoImage.setImageUrl(photoModel.getImageUrl());
-                    photoImage.setListOrder(photoModel.getListOrder());
-                    imageList.add(photoImage);
-                    imagesMap.put(imageKey, imageList);
-                }
 
-                if (photoModel.getIsToday().intValue() == 0) {
-                    //Today's models
-                    models.add(photoModel);
-                } else if (photoModel.getIsToday().intValue() == 1) {
-                    //Today's models next Available
-                    List<String> nextAvailableList = nextAvailableMap.get(photoModel.getModelID());
-                    if (nextAvailableList == null) {
-                        nextAvailableList = new ArrayList<String>();
-                    }
-                    nextAvailableList.add(photoModel.getTheDate());
-                    nextAvailableMap.put(photoModel.getModelID(), nextAvailableList);
-
-                }
-            }
+            availableModelsResponses.add(response);
         }
 
-        // for flat mode next Available
-        if (models.size() == 0 && photoModels.size() > 0) {
-            for (PhotoModel photoModel : photoModels) {
-                if (photoModel.getModelID() != null) {
-                    break;
-                }
-
-                if (models.size() == 0) {
-                    //Today's
-                    models.add(photoModel);
-                }
-
-                if (photoModel.getIsToday().intValue() == 1) {
-                    //next Available
-                    List<String> nextAvailableList = nextAvailableMap.get(photoModel.getModelID());
-                    if (nextAvailableList == null) {
-                        nextAvailableList = new ArrayList<String>();
-                    }
-                    nextAvailableList.add(photoModel.getTheDate());
-                    nextAvailableMap.put(photoModel.getModelID(), nextAvailableList);
-
-                }
-            }
-        }
-
-        for (PhotoModel photoModel : models) {
-            photoModel.setPhotoImages(imagesMap.get(String.valueOf(photoModel.getCalendarID()) + String.valueOf(photoModel.getModelID())));
-            photoModel.setNextAvailableDates(nextAvailableMap.get(photoModel.getModelID()));
-        }
-
-        return models;
+        return availableModelsResponses;
     }
 
-    public String updatePhotoOrder(PhotoOrder photoOrder) {
-        List<Object> params = new ArrayList<Object>();
-        if (photoOrder.getOrderID() == null) {
+    public String updatePhotoOrder(OrderUpdateRequest orderUpdateRequest) {
+        if (orderUpdateRequest.getOrderId() == null) {
+			return "OrderID does not exist!";
+		}
+
+        PhotoOrder photoOrder = Optional.ofNullable(photoOrderRepository.getPhotoOrderInfoWithBookAndModelAndCategory(orderUpdateRequest.getOrderId()))
+                .orElse(null);
+
+        if(photoOrder == null) {
             return "OrderID does not exist!";
         }
 
-        params.add(photoOrder.getOrderID());
-        params.add(photoOrder.getPhotoshootDateTime());
-        params.add(photoOrder.getModelID());
-        params.add(photoOrder.getAdditionalDiscountAmount());
-        params.add(photoOrder.getInHouseNote());
-        params.add(Utility.getUsername());
+        LocalDateTime now = LocalDateTime.now();
 
-        List<Object> outputparams = new ArrayList<Object>();
-        outputparams.add("");
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_UpdateOrder", params, outputparams);
+        String username = Utility.getUsername();
+		if(orderUpdateRequest.getPhotoshootDate() != null) {
+            if(!now.toLocalDate().isBefore(photoOrder.get_photoshootDate().toLocalDate())) {
+                return "The photo shoot date can be changed only before the original photo shoot date!";
+            }
 
-        List<Object> outputs = (List<Object>) r.get(0);
-        if (outputs != null && outputs.size() > 0) {
-            return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
-        }
+			List<Object> params = new ArrayList<Object>();
+			params.add(orderUpdateRequest.getOrderId());
+			params.add(orderUpdateRequest.getPhotoshootDate());
+            params.add(orderUpdateRequest.getModelId());
+            params.add(orderUpdateRequest.getAdditionalDiscountAmount());
+            params.add(orderUpdateRequest.getInHouseNote());
+			params.add(username);
+
+			List<Object> outputparams = new ArrayList<Object>();
+			outputparams.add("");
+			List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_UpdateOrder", params, outputparams);
+
+			List<Object> outputs = (List<Object>) r.get(0);
+			if (outputs != null && outputs.size() > 0) {
+				return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
+			}
+		} else {
+            if(!now.toLocalDate().isBefore(photoOrder.get_photoshootDate().toLocalDate())) {
+                return "The item qty can be changed only before the photo shoot date!";
+            }
+
+		    if (validateInputQty(orderUpdateRequest.getItems())) {
+		        return "The item qty cannot be lower than 0";
+            }
+
+            // Load Unit
+            boolean isFullModelShot = photoOrder.getPhotoCategory().getTypeOfPhotoshoot().equals("Full Model Shot"); // TODO HARDCODED
+            Map<Integer, PhotoUnit> photoUnitMap = photoUnitRepository.findAllEffectiveUnit(photoOrder.getCategoryID(), photoOrder.getPackageID(), isFullModelShot)
+                    .stream()
+                    .collect(Collectors.toMap(PhotoUnit::getPriceTypeID, photoUnit -> photoUnit));
+
+            List<PhotoOrderDetail> originalItems = photoOrderDetailRepository.findByOrderID(photoOrder.getOrderID());
+            List<PhotoOrderDetail> changedItems;
+            try {
+                 changedItems = updateOrderItemQty(photoOrder, originalItems, orderUpdateRequest.getItems(), photoUnitMap, now);
+            } catch (NotEnoughAvailableUnit e) {
+                return "There is no available unit";
+            }
+
+            photoOrder.setAdditionalDiscountAmount(orderUpdateRequest.getAdditionalDiscountAmount());
+            photoOrder.setInHouseNote(orderUpdateRequest.getInHouseNote());
+            photoOrder.setModifiedOnDate(now);
+            photoOrder.setModifiedBY(username);
+
+            photoOrder.getPhotoBooking().setBookedUnit(photoOrder.getTotalUnit());
+            photoOrder.getPhotoBooking().setModifiedOnDate(now);
+            photoOrder.getPhotoBooking().setModifiedBY(username);
+
+            TransactionTemplate template = new TransactionTemplate(transactionManager);
+            template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+            template.execute(new TransactionCallbackWithoutResult() {
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                    photoOrderRepository.save(photoOrder);
+                    photoBookingRepository.save(photoOrder.getPhotoBooking());
+                    photoOrderDetailRepository.saveAll(changedItems);
+                }
+            });
+		}
 
         return null;
     }
@@ -977,54 +1146,137 @@ public class PhotoStudioService extends ApiService {
     }
 
 
-    public Map<String, Object> getReports(Map<String, Object> parmMap) {
+    public Map<String, Object> getReports(int year, int month, ReportType reportType) {
 
-        int categoryID = Integer.parseInt(String.valueOf(parmMap.get("categoryID")));
-        ;
+        LocalDateTime start = DateUtils.getFirstDayOfMonthAsLocalDateTime(year, month);
+        LocalDateTime end = DateUtils.getLastDayOfMonthAsLocalDateTime(year, month);
 
+        List<PhotoOrder> orders = null;
         Map<String, Object> result = new HashMap<String, Object>();
-        List<Object> params = new ArrayList<Object>();
+        if (reportType == ReportType.DailySalesReport) {
+            orders = photoOrderRepository.getOrderWithDetail(start, end);
+            if(CollectionUtils.isEmpty(orders)) return new HashedMap<>();
 
-        params.add(parmMap.get("year"));
-        params.add(parmMap.get("month"));
-        params.add(categoryID);
+            List<PhotoOrder> validOrders = orders.stream().filter(x -> x.getIsCancelledBy() == null).collect(Collectors.toList());
+            List<ReportDailySummaryResponse> dailyDatas = makeDailyReportDataByCheckoutDate(validOrders);
+            if(CollectionUtils.isNotEmpty(dailyDatas)) dailyDatas.sort(Comparator.comparing(o -> o.getDate()));
+            result.put("dailyData", dailyDatas);
 
-        if (categoryID == 5) {
-            List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class);
-
-            List<CommonReportsVo> dailyData = (List<CommonReportsVo>) r.get(0);
-            List<CommonReportsVo> monthSummary = (List<CommonReportsVo>) r.get(1);
-
-            result.put("dailyData", dailyData);
-            result.put("monthSummary", monthSummary);
-
+            ReportMonthlySummaryResponse response = makeMonthlyReportData(start, orders);
+            result.put("monthSummary", response);
         } else {
-            List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReports", params, CommonReportsVo.class, CommonReportsVo.class, CommonReportsVo.class);
-            List<CommonReportsVo> dailyVendorData = (List<CommonReportsVo>) r.get(0);
-            List<CommonReportsVo> dailyData = (List<CommonReportsVo>) r.get(1);
-            List<CommonReportsVo> monthSummary = (List<CommonReportsVo>) r.get(2);
+            orders = photoOrderRepository.getOrderWithDetailByPhotoshootDate(start, end);
+            if(CollectionUtils.isEmpty(orders)) return new HashedMap<>();
 
-            result.put("dailyVendorData", dailyVendorData);
-            result.put("dailyData", dailyData);
-            result.put("monthSummary", monthSummary);
+            List<PhotoOrder> validOrders = null;
+            List<PhotoOrder> ordersByType = null;
+            if(reportType == ReportType.AllPhotoshoot) {
+                validOrders = orders.stream().filter(x -> x.getIsCancelledBy() == null).collect(Collectors.toList());
+
+                ordersByType = orders;
+            } else {
+                validOrders = orders.stream().filter(
+                        x ->
+                                x.getIsCancelledBy() == null && ReportTypeChecker.checkReportType(reportType, x.getCategoryID(), x.getPackageID())
+                ).collect(Collectors.toList());
+
+                ordersByType = orders.stream().filter(x ->
+                        ReportTypeChecker.checkReportType(reportType, x.getCategoryID(), x.getPackageID())
+                ).collect(Collectors.toList());
+            }
+
+            List<ReportDailySummaryResponse> dailyDatas = makeDailyReportDataByPhotoShootDate(validOrders);
+            if(CollectionUtils.isNotEmpty(dailyDatas)) dailyDatas.sort(Comparator.comparing(o -> o.getDate()));
+            result.put("dailyData", dailyDatas);
+
+            List<ReportDailyVendorSummaryResponse> dailyVendorDatas = makeDailyVendorReportData(validOrders);
+            dailyVendorDatas.sort(Comparator.comparing(o -> o.getDate()));
+            result.put("dailyVendorData", dailyVendorDatas);
+
+            ReportMonthlySummaryResponse response = makeMonthlyReportData(start, ordersByType);
+            result.put("monthSummary", response);
         }
 
         return result;
     }
 
-    public List<ReportCsvMonthly> getReportsMonthlyCsv(Map<String, Object> parmMap) {
-        int categoryID = Integer.parseInt(String.valueOf(parmMap.get("categoryID")));
-        ;
+    private List<ReportDailyVendorSummaryResponse> makeDailyVendorReportData(List<PhotoOrder> validOrders) {
+        Map<String, List<PhotoOrder>> photoOrderMap = validOrders.stream().collect(Collectors.groupingBy(PhotoOrder::getPhotoshootDate));
+        List<ReportDailyVendorSummaryResponse> dailyVendorDatas = new ArrayList<>();
+        for (String photoshootDate : photoOrderMap.keySet()) {
+            List<PhotoOrder> orders = photoOrderMap.get(photoshootDate);
+            Map<String, List<PhotoOrder>> photoOrderMapByWholeSaler = orders.stream().collect(Collectors.groupingBy(PhotoOrder::getWholeSalerCompanyName));
 
-        List<Object> params = new ArrayList<Object>();
+            for (String wholeSalerCompanyName : photoOrderMapByWholeSaler.keySet()) {
+                ReportDailyVendorSummaryResponse response = ReportDailyVendorSummaryResponse.makeSummary(photoshootDate, wholeSalerCompanyName, photoOrderMapByWholeSaler.get(wholeSalerCompanyName));
+                dailyVendorDatas.add(response);
+            }
+        }
+        return dailyVendorDatas;
+    }
 
-        params.add(parmMap.get("yyyymmdd"));
-        params.add(categoryID);
+    private ReportMonthlySummaryResponse makeMonthlyReportData(LocalDateTime startDate, List<PhotoOrder> orders) {
+        ReportMonthlySummaryResponse response = ReportMonthlySummaryResponse.makeSummary(startDate, orders);
+        List<Integer> wholeSalerIds = orders.parallelStream().map(PhotoOrder::getWholeSalerID).collect(Collectors.toList());
+        Map<Integer, List<PhotoOrder>> oldOrders = photoOrderRepository.getOrderOfWholeSaler(wholeSalerIds);
+        response.makeOldOrdersSummary(oldOrders);
+        return response;
+    }
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReport_csv_monthly", params, ReportCsvMonthly.class);
-        List<ReportCsvMonthly> reportCsvMonthlys = (List<ReportCsvMonthly>) r.get(0);
+    private List<ReportDailySummaryResponse> makeDailyReportDataByPhotoShootDate(List<PhotoOrder> validOrders) {
+        if(CollectionUtils.isEmpty(validOrders)) {
+            return new ArrayList<>();
+        }
 
-        return reportCsvMonthlys;
+        Map<String, List<PhotoOrder>> photoOrderMap = validOrders.stream().collect(Collectors.groupingBy(PhotoOrder::getPhotoshootDate));
+        return makeDailyReportData(photoOrderMap);
+    }
+
+    private List<ReportDailySummaryResponse> makeDailyReportData(Map<String, List<PhotoOrder>> photoOrderMap) {
+        List<ReportDailySummaryResponse> dailyDatas = new ArrayList<>();
+        for (String date : photoOrderMap.keySet()) {
+            List<PhotoOrder> orders = photoOrderMap.get(date);
+            ReportDailySummaryResponse response = ReportDailySummaryResponse.makeSummary(date, orders);
+
+            List<Integer> wholeSalerIds = orders.parallelStream().map(PhotoOrder::getWholeSalerID).collect(Collectors.toList());
+            Map<Integer, List<PhotoOrder>> oldOrders = photoOrderRepository.getOrderOfWholeSaler(wholeSalerIds);
+            response.makeOldOrdersSummary(oldOrders);
+
+            dailyDatas.add(response);
+        }
+        return dailyDatas;
+    }
+
+    private List<ReportDailySummaryResponse> makeDailyReportDataByCheckoutDate(List<PhotoOrder> validOrders) {
+        if(CollectionUtils.isEmpty(validOrders)) {
+            return new ArrayList<>();
+        }
+
+        Map<String, List<PhotoOrder>> photoOrderMap = validOrders.stream().collect(Collectors.groupingBy(PhotoOrder::getCheckOutDate));
+        return makeDailyReportData(photoOrderMap);
+    }
+
+    public List<ReportCsvMonthly> getReportsMonthlyCsv(String yyyymmddString, ReportType reportType) {
+
+        LocalDateTime start = DateUtils.getLocalDateTimeFromyyyyMMdd(yyyymmddString);
+        LocalDateTime end = DateUtils.getLastDayOfMonthAsLocalDateTime(start);
+
+        List<PhotoOrder> orders = photoOrderRepository.getValidOrderWithDetailByPhotoshootDate(start, end);
+
+        List<PhotoOrder> ordersByType = null;
+        if(reportType == ReportType.AllPhotoshoot) {
+            ordersByType = orders;
+        } else {
+            ordersByType = orders.stream().filter(x ->
+                    ReportTypeChecker.checkReportType(reportType, x.getCategoryID(), x.getPackageID())
+            ).collect(Collectors.toList());
+        }
+        List<ReportCsvMonthly> reportCsvMonthlyDatas = ReportCsvMonthly.makeSummary(ordersByType);
+        return reportCsvMonthlyDatas;
+//        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReport_csv_monthly", params, ReportCsvMonthly.class);
+//        List<ReportCsvMonthly> reportCsvMonthlys = (List<ReportCsvMonthly>) r.get(0);
+//
+//        return reportCsvMonthlys;
     }
 
     public Integer saveCredit(PhotoCredit photoCredit) {
@@ -1106,6 +1358,16 @@ public class PhotoStudioService extends ApiService {
         return bSuccess;
     }
 
+    public List<PhotoCart> getPhotoCarts(Date start, Date end) {
+        List<PhotoCart> photoCarts = photoCartRepository.findAllByCreatedOnBetween(start, end);
+        return photoCarts;
+    }
+
+    public List<PhotoBannerClickStatistic> getPhotoBannerClicks(Date start, Date end) {
+        List<PhotoBannerClickStatistic> photoBannerClickStatistics = photoBannerClickRepository.getClickStatistic(start, end);
+        return photoBannerClickStatistics;
+    }
+
     private final String DAILY_REPORT_REQUEST_DATE_PATTERN = "yyyyMMdd";
 
     public DailyReport getDailyReportToExcel(String date) {
@@ -1119,8 +1381,7 @@ public class PhotoStudioService extends ApiService {
             logger.debug("start : {}, end : {}");
         } catch (ParseException e) {
         }
-        List<PhotoCart> photoCarts = photoCartRepository.findAllByCreatedOnBetween(start, end);
-        List<PageViewDailyReport> pageViewDailyReports = PageViewDailyReport.build(photoCarts);
+        List<PageViewDailyReport> pageViewDailyReports = PageViewDailyReport.build(getPhotoCarts(start, end));
 
         List<PhotoCategory> photoCategories = photoCategoryRepository.findAll();
         Map<Integer, PhotoCategory> photoCategoryMap = photoCategories.stream().collect(
@@ -1132,8 +1393,7 @@ public class PhotoStudioService extends ApiService {
                 photoOrderRepository.getValidOrderDetailStatistic(start, end)
         );
 
-        List<PhotoBannerClickStatistic> photoBannerClickStatistics = photoBannerClickRepository.getClickStatistic(start, end);
-        List<ClickStatDailyReport> clickStatDailyReports = ClickStatDailyReport.build(photoBannerClickStatistics);
+        List<ClickStatDailyReport> clickStatDailyReports = ClickStatDailyReport.build(getPhotoBannerClicks(start, end));
 
         DailyReport dailyReport = new DailyReport();
         dailyReport.setPageViewDailyReports(pageViewDailyReports);
@@ -1143,4 +1403,165 @@ public class PhotoStudioService extends ApiService {
         return dailyReport;
     }
 
+    private List<PhotoOrderDetail> updateOrderItemQty(PhotoOrder photoOrder, List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems, Map<Integer, PhotoUnit> photoUnitMap, LocalDateTime now) {
+        List<PhotoOrderDetail> changedItems = new ArrayList<>(originalItems.size());
+
+        for (PhotoOrderDetail originalItem : originalItems) {
+            DetailOrderQuantity newItem = newItems.stream()
+                    .filter(item -> item.getOrderDetailID().equals(originalItem.getOrderDetailID()))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new);
+
+            if (equalsNullable(originalItem.getStyleQty(), newItem.getStyleQty())
+                && equalsNullable(originalItem.getColorQty(), newItem.getColorQty())
+                && equalsNullable(originalItem.getColorSetQty(), newItem.getColorSetQty())
+                && equalsNullable(originalItem.getMovieQty(), newItem.getMovieQty())
+                && equalsNullable(originalItem.getBaseColorSetQty(), newItem.getBaseColorSetQty())
+                && equalsNullable(originalItem.getModelSwatchQty(), newItem.getModelSwatchQty())
+                && equalsNullable(originalItem.getColorSwatchQty(), newItem.getColorSwatchQty())
+                && equalsNullable(originalItem.getMovieClipQty(), newItem.getMovieClipQty())) {
+                continue;
+            }
+
+            originalItem.setStyleQty(newItem.getStyleQty());
+            originalItem.setColorQty(newItem.getColorQty());
+            originalItem.setColorSetQty(newItem.getColorSetQty());
+            originalItem.setMovieQty(newItem.getMovieQty());
+            originalItem.setBaseColorSetQty(newItem.getBaseColorSetQty());
+            originalItem.setModelSwatchQty(newItem.getModelSwatchQty());
+            originalItem.setColorSwatchQty(newItem.getColorSwatchQty());
+            originalItem.setMovieClipQty(newItem.getMovieClipQty());
+            originalItem.setModifiedOnDate(now);
+            originalItem.setModifiedBY(Utility.getUsername());
+
+            changedItems.add(originalItem);
+        }
+
+        BigDecimal newTotalUnit = calculateTotalUnit(originalItems, photoUnitMap);
+
+        MapPhotoCalendarModel mapPhotoCalendarModel = photoOrder.getPhotoBooking().getMapPhotoCalendarModel();
+
+        BigDecimal totalAvailableUnit = mapPhotoCalendarModel.getAvailableUnit();
+        BigDecimal bookedUnit = mapPhotoCalendarModel.getPhotoBooking().stream()
+                .filter(booking -> booking.getStatusID() == 0)
+                .map(PhotoBooking::getBookedUnit)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal availableUnit = totalAvailableUnit.subtract(bookedUnit);
+        BigDecimal changedUnit = newTotalUnit.subtract(photoOrder.getTotalUnit());
+
+        if (availableUnit.subtract(changedUnit).doubleValue() < 0) {
+            throw new NotEnoughAvailableUnit();
+        }
+
+        // Update Order TotalUnit, TotalQty, SubtotalAmount, TotalAmount
+        photoOrder.setTotalUnit(newTotalUnit);
+        photoOrder.setTotalQty(calculateTotalQty(originalItems));
+        photoOrder.setSubtotalAmount(calculateSubtotalPrice(originalItems));
+
+        return changedItems;
+    }
+
+    private boolean equalsNullable(Integer int1, Integer int2) {
+        if (int1 == null && int2 == null) {
+            return true;
+        } else if (int1 == null || int2 == null) {
+            return false;
+        } else {
+            return int1.equals(int2);
+        }
+    }
+
+    private BigDecimal calculateTotalUnit(List<PhotoOrderDetail> photoOrderDetails, Map<Integer, PhotoUnit> photoUnitMap) {
+        BigDecimal totalUnit = BigDecimal.ZERO;
+
+        for (PhotoOrderDetail photoOrderDetail : photoOrderDetails) {
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(1)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getStyleQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(2)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorSetQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(3)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(4)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getMovieQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(5)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getBaseColorSetQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(6)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getModelSwatchQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(7)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getMovieClipQty()).orElse(0))));
+
+			totalUnit = totalUnit.add(Optional.ofNullable(photoUnitMap.get(8)).map(PhotoUnit::getUnit).orElse(BigDecimal.ZERO)
+					.multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorSwatchQty()).orElse(0))));
+		}
+
+        return totalUnit;
+    }
+
+    private BigDecimal calculateSubtotalPrice(List<PhotoOrderDetail> photoOrderDetails) {
+        BigDecimal totalUnit = BigDecimal.ZERO;
+
+        for (PhotoOrderDetail photoOrderDetail : photoOrderDetails) {
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getStyleUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getStyleQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getColorSetUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorSetQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getColorUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getMovieUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getMovieQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getBaseColorSetUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getBaseColorSetQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getModelSwatchUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getModelSwatchQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getMovieClipUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getMovieClipQty()).orElse(0))));
+
+            totalUnit = totalUnit.add(Optional.ofNullable(photoOrderDetail.getColorSwatchUnitPrice()).orElse(BigDecimal.ZERO)
+                    .multiply(new BigDecimal(Optional.ofNullable(photoOrderDetail.getColorSwatchQty()).orElse(0))));
+        }
+
+        return totalUnit;
+    }
+
+    private int calculateTotalQty(List<PhotoOrderDetail> photoOrderDetails) {
+    	int totalQty = 0;
+
+    	for (PhotoOrderDetail photoOrderDetail : photoOrderDetails) {
+    		totalQty += Optional.ofNullable(photoOrderDetail.getStyleQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getColorQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getColorSetQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getMovieQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getBaseColorSetQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getModelSwatchQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getColorSwatchQty()).orElse(0);
+    		totalQty += Optional.ofNullable(photoOrderDetail.getMovieClipQty()).orElse(0);
+		}
+
+    	return totalQty;
+	}
+
+    private boolean validateInputQty(List<DetailOrderQuantity> items) {
+        return items.stream()
+                .anyMatch(item -> Optional.ofNullable(item.getStyleQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getColorQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getColorSetQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getMovieQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getBaseColorSetQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getColorSwatchQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getModelSwatchQty()).orElse(0) < 0
+                            || Optional.ofNullable(item.getMovieClipQty()).orElse(0) < 0);
+    }
 }

@@ -286,12 +286,12 @@ public class PhotoStudioController {
     }
 
     @GetMapping("/calendar")
-    public JsonResponse<?> getPhotoCalendar(@RequestParam Map<String, String> parmMap) {
+    public JsonResponse<List<PhotoCalendarResponse>> getPhotoCalendar(@RequestParam Map<String, String> parmMap) {
         logger.debug("PhotoStudioController.getPhotoCalendar() called!!!");
-        JsonResponse<List<PhotoCalendar>> response = new JsonResponse<>(false, null, null);
+        JsonResponse<List<PhotoCalendarResponse>> response = new JsonResponse<>(false, null, null);
 
         try {
-            List<PhotoCalendar> result = photoStudioService.getPhotoCalendar(parmMap);
+            List<PhotoCalendarResponse> result = photoStudioService.getPhotoCalendar(parmMap);
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -400,10 +400,10 @@ public class PhotoStudioController {
     @GetMapping("/calendar/availablemodels/{orderID}/{theDate}")
     public JsonResponse<?> getAvailableModels(@PathVariable("orderID") Integer orderID, @PathVariable("theDate") String theDate) {
         logger.debug("PhotoStudioController.getAvailableModels() called!!!");
-        JsonResponse<List<PhotoModel>> response = new JsonResponse<>(false, null, null);
+        JsonResponse<List<AvailableModelsResponse>> response = new JsonResponse<>(false, null, null);
 
         try {
-            List<PhotoModel> result = photoStudioService.getAvailableModels(orderID, theDate);
+            List<AvailableModelsResponse> result = photoStudioService.getAvailableModels(orderID, theDate);
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -415,13 +415,12 @@ public class PhotoStudioController {
     }
 
     @PostMapping(value = "/order/update")
-    public JsonResponse<?> updatePhotoOrder(@RequestBody PhotoOrder photoOrder) {
+    public JsonResponse<?> updatePhotoOrder(@RequestBody OrderUpdateRequest orderUpdateRequest) {
         logger.debug("PhotoStudioController.updatePhotoOrder() called!!!");
         JsonResponse<String> response = new JsonResponse<>(false, null, null);
 
         try {
-
-            String resultMsg = photoStudioService.updatePhotoOrder(photoOrder);
+            String resultMsg = photoStudioService.updatePhotoOrder(orderUpdateRequest);
             response.setSuccess(StringUtils.isEmpty(resultMsg));
             response.setMessage(resultMsg);
         } catch (Exception ex) {
@@ -504,7 +503,11 @@ public class PhotoStudioController {
         JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
 
         try {
-            Map<String, Object> result = photoStudioService.getReports(parmMap);
+            int year = Integer.parseInt(String.valueOf(parmMap.get("year")));
+            int month = Integer.parseInt(String.valueOf(parmMap.get("month")));
+            int reportTypeId = Integer.parseInt(String.valueOf(parmMap.get("reportTypeId")));
+
+            Map<String, Object> result = photoStudioService.getReports(year, month, ReportType.typeOf(reportTypeId));
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -528,7 +531,10 @@ public class PhotoStudioController {
         JsonResponse<List<ReportCsvMonthly>> response = new JsonResponse<>(false, null, null);
 
         try {
-            List<ReportCsvMonthly> result = photoStudioService.getReportsMonthlyCsv(parmMap);
+            String yyyymmddString = String.valueOf(parmMap.get("yyyymmdd"));
+            int reportTypeId = Integer.parseInt(String.valueOf(parmMap.get("reportTypeId")));
+
+            List<ReportCsvMonthly> result = photoStudioService.getReportsMonthlyCsv(yyyymmddString, ReportType.typeOf(reportTypeId));
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
