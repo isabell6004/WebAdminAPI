@@ -268,4 +268,21 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
 
         return query.fetchOne();
     }
+
+    @Override
+    public List<PhotoOrder> getValidOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end) {
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .where(photoOrder.isCancelledBy.isNull().and(photoOrder._photoshootDate.goe(start)).and(photoOrder._photoshootDate.lt(end)))
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        return orders;
+    }
 }

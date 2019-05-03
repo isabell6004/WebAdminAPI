@@ -6,6 +6,9 @@ import org.apache.tomcat.jni.Local;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,10 +46,30 @@ public class DateUtils {
         return now;
     }
 
+    public static LocalDateTime getLastDayOfMonthAsLocalDateTime(LocalDateTime startDate) {
+        LocalDateTime endDate = startDate.plusMonths(1);
+        endDate = endDate.minusDays(1);
+        return endDate;
+    }
+
     public static int getDateCount(LocalDateTime startDate) {
         LocalDateTime endDate = startDate.plusMonths(1);
         int dateCount = (int) ChronoUnit.DAYS.between(startDate, endDate);
         return dateCount;
 
+    }
+
+    private final static String YYYYMMDD_DATE_FORMAT = "yyyyMMdd";
+    public static LocalDateTime getLocalDateTimeFromyyyyMMdd(String yyyymmddString) {
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(YYYYMMDD_DATE_FORMAT);
+        DateTimeFormatter localDateTimeFormatter = new DateTimeFormatterBuilder().append(dateFormatter)
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .toFormatter();
+
+        LocalDateTime ldt = LocalDateTime.parse(yyyymmddString, localDateTimeFormatter);
+        return ldt;
     }
 }

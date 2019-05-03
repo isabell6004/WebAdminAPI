@@ -18,89 +18,81 @@ import java.util.Optional;
  */
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
+@NoArgsConstructor
 @ToString
 public class ReportMonthlySummaryResponse {
 
     private Integer dateCount;
 
     private BigDecimal totalOrderAmount = BigDecimal.ZERO;
-
     private BigDecimal avgOrder = BigDecimal.ZERO;
 
     private Integer firstTimeVendor = 0;
-
     private Integer returningVendor = 0;
 
     private Integer womenOrders = 0;
-
     private Integer womenCancelled = 0;
-
     private BigDecimal womenAmounts = BigDecimal.ZERO;
 
     private Integer plusWomenOrders = 0;
-
     private Integer plusWomenCancelled = 0;
-
     private BigDecimal plusWomenAmounts = BigDecimal.ZERO;
 
     private Integer menOrders = 0;
-
     private Integer menCancelled = 0;
-
     private BigDecimal menAmounts = BigDecimal.ZERO;
 
     private Integer kidsOrders = 0;
-
     private Integer kidsCancelled = 0;
-
     private BigDecimal kidsAmounts = BigDecimal.ZERO;
 
     private Integer shoesOrders = 0;
-
     private Integer shoesCancelled = 0;
-
     private BigDecimal shoesAmounts = BigDecimal.ZERO;
 
     private Integer handbagsOrders = 0;
-
     private Integer handbagsCancelled = 0;
-
     private BigDecimal handbagsAmounts = BigDecimal.ZERO;
 
     private Integer accessoriesOrders = 0;
-
     private Integer accessoriesCancelled = 0;
-
     private BigDecimal accessoriesAmounts = BigDecimal.ZERO;
 
-    private BigDecimal avgOrdersDaily;
-    private BigDecimal avgStylesDaily;
-    private BigDecimal avgUnitsDaily;
+    private BigDecimal avgOrdersDaily = BigDecimal.ZERO;
+    private BigDecimal avgStylesDaily = BigDecimal.ZERO;
+    private BigDecimal avgUnitsDaily = BigDecimal.ZERO;
 
-    private Integer lightblue;
-    private Integer pastelyellow;
-    private Integer totalCancelledOrders;
-    private Integer totalColorSet;
-    private Integer totalColors;
-    private Integer totalMovie;
-    private Integer totalModelSwatch;
-    private Integer totalColorSwatch;
-    private Integer totalOrders;
-    private Integer totalStyles;
-    private BigDecimal totalUnits;
-    private Integer totalpackage1;
-    private Integer totalpackage2;
-    private Integer totalpackage3;
+    private Integer lightblue = 0;
+    private Integer pastelyellow = 0;
+    private Integer totalCancelledOrders = 0;
 
+    // old product
+    private Integer totalStyles = 0;
+    private Integer totalColorSet = 0;
+    private Integer totalColors = 0;
+    private Integer totalMovie = 0;
+
+    // new product
+    private Integer totalModelSwatch = 0;
+    private Integer totalColorSwatch = 0;
+    private Integer totalBaseColorSet = 0;
+    private Integer totalMovieClip = 0;
+
+    private Integer totalOrders = 0;
+    private BigDecimal totalUnits = BigDecimal.ZERO;
+
+    private Integer totalpackage1 = 0;
+    private Integer totalpackage2 = 0;
+    private Integer totalpackage3 = 0;
 
     public BigDecimal getAvgOrdersDaily() {
-        this.avgOrdersDaily = BigDecimal.valueOf(this.totalOrders / this.dateCount);
+        this.avgOrdersDaily = BigDecimal.valueOf(this.totalOrders.doubleValue() / this.dateCount);
         return this.avgOrdersDaily;
     }
 
     public BigDecimal getAvgStylesDaily() {
-        this.avgStylesDaily = BigDecimal.valueOf(this.totalStyles / this.dateCount);
+        this.avgStylesDaily = BigDecimal.valueOf(this.totalStyles.doubleValue()  / this.dateCount);
         return this.avgStylesDaily;
     }
 
@@ -127,8 +119,11 @@ public class ReportMonthlySummaryResponse {
             this.totalColorSet += Optional.ofNullable(detail.getColorSetQty()).orElse(0);
             this.totalColors += Optional.ofNullable(detail.getColorQty()).orElse(0);
             this.totalMovie += Optional.ofNullable(detail.getMovieQty()).orElse(0);
+
             this.totalColorSwatch += Optional.ofNullable(detail.getModelSwatchQty()).orElse(0);
             this.totalColorSwatch += Optional.ofNullable(detail.getColorSwatchQty()).orElse(0);
+            this.totalBaseColorSet += Optional.ofNullable(detail.getBaseColorSetQty()).orElse(0);
+            this.totalMovieClip += Optional.ofNullable(detail.getMovieClipQty()).orElse(0);
         }
 
     }
@@ -292,50 +287,8 @@ public class ReportMonthlySummaryResponse {
 
         Integer dateCount = DateUtils.getDateCount(startDate);
 
-        ReportMonthlySummaryResponse response = ReportMonthlySummaryResponse.builder()
+        ReportMonthlySummaryResponse response = new ReportMonthlySummaryResponse().toBuilder()
                 .dateCount(dateCount)
-                .totalOrderAmount(BigDecimal.ZERO)
-                .avgOrder(BigDecimal.ZERO)
-                .firstTimeVendor(0)
-                .returningVendor(0)
-                .womenOrders(0)
-                .womenCancelled(0)
-                .womenAmounts(BigDecimal.ZERO)
-                .plusWomenOrders(0)
-                .plusWomenCancelled(0)
-                .plusWomenAmounts(BigDecimal.ZERO)
-                .menOrders(0)
-                .menCancelled(0)
-                .menAmounts(BigDecimal.ZERO)
-                .kidsOrders(0)
-                .kidsCancelled(0)
-                .kidsAmounts(BigDecimal.ZERO)
-                .shoesOrders(0)
-                .shoesCancelled(0)
-                .shoesAmounts(BigDecimal.ZERO)
-                .handbagsOrders(0)
-                .handbagsCancelled(0)
-                .handbagsAmounts(BigDecimal.ZERO)
-                .accessoriesOrders(0)
-                .accessoriesCancelled(0)
-                .accessoriesAmounts(BigDecimal.ZERO)
-                .totalCancelledOrders(0)
-                .totalOrders(0)
-                .totalStyles(0)
-                .totalUnits(BigDecimal.ZERO)
-                .totalColors(0)
-                .totalColorSet(0)
-                .totalMovie(0)
-                .totalModelSwatch(0)
-                .totalColorSwatch(0)
-                .lightblue(0)
-                .pastelyellow(0)
-                .avgOrdersDaily(BigDecimal.ZERO)
-                .avgStylesDaily(BigDecimal.ZERO)
-                .avgUnitsDaily(BigDecimal.ZERO)
-                .totalpackage1(0)
-                .totalpackage2(0)
-                .totalpackage3(0)
                 .build();
 
         photoOrders.stream().forEach(x -> response.addStatistic(x));

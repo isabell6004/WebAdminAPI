@@ -53,4 +53,23 @@ public class DateUtilsTest {
         int dateCount = DateUtils.getDateCount(start);
         log.debug("{}", dateCount);
     }
+
+    @Test
+    public void getLocalDateTime() {
+
+        String str = "20190501";
+        LocalDateTime startDate = DateUtils.getLocalDateTimeFromyyyyMMdd(str);
+
+        log.debug("{}", startDate);
+    }
+
+    @Test
+    public void getLastDayOfMonthAsLocalDateTime() {
+
+        String str = "20190501";
+        LocalDateTime startDate = DateUtils.getLocalDateTimeFromyyyyMMdd(str);
+        LocalDateTime endDate = DateUtils.getLastDayOfMonthAsLocalDateTime(startDate);
+
+        log.debug("{}, {}", startDate, endDate);
+    }
 }

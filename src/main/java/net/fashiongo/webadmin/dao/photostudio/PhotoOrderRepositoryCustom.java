@@ -34,5 +34,7 @@ public interface PhotoOrderRepositoryCustom {
 
     List<PhotoOrder> getOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end);
 
+    List<PhotoOrder> getValidOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end);
+
     List<PhotoOrder> getOrdersByPhotoshootDate(LocalDateTime start, LocalDateTime end);
 }
