@@ -150,6 +150,12 @@ public class CommonService extends ApiService {
 		return result;
 	}
 	
+	public List<Category> getAllCategoryListbyParentID(Integer parentCategoryId, Integer parentParentCategoryId) {
+		List<Category> result = categoryRepository.findByParentCategoryIDOrParentParentCategoryIDOrderByListOrderAsc(parentCategoryId,parentParentCategoryId);
+		
+		return result;
+	}
+	
 	/**
 	 * Get Bid AdPage Spots Combined 
 	 * 

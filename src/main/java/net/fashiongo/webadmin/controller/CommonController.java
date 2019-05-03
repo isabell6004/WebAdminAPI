@@ -102,6 +102,17 @@ public class CommonController {
 		return results;
 	}
 	
+	@RequestMapping(value = "getAllCategoryListbyParentID", method = RequestMethod.POST)
+	public JsonResponse<List<Category>> getAllCategoryListbyParentID(@RequestBody GetBidAdSpotCategory parameter) {
+		JsonResponse<List<Category>> results = new JsonResponse<List<Category>>();
+		List<Category> result = commonService.getAllCategoryListbyParentID(parameter.getParentCategoryId(),parameter.getParentCategoryId());
+		
+		results.setSuccess(true);
+		results.setData(result);
+		
+		return results;
+	}
+	
 	/**
 	 * Get Bid AdPage Spots Combined 
 	 * 
