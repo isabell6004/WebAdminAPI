@@ -202,7 +202,18 @@ public class PhotoPrice implements IPersistent, Serializable {
 	public void setPriceTypeName(String priceTypeName) {
 		this.priceTypeName = priceTypeName;
 	}
-	
+
+	@Column(name = "PackageID")
+	private Integer packageId;
+
+	public Integer getPackageId() {
+		return packageId;
+	}
+
+	public void setPackageId(Integer packageId) {
+		this.packageId = packageId;
+	}
+
 	@Transient
 	private String photoShootTypeName;
 	public String getPhotoShootTypeName() {

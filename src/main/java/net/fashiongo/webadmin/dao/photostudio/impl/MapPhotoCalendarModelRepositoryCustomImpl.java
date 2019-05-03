@@ -29,7 +29,7 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 		QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
 
 		JPAQuery<MapPhotoCalendarModel> query = new JPAQuery<>(photostudioEntityManager)
-				.select(mapPhotoCalendarModel)
+				.select(mapPhotoCalendarModel).distinct()
 				.from(mapPhotoCalendarModel)
 				.join(mapPhotoCalendarModel.photoCalendarEntity, photoCalendar).fetchJoin()
 				.leftJoin(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()

@@ -264,6 +264,7 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
                 .join(photoOrder.photoCategory, photoCategory).fetchJoin()
                 .leftJoin(photoBooking.mapPhotoCalendarModel, photoCalendarModel).fetchJoin()
                 .leftJoin(photoCalendarModel.photoModel, photoModel).fetchJoin()
+                .leftJoin(photoCalendarModel.photoBooking, photoBooking).fetchJoin()
                 .where(photoOrder.orderID.eq(orderId));
 
         return query.fetchOne();

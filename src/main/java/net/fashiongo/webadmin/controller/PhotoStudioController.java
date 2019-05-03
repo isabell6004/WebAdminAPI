@@ -415,13 +415,12 @@ public class PhotoStudioController {
     }
 
     @PostMapping(value = "/order/update")
-    public JsonResponse<?> updatePhotoOrder(@RequestBody PhotoOrder photoOrder) {
+    public JsonResponse<?> updatePhotoOrder(@RequestBody OrderUpdateRequest orderUpdateRequest) {
         logger.debug("PhotoStudioController.updatePhotoOrder() called!!!");
         JsonResponse<String> response = new JsonResponse<>(false, null, null);
 
         try {
-
-            String resultMsg = photoStudioService.updatePhotoOrder(photoOrder);
+            String resultMsg = photoStudioService.updatePhotoOrder(orderUpdateRequest);
             response.setSuccess(StringUtils.isEmpty(resultMsg));
             response.setMessage(resultMsg);
         } catch (Exception ex) {
