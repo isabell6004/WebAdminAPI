@@ -6,10 +6,7 @@ import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -61,7 +58,7 @@ public class ReportCsvMonthly {
                 dailyOrderCount++;
                 dailyTotalUnits = dailyTotalUnits.add(o.getTotalUnit());
                 List<PhotoOrderDetail> details = o.getOrderDetails();
-                dailyTotalStyles += details.stream().mapToInt(x -> x.getStyleQty()).sum();
+                dailyTotalStyles += details.stream().mapToInt(x -> Optional.ofNullable(x.getStyleQty()).orElse(0)).sum();
             }
             try {
                 avgDailyOrderAmounts = BigDecimal.valueOf(dailyOrderAmount.longValue() / dailyOrderCount);
@@ -79,7 +76,7 @@ public class ReportCsvMonthly {
                     orderAmount = orderAmount.add(w.getTotalAmount());
                     units = units.add(w.getTotalUnit());
                     List<PhotoOrderDetail> details = w.getOrderDetails();
-                    styleQty += details.stream().mapToInt(x -> x.getStyleQty()).sum();
+                    styleQty += details.stream().mapToInt(x -> Optional.ofNullable(x.getStyleQty()).orElse(0)).sum();
                 }
 
                 ReportCsvMonthly report = ReportCsvMonthly.builder()

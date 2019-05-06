@@ -1,5 +1,8 @@
 package net.fashiongo.webadmin.model.photostudio;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,6 +15,8 @@ import java.util.List;
         attributeNodes = {@NamedAttributeNode("cartDetails"), @NamedAttributeNode("category"),
                 @NamedAttributeNode("discount"), @NamedAttributeNode("packageInfo"), @NamedAttributeNode("model")}
 )
+@Getter
+@Setter
 public class PhotoCart implements Serializable {
 
     @Id
@@ -77,150 +82,6 @@ public class PhotoCart implements Serializable {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "CartID", referencedColumnName = "CartID")
     private List<PhotoCartDetail> cartDetails;
-
-    public Integer getCartStatusStep() {
-        return cartStatusStep;
-    }
-
-    public void setCartStatusStep(Integer cartStatusStep) {
-        this.cartStatusStep = cartStatusStep;
-    }
-
-    public PhotoCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(PhotoCategory category) {
-        this.category = category;
-    }
-
-    public Integer getColorId() {
-        return colorId;
-    }
-
-    public void setColorId(Integer colorId) {
-        this.colorId = colorId;
-    }
-
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public BigDecimal getDiscountAmount() {
-        return discountAmount;
-    }
-
-    public void setDiscountAmount(BigDecimal discountAmount) {
-        this.discountAmount = discountAmount;
-    }
-
-    public String getDiscountCode() {
-        return discountCode;
-    }
-
-    public void setDiscountCode(String discountCode) {
-        this.discountCode = discountCode;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Boolean getByStyle() {
-        return isByStyle;
-    }
-
-    public void setByStyle(Boolean byStyle) {
-        isByStyle = byStyle;
-    }
-
-    public Boolean getDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
-    }
-
-    public PhotoDiscount getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(PhotoDiscount discount) {
-        this.discount = discount;
-    }
-
-    public PhotoModel getModel() {
-        return model;
-    }
-
-    public void setModel(PhotoModel model) {
-        this.model = model;
-    }
-
-    public PhotoPackage getPackageInfo() {
-        return packageInfo;
-    }
-
-    public void setPackageInfo(PhotoPackage packageInfo) {
-        this.packageInfo = packageInfo;
-    }
-
-    public BigDecimal getPhotoCreditUsedAmount() {
-        return photoCreditUsedAmount;
-    }
-
-    public void setPhotoCreditUsedAmount(BigDecimal photoCreditUsedAmount) {
-        this.photoCreditUsedAmount = photoCreditUsedAmount;
-    }
-
-    public Date getPhotoshootDate() {
-        return photoshootDate;
-    }
-
-    public void setPhotoshootDate(Date photoshootDate) {
-        this.photoshootDate = photoshootDate;
-    }
-
-    public String getSpecialRequest() {
-        return specialRequest;
-    }
-
-    public void setSpecialRequest(String specialRequest) {
-        this.specialRequest = specialRequest;
-    }
-
-    public Integer getWholeSalerId() {
-        return wholeSalerId;
-    }
-
-    public void setWholeSalerId(Integer wholeSalerId) {
-        this.wholeSalerId = wholeSalerId;
-    }
-
-    public List<PhotoCartDetail> getCartDetails() {
-        return cartDetails;
-    }
-
-    public void setCartDetails(List<PhotoCartDetail> cartDetails) {
-        this.cartDetails = cartDetails;
-    }
-
-    public String getWholeSalerCompanyName() {
-        return wholeSalerCompanyName;
-    }
-
-    public void setWholeSalerCompanyName(String wholeSalerCompanyName) {
-        this.wholeSalerCompanyName = wholeSalerCompanyName;
-    }
 
     public String getPhotoStudioOrderType() {
         try {

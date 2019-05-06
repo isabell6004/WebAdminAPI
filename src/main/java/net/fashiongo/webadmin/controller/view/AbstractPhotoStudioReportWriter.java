@@ -24,8 +24,7 @@ public abstract class AbstractPhotoStudioReportWriter {
 
     public void create(Workbook workbook, Map<String, Object> dataMap, HttpServletResponse response) {
         response.setHeader("Content-Disposition", "attachment; filename=\"" + getFileName(dataMap) + "\"");
-//        logger.info("data : {} ", dataMap.get("dailyReport"));
-        createEcxelData(workbook, dataMap, response);
+        createExcelData(workbook, dataMap, response);
     }
 
     protected void createRow(Sheet sheet, List<String> cellList, int rowNum, CellStyle style) {
@@ -49,6 +48,6 @@ public abstract class AbstractPhotoStudioReportWriter {
         }
     }
 
-    abstract protected void createEcxelData(Workbook workbook, Map<String, Object> model, HttpServletResponse response);
+    abstract protected void createExcelData(Workbook workbook, Map<String, Object> model, HttpServletResponse response);
 
 }
