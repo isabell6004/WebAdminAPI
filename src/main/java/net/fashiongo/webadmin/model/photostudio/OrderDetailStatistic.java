@@ -1,79 +1,58 @@
 package net.fashiongo.webadmin.model.photostudio;
 
+import lombok.*;
+
 import javax.persistence.Tuple;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * Created by jinwoo on 2019. 2. 12..
  */
+@Builder(toBuilder = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Setter
 public class OrderDetailStatistic {
 
     private Integer categoryId;
 
-    private Integer styleQuentity = 0;
+    // old product
+    private Integer styleQuantity = 0;
 
-    private Integer additionalColorSetQuentity = 0;
+    private Integer additionalColorSetQuantity = 0;
 
-    private Integer additionalColorQuentity = 0;
+    private Integer additionalColorQuantity = 0;
 
-    private Integer movieClipsQuentity = 0;
+    private Integer movieClipsQuantity = 0;
 
-    public OrderDetailStatistic(Integer categoryId, int styleQuentity, int colorSetQuentity, int colorQuentity, int movieQuentity) {
-        this.categoryId = categoryId;
-        this.styleQuentity = styleQuentity;
-        this.additionalColorQuentity = colorQuentity;
-        this.additionalColorSetQuentity = colorSetQuentity;
-        this.movieClipsQuentity = movieQuentity;
-    }
+    // new product
+    private Integer baseColorSetQuantity = 0;
 
-    public Integer getAdditionalColorQuentity() {
-        return additionalColorQuentity;
-    }
+    private Integer modelSwatchQuantity = 0;
 
-    public void setAdditionalColorQuentity(Integer additionalColorQuentity) {
-        this.additionalColorQuentity = additionalColorQuentity;
-    }
+    private Integer newMovieClipsQuantity = 0;
 
-    public Integer getAdditionalColorSetQuentity() {
-        return additionalColorSetQuentity;
-    }
-
-    public void setAdditionalColorSetQuentity(Integer additionalColorSetQuentity) {
-        this.additionalColorSetQuentity = additionalColorSetQuentity;
-    }
-
-    public Integer getMovieClipsQuentity() {
-        return movieClipsQuentity;
-    }
-
-    public void setMovieClipsQuentity(Integer movieClipsQuentity) {
-        this.movieClipsQuentity = movieClipsQuentity;
-    }
-
-    public Integer getStyleQuentity() {
-        return styleQuentity;
-    }
-
-    public void setStyleQuentity(Integer styleQuentity) {
-        this.styleQuentity = styleQuentity;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
+    private Integer colorSwatchQuantity = 0;
 
     public static Map<Integer, OrderDetailStatistic> build(List<Tuple> tuples) {
 
         List<OrderDetailStatistic> results = tuples.stream().map((tuple) -> {
-            return new OrderDetailStatistic(tuple.get("categoryId", Integer.class),
-                    tuple.get("styleQuentity", Long.class).intValue(), tuple.get("colorSetQuentity", Long.class).intValue(),
-                    tuple.get("colorQuentity", Long.class).intValue(), tuple.get("movieQuentity", Long.class).intValue());
+            OrderDetailStatistic statistic = new OrderDetailStatistic().toBuilder()
+                    .categoryId(tuple.get("categoryId", Integer.class))
+                    .styleQuantity(Optional.ofNullable(tuple.get("styleQuantity", Long.class)).orElse(0L).intValue())
+                    .additionalColorQuantity(Optional.ofNullable(tuple.get("colorQuantity", Long.class)).orElse(0L).intValue())
+                    .additionalColorSetQuantity(Optional.ofNullable(tuple.get("colorSetQuantity", Long.class)).orElse(0L).intValue())
+                    .movieClipsQuantity(Optional.ofNullable(tuple.get("movieQuantity", Long.class)).orElse(0L).intValue())
+                    .baseColorSetQuantity(Optional.ofNullable(tuple.get("baseColorSetQuantity", Long.class)).orElse(0L).intValue())
+                    .modelSwatchQuantity(Optional.ofNullable(tuple.get("modelSwatchQuantity", Long.class)).orElse(0L).intValue())
+                    .newMovieClipsQuantity(Optional.ofNullable(tuple.get("movieClipQuantity", Long.class)).orElse(0L).intValue())
+                    .colorSwatchQuantity(Optional.ofNullable(tuple.get("colorSwatchQuantity", Long.class)).orElse(0L).intValue())
+                    .build();
+            return statistic;
         }).collect(Collectors.toList());
 
         return results.stream().collect(Collectors.toMap(order -> order.getCategoryId(), order -> order));

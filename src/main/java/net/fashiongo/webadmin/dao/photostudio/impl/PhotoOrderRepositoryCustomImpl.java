@@ -103,14 +103,22 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
         predicates.add(criteriaBuilder.isNull(root.<Integer>get("cancelTypeID")));
 
         Expression<Integer> categoryID = root.get("categoryID");
-        Expression<Long> styleQuentity = criteriaBuilder.sum(orderDetailJoin.get("styleQty"));
-        Expression<Long> colorSetQuentity = criteriaBuilder.sum(orderDetailJoin.get("colorSetQty"));
-        Expression<Long> colorQuentity = criteriaBuilder.sum(orderDetailJoin.get("colorQty"));
-        Expression<Long> movieQuentity = criteriaBuilder.sum(orderDetailJoin.get("movieQty"));
+
+        Expression<Long> styleQuantity = criteriaBuilder.sum(orderDetailJoin.get("styleQty"));
+        Expression<Long> colorSetQuantity = criteriaBuilder.sum(orderDetailJoin.get("colorSetQty"));
+        Expression<Long> colorQuantity = criteriaBuilder.sum(orderDetailJoin.get("colorQty"));
+        Expression<Long> movieQuantity = criteriaBuilder.sum(orderDetailJoin.get("movieQty"));
+
+        Expression<Long> baseColorSetQuantity = criteriaBuilder.sum(orderDetailJoin.get("baseColorSetQty"));
+        Expression<Long> modelSwatchQuantity = criteriaBuilder.sum(orderDetailJoin.get("modelSwatchQty"));
+        Expression<Long> movieClipQuantity = criteriaBuilder.sum(orderDetailJoin.get("movieClipQty"));
+        Expression<Long> colorSwatchQuantity = criteriaBuilder.sum(orderDetailJoin.get("colorSwatchQty"));
 
         criteriaQuery.select(criteriaBuilder.tuple(categoryID.alias("categoryId"),
-                styleQuentity.alias("styleQuentity"), colorSetQuentity.alias("colorSetQuentity"),
-                colorQuentity.alias("colorQuentity"), movieQuentity.alias("movieQuentity")));
+                styleQuantity.alias("styleQuantity"), colorSetQuantity.alias("colorSetQuantity"),
+                colorQuantity.alias("colorQuantity"), movieQuantity.alias("movieQuantity"),
+                baseColorSetQuantity.alias("baseColorSetQuantity"), modelSwatchQuantity.alias("modelSwatchQuantity"),
+                movieClipQuantity.alias("movieClipQuantity"), colorSwatchQuantity.alias("colorSwatchQuantity") ));
 
         criteriaQuery.where(predicates.toArray(new Predicate[]{}));
         criteriaQuery.groupBy(categoryID);

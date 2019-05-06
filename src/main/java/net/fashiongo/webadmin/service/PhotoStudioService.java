@@ -1381,26 +1381,33 @@ public class PhotoStudioService extends ApiService {
             logger.debug("start : {}, end : {}");
         } catch (ParseException e) {
         }
-        List<PageViewDailyReport> pageViewDailyReports = PageViewDailyReport.build(getPhotoCarts(start, end));
 
-        List<PhotoCategory> photoCategories = photoCategoryRepository.findAll();
-        Map<Integer, PhotoCategory> photoCategoryMap = photoCategories.stream().collect(
-                Collectors.toMap(x -> x.getCategoryId(), x -> x));
-        List<OrderDetailDailyReport> orderDetailDailyReports = OrderDetailDailyReport.build(
-                photoCategoryMap,
-                photoOrderRepository.getValidOrderStatistic(start, end),
-                photoOrderRepository.getCancelOrderStatistic(start, end),
-                photoOrderRepository.getValidOrderDetailStatistic(start, end)
-        );
+        try {
 
-        List<ClickStatDailyReport> clickStatDailyReports = ClickStatDailyReport.build(getPhotoBannerClicks(start, end));
 
-        DailyReport dailyReport = new DailyReport();
-        dailyReport.setPageViewDailyReports(pageViewDailyReports);
-        dailyReport.setOrderDetailDailyReports(orderDetailDailyReports);
-        dailyReport.setClickStatDailyReports(clickStatDailyReports);
+            List<PageViewDailyReport> pageViewDailyReports = PageViewDailyReport.build(getPhotoCarts(start, end));
 
-        return dailyReport;
+            List<PhotoCategory> photoCategories = photoCategoryRepository.findAll();
+            Map<Integer, PhotoCategory> photoCategoryMap = photoCategories.stream().collect(
+                    Collectors.toMap(x -> x.getCategoryId(), x -> x));
+            List<OrderDetailDailyReport> orderDetailDailyReports = OrderDetailDailyReport.build(
+                    photoCategoryMap,
+                    photoOrderRepository.getValidOrderStatistic(start, end),
+                    photoOrderRepository.getCancelOrderStatistic(start, end),
+                    photoOrderRepository.getValidOrderDetailStatistic(start, end)
+            );
+
+            List<ClickStatDailyReport> clickStatDailyReports = ClickStatDailyReport.build(getPhotoBannerClicks(start, end));
+
+            DailyReport dailyReport = new DailyReport();
+            dailyReport.setPageViewDailyReports(pageViewDailyReports);
+            dailyReport.setOrderDetailDailyReports(orderDetailDailyReports);
+            dailyReport.setClickStatDailyReports(clickStatDailyReports);
+            return dailyReport;
+        }catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return null;
     }
 
     private List<PhotoOrderDetail> updateOrderItemQty(PhotoOrder photoOrder, List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems, Map<Integer, PhotoUnit> photoUnitMap, LocalDateTime now) {
