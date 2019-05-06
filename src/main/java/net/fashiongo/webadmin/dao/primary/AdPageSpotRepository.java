@@ -20,4 +20,6 @@ public interface AdPageSpotRepository extends CrudRepository<AdPageSpot, Integer
 
 	List<AdPageSpot> findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotName(
 			LocalDateTime bidEffectiveOn, Integer pageIdNot, Integer pageId);
+	List<AdPageSpot> findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotID(
+			LocalDateTime bidEffectiveOn, Integer pageIdNot, Integer pageId);
 }

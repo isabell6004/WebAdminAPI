@@ -13,12 +13,14 @@ import net.fashiongo.webadmin.model.pojo.admin.Resource;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.model.pojo.common.parameter.GetBidAdPageSpotsParameter;
+import net.fashiongo.webadmin.model.pojo.common.parameter.GetBidAdSpotCategory;
 import net.fashiongo.webadmin.model.pojo.common.parameter.GetCountryStatesParameter;
 import net.fashiongo.webadmin.model.pojo.common.parameter.GetMenuIDParameter;
 import net.fashiongo.webadmin.model.pojo.common.parameter.GetServerHeartBeatParameter;
 import net.fashiongo.webadmin.model.pojo.common.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.pojo.common.response.GetCountryStatesResponse;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
+import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
@@ -82,6 +84,17 @@ public class CommonController {
 	public JsonResponse<List<AdPageSpot>> getBidAdPageSpots(@RequestBody GetBidAdPageSpotsParameter parameter) {
 		JsonResponse<List<AdPageSpot>> results = new JsonResponse<List<AdPageSpot>>();
 		List<AdPageSpot> result = commonService.getBidAdPageSpots(parameter.getPageId());
+		
+		results.setSuccess(true);
+		results.setData(result);
+		
+		return results;
+	}
+	
+	@RequestMapping(value = "getbidadpagespotCategory", method = RequestMethod.POST)
+	public JsonResponse<List<Category>> getBidAdPageSpotCategry(@RequestBody GetBidAdSpotCategory parameter) {
+		JsonResponse<List<Category>> results = new JsonResponse<List<Category>>();
+		List<Category> result = commonService.getBidAdPageSpotCategory(parameter.getParentCategoryId(), parameter.getCategoryLevel());
 		
 		results.setSuccess(true);
 		results.setData(result);
