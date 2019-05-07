@@ -347,14 +347,14 @@ public class BidService extends ApiService {
 		if (adPurchase == null) {
 			adPurchase = new AdPurchase();
 			adPurchase.setAdId(adVendor.getAdID());
+			adPurchase.setCreatedOn(finalizedOn);
+			adPurchase.setCreatedBy(finalizedBy);
 		}
 		adPurchase.setPurchaseSessionId(sessionId == null ? "" : sessionId);
 		adPurchase.setWholeSalerId(adBid == null ? 0 : adBid.getWholeSalerId());
 		adPurchase.setPurchaseAmount(adBid == null ? BigDecimal.valueOf(0L) : adBid.getFinalizedBidAmount());
 		adPurchase.setPurchaseTypeId(2);
 		adPurchase.setPoNumber(adBid == null ? "" : String.format("FGAB-%010d", adVendor.getAdID()));
-		adPurchase.setCreatedOn(finalizedOn);
-		adPurchase.setCreatedBy(finalizedBy);				
 		adPurchase.setModifiedOn(finalizedOn);
 		adPurchase.setModifiedBy(finalizedBy);				
 		adPurchaseRepository.save(adPurchase);
