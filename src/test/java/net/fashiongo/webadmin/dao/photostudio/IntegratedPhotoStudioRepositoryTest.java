@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.origin.SystemEnvironmentOrigin;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -393,5 +394,30 @@ public class IntegratedPhotoStudioRepositoryTest {
         Assert.assertNotNull(response);
     }
 
+    @Test
+    public void getPhotoOrderRepository_modelId_null() {
+
+        Integer calendarId = 99;
+        Integer modelId = null;
+        List<PhotoOrderEntity> photoOrders = photoOrderRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
+
+        photoOrders.forEach(x -> log.debug("{}", x.getOrderID()));
+
+        Assert.assertNotNull(photoOrders);
+
+    }
+
+    @Test
+    public void getPhotoOrderRepository_modelId_not_null() {
+
+        Integer calendarId = 99;
+        Integer modelId = 18;
+        List<PhotoOrderEntity> photoOrders = photoOrderRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
+
+        photoOrders.forEach(x -> log.debug("{}", x.getOrderID()));
+
+        Assert.assertNotNull(photoOrders);
+
+    }
 
 }

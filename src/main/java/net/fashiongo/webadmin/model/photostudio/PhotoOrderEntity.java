@@ -35,7 +35,7 @@ public class PhotoOrderEntity implements Serializable {
 	@Column(name = "CategoryID", insertable=false, updatable=false)
 	private Integer categoryID;
 
-	@Column(name = "PackageID")
+	@Column(name = "PackageID", insertable = false, updatable = false)
 	private Integer packageID;
 
 	@Column(name = "ColorID", insertable=false, updatable=false)
@@ -145,6 +145,10 @@ public class PhotoOrderEntity implements Serializable {
     @JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID")
     private PhotoCategory photoCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PackageID", referencedColumnName = "PackageID")
+    private PhotoPackage photoPackage;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BookingID", referencedColumnName = "BookingID")
     private PhotoBooking photoBooking;
@@ -156,4 +160,5 @@ public class PhotoOrderEntity implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CancelTypeID", referencedColumnName = "CancelTypeID", insertable = false, updatable = false)
     private PhotoCancellationFee photoCancellationFee;
+
 }

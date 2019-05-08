@@ -668,18 +668,21 @@ public class PhotoStudioService extends ApiService {
         return photoCalendarResponseList;
     }
 
-    public Map<String, Object> getPhotoCalendarModelsOrders(Map<String, String> parmMap) {
+    public Map<String, Object> getPhotoCalendarModelsOrders(Integer calendarId, Integer modelId) {
+
         Map<String, Object> result = new HashMap<String, Object>();
         List<Object> params = new ArrayList<Object>();
-        params.add(parmMap.get("calendarID"));
-        params.add(parmMap.get("modelID"));
+        params.add(calendarId);
+        params.add(modelId);
 
         List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCalendarModelsAndOrders", params, CalendarPhotoModel.class, SimplePhotoOrder.class, PhotoModel.class);
 
         List<PhotoModel> models = (List<PhotoModel>) r.get(0);
-        List<SimplePhotoOrder> orders = (List<SimplePhotoOrder>) r.get(1);
-        List<PhotoModel> modelsOption = (List<PhotoModel>) r.get(2);
 
+        List<PhotoOrderEntity> photoOrders = photoOrderRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
+        List<SimplePhotoOrder> orders = SimplePhotoOrder.makeOrders(photoOrders);
+
+        List<PhotoModel> modelsOption = (List<PhotoModel>) r.get(2);
 
         result.put("models", models);
         result.put("orders", orders);
