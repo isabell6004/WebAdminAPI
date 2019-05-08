@@ -33,15 +33,15 @@ public class MapPhotoCalendarModel implements IPersistent, Serializable {
 	@Column(name = "IsDelete")
 	private Boolean isDelete;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CalendarID", referencedColumnName = "CalendarID", insertable = false, updatable = false)
 	private PhotoCalendarEntity photoCalendarEntity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ModelID", referencedColumnName = "ModelID", insertable = false, updatable = false)
     private PhotoModel photoModel;
 
-	@OneToMany
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ModelScheduleID", referencedColumnName = "ModelScheduleID")
 	private List<PhotoBooking> photoBooking;
 }

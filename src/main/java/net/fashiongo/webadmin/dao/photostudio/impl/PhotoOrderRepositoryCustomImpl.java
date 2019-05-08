@@ -1,15 +1,19 @@
 package net.fashiongo.webadmin.dao.photostudio.impl;
 
+import com.querydsl.core.types.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.dao.photostudio.PhotoOrderRepositoryCustom;
 import net.fashiongo.webadmin.model.photostudio.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.NumberUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -292,6 +296,34 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
                 .distinct()
                 .collect(Collectors.toList());
 
+        return orders;
+    }
+
+    @Override
+    public List<PhotoOrderEntity> getValidOrderWithModelByCalendarIdAndModelId(Integer calendarId, Integer modelId) {
+
+        QPhotoOrderEntity photoOrder = QPhotoOrderEntity.photoOrderEntity;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+        QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+        QMapPhotoCalendarModel mapPhotoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
+        QPhotoPackage photoPackage = QPhotoPackage.photoPackage;
+        QPhotoModel photoModel = QPhotoModel.photoModel;
+
+        JPAQuery<PhotoOrderEntity> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrderEntity> orders = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .innerJoin(photoOrder.photoBooking, photoBooking).fetchJoin()
+                .leftJoin(photoOrder.photoPackage, photoPackage).fetchJoin()
+                .innerJoin(photoBooking.mapPhotoCalendarModel, mapPhotoCalendarModel).fetchJoin()
+                .leftJoin(mapPhotoCalendarModel.photoModel, photoModel).fetchJoin()
+                .where(mapPhotoCalendarModel.calendarID.eq(calendarId)
+                        .and(Optional.ofNullable(modelId).map(photoModel.modelID::eq).orElse(null))
+                        .and(photoOrder.isCancelledBy.isNull()))
+                .orderBy(photoOrder.categoryID.asc())
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
         return orders;
     }
 }
