@@ -1034,9 +1034,9 @@ public class SitemgmtController {
 		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
 	}
 	
-	@RequestMapping(value = "editorsPick", method = RequestMethod.DELETE)
-	public JsonResponse<String> deleteSocialMedia(@RequestBody EditorPickVendorContent editorPickVendorContent) {
-		ResultCode result = sitemgmtService.deleteEditorPickVendorContent(editorPickVendorContent);
+	@RequestMapping(value = "editorsPick/{id}", method = RequestMethod.DELETE)
+	public JsonResponse<String> deleteSocialMedia(@PathVariable("id") String id) {
+		ResultCode result = sitemgmtService.deleteEditorPickVendorContent(StringUtil.isNullOrEmpty(id) ? null : Integer.parseInt(id));
 		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
 	}
 }

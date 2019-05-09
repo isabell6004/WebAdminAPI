@@ -1132,7 +1132,7 @@ public class SitemgmtService extends ApiService {
 	 * @param parameter
 	 * @return
 	 */
-	@SuppressWarnings({ "unused", "unchecked" })
+	@SuppressWarnings({"static-access","unchecked"})
 	public GetProductAttributesResponse getProductAttributes(GetProductAttributesParameter parameter) {
 		GetProductAttributesResponse result = new GetProductAttributesResponse();
 		String DataSrc = null;
@@ -2111,7 +2111,7 @@ public class SitemgmtService extends ApiService {
 	}
 
 	public List<VendorContent> getVendorContents(Integer vendorId) {
-		return vendorContentRepository.findByWholeSalerIdAndStatusIdAndIsActiveAndIsDeleted(vendorId, 2/*Approved*/, true, false);
+		return vendorContentRepository.findByWholeSalerIdAndStatusIdAndTargetTypeIdAndIsActiveAndIsDeleted(vendorId, 2/*Approved*/, 1/*PC*/, true, false);
 	}
 
 	public ResultCode saveEditorPickVendorContent(EditorPickVendorContent editorPickVendorContent) {
@@ -2146,9 +2146,10 @@ public class SitemgmtService extends ApiService {
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 	
-	public ResultCode deleteEditorPickVendorContent(EditorPickVendorContent editorPickVendorContent) {
+	@Transactional
+	public ResultCode deleteEditorPickVendorContent(Integer id) {
 		try {
-			editorPickVendorContentRepository.delete(editorPickVendorContent);
+			editorPickVendorContentRepository.deleteByEditorPickVendorContentId(id);
 		} catch (Exception e) {
 			return new ResultCode(false, -1, e.getMessage());
 		}

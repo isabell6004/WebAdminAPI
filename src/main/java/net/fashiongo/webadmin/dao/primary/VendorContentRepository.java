@@ -11,5 +11,5 @@ import net.fashiongo.webadmin.model.primary.VendorContent;
  * @since 2019-04-16
  */
 public interface VendorContentRepository extends CrudRepository<VendorContent, Integer> {
-	List<VendorContent> findByWholeSalerIdAndStatusIdAndIsActiveAndIsDeleted(Integer wholeSalerId, int statusId, boolean isActive, boolean isDelete);
+	List<VendorContent> findByWholeSalerIdAndStatusIdAndTargetTypeIdAndIsActiveAndIsDeleted(Integer wholeSalerId, Integer statusId, Integer targetTypeId, Boolean isActive, Boolean isDelete);
 }

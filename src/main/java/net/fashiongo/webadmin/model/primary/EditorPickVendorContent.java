@@ -61,6 +61,9 @@ public class EditorPickVendorContent {
 	@Column(name = "modified_by")
 	private String modifiedBy;
 	
+	@Column(name = "ImageRequestID")
+	private Integer imageRequestID;
+	
     @JoinColumn(name = "vendor_id", insertable = false, updatable = false, nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     private Vendor vendor;
@@ -69,6 +72,11 @@ public class EditorPickVendorContent {
     @ManyToOne(fetch = FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
     private VendorContent vendorContent;
+    
+    @JoinColumn(name = "ImageRequestID", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    private VendorImageRequest vendorImageRequest;
     
     public boolean getStatus() {
     	LocalDateTime now = LocalDateTime.now();
@@ -102,6 +110,6 @@ public class EditorPickVendorContent {
     		if(vendorContent.getIsDeleted()) descs.add("media is deleted");
     	}
     	
-    	return String.join(", ", descs);
+    	return String.join("<br/>", descs);
     }
 }

@@ -19,4 +19,5 @@ public interface EditorPickVendorContentRepository extends EditorPickVendorConte
 JpaSpecificationExecutor<EditorPickVendorContent>, QuerydslPredicateExecutor<EditorPickVendorContent> {
 	EditorPickVendorContent findOneByEditorPickVendorContentId(Integer editorPickVendorContentId);
 	List<EditorPickVendorContent> findByVendorId(Integer vendorId);
+	void deleteByEditorPickVendorContentId(Integer editorPickVendorContentId);
 }

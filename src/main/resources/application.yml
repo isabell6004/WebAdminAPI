@@ -6,10 +6,6 @@
 spring:
   application:
     name: FashionGo WebAdminAPI
-  boot:
-    admin:
-      username: admin
-      password: fg6301
   profiles:
     active: "local"
   # Primary DB
@@ -108,6 +104,7 @@ logging:
   path: logs/
 
 webAdminapi:
+  fgServiceAPI_EndPoint: http://localhost:29001
   statsAPI_EndPoint: http://localhost:19101
   jwt:
     develop:
