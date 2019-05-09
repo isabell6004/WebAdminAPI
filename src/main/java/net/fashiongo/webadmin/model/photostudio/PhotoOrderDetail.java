@@ -40,13 +40,14 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "StyleName")
 	private String styleName;
 
+	// OLD
 	@Column(name = "StyleUnitPrice")
 	private BigDecimal styleUnitPrice;
 
 	@Column(name = "StyleQty")
 	private Integer styleQty;
 
-	@Column(name = "StyleAmount")
+	@Column(name = "StyleAmount", insertable = false, updatable = false)
 	private BigDecimal styleAmount;
 
 	@Column(name = "ColorSetUnitPrice")
@@ -55,7 +56,7 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "ColorSetQty")
 	private Integer colorSetQty;
 
-	@Column(name = "ColorSetAmount")
+	@Column(name = "ColorSetAmount", insertable = false, updatable = false)
 	private BigDecimal colorSetAmount;
 
 	@Column(name = "ColorUnitPrice")
@@ -64,7 +65,7 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "ColorQty")
 	private Integer colorQty;
 
-	@Column(name = "ColorAmount")
+	@Column(name = "ColorAmount", insertable = false, updatable = false)
 	private BigDecimal colorAmount;
 
 	@Column(name = "MovieUnitPrice")
@@ -73,10 +74,47 @@ public class PhotoOrderDetail implements IPersistent, Serializable {
 	@Column(name = "MovieQty")
 	private Integer movieQty;
 
-	@Column(name = "MovieAmount")
+	@Column(name = "MovieAmount", insertable = false, updatable = false)
 	private BigDecimal movieAmount;
 
-	@JsonIgnore
+	// NEW
+    @Column(name = "BaseColorSetUnitPrice")
+    private BigDecimal baseColorSetUnitPrice;
+
+    @Column(name = "BaseColorSetQty")
+    private Integer baseColorSetQty;
+
+    @Column(name = "BaseColorSetAmount", insertable = false, updatable = false)
+    private BigDecimal baseColorSetAmount;
+
+    @Column(name = "ColorSwatchUnitPrice")
+    private BigDecimal colorSwatchUnitPrice;
+
+    @Column(name = "ColorSwatchQty")
+    private Integer colorSwatchQty;
+
+    @Column(name = "ColorSwatchAmount", insertable = false, updatable = false)
+    private BigDecimal colorSwatchAmount;
+
+    @Column(name = "ModelSwatchUnitPrice")
+    private BigDecimal modelSwatchUnitPrice;
+
+    @Column(name = "ModelSwatchQty")
+    private Integer modelSwatchQty;
+
+    @Column(name = "ModelSwatchAmount", insertable = false, updatable = false)
+    private BigDecimal modelSwatchAmount;
+
+    @Column(name = "MovieClipUnitPrice")
+    private BigDecimal movieClipUnitPrice;
+
+    @Column(name = "MovieClipQty")
+    private Integer movieClipQty;
+
+    @Column(name = "MovieClipAmount", insertable = false, updatable = false)
+    private BigDecimal movieClipAmount;
+
+    @JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
 	private LocalDateTime createdOnDate;

@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,8 @@ import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdDetailParamet
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchVendorParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdListParameter;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryAdListParameter;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryListAdCountParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.SaveCategoryAdItemForBidVendorParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddPageParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddSpotSettingParameter;
@@ -26,6 +29,8 @@ import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdDetailResponse
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchVendorResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdListResponse;
+import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryAdListResponse;
+import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryListAdCountResponse;
 import net.fashiongo.webadmin.model.pojo.ad.response.GetSpotCheckResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
@@ -49,8 +54,9 @@ public class AdController {
 	 * @return GetADSettingResponse
 	 */
 	@RequestMapping(value = "getadsetting", method = RequestMethod.POST)
-	public JsonResponse<GetADSettingResponse> getAdsetting() {
-		GetADSettingResponse result = adService.getAdsetting();
+	public JsonResponse<GetADSettingResponse> getAdsetting(@RequestBody JSONObject parameter) {
+		boolean showAll = (boolean) parameter.get("showAll");
+		GetADSettingResponse result = adService.getAdsetting(showAll);
 		return new JsonResponse<GetADSettingResponse>(true, null, 0, result);
 	}
 	
@@ -141,6 +147,17 @@ public class AdController {
 	public JsonResponse<GetCategoryAdCalendarResponse> GetCategoryAdCalendar(@RequestBody GetCategoryAdCalendarParameter parameters) {
 		JsonResponse<GetCategoryAdCalendarResponse> results = new JsonResponse<GetCategoryAdCalendarResponse>(false, null, 0, null);
 		GetCategoryAdCalendarResponse result = adService.GetCategoryAdCalendar(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		
+		return results;
+	}
+	
+	@RequestMapping(value = "getfgcategoryadcalendar", method = RequestMethod.POST)
+	public JsonResponse<GetFGCategoryListAdCountResponse> GetFGCategoryAdCalendar(@RequestBody GetFGCategoryListAdCountParameter parameters) {
+		JsonResponse<GetFGCategoryListAdCountResponse> results = new JsonResponse<GetFGCategoryListAdCountResponse>(false, null, 0, null);
+		GetFGCategoryListAdCountResponse result = adService.GetFGCategoryAdCount(parameters);
+		
 		results.setData(result);
 		results.setSuccess(true);
 		
@@ -257,6 +274,15 @@ public class AdController {
 	public JsonResponse<GetCategoryAdListResponse> GetCategoryAdList(@RequestBody GetCategoryAdListParameter parameters) {
 		JsonResponse<GetCategoryAdListResponse> results = new JsonResponse<GetCategoryAdListResponse>(false, null, 0, null);
 		GetCategoryAdListResponse result = adService.GetCategoryAdList(parameters);
+		results.setData(result);
+		results.setSuccess(true);
+		return results;
+	}
+	
+	@RequestMapping(value = "getfgcategoryadlist", method = RequestMethod.POST)
+	public JsonResponse<GetFGCategoryAdListResponse> GetFGCategoryAdList(@RequestBody GetFGCategoryAdListParameter parameters) {
+		JsonResponse<GetFGCategoryAdListResponse> results = new JsonResponse<GetFGCategoryAdListResponse>(false, null, 0, null);
+		GetFGCategoryAdListResponse result = adService.GetFGCategoryAdList(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 		return results;

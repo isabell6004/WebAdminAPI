@@ -1,25 +1,31 @@
 package net.fashiongo.webadmin.dao.photostudio.impl;
 
+import com.querydsl.core.types.*;
 import com.querydsl.jpa.impl.JPAQuery;
-import net.fashiongo.webadmin.dao.photostudio.PhotoOrderStatisticCustom;
+import net.fashiongo.webadmin.dao.photostudio.PhotoOrderRepositoryCustom;
 import net.fashiongo.webadmin.model.photostudio.*;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.NumberUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by jinwoo on 2019. 2. 12..
  */
 @Repository
-public class PhotoOrderRepositoryCustomImpl implements PhotoOrderStatisticCustom {
+public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCustom {
 
     @PersistenceContext(unitName = "photostudioEntityManager")
     private EntityManager photostudioEntityManager;
@@ -101,14 +107,22 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderStatisticCustom
         predicates.add(criteriaBuilder.isNull(root.<Integer>get("cancelTypeID")));
 
         Expression<Integer> categoryID = root.get("categoryID");
-        Expression<Long> styleQuentity = criteriaBuilder.sum(orderDetailJoin.get("styleQty"));
-        Expression<Long> colorSetQuentity = criteriaBuilder.sum(orderDetailJoin.get("colorSetQty"));
-        Expression<Long> colorQuentity = criteriaBuilder.sum(orderDetailJoin.get("colorQty"));
-        Expression<Long> movieQuentity = criteriaBuilder.sum(orderDetailJoin.get("movieQty"));
+
+        Expression<Long> styleQuantity = criteriaBuilder.sum(orderDetailJoin.get("styleQty"));
+        Expression<Long> colorSetQuantity = criteriaBuilder.sum(orderDetailJoin.get("colorSetQty"));
+        Expression<Long> colorQuantity = criteriaBuilder.sum(orderDetailJoin.get("colorQty"));
+        Expression<Long> movieQuantity = criteriaBuilder.sum(orderDetailJoin.get("movieQty"));
+
+        Expression<Long> baseColorSetQuantity = criteriaBuilder.sum(orderDetailJoin.get("baseColorSetQty"));
+        Expression<Long> modelSwatchQuantity = criteriaBuilder.sum(orderDetailJoin.get("modelSwatchQty"));
+        Expression<Long> movieClipQuantity = criteriaBuilder.sum(orderDetailJoin.get("movieClipQty"));
+        Expression<Long> colorSwatchQuantity = criteriaBuilder.sum(orderDetailJoin.get("colorSwatchQty"));
 
         criteriaQuery.select(criteriaBuilder.tuple(categoryID.alias("categoryId"),
-                styleQuentity.alias("styleQuentity"), colorSetQuentity.alias("colorSetQuentity"),
-                colorQuentity.alias("colorQuentity"), movieQuentity.alias("movieQuentity")));
+                styleQuantity.alias("styleQuantity"), colorSetQuantity.alias("colorSetQuantity"),
+                colorQuantity.alias("colorQuantity"), movieQuantity.alias("movieQuantity"),
+                baseColorSetQuantity.alias("baseColorSetQuantity"), modelSwatchQuantity.alias("modelSwatchQuantity"),
+                movieClipQuantity.alias("movieClipQuantity"), colorSwatchQuantity.alias("colorSwatchQuantity") ));
 
         criteriaQuery.where(predicates.toArray(new Predicate[]{}));
         criteriaQuery.groupBy(categoryID);
@@ -143,5 +157,173 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderStatisticCustom
                 .fetchOne();
 
         return Optional.ofNullable(order).orElse(new PhotoOrder());
+    }
+
+    @Override
+    public List<PhotoOrder> getValidOrderWithDetail(LocalDateTime start, LocalDateTime end) {
+
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .where(photoOrder.isCancelledBy.isNull().and(photoOrder._checkOutDate.goe(start)).and(photoOrder._checkOutDate.lt(end)))
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        return orders;
+    }
+
+    @Override
+    public List<PhotoOrder> getCancelOrderWithDetail(LocalDateTime start, LocalDateTime end) {
+
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .where(photoOrder.isCancelledBy.isNotNull().and(photoOrder._checkOutDate.goe(start)).and(photoOrder._checkOutDate.lt(end)))
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        return orders;
+    }
+
+    @Override
+    public List<PhotoOrder> getOrderWithDetail(LocalDateTime start, LocalDateTime end) {
+
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .where(photoOrder._checkOutDate.goe(start).and(photoOrder._checkOutDate.lt(end)))
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        return orders;
+    }
+
+    @Override
+    public Map<Integer, List<PhotoOrder>> getOrderOfWholeSaler(List<Integer> wholeSalerIds) {
+
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .where(photoOrder.wholeSalerID.in(wholeSalerIds)).fetch();
+
+        if(!CollectionUtils.isEmpty(orders)) {
+            return orders.stream().collect(Collectors.groupingBy(PhotoOrder::getWholeSalerID));
+        }
+
+        return new HashMap<>();
+    }
+
+    @Override
+    public List<PhotoOrder> getOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end) {
+
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .where(photoOrder._photoshootDate.goe(start).and(photoOrder._photoshootDate.lt(end)))
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        return orders;
+    }
+
+    @Override
+    public List<PhotoOrder> getOrdersByPhotoshootDate(LocalDateTime start, LocalDateTime end) {
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .where(photoOrder._photoshootDate.goe(start).and(photoOrder._photoshootDate.lt(end)))
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+        return orders;
+    }
+
+    @Override
+    public PhotoOrder getPhotoOrderInfoWithBookAndModelAndCategory(int orderId) {
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+        QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
+        QMapPhotoCalendarModel photoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
+        QPhotoModel photoModel = QPhotoModel.photoModel;
+
+        JPAQuery<PhotoOrder> query = new JPAQuery<>(photostudioEntityManager)
+                .select(photoOrder)
+                .from(photoOrder)
+                .join(photoOrder.photoBooking, photoBooking).fetchJoin()
+                .join(photoOrder.photoCategory, photoCategory).fetchJoin()
+                .leftJoin(photoBooking.mapPhotoCalendarModel, photoCalendarModel).fetchJoin()
+                .leftJoin(photoCalendarModel.photoModel, photoModel).fetchJoin()
+                .leftJoin(photoCalendarModel.photoBooking, photoBooking).fetchJoin()
+                .where(photoOrder.orderID.eq(orderId));
+
+        return query.fetchOne();
+    }
+
+    @Override
+    public List<PhotoOrder> getValidOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end) {
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .where(photoOrder.isCancelledBy.isNull().and(photoOrder._photoshootDate.goe(start)).and(photoOrder._photoshootDate.lt(end)))
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        return orders;
+    }
+
+    @Override
+    public List<PhotoOrderEntity> getValidOrderWithModelByCalendarIdAndModelId(Integer calendarId, Integer modelId) {
+
+        QPhotoOrderEntity photoOrder = QPhotoOrderEntity.photoOrderEntity;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+        QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+        QMapPhotoCalendarModel mapPhotoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
+        QPhotoPackage photoPackage = QPhotoPackage.photoPackage;
+        QPhotoModel photoModel = QPhotoModel.photoModel;
+
+        JPAQuery<PhotoOrderEntity> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrderEntity> orders = jpaQuery.from(photoOrder)
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .innerJoin(photoOrder.photoBooking, photoBooking).fetchJoin()
+                .leftJoin(photoOrder.photoPackage, photoPackage).fetchJoin()
+                .innerJoin(photoBooking.mapPhotoCalendarModel, mapPhotoCalendarModel).fetchJoin()
+                .leftJoin(mapPhotoCalendarModel.photoModel, photoModel).fetchJoin()
+                .where(mapPhotoCalendarModel.calendarID.eq(calendarId)
+                        .and(Optional.ofNullable(modelId).map(photoModel.modelID::eq).orElse(null))
+                        .and(photoOrder.isCancelledBy.isNull()))
+                .orderBy(photoOrder.categoryID.asc())
+                .fetch()
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+        return orders;
     }
 }

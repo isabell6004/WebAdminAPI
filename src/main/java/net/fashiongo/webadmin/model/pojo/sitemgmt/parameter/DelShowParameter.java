@@ -24,6 +24,10 @@ public class DelShowParameter {
 	@JsonProperty("mapId")
 	private Integer mapId;
 
+	@ApiModelProperty(required = false, example = "admin")
+	@JsonProperty("userName")
+	private String userName;
+
 	public Integer getShowID() {
 		return showID;
 	}
@@ -54,6 +58,14 @@ public class DelShowParameter {
 
 	public void setMapId(Integer mapId) {
 		this.mapId = mapId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 }

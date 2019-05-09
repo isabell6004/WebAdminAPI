@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -104,5 +105,23 @@ public class BidServiceTest {
 		
 		GetBidSettingLastWeekResponse _result = bidService.getBidSettingLastWeek(parameters.getTop());
 		assertNotNull(_result.getBidSettingLastWeek());
+	}
+	
+	@Test
+	public void testAcceptBids() {
+		ResultCode resultCode = bidService.acceptBids();
+		assertEquals(Integer.valueOf(1), resultCode.getResultCode());
+	}
+	
+	@Test
+	public void testEditBids() {
+		ResultCode resultCode = new ResultCode(true, 1, "SUCCESS");
+		try {
+			resultCode = bidService.editBid("124", "20190410", "86093,86088,86090,86092,86087", "developer");
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultCode = new ResultCode(true, -1, "FAILURE");
+		}
+		assertEquals(Integer.valueOf(1), resultCode.getResultCode());
 	}
 }

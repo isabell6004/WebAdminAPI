@@ -1,282 +1,187 @@
 /**
- * 
+ *
  */
 package net.fashiongo.webadmin.model.photostudio;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-
-import net.fashiongo.common.conversion.LocalDateTimeConverter;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author XiaoChuan.Gao
- *  SimplePhotoOrder: Order info for Order Listing page
+ *         SimplePhotoOrder: Order info for Order Listing page
  */
-
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SimplePhotoOrder {
-	
-	private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
 
-	@Id
-	@Column(name = "OrderID")
-	private Integer orderID;
-	public Integer getOrderID() {
-		return orderID;
-	}
+    private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
 
-	public void setOrderID(Integer orderID) {
-		this.orderID = orderID;
-	}
+    @Id
+    @Column(name = "OrderID")
+    private Integer orderID;
 
-	@JsonIgnore
-	@Column(name = "PhotoshootDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _photoshootDate;
-	public LocalDateTime get_photoshootDate() {
-		return _photoshootDate;
-	}
+    @JsonIgnore
+    @Column(name = "PhotoshootDate")
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime _photoshootDate;
 
-	public void set_photoshootDate(LocalDateTime _photoshootDate) {
-		this._photoshootDate = _photoshootDate;
-	}
+    @Transient
+    private String photoshootDate;
 
-	@Transient
-	private String photoshootDate;
-	public String getPhotoshootDate() {
-		return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
-	
-	@JsonIgnore
-	@Column(name = "CheckOutDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _checkOutDate;
-	public LocalDateTime get_checkOutDate() {
-		return _checkOutDate;
-	}
+    public String getPhotoshootDate() {
+        return _photoshootDate != null ? _photoshootDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	public void set_checkOutDate(LocalDateTime _checkOutDate) {
-		this._checkOutDate = _checkOutDate;
-	}
+    @JsonIgnore
+    @Column(name = "CheckOutDate")
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime _checkOutDate;
 
-	@Transient
-	private String checkOutDate;
-	public String getCheckOutDate() {
-		return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
-	
-	@Column(name = "PONumber")
-	private String poNumber;
-	public String getPoNumber() {
-		return poNumber;
-	}
+    @Transient
+    private String checkOutDate;
 
-	public void setPoNumber(String poNumber) {
-		this.poNumber = poNumber;
-	}
+    public String getCheckOutDate() {
+        return _checkOutDate != null ? _checkOutDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	@Column(name = "InHouseNote")
-	private String inHouseNote;
-	public String getInHouseNote() {
-		return inHouseNote;
-	}
+    @Column(name = "PONumber")
+    private String poNumber;
 
-	public void setInHouseNote(String inHouseNote) {
-		this.inHouseNote = inHouseNote;
-	}
-	
-	@Column(name = "SpecialRequest")
-	private String specialRequest;
-	public String getSpecialRequest() {
-		return specialRequest;
-	}
+    @Column(name = "InHouseNote")
+    private String inHouseNote;
 
-	public void setSpecialRequest(String specialRequest) {
-		this.specialRequest = specialRequest;
-	}
+    @Column(name = "SpecialRequest")
+    private String specialRequest;
 
-	@Column(name = "WholeSalerID")
-	private Integer wholeSalerID;
-	public Integer getWholeSalerID() {
-		return wholeSalerID;
-	}
+    @Column(name = "WholeSalerID")
+    private Integer wholeSalerID;
 
-	public void setWholeSalerID(Integer wholeSalerID) {
-		this.wholeSalerID = wholeSalerID;
-	}
+    @Column(name = "WholeSalerCompanyName")
+    private String wholeSalerCompanyName;
 
-	@Column(name = "WholeSalerCompanyName")
-	private String wholeSalerCompanyName;
-	public String getWholeSalerCompanyName() {
-		return wholeSalerCompanyName;
-	}
+    @Column(name = "CategoryID")
+    private Integer categoryID;
 
-	public void setWholeSalerCompanyName(String wholeSalerCompanyName) {
-		this.wholeSalerCompanyName = wholeSalerCompanyName;
-	}
-	
-	@Column(name = "CategoryID")
-	private Integer categoryID;
-	public Integer getCategoryID() {
-		return categoryID;
-	}
+    @Column(name = "CategoryName")
+    private String categoryName;
 
-	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
-	}
-	
-	@Column(name = "CategoryName")
-	private String categoryName;
-	public String getCategoryName() {
-		return categoryName;
-	}
+    @Column(name = "PackageID")
+    private Integer packageID;
 
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
-	
-	@Column(name = "PackageID")
-	private Integer packageID;
-	public Integer getPackageID() {
-		return packageID;
-	}
+    @Column(name = "PackageName")
+    private String packageName;
 
-	public void setPackageID(Integer packageID) {
-		this.packageID = packageID;
-	}
-	
-	@Column(name = "PackageName")
-	private String packageName;
-	public String getPackageName() {
-		return packageName;
-	}
+    @Column(name = "TypeOfPhotoshoot")
+    private String typeOfPhotoshoot;
 
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
-	}
+    @Column(name = "TotalQty")
+    private Integer totalQty;
 
-	@Column(name = "TypeOfPhotoshoot")
-	private String typeOfPhotoshoot;
-	public String getTypeOfPhotoshoot() {
-		return typeOfPhotoshoot;
-	}
+    @JsonIgnore
+    @Column(name = "DropOffDate")
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime _dropOffDate;
 
-	public void setTypeOfPhotoshoot(String typeOfPhotoshoot) {
-		this.typeOfPhotoshoot = typeOfPhotoshoot;
-	}
+    @Transient
+    private String dropOffDate;
 
-	@Column(name = "TotalQty")
-	private Integer totalQty;
-	public Integer getTotalQty() {
-		return totalQty;
-	}
+    public String getDropOffDate() {
+        return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
+    }
 
-	public void setTotalQty(Integer totalQty) {
-		this.totalQty = totalQty;
-	}
+    @Column(name = "TotalAmount")
+    private BigDecimal totalAmount;
 
-	@JsonIgnore
-	@Column(name = "DropOffDate")
-	@Convert(converter = LocalDateTimeConverter.class)
-	private LocalDateTime _dropOffDate;
-	public LocalDateTime get_dropOffDate() {
-		return _dropOffDate;
-	}
+    @Column(name = "OrderStatusID")
+    private Integer orderStatusID;
 
-	public void set_dropOffDate(LocalDateTime _dropOffDate) {
-		this._dropOffDate = _dropOffDate;
-	}
+    @Column(name = "IsCancelledBy")
+    private Integer isCancelledBy;
 
-	@Transient
-	private String dropOffDate;
-	public String getDropOffDate() {
-		return _dropOffDate != null ? _dropOffDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
-	}
+    @Column(name = "CancelNote")
+    private String cancelNote;
 
-	@Column(name = "TotalAmount")
-	private BigDecimal totalAmount;
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
-	}
+    @Column(name = "IsDelayed")
+    private Boolean isDelayed;
 
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
-	}
+    @Column(name = "ModelID")
+    private Integer modelID;
 
-	@Column(name = "OrderStatusID")
-	private Integer orderStatusID;
-	public Integer getOrderStatusID() {
-		return orderStatusID;
-	}
+    @Column(name = "ModelName")
+    private String modelName;
 
-	public void setOrderStatusID(Integer orderStatusID) {
-		this.orderStatusID = orderStatusID;
-	}
-	
-	@Column(name = "IsCancelledBy")
-	private Integer isCancelledBy;
-	public Integer getIsCancelledBy() {
-		return isCancelledBy;
-	}
+    @Column(name = "TotalUnit")
+    private BigDecimal totalUnit;
 
-	public void setIsCancelledBy(Integer isCancelledBy) {
-		this.isCancelledBy = isCancelledBy;
-	}
+    @Transient
+    private Integer colorId;
 
-	@Column(name = "CancelNote")
-	private String cancelNote;
-	public String getCancelNote() {
-		return cancelNote;
-	}
+    @Transient
+    private Integer styles;
 
-	public void setCancelNote(String cancelNote) {
-		this.cancelNote = cancelNote;
-	}
-	
-	@Column(name = "IsDelayed")
-	private Boolean isDelayed;
-	public Boolean getIsDelayed() {
-		return isDelayed;
-	}
+    @Transient
+    private Integer movies;
 
-	public void setIsDelayed(Boolean isDelayed) {
-		this.isDelayed = isDelayed;
-	}
-	
-	@Column(name = "ModelID")
-	private Integer modelID;
-	public Integer getModelID() {
-		return modelID;
-	}
-	public void setModelID(Integer modelID) {
-		this.modelID = modelID;
-	}
-	
-	@Column(name = "ModelName")
-	private String modelName;
-	public String getModelName() {
-		return modelName;
-	}
-	public void setModelName(String modelName) {
-		this.modelName = modelName;
-	}
-	
-	@Column(name = "TotalUnit")
-	private BigDecimal totalUnit;
-	public BigDecimal getTotalUnit() {
-		return totalUnit;
-	}
+    public static List<SimplePhotoOrder> makeOrders(List<PhotoOrderEntity> photoOrders) {
 
-	public void setTotalUnit(BigDecimal totalUnit) {
-		this.totalUnit = totalUnit;
-	}
+        List<SimplePhotoOrder> simpleOrders = photoOrders.stream().map((order) -> {
+            SimplePhotoOrder simplePhotoOrder = SimplePhotoOrder.builder()
+                    .orderID(order.getOrderID())
+                    .orderStatusID(order.getOrderStatusID())
+                    .colorId(order.getColorID())
+                    .poNumber(order.getPoNumber())
+                    .categoryID(order.getCategoryID())
+                    .packageID(order.getPackageID())
+                    .packageName(order.getPhotoPackage().getName())
+                    .wholeSalerID(order.getWholeSalerID())
+                    .wholeSalerCompanyName(order.getWholeSalerCompanyName())
+                    .modelID(
+                            Optional.ofNullable(order.getPhotoBooking().getMapPhotoCalendarModel().getModelID()).orElse(null)
+                    )
+                    .modelName(
+                            Optional.ofNullable(order.getPhotoBooking().getMapPhotoCalendarModel().getPhotoModel()).map(
+                                    model -> (model.getModelName())
+                            ).orElse(null)
+                    )
+                    .totalUnit(order.getTotalUnit())
+                    .styles(order.getOrderDetails().stream().mapToInt(x -> (Optional.ofNullable(x.getColorSetQty()).orElse(0) + Optional.ofNullable(x.getBaseColorSetQty()).orElse(0))).sum())
+                    .movies(order.getOrderDetails().stream().mapToInt(x -> (Optional.ofNullable(x.getMovieQty()).orElse(0) + Optional.ofNullable(x.getMovieClipQty()).orElse(0))).sum())
+                    .isDelayed(
+                            checkDelayedStatus(order)
+                    )
+                    .build();
+            return simplePhotoOrder;
+        }).collect(Collectors.toList());
+
+        return simpleOrders;
+    }
+
+    private static Boolean checkDelayedStatus(PhotoOrderEntity order) {
+        LocalDateTime now = LocalDateTime.now();
+        if ((order.getOrderStatusID() == 1 && order.get_dropOffDate().isBefore(now))
+                || (order.getOrderStatusID() == 2 && order.get_prepDate().isBefore(now))
+                || (order.getOrderStatusID() == 3 && order.get_retouchDate().isBefore(now))
+                || (order.getOrderStatusID() == 4 && order.get_retouchDate().isBefore(now))
+                || (order.getOrderStatusID() == 5 && order.get_uploadDate().isBefore(now))) {
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -86,6 +86,8 @@ public class DetailPhotoOrder {
 
     private Integer totalQty;
 
+    private BigDecimal totalUnit;
+
     private BigDecimal subtotalAmount;
 
     private BigDecimal totalAmount;
@@ -163,6 +165,7 @@ public class DetailPhotoOrder {
                 .totalQty(photoOrder.getTotalQty())
                 .subtotalAmount(photoOrder.getSubtotalAmount())
                 .totalAmount(photoOrder.getTotalAmount())
+                .totalUnit(photoOrder.getTotalUnit())
                 .photoCreditUsedAmount(photoOrder.getPhotoCreditUsedAmount())
                 .additionalDiscountAmount(photoOrder.getAdditionalDiscountAmount())
                 .discountID(photoOrder.getDiscountID())

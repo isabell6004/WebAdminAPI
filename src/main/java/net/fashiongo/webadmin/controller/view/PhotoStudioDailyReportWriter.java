@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.controller.view;
 
 import net.fashiongo.webadmin.model.photostudio.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -43,7 +44,7 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
     }
 
     @Override
-    protected void createEcxelData(Workbook workbook, Map<String, Object> dataMap, HttpServletResponse response) {
+    protected void createExcelData(Workbook workbook, Map<String, Object> dataMap, HttpServletResponse response) {
 
         DailyReport dailyReport = (DailyReport) dataMap.get("excelReport");
 
@@ -51,7 +52,6 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
         style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setAlignment(HorizontalAlignment.CENTER);
-
 
         Sheet pageViewsheet = workbook.createSheet(PAGE_VIEW_SHEET_KEY);
         mapToPageViewHeadList(pageViewsheet, style);
@@ -75,27 +75,53 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getCatetoryName());
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderStatistic() == null ? 0 : orderDetailDailyReport.getOrderStatistic().getOrderCount());
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderStatistic() == null ? 0 : orderDetailDailyReport.getOrderStatistic().getTotalAamounts());
-            row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderDetailStatistic() == null ? 0 : orderDetailDailyReport.getOrderDetailStatistic().getStyleQuentity());
-            row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderDetailStatistic() == null ? 0 : orderDetailDailyReport.getOrderDetailStatistic().getAdditionalColorSetQuentity());
-            row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderDetailStatistic() == null ? 0 : orderDetailDailyReport.getOrderDetailStatistic().getAdditionalColorQuentity());
-            row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getOrderDetailStatistic() == null ? 0 : orderDetailDailyReport.getOrderDetailStatistic().getMovieClipsQuentity());
+
+            OrderDetailStatistic statistic = orderDetailDailyReport.getOrderDetailStatistic();
+            if(statistic == null) {
+                row.createCell(cellNumber++).setCellValue(0);
+                row.createCell(cellNumber++).setCellValue(0);
+                row.createCell(cellNumber++).setCellValue(0);
+                row.createCell(cellNumber++).setCellValue(0);
+                row.createCell(cellNumber++).setCellValue(0);
+                row.createCell(cellNumber++).setCellValue(0);
+                row.createCell(cellNumber++).setCellValue(0);
+                row.createCell(cellNumber++).setCellValue(0);
+            } else {
+                row.createCell(cellNumber++).setCellValue(statistic.getStyleQuantity());
+                row.createCell(cellNumber++).setCellValue(statistic.getAdditionalColorSetQuantity());
+                row.createCell(cellNumber++).setCellValue(statistic.getAdditionalColorQuantity());
+                row.createCell(cellNumber++).setCellValue(statistic.getMovieClipsQuantity());
+
+                row.createCell(cellNumber++).setCellValue(statistic.getBaseColorSetQuantity());
+                row.createCell(cellNumber++).setCellValue(statistic.getModelSwatchQuantity());
+                row.createCell(cellNumber++).setCellValue(statistic.getNewMovieClipsQuantity());
+                row.createCell(cellNumber++).setCellValue(statistic.getColorSwatchQuantity());
+            }
+
             row.createCell(cellNumber++).setCellValue(orderDetailDailyReport.getCanceledOrderStatistic() == null ? 0 : orderDetailDailyReport.getCanceledOrderStatistic().getOrderCount());
         }
     }
 
     private void mapToPageViewHeadList(Sheet sheet, CellStyle style) {
         String[] heads = {
-                "order submit date",
+                "Order submit date",
                 "Vendor name",
                 "Category",
                 "Package",
-                "input quantity- Full/Style",
+                "Input quantity- Full/Style",
+
                 "Total styles",
-                "total add'l colors",
-                "total Add'l Color set",
-                "total movie Clip",
-                "pick a date",
-                "choose model",
+                "Total add'l colors",
+                "Total add'l Color set",
+                "Total movie Clip",
+
+                "Total base Color Set",
+                "Total model Swatch",
+                "Total movie Clip",
+                "Total color Swatch",
+
+                "Pick a date",
+                "Choose model",
                 "Promo"};
 
         createRow(sheet, Arrays.asList(heads), 0, style, 5000);
@@ -116,10 +142,17 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getCategoryName());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPackageName());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getInputQuantityType());
+            // old product
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalStyleCount());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalAdditionalColorCount());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalAdditionalColorSetCount());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalMovieClipCount());
+            // new product
+            row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalBaseColorSetCount());
+            row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalModelSwatchCount());
+            row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalNewMovieClipCount());
+            row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalColorSwatchCount());
+
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPickDate() == null ? "" : format.format(pageViewDailyReport.getPickDate()));
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getModelName());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPromotionCode());
@@ -129,6 +162,18 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
     private void mapToClicksBodyList(Sheet sheet, List<ClickStatDailyReport> clickStatDailyReports) {
 
         int rowNumber = 1;
+
+        if(CollectionUtils.isEmpty(clickStatDailyReports)) {
+            Row row = sheet.createRow(rowNumber);
+            int cellNumber = 0;
+            row.createCell(cellNumber++).setCellValue("Total");
+            row.createCell(cellNumber++).setCellValue(0);
+            row.createCell(cellNumber++).setCellValue(0);
+            row.createCell(cellNumber++).setCellValue(0);
+            row.createCell(cellNumber++).setCellValue(0);
+            return;
+        }
+
         for (ClickStatDailyReport clickStatDailyReport : clickStatDailyReports) {
             int cellNumber = 0;
             Row row = sheet.createRow(rowNumber++);
@@ -141,7 +186,6 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
         }
 
         Row row = sheet.createRow(rowNumber);
-
         int cellNumber = 0;
         row.createCell(cellNumber++).setCellValue("Total");
         row.createCell(cellNumber).setCellType(CellType.FORMULA);
@@ -174,6 +218,10 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
                 "# of add'l set",
                 "# of add'l image",
                 "# of movie clips",
+                "# of base color set",
+                "# of model swatch",
+                "# of movie clips",
+                "# of color swatch",
 //                "New Customer",
                 "# of Cancelled order"
         };
@@ -185,7 +233,7 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
 
         String[] heads = {
                 "Vendor name",
-                "bannerClicks",
+                "Banner Clicks",
                 "MenuClicks	Close on Top",
                 "CloseForever",
                 "Try out button"

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.primary.AdPageRepository;
 import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
+import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
 import net.fashiongo.webadmin.dao.primary.TopCategoriesRepository;
@@ -18,6 +19,7 @@ import net.fashiongo.webadmin.model.pojo.common.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.pojo.common.response.GetCountryStatesResponse;
 import net.fashiongo.webadmin.model.primary.AdPage;
 import net.fashiongo.webadmin.model.primary.AdPageSpot;
+import net.fashiongo.webadmin.model.primary.Category;
 import net.fashiongo.webadmin.model.primary.SecurityMenu;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
 import net.fashiongo.webadmin.model.primary.TopCategories;
@@ -45,6 +47,9 @@ public class CommonService extends ApiService {
 	
 	@Autowired
 	SecurityUserRepository securityUserRepository;
+	
+	@Autowired
+	CategoryRepository categoryRepository;
 	
 	@Autowired
 	@Qualifier("serviceJsonClient")
@@ -134,7 +139,19 @@ public class CommonService extends ApiService {
 	 */
 	public List<AdPageSpot> getBidAdPageSpots(Integer pageId) {
 		LocalDateTime nowDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0);
-		List<AdPageSpot> result = adPageSpotRepository.findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotName(nowDate, 0, pageId);
+		List<AdPageSpot> result = adPageSpotRepository.findByActiveTrueAndBidEffectiveOnLessThanEqualAndPageIDNotAndPageIDOrderBySpotID(nowDate, 0, pageId);
+		
+		return result;
+	}
+	
+	public List<Category> getBidAdPageSpotCategory(Integer parentCategoryId, Integer categoryLevel) {
+		List<Category> result = categoryRepository.findByParentCategoryIDAndLvlOrderByListOrderAsc(parentCategoryId, categoryLevel);
+		
+		return result;
+	}
+	
+	public List<Category> getAllCategoryListbyParentID(Integer parentCategoryId, Integer parentParentCategoryId) {
+		List<Category> result = categoryRepository.findByParentCategoryIDOrParentParentCategoryIDOrderByListOrderAsc(parentCategoryId,parentParentCategoryId);
 		
 		return result;
 	}

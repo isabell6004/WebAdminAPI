@@ -83,6 +83,12 @@ webAdminapi:
     develop:
       check-token: true
 
+bid-redis:
+  database: 3
+  lock:
+    timeout-seconds:
+      acquire: 3
+      expire: 10
 ---
 
 # Local
@@ -109,6 +115,30 @@ webAdminapi:
   jwt:
     develop:
       check-token: true
+
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7
+    package2: 2, 8
+    package3: 3, 9
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
 
 ---
 
@@ -151,7 +181,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2_Dev
+    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
   datasource2:
     jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
   datasource3:
@@ -167,7 +197,30 @@ spring:
 logging:
   config: classpath:log4j2-dev.xml
   path: /var/www/logs/
-  
+
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7
+    package2: 2, 8
+    package3: 3, 9
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
 ---
 # Stage
 spring:
@@ -193,6 +246,10 @@ webAdminapi:
     
 logging:
   config: classpath:log4j2-stage.xml
+
+bid-redis:
+  database: 4
+
 ---
 # Prod
 spring:
