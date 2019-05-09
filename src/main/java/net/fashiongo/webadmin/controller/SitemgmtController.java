@@ -969,8 +969,8 @@ public class SitemgmtController {
             		StringUtil.isNullOrEmpty(pagesize) ? null : Integer.parseInt(pagesize),
             		title,
             		vendor,
-            		StringUtil.isNullOrEmpty(startDate) ? null : LocalDateTime.parse(startDate+" 00:00:00", formatter),
-            		StringUtil.isNullOrEmpty(endDate) ? null : LocalDateTime.parse(endDate+" 23:59:59", formatter),
+            		StringUtil.isNullOrEmpty(startDate) ? null : LocalDateTime.parse(startDate, formatter),
+            		StringUtil.isNullOrEmpty(endDate) ? null : LocalDateTime.parse(endDate, formatter),
             		orderBy);
             
             response.setSuccess(true);
