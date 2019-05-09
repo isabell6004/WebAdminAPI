@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.transaction.TransactionManager;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -837,26 +836,6 @@ public class PhotoStudioService extends ApiService {
         return result;
     }
 
-//    public Map<String, Object> getPhotoOrder(String poNumber) {
-//        Map<String, Object> result = new HashMap<String, Object>();
-//        List<Object> params = new ArrayList<Object>();
-//        params.add(poNumber);
-//
-//        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderDetail", params, DetailPhotoOrder.class, LogPhotoAction.class, PhotoOrderDetail.class, PhotoActionUser.class);
-//
-//        List<DetailPhotoOrder> photoOrders = (List<DetailPhotoOrder>) r.get(0);
-//        List<LogPhotoAction> logPhotoActions = (List<LogPhotoAction>) r.get(1);
-//        List<PhotoOrderDetail> photoOrderDetails = (List<PhotoOrderDetail>) r.get(2);
-//        List<PhotoActionUser> photoActionUsers = (List<PhotoActionUser>) r.get(3);
-//
-//        result.put("photoOrder", photoOrders.get(0));
-//        result.put("actionLogs", logPhotoActions);
-//        result.put("items", photoOrderDetails);
-//        result.put("photoStudioUsers", photoActionUsers);
-//
-//        return result;
-//    }
-
     @Autowired
     private PhotoOrderDetailRepository photoOrderDetailRepository;
 
@@ -1104,14 +1083,23 @@ public class PhotoStudioService extends ApiService {
         return null;
     }
 
-    public DailySummaryVo getDailySummary(String photoshootDate) {
-        List<Object> params = new ArrayList<Object>();
-        params.add(photoshootDate);
+    public DailySummaryResponse getDailySummary(String photoshootDate) {
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetDailySummary", params, DailySummaryVo.class);
-        List<DailySummaryVo> dailySummaryVos = (List<DailySummaryVo>) r.get(0);
+        LocalDateTime start = DateUtils.getLocalDateTimeFromyyyyDashMMDashdd(photoshootDate);
+        LocalDateTime end = DateUtils.getDatePlusOneDay(start);
 
-        return dailySummaryVos.get(0);
+        List<PhotoOrder> photoOrders = photoOrderRepository.getValidOrderWithDetailByPhotoshootDate(start, end);
+
+        DailySummaryResponse dailySummaryResponse = DailySummaryResponse.make(start, photoOrders);
+
+//        List<Object> params = new ArrayList<Object>();
+//        params.add(photoshootDate);
+//
+//        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetDailySummary", params, DailySummaryResponse.class);
+//        List<DailySummaryResponse> dailySummaryResponses = (List<DailySummaryResponse>) r.get(0);
+//        return dailySummaryResponses.get(0);
+
+        return dailySummaryResponse;
     }
 
     public List<LogPhotoAction> getActionLog(Integer orderId, Integer actionType) {
@@ -1276,10 +1264,6 @@ public class PhotoStudioService extends ApiService {
         }
         List<ReportCsvMonthly> reportCsvMonthlyDatas = ReportCsvMonthly.makeSummary(ordersByType);
         return reportCsvMonthlyDatas;
-//        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetReport_csv_monthly", params, ReportCsvMonthly.class);
-//        List<ReportCsvMonthly> reportCsvMonthlys = (List<ReportCsvMonthly>) r.get(0);
-//
-//        return reportCsvMonthlys;
     }
 
     public Integer saveCredit(PhotoCredit photoCredit) {
