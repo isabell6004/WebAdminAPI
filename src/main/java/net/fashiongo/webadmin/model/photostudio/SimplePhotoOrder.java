@@ -3,26 +3,20 @@
  */
 package net.fashiongo.webadmin.model.photostudio;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
+
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import net.fashiongo.common.conversion.LocalDateTimeConverter;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author XiaoChuan.Gao
@@ -31,6 +25,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SimplePhotoOrder {
 
     private static final String DATE_PATTERN_YYYYMMDD = "yyyy-MM-dd";
@@ -132,10 +128,13 @@ public class SimplePhotoOrder {
     @Column(name = "TotalUnit")
     private BigDecimal totalUnit;
 
+    @Transient
     private Integer colorId;
 
+    @Transient
     private Integer styles;
 
+    @Transient
     private Integer movies;
 
     public static List<SimplePhotoOrder> makeOrders(List<PhotoOrderEntity> photoOrders) {

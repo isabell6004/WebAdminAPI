@@ -13,10 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -419,5 +416,26 @@ public class IntegratedPhotoStudioRepositoryTest {
         Assert.assertNotNull(photoOrders);
 
     }
+
+    @Test
+    public void getPhotoOrders_by_photoshootdate() {
+
+        LocalDateTime start = DateUtils.getLocalDateTimeFromyyyyMMdd("20190508");
+        LocalDateTime end = DateUtils.getDatePlusOneDay(start);
+
+        List<PhotoOrder> photoOrders = photoOrderRepository.getValidOrderWithDetailByPhotoshootDate(start, end);
+        Assert.assertNotNull(photoOrders);
+        photoOrders.forEach(x -> {log.info("photoshoot date : {}", x.get_photoshootDate());});
+
+        DailySummaryResponse dailySummaryResponse = DailySummaryResponse.make(start, photoOrders);
+        log.info("{}, {}", dailySummaryResponse.getPhotoshootDate(), dailySummaryResponse.toString());
+
+
+    }
+
+
+
+
+
 
 }

@@ -238,6 +238,8 @@ public class PhotoStudioController {
             queryParam.setPs(20);
         }
         if (queryParam.getOrderBy() == null) {
+
+
             queryParam.setOrderBy("PhotoshootDateDesc");
         }
 
@@ -389,7 +391,6 @@ public class PhotoStudioController {
         JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
 
         try {
-            //Map<String, Object> result = photoStudioService.getPhotoOrder(poNumber);
             Map<String, Object> result = photoStudioService.getPhotoOrder(poNumber);
             response.setSuccess(true);
             response.setData(result);
@@ -454,10 +455,10 @@ public class PhotoStudioController {
     @GetMapping("/order/dailysummary/{photoshootDate}")
     public JsonResponse<?> getDailySummary(@PathVariable("photoshootDate") String photoshootDate) {
         logger.debug("PhotoStudioController.getDailySummary() called!!!");
-        JsonResponse<DailySummaryVo> response = new JsonResponse<>(false, null, null);
+        JsonResponse<DailySummaryResponse> response = new JsonResponse<>(false, null, null);
 
         try {
-            DailySummaryVo result = photoStudioService.getDailySummary(photoshootDate);
+            DailySummaryResponse result = photoStudioService.getDailySummary(photoshootDate);
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {

@@ -26,6 +26,11 @@ public class DateUtils {
         return c.getTime();
     }
 
+    public static LocalDateTime getDatePlusOneDay(LocalDateTime date) {
+        LocalDateTime returnDate = date.plusDays(1);
+        return returnDate;
+    }
+
     public static Date getFirstDayOfMonth(int year, int month) {
         return Date.from(LocalDateTime.of(year, month, 1, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
     }
@@ -59,17 +64,26 @@ public class DateUtils {
 
     }
 
-    private final static String YYYYMMDD_DATE_FORMAT = "yyyyMMdd";
-    public static LocalDateTime getLocalDateTimeFromyyyyMMdd(String yyyymmddString) {
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(YYYYMMDD_DATE_FORMAT);
+    public static LocalDateTime getLocalDateTimeFromyyyyMMdd(String yyyymmddString) {
+        final String formatString = "yyyyMMdd";
+        return parse(yyyymmddString, formatString);
+    }
+
+    public static LocalDateTime getLocalDateTimeFromyyyyDashMMDashdd(String yyyydashmmdashddString) {
+        final String formatString = "yyyy-MM-dd";
+        return parse(yyyydashmmdashddString, formatString);
+    }
+
+    private static LocalDateTime parse(String dateString, String formatString) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(formatString);
         DateTimeFormatter localDateTimeFormatter = new DateTimeFormatterBuilder().append(dateFormatter)
                 .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
                 .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
                 .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
                 .toFormatter();
 
-        LocalDateTime ldt = LocalDateTime.parse(yyyymmddString, localDateTimeFormatter);
+        LocalDateTime ldt = LocalDateTime.parse(dateString, localDateTimeFormatter);
         return ldt;
     }
 }
