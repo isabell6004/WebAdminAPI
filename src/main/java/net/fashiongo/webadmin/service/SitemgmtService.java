@@ -1274,7 +1274,7 @@ public class SitemgmtService extends ApiService {
 				todayDeal.setToDate(parameters.getFromDate().plusDays(1).minusSeconds(1));
 			}
 			
-			if(parameters.getActive() == false) {
+			if(!parameters.getActive()) {
 				todayDeal.setRevokedOn(LocalDateTime.now());
 				todayDeal.setRevokedBy(Utility.getUsername());
 				todayDeal.setNotes(parameters.getNotes());
@@ -2122,7 +2122,7 @@ public class SitemgmtService extends ApiService {
 	
 	private List<EditorsPick> parseEditorsPicks(List<EditorPickVendorContent> epvcList) {
 		return epvcList.stream()
-				.map(epvc -> parseEditorsPick(epvc))
+				.map(this::parseEditorsPick)
 				.collect(Collectors.toList());
 	}
 	
