@@ -61,8 +61,8 @@ public class EditorPickVendorContent {
 	@Column(name = "modified_by")
 	private String modifiedBy;
 	
-	@Column(name = "ImageRequestID")
-	private Integer imageRequestID;
+	@Column(name = "image_request_id")
+	private Integer imageRequestId;
 	
     @JoinColumn(name = "vendor_id", insertable = false, updatable = false, nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
@@ -73,7 +73,7 @@ public class EditorPickVendorContent {
     @NotFound(action = NotFoundAction.IGNORE)
     private VendorContent vendorContent;
     
-    @JoinColumn(name = "ImageRequestID", insertable = false, updatable = false)
+    @JoinColumn(name = "image_request_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
     private VendorImageRequest vendorImageRequest;

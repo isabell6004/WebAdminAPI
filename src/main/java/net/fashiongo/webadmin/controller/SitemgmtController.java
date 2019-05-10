@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMedia;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPick;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelFeaturedItemParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelSocialMediaParameter;
@@ -953,7 +956,7 @@ public class SitemgmtController {
      * @since 2019-04-29
      */
     @GetMapping(value = "editorsPicks")
-    public JsonResponse<PagedResult<EditorPickVendorContent>> getEditorsPicks(
+    public JsonResponse<PagedResult<EditorsPick>> getEditorsPicks(
     		@RequestParam(value="pagenum", required=false) String pagenum,
     		@RequestParam(value="pagesize", required=false) String pagesize,
     		@RequestParam(value="title", required=false) String title,
@@ -961,10 +964,10 @@ public class SitemgmtController {
     		@RequestParam(value="startDate", required=false) String startDate,
     		@RequestParam(value="endDate", required=false) String endDate,
     		@RequestParam(value="orderBy", required=false) String orderBy) {
-        JsonResponse<PagedResult<EditorPickVendorContent>> response = new JsonResponse<>(false, null, null);
+        JsonResponse<PagedResult<EditorsPick>> response = new JsonResponse<>(false, null, null);
         try {
         	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-            PagedResult<EditorPickVendorContent> result = sitemgmtService.getEditorPickVendorContents(
+            PagedResult<EditorsPick> result = sitemgmtService.getEditorPickVendorContents(
             		StringUtil.isNullOrEmpty(pagenum) ? null : Integer.parseInt(pagenum),
             		StringUtil.isNullOrEmpty(pagesize) ? null : Integer.parseInt(pagesize),
             		title,
@@ -987,10 +990,10 @@ public class SitemgmtController {
      * @since 2019-04-29
      */
     @GetMapping(value = "editorsPick/{id}")
-    public JsonResponse<EditorPickVendorContent> getEditorsPick(@PathVariable("id") String id){
-    	JsonResponse<EditorPickVendorContent> response = new JsonResponse<>(false, null, null);
+    public JsonResponse<EditorsPick> getEditorsPick(@PathVariable("id") String id){
+    	JsonResponse<EditorsPick> response = new JsonResponse<>(false, null, null);
     	try {
-    		EditorPickVendorContent result = sitemgmtService.getEditorPickVendorContent(StringUtil.isNullOrEmpty(id) ? null : Integer.parseInt(id));
+    		EditorsPick result = sitemgmtService.getEditorPickVendorContent(StringUtil.isNullOrEmpty(id) ? null : Integer.parseInt(id));
     		response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -1015,10 +1018,10 @@ public class SitemgmtController {
     }
     
     @GetMapping(value = "editorsPick/vendor/{vendorId}")
-    public JsonResponse<List<VendorContent>> getEditorsPickVendorContents(@PathVariable("vendorId") Integer vendorId){
-    	JsonResponse<List<VendorContent>> response = new JsonResponse<>(false, null, null);
+    public JsonResponse<List<BannerOrMedia>> getEditorsPickVendorBannerOrMedia(@PathVariable("vendorId") Integer vendorId){
+    	JsonResponse<List<BannerOrMedia>> response = new JsonResponse<>(false, null, null);
     	try {
-    		List<VendorContent> result = sitemgmtService.getVendorContents(vendorId);
+    		List<BannerOrMedia> result = sitemgmtService.getVendorImageRequestsAndVendorContents(vendorId);
     		response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -1029,13 +1032,13 @@ public class SitemgmtController {
     }
     
 	@PostMapping(value = "editorsPick")
-	public JsonResponse<String> saveSocialMedia(@RequestBody EditorPickVendorContent editorPickVendorContent) {
-		ResultCode result = sitemgmtService.saveEditorPickVendorContent(editorPickVendorContent);
+	public JsonResponse<String> saveEditorsPick(@RequestBody EditorsPick editorsPick) {
+		ResultCode result = sitemgmtService.saveEditorsPick(editorsPick);
 		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
 	}
 	
-	@RequestMapping(value = "editorsPick/{id}", method = RequestMethod.DELETE)
-	public JsonResponse<String> deleteSocialMedia(@PathVariable("id") String id) {
+	@DeleteMapping(value = "editorsPick/{id}")
+	public JsonResponse<String> deleteEditorsPick(@PathVariable("id") String id) {
 		ResultCode result = sitemgmtService.deleteEditorPickVendorContent(StringUtil.isNullOrEmpty(id) ? null : Integer.parseInt(id));
 		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
 	}

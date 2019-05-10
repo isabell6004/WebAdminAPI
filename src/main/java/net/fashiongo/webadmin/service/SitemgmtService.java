@@ -3,13 +3,14 @@ package net.fashiongo.webadmin.service;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
@@ -23,12 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQuery;
-
-import io.netty.util.internal.StringUtil;
-import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
 import net.fashiongo.webadmin.dao.primary.CategoryRepository;
 import net.fashiongo.webadmin.dao.primary.CodeFabricRepository;
@@ -38,6 +33,7 @@ import net.fashiongo.webadmin.dao.primary.CodeStyleRepository;
 import net.fashiongo.webadmin.dao.primary.CommunicationReasonRepository;
 import net.fashiongo.webadmin.dao.primary.EditorPickVendorContentRepository;
 import net.fashiongo.webadmin.dao.primary.FeaturedItemRepository;
+import net.fashiongo.webadmin.dao.primary.ListVendorImageTypeRepository;
 import net.fashiongo.webadmin.dao.primary.MapFabricCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapLengthCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.MapPatternCategoryRepository;
@@ -51,19 +47,8 @@ import net.fashiongo.webadmin.dao.primary.VendorCatalogSendQueueRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCatalogSendRequestRepository;
 import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
 import net.fashiongo.webadmin.dao.primary.VendorContentRepository;
+import net.fashiongo.webadmin.dao.primary.VendorImageRequestRepository;
 import net.fashiongo.webadmin.model.fgem.EmConfiguration;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ActiveTodayDealDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CodeData;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.DMRequest;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.DMRequestDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedVendorDaily;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.InactiveTodayDealDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductAttribute;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductSelectCheck;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportDefault;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportItem;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportList;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.ad.CategoryAdCount;
 import net.fashiongo.webadmin.model.pojo.ad.SelectData;
 import net.fashiongo.webadmin.model.pojo.ad.VendorCount;
@@ -72,28 +57,43 @@ import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ActiveTodayDealDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMedia;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMediaFile;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.BodySizeInfo;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryCount;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryReport;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryVendor;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryVendorInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.CodeData;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ColorListInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.DMRequest;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.DMRequestDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPick;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.FabricInfo;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedItemCount;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedItemList;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedVendorDaily;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.InactiveTodayDealDetail;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.LengthInfo;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.PatternInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductColors;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductInfo;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductSelectCheck;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductSize;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.StyleInfo;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TodayDealCalendarDetail;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TodayDealDetail;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportDefault;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportItem;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportList;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorCategorySummary;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorSummary;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorSummaryDetail;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelFeaturedItemParameter;
@@ -163,15 +163,13 @@ import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
 import net.fashiongo.webadmin.model.primary.EditorPickVendorContent;
 import net.fashiongo.webadmin.model.primary.FeaturedItem;
+import net.fashiongo.webadmin.model.primary.ListVendorImageType;
 import net.fashiongo.webadmin.model.primary.MapFabricCategory;
 import net.fashiongo.webadmin.model.primary.MapLengthCategory;
 import net.fashiongo.webadmin.model.primary.MapPatternCategory;
 import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 import net.fashiongo.webadmin.model.primary.Policy;
 import net.fashiongo.webadmin.model.primary.PolicyAgreement;
-import net.fashiongo.webadmin.model.primary.QEditorPickVendorContent;
-import net.fashiongo.webadmin.model.primary.QVendor;
-import net.fashiongo.webadmin.model.primary.QVendorContent;
 import net.fashiongo.webadmin.model.primary.TodayDeal;
 import net.fashiongo.webadmin.model.primary.TrendReport;
 import net.fashiongo.webadmin.model.primary.TrendReportContents;
@@ -180,7 +178,10 @@ import net.fashiongo.webadmin.model.primary.VendorCatalogSendQueue;
 import net.fashiongo.webadmin.model.primary.VendorCatalogSendRequest;
 import net.fashiongo.webadmin.model.primary.VendorCategory;
 import net.fashiongo.webadmin.model.primary.VendorContent;
+import net.fashiongo.webadmin.model.primary.VendorContentFile;
+import net.fashiongo.webadmin.model.primary.VendorImageRequest;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
 
 /**
  *
@@ -254,6 +255,12 @@ public class SitemgmtService extends ApiService {
 
 	@Autowired
 	private VendorContentRepository vendorContentRepository;
+	
+	@Autowired
+	private ListVendorImageTypeRepository listVendorImageTypeRepository;
+	
+	@Autowired
+	private VendorImageRequestRepository vendorImageRequestRepository;
 	
 	private net.fashiongo.webadmin.utility.Utility uUtility;
 
@@ -2084,7 +2091,7 @@ public class SitemgmtService extends ApiService {
 	 */
 	public ResultCode setTrendReportMap(SetTrendReportMapParameter parameters) {
 		String spName = "up_wa_AddDelTrendReportItem";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 
 		params.add(parameters.getSetType());
 		params.add(parameters.getMapId());
@@ -2101,49 +2108,166 @@ public class SitemgmtService extends ApiService {
 	 * @author Kenny/Kyungwoo
 	 * @since 2019-04-29
 	 */
-	public PagedResult<EditorPickVendorContent> getEditorPickVendorContents(Integer pagenum, Integer pagesize,
+	public PagedResult<EditorsPick> getEditorPickVendorContents(Integer pagenum, Integer pagesize,
 			String title, String vendorName, LocalDateTime startDate, LocalDateTime endDate, String orderBy) {
-		return editorPickVendorContentRepository.getEditorPickVendorContents(pagenum, pagesize, title, vendorName, startDate, endDate, orderBy);
+		//1. Get from DB
+		PagedResult<EditorPickVendorContent> resultDb = editorPickVendorContentRepository.getEditorPickVendorContents(pagenum, pagesize, title, vendorName, startDate, endDate, orderBy);
+		
+		//2. Parse to DTO
+		PagedResult<EditorsPick> resultDto = new PagedResult<>();
+		resultDto.setTotal(resultDb.getTotal());
+		resultDto.setRecords(parseEditorsPicks(resultDb.getRecords()));
+		return resultDto;
+	}
+	
+	private List<EditorsPick> parseEditorsPicks(List<EditorPickVendorContent> epvcList) {
+		return epvcList.stream()
+				.map(epvc -> parseEditorsPick(epvc))
+				.collect(Collectors.toList());
+	}
+	
+	private EditorsPick parseEditorsPick(EditorPickVendorContent epvc) {
+		return EditorsPick.builder()
+				.id(epvc.getEditorPickVendorContentId())
+				.title(epvc.getEditorTitle())
+				.description(epvc.getEditorDescription())
+				.createdOn(epvc.getCreatedOn())
+				.createdBy(epvc.getCreatedBy())
+				.modifiedOn(epvc.getModifiedOn())
+				.modifiedBy(epvc.getModifiedBy())
+				.status(epvc.getStatus())
+				.statusDescription(epvc.getStatusDescription())
+				.vendor(epvc.getVendor())
+				.bannerOrMedia(parseBannerOrMedia(epvc.getVendorImageRequest(), epvc.getVendorContent()))
+				.build();
+	}
+	
+	private BannerOrMedia parseBannerOrMedia(VendorImageRequest banner, VendorContent media) {
+		//1. Banner
+		if(banner!=null) {
+			Optional<ListVendorImageType> type = listVendorImageTypeRepository.findById(banner.getVendorImageTypeID());
+			if(type.isPresent()) {
+				int typeId = type.get().getVendorImageTypeID();
+				if(typeId==8 || typeId==9) { //8=Home Banner, 9=Home Intro Video
+					return BannerOrMedia.builder()
+							.typeId(1) //banner
+							.id(banner.getImageRequestID())
+							.title(type.get().getVendorImageType())
+							.files(Collections.singletonList(
+									parseBannerOrMediaFiles(banner, typeId)))
+							.build();
+				}
+			}
+		}
+		
+		//2. Media
+		if(media!=null) {
+			return BannerOrMedia.builder()
+					.typeId(2) //media
+					.id(media.getVendorContentId())
+					.title(media.getTitle())
+					.files(parseBannerOrMediaFiles(media.getVendorContentFiles(), media.getWholeSalerId()))
+					.build();
+		}
+		
+		return null;
 	}
 
-	public EditorPickVendorContent getEditorPickVendorContent(Integer id) {
-		return editorPickVendorContentRepository.findOneByEditorPickVendorContentId(id);
+	private BannerOrMediaFile parseBannerOrMediaFiles(VendorImageRequest banner, int typeId){
+		return BannerOrMediaFile.builder()
+				.id(banner.getImageRequestID())
+				.fileType(typeId==8 ? 1 : 2) //1=Image, 2=Video
+				.fileName(typeId==8 ? banner.getWholeSalerID()+"/main/"+banner.getWholeSalerID()+"/"+banner.getOriginalFileName() : banner.getOriginalFileName())
+				.build();
+	}
+	
+	private List<BannerOrMediaFile> parseBannerOrMediaFiles(List<VendorContentFile> vcFiles, int wholeSalerId) {
+		return vcFiles.stream()
+				.map(vcFile -> BannerOrMediaFile.builder()
+						.id(vcFile.getVendorContentFileId())
+						.fileType(vcFile.getFileType()) //1=Image, 2=Video
+						.fileName(vcFile.getFileType()==1 ? wholeSalerId+"/premium/"+wholeSalerId+"/"+vcFile.getFileName() : vcFile.getFileName())
+						.build())
+				.collect(Collectors.toList());
 	}
 
-	public List<VendorContent> getVendorContents(Integer vendorId) {
-		return vendorContentRepository.findByWholeSalerIdAndStatusIdAndTargetTypeIdAndIsActiveAndIsDeleted(vendorId, 2/*Approved*/, 1/*PC*/, true, false);
+	public EditorsPick getEditorPickVendorContent(Integer id) {
+		return parseEditorsPick(editorPickVendorContentRepository.findOneByEditorPickVendorContentId(id));
 	}
 
-	public ResultCode saveEditorPickVendorContent(EditorPickVendorContent editorPickVendorContent) {
+	public List<BannerOrMedia> getVendorImageRequestsAndVendorContents(Integer vendorId) {
+		List<BannerOrMedia> bannerOrMedias = new ArrayList<>();
+		
+		//1. Banner
+		bannerOrMedias.addAll(
+				vendorImageRequestRepository.findByWholeSalerIDAndVendorImageTypeIDInAndActiveOrderByVendorImageTypeIDAscImageRequestIDAsc(
+						vendorId, Arrays.asList(8,9)/*8=Image,9=Video*/, true/*Active*/).stream()
+				.map(banner -> parseBannerOrMedia(banner, null))
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList()));
+		
+		//2. Media
+		bannerOrMedias.addAll(
+				vendorContentRepository.findByWholeSalerIdAndStatusIdAndTargetTypeIdAndIsActiveAndIsDeleted(
+						vendorId, 2/*Approved*/, 1/*PC*/, true, false).stream()
+				.map(media -> parseBannerOrMedia(null, media))
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList()));
+		
+		return bannerOrMedias;
+	}
+
+	public ResultCode saveEditorsPick(EditorsPick editorsPick) {
 		try {
 			//1. Validate
-			if(editorPickVendorContent==null) throw new Exception("No information to save!");
-			if(editorPickVendorContent.getEditorTitle()==null) throw new Exception("Empty title!");
-			if(editorPickVendorContent.getEditorDescription()==null) throw new Exception("Empty description!");
-			if(editorPickVendorContent.getVendorId()==null) throw new Exception("Empty vendor!");
-			if(editorPickVendorContent.getStartDate()==null)  throw new Exception("Empty starting period!");
-			if(editorPickVendorContent.getEndDate()==null)  throw new Exception("Empty Ending period!");
-			if(editorPickVendorContent.getVendorId()==null) throw new Exception("Empty vendor!");
-			if(editorPickVendorContent.getVendorContentId()==null) throw new Exception("Empty vendor content(video/media)!");
+			if(editorsPick==null) throw new Exception("No information to save!");
+			if(editorsPick.getTitle()==null) throw new Exception("Empty title!");
+			if(editorsPick.getDescription()==null) throw new Exception("Empty description!");
+			if(editorsPick.getVendorId()==null) throw new Exception("Empty vendor!");
+			if(editorsPick.getStartDate()==null)  throw new Exception("Empty starting period!");
+			if(editorsPick.getEndDate()==null)  throw new Exception("Empty Ending period!");
+			if(editorsPick.getBannerOrMediaId()==null || editorsPick.getBannerOrMediaTypeId()==null) throw new Exception("Empty banner or media!");
 			
 			//2. Post-process
-			editorPickVendorContent.setStartDate(editorPickVendorContent.getStartDate().withHour(0).withMinute(0).withSecond(0));			
-			editorPickVendorContent.setEndDate(editorPickVendorContent.getEndDate().withHour(23).withMinute(59).withSecond(59));
+			editorsPick.setStartDate(editorsPick.getStartDate().withHour(0).withMinute(0).withSecond(0));			
+			editorsPick.setEndDate(editorsPick.getEndDate().withHour(23).withMinute(59).withSecond(59));
 			
-			String userName = Utility.getUsername();
-			if(editorPickVendorContent.getCreatedOn()==null) {
-				editorPickVendorContent.setCreatedOn(LocalDateTime.now());
-				editorPickVendorContent.setCreatedBy(userName);
+			WebAdminLoginUser user = Utility.getUserInfo();
+			if(editorsPick.getCreatedOn()==null) {
+				editorsPick.setCreatedOn(LocalDateTime.now());
+				editorsPick.setCreatedBy(user.getUsername());
 			}
-			editorPickVendorContent.setModifiedOn(LocalDateTime.now());
-			editorPickVendorContent.setModifiedBy(userName);
+			editorsPick.setModifiedOn(LocalDateTime.now());
+			editorsPick.setModifiedBy(user.getUsername());
 			
 			//3. Save
-			editorPickVendorContentRepository.save(editorPickVendorContent);
+			editorPickVendorContentRepository.save(parseEditorPickVendorContent(editorsPick));
 		} catch (Exception e) {
 			return new ResultCode(false, -1, e.getMessage());
 		}
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+	}
+	
+	private EditorPickVendorContent parseEditorPickVendorContent(EditorsPick ep) {
+		EditorPickVendorContent epvc = new EditorPickVendorContent();
+		
+		epvc.setEditorTitle(ep.getTitle());
+		epvc.setEditorDescription(ep.getDescription());
+		epvc.setVendorId(ep.getVendorId());
+		epvc.setStartDate(ep.getStartDate());
+		epvc.setEndDate(ep.getEndDate());
+		epvc.setCreatedOn(ep.getCreatedOn());
+		epvc.setCreatedBy(ep.getCreatedBy());
+		epvc.setModifiedOn(ep.getModifiedOn());
+		epvc.setModifiedBy(ep.getModifiedBy());
+		
+		if(ep.getBannerOrMediaTypeId()==1) { //1=Banner
+			epvc.setImageRequestId(ep.getBannerOrMediaId());
+		}else if(ep.getBannerOrMediaTypeId()==2) { //2=Media
+			epvc.setVendorContentId(ep.getBannerOrMediaId());
+		}
+		
+		return epvc;
 	}
 	
 	@Transactional

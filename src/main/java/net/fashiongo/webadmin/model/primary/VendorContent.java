@@ -94,15 +94,4 @@ public class VendorContent {
     @JoinColumn(name = "VendorContentID")
     @OneToMany
     private List<VendorContentFile> vendorContentFiles = new ArrayList<>();
-	
-    public String getBaseImageUrl() {
-		return new StringBuilder("https://s3-us-west-2.amazonaws.com/fg-business-data/vendor/")
-				.append(this.wholeSalerId + "/premium/")
-				.append(this.vendorContentId + "/")
-				.toString();
-	}
-	
-	public String getBaseVideoUrl() {
-		return "https://vimeo.com/";
-	}
 }
