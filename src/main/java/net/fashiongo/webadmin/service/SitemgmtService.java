@@ -2166,7 +2166,7 @@ public class SitemgmtService extends ApiService {
 					.typeId(2) //media
 					.id(media.getVendorContentId())
 					.title(media.getTitle())
-					.files(parseBannerOrMediaFiles(media.getVendorContentFiles(), media.getWholeSalerId()))
+					.files(parseBannerOrMediaFiles(media.getVendorContentFiles(), media.getWholeSalerId(), media.getVendorContentId()))
 					.build();
 		}
 		
@@ -2177,16 +2177,16 @@ public class SitemgmtService extends ApiService {
 		return BannerOrMediaFile.builder()
 				.id(banner.getImageRequestID())
 				.fileType(typeId==8 ? 1 : 2) //1=Image, 2=Video
-				.fileName(typeId==8 ? banner.getWholeSalerID()+"/main/"+banner.getWholeSalerID()+"/"+banner.getOriginalFileName() : banner.getOriginalFileName())
+				.fileName(typeId==8 ? banner.getWholeSalerID()+"/main/"+ banner.getOriginalFileName() : banner.getOriginalFileName())
 				.build();
 	}
 	
-	private List<BannerOrMediaFile> parseBannerOrMediaFiles(List<VendorContentFile> vcFiles, int wholeSalerId) {
+	private List<BannerOrMediaFile> parseBannerOrMediaFiles(List<VendorContentFile> vcFiles, int wholeSalerId, int vendorContentId) {
 		return vcFiles.stream()
 				.map(vcFile -> BannerOrMediaFile.builder()
 						.id(vcFile.getVendorContentFileId())
 						.fileType(vcFile.getFileType()) //1=Image, 2=Video
-						.fileName(vcFile.getFileType()==1 ? wholeSalerId+"/premium/"+wholeSalerId+"/"+vcFile.getFileName() : vcFile.getFileName())
+						.fileName(vcFile.getFileType()==1 ? wholeSalerId+"/premium/"+ vendorContentId +"/"+vcFile.getFileName() : vcFile.getFileName())
 						.build())
 				.collect(Collectors.toList());
 	}
