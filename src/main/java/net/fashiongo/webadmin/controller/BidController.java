@@ -1,20 +1,30 @@
 package net.fashiongo.webadmin.controller;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.exception.BidAcceptAutoException;
 import net.fashiongo.webadmin.model.pojo.bid.parameter.*;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastWeekResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.primary.AdBidSetting;
 import net.fashiongo.webadmin.service.BidService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.spring.web.json.Json;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 
  * @author JungHwan
  */
+@Slf4j
 @RestController
 @RequestMapping(value = "/bid", produces = "application/json")
 public class BidController {
@@ -103,22 +113,44 @@ public class BidController {
 	
 	@RequestMapping(value = "setacceptbidsAuto", method = RequestMethod.GET)
 	public JsonResponse<String> acceptBidsAuto() {
-		JsonResponse<String> results = new JsonResponse<String>(false, null, -1, null);
-		ResultCode result;
-		try {
-			result = bidService.acceptBids();
-		} catch (Exception e) {
-			results.setMessage("Accept Bid Auto Failed.");
-			if (e instanceof BidAcceptAutoException) {
-				results.setCode(((BidAcceptAutoException)e).getBidSettingId());
-			}
+		JsonResponse<String> results = new JsonResponse<>(false, null, -1, null);
+
+		List<AdBidSetting> adBidSettingList = bidService.getFinalizeAdBidSettingTargetList();
+		if (adBidSettingList.size() == 0) {
+			results.setSuccess(true);
+			results.setMessage("No target exists");
 			return results;
 		}
 
-		results.setSuccess(result.getSuccess());
-		results.setCode(result.getResultCode());
-		results.setMessage(result.getResultMsg());
-		
+		List<Integer> targetBidSettingIdList = adBidSettingList.stream().map(AdBidSetting::getBidSettingId).collect(Collectors.toList());
+
+		JsonObject resultData = new JsonObject();
+		resultData.add("targetBidSettingIds", new JsonArray());
+		resultData.add("failedBidSettingIds", new JsonArray());
+
+		for (int adBidSettingId : targetBidSettingIdList) {
+			resultData.getAsJsonArray("targetBidSettingIds").add(adBidSettingId);
+			try {
+				bidService.acceptBid(adBidSettingId);
+			} catch (Exception e) {
+				if (!(e instanceof BidAcceptAutoException)) {
+					log.error("acceptBidsAuto error", e);
+				}
+				resultData.getAsJsonArray("failedBidSettingIds").add(adBidSettingId);
+			}
+		}
+
+		resultData.addProperty("target count", adBidSettingList.size());
+		if (resultData.getAsJsonArray("failedBidSettingIds").size() == 0) {
+			results.setSuccess(true);
+			results.setMessage("Saved successfully!");
+			results.setData(resultData.toString());
+		} else {
+			results.setSuccess(false);
+			results.setMessage("Failed BidSettingId exists!");
+			results.setData(resultData.toString());
+		}
+
 		return results;
 	}
 	

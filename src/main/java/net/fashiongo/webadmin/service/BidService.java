@@ -177,50 +177,51 @@ public class BidService extends ApiService {
 		
 		return result;
 	}
+
+	public List<AdBidSetting> getFinalizeAdBidSettingTargetList() {
+		return adBidSettingRepository.getFinalizeAdBidSettingTargetList();
+	}
 	
 	@Transactional("primaryTransactionManager")
-	public ResultCode acceptBids() {		
+	public ResultCode acceptBid(int bidSettingId) {
 		LocalDateTime finalizedOn = LocalDateTime.now();
         String sessionId = UUID.randomUUID().toString();
 
-		List<AdBidSetting> adBidSettingList = adBidSettingRepository.getFinalizeAdBidSettingTargetList();			
-		adBidSettingList.forEach(adBidSetting -> {
-			logger.info("adBidSetting : " + adBidSetting);
-			Integer bidSettingId = adBidSetting.getBidSettingId();
-			
-			try {
-				//  update Ad_Bid_Setting (finalizedOn, finalizedBy)
-				adBidSetting.setFinalizedOn(finalizedOn);
-				adBidSetting.setFinalizedBy("AUTO");
-				adBidSettingRepository.save(adBidSetting);
-				
-				List<AdBid> adBidList = adBidRepository.findByBidSettingIdAndStatusId(adBidSetting.getBidSettingId(), 1);
-				logger.info("adBidList.size : " + adBidList.size());
-				
-				adBidList.forEach(adBid -> {
-					//  update Ad_Bid (finalizedBidAmount, finalizedOn, finalizedBy)
-					adBid.setFinalizedBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
-					adBid.setBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
-					adBid.setFinalizedOn(finalizedOn);
-					adBid.setFinalizedBy("AUTO");
-					adBidRepository.save(adBid);
-					
-					//  insert Ad_Bid_Log
-					addAdBidLog(adBid, finalizedOn, "FINAL");
-					
-					//  update Ad_Vendor & Ad_Purchase 
-					AdVendor adVendor = adVendorRepository.findTopBySpotIDAndFromDateAndWholeSalerIDIsNull(
-							adBidSetting.getSpotId(), Date.from(adBidSetting.getFromDate().atZone(ZoneId.systemDefault()).toInstant()));
-					addToAdVendorAndAdPurchase(adVendor, adBid, sessionId, finalizedOn, "AUTO");
-				});
+        AdBidSetting adBidSetting = adBidSettingRepository.findById(bidSettingId).orElseThrow(() -> new RuntimeException("BidSettingId not exists."));
+		logger.info("adBidSetting : " + adBidSetting);
 
-				redisListingAdBidSpotTemplate.opsForHash().delete(BIDDING_TOP_MAP_HASH, String.valueOf(adBidSetting.getBidSettingId()));
-			} catch (Exception e) {
-				logger.error("acceptBids error :", e.getMessage());			
-				throw new BidAcceptAutoException(e, bidSettingId);
-			}
-		});
-		
+		try {
+			//  update Ad_Bid_Setting (finalizedOn, finalizedBy)
+			adBidSetting.setFinalizedOn(finalizedOn);
+			adBidSetting.setFinalizedBy("AUTO");
+			adBidSettingRepository.save(adBidSetting);
+
+			List<AdBid> adBidList = adBidRepository.findByBidSettingIdAndStatusId(adBidSetting.getBidSettingId(), 1);
+			logger.info("adBidList.size : " + adBidList.size());
+
+			adBidList.forEach(adBid -> {
+				//  update Ad_Bid (finalizedBidAmount, finalizedOn, finalizedBy)
+				adBid.setFinalizedBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
+				adBid.setBidAmount(calculateBidAmount(adBid.getBidAmount(), adBid.getMaxBidAmount(), adBidSetting.getBidPriceUnit()));
+				adBid.setFinalizedOn(finalizedOn);
+				adBid.setFinalizedBy("AUTO");
+				adBidRepository.save(adBid);
+
+				//  insert Ad_Bid_Log
+				addAdBidLog(adBid, finalizedOn, "FINAL");
+
+				//  update Ad_Vendor & Ad_Purchase
+				AdVendor adVendor = adVendorRepository.findTopBySpotIDAndFromDateAndWholeSalerIDIsNull(
+						adBidSetting.getSpotId(), Date.from(adBidSetting.getFromDate().atZone(ZoneId.systemDefault()).toInstant()));
+				addToAdVendorAndAdPurchase(adVendor, adBid, sessionId, finalizedOn, "AUTO");
+			});
+
+			redisListingAdBidSpotTemplate.opsForHash().delete(BIDDING_TOP_MAP_HASH, String.valueOf(adBidSetting.getBidSettingId()));
+		} catch (Exception e) {
+			logger.error("acceptBids error :", e);
+			throw new BidAcceptAutoException(e, bidSettingId);
+		}
+
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 	
@@ -300,7 +301,7 @@ public class BidService extends ApiService {
 				});
 			}
 		} catch (Exception e) {
-			logger.error("editBid error :", e.getMessage());
+			logger.error("editBid error :", e);
 			throw e;
 		}
 		
