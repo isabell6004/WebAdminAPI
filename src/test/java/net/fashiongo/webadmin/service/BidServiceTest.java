@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import net.fashiongo.webadmin.model.primary.AdBid;
+import net.fashiongo.webadmin.model.primary.AdBidSetting;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,8 @@ import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastRecordsRe
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingLastWeekResponse;
 import net.fashiongo.webadmin.model.pojo.bid.response.GetBidSettingResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -108,9 +112,12 @@ public class BidServiceTest {
 	}
 	
 	@Test
-	public void testAcceptBids() {
-		ResultCode resultCode = bidService.acceptBids();
-		assertEquals(Integer.valueOf(1), resultCode.getResultCode());
+	public void testAcceptBid() {
+		List<AdBidSetting> adBidSettingList = bidService.getFinalizeAdBidSettingTargetList();
+		for (AdBidSetting adBidSetting : adBidSettingList) {
+			ResultCode resultCode = bidService.acceptBid(adBidSetting.getBidSettingId());
+			assertEquals(Integer.valueOf(1), resultCode.getResultCode());
+		}
 	}
 	
 	@Test
