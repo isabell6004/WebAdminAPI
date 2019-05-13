@@ -121,9 +121,9 @@ webAdminapi:
 
 photostudio:
   fullModelPackageIdMap:
-    package1: 1, 7
-    package2: 2, 8
-    package3: 3, 9
+    package1: 1, 7, 18
+    package2: 2, 8, 19
+    package3: 3, 9, 20
   reportTypeProperties:
     test: test
     categoryIdMap:
