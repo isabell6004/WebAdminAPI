@@ -2131,6 +2131,8 @@ public class SitemgmtService extends ApiService {
 				.id(epvc.getEditorPickVendorContentId())
 				.title(epvc.getEditorTitle())
 				.description(epvc.getEditorDescription())
+				.startDate(epvc.getStartDate())
+				.endDate(epvc.getEndDate())
 				.createdOn(epvc.getCreatedOn())
 				.createdBy(epvc.getCreatedBy())
 				.modifiedOn(epvc.getModifiedOn())

@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.dao.primary.custom;
 
 import static net.fashiongo.webadmin.model.primary.QEditorPickVendorContent.editorPickVendorContent;
 import static net.fashiongo.webadmin.model.primary.QVendor.vendor;
-import static net.fashiongo.webadmin.model.primary.QVendorContent.vendorContent;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
