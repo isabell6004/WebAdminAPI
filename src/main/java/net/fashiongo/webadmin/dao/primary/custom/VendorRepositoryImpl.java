@@ -4,7 +4,6 @@ import static net.fashiongo.webadmin.model.primary.QVendor.vendor;
 import static net.fashiongo.webadmin.model.primary.QVendorContent.vendorContent;
 import static net.fashiongo.webadmin.model.primary.QVendorImageRequest.vendorImageRequest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,8 +13,6 @@ import javax.persistence.PersistenceContext;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.querydsl.core.QueryResults;
 
 import net.fashiongo.webadmin.model.primary.Vendor;
 
@@ -38,8 +35,7 @@ public class VendorRepositoryImpl extends QuerydslRepositorySupport implements V
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
 	public List<Vendor> getEditorPickVendors() {
-		QueryResults<Vendor> list = 
-				from(vendor)
+		return from(vendor)
 				.where(vendor.active.eq(true),
 						vendor.shopActive.eq(true),
 						vendor.orderActive.eq(true),
@@ -58,7 +54,6 @@ public class VendorRepositoryImpl extends QuerydslRepositorySupport implements V
 										vendorImageRequest.active.eq(true),
 										vendorImageRequest.vendorImageTypeID.in(Arrays.asList(8,9)/*8=Image,9=Video*/))
 								.fetch())))
-				.fetchResults();
-        return list.getResults()==null ? new ArrayList<Vendor>() : list.getResults();
+				.fetch();
     }
 }

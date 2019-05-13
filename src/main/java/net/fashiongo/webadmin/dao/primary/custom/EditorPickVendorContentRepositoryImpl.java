@@ -45,7 +45,6 @@ public class EditorPickVendorContentRepositoryImpl extends QuerydslRepositorySup
 			String title, String vendorName, LocalDateTime startDate, LocalDateTime endDate, String orderBy) {
 		QueryResults<EditorPickVendorContent> list = from(editorPickVendorContent)
 				.innerJoin(editorPickVendorContent.vendor, vendor).fetchJoin()
-				.innerJoin(editorPickVendorContent.vendorContent, vendorContent).fetchJoin()
 				.where(!StringUtil.isNullOrEmpty(title) ? editorPickVendorContent.editorTitle.likeIgnoreCase(Expressions.asString("%").concat(title).concat("%")) : null,
 						!StringUtil.isNullOrEmpty(vendorName) ? editorPickVendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(vendorName).concat("%")) : null,
 						startDate!=null ? editorPickVendorContent.startDate.goe(startDate) : null,

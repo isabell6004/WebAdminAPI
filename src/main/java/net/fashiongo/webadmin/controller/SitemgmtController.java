@@ -1021,7 +1021,7 @@ public class SitemgmtController {
     public JsonResponse<List<BannerOrMedia>> getEditorsPickVendorBannerOrMedia(@PathVariable("vendorId") Integer vendorId){
     	JsonResponse<List<BannerOrMedia>> response = new JsonResponse<>(false, null, null);
     	try {
-    		List<BannerOrMedia> result = sitemgmtService.getVendorImageRequestsAndVendorContents(vendorId);
+    		List<BannerOrMedia> result = sitemgmtService.getBannerOrMedias(vendorId);
     		response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {

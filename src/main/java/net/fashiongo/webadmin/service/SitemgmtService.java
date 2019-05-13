@@ -2195,7 +2195,7 @@ public class SitemgmtService extends ApiService {
 		return parseEditorsPick(editorPickVendorContentRepository.findOneByEditorPickVendorContentId(id));
 	}
 
-	public List<BannerOrMedia> getVendorImageRequestsAndVendorContents(Integer vendorId) {
+	public List<BannerOrMedia> getBannerOrMedias(Integer vendorId) {
 		List<BannerOrMedia> bannerOrMedias = new ArrayList<>();
 		
 		//1. Banner
