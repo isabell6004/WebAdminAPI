@@ -2,8 +2,10 @@ package net.fashiongo.webadmin.dao.primary.custom;
 
 import static net.fashiongo.webadmin.model.primary.QVendor.vendor;
 import static net.fashiongo.webadmin.model.primary.QVendorContent.vendorContent;
+import static net.fashiongo.webadmin.model.primary.QVendorImageRequest.vendorImageRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -36,18 +38,26 @@ public class VendorRepositoryImpl extends QuerydslRepositorySupport implements V
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
 	public List<Vendor> getEditorPickVendors() {
-		QueryResults<Vendor> list = from(vendor)
+		QueryResults<Vendor> list = 
+				from(vendor)
 				.where(vendor.active.eq(true),
 						vendor.shopActive.eq(true),
 						vendor.orderActive.eq(true),
 						vendor.vendorType.eq(2), //Premium vendor
 						vendor.wholeSalerId.in(
 								from(vendorContent)
+								.select(vendorContent.wholeSalerId)
 								.where(vendorContent.statusId.eq(2), //Approved
 										vendorContent.isActive.eq(true),
 										vendorContent.isDeleted.ne(true))
-								.select(vendorContent.wholeSalerId)
-								.fetch() ))
+								.fetch())
+						.or(vendor.wholeSalerId.in(
+								from(vendorImageRequest)
+								.select(vendorImageRequest.wholeSalerID)
+								.where(vendorImageRequest.isApproved.eq(true),
+										vendorImageRequest.active.eq(true),
+										vendorImageRequest.vendorImageTypeID.in(Arrays.asList(8,9)/*8=Image,9=Video*/))
+								.fetch())))
 				.fetchResults();
         return list.getResults()==null ? new ArrayList<Vendor>() : list.getResults();
     }

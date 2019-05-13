@@ -712,43 +712,7 @@ public class VendorService extends ApiService {
      * @since 2019-04-15
      */
 	public PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company, LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer status) {
-		//0. Prepare Query type
-		QVendorContent vc = QVendorContent.vendorContent;
-		PagedResult<VendorContent> result = new PagedResult<>();
-		
-		//1. Build query
-		JPAQuery<VendorContent> query = new JPAQuery<>(entityManager);
-		query.select(vc);
-		query.from(vc);
-        
-		//2. Fill where conditions
-		BooleanExpression where = vc.isDeleted.eq(false);
-        if(!StringUtil.isNullOrEmpty(company)) where.and(vc.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")));
-        if(datefrom!=null) where.and(vc.requestedOn.goe(datefrom));
-        if(dateto!=null) where.and(vc.requestedOn.loe(dateto));
-        if(type!=null) where.and(vc.targetTypeId.eq(type));
-        if(status!=null) where.and(vc.statusId.eq(status));
-        query.where(where);
-        
-        
-        //3. Get the count first
-        int totalCount = (int)query.fetchCount();
-        
-        //4. Set the page
-        if(pagenum!=null && pagesize!=null) {
-        	query.offset(pagesize*(pagenum-1));
-        	query.limit(pagesize);
-        }
-        
-        //5. Get the page
-        List<VendorContent> list = query.fetch();
-
-        //6. Return
-        SingleValueResult total = new SingleValueResult();
-        total.setTotalCount(totalCount);
-        result.setTotal(total);
-        result.setRecords(list==null ? new ArrayList<VendorContent>() : list);
-        return result;
+		return vendorContentRepository.getVendorContents(pagenum, pagesize, company, datefrom, dateto, type, status);
 	}
 
 	/**
