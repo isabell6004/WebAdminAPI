@@ -3,10 +3,7 @@ package net.fashiongo.webadmin.dao.photostudio.impl;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.dao.photostudio.MapPhotoCalendarModelRepositoryCustom;
-import net.fashiongo.webadmin.model.photostudio.MapPhotoCalendarModel;
-import net.fashiongo.webadmin.model.photostudio.QMapPhotoCalendarModel;
-import net.fashiongo.webadmin.model.photostudio.QPhotoBooking;
-import net.fashiongo.webadmin.model.photostudio.QPhotoCalendarEntity;
+import net.fashiongo.webadmin.model.photostudio.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -27,10 +24,12 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 		QMapPhotoCalendarModel mapPhotoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
 		QPhotoCalendarEntity photoCalendar = QPhotoCalendarEntity.photoCalendarEntity;
 		QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+		QPhotoModel photoModel = QPhotoModel.photoModel;
 
 		JPAQuery<MapPhotoCalendarModel> query = new JPAQuery<>(photostudioEntityManager)
 				.select(mapPhotoCalendarModel).distinct()
 				.from(mapPhotoCalendarModel)
+				.join(mapPhotoCalendarModel.photoModel, photoModel).fetchJoin()
 				.join(mapPhotoCalendarModel.photoCalendarEntity, photoCalendar).fetchJoin()
 				.leftJoin(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()
 				.where(photoCalendar.theDate.eq(theDate.atTime(0, 0))
