@@ -48,12 +48,12 @@ public class PhotoStudioController {
     }
 
     @GetMapping("/prices")
-    public JsonResponse<?> getPhotoPrices() {
+    public JsonResponse<PhotoPriceListResponse> getPhotoPrices() {
         logger.debug("PhotoStudioController.getPhotoPrices() called!!!");
-        JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
+        JsonResponse<PhotoPriceListResponse> response = new JsonResponse<>(false, null, null);
 
         try {
-            Map<String, Object> result = photoStudioService.getPhotoPrices();
+			PhotoPriceListResponse result = photoStudioService.getPhotoPrices();
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -114,12 +114,12 @@ public class PhotoStudioController {
     }
 
     @GetMapping("/units")
-    public JsonResponse<?> getPhotoUnits() {
+    public JsonResponse<PhotoUnitListResponse> getPhotoUnits() {
         logger.debug("PhotoStudioController.getPhotoUnits() called!!!");
-        JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
+        JsonResponse<PhotoUnitListResponse> response = new JsonResponse<>(false, null, null);
 
         try {
-            Map<String, Object> result = photoStudioService.getPhotoUnits();
+            PhotoUnitListResponse result = photoStudioService.getPhotoUnits();
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {

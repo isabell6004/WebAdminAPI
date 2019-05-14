@@ -3,8 +3,7 @@ package net.fashiongo.webadmin.dao.photostudio.impl;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.dao.photostudio.PhotoUnitRepositoryCustom;
-import net.fashiongo.webadmin.model.photostudio.PhotoUnit;
-import net.fashiongo.webadmin.model.photostudio.QPhotoUnit;
+import net.fashiongo.webadmin.model.photostudio.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -20,7 +19,7 @@ public class PhotoUnitRepositoryCustomImpl implements PhotoUnitRepositoryCustom 
 	private EntityManager photostudioEntityManager;
 
 	@Override
-	public List<PhotoUnit> findAllEffectiveUnit(Integer categoryId, Integer packageId, boolean isFullModelShot) {
+	public List<PhotoUnit> findAllCurrentEffectiveUnit(Integer categoryId, Integer packageId, boolean isFullModelShot) {
 		QPhotoUnit photoUnit = QPhotoUnit.photoUnit;
 
 		LocalDateTime now = LocalDateTime.now();
@@ -40,6 +39,43 @@ public class PhotoUnitRepositoryCustomImpl implements PhotoUnitRepositoryCustom 
 				.select(photoUnit)
 				.from(photoUnit)
 				.where(condition);
+
+		return query.fetch();
+	}
+
+	@Override
+	public List<PhotoUnit> findAllCurrentEffectiveUnit(LocalDateTime now) {
+		QPhotoUnit photoUnit = QPhotoUnit.photoUnit;
+		QPhotoPackage photoPackage = QPhotoPackage.photoPackage;
+		QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
+
+		JPAQuery<PhotoUnit> query = new JPAQuery<>(photostudioEntityManager)
+				.select(photoUnit)
+				.from(photoUnit)
+				.innerJoin(photoUnit.photoPackage, photoPackage).fetchJoin()
+				.innerJoin(photoPackage.photoCategory, photoCategory).fetchJoin()
+				.where(photoUnit.packageId.isNotNull()
+						.and(photoUnit._fromEffectiveDate.before(now))
+						.and(photoUnit._toEffectiveDate.after(now)
+								.or(photoUnit._toEffectiveDate.isNull())));
+
+		return query.fetch();
+	}
+
+	@Override
+	public List<PhotoUnit> findAllToBeEffectiveUnit(LocalDateTime now) {
+		QPhotoUnit photoUnit = QPhotoUnit.photoUnit;
+		QPhotoPackage photoPackage = QPhotoPackage.photoPackage;
+		QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
+
+		JPAQuery<PhotoUnit> query = new JPAQuery<>(photostudioEntityManager)
+				.select(photoUnit)
+				.from(photoUnit)
+				.innerJoin(photoUnit.photoPackage, photoPackage).fetchJoin()
+				.innerJoin(photoPackage.photoCategory, photoCategory).fetchJoin()
+				.where(photoUnit.packageId.isNotNull()
+						.and(photoUnit._fromEffectiveDate.after(now))
+						.and(photoUnit._toEffectiveDate.isNull()));
 
 		return query.fetch();
 	}

@@ -4,6 +4,6 @@ import net.fashiongo.webadmin.model.photostudio.PhotoPrice;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface PhotoPriceRepository extends CrudRepository<PhotoPrice, Integer>{
+public interface PhotoPriceRepository extends CrudRepository<PhotoPrice, Integer>, PhotoPriceRepositoryCustom {
 
 }
