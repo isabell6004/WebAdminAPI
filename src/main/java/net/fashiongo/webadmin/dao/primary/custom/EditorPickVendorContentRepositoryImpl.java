@@ -63,17 +63,17 @@ public class EditorPickVendorContentRepositoryImpl extends QuerydslRepositorySup
     
     private OrderSpecifier<?> getOrderBy(String orderBy) {
         if(orderBy!=null) {
-        	if(orderBy.equals("vendorAsc")) return editorPickVendorContent.vendor.companyName.asc();
-        	else if(orderBy.equals("vendorDesc")) return editorPickVendorContent.vendor.companyName.desc();
-        	else if(orderBy.equals("titleAsc")) return editorPickVendorContent.editorTitle.asc();
-        	else if(orderBy.equals("titleDesc")) return editorPickVendorContent.editorTitle.desc();
-        	else if(orderBy.equals("startDateAsc")) return editorPickVendorContent.startDate.asc();
-        	else if(orderBy.equals("startDateDesc")) return editorPickVendorContent.startDate.desc();
-        	else if(orderBy.equals("endDateAsc")) return editorPickVendorContent.endDate.asc();
-        	else if(orderBy.equals("endDateDesc")) return editorPickVendorContent.endDate.desc();
-        	else if(orderBy.equals("createdByAsc")) return editorPickVendorContent.createdBy.asc();
-        	else if(orderBy.equals("createdByDesc")) return editorPickVendorContent.createdBy.desc();
+        	if(orderBy.equals("vendorasc")) return editorPickVendorContent.vendor.companyName.asc();
+        	else if(orderBy.equals("vendordesc")) return editorPickVendorContent.vendor.companyName.desc();
+        	else if(orderBy.equals("titleasc")) return editorPickVendorContent.editorTitle.asc();
+        	else if(orderBy.equals("titledesc")) return editorPickVendorContent.editorTitle.desc();
+        	else if(orderBy.equals("startDateasc")) return editorPickVendorContent.startDate.asc();
+        	else if(orderBy.equals("startDatedesc")) return editorPickVendorContent.startDate.desc();
+        	else if(orderBy.equals("endDateasc")) return editorPickVendorContent.endDate.asc();
+        	else if(orderBy.equals("endDatedesc")) return editorPickVendorContent.endDate.desc();
+        	else if(orderBy.equals("createdByasc")) return editorPickVendorContent.createdBy.asc();
+        	else if(orderBy.equals("createdBydesc")) return editorPickVendorContent.createdBy.desc();
         }
-        return null;
+        return editorPickVendorContent.vendor.companyName.asc(); //default
     }
 }
