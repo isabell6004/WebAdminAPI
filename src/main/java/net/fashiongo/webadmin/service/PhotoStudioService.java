@@ -842,7 +842,7 @@ public class PhotoStudioService extends ApiService {
         params.add(queryParam.getCancelledByFG());
         params.add(queryParam.getCancelledByVendor());
 
-        List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderList", params, SingleValueResult.class, SimplePhotoOrder.class);
+        List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderList2", params, SingleValueResult.class, SimplePhotoOrder.class);
 
         List<SingleValueResult> rs1 = (List<SingleValueResult>) _results.get(0);
         List<SimplePhotoOrder> rs2 = (List<SimplePhotoOrder>) _results.get(1);
