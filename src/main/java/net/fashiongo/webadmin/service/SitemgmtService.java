@@ -2253,6 +2253,7 @@ public class SitemgmtService extends ApiService {
 	private EditorPickVendorContent parseEditorPickVendorContent(EditorsPick ep) {
 		EditorPickVendorContent epvc = new EditorPickVendorContent();
 		
+		epvc.setEditorPickVendorContentId(ep.getId());
 		epvc.setEditorTitle(ep.getTitle());
 		epvc.setEditorDescription(ep.getDescription());
 		epvc.setVendorId(ep.getVendorId());
