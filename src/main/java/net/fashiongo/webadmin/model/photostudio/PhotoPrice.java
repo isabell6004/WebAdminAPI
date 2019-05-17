@@ -5,14 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -202,7 +195,18 @@ public class PhotoPrice implements IPersistent, Serializable {
 	public void setPriceTypeName(String priceTypeName) {
 		this.priceTypeName = priceTypeName;
 	}
-	
+
+	@Column(name = "PackageID")
+	private Integer packageId;
+
+	public Integer getPackageId() {
+		return packageId;
+	}
+
+	public void setPackageId(Integer packageId) {
+		this.packageId = packageId;
+	}
+
 	@Transient
 	private String photoShootTypeName;
 	public String getPhotoShootTypeName() {
@@ -216,5 +220,17 @@ public class PhotoPrice implements IPersistent, Serializable {
 
 	public void setPhotoShootTypeName(String photoShootTypeName) {
 		this.photoShootTypeName = photoShootTypeName;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "PackageID", referencedColumnName = "PackageID", insertable = false, updatable = false)
+	private PhotoPackage photoPackage;
+
+	public PhotoPackage getPhotoPackage() {
+		return photoPackage;
+	}
+
+	public void setPhotoPackage(PhotoPackage photoPackage) {
+		this.photoPackage = photoPackage;
 	}
 }

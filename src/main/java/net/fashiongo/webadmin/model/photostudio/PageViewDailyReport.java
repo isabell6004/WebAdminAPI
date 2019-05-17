@@ -1,15 +1,23 @@
 package net.fashiongo.webadmin.model.photostudio;
 
+import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by jinwoo on 2019. 2. 6..
  */
+@Builder(toBuilder = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Setter
 public class PageViewDailyReport {
 
     private Date orderSubmitDate;
@@ -30,137 +38,19 @@ public class PageViewDailyReport {
 
     private Integer totalMovieClipCount = 0;
 
+    private Integer totalBaseColorSetCount = 0;
+
+    private Integer totalModelSwatchCount = 0;
+
+    private Integer totalNewMovieClipCount = 0;
+
+    private Integer totalColorSwatchCount = 0;
+
     private Date pickDate;
 
     private String modelName;
 
     private String promotionCode;
-
-    private PageViewDailyReport() {
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public PageViewDailyReport setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-        return this;
-    }
-
-    public String getInputQuantityType() {
-        return inputQuantityType;
-    }
-
-    public PageViewDailyReport setInputQuantityType(String inputQuantityType) {
-        this.inputQuantityType = inputQuantityType;
-        return this;
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public PageViewDailyReport setModelName(String modelName) {
-        this.modelName = modelName;
-        return this;
-    }
-
-    public Date getOrderSubmitDate() {
-        return orderSubmitDate;
-    }
-
-    public PageViewDailyReport setOrderSubmitDate(Date orderSubmitDate) {
-        this.orderSubmitDate = orderSubmitDate;
-        return this;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public PageViewDailyReport setPackageName(String packageName) {
-        this.packageName = packageName;
-        return this;
-    }
-
-    public Date getPickDate() {
-        return pickDate;
-    }
-
-    public PageViewDailyReport setPickDate(Date pickDate) {
-        this.pickDate = pickDate;
-        return this;
-    }
-
-    public String getPromotionCode() {
-        return promotionCode;
-    }
-
-    public PageViewDailyReport setPromotionCode(String promotionCode) {
-        this.promotionCode = promotionCode;
-        return this;
-    }
-
-    public Integer getTotalAdditionalColorCount() {
-
-        if(this.totalAdditionalColorCount == null || this.totalAdditionalColorCount == 0) {
-            return 0;
-        }
-
-        return totalAdditionalColorCount;
-    }
-
-    public PageViewDailyReport setTotalAdditionalColorCount(Integer totalAdditionalColorCount) {
-        this.totalAdditionalColorCount = totalAdditionalColorCount;
-        return this;
-    }
-
-    public Integer getTotalAdditionalColorSetCount() {
-        if(this.totalAdditionalColorSetCount == null || this.totalAdditionalColorSetCount == 0) {
-            return 0;
-        }
-        return totalAdditionalColorSetCount;
-    }
-
-    public PageViewDailyReport setTotalAdditionalColorSetCount(Integer totalAdditionalColorSetCount) {
-        this.totalAdditionalColorSetCount = totalAdditionalColorSetCount;
-        return this;
-    }
-
-    public Integer getTotalMovieClipCount() {
-        if(this.totalMovieClipCount == null) {
-            return 0;
-        }
-        return totalMovieClipCount;
-    }
-
-    public PageViewDailyReport setTotalMovieClipCount(Integer totalMovieClipCount) {
-        this.totalMovieClipCount = totalMovieClipCount;
-        return this;
-    }
-
-    public Integer getTotalStyleCount() {
-
-        if(this.totalStyleCount == null)
-            return 0;
-
-        return totalStyleCount;
-    }
-
-    public PageViewDailyReport setTotalStyleCount(Integer totalStyleCount) {
-        this.totalStyleCount = totalStyleCount;
-        return this;
-    }
-
-    public String getVendorName() {
-        return vendorName;
-    }
-
-    public PageViewDailyReport setVendorName(String vendorName) {
-        this.vendorName = vendorName;
-        return this;
-    }
 
     public static List<PageViewDailyReport> build(List<PhotoCart> photoCarts) {
 
@@ -171,33 +61,40 @@ public class PageViewDailyReport {
 
         for (PhotoCart photoCart : photoCarts) {
             if (CollectionUtils.isEmpty(photoCart.getCartDetails())) {
-                PageViewDailyReport report = new PageViewDailyReport();
-                report.setOrderSubmitDate(photoCart.getCreatedOn())
-                        .setVendorName(photoCart.getWholeSalerCompanyName())
-                        .setCategoryName((photoCart.getCategory() == null) ? "" : photoCart.getCategory().getCategoryName())
-                        .setPackageName((photoCart.getPackageInfo() == null) ? "" : photoCart.getPackageInfo().getName())
-                        .setInputQuantityType(photoCart.getPhotoStudioOrderType())
-                        .setPickDate(photoCart.getPhotoshootDate())
-                        .setModelName((photoCart.getModel() == null) ? "" : photoCart.getModel().getModelName())
-                        .setPromotionCode((photoCart.getDiscount() == null) ? "" : photoCart.getDiscount().getDiscountName());
+
+                PageViewDailyReport report = new PageViewDailyReport().toBuilder()
+                        .orderSubmitDate(photoCart.getCreatedOn())
+                        .vendorName(photoCart.getWholeSalerCompanyName())
+                        .categoryName((photoCart.getCategory() == null) ? "" : photoCart.getCategory().getCategoryName())
+                        .packageName((photoCart.getPackageInfo() == null) ? "" : photoCart.getPackageInfo().getName())
+                        .inputQuantityType(photoCart.getPhotoStudioOrderType())
+                        .pickDate(photoCart.getPhotoshootDate())
+                        .modelName((photoCart.getModel() == null) ? "" : photoCart.getModel().getModelName())
+                        .promotionCode((photoCart.getDiscount() == null) ? "" : photoCart.getDiscount().getDiscountName())
+                        .build();
                 buildedObjects.add(report);
             } else {
-                for (PhotoCartDetail detail : photoCart.getCartDetails()) {
-                    PageViewDailyReport report = new PageViewDailyReport();
-                    report.setOrderSubmitDate(photoCart.getCreatedOn())
-                            .setVendorName(photoCart.getWholeSalerCompanyName())
-                            .setCategoryName((photoCart.getCategory() == null) ? "" : photoCart.getCategory().getCategoryName())
-                            .setPackageName((photoCart.getPackageInfo() == null) ? "" : photoCart.getPackageInfo().getName())
-                            .setInputQuantityType(photoCart.getPhotoStudioOrderType())
-                            .setTotalStyleCount(detail.getStyleQty())
-                            .setTotalAdditionalColorCount(detail.getColorQty())
-                            .setTotalAdditionalColorSetCount(detail.getColorSetQty())
-                            .setTotalMovieClipCount(detail.getMovieQty())
-                            .setPickDate(photoCart.getPhotoshootDate())
-                            .setModelName((photoCart.getModel() == null) ? "" : photoCart.getModel().getModelName())
-                            .setPromotionCode((photoCart.getDiscount() == null) ? "" : photoCart.getDiscount().getDiscountName());
-                    buildedObjects.add(report);
-                }
+                buildedObjects = photoCart.getCartDetails().stream().map((detail) -> {
+                    PageViewDailyReport report = new PageViewDailyReport().toBuilder()
+                            .orderSubmitDate(photoCart.getCreatedOn())
+                            .vendorName(photoCart.getWholeSalerCompanyName())
+                            .categoryName((photoCart.getCategory() == null) ? "" : photoCart.getCategory().getCategoryName())
+                            .packageName((photoCart.getPackageInfo() == null) ? "" : photoCart.getPackageInfo().getName())
+                            .inputQuantityType(photoCart.getPhotoStudioOrderType())
+                            .totalStyleCount(Optional.ofNullable(detail.getStyleQty()).orElse(0))
+                            .totalAdditionalColorCount(Optional.ofNullable(detail.getColorQty()).orElse(0))
+                            .totalAdditionalColorSetCount(Optional.ofNullable(detail.getColorSetQty()).orElse(0))
+                            .totalMovieClipCount(Optional.ofNullable(detail.getMovieQty()).orElse(0))
+                            .totalBaseColorSetCount(Optional.ofNullable(detail.getBaseColorSetQty()).orElse(0))
+                            .totalModelSwatchCount(Optional.ofNullable(detail.getModelSwatchQty()).orElse(0))
+                            .totalNewMovieClipCount(Optional.ofNullable(detail.getMovieClipQty()).orElse(0))
+                            .totalColorSwatchCount(Optional.ofNullable(detail.getColorSwatchQty()).orElse(0))
+                            .pickDate(photoCart.getPhotoshootDate())
+                            .modelName((photoCart.getModel() == null) ? "" : photoCart.getModel().getModelName())
+                            .promotionCode((photoCart.getDiscount() == null) ? "" : photoCart.getDiscount().getDiscountName())
+                            .build();
+                    return report;
+                }).collect(Collectors.toList());
             }
         }
 

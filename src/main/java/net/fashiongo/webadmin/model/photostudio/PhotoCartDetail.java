@@ -1,11 +1,16 @@
 package net.fashiongo.webadmin.model.photostudio;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "Photo_CartDetail")
+@Getter
+@Setter
 public class PhotoCartDetail implements Serializable {
 
     @Id
@@ -55,124 +60,40 @@ public class PhotoCartDetail implements Serializable {
     @Column(name = "MovieAmount")
     private BigDecimal movieAmount;
 
-    public Integer getCartId() {
-        return cartId;
-    }
+    @Column(name = "BaseColorSetUnitPrice")
+    private BigDecimal baseColorSetUnitPrice;
 
-    public void setCartId(Integer cartId) {
-        this.cartId = cartId;
-    }
+    @Column(name = "BaseColorSetQty")
+    private Integer baseColorSetQty;
 
-    public BigDecimal getColorAmount() {
-        return colorAmount;
-    }
+    @Column(name = "BaseColorSetAmount")
+    private BigDecimal baseColorSetAmount;
 
-    public void setColorAmount(BigDecimal colorAmount) {
-        this.colorAmount = colorAmount;
-    }
+    @Column(name = "ModelSwatchUnitPrice")
+    private BigDecimal modelSwatchUnitPrice;
 
-    public Integer getColorQty() {
-        return colorQty;
-    }
+    @Column(name = "ModelSwatchQty")
+    private Integer modelSwatchQty;
 
-    public void setColorQty(Integer colorQty) {
-        this.colorQty = colorQty;
-    }
+    @Column(name = "ModelSwatchAmount")
+    private BigDecimal modelSwatchAmount;
 
-    public BigDecimal getColorSetAmount() {
-        return colorSetAmount;
-    }
+    @Column(name = "MovieClipUnitPrice")
+    private BigDecimal movieClipUnitPrice;
 
-    public void setColorSetAmount(BigDecimal colorSetAmount) {
-        this.colorSetAmount = colorSetAmount;
-    }
+    @Column(name = "MovieClipQty")
+    private Integer movieClipQty;
 
-    public Integer getColorSetQty() {
-        return colorSetQty;
-    }
+    @Column(name = "MovieClipAmount")
+    private BigDecimal movieClipAmount;
 
-    public void setColorSetQty(Integer colorSetQty) {
-        this.colorSetQty = colorSetQty;
-    }
+    @Column(name = "ColorSwatchUnitPrice")
+    private BigDecimal colorSwatchUnitPrice;
 
-    public BigDecimal getColorSetUnitPrice() {
-        return colorSetUnitPrice;
-    }
+    @Column(name = "ColorSwatchQty")
+    private Integer colorSwatchQty;
 
-    public void setColorSetUnitPrice(BigDecimal colorSetUnitPrice) {
-        this.colorSetUnitPrice = colorSetUnitPrice;
-    }
-
-    public BigDecimal getColorUnitPrice() {
-        return colorUnitPrice;
-    }
-
-    public void setColorUnitPrice(BigDecimal colorUnitPrice) {
-        this.colorUnitPrice = colorUnitPrice;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public BigDecimal getMovieAmount() {
-        return movieAmount;
-    }
-
-    public void setMovieAmount(BigDecimal movieAmount) {
-        this.movieAmount = movieAmount;
-    }
-
-    public Integer getMovieQty() {
-        return movieQty;
-    }
-
-    public void setMovieQty(Integer movieQty) {
-        this.movieQty = movieQty;
-    }
-
-    public BigDecimal getMovieUnitPrice() {
-        return movieUnitPrice;
-    }
-
-    public void setMovieUnitPrice(BigDecimal movieUnitPrice) {
-        this.movieUnitPrice = movieUnitPrice;
-    }
-
-    public BigDecimal getStyleAmount() {
-        return styleAmount;
-    }
-
-    public void setStyleAmount(BigDecimal styleAmount) {
-        this.styleAmount = styleAmount;
-    }
-
-    public String getStyleName() {
-        return styleName;
-    }
-
-    public void setStyleName(String styleName) {
-        this.styleName = styleName;
-    }
-
-    public Integer getStyleQty() {
-        return styleQty;
-    }
-
-    public void setStyleQty(Integer styleQty) {
-        this.styleQty = styleQty;
-    }
-
-    public BigDecimal getStyleUnitPrice() {
-        return styleUnitPrice;
-    }
-
-    public void setStyleUnitPrice(BigDecimal styleUnitPrice) {
-        this.styleUnitPrice = styleUnitPrice;
-    }
+    @Column(name = "ColorSwatchAmount")
+    private BigDecimal colorSwatchAmount;
 
 }

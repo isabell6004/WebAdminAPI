@@ -119,6 +119,30 @@ webAdminapi:
     develop:
       check-token: true
 
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7, 18
+    package2: 2, 8, 19
+    package3: 3, 9, 20
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
+
 ---
 
 # photo-studio
@@ -176,7 +200,30 @@ spring:
 logging:
   config: classpath:log4j2-dev.xml
   path: /var/www/logs/
-  
+
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7, 18
+    package2: 2, 8, 19
+    package3: 3, 9, 20
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
 ---
 # Stage
 spring:
@@ -205,6 +252,30 @@ logging:
 
 bid-redis:
   database: 4
+
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7, 18
+    package2: 2, 8, 19
+    package3: 3, 9, 20
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
 
 ---
 # Prod
@@ -235,7 +306,31 @@ server:
 logging:
   config: classpath:log4j2-prod.xml
   path: /var/www/logs/
-  
+
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7, 18
+    package2: 2, 8, 19
+    package3: 3, 9, 20
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
+
 ---
 # qa
 spring:
