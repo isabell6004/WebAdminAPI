@@ -26,6 +26,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
@@ -173,45 +174,49 @@ public class PhotoStudioService extends ApiService {
         return bSuccess;
     }
 
-    public Map<String, Object> getPhotoPrices() {
-        Map<String, Object> result = new HashMap<String, Object>();
-        List<Object> params = new ArrayList<Object>();
+    public PhotoPriceListResponse getPhotoPrices() {
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetPrices", params, PhotoPrice.class, PhotoPrice.class);
+    	LocalDateTime now = LocalDateTime.now();
 
-        List<PhotoPrice> currentPhotoPrices = (List<PhotoPrice>) r.get(0);
-        List<PhotoPrice> newPhotoPrices = (List<PhotoPrice>) r.get(1);
+		List<PhotoPrice> currentPhotoPrices = photoPriceRepository.findAllCurrentEffectivePrice(now);
+		List<PhotoPrice> newPhotoPrices = photoPriceRepository.findAllToBeEffectivePrice(now);
 
-        if (newPhotoPrices == null || newPhotoPrices.size() == 0) {
-            for (PhotoPrice currentPhotoPrice : currentPhotoPrices) {
-                PhotoPrice newPhotoPrice = new PhotoPrice();
-                newPhotoPrice.setPriceTypeID(currentPhotoPrice.getPriceTypeID());
-                newPhotoPrice.setPriceTypeName(currentPhotoPrice.getPriceTypeName());
-                newPhotoPrice.setPhotoshootType(currentPhotoPrice.getPhotoshootType());
-                newPhotoPrice.setPhotoShootTypeName(currentPhotoPrice.getPhotoShootTypeName());
-                newPhotoPrices.add(newPhotoPrice);
-            }
-        }
+		if (newPhotoPrices.size() == 0) {
+			for (PhotoPrice currentPhotoPrice : currentPhotoPrices) {
+				PhotoPrice newPhotoPrice = new PhotoPrice();
+				newPhotoPrice.setPriceTypeID(currentPhotoPrice.getPriceTypeID());
+				newPhotoPrice.setPriceTypeName(currentPhotoPrice.getPriceTypeName());
+				newPhotoPrice.setPhotoshootType(currentPhotoPrice.getPhotoshootType());
+				newPhotoPrice.setPhotoShootTypeName(currentPhotoPrice.getPhotoShootTypeName());
+				newPhotoPrice.setPhotoPackage(currentPhotoPrice.getPhotoPackage());
+				newPhotoPrices.add(newPhotoPrice);
+			}
+		}
 
-        result.put("currentPrices", currentPhotoPrices);
-        result.put("newPrices", newPhotoPrices);
+		PhotoPriceListResponse listResponse = new PhotoPriceListResponse();
+		listResponse.setCurrentPrices(currentPhotoPrices.stream()
+				.map(PhotoPriceResponse::of)
+				.collect(Collectors.toList()));
+		listResponse.setNewPrices(newPhotoPrices.stream()
+				.map(PhotoPriceResponse::of)
+				.collect(Collectors.toList()));
 
-        return result;
+        return listResponse;
     }
 
     @Transactional
     public String savePrices(Map<String, List<PhotoPrice>> parmMap) throws IllegalArgumentException, IllegalAccessException {
+        log.info(Boolean.toString(TransactionSynchronizationManager.isActualTransactionActive()));
 
         String Msg = null;
+        LocalDateTime now = LocalDateTime.now();
+        String username = Utility.getUsername();
 
-        List<PhotoPrice> currentPrices = parmMap.get("currentPrices");
+        List<PhotoPrice> currentPrices = photoPriceRepository.findAllCurrentEffectivePrice(now);
         List<PhotoPrice> newPrices = parmMap.get("newPrices");
 
         LocalDateTime currentFromEffectiveDate = currentPrices.get(0).get_fromEffectiveDate();
         LocalDateTime newFromEffectiveDate = newPrices.get(0).get_fromEffectiveDate();
-
-        LocalDateTime now = LocalDateTime.now();
-        String username = Utility.getUsername();
 
         if (!newFromEffectiveDate.isAfter(now)) {
             return "The new effective date must after today!";
@@ -226,33 +231,44 @@ public class PhotoStudioService extends ApiService {
             currentPhotoPrice.set_toEffectiveDate(currentToEffectiveDate);
             currentPhotoPrice.setModifiedBY(username);
             currentPhotoPrice.setModifiedOnDate(now);
-            if (currentPhotoPrice.getPriceID() == null) {
-                return "The current price does not exist , can't update ！ ";
-            }
-            String sql = currentPhotoPrice.toUpdateQuery("");
-            jdbcTemplatePhotoStudio.update(sql);
         }
 
+        photoPriceRepository.saveAll(currentPrices);
+
         if (newPrices.get(0).getPriceID() == null) {
+            // save new prices
             for (PhotoPrice newPhotoPrice : newPrices) {
                 newPhotoPrice.setCreatedOnDate(now);
                 newPhotoPrice.setCreatedBy(username);
             }
             photoPriceRepository.saveAll(newPrices);
 
-            List<PhotoCategory> photoCategorys = photoCategoryRepository.findAll();
-            List<MapPhotoCategoryPrice> mapPhotoCategoryPrices = new ArrayList<MapPhotoCategoryPrice>();
-            for (PhotoCategory photoCategory : photoCategorys) {
-                for (PhotoPrice newPhotoPrice : newPrices) {
-                    if (StringUtils.equalsIgnoreCase(photoCategory.getTypeOfPhotoshoot(), newPhotoPrice.getPhotoShootTypeName())) {
-                        MapPhotoCategoryPrice mapPhotoCategoryPrice = new MapPhotoCategoryPrice();
-                        mapPhotoCategoryPrice.setCategoryID(photoCategory.getCategoryId());
-                        mapPhotoCategoryPrice.setPriceID(newPhotoPrice.getPriceID());
-                        mapPhotoCategoryPrices.add(mapPhotoCategoryPrice);
-                    }
-                }
-            }
-            mapPhotoCategoryPriceRepository.saveAll(mapPhotoCategoryPrices);
+            // save new mapPhotoImages
+//            List<MapPhotoImage> mapPhotoImages = mapPhotoImageRepository.findPriceImagesByPriceIds(currentPrices.stream()
+//                    .map(PhotoPrice::getPriceID)
+//                    .collect(Collectors.toList()));
+//
+//            for (MapPhotoImage mapPhotoImage : mapPhotoImages) {
+//                mapPhotoImage.setImageID(null);
+//
+//                Integer newReferenceId = currentPrices.stream()
+//                        .filter(price -> price.getPriceID().equals(mapPhotoImage.getReferenceID()))
+//                        .findFirst()
+//                        .map(currentPrice -> newPrices.stream()
+//                                    .filter(newPrice -> newPrice.getPackageId().equals(currentPrice.getPackageId()) && newPrice.getPriceTypeID().equals(currentPrice.getPriceTypeID()))
+//                                    .findFirst()
+//                                    .orElse(null))
+//                        .map(PhotoPrice::getPriceID)
+//                        .orElse(null);
+//
+//                if(newReferenceId == null) {
+//                    return "Unknown Error";
+//                }
+//
+//                mapPhotoImage.setReferenceID(newReferenceId);
+//            }
+//
+//            mapPhotoImageRepository.saveAll(mapPhotoImages);
         } else {
             for (PhotoPrice newPhotoPrice : newPrices) {
                 newPhotoPrice.setModifiedOnDate(now);
@@ -349,46 +365,47 @@ public class PhotoStudioService extends ApiService {
         return Msg;
     }
 
-    public Map<String, Object> getPhotoUnits() {
-        Map<String, Object> result = new HashMap<String, Object>();
-        List<Object> params = new ArrayList<Object>();
+    public PhotoUnitListResponse getPhotoUnits() {
+        LocalDateTime now = LocalDateTime.now();
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetUnits", params, PhotoUnit.class, PhotoUnit.class);
+        List<PhotoUnit> currentPhotoUnits = photoUnitRepository.findAllCurrentEffectiveUnit(now);
+        List<PhotoUnit> newPhotoUnits = photoUnitRepository.findAllToBeEffectiveUnit(now);
 
-        List<PhotoUnit> currentPhotoUnits = (List<PhotoUnit>) r.get(0);
-        List<PhotoUnit> newPhotoUnits = (List<PhotoUnit>) r.get(1);
-
-        if (newPhotoUnits == null || newPhotoUnits.size() == 0) {
+        if (newPhotoUnits.size() == 0) {
             for (PhotoUnit currentPhotoUnit : currentPhotoUnits) {
                 PhotoUnit newPhotoUnit = new PhotoUnit();
                 newPhotoUnit.setPriceTypeID(currentPhotoUnit.getPriceTypeID());
                 newPhotoUnit.setPriceTypeName(currentPhotoUnit.getPriceTypeName());
                 newPhotoUnit.setPhotoshootType(currentPhotoUnit.getPhotoshootType());
                 newPhotoUnit.setPhotoShootTypeName(currentPhotoUnit.getPhotoShootTypeName());
+                newPhotoUnit.setPhotoPackage(currentPhotoUnit.getPhotoPackage());
                 newPhotoUnits.add(newPhotoUnit);
             }
         }
 
-        result.put("currentPhotoUnits", currentPhotoUnits);
-        result.put("newPhotoUnits", newPhotoUnits);
+        PhotoUnitListResponse listResponse = new PhotoUnitListResponse();
+        listResponse.setCurrentPhotoUnits(currentPhotoUnits.stream()
+                .map(PhotoUnitResponse::of)
+                .collect(Collectors.toList()));
+        listResponse.setNewPhotoUnits(newPhotoUnits.stream()
+                .map(PhotoUnitResponse::of)
+                .collect(Collectors.toList()));
 
-        return result;
+        return listResponse;
     }
 
     @Transactional
     public String savePhotoUnits(Map<String, List<PhotoUnit>> parmMap)
             throws IllegalArgumentException, IllegalAccessException {
 
-        String Msg = null;
+        LocalDateTime now = LocalDateTime.now();
+        String username = Utility.getUsername();
 
-        List<PhotoUnit> currentPhotoUnits = parmMap.get("currentPhotoUnits");
+        List<PhotoUnit> currentPhotoUnits = photoUnitRepository.findAllCurrentEffectiveUnit(now);
         List<PhotoUnit> newPhotoUnits = parmMap.get("newPhotoUnits");
 
         LocalDateTime currentFromEffectiveDate = currentPhotoUnits.get(0).get_fromEffectiveDate();
         LocalDateTime newFromEffectiveDate = newPhotoUnits.get(0).get_fromEffectiveDate();
-
-        LocalDateTime now = LocalDateTime.now();
-        String username = Utility.getUsername();
 
         if (!newFromEffectiveDate.isAfter(now)) {
             return "The new effective date must after today!";
@@ -429,7 +446,7 @@ public class PhotoStudioService extends ApiService {
             }
         }
 
-        return Msg;
+        return null;
     }
 
     @Transactional
@@ -825,7 +842,7 @@ public class PhotoStudioService extends ApiService {
         params.add(queryParam.getCancelledByFG());
         params.add(queryParam.getCancelledByVendor());
 
-        List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderList", params, SingleValueResult.class, SimplePhotoOrder.class);
+        List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderList2", params, SingleValueResult.class, SimplePhotoOrder.class);
 
         List<SingleValueResult> rs1 = (List<SingleValueResult>) _results.get(0);
         List<SimplePhotoOrder> rs2 = (List<SimplePhotoOrder>) _results.get(1);
@@ -1031,7 +1048,7 @@ public class PhotoStudioService extends ApiService {
 
             // Load Unit
             boolean isFullModelShot = photoOrder.getPhotoCategory().getTypeOfPhotoshoot().equals("Full Model Shot"); // TODO HARDCODED
-            Map<Integer, PhotoUnit> photoUnitMap = photoUnitRepository.findAllEffectiveUnit(photoOrder.getCategoryID(), photoOrder.getPackageID(), isFullModelShot)
+            Map<Integer, PhotoUnit> photoUnitMap = photoUnitRepository.findAllCurrentEffectiveUnit(photoOrder.getCategoryID(), photoOrder.getPackageID(), isFullModelShot)
                     .stream()
                     .collect(Collectors.toMap(PhotoUnit::getPriceTypeID, photoUnit -> photoUnit));
 

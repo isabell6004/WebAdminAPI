@@ -112,13 +112,13 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
 
                 "Total styles",
                 "Total add'l colors",
-                "Total add'l Color set",
-                "Total movie Clip",
+                "Total add'l color set",
+                "Total movie clip",
 
-                "Total base Color Set",
-                "Total model Swatch",
-                "Total movie Clip",
-                "Total color Swatch",
+                "Total color set",
+                "Total model swatch",
+                "Total movie clip",
+                "Total color swatch",
 
                 "Pick a date",
                 "Choose model",
@@ -218,7 +218,7 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
                 "# of add'l set",
                 "# of add'l image",
                 "# of movie clips",
-                "# of base color set",
+                "# of color set",
                 "# of model swatch",
                 "# of movie clips",
                 "# of color swatch",

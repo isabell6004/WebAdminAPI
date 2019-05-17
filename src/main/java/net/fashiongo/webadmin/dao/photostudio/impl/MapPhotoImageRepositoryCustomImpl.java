@@ -31,4 +31,17 @@ public class MapPhotoImageRepositoryCustomImpl implements MapPhotoImageRepositor
 
 		return query.fetch();
 	}
+
+	@Override
+	public List<MapPhotoImage> findPriceImagesByPriceIds(List<Integer> priceIds) {
+		QMapPhotoImage mapPhotoImage = QMapPhotoImage.mapPhotoImage;
+
+		JPAQuery<MapPhotoImage> query = new JPAQuery<>(photostudioEntityManager)
+				.select(mapPhotoImage)
+				.from(mapPhotoImage)
+				.where(mapPhotoImage.mappingType.eq(4)
+						.and(mapPhotoImage.referenceID.in(priceIds)));
+
+		return query.fetch();
+	}
 }

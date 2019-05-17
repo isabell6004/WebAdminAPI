@@ -1,12 +1,9 @@
 package net.fashiongo.webadmin.model.photostudio;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -41,4 +38,10 @@ public class PhotoPackage {
 	@Column(name = "ModifiedBY")
 	private String modifiedBy;
 
+	@Column(name = "CategoryID")
+	private Integer categoryId;
+
+	@ManyToOne
+	@JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID", insertable = false, updatable = false)
+	private PhotoCategory photoCategory;
 }

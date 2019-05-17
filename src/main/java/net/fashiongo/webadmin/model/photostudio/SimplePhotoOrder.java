@@ -6,6 +6,7 @@ package net.fashiongo.webadmin.model.photostudio;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -147,7 +148,9 @@ public class SimplePhotoOrder {
                     .poNumber(order.getPoNumber())
                     .categoryID(order.getCategoryID())
                     .packageID(order.getPackageID())
-                    .packageName(order.getPhotoPackage().getName())
+                    .packageName(
+                            Optional.ofNullable(order.getPhotoPackage()).map(x -> x.getName()).orElse("")
+                    )
                     .wholeSalerID(order.getWholeSalerID())
                     .wholeSalerCompanyName(order.getWholeSalerCompanyName())
                     .modelID(

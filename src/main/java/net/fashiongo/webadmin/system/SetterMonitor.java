@@ -47,7 +47,8 @@ public class SetterMonitor implements ThrowsAdvice {
 		
 		return retVal;
 	}
-	
+
+	// todo need to remove...
 	/**
 	 * 
 	 * @since 2018. 9. 13.
@@ -57,7 +58,8 @@ public class SetterMonitor implements ThrowsAdvice {
 	 * @throws Throwable 
 	 * Desc : error log
 	 */
-	@AfterThrowing(pointcut = "execution(* net.fashiongo.webadmin.service..*(..))" , throwing="e")
+	@AfterThrowing(pointcut = "execution(* net.fashiongo.webadmin.service..*(..)) " +
+			"&& !execution(* net.fashiongo.webadmin.service.BidService.*(..))" , throwing="e")
 	public void callMethodException(JoinPoint joinPoint, Throwable e) throws Throwable {
 
 		Signature signature = joinPoint.getSignature();
