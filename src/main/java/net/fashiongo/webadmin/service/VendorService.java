@@ -1,9 +1,5 @@
 package net.fashiongo.webadmin.service;
 
-import static net.fashiongo.webadmin.model.primary.QVendor.vendor;
-import static net.fashiongo.webadmin.model.primary.QVendorContent.vendorContent;
-import static net.fashiongo.webadmin.model.primary.QVendorContentFile.vendorContentFile;
-
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 
@@ -64,7 +62,7 @@ import net.fashiongo.webadmin.utility.Utility;
 @Service
 public class VendorService extends ApiService {
 	@Autowired
-	private VendorListRepository vendorListRepository;
+	private VendorRepository vendorRepository;
 
     @Autowired
     private VendorAutocompleteRepository vendorAutocompleteRepository;
@@ -129,8 +127,8 @@ public class VendorService extends ApiService {
 	 * @author roy
 	 * @return vendor list
 	 */
-	public List<VendorCompany> getVendorList() {
-		return vendorListRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
+	public List<Vendor> getVendorList() {
+		return vendorRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
 	}
 
     /**
@@ -704,8 +702,8 @@ public class VendorService extends ApiService {
 		return result;
 	}
 
-    public VendorCompany getVendorInfo(Integer wholeSalerID) {
-        Optional<VendorCompany> vendor = vendorListRepository.findById(wholeSalerID);
+    public Vendor getVendorInfo(Integer wholeSalerID) {
+        Optional<Vendor> vendor = vendorRepository.findById(wholeSalerID);
         return vendor.get();
     }
 
@@ -714,39 +712,7 @@ public class VendorService extends ApiService {
      * @since 2019-04-15
      */
 	public PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company, LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer status) {
-		PagedResult<VendorContent> result = new PagedResult<>();
-		
-		//1. Build query
-		JPAQuery<VendorContent> query = new JPAQuery<>(entityManager);
-		query.select(vendorContent);
-		query.from(vendorContent);
-        
-		//2. Fill where conditions
-        if(!StringUtil.isNullOrEmpty(company)) query.where(vendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")));
-        if(datefrom!=null) query.where(vendorContent.requestedOn.goe(datefrom));
-        if(dateto!=null) query.where(vendorContent.requestedOn.loe(dateto));
-        if(type!=null) query.where(vendorContent.targetTypeId.eq(type));
-        if(status!=null) query.where(vendorContent.statusId.eq(status));
-        
-        
-        //3. Get the count first
-        int totalCount = (int)query.fetchCount();
-        
-        //4. Set the page
-        if(pagenum!=null && pagesize!=null) {
-        	query.offset(pagesize*(pagenum-1));
-        	query.limit(pagesize);
-        }
-        
-        //5. Get the page
-        List<VendorContent> list = query.fetch();
-
-        //6. Return
-        SingleValueResult total = new SingleValueResult();
-        total.setTotalCount(totalCount);
-        result.setTotal(total);
-        result.setRecords(list==null ? new ArrayList<VendorContent>() : list);
-        return result;
+		return vendorContentRepository.getVendorContents(pagenum, pagesize, company, datefrom, dateto, type, status);
 	}
 
 	/**
@@ -788,5 +754,13 @@ public class VendorService extends ApiService {
      */
 	public List<SecurityUser> getAssignedUsers() {
 		return securityUserRepository.findAllMappedByVendor();
+	}
+
+	/**
+     * @author Kenny/Kyungwoo
+     * @since 2019-05-02
+     */
+	public List<Vendor> getEditorsPickVendors() {
+		return vendorRepository.getEditorPickVendors();
 	}
 }

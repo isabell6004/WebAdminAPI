@@ -9,7 +9,7 @@ import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
-import net.fashiongo.webadmin.model.primary.VendorCompany;
+import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.service.photostudio.ReportTypeChecker;
 import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.Utility;
@@ -867,7 +867,7 @@ public class PhotoStudioService extends ApiService {
     public Map<String, Object> getPhotoOrder(String poNumber) {
 
         PhotoOrder photoOrder = photoOrderRepository.getPhotoOrderInfoWithAdditionalInfo(poNumber);
-        VendorCompany vendor = vendorService.getVendorInfo(photoOrder.getWholeSalerID());
+        Vendor vendor = vendorService.getVendorInfo(photoOrder.getWholeSalerID());
         List<LogPhotoAction> logPhotoActions = logPhotoActionRepository.getLogPhotoActions(photoOrder.getOrderID());
         List<PhotoOrderDetail> photoOrderDetails = photoOrderDetailRepository.findByOrderID(photoOrder.getOrderID());
         List<SecurityUser> securityUsers = securityGroupService.getSecurityUsersByGroupId(PHOTOSTUDIO_GROUP_NUMBER);

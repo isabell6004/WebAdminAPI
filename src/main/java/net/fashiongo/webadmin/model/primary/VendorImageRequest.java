@@ -1,6 +1,5 @@
 package net.fashiongo.webadmin.model.primary;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -13,14 +12,17 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
 /**
  * 
  * @author Reo
  *
  */
+@Data
 @Entity
 @Table(name = "Vendor_ImageRequest")
-public class VendorImageRequest implements Serializable {
+public class VendorImageRequest {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("ImageRequestID")
@@ -79,109 +81,4 @@ public class VendorImageRequest implements Serializable {
 	@JsonProperty("DeletedBy")
 	@Column(name = "DeletedBy")
 	private String deletedBy;
-
-	public Integer getImageRequestID() {
-		return imageRequestID;
-	}
-
-	public void setImageRequestID(Integer imageRequestID) {
-		this.imageRequestID = imageRequestID;
-	}
-
-	public Integer getWholeSalerID() {
-		return wholeSalerID;
-	}
-
-	public void setWholeSalerID(Integer wholeSalerID) {
-		this.wholeSalerID = wholeSalerID;
-	}
-
-	public Integer getVendorImageTypeID() {
-		return vendorImageTypeID;
-	}
-
-	public void setVendorImageTypeID(Integer vendorImageTypeID) {
-		this.vendorImageTypeID = vendorImageTypeID;
-	}
-
-	public LocalDateTime getRequestedOn() {
-		return requestedOn;
-	}
-
-	public void setRequestedOn(LocalDateTime requestedOn) {
-		this.requestedOn = requestedOn;
-	}
-
-	public String getRequestedBy() {
-		return requestedBy;
-	}
-
-	public void setRequestedBy(String requestedBy) {
-		this.requestedBy = requestedBy;
-	}
-
-	public Boolean getIsApproved() {
-		return isApproved;
-	}
-
-	public void setIsApproved(Boolean isApproved) {
-		this.isApproved = isApproved;
-	}
-
-	public String getRejectReason() {
-		return rejectReason;
-	}
-
-	public void setRejectReason(String rejectReason) {
-		this.rejectReason = rejectReason;
-	}
-
-	public LocalDateTime getDecidedOn() {
-		return decidedOn;
-	}
-
-	public void setDecidedOn(LocalDateTime decidedOn) {
-		this.decidedOn = decidedOn;
-	}
-
-	public String getDecidedBy() {
-		return decidedBy;
-	}
-
-	public void setDecidedBy(String decidedBy) {
-		this.decidedBy = decidedBy;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	public String getOriginalFileName() {
-		return originalFileName;
-	}
-
-	public void setOriginalFileName(String originalFileName) {
-		this.originalFileName = originalFileName;
-	}
-
-	public LocalDateTime getDeletedOn() {
-		return deletedOn;
-	}
-
-	public void setDeletedOn(LocalDateTime deletedOn) {
-		this.deletedOn = deletedOn;
-	}
-
-	public String getDeletedBy() {
-		return deletedBy;
-	}
-
-	public void setDeletedBy(String deletedBy) {
-		this.deletedBy = deletedBy;
-	}
-
 }

@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.controller;
 
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -9,16 +11,26 @@ import javax.ws.rs.core.MediaType;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMedia;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPick;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelFeaturedItemParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelSocialMediaParameter;
@@ -85,10 +97,14 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReportItemRes
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
+import net.fashiongo.webadmin.model.primary.EditorPickVendorContent;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
+import net.fashiongo.webadmin.model.primary.Vendor;
+import net.fashiongo.webadmin.model.primary.VendorContent;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.SocialMediaService;
+import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
 /*
@@ -98,6 +114,7 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 @RestController
 @Consumes(MediaType.APPLICATION_JSON)
 @RequestMapping(value = "/sitemgmt", produces = "application/json")
+@Slf4j
 public class SitemgmtController {
 
 	@Autowired
@@ -108,6 +125,9 @@ public class SitemgmtController {
 	
     @Autowired
     private CacheService cacheService;
+    
+	@Autowired
+	VendorService vendorService;
 
 	// ----------------------------------------------------
 	// collection category setting
@@ -931,4 +951,95 @@ public class SitemgmtController {
 		return new JsonResponse<Integer>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	
+    /**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-29
+     */
+    @GetMapping(value = "editorsPicks")
+    public JsonResponse<PagedResult<EditorsPick>> getEditorsPicks(
+    		@RequestParam(value="pagenum", required=false) String pagenum,
+    		@RequestParam(value="pagesize", required=false) String pagesize,
+    		@RequestParam(value="title", required=false) String title,
+    		@RequestParam(value="vendor", required=false) String vendor,
+    		@RequestParam(value="startDate", required=false) String startDate,
+    		@RequestParam(value="endDate", required=false) String endDate,
+    		@RequestParam(value="orderBy", required=false) String orderBy) {
+        JsonResponse<PagedResult<EditorsPick>> response = new JsonResponse<>(false, null, null);
+        try {
+        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            PagedResult<EditorsPick> result = sitemgmtService.getEditorPickVendorContents(
+            		StringUtil.isNullOrEmpty(pagenum) ? null : Integer.parseInt(pagenum),
+            		StringUtil.isNullOrEmpty(pagesize) ? null : Integer.parseInt(pagesize),
+            		title,
+            		vendor,
+            		StringUtil.isNullOrEmpty(startDate) ? null : LocalDateTime.parse(startDate, formatter),
+            		StringUtil.isNullOrEmpty(endDate) ? null : LocalDateTime.parse(endDate, formatter),
+            		orderBy);
+            
+            response.setSuccess(true);
+            response.setData(result);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+        return response;
+    }
+    
+    /**
+     * @author Kenny/Kyungwoo
+     * @since 2019-04-29
+     */
+    @GetMapping(value = "editorsPick/{id}")
+    public JsonResponse<EditorsPick> getEditorsPick(@PathVariable("id") String id){
+    	JsonResponse<EditorsPick> response = new JsonResponse<>(false, null, null);
+    	try {
+    		EditorsPick result = sitemgmtService.getEditorPickVendorContent(StringUtil.isNullOrEmpty(id) ? null : Integer.parseInt(id));
+    		response.setSuccess(true);
+            response.setData(result);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
+    
+    @GetMapping(value = "editorsPick/vendors")
+    public JsonResponse<List<Vendor>> getEditorsPickVendors(){
+    	JsonResponse<List<Vendor>> response = new JsonResponse<>(false, null, null);
+    	try {
+    		List<Vendor> result = vendorService.getEditorsPickVendors();
+    		response.setSuccess(true);
+            response.setData(result);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
+    
+    @GetMapping(value = "editorsPick/vendor/{vendorId}")
+    public JsonResponse<List<BannerOrMedia>> getEditorsPickVendorBannerOrMedia(@PathVariable("vendorId") Integer vendorId){
+    	JsonResponse<List<BannerOrMedia>> response = new JsonResponse<>(false, null, null);
+    	try {
+    		List<BannerOrMedia> result = sitemgmtService.getBannerOrMedias(vendorId);
+    		response.setSuccess(true);
+            response.setData(result);
+        } catch (Exception ex) {
+            log.error("Exception Error: ", ex);
+            response.setMessage(ex.getMessage());
+        }
+    	return response;
+    }
+    
+	@PostMapping(value = "editorsPick")
+	public JsonResponse<String> saveEditorsPick(@RequestBody EditorsPick editorsPick) {
+		ResultCode result = sitemgmtService.saveEditorsPick(editorsPick);
+		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
+	}
+	
+	@DeleteMapping(value = "editorsPick/{id}")
+	public JsonResponse<String> deleteEditorsPick(@PathVariable("id") String id) {
+		ResultCode result = sitemgmtService.deleteEditorPickVendorContent(StringUtil.isNullOrEmpty(id) ? null : Integer.parseInt(id));
+		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
+	}
 }
