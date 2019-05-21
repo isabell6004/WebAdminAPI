@@ -33,7 +33,7 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 				.join(mapPhotoCalendarModel.photoCalendarEntity, photoCalendar).fetchJoin()
 				.leftJoin(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()
 				.where(photoCalendar.theDate.eq(theDate.atTime(0, 0))
-						.and(photoCalendar.theDate.after(LocalDateTime.now()))
+                        .and(photoCalendar.theDate.after(LocalDateTime.now().minusDays(1)))
 						.and(photoCalendar.available.isTrue())
 						.and(photoCalendar.isHoliday.isFalse())
 						.and(mapPhotoCalendarModel.isDelete.isFalse()
