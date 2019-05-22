@@ -30,6 +30,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -581,21 +582,37 @@ public class PhotoStudioService extends ApiService {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     public PhotoModel getModel(Integer modelID) {
+        PhotoModel model = updateModelPopularity(modelID);
 
-        List<Object> params = new ArrayList<Object>();
-        params.add(modelID);
+        List<PhotoImage> photoImageList = mapPhotoImageRepository.findModelImageByModelId(modelID).stream()
+                .map(mapPhotoImage -> {
+                    PhotoImage photoImage = mapPhotoImage.getPhotoImage();
+                    photoImage.setListOrder(mapPhotoImage.getListOrder());
+                    return photoImage;
+                })
+                .collect(Collectors.toList());
 
-        List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetModelInfo", params, PhotoModel.class, PhotoImage.class);
+        model.setPhotoImages(photoImageList);
 
-        List<PhotoModel> photoModels = (List<PhotoModel>) _results.get(0);
-        List<PhotoImage> photoImages = (List<PhotoImage>) _results.get(1);
+        return model;
+    }
 
-        PhotoModel photoModel = photoModels.get(0);
-        photoModel.setPhotoImages(photoImages);
+    private PhotoModel updateModelPopularity(int modelId) {
+        PhotoModel model = photoModelRepository.findOneByModelID(modelId);
+        List<MapPhotoCalendarModel> maps = mapPhotoCalendarModelRepository.findByModelIdWithBooking(modelId);
 
-        return photoModel;
+        long totalOrderCount = maps.stream()
+                .map(MapPhotoCalendarModel::getPhotoBooking)
+                .mapToLong(List::size)
+                .sum();
+        long orderDayCount = maps.size();
+
+        BigDecimal popularity = orderDayCount == 0 ? BigDecimal.ZERO
+                : BigDecimal.valueOf(totalOrderCount).divide(BigDecimal.valueOf(orderDayCount), 2, RoundingMode.HALF_UP);
+        model.setPopularity(popularity);
+
+        return photoModelRepository.save(model);
     }
 
     @SuppressWarnings("unchecked")
@@ -1035,6 +1052,12 @@ public class PhotoStudioService extends ApiService {
 
 			List<Object> outputs = (List<Object>) r.get(0);
 			if (outputs != null && outputs.size() > 0) {
+			    Integer beforeModelID = photoOrder.getPhotoBooking().getMapPhotoCalendarModel().getModelID();
+			    if (beforeModelID != null) {
+                    updateModelPopularity(beforeModelID);
+                    updateModelPopularity(orderUpdateRequest.getModelId());
+                }
+
 				return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
 			}
 		} else {
@@ -1096,6 +1119,13 @@ public class PhotoStudioService extends ApiService {
         params.add(photoOrder.getCancellationFeeRate());
 
         List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_CancelOrder", params);
+
+        PhotoOrder order = Optional.ofNullable(photoOrderRepository.getPhotoOrderInfoWithBookAndModelAndCategory(photoOrder.getOrderID()))
+                .orElse(null);
+
+        if (order.getPhotoBooking().getMapPhotoCalendarModel().getModelID() != null) {
+            updateModelPopularity(order.getPhotoBooking().getMapPhotoCalendarModel().getModelID());
+        }
 
         return null;
     }

@@ -8,4 +8,5 @@ import java.util.List;
 public interface MapPhotoCalendarModelRepositoryCustom {
 	List<MapPhotoCalendarModel> findAvailableMapByTheDate(LocalDate theDate);
 	List<MapPhotoCalendarModel> findAvailableMapAfterNowByModelIdsAndNotTheDate(List<Integer> modelIds, LocalDate theDate, boolean isFullModelShot);
+	List<MapPhotoCalendarModel> findByModelIdWithBooking(int modelId);
 }
