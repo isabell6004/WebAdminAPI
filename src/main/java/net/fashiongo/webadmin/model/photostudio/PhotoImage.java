@@ -53,6 +53,16 @@ public class PhotoImage implements IPersistent, Serializable {
 		this.imageUrl = imageUrl;
 	}
 
+	@Column(name = "MovieClipUrl")
+	private String movieClipUrl;
+
+	public String getMovieClipUrl() {
+		return movieClipUrl;
+	}
+	public void setMovieClipUrl(String movieClipUrl) {
+		this.movieClipUrl = movieClipUrl;
+	}
+
 	@JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
