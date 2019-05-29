@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
@@ -178,11 +179,10 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
             int cellNumber = 0;
             Row row = sheet.createRow(rowNumber++);
             row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getWholeSalerCompanyName());
-            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getBannerClickCount());
-//            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getMenuClickCount());
-            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getCloseOnTopCount());
-            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getCloseForeverCount());
-            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getTryOutButtonCount());
+            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getClickCount(BannerType.BannerClick));
+            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getClickCount(BannerType.OrderMenuClick));
+            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getClickCount(BannerType.AdsDoNotShowAgain));
+            row.createCell(cellNumber++).setCellValue(clickStatDailyReport.getClickCount(BannerType.AdsTryBottom));
         }
 
         Row row = sheet.createRow(rowNumber);
@@ -234,7 +234,7 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
         String[] heads = {
                 "Vendor name",
                 "Banner Clicks",
-                "MenuClicks	Close on Top",
+                "Menu Clicks",
                 "CloseForever",
                 "Try out button"
         };

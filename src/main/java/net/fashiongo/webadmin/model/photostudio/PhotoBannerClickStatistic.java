@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.photostudio;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,6 +11,11 @@ import java.util.stream.Collectors;
 /**
  * Created by jinwoo on 2019. 2. 6..
  */
+@Getter
+@Setter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(toBuilder = true)
 public class PhotoBannerClickStatistic implements Serializable {
 
     private Integer wholeSalerId;
@@ -17,53 +24,14 @@ public class PhotoBannerClickStatistic implements Serializable {
 
     private Integer bannerType;
 
-    private Integer bannerClickCount;
-
-    public PhotoBannerClickStatistic(Integer wholeSalerId, String wholeSalerCompanyName, Integer bannerType, Long count) {
-        this.wholeSalerId = wholeSalerId;
-        this.wholeSalerCompanyName = wholeSalerCompanyName;
-        this.bannerType = bannerType;
-        this.bannerClickCount = count.intValue();
-    }
-
-    public Integer getBannerClickCount() {
-        return bannerClickCount;
-    }
-
-    public void setBannerClickCount(Integer bannerClickCount) {
-        this.bannerClickCount = bannerClickCount;
-    }
-
-    public Integer getBannerType() {
-        return bannerType;
-    }
-
-    public void setBannerType(Integer bannerType) {
-        this.bannerType = bannerType;
-    }
-
-    public String getWholeSalerCompanyName() {
-        return wholeSalerCompanyName;
-    }
-
-    public void setWholeSalerCompanyName(String wholeSalerCompanyName) {
-        this.wholeSalerCompanyName = wholeSalerCompanyName;
-    }
-
-    public Integer getWholeSalerId() {
-        return wholeSalerId;
-    }
-
-    public void setWholeSalerId(Integer wholeSalerId) {
-        this.wholeSalerId = wholeSalerId;
-    }
+    private Integer bannerClickCount = 0;
 
     public static List<PhotoBannerClickStatistic> build(List<Tuple> results) {
-
-        return results.stream().map((tuple) -> {
-            return new PhotoBannerClickStatistic(tuple.get("wholeSalerId", Integer.class),
-                    tuple.get("wholeSalerCompanyName", String.class), tuple.get("bannerType", Integer.class),
-                    tuple.get("count", Long.class));
-        }).collect(Collectors.toList());
+        return results.stream().map((tuple) -> new PhotoBannerClickStatistic().toBuilder()
+                .wholeSalerId(tuple.get("wholeSalerId", Integer.class))
+                .wholeSalerCompanyName(tuple.get("wholeSalerCompanyName", String.class))
+                .bannerType(tuple.get("bannerType", Integer.class))
+                .bannerClickCount(tuple.get("count", Long.class).intValue())
+                .build()).collect(Collectors.toList());
     }
 }

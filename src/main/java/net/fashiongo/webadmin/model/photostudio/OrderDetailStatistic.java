@@ -20,7 +20,6 @@ public class OrderDetailStatistic {
 
     private Integer categoryId;
 
-    // old product
     private Integer styleQuantity = 0;
 
     private Integer additionalColorSetQuantity = 0;
@@ -29,7 +28,6 @@ public class OrderDetailStatistic {
 
     private Integer movieClipsQuantity = 0;
 
-    // new product
     private Integer baseColorSetQuantity = 0;
 
     private Integer modelSwatchQuantity = 0;
