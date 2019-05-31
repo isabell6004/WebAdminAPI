@@ -72,4 +72,21 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 
 		return query.fetch();
 	}
+
+	@Override
+	public List<MapPhotoCalendarModel> findByModelIdWithBooking(int modelId) {
+		QMapPhotoCalendarModel mapPhotoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
+		QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+		QPhotoOrderEntity photoOrder = QPhotoOrderEntity.photoOrderEntity;
+
+		JPAQuery<MapPhotoCalendarModel> query = new JPAQuery<>(photostudioEntityManager)
+				.select(mapPhotoCalendarModel).distinct()
+				.from(mapPhotoCalendarModel)
+				.join(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()
+				.join(photoBooking.photoOrder, photoOrder).fetchJoin()
+				.where(mapPhotoCalendarModel.modelID.eq(modelId)
+						.and(photoBooking.statusID.eq(0)));
+
+		return query.fetch();
+	}
 }

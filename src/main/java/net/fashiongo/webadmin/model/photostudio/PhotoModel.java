@@ -95,6 +95,12 @@ public class PhotoModel implements IPersistent, Serializable {
 	@Column(name = "Note")
 	private String note;
 
+	@Column(name = "Warning")
+	private String warning;
+
+	@Column(name = "Popularity")
+	private BigDecimal popularity;
+
 	@JsonIgnore
 	@Column(name = "CreatedOn", updatable = false)
 	@Convert(converter = LocalDateTimeConverter.class)
