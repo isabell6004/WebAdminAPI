@@ -1075,9 +1075,21 @@ public class PhotoStudioService extends ApiService {
                     .collect(Collectors.toMap(PhotoUnit::getPriceTypeID, photoUnit -> photoUnit));
 
             List<PhotoOrderDetail> originalItems = photoOrderDetailRepository.findByOrderID(photoOrder.getOrderID());
-            List<PhotoOrderDetail> changedItems;
+            List<PhotoOrderDetail> noChangeItems = getNoChangeDetailList(originalItems, orderUpdateRequest.getItems());
+            List<PhotoOrderDetail> changedItems = getChangedDetailList(originalItems, orderUpdateRequest.getItems(), now);
+            List<PhotoOrderDetail> addedItems = getAddedDetailList(photoOrder, orderUpdateRequest.getItems(), now);
+            List<PhotoOrderDetail> removedItems = getRemovedDetailList(originalItems, orderUpdateRequest.getItems());
+
+            // Calculate total unit
             try {
-                 changedItems = updateOrderItemQty(photoOrder, originalItems, orderUpdateRequest.getItems(), photoUnitMap, now);
+                List<PhotoOrderDetail> allRemainedItemList = new ArrayList<>(changedItems);
+                allRemainedItemList.addAll(noChangeItems);
+                allRemainedItemList.addAll(addedItems);
+                BigDecimal totalUnit = calculateTotalUnit(photoOrder, allRemainedItemList, photoUnitMap);
+
+                photoOrder.setTotalUnit(totalUnit);
+                photoOrder.setTotalQty(calculateTotalQty(allRemainedItemList));
+                photoOrder.setSubtotalAmount(calculateSubtotalPrice(allRemainedItemList));
             } catch (NotEnoughAvailableUnit e) {
                 return "There is no available unit";
             }
@@ -1099,6 +1111,8 @@ public class PhotoStudioService extends ApiService {
                     photoOrderRepository.save(photoOrder);
                     photoBookingRepository.save(photoOrder.getPhotoBooking());
                     photoOrderDetailRepository.saveAll(changedItems);
+                    photoOrderDetailRepository.saveAll(addedItems);
+                    photoOrderDetailRepository.deleteAll(removedItems);
                 }
             });
 		}
@@ -1492,16 +1506,75 @@ public class PhotoStudioService extends ApiService {
                 .collect(Collectors.toList());
     }
 
-    private List<PhotoOrderDetail> updateOrderItemQty(PhotoOrder photoOrder, List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems, Map<Integer, PhotoUnit> photoUnitMap, LocalDateTime now) {
-        List<PhotoOrderDetail> changedItems = new ArrayList<>(originalItems.size());
+    private List<PhotoOrderDetail> getAddedDetailList(PhotoOrder photoOrder, List<DetailOrderQuantity> newItems, LocalDateTime now) {
+        return newItems.stream().filter(i -> i.getOrderDetailID() == null || i.getOrderDetailID() == 0)
+                .map(i -> {
+                    PhotoOrderDetail detail = new PhotoOrderDetail();
+                    detail.setOrderID(photoOrder.getOrderID());
+                    detail.setStyleName(i.getStyleName());
 
-        for (PhotoOrderDetail originalItem : originalItems) {
-            DetailOrderQuantity newItem = newItems.stream()
-                    .filter(item -> item.getOrderDetailID().equals(originalItem.getOrderDetailID()))
-                    .findFirst()
-                    .orElseThrow(RuntimeException::new);
+                    detail.setBaseColorSetUnitPrice(i.getBaseColorSetUnitPrice());
+                    detail.setBaseColorSetQty(i.getBaseColorSetQty());
 
-            if (equalsNullable(originalItem.getStyleQty(), newItem.getStyleQty())
+                    detail.setColorSwatchUnitPrice(i.getColorSwatchUnitPrice());
+                    detail.setColorSwatchQty(i.getColorSwatchQty());
+
+                    detail.setModelSwatchUnitPrice(i.getModelSwatchUnitPrice());
+                    detail.setModelSwatchQty(i.getModelSwatchQty());
+
+                    detail.setMovieClipUnitPrice(i.getMovieClipUnitPrice());
+                    detail.setMovieClipQty(i.getMovieClipQty());
+
+                    detail.setCreatedOnDate(now);
+                    detail.setCreatedBy(Utility.getUsername());
+                    return detail;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<PhotoOrderDetail> getRemovedDetailList(List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems) {
+        List<Integer> idList = newItems.stream().filter(i -> i.getOrderDetailID() != null && i.getOrderDetailID() > 0)
+                .map(DetailOrderQuantity::getOrderDetailID)
+                .collect(Collectors.toList());
+        return originalItems.stream().filter(d -> !idList.contains(d.getOrderDetailID()))
+                .collect(Collectors.toList());
+    }
+
+    private List<PhotoOrderDetail> getChangedDetailList(List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems, LocalDateTime now) {
+        Map<Integer, DetailOrderQuantity> itemMap = newItems.stream().filter(i -> i.getOrderDetailID() != null && i.getOrderDetailID() > 0)
+                .collect(Collectors.toMap(DetailOrderQuantity::getOrderDetailID, i -> i, (i1, i2) -> i1));
+
+        return originalItems.stream()
+                .filter(d -> itemMap.get(d.getOrderDetailID()) != null)
+                .filter(d -> isUpdatedDetail(d, itemMap.get(d.getOrderDetailID())))
+                .peek(d -> {
+                    DetailOrderQuantity item = itemMap.get(d.getOrderDetailID());
+                    d.setStyleQty(item.getStyleQty());
+                    d.setColorQty(item.getColorQty());
+                    d.setColorSetQty(item.getColorSetQty());
+                    d.setMovieQty(item.getMovieQty());
+                    d.setBaseColorSetQty(item.getBaseColorSetQty());
+                    d.setModelSwatchQty(item.getModelSwatchQty());
+                    d.setColorSwatchQty(item.getColorSwatchQty());
+                    d.setMovieClipQty(item.getMovieClipQty());
+                    d.setModifiedOnDate(now);
+                    d.setModifiedBY(Utility.getUsername());
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<PhotoOrderDetail> getNoChangeDetailList(List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems) {
+        Map<Integer, DetailOrderQuantity> itemMap = newItems.stream().filter(i -> i.getOrderDetailID() != null && i.getOrderDetailID() > 0)
+                .collect(Collectors.toMap(DetailOrderQuantity::getOrderDetailID, i -> i, (i1, i2) -> i1));
+
+        return originalItems.stream()
+                .filter(d -> itemMap.get(d.getOrderDetailID()) != null)
+                .filter(d -> !isUpdatedDetail(d, itemMap.get(d.getOrderDetailID())))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isUpdatedDetail(PhotoOrderDetail originalItem, DetailOrderQuantity newItem) {
+        if (equalsNullable(originalItem.getStyleQty(), newItem.getStyleQty())
                 && equalsNullable(originalItem.getColorQty(), newItem.getColorQty())
                 && equalsNullable(originalItem.getColorSetQty(), newItem.getColorSetQty())
                 && equalsNullable(originalItem.getMovieQty(), newItem.getMovieQty())
@@ -1509,24 +1582,13 @@ public class PhotoStudioService extends ApiService {
                 && equalsNullable(originalItem.getModelSwatchQty(), newItem.getModelSwatchQty())
                 && equalsNullable(originalItem.getColorSwatchQty(), newItem.getColorSwatchQty())
                 && equalsNullable(originalItem.getMovieClipQty(), newItem.getMovieClipQty())) {
-                continue;
-            }
-
-            originalItem.setStyleQty(newItem.getStyleQty());
-            originalItem.setColorQty(newItem.getColorQty());
-            originalItem.setColorSetQty(newItem.getColorSetQty());
-            originalItem.setMovieQty(newItem.getMovieQty());
-            originalItem.setBaseColorSetQty(newItem.getBaseColorSetQty());
-            originalItem.setModelSwatchQty(newItem.getModelSwatchQty());
-            originalItem.setColorSwatchQty(newItem.getColorSwatchQty());
-            originalItem.setMovieClipQty(newItem.getMovieClipQty());
-            originalItem.setModifiedOnDate(now);
-            originalItem.setModifiedBY(Utility.getUsername());
-
-            changedItems.add(originalItem);
+            return false;
         }
+        return true;
+    }
 
-        BigDecimal newTotalUnit = calculateTotalUnit(originalItems, photoUnitMap);
+    private BigDecimal calculateTotalUnit(PhotoOrder photoOrder, List<PhotoOrderDetail> items, Map<Integer, PhotoUnit> photoUnitMap) {
+        BigDecimal newTotalUnit = calculateTotalUnit(items, photoUnitMap);
 
         MapPhotoCalendarModel mapPhotoCalendarModel = photoOrder.getPhotoBooking().getMapPhotoCalendarModel();
 
@@ -1543,12 +1605,7 @@ public class PhotoStudioService extends ApiService {
             throw new NotEnoughAvailableUnit();
         }
 
-        // Update Order TotalUnit, TotalQty, SubtotalAmount, TotalAmount
-        photoOrder.setTotalUnit(newTotalUnit);
-        photoOrder.setTotalQty(calculateTotalQty(originalItems));
-        photoOrder.setSubtotalAmount(calculateSubtotalPrice(originalItems));
-
-        return changedItems;
+        return newTotalUnit;
     }
 
     private boolean equalsNullable(Integer int1, Integer int2) {
