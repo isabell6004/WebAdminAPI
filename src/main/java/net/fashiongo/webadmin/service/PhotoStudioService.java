@@ -1070,7 +1070,7 @@ public class PhotoStudioService extends ApiService {
 		} else {
             if(!isInStyleChangeDueDate && !isInAdditionalDiscountChangeDueDate) {
                 return "The item qty can be changed only before the photo shoot date!";
-            } else if (isInAdditionalDiscountChangeDueDate) {
+            } else if (!isInStyleChangeDueDate && isInAdditionalDiscountChangeDueDate) {
                 modifyNonBookingAndStyleOption(photoOrder, orderUpdateRequest.getAdditionalDiscountAmount(), orderUpdateRequest.getInHouseNote());
                 return null;
             }
