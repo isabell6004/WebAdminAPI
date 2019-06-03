@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import com.querydsl.core.QueryResults;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.photostudio.*;
 import net.fashiongo.webadmin.exception.NotEnoughAvailableUnit;
@@ -95,7 +96,13 @@ public class PhotoStudioService extends ApiService {
     private PhotoOrderRepository photoOrderRepository;
 
     @Autowired
+    private PhotoOrderEntityRepository photoOrderEntityRepository;
+
+    @Autowired
     private PhotoBannerClickRepository photoBannerClickRepository;
+
+    @Autowired
+    private PhotoDropperRepository photoDropperRepository;
 
     @Autowired
     @Qualifier("photostudioTransactionManager")
@@ -712,7 +719,7 @@ public class PhotoStudioService extends ApiService {
 
         List<PhotoModel> models = (List<PhotoModel>) r.get(0);
 
-        List<PhotoOrderEntity> photoOrders = photoOrderRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
+        List<PhotoOrderEntity> photoOrders = photoOrderEntityRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
         List<SimplePhotoOrder> orders = SimplePhotoOrder.makeOrders(photoOrders);
 
         List<PhotoModel> modelsOption = (List<PhotoModel>) r.get(2);
@@ -818,56 +825,32 @@ public class PhotoStudioService extends ApiService {
     }
 
     @SuppressWarnings("unchecked")
-    public PagedResult<SimplePhotoOrder> getPhotoOrders(QueryParam queryParam) {
-        PagedResult<SimplePhotoOrder> result = new PagedResult<SimplePhotoOrder>();
+    public PagedResult<PhotoOrderResponse> getPhotoOrders(OrderQueryParam queryParam) {
+        QueryResults<PhotoOrderEntity> orderListResult = photoOrderEntityRepository.getPhotoOrderList(queryParam);
 
-        List<Object> params = new ArrayList<Object>();
-        params.add(queryParam.getPn());
-        params.add(queryParam.getPs());
-        params.add(queryParam.getOrderBy());
+        SingleValueResult total = new SingleValueResult();
+        total.setTotalCount(new Long(orderListResult.getTotal()).intValue());
 
-        String searchType = queryParam.getQt();
-        String searchKeyword = queryParam.getQ();
-
-        if (!StringUtils.isEmpty(searchType) && !StringUtils.isEmpty(searchKeyword)) {
-            params.add(searchType);
-            params.add(searchKeyword);
-        } else {
-            params.add(null);
-            params.add(null);
-        }
-
-        String dType = queryParam.getDtype();
-        Date df = queryParam.getDf();
-        Date dt = queryParam.getDt();
-        if (!StringUtils.isEmpty(dType) && (df != null || dt != null)) {
-            params.add(dType);
-            params.add(df);
-            params.add(dt);
-        } else {
-            params.add(null);
-            params.add(null);
-            params.add(null);
-        }
-
-        params.add(queryParam.getCatids());
-        params.add(queryParam.getOstsids());
-
-        params.add(queryParam.getIsDelayed());
-        params.add(queryParam.getOnTime());
-        params.add(queryParam.getNotCancelled());
-        params.add(queryParam.getCancelledByFG());
-        params.add(queryParam.getCancelledByVendor());
-
-        List<Object> _results = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetOrderList2", params, SingleValueResult.class, SimplePhotoOrder.class);
-
-        List<SingleValueResult> rs1 = (List<SingleValueResult>) _results.get(0);
-        List<SimplePhotoOrder> rs2 = (List<SimplePhotoOrder>) _results.get(1);
-
-        result.setTotal(rs1.get(0));
-        result.setRecords(rs2);
+        PagedResult result = new PagedResult();
+        result.setTotal(total);
+        result.setRecords(orderListResult.getResults().stream()
+                .map(PhotoOrderResponse::of)
+                .collect(Collectors.toList()));
 
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public PhotoOrderSiblingResponse getPhotoOrderSiblings(String poNumber, OrderQueryParam queryParam) {
+        PhotoOrderEntity photoOrderEntity = photoOrderEntityRepository.findByPoNumber(poNumber);
+
+        Optional<String> prevPoOrder = photoOrderEntityRepository.getPrevOrderNumber(photoOrderEntity, queryParam);
+        Optional<String> nextPoOrder = photoOrderEntityRepository.getNextOrderNumber(photoOrderEntity, queryParam);
+
+        return PhotoOrderSiblingResponse.builder()
+                .prevPoNumber(prevPoOrder.orElse(null))
+                .nextPoNumber(nextPoOrder.orElse(null))
+                .build();
     }
 
     @Autowired
@@ -1468,6 +1451,25 @@ public class PhotoStudioService extends ApiService {
             t.printStackTrace();
         }
         return null;
+    }
+
+    public List<PhotoDropperResponse> getDroppers(int wholeSalerId) {
+        return photoDropperRepository.findAllByWholeSalerId(wholeSalerId).stream()
+                .map(PhotoDropperResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<PhotoDropperResponse> saveDropper(PhotoDropperSaveRequest request) {
+        PhotoDropper photoDropper = PhotoDropper.builder()
+                .wholeSalerId(request.getWholeSalerId())
+                .dropperName(request.getDropperName())
+                .dropperEmail(request.getDropperEmail())
+                .build();
+
+        photoDropperRepository.save(photoDropper);
+        return photoDropperRepository.findAllByWholeSalerId(request.getWholeSalerId()).stream()
+                .map(PhotoDropperResponse::of)
+                .collect(Collectors.toList());
     }
 
     private List<PhotoOrderDetail> updateOrderItemQty(PhotoOrder photoOrder, List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems, Map<Integer, PhotoUnit> photoUnitMap, LocalDateTime now) {

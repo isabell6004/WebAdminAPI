@@ -1,10 +1,7 @@
 package net.fashiongo.webadmin.service;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.model.photostudio.PhotoBannerClickStatistic;
-import net.fashiongo.webadmin.model.photostudio.PhotoCart;
-import net.fashiongo.webadmin.model.photostudio.ReportType;
-import net.fashiongo.webadmin.model.photostudio.SimplePhotoOrder;
+import net.fashiongo.webadmin.model.photostudio.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 import net.fashiongo.webadmin.utility.DateUtils;
@@ -39,17 +36,17 @@ public class IntegratedPhotoStudioServiceTest {
         Integer pn = 1;
         Integer ps = 20;
         String orderBy = "PhotoshootDate";
-        Date df = Date.from(LocalDateTime.of(2019, 5, 1, 0, 0, 0).atZone(ZoneId.systemDefault()).toInstant());
+        LocalDateTime df = LocalDateTime.of(2019, 5, 1, 0, 0, 0);
         String dtype = "PhotoshootDate";
 
-        QueryParam queryParam = new QueryParam();
+        OrderQueryParam queryParam = new OrderQueryParam();
         queryParam.setPn(pn);
         queryParam.setPs(ps);
         queryParam.setOrderBy(orderBy);
         queryParam.setDf(df);
         queryParam.setDtype(dtype);
 
-        PagedResult<SimplePhotoOrder> results = photoStudioService.getPhotoOrders(queryParam);
+        PagedResult<PhotoOrderResponse> results = photoStudioService.getPhotoOrders(queryParam);
 
         log.info("results : {}", results.getRecords().size());
         results.getRecords().forEach((x) -> log.info("order : {}, {}, {}", x.getOrderID(), x.getPackageID(), x.getPackageName()));

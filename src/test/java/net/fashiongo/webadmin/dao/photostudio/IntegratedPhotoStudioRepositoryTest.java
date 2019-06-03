@@ -30,6 +30,9 @@ public class IntegratedPhotoStudioRepositoryTest {
     @Autowired
     private PhotoOrderRepository photoOrderRepository;
 
+    @Autowired
+    private PhotoOrderEntityRepository photoOrderEntityRepository;
+
     @Test
     public void get_photo_orders_of_wholesaler() {
 
@@ -396,7 +399,7 @@ public class IntegratedPhotoStudioRepositoryTest {
 
         Integer calendarId = 99;
         Integer modelId = null;
-        List<PhotoOrderEntity> photoOrders = photoOrderRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
+        List<PhotoOrderEntity> photoOrders = photoOrderEntityRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
 
         photoOrders.forEach(x -> log.debug("{}", x.getOrderID()));
 
@@ -409,7 +412,7 @@ public class IntegratedPhotoStudioRepositoryTest {
 
         Integer calendarId = 99;
         Integer modelId = 18;
-        List<PhotoOrderEntity> photoOrders = photoOrderRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
+        List<PhotoOrderEntity> photoOrders = photoOrderEntityRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
 
         photoOrders.forEach(x -> log.debug("{}", x.getOrderID()));
 

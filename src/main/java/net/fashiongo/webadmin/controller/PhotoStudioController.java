@@ -358,7 +358,7 @@ public class PhotoStudioController {
     }
 
     @GetMapping(value = "/orders")
-    public JsonResponse getPhotoOrders(@ModelAttribute QueryParam queryParam) {
+    public JsonResponse<PagedResult<PhotoOrderResponse>> getPhotoOrders(@ModelAttribute OrderQueryParam queryParam) {
         logger.debug("PhotoStudioController.getPhotoOrders() called!!!");
         if (queryParam.getPn() == null) {
             queryParam.setPn(1);
@@ -367,21 +367,21 @@ public class PhotoStudioController {
             queryParam.setPs(20);
         }
         if (queryParam.getOrderBy() == null) {
-            queryParam.setOrderBy("PhotoshootDateDesc");
+            queryParam.setOrderBy("PhotoshootDate Desc");
         }
 
         try {
             if (Utility.checkValidPageSize("getPhotoOrders", queryParam.getPs())) {
                 logger.debug("getPhotoOrders() params: {}", queryParam.toString());
-                PagedResult<SimplePhotoOrder> photoOrders = photoStudioService.getPhotoOrders(queryParam);
-                return new JsonResponse(true, "", photoOrders);
+                PagedResult<PhotoOrderResponse> photoOrders = photoStudioService.getPhotoOrders(queryParam);
+                return new JsonResponse<>(true, "", photoOrders);
             } else {
-                return new JsonResponse(false, "PhotoOrder Page Size invalid.", null);
+                return new JsonResponse<>(false, "PhotoOrder Page Size invalid.", null);
             }
         } catch (Exception e) {
             logger.error("Error: PhotoStudioController.getPhotoOrders():", e);
             logger.error("QueryParam: {}", queryParam.toString());
-            return new JsonResponse(false, "", null);
+            return new JsonResponse<>(false, "", null);
         }
     }
 
@@ -400,6 +400,35 @@ public class PhotoStudioController {
         }
 
         return response;
+    }
+
+    @GetMapping("/order/{poNumber}/siblings")
+    public JsonResponse<PhotoOrderSiblingResponse> getPhotoOrderSiblings(@PathVariable("poNumber") String poNumber,
+                                                                         @ModelAttribute OrderQueryParam queryParam) {
+        logger.debug("PhotoStudioController.getPhotoOrderSiblings() called!!!");
+        if (queryParam.getPn() == null) {
+            queryParam.setPn(1);
+        }
+        if (queryParam.getPs() == null) {
+            queryParam.setPs(20);
+        }
+        if (queryParam.getOrderBy() == null) {
+            queryParam.setOrderBy("PhotoshootDate Desc");
+        }
+
+        try {
+            if (Utility.checkValidPageSize("getPhotoOrders", queryParam.getPs())) {
+                logger.debug("getPhotoOrderSiblings() params: {}", queryParam.toString());
+                PhotoOrderSiblingResponse siblings = photoStudioService.getPhotoOrderSiblings(poNumber, queryParam);
+                return new JsonResponse<>(true, "", siblings);
+            } else {
+                return new JsonResponse<>(false, "PhotoOrder Page Size invalid.", null);
+            }
+        } catch (Exception e) {
+            logger.error("Error: PhotoStudioController.getPhotoOrderSiblings():", e);
+            logger.error("QueryParam: {}", queryParam.toString());
+            return new JsonResponse<>(false, "", null);
+        }
     }
 
     @GetMapping("/calendar/availablemodels/{orderID}/{theDate}")
@@ -480,6 +509,38 @@ public class PhotoStudioController {
             response.setData(result);
         } catch (Exception ex) {
             logger.error("Error: PhotoStudioController.saveActionLog():", ex);
+        }
+
+        return response;
+    }
+
+    @GetMapping(value = "/dropper/{wholeSalerId}")
+    public JsonResponse<List<PhotoDropperResponse>> getDroppers(@PathVariable int wholeSalerId) {
+        logger.debug("PhotoStudioController.getDroppers() called!!!");
+        JsonResponse<List<PhotoDropperResponse>> response = new JsonResponse<>(false, null, null);
+
+        try {
+            List<PhotoDropperResponse> droppers = photoStudioService.getDroppers(wholeSalerId);
+            response.setSuccess(true);
+            response.setData(droppers);
+        } catch (Exception ex) {
+            logger.error("Error: PhotoStudioController.getDroppers():", ex);
+        }
+
+        return response;
+    }
+
+    @PostMapping(value = "/dropper")
+    public JsonResponse<List<PhotoDropperResponse>> saveDroppers(@RequestBody PhotoDropperSaveRequest request) {
+        logger.debug("PhotoStudioController.saveDroppers() called!!!");
+        JsonResponse<List<PhotoDropperResponse>> response = new JsonResponse<>(false, null, null);
+
+        try {
+            List<PhotoDropperResponse> droppers = photoStudioService.saveDropper(request);
+            response.setSuccess(true);
+            response.setData(droppers);
+        } catch (Exception ex) {
+            logger.error("Error: PhotoStudioController.saveDroppers():", ex);
         }
 
         return response;

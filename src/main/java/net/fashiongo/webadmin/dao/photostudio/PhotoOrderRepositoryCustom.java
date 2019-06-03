@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.dao.photostudio;
 import net.fashiongo.webadmin.model.photostudio.OrderDetailStatistic;
 import net.fashiongo.webadmin.model.photostudio.OrderStatistic;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrder;
-import net.fashiongo.webadmin.model.photostudio.PhotoOrderEntity;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -31,13 +30,11 @@ public interface PhotoOrderRepositoryCustom {
 
     List<PhotoOrder> getOrderWithDetail(LocalDateTime start, LocalDateTime end);
 
-    Map<Integer,List<PhotoOrder>> getOrderOfWholeSaler(List<Integer> wholeSalerIds);
+    Map<Integer, List<PhotoOrder>> getOrderOfWholeSaler(List<Integer> wholeSalerIds);
 
     List<PhotoOrder> getOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end);
 
     List<PhotoOrder> getValidOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end);
 
     List<PhotoOrder> getOrdersByPhotoshootDate(LocalDateTime start, LocalDateTime end);
-
-    List<PhotoOrderEntity> getValidOrderWithModelByCalendarIdAndModelId(Integer calendarId, Integer modelId);
 }
