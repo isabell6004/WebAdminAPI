@@ -1075,21 +1075,21 @@ public class PhotoStudioService extends ApiService {
                     .collect(Collectors.toMap(PhotoUnit::getPriceTypeID, photoUnit -> photoUnit));
 
             List<PhotoOrderDetail> originalItems = photoOrderDetailRepository.findByOrderID(photoOrder.getOrderID());
-            List<PhotoOrderDetail> noChangeItems = getUnchangedDetailList(originalItems, orderUpdateRequest.getItems());
+            List<PhotoOrderDetail> unchangedItems = getUnchangedDetailList(originalItems, orderUpdateRequest.getItems());
             List<PhotoOrderDetail> changedItems = getChangedDetailList(originalItems, orderUpdateRequest.getItems(), now);
             List<PhotoOrderDetail> addedItems = getAddedDetailList(photoOrder, orderUpdateRequest.getItems(), now);
             List<PhotoOrderDetail> removedItems = getRemovedDetailList(originalItems, orderUpdateRequest.getItems());
 
             // Calculate total unit
             try {
-                List<PhotoOrderDetail> allRemainedItemList = new ArrayList<>(changedItems);
-                allRemainedItemList.addAll(noChangeItems);
-                allRemainedItemList.addAll(addedItems);
-                BigDecimal totalUnit = calculateTotalUnit(photoOrder, allRemainedItemList, photoUnitMap);
+                List<PhotoOrderDetail> storedItems = new ArrayList<>(changedItems);
+                storedItems.addAll(unchangedItems);
+                storedItems.addAll(addedItems);
+                BigDecimal totalUnit = calculateTotalUnit(photoOrder, storedItems, photoUnitMap);
 
                 photoOrder.setTotalUnit(totalUnit);
-                photoOrder.setTotalQty(calculateTotalQty(allRemainedItemList));
-                photoOrder.setSubtotalAmount(calculateSubtotalPrice(allRemainedItemList));
+                photoOrder.setTotalQty(calculateTotalQty(storedItems));
+                photoOrder.setSubtotalAmount(calculateSubtotalPrice(storedItems));
             } catch (NotEnoughAvailableUnit e) {
                 return "There is no available unit";
             }
