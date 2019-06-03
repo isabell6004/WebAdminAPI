@@ -1075,7 +1075,7 @@ public class PhotoStudioService extends ApiService {
                     .collect(Collectors.toMap(PhotoUnit::getPriceTypeID, photoUnit -> photoUnit));
 
             List<PhotoOrderDetail> originalItems = photoOrderDetailRepository.findByOrderID(photoOrder.getOrderID());
-            List<PhotoOrderDetail> noChangeItems = getNoChangeDetailList(originalItems, orderUpdateRequest.getItems());
+            List<PhotoOrderDetail> noChangeItems = getUnchangedDetailList(originalItems, orderUpdateRequest.getItems());
             List<PhotoOrderDetail> changedItems = getChangedDetailList(originalItems, orderUpdateRequest.getItems(), now);
             List<PhotoOrderDetail> addedItems = getAddedDetailList(photoOrder, orderUpdateRequest.getItems(), now);
             List<PhotoOrderDetail> removedItems = getRemovedDetailList(originalItems, orderUpdateRequest.getItems());
@@ -1563,7 +1563,7 @@ public class PhotoStudioService extends ApiService {
                 .collect(Collectors.toList());
     }
 
-    private List<PhotoOrderDetail> getNoChangeDetailList(List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems) {
+    private List<PhotoOrderDetail> getUnchangedDetailList(List<PhotoOrderDetail> originalItems, List<DetailOrderQuantity> newItems) {
         Map<Integer, DetailOrderQuantity> itemMap = newItems.stream().filter(i -> i.getOrderDetailID() != null && i.getOrderDetailID() > 0)
                 .collect(Collectors.toMap(DetailOrderQuantity::getOrderDetailID, i -> i, (i1, i2) -> i1));
 
