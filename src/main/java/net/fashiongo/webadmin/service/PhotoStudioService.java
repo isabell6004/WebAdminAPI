@@ -1052,7 +1052,8 @@ public class PhotoStudioService extends ApiService {
 			}
 		} else {
             if(!isInStyleChangeDueDate && !isInAdditionalDiscountChangeDueDate) {
-                return "The item qty can be changed only before the photo shoot date!";
+                modifyInHouseNote(photoOrder, now, username, orderUpdateRequest.getInHouseNote());
+                return null;
             } else if (!isInStyleChangeDueDate && isInAdditionalDiscountChangeDueDate) {
                 modifyNonBookingAndStyleOption(photoOrder, orderUpdateRequest.getAdditionalDiscountAmount(), orderUpdateRequest.getInHouseNote());
                 return null;
@@ -1098,6 +1099,20 @@ public class PhotoStudioService extends ApiService {
 		}
 
         return null;
+    }
+
+    private void modifyInHouseNote(PhotoOrder photoOrder, LocalDateTime now, String username, String inHouseNote) {
+        photoOrder.setInHouseNote(inHouseNote);
+        photoOrder.setModifiedOnDate(now);
+        photoOrder.setModifiedBY(username);
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        template.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                photoOrderRepository.save(photoOrder);
+            }
+        });
     }
 
     private void modifyNonBookingAndStyleOption(PhotoOrder photoOrder, BigDecimal discountAmount, String inHouseNode) {
