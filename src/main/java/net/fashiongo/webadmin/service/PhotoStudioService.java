@@ -1018,10 +1018,10 @@ public class PhotoStudioService extends ApiService {
         String username = Utility.getUsername();
 
         LocalDate nowDate = now.toLocalDate();
-        LocalDate photoshootDate = photoOrder.get_photoshootDate().toLocalDate();
-        boolean isInScheduleChangeDueDate = nowDate.isBefore(photoshootDate);
-        boolean isInStyleChangeDueDate = nowDate.compareTo(photoshootDate) <= 0;
-        boolean isInAdditionalDiscountChangeDueDate = nowDate.getMonthValue() <= photoshootDate.getMonthValue();
+        LocalDate photoShootDate = photoOrder.get_photoshootDate().toLocalDate();
+        boolean isInScheduleChangeDueDate = nowDate.compareTo(photoShootDate) <= 0;
+        boolean isInStyleChangeDueDate = nowDate.compareTo(photoShootDate) <= 0;
+        boolean isInAdditionalDiscountChangeDueDate = nowDate.getMonthValue() <= photoShootDate.getMonthValue();
 
 		if(orderUpdateRequest.getPhotoshootDate() != null) {
             if(!isInScheduleChangeDueDate) {
