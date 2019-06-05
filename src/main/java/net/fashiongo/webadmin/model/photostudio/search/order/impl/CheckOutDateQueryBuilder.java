@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.model.photostudio.search.order.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import net.fashiongo.webadmin.model.photostudio.PhotoOrderEntity;
 import net.fashiongo.webadmin.model.photostudio.search.order.PhotoOrderQueryBuilder;
 import net.fashiongo.webadmin.model.photostudio.search.order.PhotoOrderSortInfoHolder;
@@ -14,20 +16,31 @@ public class CheckOutDateQueryBuilder extends PhotoOrderQueryBuilder<LocalDateTi
         super(sortInfoHolder);
     }
 
+    /*
+    https://github.com/microsoft/mssql-jdbc/issues/680
+
+    There is an issue in mssql-jdbc that TimeStamp is cast to DateTime2 NOT DateTime.
+    Therefore, comparing (Java8)LocalDateTime with (MSSQL)DateTime is not accurate at millisecond level.
+     */
+
     @Override
     public BooleanBuilder makePrevQuery(PhotoOrderEntity photoOrderEntity) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
+        JPQLQuery<LocalDateTime> checkOutDate = JPAExpressions.select(photoOrder._checkOutDate)
+                .from(photoOrder)
+                .where(photoOrder.orderID.eq(photoOrderEntity.getOrderID()));
+
         if (getSortInfoHolder().getSortDirection().equals(PhotoOrderSortInfoHolder.PhotoOrderSortDirection.DESC)) {
             booleanBuilder
-                    .and(photoOrder._checkOutDate.eq(photoOrderEntity.get_checkOutDate())
+                    .and(photoOrder._checkOutDate.eq(checkOutDate)
                             .and(photoOrder.orderID.lt(photoOrderEntity.getOrderID())))
-                    .or(photoOrder._checkOutDate.gt(photoOrderEntity.get_checkOutDate()));
+                    .or(photoOrder._checkOutDate.gt(checkOutDate));
         } else {
             booleanBuilder
-                    .and(photoOrder._checkOutDate.eq(photoOrderEntity.get_checkOutDate())
+                    .and(photoOrder._checkOutDate.eq(checkOutDate)
                             .and(photoOrder.orderID.gt(photoOrderEntity.getOrderID())))
-                    .or(photoOrder._checkOutDate.lt(photoOrderEntity.get_checkOutDate()));
+                    .or(photoOrder._checkOutDate.lt(checkOutDate));
         }
 
         return booleanBuilder;
@@ -37,16 +50,20 @@ public class CheckOutDateQueryBuilder extends PhotoOrderQueryBuilder<LocalDateTi
     public BooleanBuilder makeNextQuery(PhotoOrderEntity photoOrderEntity) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
+        JPQLQuery<LocalDateTime> checkOutDate = JPAExpressions.select(photoOrder._checkOutDate)
+                .from(photoOrder)
+                .where(photoOrder.orderID.eq(photoOrderEntity.getOrderID()));
+
         if (getSortInfoHolder().getSortDirection().equals(PhotoOrderSortInfoHolder.PhotoOrderSortDirection.DESC)) {
             booleanBuilder
-                    .and(photoOrder._checkOutDate.eq(photoOrderEntity.get_checkOutDate())
+                    .and(photoOrder._checkOutDate.eq(checkOutDate)
                             .and(photoOrder.orderID.gt(photoOrderEntity.getOrderID())))
-                    .or(photoOrder._checkOutDate.lt(photoOrderEntity.get_checkOutDate()));
+                    .or(photoOrder._checkOutDate.lt(checkOutDate));
         } else {
             booleanBuilder
-                    .and(photoOrder._checkOutDate.eq(photoOrderEntity.get_checkOutDate())
+                    .and(photoOrder._checkOutDate.eq(checkOutDate)
                             .and(photoOrder.orderID.lt(photoOrderEntity.getOrderID())))
-                    .or(photoOrder._checkOutDate.gt(photoOrderEntity.get_checkOutDate()));
+                    .or(photoOrder._checkOutDate.gt(checkOutDate));
         }
 
         return booleanBuilder;
