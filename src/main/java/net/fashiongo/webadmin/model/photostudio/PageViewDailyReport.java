@@ -4,10 +4,7 @@ import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +14,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@Setter
+@Setter(AccessLevel.PRIVATE)
 public class PageViewDailyReport {
 
     private Date orderSubmitDate;
@@ -52,7 +49,13 @@ public class PageViewDailyReport {
 
     private String promotionCode;
 
-    public static List<PageViewDailyReport> build(List<PhotoCart> photoCarts) {
+    private Boolean orderComplete = false;
+
+    public String getOrderComplete() {
+        return this.orderComplete ? "Y" : "N";
+    }
+
+    public static List<PageViewDailyReport> build(List<PhotoCart> photoCarts, Map<Integer, PhotoOrder> photoOrderOfCartId) {
 
         List<PageViewDailyReport> buildedObjects = new ArrayList<>();
         if (CollectionUtils.isEmpty(photoCarts)) {
@@ -60,44 +63,36 @@ public class PageViewDailyReport {
         }
 
         for (PhotoCart photoCart : photoCarts) {
-            if (CollectionUtils.isEmpty(photoCart.getCartDetails())) {
 
-                PageViewDailyReport report = new PageViewDailyReport().toBuilder()
-                        .orderSubmitDate(photoCart.getCreatedOn())
-                        .vendorName(photoCart.getWholeSalerCompanyName())
-                        .categoryName((photoCart.getCategory() == null) ? "" : photoCart.getCategory().getCategoryName())
-                        .packageName((photoCart.getPackageInfo() == null) ? "" : photoCart.getPackageInfo().getName())
-                        .inputQuantityType(photoCart.getPhotoStudioOrderType())
-                        .pickDate(photoCart.getPhotoshootDate())
-                        .modelName((photoCart.getModel() == null) ? "" : photoCart.getModel().getModelName())
-                        .promotionCode((photoCart.getDiscount() == null) ? "" : photoCart.getDiscount().getDiscountName())
-                        .build();
-                buildedObjects.add(report);
-            } else {
-                buildedObjects = photoCart.getCartDetails().stream().map((detail) -> {
-                    PageViewDailyReport report = new PageViewDailyReport().toBuilder()
-                            .orderSubmitDate(photoCart.getCreatedOn())
-                            .vendorName(photoCart.getWholeSalerCompanyName())
-                            .categoryName((photoCart.getCategory() == null) ? "" : photoCart.getCategory().getCategoryName())
-                            .packageName((photoCart.getPackageInfo() == null) ? "" : photoCart.getPackageInfo().getName())
-                            .inputQuantityType(photoCart.getPhotoStudioOrderType())
-                            .totalStyleCount(Optional.ofNullable(detail.getStyleQty()).orElse(0))
-                            .totalAdditionalColorCount(Optional.ofNullable(detail.getColorQty()).orElse(0))
-                            .totalAdditionalColorSetCount(Optional.ofNullable(detail.getColorSetQty()).orElse(0))
-                            .totalMovieClipCount(Optional.ofNullable(detail.getMovieQty()).orElse(0))
-                            .totalBaseColorSetCount(Optional.ofNullable(detail.getBaseColorSetQty()).orElse(0))
-                            .totalModelSwatchCount(Optional.ofNullable(detail.getModelSwatchQty()).orElse(0))
-                            .totalNewMovieClipCount(Optional.ofNullable(detail.getMovieClipQty()).orElse(0))
-                            .totalColorSwatchCount(Optional.ofNullable(detail.getColorSwatchQty()).orElse(0))
-                            .pickDate(photoCart.getPhotoshootDate())
-                            .modelName((photoCart.getModel() == null) ? "" : photoCart.getModel().getModelName())
-                            .promotionCode((photoCart.getDiscount() == null) ? "" : photoCart.getDiscount().getDiscountName())
-                            .build();
-                    return report;
-                }).collect(Collectors.toList());
+            PageViewDailyReport report = new PageViewDailyReport().toBuilder()
+                    .orderSubmitDate(photoCart.getCreatedOn())
+                    .vendorName(photoCart.getWholeSalerCompanyName())
+                    .categoryName((photoCart.getCategory() == null) ? "" : photoCart.getCategory().getCategoryName())
+                    .packageName((photoCart.getPackageInfo() == null) ? "" : photoCart.getPackageInfo().getName())
+                    .inputQuantityType(photoCart.getPhotoStudioOrderType())
+                    .pickDate(photoCart.getPhotoshootDate())
+                    .modelName((photoCart.getModel() == null) ? "" : photoCart.getModel().getModelName())
+                    .promotionCode((photoCart.getDiscount() == null) ? "" : photoCart.getDiscount().getDiscountName())
+                    .orderComplete(photoOrderOfCartId.containsKey(photoCart.getId()))
+                    .build();
+
+            if (!CollectionUtils.isEmpty(photoCart.getCartDetails())) {
+                photoCart.getCartDetails().stream().forEach((detail) -> {
+                    report.setTotalStyleCount(report.getTotalStyleCount() + Optional.ofNullable(detail.getStyleQty()).orElse(0));
+                    report.setTotalAdditionalColorCount(report.getTotalAdditionalColorCount() + Optional.ofNullable(detail.getColorQty()).orElse(0));
+                    report.setTotalAdditionalColorSetCount(report.getTotalAdditionalColorSetCount() + Optional.ofNullable(detail.getColorSetQty()).orElse(0));
+                    report.setTotalMovieClipCount(report.getTotalMovieClipCount() + Optional.ofNullable(detail.getMovieQty()).orElse(0));
+                    report.setTotalBaseColorSetCount(report.getTotalBaseColorSetCount() + Optional.ofNullable(detail.getBaseColorSetQty()).orElse(0));
+                    report.setTotalModelSwatchCount(report.getTotalModelSwatchCount() + Optional.ofNullable(detail.getModelSwatchQty()).orElse(0));
+                    report.setTotalNewMovieClipCount(report.getTotalNewMovieClipCount() + Optional.ofNullable(detail.getMovieClipQty()).orElse(0));
+                    report.setTotalColorSwatchCount(report.getTotalColorSwatchCount() + Optional.ofNullable(detail.getColorSwatchQty()).orElse(0));
+                });
             }
+
+            buildedObjects.add(report);
         }
 
         return buildedObjects;
     }
+
 }

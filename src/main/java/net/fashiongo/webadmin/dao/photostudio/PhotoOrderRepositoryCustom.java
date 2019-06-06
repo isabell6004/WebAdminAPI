@@ -32,6 +32,8 @@ public interface PhotoOrderRepositoryCustom {
 
     Map<Integer, List<PhotoOrder>> getOrderOfWholeSaler(List<Integer> wholeSalerIds);
 
+    Map<Integer, PhotoOrder> getOrderOfCart(List<Integer> cartIds);
+
     List<PhotoOrder> getOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end);
 
     List<PhotoOrder> getValidOrderWithDetailByPhotoshootDate(LocalDateTime start, LocalDateTime end);

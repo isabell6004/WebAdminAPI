@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -219,6 +220,22 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
 
         if(!CollectionUtils.isEmpty(orders)) {
             return orders.stream().collect(Collectors.groupingBy(PhotoOrder::getWholeSalerID));
+        }
+
+        return new HashMap<>();
+    }
+
+    @Override
+    public Map<Integer, PhotoOrder> getOrderOfCart(List<Integer> cartIds) {
+
+        QPhotoOrder photoOrder = QPhotoOrder.photoOrder;
+
+        JPAQuery<PhotoOrder> jpaQuery = new JPAQuery<>(photostudioEntityManager);
+        List<PhotoOrder> orders = jpaQuery.from(photoOrder)
+                .where(photoOrder.cartID.in(cartIds)).fetch();
+
+        if(!CollectionUtils.isEmpty(orders)) {
+            return orders.stream().collect(Collectors.toMap(PhotoOrder::getCartID, Function.identity()));
         }
 
         return new HashMap<>();

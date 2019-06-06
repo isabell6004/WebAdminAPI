@@ -123,7 +123,8 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
 
                 "Pick a date",
                 "Choose model",
-                "Promo"};
+                "Promo",
+                "Order Complete"};
 
         createRow(sheet, Arrays.asList(heads), 0, style, 5000);
     }
@@ -157,6 +158,7 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPickDate() == null ? "" : format.format(pageViewDailyReport.getPickDate()));
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getModelName());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPromotionCode());
+            row.createCell(cellNumber).setCellValue(pageViewDailyReport.getOrderComplete());
         }
     }
 

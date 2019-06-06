@@ -1457,8 +1457,11 @@ public class PhotoStudioService extends ApiService {
 
         try {
 
+            List<PhotoCart> photoCarts = getPhotoCarts(start, end);
+            List<Integer> cartIds = photoCarts.parallelStream().map(x -> x.getId()).collect(Collectors.toList());
+            Map<Integer, PhotoOrder> photoOrderOfCartId = photoOrderRepository.getOrderOfCart(cartIds);
 
-            List<PageViewDailyReport> pageViewDailyReports = PageViewDailyReport.build(getPhotoCarts(start, end));
+            List<PageViewDailyReport> pageViewDailyReports = PageViewDailyReport.build(photoCarts, photoOrderOfCartId);
 
             List<PhotoCategory> photoCategories = photoCategoryRepository.findAll();
             Map<Integer, PhotoCategory> photoCategoryMap = photoCategories.stream().collect(
