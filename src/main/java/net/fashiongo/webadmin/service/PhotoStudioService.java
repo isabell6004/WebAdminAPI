@@ -1033,8 +1033,15 @@ public class PhotoStudioService extends ApiService {
         LocalDateTime now = LocalDateTime.now();
 
         String username = Utility.getUsername();
+
+        LocalDate nowDate = now.toLocalDate();
+        LocalDate photoshootDate = photoOrder.get_photoshootDate().toLocalDate();
+        boolean isInScheduleChangeDueDate = nowDate.isBefore(photoshootDate);
+        boolean isInStyleChangeDueDate = nowDate.compareTo(photoshootDate) <= 0;
+        boolean isInAdditionalDiscountChangeDueDate = nowDate.getMonthValue() <= photoshootDate.getMonthValue();
+
 		if(orderUpdateRequest.getPhotoshootDate() != null) {
-            if(!now.toLocalDate().isBefore(photoOrder.get_photoshootDate().toLocalDate())) {
+            if(!isInScheduleChangeDueDate) {
                 return "The photo shoot date can be changed only before the original photo shoot date!";
             }
 
@@ -1061,8 +1068,11 @@ public class PhotoStudioService extends ApiService {
 				return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
 			}
 		} else {
-            if(!now.toLocalDate().isBefore(photoOrder.get_photoshootDate().toLocalDate())) {
+            if(!isInStyleChangeDueDate && !isInAdditionalDiscountChangeDueDate) {
                 return "The item qty can be changed only before the photo shoot date!";
+            } else if (!isInStyleChangeDueDate && isInAdditionalDiscountChangeDueDate) {
+                modifyNonBookingAndStyleOption(photoOrder, orderUpdateRequest.getAdditionalDiscountAmount(), orderUpdateRequest.getInHouseNote());
+                return null;
             }
 
 		    if (validateInputQty(orderUpdateRequest.getItems())) {
@@ -1105,6 +1115,22 @@ public class PhotoStudioService extends ApiService {
 		}
 
         return null;
+    }
+
+    private void modifyNonBookingAndStyleOption(PhotoOrder photoOrder, BigDecimal discountAmount, String inHouseNode) {
+        photoOrder.setAdditionalDiscountAmount(discountAmount);
+        photoOrder.setInHouseNote(inHouseNode);
+        photoOrder.setModifiedOnDate(LocalDateTime.now());
+        photoOrder.setModifiedBY(Utility.getUsername());
+
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        template.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                photoOrderRepository.save(photoOrder);
+            }
+        });
     }
 
     public String cancelPhotoOrder(PhotoOrder photoOrder) {

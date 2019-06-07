@@ -1,8 +1,6 @@
 package net.fashiongo.webadmin.model.photostudio;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -15,6 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DetailOrderQuantity {
 
     private Integer orderDetailID;
