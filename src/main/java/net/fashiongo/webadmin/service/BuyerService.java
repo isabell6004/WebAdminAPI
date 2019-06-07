@@ -148,6 +148,7 @@ public class BuyerService extends ApiService {
 		}
 
 		// save tblRetailer
+		tblRetailer.setUserID(retailerDetail.getUserId());
 		tblRetailer.setCompanyName(retailerDetail.getCompanyName());
 		tblRetailer.setRetailerPermitNo(retailerDetail.getRetailerPermitNo());
 		tblRetailer.setFirstName(retailerDetail.getFirstName());
