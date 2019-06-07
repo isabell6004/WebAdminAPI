@@ -1064,7 +1064,9 @@ public class PhotoStudioService extends ApiService {
                 return null;
             }
 
-		    if (validateInputQty(orderUpdateRequest.getItems())) {
+            if (CollectionUtils.isEmpty(orderUpdateRequest.getItems())) {
+                return "At least 1 order has to be on the list";
+            } else if (validateInputQty(orderUpdateRequest.getItems())) {
 		        return "The item qty cannot be lower than 0";
             }
 
