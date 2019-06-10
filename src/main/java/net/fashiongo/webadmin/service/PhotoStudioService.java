@@ -1020,7 +1020,11 @@ public class PhotoStudioService extends ApiService {
         LocalDate nowDate = now.toLocalDate();
         LocalDate photoShootDate = photoOrder.get_photoshootDate().toLocalDate();
         boolean isInScheduleChangeDueDate = nowDate.compareTo(photoShootDate) <= 0;
-        boolean isInStyleChangeDueDate = nowDate.compareTo(photoShootDate) <= 0;
+        boolean isInStyleChangeDueDate = nowDate.getYear() < photoShootDate.getYear()
+                || (nowDate.getYear() == photoShootDate.getYear() && nowDate.getMonthValue() < photoShootDate.getMonthValue())
+                || (nowDate.getYear() == photoShootDate.getYear()
+					&& nowDate.getMonthValue() == photoShootDate.getMonthValue()
+                    && nowDate.compareTo(photoShootDate.plusDays(2)) <= 0);
         boolean isInAdditionalDiscountChangeDueDate = nowDate.getYear() < photoShootDate.getYear()
                 || nowDate.getYear() == photoShootDate.getYear() && nowDate.getMonthValue() <= photoShootDate.getMonthValue();
 
