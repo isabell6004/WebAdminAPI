@@ -172,13 +172,19 @@ public class PhotoOrderEntityRepositoryCustomImpl implements PhotoOrderEntityRep
         }
 
         List<Integer> categoryIds = param.getCatids();
-        if (categoryIds != null) {
-            queryBuilder.and(photoOrder.categoryID.in(categoryIds));
-        }
-
         List<Integer> packageIds = param.getPackids();
-        if (packageIds != null) {
-            queryBuilder.and(photoOrder.packageID.in(packageIds));
+        if (categoryIds != null || packageIds != null) {
+            BooleanBuilder tempBuilder = new BooleanBuilder();
+
+            if (categoryIds != null) {
+                tempBuilder.or(photoOrder.categoryID.in(categoryIds));
+            }
+
+            if (packageIds != null) {
+                tempBuilder.or(photoOrder.packageID.in(packageIds));
+            }
+
+            queryBuilder.and(tempBuilder);
         }
 
         List<Integer> orderStatusIds = param.getOstsids();
