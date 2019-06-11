@@ -136,6 +136,9 @@ public class SimplePhotoOrder {
     private Integer styles;
 
     @Transient
+    private Integer swatches;
+
+    @Transient
     private Integer movies;
 
     public static List<SimplePhotoOrder> makeOrders(List<PhotoOrderEntity> photoOrders) {
@@ -163,6 +166,7 @@ public class SimplePhotoOrder {
                     )
                     .totalUnit(order.getTotalUnit())
                     .styles(order.getOrderDetails().stream().mapToInt(x -> (Optional.ofNullable(x.getColorSetQty()).orElse(0) + Optional.ofNullable(x.getBaseColorSetQty()).orElse(0))).sum())
+                    .swatches(order.getOrderDetails().stream().mapToInt(x -> (Optional.ofNullable(x.getModelSwatchQty()).orElse(0) + Optional.ofNullable(x.getColorSwatchQty()).orElse(0))).sum())
                     .movies(order.getOrderDetails().stream().mapToInt(x -> (Optional.ofNullable(x.getMovieQty()).orElse(0) + Optional.ofNullable(x.getMovieClipQty()).orElse(0))).sum())
                     .isDelayed(
                             checkDelayedStatus(order)
