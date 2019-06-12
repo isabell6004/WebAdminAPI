@@ -1551,6 +1551,7 @@ public class PhotoStudioService extends ApiService {
                 .filter(d -> isUpdatedDetail(d, itemMap.get(d.getOrderDetailID())))
                 .peek(d -> {
                     DetailOrderQuantity item = itemMap.get(d.getOrderDetailID());
+                    d.setStyleName(item.getStyleName());
                     d.setStyleQty(item.getStyleQty());
                     d.setColorQty(item.getColorQty());
                     d.setColorSetQty(item.getColorSetQty());
@@ -1576,7 +1577,8 @@ public class PhotoStudioService extends ApiService {
     }
 
     private boolean isUpdatedDetail(PhotoOrderDetail originalItem, DetailOrderQuantity newItem) {
-        if (equalsNullable(originalItem.getStyleQty(), newItem.getStyleQty())
+        if (StringUtils.equals(originalItem.getStyleName(), newItem.getStyleName())
+                && equalsNullable(originalItem.getStyleQty(), newItem.getStyleQty())
                 && equalsNullable(originalItem.getColorQty(), newItem.getColorQty())
                 && equalsNullable(originalItem.getColorSetQty(), newItem.getColorSetQty())
                 && equalsNullable(originalItem.getMovieQty(), newItem.getMovieQty())
