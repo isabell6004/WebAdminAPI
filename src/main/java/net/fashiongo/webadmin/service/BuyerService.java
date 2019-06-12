@@ -119,12 +119,12 @@ public class BuyerService extends ApiService {
 
 		if (setAdminRetailerDetailParam.isChangeId() &&
 				tblRetailer.getUserID().equals(retailerDetail.getUserId())) {
-			Optional<AspnetUsers> duplicateUserOptional = aspnetUsersRepository.findById(retailerDetail.getUserId());
+			Optional<AspnetUsers> duplicateUserOptional = aspnetUsersRepository.findByUserName(retailerDetail.getUserId());
 			if (duplicateUserOptional.isPresent()) {
 				return -3;
 			}
 
-			Optional<AspnetUsers> aspnetUsersOptional = aspnetUsersRepository.findById(setAdminRetailerDetailParam.getPreUserId());
+			Optional<AspnetUsers> aspnetUsersOptional = aspnetUsersRepository.findByUserName(setAdminRetailerDetailParam.getPreUserId());
 			aspnetUsersOptional.ifPresent(aspnetUsers -> {
 
 				// save aspnet_Users
