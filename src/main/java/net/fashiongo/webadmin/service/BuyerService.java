@@ -117,8 +117,7 @@ public class BuyerService extends ApiService {
 		String statusBefore = tblRetailer.getActive().toUpperCase() + tblRetailer.getCurrentStatus();
 		String statusAfter = retailerDetail.getActive().toUpperCase() + retailerDetail.getCurrentStatus();
 
-		if (setAdminRetailerDetailParam.isChangeId() &&
-				tblRetailer.getUserID().equals(retailerDetail.getUserId())) {
+		if (setAdminRetailerDetailParam.isChangeId()) {
 			Optional<AspnetUsers> duplicateUserOptional = aspnetUsersRepository.findByUserName(retailerDetail.getUserId());
 			if (duplicateUserOptional.isPresent()) {
 				return -3;
