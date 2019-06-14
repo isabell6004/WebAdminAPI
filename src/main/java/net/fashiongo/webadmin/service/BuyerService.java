@@ -157,7 +157,7 @@ public class BuyerService extends ApiService {
 		tblRetailer.setInHouseMemo(retailerDetail.getInHouseMemo());
 		tblRetailer.setTerminatedNote(retailerDetail.getTerminatedNote());
 		tblRetailer.setWebSite(retailerDetail.getWebSite());
-		tblRetailer.setEMail(retailerDetail.getEmail());
+		tblRetailer.setEMail(retailerDetail.getUserId());
 		tblRetailer.setLastUser(retailerDetail.getLastUser());
 		tblRetailer.setLastModifiedDateTime(retailerDetail.getLastModifiedDateTime());
 		retailerCompanyRepository.save(tblRetailer);
