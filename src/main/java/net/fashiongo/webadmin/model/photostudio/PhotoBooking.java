@@ -68,6 +68,6 @@ public class PhotoBooking implements IPersistent, Serializable {
     @JoinColumn(name = "ModelScheduleID", referencedColumnName = "ModelScheduleID")
     private MapPhotoCalendarModel mapPhotoCalendarModel;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "photoOrder")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "photoBooking")
 	private PhotoOrderEntity photoOrder;
 }
