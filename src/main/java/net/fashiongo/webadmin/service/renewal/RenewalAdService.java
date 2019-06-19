@@ -2,18 +2,18 @@ package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.entity.primary.AdPageEntity;
 import net.fashiongo.webadmin.data.entity.primary.AdPageSpotEntity;
-import net.fashiongo.webadmin.data.model.ad.AdPage;
-import net.fashiongo.webadmin.data.model.ad.AdPageSpot;
-import net.fashiongo.webadmin.data.model.ad.ResultGetCategoryAdCalendar2;
-import net.fashiongo.webadmin.data.model.ad.ResultGetCategoryAdDetail;
+import net.fashiongo.webadmin.data.model.ad.*;
 import net.fashiongo.webadmin.data.model.ad.response.GetAdPageSettingResponse;
 import net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse;
 import net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdDetailResponse;
+import net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdItemForBidVendorResponse;
 import net.fashiongo.webadmin.data.repository.primary.AdPageEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.AdPageSpotEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.AdProcedureRepository;
+import net.fashiongo.webadmin.data.repository.primary.MapAdVendorItemEntityRepository;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdDetailParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -32,13 +32,16 @@ public class RenewalAdService {
 
 	private final AdProcedureRepository adProcedureRepository;
 
+	private final MapAdVendorItemEntityRepository mapAdVendorItemEntityRepository;
+
 	private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-M-dd");
 
 	@Autowired
-	public RenewalAdService(AdPageSpotEntityRepository adPageSpotEntityRepository, AdPageEntityRepository adPageEntityRepository, AdProcedureRepository adProcedureRepository) {
+	public RenewalAdService(AdPageSpotEntityRepository adPageSpotEntityRepository, AdPageEntityRepository adPageEntityRepository, AdProcedureRepository adProcedureRepository, MapAdVendorItemEntityRepository mapAdVendorItemEntityRepository) {
 		this.adPageSpotEntityRepository = adPageSpotEntityRepository;
 		this.adPageEntityRepository = adPageEntityRepository;
 		this.adProcedureRepository = adProcedureRepository;
+		this.mapAdVendorItemEntityRepository = mapAdVendorItemEntityRepository;
 	}
 
 	public GetAdPageSettingResponse getAdSetting(boolean showAll) {
@@ -118,6 +121,14 @@ public class RenewalAdService {
 		return GetCategoryAdDetailResponse.builder()
 				.biddingList(resultGetCategoryAdDetail.getBidding2List())
 				.curatedBestList(resultGetCategoryAdDetail.getCuratedBestList())
+				.build();
+	}
+
+	public GetCategoryAdItemForBidVendorResponse getCategoryAdItemForBidVendor(GetCategoryAdItemForBidVendorParameter parameter) {
+		List<CategoryAdItem> results = mapAdVendorItemEntityRepository.findCategoryAdItemOrderByListOrder(parameter.getAdID());
+
+		return GetCategoryAdItemForBidVendorResponse.builder()
+				.categoryAdItem(results)
 				.build();
 	}
 }

@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "Products")
@@ -307,4 +308,17 @@ public class ProductsEntity {
 	@OneToOne(optional = false)
 	@JoinColumn(name = "WholeSalerID",insertable = false,updatable = false)
 	private SimpleWholeSalerEntity wholeSaler;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ProductID")
+	private List<ProductImageEntity> productImageEntity;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "VendorCategoryID", insertable = false, updatable = false)
+	private VendorCategoryEntity vendorCategoryEntity;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ProductID")
+	private List<ProductVideoEntity> productVideoEntity;
+
 }

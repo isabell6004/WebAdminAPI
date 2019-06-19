@@ -3,10 +3,7 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Getter
@@ -42,4 +39,23 @@ public class SimpleWholeSalerEntity implements Serializable {
 
     @Column(name = "ImageServerID")
     private Integer imageServerID;
+
+    @Column(name = "AllowImage2Anony")
+    private boolean allowImage2Anony = true;
+
+    @Column(name = "AllowImmediateShopping")
+    private boolean allowImmediateShopping = true;
+
+    @Column(name = "AllowAccess2Y3")
+    private boolean allowAccess2Y3 = true;
+
+    @Column(name = "Vendor_Type")
+    private int vendorType = 1;
+
+    @Column(name = "FashionGoExclusive")
+    private Boolean fashionGoExclusive;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)
+    private SystemImageServersEntity systemImageServersEntity;
 }
