@@ -41,7 +41,6 @@ public class MapPhotoCalendarModel implements IPersistent, Serializable {
     @JoinColumn(name = "ModelID", referencedColumnName = "ModelID", insertable = false, updatable = false)
     private PhotoModel photoModel;
 
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ModelScheduleID", referencedColumnName = "ModelScheduleID")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mapPhotoCalendarModel")
 	private List<PhotoBooking> photoBooking;
 }

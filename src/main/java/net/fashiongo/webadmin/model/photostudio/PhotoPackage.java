@@ -41,7 +41,7 @@ public class PhotoPackage {
 	@Column(name = "CategoryID")
 	private Integer categoryId;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID", insertable = false, updatable = false)
 	private PhotoCategory photoCategory;
 }

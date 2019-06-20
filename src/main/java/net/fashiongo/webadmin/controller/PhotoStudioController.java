@@ -16,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Andy
@@ -53,7 +52,7 @@ public class PhotoStudioController {
         JsonResponse<PhotoPriceListResponse> response = new JsonResponse<>(false, null, null);
 
         try {
-			PhotoPriceListResponse result = photoStudioService.getPhotoPrices();
+            PhotoPriceListResponse result = photoStudioService.getPhotoPrices();
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
@@ -306,15 +305,13 @@ public class PhotoStudioController {
     }
 
     @GetMapping("/calendar/models-orders")
-    public JsonResponse<?> getPhotoCalendarModelsOrders(@RequestParam Map<String, String> parmMap) {
+    public JsonResponse<ModelsOrdersResponse> getPhotoCalendarModelsOrders(@RequestParam(name = "calendarID") int calendarId,
+                                                                           @RequestParam(name = "modelID", required = false) Integer modelId) {
         logger.debug("PhotoStudioController.getPhotoCalendarModelsOrders() called!!!");
-        JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
+        JsonResponse<ModelsOrdersResponse> response = new JsonResponse<>(false, null, null);
 
         try {
-            Integer calendarId = Integer.valueOf(parmMap.get("calendarID"));
-            Integer modelId = Optional.ofNullable(parmMap.get("modelID")).map(i -> Integer.valueOf(i)).orElse(null) ;
-
-            Map<String, Object> result = photoStudioService.getPhotoCalendarModelsOrders(calendarId, modelId);
+            ModelsOrdersResponse result = photoStudioService.getPhotoCalendarModelsOrders(calendarId, modelId);
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {

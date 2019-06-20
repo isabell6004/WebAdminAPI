@@ -19,7 +19,6 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class PhotoOrderEntityRepositoryCustomImpl implements PhotoOrderEntityRepositoryCustom {
@@ -36,8 +35,9 @@ public class PhotoOrderEntityRepositoryCustomImpl implements PhotoOrderEntityRep
         QPhotoPackage photoPackage = QPhotoPackage.photoPackage;
         QPhotoModel photoModel = QPhotoModel.photoModel;
 
-        JPAQuery<PhotoOrderEntity> jpaQuery = new JPAQuery<>(photostudioEntityManager);
-        List<PhotoOrderEntity> orders = jpaQuery.from(photoOrder)
+        return new JPAQuery<>(photostudioEntityManager)
+                .select(photoOrder).distinct()
+                .from(photoOrder)
                 .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
                 .innerJoin(photoOrder.photoBooking, photoBooking).fetchJoin()
                 .leftJoin(photoOrder.photoPackage, photoPackage).fetchJoin()
@@ -47,11 +47,7 @@ public class PhotoOrderEntityRepositoryCustomImpl implements PhotoOrderEntityRep
                         .and(Optional.ofNullable(modelId).map(photoModel.modelID::eq).orElse(null))
                         .and(photoOrder.isCancelledBy.isNull()))
                 .orderBy(photoOrder.categoryID.asc())
-                .fetch()
-                .stream()
-                .distinct()
-                .collect(Collectors.toList());
-        return orders;
+                .fetch();
     }
 
     @Override

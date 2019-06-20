@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.StreamUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -39,6 +40,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
@@ -672,7 +674,6 @@ public class PhotoStudioService extends ApiService {
                             .doubleValue());
                     photoCalendarResponse.setCalendarID(photoCalendarEntity.getCalendarID());
                     photoCalendarResponse.setDateName(photoCalendarEntity.getDateName());
-                    photoCalendarResponse.setDisabled(photoModel != null && photoModel.getType().equals("Plus") && !photoCalendarEntity.getDateName().equals("Friday")); // TODO: HARDCODED
                     photoCalendarResponse.setIsDelayed(photoCalendarEntity.getMapPhotoCalendarModel().stream()
                             .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
                             .anyMatch(mapPhotoCalendarModel -> mapPhotoCalendarModel.getPhotoBooking().stream()
@@ -708,27 +709,49 @@ public class PhotoStudioService extends ApiService {
         return photoCalendarResponseList;
     }
 
-    public Map<String, Object> getPhotoCalendarModelsOrders(Integer calendarId, Integer modelId) {
+    public ModelsOrdersResponse getPhotoCalendarModelsOrders(Integer calendarId, Integer modelId) {
+        ModelsOrdersResponse.ModelsOrdersResponseBuilder responseBuilder = ModelsOrdersResponse.builder();
 
-        Map<String, Object> result = new HashMap<String, Object>();
-        List<Object> params = new ArrayList<Object>();
-        params.add(calendarId);
-        params.add(modelId);
+        if(modelId == null) {
+            // models
+            List<MapPhotoCalendarModel> maps = mapPhotoCalendarModelRepository.findWithModelAndBookingByCalendarId(calendarId);
+            List<ModelUnit> modelUnits = maps.stream()
+                    .map(ModelUnit::of)
+                    .collect(Collectors.toList());
 
-        List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_GetCalendarModelsAndOrders", params, CalendarPhotoModel.class, SimplePhotoOrder.class, PhotoModel.class);
+            // modelsOption
+            List<PhotoModel> models = photoModelRepository.findAllByIsDeletedOrderByModelNameAsc(false);
 
-        List<PhotoModel> models = (List<PhotoModel>) r.get(0);
+            List<Integer> modelIds = models.stream()
+                    .map(PhotoModel::getModelID)
+                    .collect(Collectors.toList());
+            List<MapPhotoImage> firstImageMaps = getModelsFirstImageMaps(modelIds);
+            List<PhotoImage> firstImages = getModelsFirstImages(firstImageMaps);
 
+            List<ModelOption> modelsOption = models.stream()
+                    .map(model -> ModelOption.builder()
+                            .imageUrl(getFirstImageUrl(model.getModelID(), firstImageMaps, firstImages))
+                            .isBooked(modelUnits.stream()
+                                    .filter(modelUnit -> modelUnit.getModelId() != null)
+                                    .filter(modelUnit -> modelUnit.getModelId().equals(model.getModelID()))
+                                    .anyMatch(modelUnit -> modelUnit.getBookedUnit() != null && modelUnit.getBookedUnit().doubleValue() > 0))
+                            .modelId(model.getModelID())
+                            .modelName(model.getModelName())
+                            .build())
+                    .collect(Collectors.toList());
+
+            responseBuilder
+                    .models(modelUnits)
+                    .modelsOption(modelsOption);
+        }
+
+        // orders
         List<PhotoOrderEntity> photoOrders = photoOrderEntityRepository.getValidOrderWithModelByCalendarIdAndModelId(calendarId, modelId);
         List<SimplePhotoOrder> orders = SimplePhotoOrder.makeOrders(photoOrders);
 
-        List<PhotoModel> modelsOption = (List<PhotoModel>) r.get(2);
-
-        result.put("models", models);
-        result.put("orders", orders);
-        result.put("modelsOption", modelsOption);
-
-        return result;
+        return responseBuilder
+                .orders(orders)
+                .build();
     }
 
     @Transactional
@@ -914,29 +937,8 @@ public class PhotoStudioService extends ApiService {
                 .map(MapPhotoCalendarModel::getModelID)
                 .collect(Collectors.toList());
 
-        // get selected day's models' first image map
-        List<MapPhotoImage> selectedModelsFirstImageMaps = mapPhotoImageRepository.findModelImagesByModelIds(selectedDaysAvailableModelIds)
-                .stream()
-                // make Map<Integer, List<MapPhotoImage>>. key=(modelId), value=(MapPhotoImages of each model)
-                .collect(Collectors.toMap(MapPhotoImage::getReferenceID, mapPhotoImage -> {
-                    List<MapPhotoImage> imageIds = new ArrayList<>();
-                    imageIds.add(mapPhotoImage);
-                    return imageIds;
-                }, (mapPhotoImages, mapPhotoImages2) -> {
-                    mapPhotoImages.addAll(mapPhotoImages2);
-                    return mapPhotoImages;
-                }))
-                .values()
-                .stream()
-                .peek(mapPhotoImages -> mapPhotoImages.sort(Comparator.comparing(MapPhotoImage::getListOrder)))
-                // find first Image. There is no mapPhotoImage that it's size is 0.
-                .map(mapPhotoImages -> mapPhotoImages.get(0))
-                .collect(Collectors.toList());
-
-        // get selected day's models' first images
-        List<PhotoImage> selectedModelsFirstImages = photoImageRepository.findAllByImageIDIn(selectedModelsFirstImageMaps.stream()
-                .map(MapPhotoImage::getImageID)
-                .collect(Collectors.toList()));
+        List<MapPhotoImage> selectedModelsFirstImageMaps = getModelsFirstImageMaps(selectedDaysAvailableModelIds);
+        List<PhotoImage> selectedModelsFirstImages = getModelsFirstImages(selectedModelsFirstImageMaps);
 
         // selected day's models' other available days(after now)
         List<MapPhotoCalendarModel> selectedModelsOtherDays = mapPhotoCalendarModelRepository.findAvailableMapAfterNowByModelIdsAndNotTheDate(selectedDaysAvailableModelIds, selectedDate, isFullModelShot)
@@ -967,15 +969,7 @@ public class PhotoStudioService extends ApiService {
                                 .filter(otherDays -> otherDays.getModelID().equals(models.getModelID()))
                                 .map(otherDays -> otherDays.getPhotoCalendarEntity().getTheDate().toLocalDate().toString())
                                 .collect(Collectors.toList()));
-                        response.setImageUrl(selectedModelsFirstImageMaps.stream()
-                                .filter(mapPhotoImage -> mapPhotoImage.getReferenceID().equals(models.getModelID()))
-                                .findFirst()
-                                .map(mapPhotoImage -> selectedModelsFirstImages.stream()
-                                        .filter(photoImage -> photoImage.getImageID().equals(mapPhotoImage.getImageID()))
-                                        .findFirst()
-                                        .map(PhotoImage::getImageUrl)
-                                        .orElse(null))
-                                .orElse(null));
+                        response.setImageUrl(getFirstImageUrl(models.getModelID(), selectedModelsFirstImageMaps, selectedModelsFirstImages));
 
                         return response;
                     })
@@ -1713,5 +1707,45 @@ public class PhotoStudioService extends ApiService {
                             || Optional.ofNullable(item.getColorSwatchQty()).orElse(0) < 0
                             || Optional.ofNullable(item.getModelSwatchQty()).orElse(0) < 0
                             || Optional.ofNullable(item.getMovieClipQty()).orElse(0) < 0);
+    }
+
+    private List<MapPhotoImage> getModelsFirstImageMaps(List<Integer> modelIds) {
+        // get selected day's models' first image maps
+        return mapPhotoImageRepository.findModelImagesByModelIds(modelIds)
+                .stream()
+                // make Map<Integer, List<MapPhotoImage>>. key=(modelId), value=(MapPhotoImages of each model)
+                .collect(Collectors.toMap(MapPhotoImage::getReferenceID, mapPhotoImage -> {
+                    List<MapPhotoImage> imageIds = new ArrayList<>();
+                    imageIds.add(mapPhotoImage);
+                    return imageIds;
+                }, (mapPhotoImages, mapPhotoImages2) -> {
+                    mapPhotoImages.addAll(mapPhotoImages2);
+                    return mapPhotoImages;
+                }))
+                .values()
+                .stream()
+                .peek(mapPhotoImages -> mapPhotoImages.sort(Comparator.comparing(MapPhotoImage::getListOrder)))
+                // find first Image. There is no mapPhotoImage that it's size is 0.
+                .map(mapPhotoImages -> mapPhotoImages.get(0))
+                .collect(Collectors.toList());
+    }
+
+    private List<PhotoImage> getModelsFirstImages(List<MapPhotoImage> firstImageMaps) {
+        // get selected day's models' first images
+        return photoImageRepository.findAllByImageIDIn(firstImageMaps.stream()
+                .map(MapPhotoImage::getImageID)
+                .collect(Collectors.toList()));
+    }
+
+    private String getFirstImageUrl(Integer modelId, List<MapPhotoImage> firstImageMaps, List<PhotoImage> firstImages) {
+        return firstImageMaps.stream()
+                .filter(mapPhotoImage -> mapPhotoImage.getReferenceID().equals(modelId))
+                .findFirst()
+                .map(mapPhotoImage -> firstImages.stream()
+                        .filter(photoImage -> photoImage.getImageID().equals(mapPhotoImage.getImageID()))
+                        .findFirst()
+                        .map(PhotoImage::getImageUrl)
+                        .orElse(null))
+                .orElse(null);
     }
 }
