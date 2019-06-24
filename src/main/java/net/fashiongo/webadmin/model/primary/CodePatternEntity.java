@@ -1,0 +1,29 @@
+package net.fashiongo.webadmin.model.primary;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "Code_Pattern")
+public class CodePatternEntity implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PatternID")
+    private Integer patternId;
+
+    @Column(name = "PatternName")
+    private String patternName;
+
+    @Column(name = "Active")
+    private Boolean active;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PatternID")
+    private List<MapPatternCategory> mapPatternCategoryList;
+}
