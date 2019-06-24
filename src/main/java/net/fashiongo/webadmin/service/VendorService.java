@@ -17,15 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQuery;
-
-import io.netty.util.internal.StringUtil;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
@@ -117,6 +111,9 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private SecurityUserRepository securityUserRepository;
+
+	@Autowired
+	private VendorBlockedEntityRepository vendorBlockedEntityRepository;
 	
     @PersistenceContext(unitName = "primaryEntityManager")
     private EntityManager entityManager;
@@ -202,6 +199,24 @@ public class VendorService extends ApiService {
 			result = (List<VwVendorBlocked>) vwVendorBlockedRepository.findAll();
 		}
 		
+		return result;
+	}
+
+	public List<VendorBlockReason> getVendorBlockEntityList(GetVendorBlockListParameter parameter) throws ParseException {
+		List<VendorBlockReason> result = null;
+		if (parameter.getSearchType().equals("ID")) {
+			result = vendorBlockedEntityRepository.findByBlockID(Integer.parseInt(parameter.getSearchKeyword()));
+		} else if (parameter.getSearchType().equals("Company")) {
+			result = vendorBlockedEntityRepository.findByCompanyNameContainingIgnoreCase(parameter.getSearchKeyword());
+		} else if (parameter.getSearchType().equals("Date")) {
+			LocalDateTime fromDate = LocalDateTime.parse(parameter.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME);
+			LocalDateTime toDate = LocalDateTime.parse(parameter.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME).plusDays(1).minusSeconds(1);
+			result = vendorBlockedEntityRepository.findByBlockedOnBetween(fromDate, toDate);
+		} else if (parameter.getSearchType().equals("Reason")) {
+			result = vendorBlockedEntityRepository.findByBlockReasonTitle(parameter.getSearchKeyword());
+		} else {
+			result = vendorBlockedEntityRepository.findAllList();
+		}
 		return result;
 	}
 	

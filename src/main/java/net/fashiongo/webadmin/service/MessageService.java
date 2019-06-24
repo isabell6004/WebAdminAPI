@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.model.primary.*;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +20,6 @@ import org.springframework.util.CollectionUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.fashiongo.webadmin.dao.primary.ContactUsRepository;
-import net.fashiongo.webadmin.dao.primary.MessageCategoryRepository;
-import net.fashiongo.webadmin.dao.primary.MessageMapRepository;
-import net.fashiongo.webadmin.dao.primary.MessageRepository;
-import net.fashiongo.webadmin.dao.primary.TblRetailerNewsRepository;
-import net.fashiongo.webadmin.dao.primary.VendorNewsDetailRepository;
-import net.fashiongo.webadmin.dao.primary.VendorNewsViewRepository;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.MessageReply;
 import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
@@ -53,13 +48,6 @@ import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerRatingRespo
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorRatingResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
-import net.fashiongo.webadmin.model.primary.ContactUs;
-import net.fashiongo.webadmin.model.primary.Message;
-import net.fashiongo.webadmin.model.primary.MessageCategory;
-import net.fashiongo.webadmin.model.primary.MessageMap;
-import net.fashiongo.webadmin.model.primary.TblRetailerNews;
-import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
-import net.fashiongo.webadmin.model.primary.VendorNewsView;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
@@ -90,6 +78,9 @@ public class MessageService extends ApiService {
 	
 	@Autowired
 	MessageMapRepository messageMapRepository;
+
+	@Autowired
+	NewsEntityRepository newsEntityRepository;
 	
 	@Autowired
 	@Qualifier("serviceJsonClient")
@@ -196,7 +187,12 @@ public class MessageService extends ApiService {
 		VendorNewsView result = vendorNewsViewRepository.findOneByNewsID(parameters.getNewsID());
 		return result;
 	}
-	
+
+	public NewsRecipient getNewsEntityDetail (GetVendorNewsDetailParameter parameter) {
+		NewsRecipient result = newsEntityRepository.findOneByNewsID(parameter.getNewsID());
+		return result;
+	}
+
 	/**
 	 * 
 	 * SetVendorNews

@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fashiongo.webadmin.model.primary.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,11 +34,6 @@ import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyRespons
 import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
-import net.fashiongo.webadmin.model.primary.MessageCategory;
-import net.fashiongo.webadmin.model.primary.RetailerCompany;
-import net.fashiongo.webadmin.model.primary.TblRetailerNews;
-import net.fashiongo.webadmin.model.primary.VendorNewsDetail;
-import net.fashiongo.webadmin.model.primary.VendorNewsView;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -106,6 +102,15 @@ public class MessageServiceTest {
 		param.setNewsID(18593);
 		VendorNewsView result = messageService.getVendorNewsDetail(param);
 		assertNotNull(result);
+	}
+
+	@Test
+	public void testGetVendorNewsEntity() {
+		GetVendorNewsDetailParameter param = new GetVendorNewsDetailParameter();
+		param.setNewsID(18593);
+		NewsRecipient result = messageService.getNewsEntityDetail(param);
+		assertNotNull(result);
+		assertTrue(result.getRecipient().equals("All"));
 	}
 
 	/**

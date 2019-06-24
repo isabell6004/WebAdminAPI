@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.util.List;
 
+import net.fashiongo.webadmin.model.primary.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,13 +34,6 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParamete
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
-import net.fashiongo.webadmin.model.primary.EntityActionLog;
-import net.fashiongo.webadmin.model.primary.ListVendorImageType;
-import net.fashiongo.webadmin.model.primary.LogCommunication;
-import net.fashiongo.webadmin.model.primary.Vendor;
-import net.fashiongo.webadmin.model.primary.VendorContent;
-import net.fashiongo.webadmin.model.primary.VendorContract;
-import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 
 /**
  * @author roy
@@ -124,7 +118,18 @@ public class VendorServiceTest {
 			assertNotNull(result.get(0));
 		}
 	}
-	
+
+	@Test
+	public void testGetVendorBlockEntityList() throws ParseException {
+		GetVendorBlockListParameter parameters = new GetVendorBlockListParameter();
+		parameters.setSearchType("");
+		parameters.setSearchKeyword("");
+		List<VendorBlockReason> result = vendorService.getVendorBlockEntityList(parameters);
+		if(!CollectionUtils.isEmpty(result)) {
+			assertNotNull(result.get(0));
+		}
+	}
+
 	/**
 	 * 
 	 * Description Example
