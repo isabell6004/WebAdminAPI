@@ -1,8 +1,7 @@
 package net.fashiongo.webadmin.dao.primary.custom;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
-import net.fashiongo.webadmin.model.primary.NewsRecipient;
+import net.fashiongo.webadmin.model.primary.NewsEntity;
 import net.fashiongo.webadmin.model.primary.QNewsEntity;
 import net.fashiongo.webadmin.model.primary.QReadOnlyWholeSalerNameEntity;
 import org.springframework.stereotype.Repository;
@@ -19,24 +18,16 @@ public class NewsEntityRepositoryCustomImpl implements NewsEntityRepositoryCusto
 
     @Override
     @Transactional
-    public NewsRecipient findOneByNewsID(Integer newsID) {
+    public NewsEntity findOneByNewsID(Integer newsID) {
         QNewsEntity newsEntity = QNewsEntity.newsEntity;
         QReadOnlyWholeSalerNameEntity readOnlyWholeSalerNameEntity = QReadOnlyWholeSalerNameEntity.readOnlyWholeSalerNameEntity;
 
-        Tuple queryResult = new JPAQuery<>(newsEntityManger)
-                .select(newsEntity, readOnlyWholeSalerNameEntity.companyName)
+        NewsEntity result = new JPAQuery<>(newsEntityManger)
+                .select(newsEntity)
                 .from(newsEntity)
-                .leftJoin(newsEntity.readOnlyWholeSalerNameEntity, readOnlyWholeSalerNameEntity)
+                .leftJoin(newsEntity.readOnlyWholeSalerNameEntity, readOnlyWholeSalerNameEntity).fetchJoin()
                 .where(newsEntity.newsId.eq(newsID))
                 .fetchOne();
-
-        NewsRecipient result = new NewsRecipient();
-        result.setNews(queryResult.get(newsEntity));
-        if (queryResult.get(readOnlyWholeSalerNameEntity.companyName) == null) {
-            result.setRecipient("All");
-        } else {
-            result.setRecipient(queryResult.get(readOnlyWholeSalerNameEntity.companyName));
-        }
 
         return result;
     }

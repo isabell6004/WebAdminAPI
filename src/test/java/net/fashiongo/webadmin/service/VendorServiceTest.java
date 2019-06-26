@@ -124,7 +124,7 @@ public class VendorServiceTest {
 		GetVendorBlockListParameter parameters = new GetVendorBlockListParameter();
 		parameters.setSearchType("");
 		parameters.setSearchKeyword("");
-		List<VendorBlockReason> result = vendorService.getVendorBlockEntityList(parameters);
+		List<VendorBlockedEntity> result = vendorService.getVendorBlockEntityList(parameters);
 		if(!CollectionUtils.isEmpty(result)) {
 			assertNotNull(result.get(0));
 		}

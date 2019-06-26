@@ -202,8 +202,8 @@ public class VendorService extends ApiService {
 		return result;
 	}
 
-	public List<VendorBlockReason> getVendorBlockEntityList(GetVendorBlockListParameter parameter) throws ParseException {
-		List<VendorBlockReason> result = null;
+	public List<VendorBlockedEntity> getVendorBlockEntityList(GetVendorBlockListParameter parameter) throws ParseException {
+		List<VendorBlockedEntity> result = null;
 		if (parameter.getSearchType().equals("ID")) {
 			result = vendorBlockedEntityRepository.findByBlockID(Integer.parseInt(parameter.getSearchKeyword()));
 		} else if (parameter.getSearchType().equals("Company")) {

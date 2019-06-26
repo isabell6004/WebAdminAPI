@@ -188,8 +188,8 @@ public class MessageService extends ApiService {
 		return result;
 	}
 
-	public NewsRecipient getNewsEntityDetail (GetVendorNewsDetailParameter parameter) {
-		NewsRecipient result = newsEntityRepository.findOneByNewsID(parameter.getNewsID());
+	public NewsEntity getNewsEntityDetail (GetVendorNewsDetailParameter parameter) {
+		NewsEntity result = newsEntityRepository.findOneByNewsID(parameter.getNewsID());
 		return result;
 	}
 

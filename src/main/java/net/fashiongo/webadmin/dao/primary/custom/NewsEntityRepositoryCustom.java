@@ -1,7 +1,7 @@
 package net.fashiongo.webadmin.dao.primary.custom;
 
-import net.fashiongo.webadmin.model.primary.NewsRecipient;
+import net.fashiongo.webadmin.model.primary.NewsEntity;
 
 public interface NewsEntityRepositoryCustom {
-    NewsRecipient findOneByNewsID(Integer newsID);
+    NewsEntity findOneByNewsID(Integer newsID);
 }

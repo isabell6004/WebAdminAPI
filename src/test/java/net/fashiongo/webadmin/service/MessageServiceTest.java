@@ -108,9 +108,8 @@ public class MessageServiceTest {
 	public void testGetVendorNewsEntity() {
 		GetVendorNewsDetailParameter param = new GetVendorNewsDetailParameter();
 		param.setNewsID(18593);
-		NewsRecipient result = messageService.getNewsEntityDetail(param);
+		NewsEntity result = messageService.getNewsEntityDetail(param);
 		assertNotNull(result);
-		assertTrue(result.getRecipient().equals("All"));
 	}
 
 	/**
