@@ -53,7 +53,7 @@ public class NewsEntity implements Serializable {
     private boolean active;
 
     @Column(name = "ActiveOld")
-    private Boolean activeOld;
+    private String activeOld;
 
     @Column(name = "ShowBanner")
     private boolean showBanner;

@@ -22,8 +22,8 @@ public class CodeFabricEntity implements Serializable {
     @Column(name = "FabricName")
     private String fabricName;
 
-    @Column(name = "Active")
-    private Boolean active;
+    @Column(name = "Active", nullable = false)
+    private boolean active;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "FabricID")

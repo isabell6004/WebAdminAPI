@@ -22,8 +22,8 @@ public class CodeLengthEntity implements Serializable {
     @Column(name = "LengthName")
     private String lengthName;
 
-    @Column(name = "Active")
-    private Boolean active;
+    @Column(name = "Active", nullable = false)
+    private boolean active;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "LengthID")

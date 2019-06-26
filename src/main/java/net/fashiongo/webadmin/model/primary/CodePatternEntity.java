@@ -22,8 +22,8 @@ public class CodePatternEntity implements Serializable {
     @Column(name = "PatternName")
     private String patternName;
 
-    @Column(name = "Active")
-    private Boolean active;
+    @Column(name = "Active", nullable = false)
+    private boolean active;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "PatternID")

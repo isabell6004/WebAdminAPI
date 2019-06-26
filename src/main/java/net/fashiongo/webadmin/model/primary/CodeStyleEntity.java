@@ -22,7 +22,7 @@ public class CodeStyleEntity implements Serializable {
     @Column(name = "StyleName")
     private String styleName;
 
-    @Column(name = "Active")
+    @Column(name = "Active", nullable = false)
     private boolean active;
 
     @OneToMany(fetch = FetchType.LAZY)

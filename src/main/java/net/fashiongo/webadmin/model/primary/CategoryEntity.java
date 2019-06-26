@@ -28,29 +28,29 @@ public class CategoryEntity implements Serializable {
     @Column(name = "CategoryDescription")
     private String categoryDescription;
 
-    @Column(name = "ParentCategoryID")
-    private Integer parentCategoryId;
+    @Column(name = "ParentCategoryID", nullable = false)
+    private int parentCategoryId;
 
     @Column(name = "ParentParentCategoryID")
     private Integer parentParentCategoryId;
 
-    @Column(name = "Lvl")
-    private Integer lvl;
+    @Column(name = "Lvl", nullable = false)
+    private int lvl;
 
     @Column(name = "TitleImage")
     private String titleImage;
 
-    @Column(name = "IsLandingPage")
-    private Boolean isLandingPage;
+    @Column(name = "IsLandingPage", nullable = false)
+    private boolean isLandingPage;
 
-    @Column(name = "IsFeatured")
-    private Boolean isFeatured;
+    @Column(name = "IsFeatured", nullable = false)
+    private boolean isFeatured;
 
-    @Column(name = "ListOrder")
-    private Integer listOrder;
+    @Column(name = "ListOrder", nullable = false)
+    private int listOrder;
 
-    @Column(name = "Active")
-    private Boolean active;
+    @Column(name = "Active", nullable = false)
+    private boolean active;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
