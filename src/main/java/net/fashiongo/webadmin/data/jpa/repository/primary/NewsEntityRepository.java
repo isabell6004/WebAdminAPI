@@ -1,7 +1,6 @@
-package net.fashiongo.webadmin.dao.primary;
+package net.fashiongo.webadmin.data.jpa.repository.primary;
 
-import net.fashiongo.webadmin.dao.primary.custom.NewsEntityRepositoryCustom;
-import net.fashiongo.webadmin.model.primary.NewsEntity;
+import net.fashiongo.webadmin.data.jpa.entity.primary.NewsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NewsEntityRepository extends JpaRepository<NewsEntity, Integer>, NewsEntityRepositoryCustom {

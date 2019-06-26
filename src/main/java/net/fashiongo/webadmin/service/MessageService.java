@@ -8,6 +8,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.jpa.entity.primary.NewsEntity;
+import net.fashiongo.webadmin.data.jpa.repository.primary.NewsEntityRepository;
 import net.fashiongo.webadmin.model.primary.*;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;

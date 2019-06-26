@@ -1,7 +1,6 @@
-package net.fashiongo.webadmin.dao.primary;
+package net.fashiongo.webadmin.data.jpa.repository.primary;
 
-import net.fashiongo.webadmin.dao.primary.custom.VendorBlockedEntityRepositoryCustom;
-import net.fashiongo.webadmin.model.primary.VendorBlockedEntity;
+import net.fashiongo.webadmin.data.jpa.entity.primary.VendorBlockedEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VendorBlockedEntityRepository extends JpaRepository<VendorBlockedEntity, Integer>, VendorBlockedEntityRepositoryCustom {

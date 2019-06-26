@@ -1,9 +1,9 @@
-package net.fashiongo.webadmin.dao.primary.custom;
+package net.fashiongo.webadmin.data.jpa.repository.primary;
 
 import com.querydsl.jpa.impl.JPAQuery;
-import net.fashiongo.webadmin.model.primary.NewsEntity;
-import net.fashiongo.webadmin.model.primary.QNewsEntity;
-import net.fashiongo.webadmin.model.primary.QReadOnlyWholeSalerNameEntity;
+import net.fashiongo.webadmin.data.jpa.entity.primary.NewsEntity;
+import net.fashiongo.webadmin.data.jpa.entity.primary.QNewsEntity;
+import net.fashiongo.webadmin.data.jpa.entity.primary.QReadOnlyWholeSalerNameEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

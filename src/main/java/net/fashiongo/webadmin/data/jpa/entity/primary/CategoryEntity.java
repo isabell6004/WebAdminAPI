@@ -1,8 +1,12 @@
-package net.fashiongo.webadmin.model.primary;
+package net.fashiongo.webadmin.data.jpa.entity.primary;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.fashiongo.webadmin.model.primary.MapFabricCategory;
+import net.fashiongo.webadmin.model.primary.MapLengthCategory;
+import net.fashiongo.webadmin.model.primary.MapPatternCategory;
+import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 
 import javax.persistence.*;
 import java.io.Serializable;

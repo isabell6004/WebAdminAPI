@@ -1,14 +1,14 @@
 package net.fashiongo.webadmin.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
+import net.fashiongo.webadmin.data.jpa.entity.primary.NewsEntity;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
+import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
+import net.fashiongo.webadmin.model.pojo.message.parameter.*;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,22 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
-import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
-import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageReadYNParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
-import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
-import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
-import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

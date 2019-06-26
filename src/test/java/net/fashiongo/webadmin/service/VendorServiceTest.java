@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.util.List;
 
+import net.fashiongo.webadmin.data.jpa.entity.primary.VendorBlockedEntity;
 import net.fashiongo.webadmin.model.primary.*;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -1,6 +1,6 @@
-package net.fashiongo.webadmin.dao.primary.custom;
+package net.fashiongo.webadmin.data.jpa.repository.primary;
 
-import net.fashiongo.webadmin.model.primary.VendorBlockedEntity;
+import net.fashiongo.webadmin.data.jpa.entity.primary.VendorBlockedEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;

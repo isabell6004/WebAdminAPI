@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-		basePackages = "net.fashiongo.webadmin.dao.primary",
+		basePackages = {"net.fashiongo.webadmin.dao.primary","net.fashiongo.webadmin.data.jpa.repository.primary"},
 		entityManagerFactoryRef = "primaryEntityManager",
 		transactionManagerRef = "primaryTransactionManager"
 )
@@ -44,7 +44,8 @@ public class PrimaryDS {
 	public LocalContainerEntityManagerFactoryBean primaryEntityManager(EntityManagerFactoryBuilder builder, @Qualifier("primaryDataSource") DataSource dataSource) {
 		return builder
 				.dataSource(dataSource)
-				.packages("net.fashiongo.webadmin.model.primary")
+				.packages("net.fashiongo.webadmin.model.primary","net.fashiongo.webadmin.data.jpa.entity.primary")
+				.persistenceUnit("primaryEntityManager")
 				.build();
 	}
 	
