@@ -1,8 +1,6 @@
 package net.fashiongo.webadmin.service;
 
 import net.fashiongo.webadmin.dao.primary.*;
-import net.fashiongo.webadmin.data.jpa.entity.primary.VendorBlockedEntity;
-import net.fashiongo.webadmin.data.jpa.repository.primary.VendorBlockedEntityRepository;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -94,9 +92,6 @@ public class VendorService extends ApiService {
 	@Autowired
 	private SecurityUserRepository securityUserRepository;
 
-	@Autowired
-	private VendorBlockedEntityRepository vendorBlockedEntityRepository;
-	
     @PersistenceContext(unitName = "primaryEntityManager")
     private EntityManager entityManager;
 	
@@ -181,24 +176,6 @@ public class VendorService extends ApiService {
 			result = (List<VwVendorBlocked>) vwVendorBlockedRepository.findAll();
 		}
 		
-		return result;
-	}
-
-	public List<VendorBlockedEntity> getVendorBlockEntityList(GetVendorBlockListParameter parameter) throws ParseException {
-		List<VendorBlockedEntity> result = null;
-		if (parameter.getSearchType().equals("ID")) {
-			result = vendorBlockedEntityRepository.findByBlockID(Integer.parseInt(parameter.getSearchKeyword()));
-		} else if (parameter.getSearchType().equals("Company")) {
-			result = vendorBlockedEntityRepository.findByCompanyNameContainingIgnoreCase(parameter.getSearchKeyword());
-		} else if (parameter.getSearchType().equals("Date")) {
-			LocalDateTime fromDate = LocalDateTime.parse(parameter.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME);
-			LocalDateTime toDate = LocalDateTime.parse(parameter.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME).plusDays(1).minusSeconds(1);
-			result = vendorBlockedEntityRepository.findByBlockedOnBetween(fromDate, toDate);
-		} else if (parameter.getSearchType().equals("Reason")) {
-			result = vendorBlockedEntityRepository.findByBlockReasonTitle(parameter.getSearchKeyword());
-		} else {
-			result = vendorBlockedEntityRepository.findAllList();
-		}
 		return result;
 	}
 	

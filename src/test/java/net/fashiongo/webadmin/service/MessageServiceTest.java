@@ -1,6 +1,5 @@
 package net.fashiongo.webadmin.service;
 
-import net.fashiongo.webadmin.data.jpa.entity.primary.NewsEntity;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
 import net.fashiongo.webadmin.model.pojo.message.RetailerNews;
@@ -91,14 +90,6 @@ public class MessageServiceTest {
 		GetVendorNewsDetailParameter param = new GetVendorNewsDetailParameter();
 		param.setNewsID(18593);
 		VendorNewsView result = messageService.getVendorNewsDetail(param);
-		assertNotNull(result);
-	}
-
-	@Test
-	public void testGetVendorNewsEntity() {
-		GetVendorNewsDetailParameter param = new GetVendorNewsDetailParameter();
-		param.setNewsID(18593);
-		NewsEntity result = messageService.getNewsEntityDetail(param);
 		assertNotNull(result);
 	}
 

@@ -9,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.util.List;
 
-import net.fashiongo.webadmin.data.jpa.entity.primary.VendorBlockedEntity;
 import net.fashiongo.webadmin.model.primary.*;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -115,17 +114,6 @@ public class VendorServiceTest {
 		parameters.setSearchType("");
 		parameters.setSearchKeyword("");
 		List<VwVendorBlocked> result = vendorService.getVendorBlockList(parameters);
-		if(!CollectionUtils.isEmpty(result)) {
-			assertNotNull(result.get(0));
-		}
-	}
-
-	@Test
-	public void testGetVendorBlockEntityList() throws ParseException {
-		GetVendorBlockListParameter parameters = new GetVendorBlockListParameter();
-		parameters.setSearchType("");
-		parameters.setSearchKeyword("");
-		List<VendorBlockedEntity> result = vendorService.getVendorBlockEntityList(parameters);
 		if(!CollectionUtils.isEmpty(result)) {
 			assertNotNull(result.get(0));
 		}
