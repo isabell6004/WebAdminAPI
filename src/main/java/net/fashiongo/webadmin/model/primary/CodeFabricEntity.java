@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.model.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ public class CodeFabricEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FabricID")
+    @Setter(AccessLevel.NONE)
     private Integer fabricId;
 
     @Column(name = "FabricName")
