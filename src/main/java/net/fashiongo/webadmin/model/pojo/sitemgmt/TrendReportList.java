@@ -58,6 +58,10 @@ public class TrendReportList {
 	@JsonProperty("Sticky")
 	private Boolean sticky;
 
+	private Integer showId;
+
+	private Integer showScheduleId;
+
 	public Long getRow() {
 		return row;
 	}
@@ -193,4 +197,12 @@ public class TrendReportList {
 	public void setSticky(Boolean sticky) {
 		this.sticky = sticky;
 	}
+
+	public Integer getShowId() { return showId; }
+
+	public void setShowId(Integer showId) { this.showId = showId; }
+
+	public Integer getShowScheduleId() { return showScheduleId; }
+
+	public void setShowScheduleId(Integer showScheduleId) { this.showScheduleId = showScheduleId; }
 }

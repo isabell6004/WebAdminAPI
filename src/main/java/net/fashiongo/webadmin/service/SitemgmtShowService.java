@@ -5,11 +5,11 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ShowInfoDto;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ShowScheduleDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1008,5 +1008,50 @@ public class SitemgmtShowService extends ApiService {
 		result.setResultWrapper(true, 1, mapID, MSG_DELETE_SUCCESS, mapID);
 
 		return result;
+	}
+
+	/**
+	 *
+	 * get simple active show list
+	 *
+	 * @author Kelly Back
+	 * @since 06-27-2019
+	 */
+	public List<ShowInfoDto> getSimpleActiveShows() {
+
+		List<ListShow> shows = listShowRepository.findByActiveOrderByShowName(true);
+
+		if (CollectionUtils.isEmpty(shows)) {
+			return Collections.emptyList();
+		}
+
+		List<Integer> showIds = shows.stream()
+				.map(ListShow::getShowID)
+				.collect(Collectors.toList());
+
+		List<ShowInfoDto> results = new ArrayList<>();
+		List<ShowSchedule> schedules = showScheduleRepository.findByShowIDInAndActive(showIds, true);
+
+		Map<Integer, List<ShowScheduleDto>> tempScheduleMap = new HashMap<>();
+		if (!CollectionUtils.isEmpty(schedules)) {
+			for (ShowSchedule s : schedules) {
+				List<ShowScheduleDto> tempScheduleList;
+				if (tempScheduleMap.containsKey(s.getShowID())) {
+					tempScheduleList = tempScheduleMap.get(s.getShowID());
+					tempScheduleList.add(ShowScheduleDto.build(s));
+					tempScheduleMap.replace(s.getShowID(), tempScheduleList);
+				} else {
+					tempScheduleList = new ArrayList<>();
+					tempScheduleList.add(ShowScheduleDto.build(s));
+					tempScheduleMap.put(s.getShowID(), tempScheduleList);
+				}
+			}
+		}
+
+		for (ListShow s : shows) {
+			results.add(ShowInfoDto.build(s, tempScheduleMap.get(s.getShowID())));
+		}
+
+		return results;
 	}
 }

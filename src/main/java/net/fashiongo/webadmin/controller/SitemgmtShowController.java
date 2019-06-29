@@ -5,12 +5,10 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.ShowInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +41,7 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 @RestController
 @Consumes(MediaType.APPLICATION_JSON)
 @RequestMapping(value = "/sitemgmt", produces = "application/json")
+@Slf4j
 public class SitemgmtShowController {
 
 	@Autowired
@@ -504,4 +503,23 @@ public class SitemgmtShowController {
 		return results;
 	}
 
+	/**
+	 * @author Kelly Back
+	 * @since 06-27-2019
+	 */
+	@GetMapping(value = "show/simpleActiveShows")
+	public JsonResponse<List<ShowInfoDto>> getSimpleActiveShows() {
+		JsonResponse<List<ShowInfoDto>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<ShowInfoDto> result = siteMgmtShowService.getSimpleActiveShows();
+			response.setSuccess(true);
+			response.setData(result);
+		} catch(Exception ex) {
+			log.error("Exception Error: ", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
 }
