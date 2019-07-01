@@ -1,8 +1,16 @@
 package net.fashiongo.webadmin.controller;
 
 
-import java.util.List;
-
+import net.fashiongo.webadmin.data.model.ad.response.GetAdPageSettingResponse;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.*;
+import net.fashiongo.webadmin.model.pojo.ad.response.*;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
+import net.fashiongo.webadmin.model.primary.CodeBodySize;
+import net.fashiongo.webadmin.service.AdService;
+import net.fashiongo.webadmin.service.renewal.RenewalAdService;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,40 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.ad.parameter.DelCategoryAdItemParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdCalendarParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdDetailParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchVendorParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdListParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryAdListParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryListAdCountParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SaveCategoryAdItemForBidVendorParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddPageParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddSpotSettingParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SetCategoryAdItemParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SpotIDParameter;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetADSettingResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdCalendarResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdDetailResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchVendorResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdListResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryAdListResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryListAdCountResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetSpotCheckResponse;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
-import net.fashiongo.webadmin.model.primary.CodeBodySize;
-import net.fashiongo.webadmin.service.AdService;
-import net.fashiongo.webadmin.utility.JsonResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping(value="/ad", produces = "application/json")
 public class AdController {
 	@Autowired
 	AdService adService;
+
+	@Autowired
+	RenewalAdService renewalAdService;
 	
 	/**
 	 * 
@@ -54,10 +38,10 @@ public class AdController {
 	 * @return GetADSettingResponse
 	 */
 	@RequestMapping(value = "getadsetting", method = RequestMethod.POST)
-	public JsonResponse<GetADSettingResponse> getAdsetting(@RequestBody JSONObject parameter) {
+	public JsonResponse<GetAdPageSettingResponse> getAdsetting(@RequestBody JSONObject parameter) {
 		boolean showAll = (boolean) parameter.get("showAll");
-		GetADSettingResponse result = adService.getAdsetting(showAll);
-		return new JsonResponse<GetADSettingResponse>(true, null, 0, result);
+		GetAdPageSettingResponse result = renewalAdService.getAdSetting(showAll);
+		return new JsonResponse<GetAdPageSettingResponse>(true, null, 0, result);
 	}
 	
 	/**
