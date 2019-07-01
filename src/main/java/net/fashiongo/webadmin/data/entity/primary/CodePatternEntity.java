@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.data.jpa.entity.primary;
+package net.fashiongo.webadmin.data.entity.primary;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,10 +1,10 @@
-package net.fashiongo.webadmin.data.jpa.repository.primary;
+package net.fashiongo.webadmin.data.repository.primary;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.jpa.entity.primary.QListVendorBlockReasonEntity;
 import net.fashiongo.webadmin.data.jpa.entity.primary.QReadOnlyWholeSalerNameEntity;
 import net.fashiongo.webadmin.data.jpa.entity.primary.QVendorBlockedEntity;
-import net.fashiongo.webadmin.data.jpa.entity.primary.VendorBlockedEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorBlockedEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
