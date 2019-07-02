@@ -2,26 +2,41 @@ package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.entity.primary.AdPageEntity;
 import net.fashiongo.webadmin.data.entity.primary.AdPageSpotEntity;
+import net.fashiongo.webadmin.data.model.ad.ResultGetCategoryAdCalendar2;
+import net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse;
 import net.fashiongo.webadmin.data.repository.primary.AdPageEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.AdPageSpotEntityRepository;
 import net.fashiongo.webadmin.data.model.ad.AdPage;
 import net.fashiongo.webadmin.data.model.ad.AdPageSpot;
 import net.fashiongo.webadmin.data.model.ad.response.GetAdPageSettingResponse;
-import net.fashiongo.webadmin.service.ApiService;
+import net.fashiongo.webadmin.data.repository.primary.AdProcedureRepository;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdCalendarParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class RenewalAdService extends ApiService {
+public class RenewalAdService {
+
+    private final AdPageSpotEntityRepository adPageSpotEntityRepository;
+
+    private final AdPageEntityRepository adPageEntityRepository;
+
+    private final AdProcedureRepository adProcedureRepository;
+
+    private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-M-dd");
 
     @Autowired
-    private AdPageSpotEntityRepository adPageSpotEntityRepository;
-    @Autowired
-    private AdPageEntityRepository adPageEntityRepository;
-
+    public RenewalAdService(AdPageSpotEntityRepository adPageSpotEntityRepository, AdPageEntityRepository adPageEntityRepository, AdProcedureRepository adProcedureRepository) {
+        this.adPageSpotEntityRepository = adPageSpotEntityRepository;
+        this.adPageEntityRepository = adPageEntityRepository;
+        this.adProcedureRepository = adProcedureRepository;
+    }
 
     public GetAdPageSettingResponse getAdSetting(boolean showAll) {
         GetAdPageSettingResponse result = new GetAdPageSettingResponse();
@@ -75,4 +90,17 @@ public class RenewalAdService extends ApiService {
         ).collect(Collectors.toList());
     }
 
+    public GetCategoryAdCalendarResponse getCategoryAdCalendar(GetCategoryAdCalendarParameter parameters) {
+        String categoryDateValue = parameters.getCategoryDate();
+
+        LocalDate categoryDate = StringUtils.isEmpty(categoryDateValue) ? LocalDate.now() : LocalDate.parse(categoryDateValue, DATE_TIME_FORMATTER);
+
+        ResultGetCategoryAdCalendar2 resultGetCategoryAdCalendar2 = adProcedureRepository.up_wa_GetCategoryAdCalendar2(categoryDate);
+
+        return GetCategoryAdCalendarResponse.builder()
+                .collectionCategoryWithCounts(resultGetCategoryAdCalendar2.getCollectionCategoryWithCounts())
+                .biddingList(resultGetCategoryAdCalendar2.getBiddingList())
+                .curatedList(resultGetCategoryAdCalendar2.getCuratedList())
+                .build();
+    }
 }

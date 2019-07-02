@@ -50,7 +50,7 @@ public class PrimaryDS {
 	}
 	
 	@Primary
-	@Bean
+	@Bean(name = "primaryTransactionManager")
 	public PlatformTransactionManager primaryTransactionManager(@Qualifier("primaryEntityManager") EntityManagerFactory primaryEntityManager) {
 		JpaTransactionManager transactionManager = new JpaTransactionManager();
 		transactionManager.setEntityManagerFactory(primaryEntityManager);

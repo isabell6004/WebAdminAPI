@@ -2,8 +2,8 @@ package net.fashiongo.webadmin.data.repository.primary;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.AdPageEntity;
-import net.fashiongo.webadmin.data.jpa.entity.primary.QAdPageEntity;
-import net.fashiongo.webadmin.data.jpa.entity.primary.QAdPageSpotEntity;
+import net.fashiongo.webadmin.data.entity.primary.QAdPageEntity;
+import net.fashiongo.webadmin.data.entity.primary.QAdPageSpotEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
