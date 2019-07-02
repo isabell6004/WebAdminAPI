@@ -15,6 +15,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
@@ -48,11 +51,10 @@ public class PhotoBannerClickRepositoryTest {
         String end = "20181205";
 
         List<PhotoBannerClickStatistic> statistics = photoBannerClickRepository.getClickStatistic(
-                new SimpleDateFormat("yyyyMMdd").parse(start),
-                new SimpleDateFormat("yyyyMMdd").parse(end)
+                LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay(),
+                LocalDate.parse(end, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay()
         );
         assertNotNull(statistics);
-
     }
 
 }

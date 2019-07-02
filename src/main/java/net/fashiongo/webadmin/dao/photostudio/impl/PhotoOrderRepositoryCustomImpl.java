@@ -27,7 +27,7 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
     private EntityManager photostudioEntityManager;
 
     @Override
-    public Map<Integer, OrderStatistic> getValidOrderStatistic(Date start, Date end) {
+    public Map<Integer, OrderStatistic> getValidOrderStatistic(LocalDateTime start, LocalDateTime end) {
 
         CriteriaBuilder criteriaBuilder = photostudioEntityManager.getCriteriaBuilder();
 
@@ -35,10 +35,8 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
         Root<PhotoOrder> root = criteriaQuery.from(PhotoOrder.class);
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("_checkOutDate"),
-                start.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
-        predicates.add(criteriaBuilder.lessThan(root.<LocalDateTime>get("_checkOutDate"),
-                end.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("_checkOutDate"), start));
+        predicates.add(criteriaBuilder.lessThan(root.<LocalDateTime>get("_checkOutDate"), end));
         predicates.add(criteriaBuilder.isNull(root.<Integer>get("cancelTypeID")));
 
         Expression<Integer> categoryID = root.get("categoryID");
@@ -57,7 +55,7 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
     }
 
     @Override
-    public Map<Integer, OrderStatistic> getCancelOrderStatistic(Date start, Date end) {
+    public Map<Integer, OrderStatistic> getCancelOrderStatistic(LocalDateTime start, LocalDateTime end) {
 
         CriteriaBuilder criteriaBuilder = photostudioEntityManager.getCriteriaBuilder();
 
@@ -65,10 +63,8 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
         Root<PhotoOrder> root = criteriaQuery.from(PhotoOrder.class);
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("_checkOutDate"),
-                start.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
-        predicates.add(criteriaBuilder.lessThan(root.<LocalDateTime>get("_checkOutDate"),
-                end.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("_checkOutDate"), start));
+        predicates.add(criteriaBuilder.lessThan(root.<LocalDateTime>get("_checkOutDate"), end));
         predicates.add(criteriaBuilder.isNotNull(root.<Integer>get("cancelTypeID")));
 
         Expression<Integer> categoryID = root.get("categoryID");
@@ -87,7 +83,7 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
     }
 
     @Override
-    public Map<Integer, OrderDetailStatistic> getValidOrderDetailStatistic(Date start, Date end) {
+    public Map<Integer, OrderDetailStatistic> getValidOrderDetailStatistic(LocalDateTime start, LocalDateTime end) {
 
         CriteriaBuilder criteriaBuilder = photostudioEntityManager.getCriteriaBuilder();
 
@@ -96,10 +92,8 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
         Join<PhotoOrder, PhotoOrderDetail> orderDetailJoin = root.join("orderDetails", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("_checkOutDate"),
-                start.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
-        predicates.add(criteriaBuilder.lessThan(root.<LocalDateTime>get("_checkOutDate"),
-                end.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("_checkOutDate"), start));
+        predicates.add(criteriaBuilder.lessThan(root.<LocalDateTime>get("_checkOutDate"), end));
         predicates.add(criteriaBuilder.isNull(root.<Integer>get("cancelTypeID")));
 
         Expression<Integer> categoryID = root.get("categoryID");

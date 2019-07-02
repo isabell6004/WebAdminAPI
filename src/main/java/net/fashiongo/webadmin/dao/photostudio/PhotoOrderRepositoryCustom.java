@@ -16,11 +16,11 @@ public interface PhotoOrderRepositoryCustom {
 
     PhotoOrder getPhotoOrderInfoWithBookAndModelAndCategory(int orderId);
 
-    Map<Integer, OrderStatistic> getValidOrderStatistic(Date start, Date end);
+    Map<Integer, OrderStatistic> getValidOrderStatistic(LocalDateTime start, LocalDateTime end);
 
-    Map<Integer, OrderStatistic> getCancelOrderStatistic(Date start, Date end);
+    Map<Integer, OrderStatistic> getCancelOrderStatistic(LocalDateTime start, LocalDateTime end);
 
-    Map<Integer, OrderDetailStatistic> getValidOrderDetailStatistic(Date start, Date end);
+    Map<Integer, OrderDetailStatistic> getValidOrderDetailStatistic(LocalDateTime start, LocalDateTime end);
 
     PhotoOrder getPhotoOrderInfoWithAdditionalInfo(String poNumber);
 

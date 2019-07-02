@@ -24,6 +24,7 @@ import java.util.Optional;
 @ToString
 public class ReportMonthlySummaryResponse {
 
+    private LocalDateTime startDate;
     private Integer dateCount;
 
     private BigDecimal totalOrderAmount = BigDecimal.ZERO;
@@ -289,6 +290,7 @@ public class ReportMonthlySummaryResponse {
         Integer dateCount = DateUtils.getDateCount(startDate);
 
         ReportMonthlySummaryResponse response = new ReportMonthlySummaryResponse().toBuilder()
+                .startDate(startDate)
                 .dateCount(dateCount)
                 .build();
 

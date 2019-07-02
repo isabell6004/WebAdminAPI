@@ -4,6 +4,7 @@ import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @Setter(AccessLevel.PRIVATE)
 public class PageViewDailyReport {
 
-    private Date orderSubmitDate;
+    private LocalDateTime orderSubmitDate;
 
     private String vendorName;
 
@@ -43,7 +44,7 @@ public class PageViewDailyReport {
 
     private Integer totalColorSwatchCount = 0;
 
-    private Date pickDate;
+    private LocalDateTime pickDate;
 
     private String modelName;
 

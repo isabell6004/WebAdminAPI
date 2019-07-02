@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
@@ -48,15 +50,13 @@ public class PhotoCartRepositoryTest {
     @Test
     public void getPhotoCartInfosByDate() throws NotFoundPhotostudioCartInfo, ParseException {
 
-        String start = "20181204";
-        String end = "20181205";
+        String start = "20190504";
+        String end = "20190531";
 
         List<PhotoCart> carts = photoCartRepository.findAllByCreatedOnBetween(
-                new SimpleDateFormat("yyyyMMdd").parse(start),
-                new SimpleDateFormat("yyyyMMdd").parse(end)
+                LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay(),
+                LocalDate.parse(end, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay()
         );
-
-        logger.debug("cart info -> id : {}", carts.size());
 
         logger.debug("cart info -> id : {}", carts.size());
 

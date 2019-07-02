@@ -1,10 +1,15 @@
 package net.fashiongo.webadmin.model.photostudio;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
  * Created by jinwoo on 2019. 2. 6..
  */
+@Getter
+@Setter
 public class DailyReport extends ExcelReport {
 
     @Override
@@ -20,35 +25,6 @@ public class DailyReport extends ExcelReport {
 
     private List<ClickStatDailyReport> clickStatDailyReports;
 
-    public String getRequestDate() {
-        return requestDate;
-    }
+    private ReportMonthlySummaryResponse reportMonthlySummaryResponse;
 
-    public void setRequestDate(String requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    public List<PageViewDailyReport> getPageViewDailyReports() {
-        return pageViewDailyReports;
-    }
-
-    public void setPageViewDailyReports(List<PageViewDailyReport> pageViewDailyReports) {
-        this.pageViewDailyReports = pageViewDailyReports;
-    }
-
-    public List<ClickStatDailyReport> getClickStatDailyReports() {
-        return clickStatDailyReports;
-    }
-
-    public void setClickStatDailyReports(List<ClickStatDailyReport> clickStatDailyReports) {
-        this.clickStatDailyReports = clickStatDailyReports;
-    }
-
-    public List<OrderDetailDailyReport> getOrderDetailDailyReports() {
-        return orderDetailDailyReports;
-    }
-
-    public void setOrderDetailDailyReports(List<OrderDetailDailyReport> orderDetailDailyReports) {
-        this.orderDetailDailyReports = orderDetailDailyReports;
-    }
 }

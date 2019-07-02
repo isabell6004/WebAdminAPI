@@ -86,4 +86,9 @@ public class DateUtils {
         LocalDateTime ldt = LocalDateTime.parse(dateString, localDateTimeFormatter);
         return ldt;
     }
+
+    public static LocalDateTime convertToLocalDateTime(Date data) {
+        return data.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
 }

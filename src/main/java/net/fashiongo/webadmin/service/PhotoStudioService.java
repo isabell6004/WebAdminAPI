@@ -1431,12 +1431,12 @@ public class PhotoStudioService extends ApiService {
         return bSuccess;
     }
 
-    public List<PhotoCart> getPhotoCarts(Date start, Date end) {
+    public List<PhotoCart> getPhotoCarts(LocalDateTime start, LocalDateTime end) {
         List<PhotoCart> photoCarts = photoCartRepository.findAllByCreatedOnBetween(start, end);
         return photoCarts;
     }
 
-    public List<PhotoBannerClickStatistic> getPhotoBannerClicks(Date start, Date end) {
+    public List<PhotoBannerClickStatistic> getPhotoBannerClicks(LocalDateTime start, LocalDateTime end) {
         List<PhotoBannerClickStatistic> photoBannerClickStatistics = photoBannerClickRepository.getClickStatistic(start, end);
         return photoBannerClickStatistics;
     }
@@ -1445,18 +1445,16 @@ public class PhotoStudioService extends ApiService {
 
     public DailyReport getDailyReportToExcel(String date) {
 
-        Date start = null;
-        Date end = null;
+        LocalDateTime start = null;
+        LocalDateTime end = null;
         SimpleDateFormat sdf = new SimpleDateFormat(DAILY_REPORT_REQUEST_DATE_PATTERN);
         try {
-            start = sdf.parse(date);
+            start = DateUtils.convertToLocalDateTime(sdf.parse(date));
             end = DateUtils.getDatePlusOneDay(start);
-            logger.debug("start : {}, end : {}");
         } catch (ParseException e) {
         }
 
         try {
-
             List<PhotoCart> photoCarts = getPhotoCarts(start, end);
             List<Integer> cartIds = photoCarts.parallelStream().map(x -> x.getId()).collect(Collectors.toList());
             Map<Integer, PhotoOrder> photoOrderOfCartId = photoOrderRepository.getOrderOfCart(cartIds);
@@ -1475,10 +1473,14 @@ public class PhotoStudioService extends ApiService {
 
             List<ClickStatDailyReport> clickStatDailyReports = ClickStatDailyReport.build(getPhotoBannerClicks(start, end));
 
+            List<PhotoOrder> orders = photoOrderRepository.getOrderWithDetail(start, end);
+            ReportMonthlySummaryResponse monthlySummaryResponse = makeMonthlyReportData(start, orders);
+
             DailyReport dailyReport = new DailyReport();
             dailyReport.setPageViewDailyReports(pageViewDailyReports);
             dailyReport.setOrderDetailDailyReports(orderDetailDailyReports);
             dailyReport.setClickStatDailyReports(clickStatDailyReports);
+            dailyReport.setReportMonthlySummaryResponse(monthlySummaryResponse);
             return dailyReport;
         }catch (Throwable t) {
             t.printStackTrace();

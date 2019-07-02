@@ -2,21 +2,16 @@ package net.fashiongo.webadmin.controller.view;
 
 import net.fashiongo.webadmin.model.photostudio.*;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by nhnent on 2019. 2. 4..
@@ -32,6 +27,7 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
     private final static String PAGE_VIEW_SHEET_KEY = "PageView";
     private final static String ORDER_DETAIL_SHEET_KEY = "OrderDetail";
     private final static String CLICKS_SHEET_KEY = "Clicks";
+    private final static String MONTHLY_SHEET_KEY = "Monthly Summary";
 
     @Override
     protected String getFileName(Map<String, Object> dataMap) {
@@ -65,6 +61,109 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
         Sheet clickSheet = workbook.createSheet(CLICKS_SHEET_KEY);
         mapToClicksHeadList(clickSheet, style);
         mapToClicksBodyList(clickSheet, dailyReport.getClickStatDailyReports());
+
+        Sheet monthlySummarySheet = workbook.createSheet(MONTHLY_SHEET_KEY);
+        mapToMonthlySummaryData(monthlySummarySheet, dailyReport.getReportMonthlySummaryResponse());
+    }
+
+    private void mapToMonthlySummaryData(Sheet monthlySummarySheet, ReportMonthlySummaryResponse response) {
+
+        int rowNumber = 0;
+        Row row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue(response.getStartDate().format(DateTimeFormatter.ofPattern("MM/yyyy")));
+
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Total Amount");
+        row.createCell(1).setCellValue(response.getTotalOrderAmount().longValue());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Avg. order");
+        row.createCell(1).setCellValue(response.getAvgOrder().longValue());
+
+        rowNumber++;
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of orders : Full Women");
+        row.createCell(1).setCellValue(response.getWomenOrders());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of Cancelled order : Full Women");
+        row.createCell(1).setCellValue(response.getWomenCancelled());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Full Women total order amounts");
+        row.createCell(1).setCellValue(response.getWomenAmounts().longValue());
+
+        rowNumber++;
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of orders of Full Plus Women");
+        row.createCell(1).setCellValue(response.getPlusWomenOrders());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of Cacelled Order : Pluse Women");
+        row.createCell(1).setCellValue(response.getPlusWomenCancelled());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Plus Women total order amounts");
+        row.createCell(1).setCellValue(response.getPlusWomenAmounts().longValue());
+
+        rowNumber++;
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of orders of Product Men");
+        row.createCell(1).setCellValue(response.getMenOrders());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of Cacelled Order : Product Men");
+        row.createCell(1).setCellValue(response.getMenCancelled());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Product Men total order amounts");
+        row.createCell(1).setCellValue(response.getMenAmounts().longValue());
+
+        rowNumber++;
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of orders of Product Kids");
+        row.createCell(1).setCellValue(response.getKidsOrders());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of Cacelled Order : Product Kids");
+        row.createCell(1).setCellValue(response.getKidsCancelled());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Product Kids total order amounts");
+        row.createCell(1).setCellValue(response.getKidsAmounts().longValue());
+
+        rowNumber++;
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of orders of Product Shoes");
+        row.createCell(1).setCellValue(response.getShoesOrders());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of Cacelled Order : Product Shoes");
+        row.createCell(1).setCellValue(response.getShoesCancelled());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Product Shoes total order amounts");
+        row.createCell(1).setCellValue(response.getShoesAmounts().longValue());
+
+        rowNumber++;
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of orders of Product Handbags");
+        row.createCell(1).setCellValue(response.getHandbagsOrders());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of Cacelled Order : Product Handbags");
+        row.createCell(1).setCellValue(response.getHandbagsCancelled());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Product Handbags total order amounts");
+        row.createCell(1).setCellValue(response.getHandbagsAmounts().longValue());
+
+        rowNumber++;
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of orders of Product Accessories");
+        row.createCell(1).setCellValue(response.getAccessoriesOrders());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("# of Cacelled Order : Product Accessories");
+        row.createCell(1).setCellValue(response.getAccessoriesCancelled());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Product Accessories total order amounts");
+        row.createCell(1).setCellValue(response.getAccessoriesAmounts().longValue());
+
+        rowNumber++;
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("Returning Vendors");
+        row.createCell(1).setCellValue(response.getReturningVendor());
+        row = monthlySummarySheet.createRow(rowNumber++);
+        row.createCell(0).setCellValue("First Time Vendors");
+        row.createCell(1).setCellValue(response.getFirstTimeVendor());
+
     }
 
     private void mapToOrderDetailBodyList(Sheet sheet, List<OrderDetailDailyReport> orderDetailDailyReports) {
@@ -133,13 +232,12 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
 
     private void mapToPageViewBodyList(Sheet sheet, List<PageViewDailyReport> pageViewDailyReports) {
 
-        SimpleDateFormat format = new SimpleDateFormat(DAILY_REPORT_DATE_PATTERN);
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DAILY_REPORT_DATE_PATTERN);
         int rowNumber = 1;
         for (PageViewDailyReport pageViewDailyReport : pageViewDailyReports) {
             int cellNumber = 0;
             Row row = sheet.createRow(rowNumber++);
-            row.createCell(cellNumber++).setCellValue(format.format(pageViewDailyReport.getOrderSubmitDate()));
+            row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getOrderSubmitDate().format(formatter));
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getVendorName());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getCategoryName());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPackageName());
@@ -155,7 +253,7 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalNewMovieClipCount());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getTotalColorSwatchCount());
 
-            row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPickDate() == null ? "" : format.format(pageViewDailyReport.getPickDate()));
+            row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPickDate() == null ? "" : pageViewDailyReport.getPickDate().format(formatter));
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getModelName());
             row.createCell(cellNumber++).setCellValue(pageViewDailyReport.getPromotionCode());
             row.createCell(cellNumber).setCellValue(pageViewDailyReport.getOrderComplete());

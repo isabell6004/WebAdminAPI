@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,15 +25,15 @@ public class PhotoBannerClickRepositoryCustomImpl implements PhotoBannerClickSta
 
 
     @Override
-    public List<PhotoBannerClickStatistic> getClickStatistic(Date start, Date end) {
+    public List<PhotoBannerClickStatistic> getClickStatistic(LocalDateTime start, LocalDateTime end) {
 
         CriteriaBuilder criteriaBuilder = photostudioEntityManager.getCriteriaBuilder();
 
         CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createQuery(Tuple.class);
         Root<PhotoBannerClick> root = criteriaQuery.from(PhotoBannerClick.class);
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<Date>get("clickedOn"), start));
-        predicates.add(criteriaBuilder.lessThan(root.<Date>get("clickedOn"), end));
+        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<LocalDateTime>get("clickedOn"), start));
+        predicates.add(criteriaBuilder.lessThan(root.<LocalDateTime>get("clickedOn"), end));
 
         Expression<String> wholeSalerId = root.get("wholeSalerId");
         Expression<String> wholeSalerCompanyName = root.get("wholeSalerCompanyName");

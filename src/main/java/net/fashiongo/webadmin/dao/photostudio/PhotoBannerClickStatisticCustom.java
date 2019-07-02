@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.dao.photostudio;
 
 import net.fashiongo.webadmin.model.photostudio.PhotoBannerClickStatistic;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,6 @@ import java.util.List;
  */
 public interface PhotoBannerClickStatisticCustom {
 
-    List<PhotoBannerClickStatistic> getClickStatistic(Date start, Date end);
+    List<PhotoBannerClickStatistic> getClickStatistic(LocalDateTime start, LocalDateTime end);
 
 }

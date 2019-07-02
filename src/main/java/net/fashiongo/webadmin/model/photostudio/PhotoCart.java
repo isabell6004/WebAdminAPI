@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class PhotoCart implements Serializable {
     private PhotoModel model;
 
     @Column(name = "PhotoshootDate")
-    private Date photoshootDate;
+    private LocalDateTime photoshootDate;
 
     @Column(name = "SpecialRequest")
     private String specialRequest;
@@ -74,7 +75,7 @@ public class PhotoCart implements Serializable {
     private Integer cartStatusStep;
 
     @Column(name = "CreatedOn")
-    private Date createdOn;
+    private LocalDateTime createdOn;
 
     @Column(name = "DiscountCode")
     private String discountCode;

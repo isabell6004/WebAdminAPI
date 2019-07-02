@@ -1,7 +1,11 @@
 package net.fashiongo.webadmin.model.photostudio;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -9,6 +13,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "Photo_BannerClick")
+@Getter
+@Setter
 public class PhotoBannerClick implements Serializable {
 
     @Id
@@ -25,48 +31,5 @@ public class PhotoBannerClick implements Serializable {
     private Integer bannerType;
 
     @Column(name = "ClickedOn")
-    private Date clickedOn;
-
-    public PhotoBannerClick() {
-    }
-
-    public Integer getBannerType() {
-        return bannerType;
-    }
-
-    public void setBannerType(Integer bannerType) {
-        this.bannerType = bannerType;
-    }
-
-    public Date getClickedOn() {
-        return clickedOn;
-    }
-
-    public void setClickedOn(Date clickedOn) {
-        this.clickedOn = clickedOn;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getWholeSalerCompanyName() {
-        return wholeSalerCompanyName;
-    }
-
-    public void setWholeSalerCompanyName(String wholeSalerCompanyName) {
-        this.wholeSalerCompanyName = wholeSalerCompanyName;
-    }
-
-    public Integer getWholeSalerId() {
-        return wholeSalerId;
-    }
-
-    public void setWholeSalerId(Integer wholeSalerId) {
-        this.wholeSalerId = wholeSalerId;
-    }
+    private LocalDateTime clickedOn;
 }

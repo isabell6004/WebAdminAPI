@@ -110,7 +110,7 @@ logging:
   path: logs/
 
 webAdminapi:
-  fgServiceAPI_EndPoint: http://localhost:29001
+  fgServiceAPI_EndPoint: http://10.10.0.145:29001
   statsAPI_EndPoint: http://localhost:19101
   jwt:
     develop:
