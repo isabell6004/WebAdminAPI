@@ -126,22 +126,10 @@ public class AdController {
 	 * @param categoryDate
 	 * @return GetCategoryAdCalendar
 	 */
-//	@RequestMapping(value = "getcategoryadcalendar", method = RequestMethod.POST)
-//	public JsonResponse<GetCategoryAdCalendarResponse> GetCategoryAdCalendar(@RequestBody GetCategoryAdCalendarParameter parameters) {
-//		JsonResponse<GetCategoryAdCalendarResponse> results = new JsonResponse<GetCategoryAdCalendarResponse>(false, null, 0, null);
-//		GetCategoryAdCalendarResponse result = adService.GetCategoryAdCalendar(parameters);
-//		net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse categoryAdCalendar = renewalAdService.getCategoryAdCalendar(parameters);
-//
-//		results.setData(result);
-//		results.setSuccess(true);
-//
-//		return results;
-//	}
-
 	@RequestMapping(value = "getcategoryadcalendar", method = RequestMethod.POST)
 	public JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse> GetCategoryAdCalendar(@RequestBody GetCategoryAdCalendarParameter parameters) {
 		JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse>(false, null, 0, null);
-		GetCategoryAdCalendarResponse result = adService.GetCategoryAdCalendar(parameters);
+//		GetCategoryAdCalendarResponse result = adService.GetCategoryAdCalendar(parameters);
 		net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse categoryAdCalendar = renewalAdService.getCategoryAdCalendar(parameters);
 
 		results.setData(categoryAdCalendar);
