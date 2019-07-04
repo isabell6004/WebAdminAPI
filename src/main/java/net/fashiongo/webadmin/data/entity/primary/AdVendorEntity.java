@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class AdVendorEntity {
 	private Integer vendorCategoryID;
 
 	@Column(name = "ActualPrice")
-	private Integer actualPrice;
+	private BigDecimal actualPrice;
 
 	@Column(name = "FromDate")
 	private Timestamp fromDate;

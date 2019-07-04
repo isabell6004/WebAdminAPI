@@ -28,6 +28,9 @@ public class SimpleWholeSalerEntity implements Serializable {
     @Column(name = "CompanyName")
     private String companyName;
 
+    @Column(name = "DirName")
+    private String dirName;
+
     @Column(name = "Active")
     private Boolean active;
 
@@ -36,4 +39,7 @@ public class SimpleWholeSalerEntity implements Serializable {
 
     @Column(name = "OrderActive")
     private Boolean orderActive;
+
+    @Column(name = "ImageServerID")
+    private Integer imageServerID;
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -44,13 +45,13 @@ public class ProductsEntity {
 	private Integer season;
 
 	@Column(name = "UnitPrice")
-	private int unitPrice;
+	private BigDecimal unitPrice;
 
 	@Column(name = "UnitPrice1")
-	private int unitPrice1;
+	private BigDecimal unitPrice1;
 
 	@Column(name = "UnitPrice2")
-	private int unitPrice2;
+	private BigDecimal unitPrice2;
 
 	@Column(name = "PictureGeneral")
 	private String pictureGeneral;

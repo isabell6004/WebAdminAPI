@@ -1,6 +1,5 @@
 package net.fashiongo.webadmin.data.repository.primary;
 
-import com.querydsl.core.ResultTransformer;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
@@ -14,10 +13,7 @@ import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLServer2012Templates;
 import net.fashiongo.webadmin.data.FashionGODayOfWeek;
 import net.fashiongo.webadmin.data.entity.primary.*;
-import net.fashiongo.webadmin.data.model.ad.Bidding;
-import net.fashiongo.webadmin.data.model.ad.CollectionCategoryWithCounts;
-import net.fashiongo.webadmin.data.model.ad.Curated;
-import net.fashiongo.webadmin.data.model.ad.ResultGetCategoryAdCalendar2;
+import net.fashiongo.webadmin.data.model.ad.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +72,6 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		QProductsEntity SUB_P = new QProductsEntity("SUB_P");
 		QMapAdVendorItemEntity SUB_MAVI = new QMapAdVendorItemEntity("SUB_MAVI");
 		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
-		SQLServer2012Templates sqlServer2012Templates = new SQLServer2012Templates();
 		Timestamp timestampFd = Timestamp.valueOf(startFromDate);
 		Timestamp timestampEd = Timestamp.valueOf(endFromDate);
 		JPASQLQuery<Bidding> jpasqlQuery = new JPASQLQuery<Bidding>(entityManager,new SQLServer2012Templates());
@@ -232,5 +227,210 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 						)
 				).orderBy(CCI.spotID.desc(),dateDay.desc(),CCI.collectionCategoryItemID.desc())
 				.fetch();
+	}
+
+	@Override
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public ResultGetCategoryAdDetail up_wa_GetCategoryAdDetail(LocalDate categoryDate, int spotId) {
+		LocalDateTime categoryDateTime = categoryDate == null ?  LocalDateTime.now() : categoryDate.atTime(0, 0, 0, 0);
+		LocalDateTime startFromDate = categoryDateTime;
+		LocalDateTime endFromDate = startFromDate.plusDays(1);
+
+		List<Bidding2> bidding2List = this.findAllBidding2(startFromDate, endFromDate, spotId);
+		List<CuratedBest> curatedBestList = this.findAllCuratedBest(startFromDate, spotId);
+		return ResultGetCategoryAdDetail.builder()
+				.bidding2List(bidding2List)
+				.curatedBestList(curatedBestList)
+				.build();
+	}
+
+	private List<Bidding2> findAllBidding2(LocalDateTime startFromDate, LocalDateTime endFromDate,int spotID) {
+//		SELECT a.*, p.ProductName, w.CompanyName, i.UrlPath as ImageUrlRoot, w.DirName, prdi.ImageName as PictureGeneral
+//	, CASE WHEN p.Active = 1 AND w.Active =1 AND w.ShopActive =1 AND w.OrderActive =1 THEN 1 ELSE 0 END AS Active
+//		FROM (
+//				select av.AdID, av.SpotID, av.WholeSalerID, av.VendorCategoryID as CollectionCategoryID, 0 as CollectionCategoryType, av.ActualPrice
+//				,(select TOP 1 mai.ProductID from Map_AdVendor_Item as mai INNER JOIN Products as p on mai.ProductID=p.ProductID where mai.AdID=av.AdID AND p.Active=1 order by mai.MapID) as ProductID
+//		,(select COUNT(mai.ProductID) from Map_AdVendor_Item as mai where mai.AdID=av.AdID) as ItemCount
+//		from Ad_Vendor as av
+//		where av.Active=1 and FromDate>=@FromDate and ToDate<@ToDate and av.SpotID=@SpotID
+//	) as a
+//		left outer join dbo.Products p on a.ProductID=p.ProductID
+//		left outer join dbo.tblWholeSaler w on a.WholeSalerID = w.WholeSalerID
+//		left outer join dbo.System_ImageServers i on w.ImageServerID = i.ImageServerID
+//		left outer join dbo.Product_Image  prdi on p.ProductID = prdi.ProductID and prdi.ListOrder = 1
+//		ORDER BY a.ActualPrice, a.AdID DESC
+
+//		SELECT AV.AdID,AV.SpotID,AV.WholeSalerID,AV.VendorCategoryID AS CollectionCategoryID,0 AS CollectionCategoryType,AV.ActualPrice
+//				, P.ProductID
+//				, ISNULL(TEMP_COUNT.P_COUNT,0) AS ItemCount
+//                ,P.ProductName,W.CompanyName,I.UrlPath AS ImageUrlRoot,W.DirName,PI.ImageName AS PictureGeneral
+//		FROM Ad_Vendor AV LEFT JOIN (
+//				SELECT SUB_AV.AdID AS AdID,MIN(SUB_MAVI.MapID) AS MAP_ID
+//				FROM Ad_Vendor SUB_AV INNER JOIN Map_AdVendor_Item SUB_MAVI ON SUB_AV.AdID = SUB_MAVI.AdID
+//				INNER JOIN Products SUB_P ON SUB_MAVI.ProductID = SUB_P.ProductID AND SUB_P.Active = 1
+//				WHERE
+//				SUB_AV.Active = 1
+//				AND SUB_AV.FromDate>=@FromDate
+//						AND SUB_AV.ToDate<@ToDate
+//						AND SUB_AV.SpotID=@SpotID
+//						GROUP BY SUB_AV.AdID
+//		) TEMP_PRODUCT ON AV.AdID = TEMP_PRODUCT.AdID
+//		LEFT JOIN (
+//				SELECT SUB_AV.AdID AS AdID,COUNT(SUB_MAVI.MapID) AS P_COUNT
+//		FROM Ad_Vendor SUB_AV INNER JOIN Map_AdVendor_Item SUB_MAVI ON SUB_AV.AdID = SUB_MAVI.AdID
+//		WHERE
+//		SUB_AV.Active = 1
+//		AND SUB_AV.FromDate>=@FromDate
+//				AND SUB_AV.ToDate<@ToDate
+//				AND SUB_AV.SpotID=@SpotID
+//				GROUP BY SUB_AV.AdID
+//                            ) TEMP_COUNT ON AV.AdID = TEMP_COUNT.AdID
+//		LEFT JOIN Map_AdVendor_Item MAVI ON AV.AdID = MAVI.AdID AND MAVI.MapID = TEMP_PRODUCT.MAP_ID
+//		LEFT JOIN Products P ON P.ProductID = MAVI.ProductID
+//		LEFT JOIN tblWholeSaler W ON AV.WholeSalerID = W.WholeSalerID
+//		LEFT JOIN System_ImageServers I ON W.ImageServerID = I.ImageServerID
+//		LEFT JOIN Product_Image PI ON P.ProductID = PI.ProductID AND PI.ListOrder = 1
+//		WHERE
+//		AV.Active = 1
+//		AND AV.FromDate>=@FromDate
+//				AND AV.ToDate<@ToDate
+//				AND AV.SpotID=@SpotID
+//				ORDER BY AV.ActualPrice, AV.AdID DESC
+		Timestamp timestampFd = Timestamp.valueOf(startFromDate);
+		Timestamp timestampEd = Timestamp.valueOf(endFromDate);
+
+		JPASQLQuery<Bidding2> jpasqlQuery = new JPASQLQuery<Bidding2>(entityManager,new SQLServer2012Templates());
+		QAdVendorEntity AV = new QAdVendorEntity("AV");
+		QMapAdVendorItemEntity MAVI = new QMapAdVendorItemEntity("MAVI");
+		QProductsEntity P = new QProductsEntity("P");
+		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
+		QProductImageEntity PI = new QProductImageEntity("PI");
+
+		QAdVendorEntity SUB_AV = new QAdVendorEntity("SUB_AV");
+		QMapAdVendorItemEntity SUB_MAVI = new QMapAdVendorItemEntity("SUB_MAVI");
+		QProductsEntity SUB_P = new QProductsEntity("SUB_P");
+		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+
+		Path<Object> temp_product = ExpressionUtils.path(Object.class, "TEMP_PRODUCT");
+		Path<Object> temp_count = ExpressionUtils.path(Object.class, "TEMP_COUNT");
+
+		Path<Object> temp_product_adid = ExpressionUtils.path(Integer.class,temp_product, "ADID");
+		Path<Object> temp_product_mapid = ExpressionUtils.path(Integer.class,temp_product, "MAP_ID");
+		Path<Object> temp_count_adid = ExpressionUtils.path(Integer.class,temp_count, "ADID");
+		NumberPath<Integer> temp_count_map_count = Expressions.numberPath(Integer.class, temp_count, "MAP_COUNT");
+		NumberExpression<Integer> collectionCategoryType = Expressions.asNumber(0).as("CollectionCategoryType");
+
+		NumberExpression<Integer> active = Expressions.cases()
+				.when(P.active.eq(true)
+						.and(W.active.eq(true))
+						.and(W.shopActive.eq(true))
+						.and(W.orderActive.eq(true))
+				).then(1)
+				.otherwise(0);
+
+		jpasqlQuery
+				.select(
+						Projections.constructor(
+								Bidding2.class
+								, AV.adID
+								, AV.spotID
+								, AV.wholeSalerID
+								, AV.vendorCategoryID
+								, collectionCategoryType
+								, AV.actualPrice
+								, P.productID
+								, Expressions.cases().when(temp_count_map_count.isNull()).then(0).otherwise(temp_count_map_count).as("ItemCount")
+								, P.productName
+								, W.companyName
+								, I.urlPath
+								, W.dirName
+								, PI.imageName
+								, active
+						)
+				)
+				.from(AV)
+				.leftJoin(
+						JPAExpressions.select(SUB_AV.adID,SUB_MAVI.mapID.min().as("MAP_ID"))
+								.from(SUB_AV)
+								.innerJoin(SUB_MAVI).on(SUB_AV.adID.eq(SUB_MAVI.adID))
+								.innerJoin(SUB_P).on(SUB_MAVI.productID.eq(SUB_P.productID).and(SUB_P.active.eq(true)))
+								.where(SUB_AV.active.eq(true).and(SUB_AV.fromDate.goe(timestampFd)).and(SUB_AV.fromDate.lt(timestampEd)).and(SUB_AV.spotID.eq(spotID)))
+								.groupBy(SUB_AV.adID)
+						,temp_product).on(AV.adID.eq(temp_product_adid))
+				.leftJoin(
+						JPAExpressions.select(SUB_AV.adID,SUB_MAVI.mapID.count().as("MAP_COUNT"))
+								.from(SUB_AV)
+								.innerJoin(SUB_MAVI).on(SUB_AV.adID.eq(SUB_MAVI.adID))
+								.where(SUB_AV.active.eq(true).and(SUB_AV.fromDate.goe(timestampFd)).and(SUB_AV.fromDate.lt(timestampEd)).and(SUB_AV.spotID.eq(spotID)))
+								.groupBy(SUB_AV.adID)
+						,temp_count).on(AV.adID.eq(temp_count_adid))
+				.leftJoin(MAVI).on(AV.adID.eq(MAVI.adID).and(MAVI.mapID.eq(temp_product_mapid)))
+				.leftJoin(P).on(MAVI.productID.eq(P.productID))
+				.leftJoin(W).on(AV.wholeSalerID.eq(W.wholeSalerId))
+				.leftJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.leftJoin(PI).on(P.productID.eq(PI.productID).and(PI.listOrder.eq(1)))
+				.where(AV.active.eq(true).and(AV.fromDate.goe(timestampFd)).and(AV.fromDate.lt(timestampEd)).and(AV.spotID.eq(spotID)))
+				.orderBy(AV.actualPrice.asc(),AV.adID.desc());
+
+		return jpasqlQuery.fetch()
+				.stream()
+				.distinct()
+				.collect(Collectors.toList());
+	}
+
+	private List<CuratedBest> findAllCuratedBest(LocalDateTime dateTime,int spotId) {
+		//		select CollectionCategoryItemID, SpotID, w.WholeSalerID, w.CompanyName, CollectionCategoryID, CollectionCategoryType
+//				, p.ProductID, p.ProductName, i.UrlPath as ImageUrlRoot, w.DirName, prdi.ImageName as PictureGeneral
+//	, CASE WHEN p.Active = 1 AND w.Active =1 AND w.ShopActive =1 AND w.OrderActive =1 THEN 1 ELSE 0 END AS Active
+//		from CollectionCategoryItem as cc
+//		left outer join dbo.Products p on cc.ProductID=p.ProductID
+//		left outer join dbo.tblWholeSaler w on cc.WholeSalerID = w.WholeSalerID
+//		left outer join dbo.System_ImageServers i on w.ImageServerID = i.ImageServerID
+//		left outer join dbo.Product_Image  prdi on p.ProductID = prdi.ProductID and prdi.ListOrder = 1
+//		where FromDate=@FromDate and SpotID=@SpotID
+//				ORDER BY Active, cc.CollectionCategoryItemID DESC
+		JPASQLQuery<CuratedBest> jpasqlQuery = new JPASQLQuery(entityManager,new SQLServer2012Templates());
+		QCollectionCategoryItemEntity CC = new QCollectionCategoryItemEntity("CC");
+		QProductsEntity P = new QProductsEntity("P");
+		QProductImageEntity PI = new QProductImageEntity("PI");
+		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
+
+		NumberExpression<Integer> active = Expressions.cases()
+				.when(P.active.eq(true)
+						.and(W.active.eq(true))
+						.and(W.shopActive.eq(true))
+						.and(W.orderActive.eq(true))
+				).then(1)
+				.otherwise(0);
+
+		jpasqlQuery.select(
+					Projections.constructor(
+							CuratedBest.class
+							, CC.collectionCategoryItemID
+							, CC.spotID
+							, W.wholeSalerId
+							, W.companyName
+							, CC.collectionCategoryID
+							, CC.collectionCategoryType
+							, P.productID
+							, P.productName
+							, I.urlPath
+							, W.dirName
+							, PI.imageName
+							, active
+					)
+				).from(CC)
+				.leftJoin(P).on(CC.productID.eq(P.productID))
+				.leftJoin(W).on(CC.wholeSalerID.eq(W.wholeSalerId))
+				.leftJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.leftJoin(PI).on(P.productID.eq(PI.productID).and(PI.listOrder.eq(1)))
+				.where(CC.fromDate.eq(dateTime).and(CC.spotID.eq(spotId)))
+				.orderBy(active.asc(),CC.collectionCategoryItemID.desc());
+
+		return jpasqlQuery.fetch()
+				.stream()
+				.distinct()
+				.collect(Collectors.toList());
 	}
 }

@@ -129,7 +129,6 @@ public class AdController {
 	@RequestMapping(value = "getcategoryadcalendar", method = RequestMethod.POST)
 	public JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse> GetCategoryAdCalendar(@RequestBody GetCategoryAdCalendarParameter parameters) {
 		JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse>(false, null, 0, null);
-//		GetCategoryAdCalendarResponse result = adService.GetCategoryAdCalendar(parameters);
 		net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse categoryAdCalendar = renewalAdService.getCategoryAdCalendar(parameters);
 
 		results.setData(categoryAdCalendar);
@@ -181,10 +180,13 @@ public class AdController {
 	 * @return GetCategoryAdDetail
 	 */
 	@RequestMapping(value = "getcategoryaddetail", method = RequestMethod.POST)
-	public JsonResponse<GetCategoryAdDetailResponse> GetCategoryAdDetail(@RequestBody GetCategoryAdDetailParameter parameters) {
-		JsonResponse<GetCategoryAdDetailResponse> results = new JsonResponse<GetCategoryAdDetailResponse>(false, null, 0, null);
+	public JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdDetailResponse> GetCategoryAdDetail(@RequestBody GetCategoryAdDetailParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdDetailResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdDetailResponse>(false, null, 0, null);
 		GetCategoryAdDetailResponse result = adService.GetCategoryAdDetail(parameters);
-		results.setData(result);
+
+		net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdDetailResponse categoryAdDetail = renewalAdService.getCategoryAdDetail(parameters);
+
+		results.setData(categoryAdDetail);
 		results.setSuccess(true);
 		return results;
 	}
@@ -194,7 +196,7 @@ public class AdController {
 	 * 
 	 * Get Category Ad Item For Bid Vendor
 	 * 
-	 * @since 2018. 10. 25.
+	 * @since 2018. 10. 25.Pa
 	 * @author Jiwon Kim
 	 * @param AdID
 	 * @return GetCategoryAdItemForBidVendor
