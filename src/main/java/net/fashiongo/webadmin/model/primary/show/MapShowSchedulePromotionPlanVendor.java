@@ -110,6 +110,9 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 	@JsonProperty("DeleteFlag")
 	private int deleteFlag;
 
+	@Column(name = "IsDeleted")
+	private Boolean isDeleted;
+
 	@Column(name = "CanceledBy")
 	@JsonProperty("CanceledBy")
 	private String canceledBy;
@@ -234,6 +237,14 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 
 	public void setDeleteFlag(int deleteFlag) {
 		this.deleteFlag = deleteFlag;
+	}
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public static long getSerialversionuid() {

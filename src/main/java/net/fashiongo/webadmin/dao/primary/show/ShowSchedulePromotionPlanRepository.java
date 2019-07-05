@@ -13,7 +13,7 @@ import net.fashiongo.webadmin.model.primary.show.ShowSchedulePromotionPlan;
  * @author Sanghyup
  *
  */
-public interface ShowSchedulePromotionPlanRepository extends CrudRepository<ShowSchedulePromotionPlan, Integer> {
+public interface ShowSchedulePromotionPlanRepository extends CrudRepository<ShowSchedulePromotionPlan, Integer>, ShowSchedulePromotionPlanRepositoryCustom {
 	// find all
 	List<ShowSchedulePromotionPlan> findAll();
 	

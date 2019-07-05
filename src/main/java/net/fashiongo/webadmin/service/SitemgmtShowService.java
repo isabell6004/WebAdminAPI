@@ -1054,4 +1054,19 @@ public class SitemgmtShowService extends ApiService {
 
 		return results;
 	}
+
+	/**
+	 *
+	 * get show vendors
+	 *
+	 * @author Kelly Back
+	 * @since 07-05-2019
+	 */
+	public List<Integer> getShowParticipatingVendorIds(Integer showScheduleId) {
+		if (showScheduleId == null) {
+			Collections.emptyList();
+		}
+
+		return showSchedulePromotionPlanRepository.getShowParticipatingVendorIds(showScheduleId);
+	}
 }

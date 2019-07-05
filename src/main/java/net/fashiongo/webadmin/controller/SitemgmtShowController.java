@@ -522,4 +522,24 @@ public class SitemgmtShowController {
 
 		return response;
 	}
+
+	/**
+	 * @author Kelly Back
+	 * @since 07-05-2019
+	 */
+	@GetMapping(value = "show/participatingVendors/{showScheduleId}")
+	public JsonResponse<List<Integer>> getShowParticipatingVendorIds(@PathVariable("showScheduleId") Integer showScheduleId) {
+		JsonResponse<List<Integer>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<Integer> result = siteMgmtShowService.getShowParticipatingVendorIds(showScheduleId);
+			response.setSuccess(true);
+			response.setData(result);
+		} catch(Exception ex) {
+			log.error("Exception Error: ", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
 }
