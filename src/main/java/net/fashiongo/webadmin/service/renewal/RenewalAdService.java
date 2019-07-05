@@ -3,22 +3,21 @@ package net.fashiongo.webadmin.service.renewal;
 import net.fashiongo.webadmin.data.entity.primary.AdPageEntity;
 import net.fashiongo.webadmin.data.entity.primary.AdPageSpotEntity;
 import net.fashiongo.webadmin.data.model.ad.*;
-import net.fashiongo.webadmin.data.model.ad.response.GetAdPageSettingResponse;
-import net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdCalendarResponse;
-import net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdDetailResponse;
-import net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdItemForBidVendorResponse;
+import net.fashiongo.webadmin.data.model.ad.response.*;
 import net.fashiongo.webadmin.data.repository.primary.AdPageEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.AdPageSpotEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.AdProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.MapAdVendorItemEntityRepository;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdDetailParameter;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,4 +130,19 @@ public class RenewalAdService {
 				.categoryAdItem(results)
 				.build();
 	}
+
+	public GetCategoryAdListResponse getTest(GetCategoryAdListParameter parameters) {
+		String categoryDateValue = parameters.getCategoryDate();
+
+		LocalDate categoryDate = StringUtils.isEmpty(categoryDateValue) ? LocalDate.now() : LocalDate.parse(categoryDateValue, DATE_TIME_FORMATTER);
+
+		ResultGetCategoryAdList resultGetCategoryAdList = adProcedureRepository.up_wa_GetCategoryAdList(categoryDate);
+
+		return GetCategoryAdListResponse.builder()
+				.categoryList(resultGetCategoryAdList.getCollectionCategoryWithCountsList())
+				.biddingList(resultGetCategoryAdList.getBidding2List())
+				.curatedBestList(resultGetCategoryAdList.getCuratedBestList())
+				.build();
+	}
+
 }

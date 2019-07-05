@@ -95,4 +95,8 @@ public class AdVendorEntity {
 	@OneToOne
 	@JoinColumn(name = "WholeSalerID",insertable = false,updatable = false)
 	private SimpleWholeSalerEntity wholeSaler;
+
+	@OneToOne
+	@JoinColumn(name = "SpotID", insertable = false, updatable = false)
+	private CollectionCategoryEntity collectionCategory;
 }
