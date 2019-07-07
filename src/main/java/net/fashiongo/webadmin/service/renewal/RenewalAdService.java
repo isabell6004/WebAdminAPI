@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,7 +130,8 @@ public class RenewalAdService {
 				.build();
 	}
 
-	public GetCategoryAdListResponse getTest(GetCategoryAdListParameter parameters) {
+	public GetCategoryAdListResponse getCategoryAdList(GetCategoryAdListParameter parameters) {
+
 		String categoryDateValue = parameters.getCategoryDate();
 
 		LocalDate categoryDate = StringUtils.isEmpty(categoryDateValue) ? LocalDate.now() : LocalDate.parse(categoryDateValue, DATE_TIME_FORMATTER);
