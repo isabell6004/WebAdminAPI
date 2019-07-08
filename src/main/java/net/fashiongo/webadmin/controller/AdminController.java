@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +38,8 @@ import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityUserParamete
 import net.fashiongo.webadmin.model.pojo.admin.parameter.SetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.SetsecuritygroupParameter;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityGroupPermissionsResponse;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityMenus2Response;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityParentMenusResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityResourcesResponse;
@@ -80,10 +79,10 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "getsecurityaccesscodes", method = RequestMethod.POST)
-	public JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetSecurityAccessCodesResponse> getSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
-		JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetSecurityAccessCodesResponse> result = new JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetSecurityAccessCodesResponse>(false, null, null);
+	public JsonResponse<GetSecurityAccessCodesResponse> getSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
+		JsonResponse<GetSecurityAccessCodesResponse> result = new JsonResponse<GetSecurityAccessCodesResponse>(false, null, null);
 //		GetSecurityAccessCodesResponse _result = adminService.getSecurityAccessCodes(parameters);
-		net.fashiongo.webadmin.data.model.ad.response.GetSecurityAccessCodesResponse securityAccessCodeList = renewalAdminService.getSecurityAccessCodes(parameters);
+		GetSecurityAccessCodesResponse securityAccessCodeList = renewalAdminService.getSecurityAccessCodes(parameters);
 
 		result.setSuccess(true);
 		result.setData(securityAccessCodeList);
@@ -144,9 +143,9 @@ public class AdminController {
 	 * @return GetSecurityLogsResponse
 	 */
 	@RequestMapping(value = "getsecuritylogs", method = RequestMethod.POST)
-	public JsonResponse<GetSecurityLogsResponse> getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {		
-		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
-		return new JsonResponse<GetSecurityLogsResponse>(true, null, 0, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse> getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse result = renewalAdminService.getSecurityLoginLogs(parameters);
+		return new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse>(true, null, 0, result);
 	}
 	
 	/**
