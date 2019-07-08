@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -67,6 +68,9 @@ public class AdminController {
 	@Autowired
 	SecurityGroupService securityGroupService;
 
+	@Autowired
+	RenewalAdminService renewalAdminService;
+
 	/**
 	 * Get Security Access Code
 	 * 
@@ -76,12 +80,13 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "getsecurityaccesscodes", method = RequestMethod.POST)
-	public JsonResponse<GetSecurityAccessCodesResponse> getSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
-		JsonResponse<GetSecurityAccessCodesResponse> result = new JsonResponse<GetSecurityAccessCodesResponse>(false, null, null);
-		GetSecurityAccessCodesResponse _result = adminService.getSecurityAccessCodes(parameters);
+	public JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetSecurityAccessCodesResponse> getSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetSecurityAccessCodesResponse> result = new JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetSecurityAccessCodesResponse>(false, null, null);
+//		GetSecurityAccessCodesResponse _result = adminService.getSecurityAccessCodes(parameters);
+		net.fashiongo.webadmin.data.model.ad.response.GetSecurityAccessCodesResponse securityAccessCodeList = renewalAdminService.getSecurityAccessCodes(parameters);
 
 		result.setSuccess(true);
-		result.setData(_result);
+		result.setData(securityAccessCodeList);
 
 		return result;
 	}
