@@ -81,6 +81,11 @@ public class SecurityLoginLogEntityRepositoryCustomImpl implements SecurityLogin
             lBound = uBound - (pageSize + 1);
         }
 
+        int limit = uBound - lBound - 1;
+
+        if(lBound < 0) lBound = 0;
+        if(limit < 1) limit = 1;
+
         List<SecurityLoginLogs> queryResults = new JPAQuery<>(entityManager)
                 .select(Projections.constructor(
                         SecurityLoginLogs.class,
@@ -96,7 +101,7 @@ public class SecurityLoginLogEntityRepositoryCustomImpl implements SecurityLogin
                         likeIP(LL, ip))
                 .orderBy(LL.loginOn.desc())
                 .offset(lBound)
-                .limit(uBound - lBound - 1)
+                .limit(limit)
                 .fetch();
 
         return queryResults;
