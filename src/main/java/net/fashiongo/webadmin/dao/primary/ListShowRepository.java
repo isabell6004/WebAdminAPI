@@ -30,5 +30,5 @@ public interface ListShowRepository extends CrudRepository<ListShow, Integer> {
 	// for getting the maximum number of key
 	ListShow findTopByOrderByShowIDDesc();
 
-
+	List<ListShow> findByActiveOrderByShowName(boolean active);
 }

@@ -27,4 +27,6 @@ public interface ShowScheduleRepository extends CrudRepository<ShowSchedule, Int
 	
 	// deleteByShowID
 	void deleteByShowID(int showID);
+
+	List<ShowSchedule> findByShowIDInAndActive(List<Integer> showIds, boolean active);
 }

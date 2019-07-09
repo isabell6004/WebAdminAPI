@@ -23,6 +23,7 @@ public class TrendReportItem {
 	private Integer sortNo;
 	@JsonProperty("Active")
 	private Boolean active;
+	private Boolean isShowItem;
 	
 	public String getImageUrlRoot() {
 		return imageUrlRoot;
@@ -78,4 +79,6 @@ public class TrendReportItem {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
+	public Boolean getIsShowItem() { return isShowItem; }
+	public void setIsShowItem(Boolean isShowItem) { this.isShowItem = isShowItem; }
 }

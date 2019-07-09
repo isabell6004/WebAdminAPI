@@ -68,6 +68,11 @@ public class GetItemsParameter {
 	@JsonProperty("StyleNo")
 	private String styleNo;
 
+	@ApiModelProperty(required = true, example = "false")
+	private Boolean showItemOnly;
+
+	private Integer showScheduleId;
+
 	public Integer getPageNum() {
 		Integer pn = pageNum.isEmpty() ? 1 : Integer.parseInt(pageNum);
 		return pn;
@@ -189,4 +194,12 @@ public class GetItemsParameter {
 	public void setStyleNo(String styleNo) {
 		this.styleNo = styleNo;
 	}
+
+	public Boolean getShowItemOnly() { return showItemOnly != null ? showItemOnly : false; }
+
+	public void setShowItemOnly(Boolean showItemOnly) { this.showItemOnly = showItemOnly; }
+
+	public Integer getShowScheduleId() { return showScheduleId; }
+
+	public void setShowScheduleId(Integer showScheduleId) { this.showScheduleId = showScheduleId; }
 }

@@ -1060,6 +1060,8 @@ public class SitemgmtService extends ApiService {
 			tr.setListOrder(param.getListOrder());
 			tr.setActive(param.getActive());
 			tr.settRDescription(param.gettRDescription());
+			tr.setShowId(param.getShowId());
+			tr.setShowScheduleId(param.getShowScheduleId());
 			trendReportRepository.save(tr);
 
 			result.setSuccess(true);
@@ -1343,6 +1345,8 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getSearchAndOr());
 		params.add(parameters.getKeyword());
 		params.add(parameters.getStyleNo());
+		params.add(parameters.getShowScheduleId());
+		params.add(parameters.getShowItemOnly());
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class);
         result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));

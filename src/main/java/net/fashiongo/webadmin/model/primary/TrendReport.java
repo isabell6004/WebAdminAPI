@@ -101,6 +101,12 @@ public class TrendReport implements Serializable {
 	@Column(name = "KMMImage2")
 	private String kMMImage2;
 
+	@Column(name = "ShowID")
+	private Integer showId;
+
+	@Column(name = "showScheduleId")
+	private Integer showScheduleId;
+
 	public Integer getTrendReportID() {
 		return trendReportID;
 	}
@@ -252,4 +258,12 @@ public class TrendReport implements Serializable {
 	public void setkMMImage2(String kMMImage2) {
 		this.kMMImage2 = kMMImage2;
 	}
+
+	public Integer getShowId() { return showId; }
+
+	public void setShowId(Integer showId) { this.showId = showId; }
+
+	public Integer getShowScheduleId() { return showScheduleId; }
+
+	public void setShowScheduleId(Integer showScheduleId) { this.showScheduleId = showScheduleId; }
 }
