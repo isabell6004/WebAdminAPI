@@ -62,8 +62,8 @@ public class PhotoStudioDailyReportWriter extends AbstractPhotoStudioReportWrite
         mapToClicksHeadList(clickSheet, style);
         mapToClicksBodyList(clickSheet, dailyReport.getClickStatDailyReports());
 
-        Sheet monthlySummarySheet = workbook.createSheet(MONTHLY_SHEET_KEY);
-        mapToMonthlySummaryData(monthlySummarySheet, dailyReport.getReportMonthlySummaryResponse());
+//        Sheet monthlySummarySheet = workbook.createSheet(MONTHLY_SHEET_KEY);
+//        mapToMonthlySummaryData(monthlySummarySheet, dailyReport.getReportMonthlySummaryResponse());
     }
 
     private void mapToMonthlySummaryData(Sheet monthlySummarySheet, ReportMonthlySummaryResponse response) {
