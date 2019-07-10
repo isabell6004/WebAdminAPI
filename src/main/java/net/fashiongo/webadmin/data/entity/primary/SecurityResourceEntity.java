@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "security.Resource")
-public class SecurityResorceEntity {
+public class SecurityResourceEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

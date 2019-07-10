@@ -44,4 +44,12 @@ public class SecurityMenuEntity {
 
 	@Column(name = "MenuIcon")
 	private String menuIcon;
+
+    @OneToOne
+    @JoinColumn(name = "ResourceID", updatable = false, insertable = false)
+    private SecurityPermissionEntity securityPermissionEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ResourceID", updatable = false, insertable = false)
+    private SecurityResourceEntity securityResourceEntity;
 }

@@ -292,11 +292,12 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecurityuserpermissions", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityGroupPermissionsResponse> getSecurityUserPermissions(@RequestBody GetSecurityUserPermissionsParameter parameters) {
-		JsonResponse<GetSecurityGroupPermissionsResponse> results = new JsonResponse<GetSecurityGroupPermissionsResponse>(false, null, 0, null);
-		GetSecurityGroupPermissionsResponse result = securityGroupService.getSecurityUserPermissions(parameters);
-		
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse> getSecurityUserPermissions(@RequestBody GetSecurityUserPermissionsParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse>(false, null, 0, null);
+
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse securityUserPermissions = renewalSecurityGroupService.getSecurityUserPermissions(parameters);
+
+		results.setData(securityUserPermissions);
 		results.setSuccess(true);
 		
 		return results;
