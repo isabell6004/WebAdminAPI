@@ -107,6 +107,16 @@ spring:
 logging:
   config: classpath:log4j2-local.xml
   path: logs/
+  level:
+    sql: TRACE
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+#              BasicExtractor: TRACE
 
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.145:29001

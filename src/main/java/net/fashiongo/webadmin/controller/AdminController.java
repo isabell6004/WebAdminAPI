@@ -5,7 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.primary.SecurityGroup;
+import net.fashiongo.webadmin.service.AdminService;
+import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
+import net.fashiongo.webadmin.service.renewal.RenewalSecurityGroupService;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -48,11 +54,6 @@ import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.SetCreateSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.SetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.primary.SecurityGroup;
-import net.fashiongo.webadmin.service.AdminService;
-import net.fashiongo.webadmin.service.SecurityGroupService;
-import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * 
@@ -66,6 +67,9 @@ public class AdminController {
 	
 	@Autowired
 	SecurityGroupService securityGroupService;
+
+	@Autowired
+	RenewalSecurityGroupService renewalSecurityGroupService;
 
 	@Autowired
 	RenewalAdminService renewalAdminService;
@@ -177,11 +181,11 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecuritygrouppermissions", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityGroupPermissionsResponse> GetSecurityGroupPermissions(@RequestBody GetSecurityGroupPermissionsParameter parameters) {
-		JsonResponse<GetSecurityGroupPermissionsResponse> results = new JsonResponse<GetSecurityGroupPermissionsResponse>(false, null, 0, null);
-		GetSecurityGroupPermissionsResponse result = securityGroupService.GetSecurityGroupPermissions(parameters);
-		
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse> GetSecurityGroupPermissions(@RequestBody GetSecurityGroupPermissionsParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse>(false, null, 0, null);
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse getSecurityGroupPermissionsResponse = renewalSecurityGroupService.GetSecurityGroupPermissions(parameters);
+
+		results.setData(getSecurityGroupPermissionsResponse);
 		results.setSuccess(true);
 		
 		return results;
