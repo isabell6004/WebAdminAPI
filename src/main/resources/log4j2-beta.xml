@@ -3,7 +3,7 @@
 
     <Properties>
         <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M:%line - %msg%n</Property>
-        <Property name="SERVER_PORT">29911</Property>
+        <Property name="SERVER_PORT">29921</Property>
         <Property name="LOG_PATH">/var/www/logs/webadmin_api/</Property>
         <Property name="LOG_FILENAME">WebAdminAPI</Property>
     </Properties>
