@@ -15,6 +15,7 @@ import net.fashiongo.webadmin.data.entity.primary.QSecurityPermissionEntity;
 import net.fashiongo.webadmin.data.model.admin.SecurityGroupPermissions;
 import net.fashiongo.webadmin.data.model.admin.SecurityPermissionAllow;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
+import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -35,7 +36,7 @@ public class SecurityGroupProcedureRepositoryImpl implements SecurityGroupProced
 	@Override
 	public List<SecurityGroupPermissions> up_wa_Security_GetPermissionGroup(int applicationId, int groupId) {
 
-		SQLServer2012Templates sqlServer2012Templates = new SQLServer2012Templates();
+		SQLServer2012Templates sqlServer2012Templates = new MSSQLServer2012Templates();
 		JPASQLQuery<SecurityGroupPermissions> jpasqlQuery = new JPASQLQuery<SecurityGroupPermissions>(entityManager, sqlServer2012Templates);
 
 		QSecurityMenuEntity M1 = new QSecurityMenuEntity("M1");
@@ -130,7 +131,7 @@ public class SecurityGroupProcedureRepositoryImpl implements SecurityGroupProced
 		QSecurityPermissionEntity UP = new QSecurityPermissionEntity("UP");
 		QSecurityResourceEntity R = new QSecurityResourceEntity("R");
 
-		JPASQLQuery<SecurityGroupPermissions> jpasqlQuery = new JPASQLQuery<SecurityGroupPermissions>(entityManager,new SQLServer2012Templates());
+		JPASQLQuery<SecurityGroupPermissions> jpasqlQuery = new JPASQLQuery<SecurityGroupPermissions>(entityManager,new MSSQLServer2012Templates());
 
 		Path<Object> M = ExpressionUtils.path(Object.class, "M");
 		NumberPath<Integer> M_MenuID = Expressions.numberPath(Integer.class, M, "MenuID");

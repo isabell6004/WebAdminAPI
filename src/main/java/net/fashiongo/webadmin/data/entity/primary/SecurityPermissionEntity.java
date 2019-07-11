@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "security.Permission")
+@Table(name = "[security.Permission]")
 public class SecurityPermissionEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

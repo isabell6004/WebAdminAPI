@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "security.Resource")
+@Table(name = "[security.Resource]")
 public class SecurityResourceEntity {
 
 	@Id

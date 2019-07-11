@@ -14,6 +14,7 @@ import com.querydsl.sql.SQLServer2012Templates;
 import net.fashiongo.webadmin.data.FashionGODayOfWeek;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.ad.*;
+import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,7 +75,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
 		Timestamp timestampFd = Timestamp.valueOf(startFromDate);
 		Timestamp timestampEd = Timestamp.valueOf(endFromDate);
-		JPASQLQuery<Bidding> jpasqlQuery = new JPASQLQuery<Bidding>(entityManager,new SQLServer2012Templates());
+		JPASQLQuery<Bidding> jpasqlQuery = new JPASQLQuery<Bidding>(entityManager,new MSSQLServer2012Templates());
 
 		NumberExpression<Integer> dateDay = AV.fromDate.dayOfMonth().as("DateDay");
 		StringExpression monthType = Expressions.cases()
@@ -299,7 +300,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		Timestamp timestampFd = Timestamp.valueOf(startFromDate);
 		Timestamp timestampEd = Timestamp.valueOf(endFromDate);
 
-		JPASQLQuery<Bidding2> jpasqlQuery = new JPASQLQuery<Bidding2>(entityManager,new SQLServer2012Templates());
+		JPASQLQuery<Bidding2> jpasqlQuery = new JPASQLQuery<Bidding2>(entityManager,new MSSQLServer2012Templates());
 		QAdVendorEntity AV = new QAdVendorEntity("AV");
 		QMapAdVendorItemEntity MAVI = new QMapAdVendorItemEntity("MAVI");
 		QProductsEntity P = new QProductsEntity("P");
@@ -389,7 +390,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 //		left outer join dbo.Product_Image  prdi on p.ProductID = prdi.ProductID and prdi.ListOrder = 1
 //		where FromDate=@FromDate and SpotID=@SpotID
 //				ORDER BY Active, cc.CollectionCategoryItemID DESC
-		JPASQLQuery<CuratedBest> jpasqlQuery = new JPASQLQuery(entityManager,new SQLServer2012Templates());
+		JPASQLQuery<CuratedBest> jpasqlQuery = new JPASQLQuery(entityManager,new MSSQLServer2012Templates());
 		QCollectionCategoryItemEntity CC = new QCollectionCategoryItemEntity("CC");
 		QProductsEntity P = new QProductsEntity("P");
 		QProductImageEntity PI = new QProductImageEntity("PI");
@@ -497,7 +498,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		Timestamp timestampFd = Timestamp.valueOf(startFromDate);
 		Timestamp timestampEd = Timestamp.valueOf(endFromDate);
 
-		JPASQLQuery<Bidding2> jpasqlQuery = new JPASQLQuery<Bidding2>(entityManager,new SQLServer2012Templates());
+		JPASQLQuery<Bidding2> jpasqlQuery = new JPASQLQuery<Bidding2>(entityManager,new MSSQLServer2012Templates());
 		QAdVendorEntity AV = new QAdVendorEntity("AV");
 		QMapAdVendorItemEntity MAVI = new QMapAdVendorItemEntity("MAVI");
 		QProductsEntity P = new QProductsEntity("P");
@@ -586,7 +587,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 	}
 
 	private List<CuratedBest> findAllCuratedBestOrderBySpotIDDesc(LocalDateTime dateTime) {
-		JPASQLQuery<CuratedBest> jpasqlQuery = new JPASQLQuery(entityManager,new SQLServer2012Templates());
+		JPASQLQuery<CuratedBest> jpasqlQuery = new JPASQLQuery(entityManager,new MSSQLServer2012Templates());
 		QCollectionCategoryItemEntity CC = new QCollectionCategoryItemEntity("CC");
 		QProductsEntity P = new QProductsEntity("P");
 		QProductImageEntity PI = new QProductImageEntity("PI");
