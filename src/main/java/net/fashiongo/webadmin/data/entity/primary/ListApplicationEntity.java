@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,4 +21,8 @@ public class ListApplicationEntity {
 
 	@Column(name = "ApplicationName")
 	private String applicationName;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ApplicationID",referencedColumnName = "ApplicationID",insertable = false,updatable = false)
+	private Set<SecurityResourceEntity> securityResource;
 }

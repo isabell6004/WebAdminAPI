@@ -312,9 +312,10 @@ public class AdminController {
 	 * @return GetSecurityResourcesResponse
 	 */
 	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityResourcesResponse> getSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
-		GetSecurityResourcesResponse resource = adminService.getSecurityResources(parameters);
-		return new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, resource);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse> getSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse securityResources = renewalAdminService.getSecurityResources(parameters);
+
+		return new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse>(true, null, 0, securityResources);
 	}
 	
 	/**

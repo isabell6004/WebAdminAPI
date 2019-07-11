@@ -35,4 +35,12 @@ public class SecurityResourceEntity {
 
 	@Column(name = "URL")
 	private String uRL;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parentID",referencedColumnName = "ResourceID",insertable = false,updatable = false)
+	private SecurityResourceEntity parentResource;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ApplicationID", referencedColumnName = "ApplicationID",insertable = false,updatable = false)
+	private ListApplicationEntity listApplication;
 }

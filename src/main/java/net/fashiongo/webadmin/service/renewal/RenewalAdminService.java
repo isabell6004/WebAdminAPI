@@ -1,17 +1,20 @@
 package net.fashiongo.webadmin.service.renewal;
 
-import net.fashiongo.webadmin.data.entity.primary.SecurityListIPEntity;
 import net.fashiongo.webadmin.data.model.admin.SecurityListIP;
+import net.fashiongo.webadmin.data.model.admin.Resource;
 import net.fashiongo.webadmin.data.model.admin.SecurityLoginLogs;
 import net.fashiongo.webadmin.data.model.admin.SecurityLogsColumn;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse;
+import net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse;
 import net.fashiongo.webadmin.data.repository.primary.SecurityAccessCodeEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SecurityListIPEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SecurityLoginLogEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.SecurityResourceEntityRepository;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityLogsParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,11 +35,15 @@ public class RenewalAdminService {
 
     private final SecurityListIPEntityRepository securityListIPEntityRepository;
 
+    private final SecurityResourceEntityRepository securityResourceEntityRepository;
+
     @Autowired
-    public RenewalAdminService(SecurityAccessCodeEntityRepository securityAccessCodeEntityRepository, SecurityLoginLogEntityRepository securityLoginLogEntityRepository, SecurityListIPEntityRepository securityListIPEntityRepository) {
+    public RenewalAdminService(SecurityAccessCodeEntityRepository securityAccessCodeEntityRepository, SecurityLoginLogEntityRepository securityLoginLogEntityRepository, SecurityListIPEntityRepository securityListIPEntityRepository, SecurityResourceEntityRepository securityResourceEntityRepository) {
+
         this.securityAccessCodeEntityRepository = securityAccessCodeEntityRepository;
         this.securityLoginLogEntityRepository = securityLoginLogEntityRepository;
         this.securityListIPEntityRepository = securityListIPEntityRepository;
+        this.securityResourceEntityRepository = securityResourceEntityRepository;
     }
 
     @Transactional(transactionManager = "primaryTransactionManager")
@@ -78,6 +85,20 @@ public class RenewalAdminService {
 
         return GetSecurityAccessIpsResponse.builder()
                 .securityListIP(securityListIP)
+                .build();
+    }
+
+    public GetSecurityResourcesResponse getSecurityResources(GetSecurityResourcesParameter parameters) {
+
+        String application = parameters.getApplication();
+        String resourceName = parameters.getResourceName();
+        String resourceParent = parameters.getResourceParent();
+        String resourceType = parameters.getResourceType();
+
+        List<Resource> resourceList = securityResourceEntityRepository.up_wa_Security_GetResource(application, resourceName, resourceParent, resourceType);
+
+        return GetSecurityResourcesResponse.builder()
+                .resource(resourceList)
                 .build();
     }
 }
