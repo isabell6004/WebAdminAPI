@@ -326,9 +326,9 @@ public class AdminController {
 	 * @return GetSecurityAccessIpsResponse
 	 */
 	@RequestMapping(value="getsecurityaccessips", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityAccessIpsResponse> getSecurityAccessIps () {
-		GetSecurityAccessIpsResponse result = adminService.getSecurityAccessIps();
-		return new JsonResponse<GetSecurityAccessIpsResponse>(true, null, 0, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse> getSecurityAccessIps () {
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse result = renewalAdminService.getSecurityAccessIps();
+		return new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse>(true, null, 0, result);
 	}
 	
 	/**

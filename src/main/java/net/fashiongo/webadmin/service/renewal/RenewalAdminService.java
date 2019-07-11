@@ -1,10 +1,14 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import net.fashiongo.webadmin.data.entity.primary.SecurityListIPEntity;
+import net.fashiongo.webadmin.data.model.admin.SecurityListIP;
 import net.fashiongo.webadmin.data.model.admin.SecurityLoginLogs;
 import net.fashiongo.webadmin.data.model.admin.SecurityLogsColumn;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.data.repository.primary.SecurityAccessCodeEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.SecurityListIPEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SecurityLoginLogEntityRepository;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityLogsParameter;
@@ -26,10 +30,13 @@ public class RenewalAdminService {
 
     private final SecurityLoginLogEntityRepository securityLoginLogEntityRepository;
 
+    private final SecurityListIPEntityRepository securityListIPEntityRepository;
+
     @Autowired
-    public RenewalAdminService(SecurityAccessCodeEntityRepository securityAccessCodeEntityRepository, SecurityLoginLogEntityRepository securityLoginLogEntityRepository) {
+    public RenewalAdminService(SecurityAccessCodeEntityRepository securityAccessCodeEntityRepository, SecurityLoginLogEntityRepository securityLoginLogEntityRepository, SecurityListIPEntityRepository securityListIPEntityRepository) {
         this.securityAccessCodeEntityRepository = securityAccessCodeEntityRepository;
         this.securityLoginLogEntityRepository = securityLoginLogEntityRepository;
+        this.securityListIPEntityRepository = securityListIPEntityRepository;
     }
 
     @Transactional(transactionManager = "primaryTransactionManager")
@@ -62,6 +69,15 @@ public class RenewalAdminService {
         return GetSecurityLogsResponse.builder()
                 .securityLoginLogs(result)
                 .securityLogsColumn(result2)
+                .build();
+    }
+
+    @Transactional(transactionManager = "primaryTransactionManager")
+    public GetSecurityAccessIpsResponse getSecurityAccessIps() {
+        List<SecurityListIP> securityListIP = securityListIPEntityRepository.findAllOrderByIPID();
+
+        return GetSecurityAccessIpsResponse.builder()
+                .securityListIP(securityListIP)
                 .build();
     }
 }
