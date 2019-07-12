@@ -452,12 +452,14 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecurityusergroupaccesstimes", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityUserGroupAccesstimeResponse> getSecurityUserGroupAccessTimes(@RequestBody GetSecurityUserGroupParameter parameters) {
-		JsonResponse<GetSecurityUserGroupAccesstimeResponse> results = new JsonResponse<GetSecurityUserGroupAccesstimeResponse>(false, null, 0, null);
-		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.getSecurityUserGroupAccessTimes(parameters);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse> getSecurityUserGroupAccessTimes(@RequestBody GetSecurityUserGroupParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse>(false, null, 0, null);
+
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse result = renewalSecurityGroupService.getSecurityUserGroupAccessTimes(parameters);
+
 		results.setData(result);
 		results.setSuccess(true);
-		
+
 		return results;
 	}
 	

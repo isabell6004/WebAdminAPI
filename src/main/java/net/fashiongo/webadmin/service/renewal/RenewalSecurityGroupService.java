@@ -1,9 +1,12 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import net.fashiongo.webadmin.data.model.admin.ResultGetSecurityUserGroupAccesstimes;
 import net.fashiongo.webadmin.data.model.admin.SecurityGroupPermissions;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse;
+import net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse;
 import net.fashiongo.webadmin.data.repository.primary.SecurityGroupProcedureRepository;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityGroupPermissionsParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserPermissionsParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,19 @@ public class RenewalSecurityGroupService {
 
 		return GetSecurityGroupPermissionsResponse.builder()
 				.securityGroupsPermissions(securityGroupPermissions)
+				.build();
+	}
+
+	public GetSecurityUserGroupAccesstimeResponse getSecurityUserGroupAccessTimes(GetSecurityUserGroupParameter parameters) {
+
+		Integer userID = parameters.getUsrId();
+
+		ResultGetSecurityUserGroupAccesstimes userGroupAccessTimes = securityGroupProcedureRepository.up_wa_GetSecurityUserGroupAccesstimes(userID);
+
+		return GetSecurityUserGroupAccesstimeResponse.builder()
+				.mapUserGroupList(userGroupAccessTimes.getMapUserGroups())
+				.loginControlList(userGroupAccessTimes.getLoginControls())
+				.success(true)
 				.build();
 	}
 

@@ -5,6 +5,7 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLServer2012Templates;
 import net.fashiongo.webadmin.data.entity.primary.QListApplicationEntity;
@@ -12,8 +13,14 @@ import net.fashiongo.webadmin.data.entity.primary.QSecurityMenuEntity;
 import net.fashiongo.webadmin.data.entity.primary.QSecurityPermissionGroupEntity;
 import net.fashiongo.webadmin.data.entity.primary.QSecurityResourceEntity;
 import net.fashiongo.webadmin.data.entity.primary.QSecurityPermissionEntity;
+import net.fashiongo.webadmin.data.entity.primary.QSecurityLoginControlEntity;
+import net.fashiongo.webadmin.data.entity.primary.QSecurityMapUserGroupEntity;
+import net.fashiongo.webadmin.data.entity.primary.QSecurityGroupEntity;
+import net.fashiongo.webadmin.data.model.admin.LoginControl;
+import net.fashiongo.webadmin.data.model.admin.ResultGetSecurityUserGroupAccesstimes;
 import net.fashiongo.webadmin.data.model.admin.SecurityGroupPermissions;
 import net.fashiongo.webadmin.data.model.admin.SecurityPermissionAllow;
+import net.fashiongo.webadmin.data.model.admin.MapUserGroup;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -200,5 +207,52 @@ public class SecurityGroupProcedureRepositoryImpl implements SecurityGroupProced
 				.stream()
 				.distinct()
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public ResultGetSecurityUserGroupAccesstimes up_wa_GetSecurityUserGroupAccesstimes(int userID) {
+		return ResultGetSecurityUserGroupAccesstimes.builder()
+				.loginControls(this.findLoginControlUserID(userID))
+				.mapUserGroups(this.findMapUserGroupUserID(userID))
+				.build();
+	}
+
+	private List<LoginControl> findLoginControlUserID(Integer userID) {
+		QSecurityLoginControlEntity SLC = QSecurityLoginControlEntity.securityLoginControlEntity;
+
+		JPAQuery<LoginControl> query = new JPAQuery<>(entityManager);
+
+		query.select(Projections.constructor(LoginControl.class,
+				SLC.controlID,
+				SLC.userID,
+				SLC.weekday,
+				SLC.timeFrom,
+				SLC.timeTo,
+				SLC.allow,
+				SLC.active
+		))
+		.from(SLC)
+		.where(SLC.userID.eq(userID));
+
+		return query.fetch();
+	}
+
+	private List<MapUserGroup> findMapUserGroupUserID(Integer userID) {
+		QSecurityMapUserGroupEntity MUG = new QSecurityMapUserGroupEntity("MUG");
+		QSecurityGroupEntity G = new QSecurityGroupEntity("G");
+
+		JPAQuery<MapUserGroup> query = new JPAQuery<>(entityManager);
+
+		query.select(Projections.constructor(MapUserGroup.class,
+				MUG.mapID,
+				MUG.userID,
+				MUG.securityGroupEntity.groupID,
+				MUG.securityGroupEntity.groupName
+		))
+		.from(MUG)
+		.innerJoin(MUG.securityGroupEntity, G)
+		.where(MUG.userID.eq(userID));
+
+		return query.fetch();
 	}
 }
