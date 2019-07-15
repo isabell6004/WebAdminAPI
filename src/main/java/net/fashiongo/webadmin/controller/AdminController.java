@@ -397,10 +397,11 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "getusermappingvendor", method=RequestMethod.POST)
-	public JsonResponse<GetUserMappingVendorResponse> getUserMappingVendor(@RequestBody GetUserMappingVendorParameter parameters) {
-		JsonResponse<GetUserMappingVendorResponse> results = new JsonResponse<GetUserMappingVendorResponse>(false, null, 0, null);
-		GetUserMappingVendorResponse result = securityGroupService.getUserMappingVendor(parameters);
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse> getUserMappingVendor(@RequestBody GetUserMappingVendorParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse>(false, null, 0, null);
+		net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse userMappingVendor = renewalSecurityGroupService.getUserMappingVendor(parameters);
+
+		results.setData(userMappingVendor);
 		results.setSuccess(true);
 		
 		return results;
