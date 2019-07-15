@@ -52,4 +52,8 @@ public class SecurityMenuEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ResourceID", updatable = false, insertable = false)
     private SecurityResourceEntity securityResourceEntity;
+
+	@OneToOne
+	@JoinColumn(name = "ParentID", updatable = false, insertable = false)
+	private SecurityMenuEntity securityParentMenuEntity;
 }

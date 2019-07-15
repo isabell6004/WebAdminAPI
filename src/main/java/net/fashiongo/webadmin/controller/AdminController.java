@@ -559,10 +559,10 @@ public class AdminController {
 	 * @return GetSecurityMenus2
 	 */
 	@RequestMapping(value="getsecuritymenus2", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityMenus2Response> GetSecurityMenus2 (@RequestBody GetSecurityMenus2Parameter parameters) {
-		JsonResponse<GetSecurityMenus2Response> results = new JsonResponse<GetSecurityMenus2Response>(true, null, 0, null);
-		GetSecurityMenus2Response result = adminService.GetSecurityMenus2(parameters);
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response> GetSecurityMenus2 (@RequestBody GetSecurityMenus2Parameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response>(true, null, 0, null);
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response getSecurityMenus2Response = renewalAdminService.GetSecurityMenus2(parameters);
+		results.setData(getSecurityMenus2Response);
 		return results;
 	}
 	

@@ -1,9 +1,7 @@
 package net.fashiongo.webadmin.service.renewal;
 
-import net.fashiongo.webadmin.data.model.admin.SecurityListIP;
-import net.fashiongo.webadmin.data.model.admin.Resource;
-import net.fashiongo.webadmin.data.model.admin.SecurityLoginLogs;
-import net.fashiongo.webadmin.data.model.admin.SecurityLogsColumn;
+import net.fashiongo.webadmin.data.model.admin.*;
+import net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse;
@@ -12,8 +10,10 @@ import net.fashiongo.webadmin.data.repository.primary.SecurityAccessCodeEntityRe
 import net.fashiongo.webadmin.data.repository.primary.SecurityListIPEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SecurityLoginLogEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SecurityResourceEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityLogsParameter;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityMenus2Parameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,13 +38,16 @@ public class RenewalAdminService {
 
     private final SecurityResourceEntityRepository securityResourceEntityRepository;
 
+    private final PrimaryProcedureRepository primaryProcedureRepository;
+
     @Autowired
-    public RenewalAdminService(SecurityAccessCodeEntityRepository securityAccessCodeEntityRepository, SecurityLoginLogEntityRepository securityLoginLogEntityRepository, SecurityListIPEntityRepository securityListIPEntityRepository, SecurityResourceEntityRepository securityResourceEntityRepository) {
+    public RenewalAdminService(SecurityAccessCodeEntityRepository securityAccessCodeEntityRepository, SecurityLoginLogEntityRepository securityLoginLogEntityRepository, SecurityListIPEntityRepository securityListIPEntityRepository, SecurityResourceEntityRepository securityResourceEntityRepository, PrimaryProcedureRepository primaryProcedureRepository) {
 
         this.securityAccessCodeEntityRepository = securityAccessCodeEntityRepository;
         this.securityLoginLogEntityRepository = securityLoginLogEntityRepository;
         this.securityListIPEntityRepository = securityListIPEntityRepository;
         this.securityResourceEntityRepository = securityResourceEntityRepository;
+        this.primaryProcedureRepository = primaryProcedureRepository;
     }
 
     @Transactional(transactionManager = "primaryTransactionManager")
@@ -99,6 +103,21 @@ public class RenewalAdminService {
 
         return GetSecurityResourcesResponse.builder()
                 .resource(resourceList)
+                .build();
+    }
+
+    @Transactional(transactionManager = "primaryTransactionManager")
+    public GetSecurityMenus2Response GetSecurityMenus2(GetSecurityMenus2Parameter parameters) {
+
+        String menuname = parameters.getMenuname();
+        Integer parentmenuid = Integer.valueOf(parameters.getParentmenuid());
+        Integer applicationid = Integer.valueOf(parameters.getApplicationid());
+        Integer active = parameters.getActive();
+
+        List<SecurityMenus2> securityMenus2s = primaryProcedureRepository.up_wa_GetSecurityMenus2(menuname, parentmenuid, applicationid, active);
+
+        return GetSecurityMenus2Response.builder()
+                .securityMenus2(securityMenus2s)
                 .build();
     }
 }

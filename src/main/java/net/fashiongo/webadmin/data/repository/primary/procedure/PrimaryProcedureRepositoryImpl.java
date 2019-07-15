@@ -1,24 +1,22 @@
 package net.fashiongo.webadmin.data.repository.primary.procedure;
 
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Path;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
-import net.fashiongo.webadmin.data.entity.primary.QCountEntity;
-import net.fashiongo.webadmin.data.entity.primary.QMapWaUserVendorEntity;
-import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
-import net.fashiongo.webadmin.data.entity.primary.SimpleWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.*;
+import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendor;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendorAssigned;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
+import net.fashiongo.webadmin.model.primary.SecurityMenu;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -38,6 +36,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 
 	@Override
+	@Transactional(value = "primaryTransactionManager")
 	public ResultGetUserMappingVendor up_wa_GetUserMappingVendor(Integer userId, String alphabet, String companyType, String categories, String vendorType, String vendorKeyword) {
 
 		List<UserMappingVendor> userMappingVendorList = findUserMappingVendor(userId, alphabet, companyType, categories, vendorType, vendorKeyword);
@@ -145,5 +144,77 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.where(M.userID.eq(userId));
 
 		return jpaQuery.fetchCount();
+	}
+
+
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public List<SecurityMenus2> up_wa_GetSecurityMenus2(String menuName, Integer parentMenuId, Integer applicationId, Integer active) {
+//		select	m.MenuID,
+////				m.Name as MenuName,
+////		(case when m.ParentID is null then 0 else m.ParentID end) as ParentID,
+////		m2.Name  as ParentMenuName ,
+////				r.ResourceID,
+////				r.Name as ResourceName,
+////
+////		m.RoutePath,
+////				m.MenuIcon,
+////
+////				m.ApplicationID,
+////				m.ListOrder,
+////				m.Visible,
+////				m.Active
+////
+////		from [security.Menu] m
+////		left OUTER join [security.Menu] m2 on m2.MenuID = m.ParentID
+////		left OUTER join [security.Resource] r on r.ResourceID = m.ResourceID
+////		where
+////		m.Name like '%' + @menuName + '%'
+////		and (m.ParentID = @parentMenuId or @parentMenuId = 0)
+////		and (m.ApplicationID = @applicationId or @applicationId = 0)
+////		and ((@active=2) or (m.active=@active))
+////		order by m.MenuID asc
+
+		JPAQuery<SecurityMenus2> jpaQuery = new JPAQuery<>(entityManager);
+
+		QSecurityMenuEntity M = new QSecurityMenuEntity("M");
+		QSecurityMenuEntity M2 = new QSecurityMenuEntity("M2");
+		QSecurityResourceEntity R = new QSecurityResourceEntity("R");
+		Expression<Integer> ZERO = Expressions.constant(0);
+		NumberExpression<Integer> PARENT_MENU_ID = Expressions.asNumber(parentMenuId);
+		NumberExpression<Integer> APPLICATION_ID = Expressions.asNumber(applicationId);
+		NumberExpression<Integer> ACTIVE = Expressions.asNumber(active);
+
+		jpaQuery.select(
+				Projections.constructor(
+						SecurityMenus2.class
+						, M.menuID
+						, M.name
+						, queryDSLSQLFunctions.isnull(Integer.class,M.parentID,0)
+						, M2.name
+						, R.resourceID
+						, R.name
+						, M.routePath
+						, M.menuIcon
+						, M.applicationID
+						, M.listOrder
+						, M.visible
+						, M.active
+				)
+		).from(M)
+				.leftJoin(M.securityParentMenuEntity,M2)
+				.leftJoin(M.securityResourceEntity,R)
+				.where(
+						M.name.contains(menuName)
+						.and(
+								M.parentID.eq(parentMenuId).or(PARENT_MENU_ID.eq(ZERO))
+						).and(M.applicationID.eq(applicationId).or(APPLICATION_ID.eq(ZERO))
+						).and(ACTIVE.eq(active).or(M.active.eq(active > 0 ? true : false)))
+				).orderBy(M.menuID.asc());
+
+		return jpaQuery.fetch()
+				.stream()
+				.distinct()
+				.collect(Collectors.toList());
 	}
 }
