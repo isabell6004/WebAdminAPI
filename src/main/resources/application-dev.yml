@@ -4,13 +4,13 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_V2
+    jdbc-url: jdbc:sqlserver://10.200.16.31;databaseName=FG_V2
   datasource2:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PAY
+    jdbc-url: jdbc:sqlserver://10.200.16.31;databaseName=FG_PAY
   datasource3:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_EM
+    jdbc-url: jdbc:sqlserver://10.200.16.31;databaseName=FG_EM
   datasource4:
-    jdbc-url: jdbc:sqlserver://10.10.10.3;databaseName=FG_PhotoStudio
+    jdbc-url: jdbc:sqlserver://10.200.16.31;databaseName=FG_PhotoStudio
     
   jpa:
     show-sql: false
