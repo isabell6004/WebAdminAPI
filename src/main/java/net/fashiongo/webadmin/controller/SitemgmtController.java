@@ -9,6 +9,10 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelTrendDailyKeywordParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendDailyKeywordParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTrendDailyKeywordParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendDailyKeywordResponse;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -97,10 +101,8 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReportItemRes
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorCategoryResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorListResponse;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
-import net.fashiongo.webadmin.model.primary.EditorPickVendorContent;
 import net.fashiongo.webadmin.model.primary.SocialMedia;
 import net.fashiongo.webadmin.model.primary.Vendor;
-import net.fashiongo.webadmin.model.primary.VendorContent;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.SocialMediaService;
@@ -1041,5 +1043,28 @@ public class SitemgmtController {
 	public JsonResponse<String> deleteEditorsPick(@PathVariable("id") String id) {
 		ResultCode result = sitemgmtService.deleteEditorPickVendorContent(StringUtil.isNullOrEmpty(id) ? null : Integer.parseInt(id));
 		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
+	}
+
+	@PostMapping(value = "gettrendkeywordcalendar")
+	public JsonResponse<GetTrendDailyKeywordResponse> getTrendKeywordCalendar(@RequestBody GetTrendDailyKeywordParameter parameter) {
+		JsonResponse<GetTrendDailyKeywordResponse> results = new JsonResponse<GetTrendDailyKeywordResponse>(true, null, null);
+
+		GetTrendDailyKeywordResponse _result = sitemgmtService.getTrendDailyKeywords(parameter);
+		results.setData(_result);
+		results.setSuccess(true);
+
+		return results;
+	}
+
+	@PostMapping(value = "settrendkeywords")
+	public JsonResponse<Integer> setTrendKeywords(@RequestBody List<SetTrendDailyKeywordParameter> parameter) {
+		ResultCode result = sitemgmtService.setTrendDailyKeywords(parameter);
+		return new JsonResponse<Integer>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
+	}
+
+	@PostMapping(value = "deltrendkeywords")
+	public JsonResponse<Integer> delTrendKeyword(@RequestBody DelTrendDailyKeywordParameter parameter) {
+		ResultCode result = sitemgmtService.delTrendDailyKeyword(parameter);
+		return new JsonResponse<Integer>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 }

@@ -1,7 +1,9 @@
 package net.fashiongo.webadmin.service;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +14,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import net.fashiongo.webadmin.data.entity.primary.TrendDailyKeywordEntity;
+import net.fashiongo.webadmin.data.repository.primary.TrendDailyKeywordEntityRepository;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendDailyKeywordResponse;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelTrendDailyKeywordParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendDailyKeywordParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTrendDailyKeywordParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendDailyKeywordResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,7 +270,10 @@ public class SitemgmtService extends ApiService {
 	
 	@Autowired
 	private VendorImageRequestRepository vendorImageRequestRepository;
-	
+
+	@Autowired
+	TrendDailyKeywordEntityRepository trendDailyKeywordEntityRepository;
+
 	private net.fashiongo.webadmin.utility.Utility uUtility;
 
 	/**
@@ -2284,6 +2296,90 @@ public class SitemgmtService extends ApiService {
 		} catch (Exception e) {
 			return new ResultCode(false, -1, e.getMessage());
 		}
+		return new ResultCode(true, 1, MSG_DELETE_SUCCESS);
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public GetTrendDailyKeywordResponse getTrendDailyKeywords(GetTrendDailyKeywordParameter parameter) {
+		String fromDateValue = parameter.getFromDate();
+		String toDateValue = parameter.getToDate();
+
+		LocalDateTime fromDate = LocalDate.parse(fromDateValue, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0, 0, 0, 0);
+		LocalDateTime toDate = LocalDate.parse(toDateValue, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0, 0, 0, 0);
+
+		List<TrendDailyKeywordEntity> result = trendDailyKeywordEntityRepository.findAllBetweenFromTo(fromDate, toDate);
+
+		List<TrendDailyKeywordResponse> _result = result.stream().map(
+				t -> new TrendDailyKeywordResponse(
+						t.getTrendDailyKeywordID(), t.getExposeDate(),t.getKeywordText(),
+						t.getKeywordType(), t.getSortNo(),t.getCategoryID(),
+						t.getCreatedOn(),t.getCreatedBy(),t.getModifiedOn(),t.getModifiedBy()))
+				.collect(Collectors.toList());
+
+		return GetTrendDailyKeywordResponse.builder()
+				.trendDailyKeywords(_result)
+				.build();
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public void setTrendKeyword(SetTrendDailyKeywordParameter parameter) {
+		this.saveTrendKeyword(parameter);
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public ResultCode setTrendDailyKeywords(List<SetTrendDailyKeywordParameter> parameters) {
+		for (SetTrendDailyKeywordParameter parameter : parameters) {
+			this.saveTrendKeyword(parameter);
+		}
+
+		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
+	}
+
+	private void saveTrendKeyword(SetTrendDailyKeywordParameter parameter) {
+		TrendDailyKeywordEntity trendKeyword = trendDailyKeywordEntityRepository.findOneById(parameter.getTrendDailyKeywordID());
+
+		String exposeDateValue = parameter.getExposeDate();
+		LocalDateTime exposeDate = LocalDate.parse(exposeDateValue, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0, 0, 0, 0);
+
+		String keywordText = parameter.getKeywordText();
+		String userName = Utility.getUsername();
+		LocalDateTime date = LocalDateTime.now();
+
+		int sortNo = parameter.getSortNo();
+
+		int keywordType = parameter.getKeywordType();
+
+		if (trendKeyword == null) {
+
+			trendKeyword = new TrendDailyKeywordEntity();
+
+			trendKeyword.setExposeDate(exposeDate);
+			trendKeyword.setSortNo(sortNo);
+
+			trendKeyword.setCreatedOn(date);
+			trendKeyword.setCreatedBy(userName);
+		}
+
+		trendKeyword.setKeywordText(keywordText);
+		trendKeyword.setKeywordType(keywordType);
+		if(keywordType == 2 && parameter.getCategoryID() != null) {
+			trendKeyword.setCategoryID(parameter.getCategoryID());
+		}
+
+		trendKeyword.setModifiedOn(date);
+		trendKeyword.setModifiedBy(userName);
+
+		trendDailyKeywordEntityRepository.save(trendKeyword);
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public ResultCode delTrendDailyKeyword(DelTrendDailyKeywordParameter parameter) {
+		try {
+			trendDailyKeywordEntityRepository.deleteByTrendDailyKeywordID(parameter.getTrendKeywordID());
+		} catch(Exception e) {
+			return new ResultCode(false, -1, e.getMessage());
+		}
+
 		return new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 	}
 }
