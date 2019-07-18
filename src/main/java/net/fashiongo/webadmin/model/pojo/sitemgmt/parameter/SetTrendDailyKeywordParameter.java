@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Setter
 public class SetTrendDailyKeywordParameter implements Serializable {
     @JsonProperty("TrendDailyKeywordID")
-    private Integer trendDailyKeywordID;
+    private Long trendDailyKeywordID;
 
     @JsonProperty("ExposeDate")
     private String exposeDate;

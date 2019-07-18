@@ -8,5 +8,5 @@ import java.util.List;
 public interface TrendDailyKeywordEntityRepositoryCustom {
     List<TrendDailyKeywordEntity> findAllBetweenFromTo(LocalDateTime fromDate, LocalDateTime toDate);
 
-    TrendDailyKeywordEntity findOneById(long id);
+    TrendDailyKeywordEntity findOneById(Long id);
 }

@@ -32,7 +32,7 @@ public class TrendDailyKeywordEntityRepositoryCustomImpl implements TrendDailyKe
     }
 
     @Override
-    public TrendDailyKeywordEntity findOneById(long id) {
+    public TrendDailyKeywordEntity findOneById(Long id) {
         QTrendDailyKeywordEntity trendDailyKeyword = QTrendDailyKeywordEntity.trendDailyKeywordEntity;
         QCategoryEntity category = QCategoryEntity.categoryEntity;
 
@@ -40,8 +40,13 @@ public class TrendDailyKeywordEntityRepositoryCustomImpl implements TrendDailyKe
 
         query.select(trendDailyKeyword)
                 .from(trendDailyKeyword)
-                .leftJoin(trendDailyKeyword.category, category).fetchJoin()
-                .where(trendDailyKeyword.trendDailyKeywordID.eq(id));
+                .leftJoin(trendDailyKeyword.category, category).fetchJoin();
+
+        if(id == null) {
+            query.where(trendDailyKeyword.trendDailyKeywordID.isNull());
+        } else {
+            query.where(trendDailyKeyword.trendDailyKeywordID.eq(id));
+        }
 
         return query.fetchOne();
     }
