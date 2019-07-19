@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.model.pojo.sitemgmt;
+package net.fashiongo.webadmin.model.pojo.sitemgmt.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -30,6 +30,12 @@ public class TrendDailyKeywordResponse {
 
     @JsonProperty("CategoryID")
     private Integer categoryID;
+
+    @JsonProperty("ParentCategoryID")
+    private Integer parentCategoryID;
+
+    @JsonProperty("ParentParentCategoryID")
+    private Integer parentParentCategoryID;
 
     @JsonProperty("CreatedOn")
     private LocalDateTime createdOn;

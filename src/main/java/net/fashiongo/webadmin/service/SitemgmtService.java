@@ -1,26 +1,27 @@
 package net.fashiongo.webadmin.service;
 
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
+import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.CategoryEntity;
 import net.fashiongo.webadmin.data.entity.primary.TrendDailyKeywordEntity;
 import net.fashiongo.webadmin.data.repository.primary.TrendDailyKeywordEntityRepository;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendDailyKeywordResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelTrendDailyKeywordParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendDailyKeywordParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTrendDailyKeywordParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendDailyKeywordResponse;
+import net.fashiongo.webadmin.model.fgem.EmConfiguration;
+import net.fashiongo.webadmin.model.pojo.ad.CategoryAdCount;
+import net.fashiongo.webadmin.model.pojo.ad.SelectData;
+import net.fashiongo.webadmin.model.pojo.ad.VendorCount;
+import net.fashiongo.webadmin.model.pojo.ad.VendorData1;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.common.Result;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.*;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
+import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,164 +34,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import net.fashiongo.webadmin.dao.fgem.EmConfigurationRepository;
-import net.fashiongo.webadmin.dao.primary.CategoryRepository;
-import net.fashiongo.webadmin.dao.primary.CodeFabricRepository;
-import net.fashiongo.webadmin.dao.primary.CodeLengthRepository;
-import net.fashiongo.webadmin.dao.primary.CodePatternRepository;
-import net.fashiongo.webadmin.dao.primary.CodeStyleRepository;
-import net.fashiongo.webadmin.dao.primary.CommunicationReasonRepository;
-import net.fashiongo.webadmin.dao.primary.EditorPickVendorContentRepository;
-import net.fashiongo.webadmin.dao.primary.FeaturedItemRepository;
-import net.fashiongo.webadmin.dao.primary.ListVendorImageTypeRepository;
-import net.fashiongo.webadmin.dao.primary.MapFabricCategoryRepository;
-import net.fashiongo.webadmin.dao.primary.MapLengthCategoryRepository;
-import net.fashiongo.webadmin.dao.primary.MapPatternCategoryRepository;
-import net.fashiongo.webadmin.dao.primary.MapStyleCategoryRepository;
-import net.fashiongo.webadmin.dao.primary.PolicyRepository;
-import net.fashiongo.webadmin.dao.primary.TodayDealRepository;
-import net.fashiongo.webadmin.dao.primary.TrendReportContentsRepository;
-import net.fashiongo.webadmin.dao.primary.TrendReportRepository;
-import net.fashiongo.webadmin.dao.primary.VendorCatalogRepository;
-import net.fashiongo.webadmin.dao.primary.VendorCatalogSendQueueRepository;
-import net.fashiongo.webadmin.dao.primary.VendorCatalogSendRequestRepository;
-import net.fashiongo.webadmin.dao.primary.VendorCategoryRepository;
-import net.fashiongo.webadmin.dao.primary.VendorContentRepository;
-import net.fashiongo.webadmin.dao.primary.VendorImageRequestRepository;
-import net.fashiongo.webadmin.model.fgem.EmConfiguration;
-import net.fashiongo.webadmin.model.pojo.ad.CategoryAdCount;
-import net.fashiongo.webadmin.model.pojo.ad.SelectData;
-import net.fashiongo.webadmin.model.pojo.ad.VendorCount;
-import net.fashiongo.webadmin.model.pojo.ad.VendorData1;
-import net.fashiongo.webadmin.model.pojo.common.PagedResult;
-import net.fashiongo.webadmin.model.pojo.common.Result;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
-import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
-import net.fashiongo.webadmin.model.pojo.message.Total;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ActiveTodayDealDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMedia;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMediaFile;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.BodySizeInfo;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryCount;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryReport;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryVendor;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryVendorInfo;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CodeData;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ColorListInfo;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.DMRequest;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.DMRequestDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPick;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.FabricInfo;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedItemCount;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedItemList;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.FeaturedVendorDaily;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.InactiveTodayDealDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.LengthInfo;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.PatternInfo;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductAttribute;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductColors;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductImage;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductInfo;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductSelectCheck;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductSize;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.StyleInfo;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TodayDealCalendarDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TodayDealDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportDefault;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportItem;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportList;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorCategorySummary;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorSummary;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.VendorSummaryDetail;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelFeaturedItemParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DeleteCommunicationReasonParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryVendorListParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetDMRequestParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetDMRequestSendListParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetFeaturedItemSearchParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetFeaturedItemSearchVendorParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetItemsParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetPolicyDetailParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetPolicyManagementDetailParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetProductAttributesParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetProductDetailParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodayDealCalendarListParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodayDealCanlendarParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodaydealParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReport2Parameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReportDefaultParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReportItemParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.PageSizeParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCategoryListOrderParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCategoryParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCommunicationReasonActiveParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCommunicationReasonParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetFGCatalogParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetFeaturedItemParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetNewTodayDealParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetPaidCampaignParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetProductAttributesMappingParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetProductAttributesParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTodayDealCalendarParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTrendReportMapParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTrendReportParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetCategoryListResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetCategoryVendorListResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetDMRequestResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetFeaturedItemCountResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetFeaturedItemListDayResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetFeaturedItemSearchResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetFeaturedItemSearchVendorResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetItemsResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetPaidCampaignResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetPolicyDetailResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetPolicyManagementDetailResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetPolicyManagementResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetProductAttributesResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetProductAttributesTotalResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetProductDetailResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTodayDealCalendarListResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTodayDealCalendarResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTodaydealResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReport2Response;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReportCategoryResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReportDefaultResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetTrendReportItemResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorCategoryResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetVendorListResponse;
-import net.fashiongo.webadmin.model.primary.Category;
-import net.fashiongo.webadmin.model.primary.CodeFabric;
-import net.fashiongo.webadmin.model.primary.CodeLength;
-import net.fashiongo.webadmin.model.primary.CodePattern;
-import net.fashiongo.webadmin.model.primary.CodeStyle;
-import net.fashiongo.webadmin.model.primary.CollectionCategory;
-import net.fashiongo.webadmin.model.primary.CommunicationReason;
-import net.fashiongo.webadmin.model.primary.EditorPickVendorContent;
-import net.fashiongo.webadmin.model.primary.FeaturedItem;
-import net.fashiongo.webadmin.model.primary.ListVendorImageType;
-import net.fashiongo.webadmin.model.primary.MapFabricCategory;
-import net.fashiongo.webadmin.model.primary.MapLengthCategory;
-import net.fashiongo.webadmin.model.primary.MapPatternCategory;
-import net.fashiongo.webadmin.model.primary.MapStyleCategory;
-import net.fashiongo.webadmin.model.primary.Policy;
-import net.fashiongo.webadmin.model.primary.PolicyAgreement;
-import net.fashiongo.webadmin.model.primary.TodayDeal;
-import net.fashiongo.webadmin.model.primary.TrendReport;
-import net.fashiongo.webadmin.model.primary.TrendReportContents;
-import net.fashiongo.webadmin.model.primary.VendorCatalog;
-import net.fashiongo.webadmin.model.primary.VendorCatalogSendQueue;
-import net.fashiongo.webadmin.model.primary.VendorCatalogSendRequest;
-import net.fashiongo.webadmin.model.primary.VendorCategory;
-import net.fashiongo.webadmin.model.primary.VendorContent;
-import net.fashiongo.webadmin.model.primary.VendorContentFile;
-import net.fashiongo.webadmin.model.primary.VendorImageRequest;
-import net.fashiongo.webadmin.utility.JsonResponse;
-import net.fashiongo.webadmin.utility.Utility;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -272,7 +122,7 @@ public class SitemgmtService extends ApiService {
 	private VendorImageRequestRepository vendorImageRequestRepository;
 
 	@Autowired
-	TrendDailyKeywordEntityRepository trendDailyKeywordEntityRepository;
+	private TrendDailyKeywordEntityRepository trendDailyKeywordEntityRepository;
 
 	private net.fashiongo.webadmin.utility.Utility uUtility;
 
@@ -2311,9 +2161,10 @@ public class SitemgmtService extends ApiService {
 
 		List<TrendDailyKeywordResponse> _result = result.stream().map(
 				t -> new TrendDailyKeywordResponse(
-						t.getTrendDailyKeywordID(), t.getExposeDate(),t.getKeywordText(),
-						t.getKeywordType(), t.getSortNo(),t.getCategoryID(),
-						t.getCreatedOn(),t.getCreatedBy(),t.getModifiedOn(),t.getModifiedBy()))
+						t.getTrendDailyKeywordID(), t.getExposeDate(), t.getKeywordText(), t.getKeywordType(), t.getSortNo(),
+						t.getCategoryID(), Optional.ofNullable(t.getCategory()).map(CategoryEntity::getParentCategoryId).orElse(null),
+						Optional.ofNullable(t.getCategory()).map(CategoryEntity::getParentParentCategoryId).orElse(null),
+						t.getCreatedOn(), t.getCreatedBy(),t.getModifiedOn(),t.getModifiedBy()))
 				.collect(Collectors.toList());
 
 		return GetTrendDailyKeywordResponse.builder()
