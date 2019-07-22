@@ -1226,7 +1226,7 @@ public class PhotoStudioService extends ApiService {
     public Map<String, Object> getReports(int year, int month, ReportType reportType) {
 
         LocalDateTime start = DateUtils.getFirstDayOfMonthAsLocalDateTime(year, month);
-        LocalDateTime end = DateUtils.getLastDayOfMonthAsLocalDateTime(year, month);
+        LocalDateTime end = DateUtils.getFirstDayOfNextMonth(year, month);
 
         List<PhotoOrder> orders = null;
         Map<String, Object> result = new HashMap<String, Object>();

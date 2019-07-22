@@ -46,10 +46,18 @@ public class DateUtils {
     }
 
     public static LocalDateTime getLastDayOfMonthAsLocalDateTime(int year, int month) {
-        LocalDateTime now = LocalDateTime.of(year, month + 1, 1, 0, 0, 0);
+        LocalDateTime now = LocalDateTime.of(year, month, 1, 0, 0, 0);
+        now = now.plusMonths(1);
         now = now.minusDays(1);
         return now;
     }
+
+    public static LocalDateTime getFirstDayOfNextMonth(int year, int month) {
+        LocalDateTime now = LocalDateTime.of(year, month, 1, 0, 0, 0);
+        now = now.plusMonths(1);
+        return now;
+    }
+
 
     public static LocalDateTime getLastDayOfMonthAsLocalDateTime(LocalDateTime startDate) {
         LocalDateTime endDate = startDate.plusMonths(1);
