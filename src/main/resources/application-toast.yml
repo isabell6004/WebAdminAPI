@@ -1,0 +1,52 @@
+# toast
+spring:
+  profiles: toast
+  redis:
+    host: 10.10.0.168
+  datasource:
+    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
+  datasource2:
+    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
+  datasource3:
+    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_EM
+  datasource4:
+    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PhotoStudio
+  
+  jpa:
+    show-sql: false
+    properties.hibernate.format_sql: false
+    properties.hibernate.generate_statistics: false
+    
+webAdminapi:
+  fgServiceAPI_EndPoint: http://10.10.0.150:19002
+  
+server:
+  port: 19901
+
+logging:
+  config: classpath:log4j2-toast.xml
+  path: /home1/irteam/logs/
+
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7, 18
+    package2: 2, 8, 19
+    package3: 3, 9, 20
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9, 18, 19, 20
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9, 18, 19, 20
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
