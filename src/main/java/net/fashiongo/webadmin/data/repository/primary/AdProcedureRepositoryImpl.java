@@ -516,7 +516,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		Path<Object> temp_spot = ExpressionUtils.path(Object.class, "TEMP_SPOT");
 
 		Path<Object> temp_product_adid = ExpressionUtils.path(Integer.class,temp_product, "ADID");
-		Path<Object> temp_product_mapid = ExpressionUtils.path(Integer.class,temp_product, "MAP_ID");
+		Path<Object> temp_product_listorder = ExpressionUtils.path(Integer.class,temp_product, "MAP_LISTORDER");
 		Path<Object> temp_count_adid = ExpressionUtils.path(Integer.class,temp_count, "ADID");
 		Path<Object> temp_spotid = ExpressionUtils.path(Integer.class,temp_spot, "SPOTID");
 
@@ -553,7 +553,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 				)
 				.from(AV)
 				.leftJoin(
-						JPAExpressions.select(SUB_AV.adID,SUB_MAVI.mapID.min().as("MAP_ID"))
+						JPAExpressions.select(SUB_AV.adID,SUB_MAVI.listOrder.min().as("MAP_LISTORDER"))
 								.from(SUB_AV)
 								.innerJoin(SUB_MAVI).on(SUB_AV.adID.eq(SUB_MAVI.adID))
 								.innerJoin(SUB_P).on(SUB_MAVI.productID.eq(SUB_P.productID).and(SUB_P.active.eq(true)))
@@ -572,7 +572,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 								.from(CC)
 								.groupBy(CC.spotID)
 						,temp_spot).on(AV.spotID.eq(temp_spotid))
-				.leftJoin(MAVI).on(AV.adID.eq(MAVI.adID).and(MAVI.mapID.eq(temp_product_mapid)))
+				.leftJoin(MAVI).on(AV.adID.eq(MAVI.adID).and(MAVI.listOrder.eq(temp_product_listorder)))
 				.leftJoin(P).on(MAVI.productID.eq(P.productID))
 				.leftJoin(W).on(AV.wholeSalerID.eq(W.wholeSalerId))
 				.leftJoin(I).on(I.imageServerID.eq(W.imageServerID))
