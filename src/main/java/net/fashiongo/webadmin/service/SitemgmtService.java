@@ -2173,54 +2173,187 @@ public class SitemgmtService extends ApiService {
 	}
 
 	@Transactional(transactionManager = "primaryTransactionManager")
-	public void setTrendKeyword(SetTrendDailyKeywordParameter parameter) {
-		this.saveTrendKeyword(parameter);
-	}
+	public ResultCode setTrendDailyKeywords(SetTrendDailyKeywordParameter parameter) {
+		List<Long> existKeywordIdList = parameter.getKeywordList().stream()
+				.filter(param -> param.getTrendDailyKeywordID() != null)
+				.map(TrendDailyKeywordParameter::getTrendDailyKeywordID)
+				.collect(Collectors.toList());
 
-	@Transactional(transactionManager = "primaryTransactionManager")
-	public ResultCode setTrendDailyKeywords(List<SetTrendDailyKeywordParameter> parameters) {
-		for (SetTrendDailyKeywordParameter parameter : parameters) {
-			this.saveTrendKeyword(parameter);
+		List<TrendDailyKeywordEntity> existKeywordList = trendDailyKeywordEntityRepository.findAllById(existKeywordIdList);
+
+		for (TrendDailyKeywordParameter keyword : parameter.getKeywordList()) {
+			TrendDailyKeywordEntity existKeyword = existKeywordList.stream()
+					.filter(tempExistKeyword -> keyword.getTrendDailyKeywordID() == tempExistKeyword.getTrendDailyKeywordID())
+					.findFirst()
+					.orElse(null);
+
+			this.saveTrendKeyword(keyword, existKeyword);
 		}
+
+		if (parameter.isApplyToAllGivenDays() && parameter.getSrcExposeDate() != null) {
+            applyToAllGivenDays(parameter.getSrcExposeDate(), parameter.getDaysToBeApplied());
+        }
 
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
 
-	private void saveTrendKeyword(SetTrendDailyKeywordParameter parameter) {
-		TrendDailyKeywordEntity trendKeyword = trendDailyKeywordEntityRepository.findOneById(parameter.getTrendDailyKeywordID());
-
-		String exposeDateValue = parameter.getExposeDate();
+	private void saveTrendKeyword(TrendDailyKeywordParameter newKeyword, TrendDailyKeywordEntity existKeyword) {
+		String exposeDateValue = newKeyword.getExposeDate();
 		LocalDateTime exposeDate = LocalDate.parse(exposeDateValue, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0, 0, 0, 0);
 
-		String keywordText = parameter.getKeywordText();
+		String keywordText = newKeyword.getKeywordText();
 		String userName = Utility.getUsername();
 		LocalDateTime date = LocalDateTime.now();
 
-		int sortNo = parameter.getSortNo();
+		int sortNo = newKeyword.getSortNo();
 
-		int keywordType = parameter.getKeywordType();
+		int keywordType = newKeyword.getKeywordType();
 
-		if (trendKeyword == null) {
-
-			trendKeyword = new TrendDailyKeywordEntity();
-
-			trendKeyword.setExposeDate(exposeDate);
-			trendKeyword.setSortNo(sortNo);
-
-			trendKeyword.setCreatedOn(date);
-			trendKeyword.setCreatedBy(userName);
+		if (!validateKeyword(newKeyword, existKeyword)) {
+			return;
 		}
 
-		trendKeyword.setKeywordText(keywordText);
-		trendKeyword.setKeywordType(keywordType);
-		if(keywordType == 2 && parameter.getCategoryID() != null) {
-			trendKeyword.setCategoryID(parameter.getCategoryID());
+		if (existKeyword == null) {
+
+			existKeyword = new TrendDailyKeywordEntity();
+
+			existKeyword.setExposeDate(exposeDate);
+			existKeyword.setSortNo(sortNo);
+
+			existKeyword.setCreatedOn(date);
+			existKeyword.setCreatedBy(userName);
 		}
 
-		trendKeyword.setModifiedOn(date);
-		trendKeyword.setModifiedBy(userName);
+		existKeyword.setKeywordText(keywordText);
+		existKeyword.setKeywordType(keywordType);
+		if(keywordType == 2 && newKeyword.getCategoryID() != null) {
+			existKeyword.setCategoryID(newKeyword.getCategoryID());
+		}
 
-		trendDailyKeywordEntityRepository.save(trendKeyword);
+		existKeyword.setModifiedOn(date);
+		existKeyword.setModifiedBy(userName);
+
+		trendDailyKeywordEntityRepository.save(existKeyword);
+	}
+
+	private void applyToAllGivenDays(String srcExposeDateValue, List<String> destExposeDateValueList) {
+        String userName = Utility.getUsername();
+        LocalDateTime date = LocalDateTime.now();
+
+		LocalDateTime srcExposeDate = LocalDate.parse(srcExposeDateValue, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0, 0, 0, 0);
+		List<TrendDailyKeywordEntity> srcKeywordList = trendDailyKeywordEntityRepository.findAllByExposeDate(srcExposeDate);
+
+		List<LocalDateTime> destExposeDateList = destExposeDateValueList.stream()
+                .map(exposeDateValue -> LocalDate.parse(exposeDateValue, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0, 0, 0, 0))
+                .collect(Collectors.toList());
+		List<TrendDailyKeywordEntity> allDestKeywordList = trendDailyKeywordEntityRepository.findAllByExposeDateIn(destExposeDateList);
+
+		List<TrendDailyKeywordEntity> savedKeywordList = new ArrayList<>();
+		List<TrendDailyKeywordEntity> deletedKeywordList = new ArrayList<>();
+		for (LocalDateTime exposeDate : destExposeDateList) {
+			List<TrendDailyKeywordEntity> destKeywordList = allDestKeywordList.stream()
+					.filter(allDestKeyword -> allDestKeyword.getExposeDate().isEqual(exposeDate))
+					.collect(Collectors.toList());
+
+			for (int i = 1; i <= 7; i++) {
+				final int temp_i = i;
+
+				Optional<TrendDailyKeywordEntity> destKeyword = destKeywordList.stream()
+						.filter(tempDestKeyword -> tempDestKeyword.getSortNo() == temp_i)
+						.findFirst();
+
+				Optional<TrendDailyKeywordEntity> newKeyword = srcKeywordList.stream()
+						.filter(tempNewKeyword -> tempNewKeyword.getSortNo() == temp_i)
+						.findFirst();
+
+				if (destKeyword.isPresent() && newKeyword.isPresent()) {
+					if (!validateKeyword(newKeyword.get(), destKeyword.get())) {
+						continue;
+					}
+
+					destKeyword.get().setKeywordText(newKeyword.get().getKeywordText());
+					destKeyword.get().setKeywordType(newKeyword.get().getKeywordType());
+                    if(newKeyword.get().getKeywordType() == 2 && newKeyword.get().getCategoryID() != null) {
+						destKeyword.get().setCategoryID(newKeyword.get().getCategoryID());
+                    }
+
+					destKeyword.get().setModifiedOn(date);
+					destKeyword.get().setModifiedBy(userName);
+
+                    savedKeywordList.add(destKeyword.get());
+				} else if (!destKeyword.isPresent() && newKeyword.isPresent()) {
+					TrendDailyKeywordEntity newKeywordEntity = new TrendDailyKeywordEntity();
+
+					newKeywordEntity.setExposeDate(exposeDate);
+					newKeywordEntity.setSortNo(newKeyword.get().getSortNo());
+					newKeywordEntity.setKeywordText(newKeyword.get().getKeywordText());
+					newKeywordEntity.setKeywordType(newKeyword.get().getKeywordType());
+					if(newKeyword.get().getKeywordType() == 2 && newKeyword.get().getCategoryID() != null) {
+						newKeywordEntity.setCategoryID(newKeyword.get().getCategoryID());
+					}
+
+					newKeywordEntity.setCreatedOn(date);
+					newKeywordEntity.setCreatedBy(userName);
+					newKeywordEntity.setModifiedOn(date);
+					newKeywordEntity.setModifiedBy(userName);
+
+					savedKeywordList.add(newKeywordEntity);
+				} else if (destKeyword.isPresent() && !newKeyword.isPresent()) {
+					deletedKeywordList.add(destKeyword.get());
+				}
+			}
+		}
+
+        trendDailyKeywordEntityRepository.saveAll(savedKeywordList);
+        trendDailyKeywordEntityRepository.deleteAll(deletedKeywordList);
+    }
+
+    private boolean validateKeyword(TrendDailyKeywordParameter newKeyword, TrendDailyKeywordEntity existKeyword) {
+		// validate empty keyword
+		if (newKeyword.getKeywordText() == null || newKeyword.getKeywordText().trim().equals("")) {
+			return false;
+		}
+
+		// validate empty category
+		if (newKeyword.getKeywordType() == 2 && newKeyword.getCategoryID() == null) {
+			return false;
+		}
+
+		// validate duplicate
+		if (existKeyword == null) {
+			return true;
+		}
+
+		if (newKeyword.getKeywordType() == 1
+				&& newKeyword.getKeywordType() == existKeyword.getKeywordType()
+				&& newKeyword.getKeywordText().equals(existKeyword.getKeywordText())) {
+			return false;
+		}
+
+		if (newKeyword.getKeywordType() == 2
+				&& newKeyword.getKeywordType() == existKeyword.getKeywordType()
+				&& newKeyword.getCategoryID().equals(existKeyword.getCategoryID())) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean validateKeyword(TrendDailyKeywordEntity newKeyword, TrendDailyKeywordEntity existKeyword) {
+		// validate duplicate
+		if (newKeyword.getKeywordType() == 1
+				&& newKeyword.getKeywordType() == existKeyword.getKeywordType()
+				&& newKeyword.getKeywordText().equals(existKeyword.getKeywordText())) {
+			return false;
+		}
+
+		if (newKeyword.getKeywordType() == 2
+				&& newKeyword.getKeywordType() == existKeyword.getKeywordType()
+				&& newKeyword.getCategoryID().equals(existKeyword.getCategoryID())) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Transactional(transactionManager = "primaryTransactionManager")

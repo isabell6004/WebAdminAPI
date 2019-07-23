@@ -5,25 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
 public class SetTrendDailyKeywordParameter implements Serializable {
-    @JsonProperty("TrendDailyKeywordID")
-    private Long trendDailyKeywordID;
+    List<TrendDailyKeywordParameter> keywordList;
 
-    @JsonProperty("ExposeDate")
-    private String exposeDate;
+    @JsonProperty("applyToAllGivenDays")
+    boolean applyToAllGivenDays;
 
-    @JsonProperty("SortNo")
-    private Integer sortNo;
+    String srcExposeDate;
 
-    @JsonProperty("KeywordText")
-    private String keywordText;
-
-    @JsonProperty("KeywordType")
-    private Integer keywordType;
-
-    @JsonProperty("CategoryID")
-    private Integer categoryID;
+    List<String> daysToBeApplied;
 }

@@ -1057,7 +1057,7 @@ public class SitemgmtController {
 	}
 
 	@PostMapping(value = "settrendkeywords")
-	public JsonResponse<Integer> setTrendKeywords(@RequestBody List<SetTrendDailyKeywordParameter> parameter) {
+	public JsonResponse<Integer> setTrendKeywords(@RequestBody SetTrendDailyKeywordParameter parameter) {
 		ResultCode result = sitemgmtService.setTrendDailyKeywords(parameter);
 		return new JsonResponse<Integer>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
