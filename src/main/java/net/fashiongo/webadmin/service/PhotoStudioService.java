@@ -751,6 +751,7 @@ public class PhotoStudioService extends ApiService {
 
         return responseBuilder
                 .orders(orders)
+                .isEditable(isEditable(calendarId, 2))
                 .build();
     }
 
@@ -900,9 +901,20 @@ public class PhotoStudioService extends ApiService {
         result.put("actionLogs", LogPhotoActionDto.build(logPhotoActions));
         result.put("items", DetailOrderQuantity.build(photoOrderDetails));
         result.put("photoStudioUsers", PhotoActionUser.build(securityUsers));
+        result.put("isEditable", isEditable(photoOrder.getPhotoBooking().getMapPhotoCalendarModel().getCalendarID(), 2));
         return result;
     }
 
+    private boolean isEditable(int calendarId, int businessDay) {
+        PhotoCalendarEntity calendarEntity = photoCalendarRepository.findById(calendarId)
+                .orElse(null);
+
+        PhotoCalendarEntity limitCalendarEntity = photoCalendarRepository.findBeforeBusinessDayFromTheDate(businessDay, LocalDateTime.now().minusDays(1));
+
+        return calendarEntity != null
+                && (calendarEntity.getTheDate().isAfter(limitCalendarEntity.getTheDate())
+                || calendarEntity.getTheDate().isEqual(limitCalendarEntity.getTheDate()));
+    }
 
     public List<AvailableModelsResponse> getAvailableModels(Integer orderID, String theDate) {
         List<Object> params = new ArrayList<Object>();
