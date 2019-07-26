@@ -2,7 +2,7 @@
 spring:
   profiles: toast
   redis:
-    host: 10.10.0.168
+    host: 10.200.24.30
   datasource:
     jdbc-url: jdbc:sqlserver://10.200.24.202;databaseName=FG_V2
   datasource2:
