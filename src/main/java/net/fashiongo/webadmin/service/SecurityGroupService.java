@@ -1,5 +1,28 @@
 package net.fashiongo.webadmin.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.application.Application;
+import net.fashiongo.common.data.enums.security.ApplicationType;
+import net.fashiongo.common.data.enums.security.ResourceAuthorityType;
+import net.fashiongo.common.data.model.entity.security.CSecurityPermission;
+import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.model.pojo.admin.*;
+import net.fashiongo.webadmin.model.pojo.admin.parameter.*;
+import net.fashiongo.webadmin.model.pojo.admin.response.*;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.response.SetAspnetMembershipResponse;
+import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -7,64 +30,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import net.fashiongo.webadmin.dao.primary.MapWaUserVendorRepository;
-import net.fashiongo.webadmin.dao.primary.SecurityGroupRepository;
-import net.fashiongo.webadmin.dao.primary.SecurityLoginControlRepository;
-import net.fashiongo.webadmin.dao.primary.SecurityMapUserGroupRepository;
-import net.fashiongo.webadmin.dao.primary.SecurityPermissionGroupRepository;
-import net.fashiongo.webadmin.dao.primary.SecurityPermissionRepository;
-import net.fashiongo.webadmin.dao.primary.SecurityUserRepository;
-import net.fashiongo.webadmin.model.pojo.admin.AspnetMembershipGetUserByName;
-import net.fashiongo.webadmin.model.pojo.admin.AspnetUserRoles;
-import net.fashiongo.webadmin.model.pojo.admin.GroupData;
-import net.fashiongo.webadmin.model.pojo.admin.LoginControl;
-import net.fashiongo.webadmin.model.pojo.admin.MapUserGroup;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.admin.SecurityGroupPermissions;
-import net.fashiongo.webadmin.model.pojo.admin.SecurityUserCreate;
-import net.fashiongo.webadmin.model.pojo.admin.SecurityUserPermission;
-import net.fashiongo.webadmin.model.pojo.admin.SecurityUserPermissionSub;
-import net.fashiongo.webadmin.model.pojo.admin.SecurityUsers;
-import net.fashiongo.webadmin.model.pojo.admin.SubGroupData;
-import net.fashiongo.webadmin.model.pojo.admin.UserMappingVendor;
-import net.fashiongo.webadmin.model.pojo.admin.UserMappingVendorAssigned;
-import net.fashiongo.webadmin.model.pojo.admin.UserMappingVendorResult;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.DelSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityGroupPermissionsParameter;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserGroupParameter;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserPermissionsParameter;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.GetUserMappingVendorParameter;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityUserParameter;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.SetUserMappingVendorParameter;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityGroupPermissionsResponse;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserGroupAccesstimeResponse;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserResponse;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.pojo.admin.response.SetCreateSecurityUserResponse;
-import net.fashiongo.webadmin.model.pojo.admin.response.SetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.pojo.response.SetAspnetMembershipResponse;
-import net.fashiongo.webadmin.model.primary.SecurityGroup;
-import net.fashiongo.webadmin.model.primary.SecurityLoginControl;
-import net.fashiongo.webadmin.model.primary.SecurityMapUserGroup;
-import net.fashiongo.webadmin.model.primary.SecurityPermission;
-import net.fashiongo.webadmin.model.primary.SecurityPermissionGroup;
-import net.fashiongo.webadmin.model.primary.SecurityUser;
-import net.fashiongo.webadmin.utility.HttpClient;
-import net.fashiongo.webadmin.utility.JsonResponse;
-import net.fashiongo.webadmin.utility.Utility;
 /**
  * 
  * @author Reo
@@ -92,6 +59,9 @@ public class SecurityGroupService extends ApiService {
 	
 	@Autowired
 	private SecurityPermissionRepository securityPermissionRepository;
+
+	@Resource(name = "data.securityPermissionRepository")
+	private net.fashiongo.common.data.repository.security.SecurityPermissionRepository newSecurityPermissionRepository;
 	
 	private String appName = "FashionGo";
 	
@@ -571,13 +541,13 @@ public class SecurityGroupService extends ApiService {
 			Integer userID = userData.getId() != null ? (userData.getId() > 0 ? userData.getId() : 0) : 0;
 			if (userID <= 0) {
 				//Call FG Service
-				String uri = "/membership/createMembership";
+				String uri = "/security/createMembership";
 				ObjectMapper mapper = new ObjectMapper();
 				JsonResponse<?> ret = httpClient.postObject(uri, mapper.writeValueAsString(userData));
 				
 				if (ret.isSuccess()) {
 					String guid = null;
-					String userByNameSpName = "aspnet_Membership_GetUserByName";  //check membership user
+					String userByNameSpName = "aspnet_Membership_GetUserByName";  //check security user
 					
 					List<Object> userByNameParams = new ArrayList<Object>();
 					userByNameParams.add(appName);
@@ -618,7 +588,7 @@ public class SecurityGroupService extends ApiService {
 					userByNameSuccess = false;
 				}
 			} else {
-				String userByNameSpName = "aspnet_Membership_GetUserByName";  //check membership user
+				String userByNameSpName = "aspnet_Membership_GetUserByName";  //check security user
 				
 				List<Object> userByNameParams = new ArrayList<Object>();
 				userByNameParams.add(appName);
@@ -633,7 +603,7 @@ public class SecurityGroupService extends ApiService {
 				su.setModifiedOn(now);
 			}
 			if (userByNameRes.getUserId() != null) {
-				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";  //update membership user
+				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";  //update security user
 				
 				List<Object> membershipParams = new ArrayList<Object>();
 				membershipParams.add(appName);
@@ -887,4 +857,24 @@ public class SecurityGroupService extends ApiService {
 
 
     }
+
+    public boolean hasSecurityResourceActionAuthority(Integer userId, String resourceName, String action) {
+		CSecurityPermission permission = newSecurityPermissionRepository.getSecurityPermission(userId, resourceName, ApplicationType.WA.getValue());
+
+		if (permission == null) {
+			return false;
+		}
+
+		if (ResourceAuthorityType.VIEW.getValue().equals(action)) {
+			return permission.getAllowView();
+		} else if (ResourceAuthorityType.ADD.getValue().equals(action)) {
+			return permission.getAllowAdd();
+		} else if (ResourceAuthorityType.EDIT.getValue().equals(action)) {
+			return permission.getAllowEdit();
+		} else if (ResourceAuthorityType.DELETE.getValue().equals(action)) {
+			return permission.getAllowDelete();
+		} else {
+			return false;
+		}
+	}
 }
