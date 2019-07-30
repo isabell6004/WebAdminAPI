@@ -27,14 +27,14 @@ public interface CouponMapper {
 
     void updateCoupon(CouponUpdateInput input, @MappingTarget CCoupon target);
 
-    @Mapping(target = "isDeleted", defaultValue = "false")
+    @Mapping(target = "isDeleted", constant = "false")
     CCouponCondition toCouponCondition(CouponConditionCreateInput input);
 
     void updateCouponCondition(CouponConditionUpdateInput input, @MappingTarget CCouponCondition target);
 
-    @Mapping(target = "generateType", defaultValue = "1")
-    @Mapping(target = "isUsed", defaultValue = "false")
-    @Mapping(target = "isDeleted", defaultValue = "false")
+    @Mapping(target = "generateType", constant = "1")
+    @Mapping(target = "isUsed", constant = "false")
+    @Mapping(target = "isDeleted", constant = "false")
     CCouponCode toCouponCode(CouponCodeCreateInput input);
 
     void updateCouponCode(CouponCodeUpdateInput input, @MappingTarget CCouponCode target);

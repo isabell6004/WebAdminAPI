@@ -2,11 +2,14 @@ package net.fashiongo.webadmin.service.coupon;
 
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.primary.coupon.command.CouponCreateInput;
-import net.fashiongo.webadmin.model.primary.coupon.command.CouponNotificationCommonInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponNotificationInput;
 import net.fashiongo.webadmin.model.primary.coupon.command.CouponOptionOutput;
 import net.fashiongo.webadmin.model.primary.coupon.command.CouponUpdateInput;
 import net.fashiongo.webadmin.model.primary.coupon.dto.CouponDto;
 import net.fashiongo.webadmin.model.primary.coupon.dto.CouponNotificationDto;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface CouponManagementService {
 
@@ -24,9 +27,9 @@ public interface CouponManagementService {
 
     CouponNotificationDto getCouponNotifications(Long couponId);
 
-    CouponNotificationDto createCouponNotification(Long couponId, CouponNotificationCommonInput couponNotificationCommonInput);
+    CouponNotificationDto createCouponNotification(Long couponId, CouponNotificationInput couponNotificationInput, MultipartFile targetFile, MultipartFile imageFile) throws IOException;
 
-    CouponNotificationDto updateCouponNotification(Long couponId, Long couponNotificationId, CouponNotificationCommonInput couponNotificationCommonInput);
+    CouponNotificationDto updateCouponNotification(Long couponId, Long couponNotificationId, CouponNotificationInput couponNotificationInput, MultipartFile targetFile, MultipartFile imageFile) throws IOException;
 
     boolean deleteCouponNotification(Long couponId, Long couponNotificationId);
 

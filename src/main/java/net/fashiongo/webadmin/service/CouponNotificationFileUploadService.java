@@ -3,10 +3,7 @@ package net.fashiongo.webadmin.service;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.config.CouponStorageProperties;
 import net.fashiongo.webadmin.data.repository.primary.CouponNotificationEntityRepository;
-<<<<<<< HEAD
 import net.fashiongo.webadmin.support.FileNameUtils;
-=======
->>>>>>> e62accfd... [Lucas Yonghee Lee] feature/coupon-file-upload-api : Implement
 import net.fashiongo.webadmin.support.storage.SwiftApiCallFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.HttpClientUtils;

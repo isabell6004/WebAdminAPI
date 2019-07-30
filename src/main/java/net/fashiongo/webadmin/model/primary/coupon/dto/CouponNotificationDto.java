@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import net.fashiongo.common.data.model.entity.coupon.CCouponNotification;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -29,8 +30,9 @@ public class CouponNotificationDto {
     private String createdBy;
     private LocalDateTime modifiedOn;
     private String modifiedBy;
+    private String imageRootUrl;
 
-    public static CouponNotificationDto build(CCouponNotification notification) {
+    public static CouponNotificationDto build(CCouponNotification notification, String imageRootUrl) {
 
         if (notification == null) {
             return null;
@@ -50,17 +52,18 @@ public class CouponNotificationDto {
                 .createdBy(notification.getCreatedBy())
                 .modifiedOn(notification.getModifiedOn())
                 .modifiedBy(notification.getModifiedBy())
+                .imageRootUrl(imageRootUrl)
                 .build();
     }
 
-    public static List<CouponNotificationDto> build(List<CCouponNotification> notifications) {
+    public static List<CouponNotificationDto> build(List<CCouponNotification> notifications, String imageRootUrl) {
 
         if (CollectionUtils.isEmpty(notifications)) {
             return Collections.emptyList();
         }
 
         return notifications.stream()
-                .map(n -> CouponNotificationDto.build(n))
+                .map(n -> CouponNotificationDto.build(n, imageRootUrl))
                 .collect(Collectors.toList());
     }
 }

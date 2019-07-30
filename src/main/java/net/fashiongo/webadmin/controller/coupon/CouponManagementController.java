@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -156,14 +157,16 @@ public class CouponManagementController {
         return response;
     }
 
-    @PostMapping(value = "/{couponId}/notification/create")
+    @PostMapping(value = "/{couponId}/notification/create",  headers="content-type=multipart/*",  consumes = {"multipart/form-data"})
     public JsonResponse<CouponNotificationDto> createCouponNotification(@PathVariable("couponId") Long couponId,
-                                                                        @RequestBody @Valid CouponNotificationCommonInput createRequest) {
+                                                                        @RequestPart(name = "notification") @Valid CouponNotificationInput input,
+                                                                        @RequestPart(name = "targetFile", required = false) MultipartFile targetFile,
+                                                                        @RequestPart(name = "imageFile", required = false) MultipartFile imageFile) {
 
         JsonResponse<CouponNotificationDto> response = new JsonResponse<>(false, null, null);
 
         try {
-            CouponNotificationDto result = couponManagementService.createCouponNotification(couponId, createRequest);
+            CouponNotificationDto result = couponManagementService.createCouponNotification(couponId, input, targetFile, imageFile);
 
             response.setSuccess(true);
             response.setMessage("success");
@@ -176,15 +179,17 @@ public class CouponManagementController {
         return response;
     }
 
-    @PostMapping(value = "/{couponId}/notification/{couponNotificationId}/update")
+    @PostMapping(value = "/{couponId}/notification/{couponNotificationId}/update", headers="content-type=multipart/*", consumes = {"multipart/form-data"})
     public JsonResponse<CouponNotificationDto> updateCouponNotification(@PathVariable("couponId") Long couponId,
                                                                         @PathVariable("couponNotificationId") Long couponNotificationId,
-                                                                        @RequestBody @Valid CouponNotificationCommonInput updateRequest) {
+                                                                        @RequestPart(name = "notification") @Valid CouponNotificationInput input,
+                                                                        @RequestPart(name = "targetFile", required = false) MultipartFile targetFile,
+                                                                        @RequestPart(name = "imageFile", required = false) MultipartFile imageFile) {
 
         JsonResponse<CouponNotificationDto> response = new JsonResponse<>(false, null, null);
 
         try {
-            CouponNotificationDto result = couponManagementService.updateCouponNotification(couponId, couponNotificationId, updateRequest);
+            CouponNotificationDto result = couponManagementService.updateCouponNotification(couponId, couponNotificationId, input, targetFile, imageFile);
 
             response.setSuccess(true);
             response.setMessage("success");
@@ -218,14 +223,14 @@ public class CouponManagementController {
         return response;
     }
 
-    @GetMapping(value = "/{couponId}/code/{couponCode}/unique")
-    public JsonResponse<Boolean> checkCouponCodeUniqueness(@PathVariable("couponId") Long couponid,
+    @GetMapping(value = "/code/{couponCodeId}/{couponCode}/unique")
+    public JsonResponse<Boolean> checkCouponCodeUniqueness(@PathVariable("couponCodeId") Long couponCodeId,
                                                            @PathVariable("couponCode") String couponCode) {
 
         JsonResponse<Boolean> response = new JsonResponse<>(false, null, null);
 
         try {
-            boolean result = couponManagementService.checkCouponCodeUnique(couponCode, null);
+            boolean result = couponManagementService.checkCouponCodeUnique(couponCode, couponCodeId);
 
             response.setSuccess(true);
             response.setMessage("success");

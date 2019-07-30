@@ -7,6 +7,7 @@ import net.fashiongo.common.data.enums.security.ResourceAuthorityType;
 import net.fashiongo.common.data.model.entity.coupon.*;
 import net.fashiongo.common.data.repository.coupon.*;
 import net.fashiongo.webadmin.aop.CouponActionAuthorityCheck;
+import net.fashiongo.webadmin.config.CouponStorageProperties;
 import net.fashiongo.webadmin.exception.coupon.*;
 import net.fashiongo.webadmin.mapper.CouponMapper;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
@@ -15,14 +16,22 @@ import net.fashiongo.webadmin.model.primary.coupon.command.*;
 import net.fashiongo.webadmin.model.primary.coupon.dto.*;
 import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.service.coupon.CouponManagementService;
+import net.fashiongo.webadmin.support.FileNameUtils;
+import net.fashiongo.webadmin.support.storage.SwiftApiCallFactory;
 import net.fashiongo.webadmin.utility.Utility;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -62,9 +71,18 @@ public class CouponManagementServiceImpl implements CouponManagementService {
     private CouponCommonRepository couponCommonRepository;
 
     @Autowired
+    private SwiftApiCallFactory factory;
+
+    @Autowired
+    private CouponStorageProperties properties;
+
+    @Autowired
     private SecurityGroupService securityGroupService;
 
     private final CouponMapper couponMapper;
+
+    @Value("${coupon.notification.image-root}")
+    private String imageRootUrl;
 
 
     private static final String[] UPPER_COMMON_CODES = {
@@ -139,8 +157,8 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         createInput.setModifiedOn(now);
         createInput.setModifiedBy(Utility.getUsername());
         createInput.validateCouponConditionRequest();
-        CCouponCondition couponConditionEntity = couponMapper.toCouponCondition(createInput);
 
+        CCouponCondition couponConditionEntity = couponMapper.toCouponCondition(createInput);
         couponConditionRepository.save(couponConditionEntity);
 
         return couponConditionEntity;
@@ -157,8 +175,8 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         createInput.setCreatedBy(Utility.getUsername());
         createInput.setModifiedOn(now);
         createInput.setModifiedBy(Utility.getUsername());
-        CCouponCode couponCodeEntity = couponMapper.toCouponCode(createInput);
 
+        CCouponCode couponCodeEntity = couponMapper.toCouponCode(createInput);
         couponCodeRepository.save(couponCodeEntity);
 
         return couponCodeEntity;
@@ -176,9 +194,6 @@ public class CouponManagementServiceImpl implements CouponManagementService {
 
         checkCouponDeletionStatus(couponEntity.getIsDeleted(), couponId);
         checkCouponActivationStatus(couponEntity.getIsActive(), couponId);
-        if (!couponEntity.getIsActive()) {
-            checkCouponActionDueDate(couponEntity.getStartDate(), "edit", couponId);
-        }
 
         Boolean previousIsNotifiedValue = couponEntity.getIsNotified();
 
@@ -225,7 +240,9 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         couponMapper.updateCouponCode(updateInput, couponCodeEntity);
 
         if (!updateInput.getIsDeleted()) {
-            checkCouponCodeUnique(updateInput.getCouponCode(), updateInput.getId());
+            if (!checkCouponCodeUnique(updateInput.getCouponCode(), updateInput.getId())) {
+                throw new NonUniqueCouponCodeException("coupon code not unique. " + updateInput.getCouponCode());
+            }
         } else {
             couponCodeEntity.setIsDeleted(true);
             couponCodeEntity.setDeletedOn(now);
@@ -353,22 +370,26 @@ public class CouponManagementServiceImpl implements CouponManagementService {
     @Override
     @CouponActionAuthorityCheck(ResourceAuthorityType.Constants.VIEW)
     public CouponNotificationDto getCouponNotifications(Long couponId) {
-        return CouponNotificationDto.build(couponNotificationRepository.findFirstByCouponId(couponId));
+        return CouponNotificationDto.build(couponNotificationRepository.findFirstByCouponId(couponId), imageRootUrl);
     }
 
     @Override
     @CouponActionAuthorityCheck(ResourceAuthorityType.Constants.ADD)
     @Transactional
-    public CouponNotificationDto createCouponNotification(Long couponId, CouponNotificationCommonInput couponNotificationCommonInput) {
+    public CouponNotificationDto createCouponNotification(Long couponId,
+                                                          CouponNotificationInput couponNotificationInput,
+                                                          MultipartFile targetFile,
+                                                          MultipartFile imageFile) throws IOException {
 
-        if (couponNotificationCommonInput.getNotification() == null) {
+        if (couponNotificationInput == null || targetFile.isEmpty() || imageFile.isEmpty()) {
             throw new InvalidInputCouponException("invalid notification input.");
         }
 
-        couponNotificationCommonInput.getNotification().setCouponId(couponId);
-        CCouponNotification couponNotificationEntity = couponMapper.toCouponNotification(couponNotificationCommonInput.getNotification());
+        couponNotificationInput.setCouponId(couponId);
+        CCouponNotification couponNotificationEntity = couponMapper.toCouponNotification(couponNotificationInput);
 
         LocalDateTime now = LocalDateTime.now();
+        couponNotificationEntity.setIsSent(false);
         couponNotificationEntity.setCreatedOn(now);
         couponNotificationEntity.setCreatedBy(Utility.getUsername());
         couponNotificationEntity.setModifiedOn(now);
@@ -376,18 +397,47 @@ public class CouponManagementServiceImpl implements CouponManagementService {
 
         couponNotificationRepository.save(couponNotificationEntity);
 
-        //TODO: call file upload api to upload target file
-        //TODO: call file upload api to upload image file
+        //TODO: upload target file
+        String originalTargetFileName = targetFile.getOriginalFilename();
+        InputStream targetFileInputStream = targetFile.getInputStream();
+        uploadEmail(couponNotificationEntity.getId(), originalTargetFileName, targetFileInputStream);
+        String targetFilePathAndName = FileNameUtils.updateOBSPrefixNotificationSavedFile(originalTargetFileName);
 
-        return CouponNotificationDto.build(couponNotificationEntity);
+        //TODO: upload image file
+        String originalImageFileName = imageFile.getOriginalFilename();
+        InputStream imageFileInputStream = imageFile.getInputStream();
+        uploadImage(couponNotificationEntity.getId(), originalImageFileName, imageFileInputStream);
+        String imageFilePathAndName = FileNameUtils.updateOBSPrefixNotificationSavedFile(originalImageFileName);
+
+        couponNotificationEntity.setNotificationTargetFile(targetFilePathAndName);
+        couponNotificationEntity.setNotificationImageFileName(imageFilePathAndName);
+        couponNotificationRepository.save(couponNotificationEntity);
+
+        CCoupon couponEntity = couponRepository.getOne(couponId);
+        createCouponHistory(couponEntity);
+
+        if (couponNotificationInput.getIsExcludeMember()) {
+            couponEntity.setIsExcludeMember(true);
+        }
+
+        couponEntity.setIsNotified(true);
+        couponEntity.setModifiedOn(now);
+        couponEntity.setModifiedBy(Utility.getUsername());
+        couponRepository.save(couponEntity);
+
+        return CouponNotificationDto.build(couponNotificationEntity, imageRootUrl);
     }
 
     @Override
     @CouponActionAuthorityCheck(ResourceAuthorityType.Constants.ADD)
     @Transactional
-    public CouponNotificationDto updateCouponNotification(Long couponId, Long couponNotificationId, CouponNotificationCommonInput couponNotificationCommonInput) {
+    public CouponNotificationDto updateCouponNotification(Long couponId,
+                                                          Long couponNotificationId,
+                                                          CouponNotificationInput couponNotificationInput,
+                                                          MultipartFile targetFile,
+                                                          MultipartFile imageFile) throws IOException {
 
-        if (couponNotificationCommonInput.getNotification() == null) {
+        if (couponNotificationInput == null) {
             throw new InvalidInputCouponException("invalid notification input.");
         }
 
@@ -401,21 +451,54 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         Optional<CCouponNotification> optionalCCouponNotification = couponNotificationRepository.findById(couponNotificationId);
         CCouponNotification couponNotificationEntity = optionalCCouponNotification.orElseThrow(() -> new NotFoundCouponNotificationException("cannot find coupon notification: " + couponNotificationId));
 
-        couponMapper.updateCouponNotification(couponNotificationCommonInput.getNotification(), couponNotificationEntity);
-        couponNotificationEntity.setModifiedOn(LocalDateTime.now());
+        couponMapper.updateCouponNotification(couponNotificationInput, couponNotificationEntity);
+
+        LocalDateTime now = LocalDateTime.now();
+        couponNotificationEntity.setModifiedOn(now);
         couponNotificationEntity.setModifiedBy(Utility.getUsername());
 
         couponNotificationRepository.save(couponNotificationEntity);
 
-        if (couponNotificationCommonInput.getTargetFile() != null) {
-            //TODO: call file upload api to upload target file
+        String targetFilePathAndName = null;
+        if (!targetFile.isEmpty()) {
+            //TODO: upload target file
+            String originalTargetFileName = targetFile.getOriginalFilename();
+            InputStream targetFileInputStream = targetFile.getInputStream();
+            uploadEmail(couponNotificationEntity.getId(), originalTargetFileName, targetFileInputStream);
+            targetFilePathAndName = FileNameUtils.updateOBSPrefixNotificationSavedFile(originalTargetFileName);
         }
 
-        if (couponNotificationCommonInput.getImageFile() != null) {
-            //TODO: call file upload api to upload image file
+        String imageFilePathAndName = null;
+        if (!imageFile.isEmpty()) {
+            //TODO: upload image file
+            String originalImageFileName = imageFile.getOriginalFilename();
+            InputStream imageFileInputStream = imageFile.getInputStream();
+            uploadImage(couponNotificationEntity.getId(), originalImageFileName, imageFileInputStream);
+            imageFilePathAndName = FileNameUtils.updateOBSPrefixNotificationSavedFile(originalImageFileName);
         }
 
-        return CouponNotificationDto.build(couponNotificationEntity);
+        if (targetFilePathAndName != null) {
+            couponNotificationEntity.setNotificationTargetFile(targetFilePathAndName);
+        }
+
+        if (imageFilePathAndName != null) {
+            couponNotificationEntity.setNotificationImageFileName(imageFilePathAndName);
+        }
+
+        couponNotificationRepository.save(couponNotificationEntity);
+
+        createCouponHistory(couponEntity);
+
+        if (couponNotificationInput.getIsExcludeMember()) {
+            couponEntity.setIsExcludeMember(true);
+        }
+
+        couponEntity.setIsNotified(true);
+        couponEntity.setModifiedOn(now);
+        couponEntity.setModifiedBy(Utility.getUsername());
+        couponRepository.save(couponEntity);
+
+        return CouponNotificationDto.build(couponNotificationEntity, imageRootUrl);
     }
 
     @Override
@@ -429,6 +512,15 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         if (couponEntity.getActivatedOn() != null) {
             throw new NotAllowedCouponException("cannot delete coupon notification. " + couponNotificationId);
         }
+
+        createCouponHistory(couponEntity);
+
+        couponEntity.setIsNotified(false);
+        couponEntity.setIsExcludeMember(false);
+        couponEntity.setModifiedOn(LocalDateTime.now());
+        couponEntity.setModifiedBy(Utility.getUsername());
+
+        couponRepository.save(couponEntity);
 
         Optional<CCouponNotification> optionalCCouponNotification = couponNotificationRepository.findById(couponNotificationId);
         CCouponNotification couponNotificationEntity = optionalCCouponNotification.orElseThrow(() -> new NotFoundCouponNotificationException("cannot find coupon notification: " + couponNotificationId));
@@ -470,11 +562,13 @@ public class CouponManagementServiceImpl implements CouponManagementService {
     public boolean checkCouponCodeUnique(String couponCode, Long couponCodeId) {
 
         if (couponCodeId == null) {
-            if (!CollectionUtils.isEmpty(couponCodeRepository.findByIsDeletedAndCouponCode(false, couponCode))) {
+            List<CCouponCode> couponEntityList = couponCodeRepository.findByIsDeletedAndCouponCode(false, couponCode);
+            if (!CollectionUtils.isEmpty(couponEntityList)) {
                 return false;
             }
         } else {
-            if (!CollectionUtils.isEmpty(couponCodeRepository.findByIsDeletedAndCouponCodeAndCouponIdNot(false, couponCode, couponCodeId))) {
+            List<CCouponCode> couponEntityList = couponCodeRepository.findByIsDeletedAndCouponCodeAndIdNot(false, couponCode, couponCodeId);
+            if (!CollectionUtils.isEmpty(couponEntityList)) {
                 return false;
             }
         }
@@ -504,5 +598,29 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         if (activatedOn != null) {
             throw new NotAllowedCouponException("cannot reactivate coupon. " + couponId);
         }
+    }
+
+    private void uploadEmail(Long couponNotificationId, String fileName, InputStream inputStream) {
+        String containerName = properties.getRootNamePrefix() + properties.getRootEmailName();
+        String objectPath = "" + couponNotificationId + "/" + fileName;
+
+        fileUpload(containerName,objectPath,inputStream);
+    }
+
+    private void uploadImage(Long couponNotificationId, String fileName, InputStream inputStream) {
+        String containerName = properties.getRootNamePrefix() + properties.getRootImageName();
+        String objectPath = "" + couponNotificationId + "/" + fileName;
+
+        fileUpload(containerName,objectPath,inputStream);
+    }
+
+    private void fileUpload(String containerName, String objectPath, InputStream inputStream) {
+        CloseableHttpResponse response = factory.create().files()
+                .upload(containerName, objectPath, inputStream, true)
+                .executeWithoutHandler();
+
+        HttpClientUtils.closeQuietly(
+                response
+        );
     }
 }

@@ -28,4 +28,6 @@ public class CouponNotificationInput {
     private String createdBy;
     private LocalDateTime modifiedOn;
     private String modifiedBy;
+
+    private Boolean isExcludeMember;
 }
