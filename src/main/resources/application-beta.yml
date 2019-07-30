@@ -10,7 +10,7 @@ spring:
   datasource3:
     jdbc-url: jdbc:sqlserver://10.200.24.29;databaseName=FG_EM
   datasource4:
-    jdbc-url: jdbc:sqlserver://10.200.24.298;databaseName=FG_PhotoStudio
+    jdbc-url: jdbc:sqlserver://10.200.24.29;databaseName=FG_PhotoStudio
     
   jpa:
     show-sql: false
