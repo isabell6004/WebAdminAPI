@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.application.Application;
 import net.fashiongo.common.data.enums.security.ApplicationType;
 import net.fashiongo.common.data.enums.security.ResourceAuthorityType;
 import net.fashiongo.common.data.model.entity.security.CSecurityPermission;
