@@ -140,11 +140,7 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         couponRepository.save(couponEntity);
 
         CCouponCondition couponConditionEntity = createCouponCondition(createInput.getCouponCondition(), couponEntity.getId(), now);
-
-        CCouponCode couponCodeEntity = null;
-        if (couponEntity.getIsCodeUsed() && createInput.getCouponCode() != null) {
-            couponCodeEntity = createCouponCode(createInput.getCouponCode(), couponEntity.getId(), now);
-        }
+        CCouponCode couponCodeEntity = couponEntity.getIsCodeUsed() ? createCouponCode(createInput.getCouponCode(), couponEntity.getId(), now) : null;
 
         return CouponDto.build(couponEntity, couponConditionEntity, couponCodeEntity);
     }
@@ -165,6 +161,10 @@ public class CouponManagementServiceImpl implements CouponManagementService {
     }
 
     private CCouponCode createCouponCode(CouponCodeCreateInput createInput, Long couponId, LocalDateTime now) {
+
+        if (createInput == null || createInput.getCouponCode() == null) {
+            return null;
+        }
 
         if (!checkCouponCodeUnique(createInput.getCouponCode(), couponId)) {
             throw new NonUniqueCouponCodeException(createInput.getCouponCode() + ", coupon code is not unique. ");
@@ -205,7 +205,7 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         couponRepository.save(couponEntity);
 
         CCouponCondition couponConditionEntity = updateCouponCondition(updateInput.getCouponCondition(), now);
-        CCouponCode couponCodeEntity = updateCouponCode(updateInput.getCouponCode(), now);
+        CCouponCode couponCodeEntity = updateCouponCode(updateInput.getCouponCode(), couponId, now);
 
         if (previousIsNotifiedValue && !couponEntity.getIsNotified()) {
             deleteCouponNotification(couponId);
@@ -230,7 +230,15 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         return couponConditionEntity;
     }
 
-    private CCouponCode updateCouponCode(CouponCodeUpdateInput updateInput, LocalDateTime now) {
+    private CCouponCode updateCouponCode(CouponCodeUpdateInput updateInput, Long couponId, LocalDateTime now) {
+
+        if (updateInput == null) {
+            return null;
+        }
+
+        if (updateInput.getId() == null) {
+            return createCouponCode(couponMapper.toCouponCodeCreateInput(updateInput), couponId, now);
+        }
 
         Optional<CCouponCode> optionalCCouponCode = couponCodeRepository.findById(updateInput.getId());
         CCouponCode couponCodeEntity = optionalCCouponCode.orElseThrow(() -> new NotFoundCouponException("cannot find coupon code: " + updateInput.getId()));
@@ -552,6 +560,10 @@ public class CouponManagementServiceImpl implements CouponManagementService {
     @Override
     public void hasCouponActionAuthority(String action) throws NotAuthorizedCouponException {
         Integer userId = Utility.getUserInfo().getUserId();
+
+        if ("S".equals(Utility.getUserInfo().getRoleid())) {
+            return;
+        }
 
         if (!securityGroupService.hasSecurityResourceActionAuthority(userId,"FG Coupon Management", action)) {
             throw new NotAuthorizedCouponException("not authorized to " + action);

@@ -42,4 +42,6 @@ public interface CouponMapper {
     CCouponNotification toCouponNotification(CouponNotificationInput input);
 
     void updateCouponNotification(CouponNotificationInput input, @MappingTarget CCouponNotification target);
+
+    CouponCodeCreateInput toCouponCodeCreateInput(CouponCodeUpdateInput input);
 }
