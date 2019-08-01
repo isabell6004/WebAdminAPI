@@ -278,6 +278,7 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         LocalDateTime now = LocalDateTime.now();
         coupon.setIsActive(true);
         coupon.setActivatedOn(now);
+        coupon.setActivatedBy(Utility.getUsername());
         coupon.setModifiedOn(LocalDateTime.now());
         coupon.setModifiedBy(Utility.getUsername());
         couponRepository.save(coupon);
