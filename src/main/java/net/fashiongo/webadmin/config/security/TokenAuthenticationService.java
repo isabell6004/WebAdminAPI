@@ -119,10 +119,10 @@ public class TokenAuthenticationService {
 			throw new Exception("Token is invalid! (No IPAddress)");
 		} else {
 			if (!webAdminLoginUser.getIpaddr().equals(Utility.getIpAddress(request))) {
-				log.info("===Token is invalid! (Invaild IpAddress) ===");
+				log.info("===== Token is invalid! (Invaild IpAddress) =====");
 				log.info("webAdminLoginUser.getIpaddr(): {}", webAdminLoginUser.getIpaddr());
 				log.info("Utility.getIpAddress(): {}", Utility.getIpAddress(request));
-				log.info("============================================");
+				log.info("=================================================");
 				throw new Exception("Token is invalid! (Invaild IpAddress)");
 			}
 		}

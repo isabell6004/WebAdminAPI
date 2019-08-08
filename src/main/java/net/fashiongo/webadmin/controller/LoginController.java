@@ -52,7 +52,7 @@ public class LoginController {
 	public JsonResponse<String> checkIP(HttpServletRequest request) {
 		JsonResponse<String> results = new JsonResponse<String>(false, null, 0, null);
         String ipAddress = Utility.getIpAddress(request);
-        
+
 		boolean result  = loginService.checkIP(ipAddress);
 		results.setSuccess(result);
 	
