@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -26,6 +27,7 @@ import net.fashiongo.webadmin.model.pojo.response.AuthuserResponse;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 
+@Slf4j
 @Component
 public class TokenAuthenticationService {
 	static final String SECRET = "fgwav2^^9070";
@@ -117,6 +119,8 @@ public class TokenAuthenticationService {
 			throw new Exception("Token is invalid! (No IPAddress)");
 		} else {
 			if (!webAdminLoginUser.getIpaddr().equals(Utility.getIpAddress(request))) {
+				log.info("webAdminLoginUser.getIpaddr(): {}", webAdminLoginUser.getIpaddr());
+				log.info("Utility.getIpAddress(): ", Utility.getIpAddress(request));
 				throw new Exception("Token is invalid! (Invaild IpAddress)");
 			}
 		}

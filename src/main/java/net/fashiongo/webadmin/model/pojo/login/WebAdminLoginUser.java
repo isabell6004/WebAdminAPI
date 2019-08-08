@@ -1,5 +1,8 @@
 package net.fashiongo.webadmin.model.pojo.login;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class WebAdminLoginUser {
 	private String roleid;
 	private Integer userId;
@@ -39,6 +42,7 @@ public class WebAdminLoginUser {
 		return ipaddr;
 	}
 	public void setIpaddr(String ipaddr) {
+		log.info("WebAdminLoginUser.setIpaddr(): {}", ipaddr);
 		this.ipaddr = ipaddr;
 	}
 	public String getUseragent() {

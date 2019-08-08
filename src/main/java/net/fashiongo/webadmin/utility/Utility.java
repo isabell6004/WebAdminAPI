@@ -131,10 +131,10 @@ public class Utility {
 	public static String getIpAddress(HttpServletRequest request) {
 		String ipAddress = request.getHeader("X-FORWARDED-FOR");
 		log.info("X-FORWARDED-FOR ipAddress: {}", ipAddress);
+		log.info("request.getRemoteAddr() ipAddress: {}", request.getRemoteAddr());
 
         if (ipAddress == null) {
         	ipAddress = request.getRemoteAddr();
-			log.info("getRemoteAddr ipAddress: {}", ipAddress);
 		}
         
 		return ipAddress.equals("0:0:0:0:0:0:0:1") ? "::1" : ipAddress;
