@@ -4,6 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.primary.SecurityGroup;
+import net.fashiongo.webadmin.service.AdminService;
+import net.fashiongo.webadmin.service.SecurityGroupService;
+import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
+import net.fashiongo.webadmin.service.renewal.RenewalSecurityGroupService;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -36,10 +44,8 @@ import net.fashiongo.webadmin.model.pojo.admin.parameter.SetSecurityUserParamete
 import net.fashiongo.webadmin.model.pojo.admin.parameter.SetUserMappingVendorParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.SetdeletesecuritygroupsParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.SetsecuritygroupParameter;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityAccessCodesResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityAccessIpsResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityGroupPermissionsResponse;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityLogsResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityMenus2Response;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityParentMenusResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityResourcesResponse;
@@ -48,11 +54,6 @@ import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.SetCreateSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.SetUserMappingVendorResponse;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.primary.SecurityGroup;
-import net.fashiongo.webadmin.service.AdminService;
-import net.fashiongo.webadmin.service.SecurityGroupService;
-import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * 
@@ -67,6 +68,12 @@ public class AdminController {
 	@Autowired
 	SecurityGroupService securityGroupService;
 
+	@Autowired
+	RenewalSecurityGroupService renewalSecurityGroupService;
+
+	@Autowired
+	RenewalAdminService renewalAdminService;
+
 	/**
 	 * Get Security Access Code
 	 * 
@@ -78,10 +85,11 @@ public class AdminController {
 	@RequestMapping(value = "getsecurityaccesscodes", method = RequestMethod.POST)
 	public JsonResponse<GetSecurityAccessCodesResponse> getSecurityAccessCodes(@RequestBody GetSecurityAccessCodesParameters parameters) {
 		JsonResponse<GetSecurityAccessCodesResponse> result = new JsonResponse<GetSecurityAccessCodesResponse>(false, null, null);
-		GetSecurityAccessCodesResponse _result = adminService.getSecurityAccessCodes(parameters);
+//		GetSecurityAccessCodesResponse _result = adminService.getSecurityAccessCodes(parameters);
+		GetSecurityAccessCodesResponse securityAccessCodeList = renewalAdminService.getSecurityAccessCodes(parameters);
 
 		result.setSuccess(true);
-		result.setData(_result);
+		result.setData(securityAccessCodeList);
 
 		return result;
 	}
@@ -139,9 +147,9 @@ public class AdminController {
 	 * @return GetSecurityLogsResponse
 	 */
 	@RequestMapping(value = "getsecuritylogs", method = RequestMethod.POST)
-	public JsonResponse<GetSecurityLogsResponse> getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {		
-		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
-		return new JsonResponse<GetSecurityLogsResponse>(true, null, 0, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse> getSecuritylogs(@RequestBody GetSecurityLogsParameter parameters) {
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse result = renewalAdminService.getSecurityLoginLogs(parameters);
+		return new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse>(true, null, 0, result);
 	}
 	
 	/**
@@ -173,11 +181,11 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecuritygrouppermissions", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityGroupPermissionsResponse> GetSecurityGroupPermissions(@RequestBody GetSecurityGroupPermissionsParameter parameters) {
-		JsonResponse<GetSecurityGroupPermissionsResponse> results = new JsonResponse<GetSecurityGroupPermissionsResponse>(false, null, 0, null);
-		GetSecurityGroupPermissionsResponse result = securityGroupService.GetSecurityGroupPermissions(parameters);
-		
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse> GetSecurityGroupPermissions(@RequestBody GetSecurityGroupPermissionsParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse>(false, null, 0, null);
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse getSecurityGroupPermissionsResponse = renewalSecurityGroupService.GetSecurityGroupPermissions(parameters);
+
+		results.setData(getSecurityGroupPermissionsResponse);
 		results.setSuccess(true);
 		
 		return results;
@@ -284,11 +292,12 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecurityuserpermissions", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityGroupPermissionsResponse> getSecurityUserPermissions(@RequestBody GetSecurityUserPermissionsParameter parameters) {
-		JsonResponse<GetSecurityGroupPermissionsResponse> results = new JsonResponse<GetSecurityGroupPermissionsResponse>(false, null, 0, null);
-		GetSecurityGroupPermissionsResponse result = securityGroupService.getSecurityUserPermissions(parameters);
-		
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse> getSecurityUserPermissions(@RequestBody GetSecurityUserPermissionsParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse>(false, null, 0, null);
+
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityGroupPermissionsResponse securityUserPermissions = renewalSecurityGroupService.getSecurityUserPermissions(parameters);
+
+		results.setData(securityUserPermissions);
 		results.setSuccess(true);
 		
 		return results;
@@ -303,9 +312,10 @@ public class AdminController {
 	 * @return GetSecurityResourcesResponse
 	 */
 	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityResourcesResponse> getSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
-		GetSecurityResourcesResponse resource = adminService.getSecurityResources(parameters);
-		return new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, resource);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse> getSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse securityResources = renewalAdminService.getSecurityResources(parameters);
+
+		return new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse>(true, null, 0, securityResources);
 	}
 	
 	/**
@@ -317,9 +327,9 @@ public class AdminController {
 	 * @return GetSecurityAccessIpsResponse
 	 */
 	@RequestMapping(value="getsecurityaccessips", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityAccessIpsResponse> getSecurityAccessIps () {
-		GetSecurityAccessIpsResponse result = adminService.getSecurityAccessIps();
-		return new JsonResponse<GetSecurityAccessIpsResponse>(true, null, 0, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse> getSecurityAccessIps () {
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse result = renewalAdminService.getSecurityAccessIps();
+		return new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse>(true, null, 0, result);
 	}
 	
 	/**
@@ -388,10 +398,11 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value = "getusermappingvendor", method=RequestMethod.POST)
-	public JsonResponse<GetUserMappingVendorResponse> getUserMappingVendor(@RequestBody GetUserMappingVendorParameter parameters) {
-		JsonResponse<GetUserMappingVendorResponse> results = new JsonResponse<GetUserMappingVendorResponse>(false, null, 0, null);
-		GetUserMappingVendorResponse result = securityGroupService.getUserMappingVendor(parameters);
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse> getUserMappingVendor(@RequestBody GetUserMappingVendorParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse>(false, null, 0, null);
+		net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse userMappingVendor = renewalSecurityGroupService.getUserMappingVendor(parameters);
+
+		results.setData(userMappingVendor);
 		results.setSuccess(true);
 		
 		return results;
@@ -443,12 +454,14 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecurityusergroupaccesstimes", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityUserGroupAccesstimeResponse> getSecurityUserGroupAccessTimes(@RequestBody GetSecurityUserGroupParameter parameters) {
-		JsonResponse<GetSecurityUserGroupAccesstimeResponse> results = new JsonResponse<GetSecurityUserGroupAccesstimeResponse>(false, null, 0, null);
-		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.getSecurityUserGroupAccessTimes(parameters);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse> getSecurityUserGroupAccessTimes(@RequestBody GetSecurityUserGroupParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse>(false, null, 0, null);
+
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAccesstimeResponse result = renewalSecurityGroupService.getSecurityUserGroupAccessTimes(parameters);
+
 		results.setData(result);
 		results.setSuccess(true);
-		
+
 		return results;
 	}
 	
@@ -546,10 +559,10 @@ public class AdminController {
 	 * @return GetSecurityMenus2
 	 */
 	@RequestMapping(value="getsecuritymenus2", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityMenus2Response> GetSecurityMenus2 (@RequestBody GetSecurityMenus2Parameter parameters) {
-		JsonResponse<GetSecurityMenus2Response> results = new JsonResponse<GetSecurityMenus2Response>(true, null, 0, null);
-		GetSecurityMenus2Response result = adminService.GetSecurityMenus2(parameters);
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response> GetSecurityMenus2 (@RequestBody GetSecurityMenus2Parameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response>(true, null, 0, null);
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response getSecurityMenus2Response = renewalAdminService.GetSecurityMenus2(parameters);
+		results.setData(getSecurityMenus2Response);
 		return results;
 	}
 	

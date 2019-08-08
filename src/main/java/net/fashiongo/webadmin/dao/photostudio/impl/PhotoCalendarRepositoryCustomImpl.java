@@ -34,4 +34,20 @@ public class PhotoCalendarRepositoryCustomImpl implements PhotoCalendarRepositor
 
 		return query.fetch();
 	}
+
+	@Override
+	public PhotoCalendarEntity findBeforeBusinessDayFromTheDate(int businessDay, LocalDateTime theDate) {
+		QPhotoCalendarEntity calendar = QPhotoCalendarEntity.photoCalendarEntity;
+
+		return new JPAQuery<>(photostudioEntityManager)
+				.select(calendar)
+				.from(calendar)
+				.where(calendar.available.isTrue()
+						.and(calendar.isHoliday.isFalse()
+								.and(calendar.theDate.loe(theDate))))
+				.orderBy(calendar.theDate.desc())
+				.limit(1)
+				.offset(businessDay - 1)
+				.fetchOne();
+	}
 }

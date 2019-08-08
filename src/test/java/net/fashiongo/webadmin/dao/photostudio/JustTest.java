@@ -28,19 +28,16 @@ public class JustTest {
     @Test
     public void cal_dates_of_localdatetime() {
 
-        LocalDateTime start = DateUtils.getFirstDayOfMonthAsLocalDateTime(2019, 4);
-        LocalDateTime end = DateUtils.getLastDayOfMonthAsLocalDateTime(2019, 5);
+        LocalDateTime start = DateUtils.getFirstDayOfMonthAsLocalDateTime(2019, 12);
+        LocalDateTime end = DateUtils.getLastDayOfMonthAsLocalDateTime(2020, 1);
 
         Period p0 = Period.between(start.toLocalDate(), end.toLocalDate());
         log.debug("period : {}", p0.getDays());
-        System.out.println(p0.getDays());
 
         Period p = Period.of(2019, 4, 1);
         int period = p.getDays();
 
         log.debug("period : {}", period);
-        System.out.println(period);
-
 
     }
 }

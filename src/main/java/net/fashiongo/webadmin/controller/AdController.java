@@ -6,7 +6,6 @@ import net.fashiongo.webadmin.model.pojo.ad.parameter.*;
 import net.fashiongo.webadmin.model.pojo.ad.response.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
 import net.fashiongo.webadmin.model.primary.CodeBodySize;
 import net.fashiongo.webadmin.service.AdService;
 import net.fashiongo.webadmin.service.renewal.RenewalAdService;
@@ -262,9 +261,10 @@ public class AdController {
 	 * @return GetCategoryAdList
 	 */
 	@RequestMapping(value = "getcategoryadlist", method = RequestMethod.POST)
-	public JsonResponse<GetCategoryAdListResponse> GetCategoryAdList(@RequestBody GetCategoryAdListParameter parameters) {
-		JsonResponse<GetCategoryAdListResponse> results = new JsonResponse<GetCategoryAdListResponse>(false, null, 0, null);
-		GetCategoryAdListResponse result = adService.GetCategoryAdList(parameters);
+	public JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdListResponse> GetCategoryAdList(@RequestBody GetCategoryAdListParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdListResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdListResponse>(false, null, 0, null);
+//		GetCategoryAdListResponse result = adService.GetCategoryAdList(parameters);
+		net.fashiongo.webadmin.data.model.ad.response.GetCategoryAdListResponse result = renewalAdService.getCategoryAdList(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 		return results;

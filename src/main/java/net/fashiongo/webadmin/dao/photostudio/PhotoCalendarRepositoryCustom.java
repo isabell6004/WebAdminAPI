@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface PhotoCalendarRepositoryCustom {
  	List<PhotoCalendarEntity> getPhotoCalendarWithJoinDate(LocalDateTime fromDate, LocalDateTime toDate);
+
+	PhotoCalendarEntity findBeforeBusinessDayFromTheDate(int businessDay, LocalDateTime theDate);
 }

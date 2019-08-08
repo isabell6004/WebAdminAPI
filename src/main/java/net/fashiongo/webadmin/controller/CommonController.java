@@ -1,33 +1,23 @@
 package net.fashiongo.webadmin.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
+import net.fashiongo.webadmin.model.pojo.common.parameter.*;
+import net.fashiongo.webadmin.model.pojo.common.response.GetBidAdPagesResponse;
+import net.fashiongo.webadmin.model.pojo.common.response.GetCountryStatesResponse;
+import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.service.AdminService;
+import net.fashiongo.webadmin.service.CommonService;
+import net.fashiongo.webadmin.service.SecurityGroupService;
+import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.admin.Resource;
-import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
-import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityResourcesResponse;
-import net.fashiongo.webadmin.model.pojo.common.parameter.GetBidAdPageSpotsParameter;
-import net.fashiongo.webadmin.model.pojo.common.parameter.GetBidAdSpotCategory;
-import net.fashiongo.webadmin.model.pojo.common.parameter.GetCountryStatesParameter;
-import net.fashiongo.webadmin.model.pojo.common.parameter.GetMenuIDParameter;
-import net.fashiongo.webadmin.model.pojo.common.parameter.GetServerHeartBeatParameter;
-import net.fashiongo.webadmin.model.pojo.common.response.GetBidAdPagesResponse;
-import net.fashiongo.webadmin.model.pojo.common.response.GetCountryStatesResponse;
-import net.fashiongo.webadmin.model.primary.AdPageSpot;
-import net.fashiongo.webadmin.model.primary.Category;
-import net.fashiongo.webadmin.model.primary.SecurityGroup;
-import net.fashiongo.webadmin.model.primary.SecurityUser;
-import net.fashiongo.webadmin.model.primary.TopCategories;
-import net.fashiongo.webadmin.service.AdminService;
-import net.fashiongo.webadmin.service.CommonService;
-import net.fashiongo.webadmin.service.SecurityGroupService;
-import net.fashiongo.webadmin.utility.JsonResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -39,7 +29,10 @@ public class CommonController {
 
 	@Autowired
 	AdminService adminService;
-	
+
+	@Autowired
+	RenewalAdminService renewalAdminService;
+
 	@Autowired
 	CommonService commonService;
 	
@@ -210,13 +203,19 @@ public class CommonController {
 	 * @return GetSecurityResources
 	 */
 	@RequestMapping(value="getsecurityresources", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
-		JsonResponse<GetSecurityResourcesResponse> results = new JsonResponse<GetSecurityResourcesResponse>(true, null, 0, null);
-		GetSecurityResourcesResponse result = adminService.getSecurityResources(parameters);
-		List<Resource> rs = result.getResource();
-		rs = rs.stream().sorted((o1,o2) -> o1.getResourceName().toLowerCase().compareTo(o2.getResourceName().toLowerCase())).collect(Collectors.toList());
-		result.setResource(rs);
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse> GetSecurityResources (@RequestBody GetSecurityResourcesParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse>(true, null, 0, null);
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse securityResources = renewalAdminService.getSecurityResources(parameters);
+
+		List<net.fashiongo.webadmin.data.model.admin.Resource> resourceList = securityResources.getResource()
+				.stream()
+				.sorted((o1, o2) -> o1.getResourceName().toLowerCase().compareTo(o2.getResourceName().toLowerCase())).collect(Collectors.toList());
+
+		net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse responseData = net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse.builder()
+				.resource(resourceList)
+				.build();
+
+		results.setData(responseData);
 		return results;
 	}
 }

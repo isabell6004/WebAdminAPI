@@ -72,4 +72,23 @@ public class DateUtilsTest {
 
         log.debug("{}, {}", startDate, endDate);
     }
+
+    @Test
+    public void getFirstDayOfNextMonth() {
+        LocalDateTime date = DateUtils.getFirstDayOfNextMonth(2019, 4);
+
+        log.debug("date : {}", date);
+
+        Assert.assertEquals(5, date.getMonthValue());
+    }
+
+    @Test
+    public void getFirstDayOfNextMonth_december() {
+        LocalDateTime date = DateUtils.getFirstDayOfNextMonth(2019, 12);
+
+        log.debug("date : {}", date);
+
+        Assert.assertEquals(1, date.getMonthValue());
+    }
+
 }
