@@ -150,7 +150,7 @@
 		<dependency>
 			<groupId>net.fashiongo.common.data</groupId>
 			<artifactId>fashiongo-common-data</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.4</version>
 		</dependency>
 
         <dependency>
