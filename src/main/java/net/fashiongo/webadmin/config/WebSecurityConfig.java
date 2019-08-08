@@ -1,7 +1,12 @@
 package net.fashiongo.webadmin.config;
 
+import net.fashiongo.webadmin.config.security.WebadminAuthenticationProvider;
+import net.fashiongo.webadmin.config.security.filter.CORSFilter;
+import net.fashiongo.webadmin.config.security.filter.JWTAuthenticationFilter;
+import net.fashiongo.webadmin.config.security.filter.JWTLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,11 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import net.fashiongo.webadmin.config.security.WebadminAuthenticationProvider;
-import net.fashiongo.webadmin.config.security.filter.CORSFilter;
-import net.fashiongo.webadmin.config.security.filter.JWTAuthenticationFilter;
-import net.fashiongo.webadmin.config.security.filter.JWTLoginFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -30,9 +30,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AuthenticationFailureHandler failureHandler;
-  
+
+	@Autowired
+	private ManagementServerProperties managementServerProperties;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+
+		String contextPath = managementServerProperties.getServlet().getContextPath();
+
 		http.headers().cacheControl();
 		if(isCheckToken) {
 			http
@@ -49,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.POST, "/payment/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/payment/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/bid/getListingAdBidCache/**").permitAll()
+			.antMatchers( contextPath + "/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/bid/setacceptbidsAuto").hasIpAddress("127.0.0.1")
 			.antMatchers(HttpMethod.GET, 
 					"/v2/api-docs", 
