@@ -7,6 +7,7 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 
-
+@Slf4j
 public class Utility {
 	private static final HashMap<String, Integer[]> psMap = new HashMap<String, Integer[]>(); 
 	
@@ -129,7 +130,12 @@ public class Utility {
 	
 	public static String getIpAddress(HttpServletRequest request) {
 		String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) ipAddress = request.getRemoteAddr();
+		log.info("X-FORWARDED-FOR ipAddress: {}", ipAddress);
+
+        if (ipAddress == null) {
+        	ipAddress = request.getRemoteAddr();
+			log.info("getRemoteAddr ipAddress: {}", ipAddress);
+		}
         
 		return ipAddress.equals("0:0:0:0:0:0:0:1") ? "::1" : ipAddress;
 	}
