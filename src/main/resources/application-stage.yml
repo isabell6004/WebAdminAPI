@@ -50,3 +50,22 @@ photostudio:
       FlatProductShotShoes: 14
       FlatProductShotHandbags: 15
       FlatProductShotAccessories: 16
+
+toast:
+  cloud:
+    storage:
+      object-storage:
+        account: AUTH_7e2eaaa493ce4625a815481da0ec2e1a
+        tenant-id: 7e2eaaa493ce4625a815481da0ec2e1a
+        username: dl_nhnglobal_tc_service@nhnglobal.com
+        password: FG!@#123
+        auth-api-url: https://api-compute.cloud.toast.com/identity/v2.0/tokens
+        api-url: https://api-storage.cloud.toast.com/v1/
+
+coupon:
+  notification:
+    storage:
+      root-email-name: coupon-email-list
+      root-image-name: coupon-banner-images
+      root-name-prefix: stage-
+    image-root: https://rlcitca4i.cdn.toastcloud.com/
