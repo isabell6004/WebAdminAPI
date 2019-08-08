@@ -29,7 +29,12 @@
 			<id>fg.nexus.repository</id>
 			<name>Fashiongo Maven Repository</name>
 			<url>http://nexus.fashiongo.net:8081/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
 			<snapshots>
+				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
