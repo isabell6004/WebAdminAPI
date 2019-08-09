@@ -540,7 +540,7 @@ public class SecurityGroupService extends ApiService {
 			Integer userID = userData.getId() != null ? (userData.getId() > 0 ? userData.getId() : 0) : 0;
 			if (userID <= 0) {
 				//Call FG Service
-				String uri = "/security/createMembership";
+				String uri = "/membership/createMembership";
 				ObjectMapper mapper = new ObjectMapper();
 				JsonResponse<?> ret = httpClient.postObject(uri, mapper.writeValueAsString(userData));
 				
