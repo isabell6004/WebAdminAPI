@@ -9,6 +9,7 @@ import net.fashiongo.webadmin.service.AdminService;
 import net.fashiongo.webadmin.service.CommonService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
+import net.fashiongo.webadmin.service.renewal.RenewalCommonService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +39,9 @@ public class CommonController {
 	
 	@Autowired
 	SecurityGroupService securityGroupService;
+
+	@Autowired
+	RenewalCommonService renewalCommonService;
 	
 	@RequestMapping(value="getsecuritygroups", method=RequestMethod.POST)
 	public JsonResponse<List<SecurityGroup>> GetSecurityGroups() {
@@ -55,9 +59,10 @@ public class CommonController {
 	 * @return JsonResponse<GetBidAdPagesResponse>
 	 */
 	@RequestMapping(value = "getbidadpages", method = RequestMethod.POST)
-	public JsonResponse<GetBidAdPagesResponse> getBidAdPages() {
-		JsonResponse<GetBidAdPagesResponse> results = new JsonResponse<GetBidAdPagesResponse>();
-		GetBidAdPagesResponse result = commonService.getBidAdPages();
+	public JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetBidAdPagesResponse> getBidAdPages() {
+		JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetBidAdPagesResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.ad.response.GetBidAdPagesResponse>();
+
+		net.fashiongo.webadmin.data.model.ad.response.GetBidAdPagesResponse result = renewalCommonService.getBidAdPages();
 
 		results.setSuccess(true);
 		results.setData(result);
