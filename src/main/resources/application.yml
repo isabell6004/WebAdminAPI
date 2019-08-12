@@ -89,6 +89,13 @@ bid-redis:
     timeout-seconds:
       acquire: 3
       expire: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /monitor
 ---
 # Local
 spring:
