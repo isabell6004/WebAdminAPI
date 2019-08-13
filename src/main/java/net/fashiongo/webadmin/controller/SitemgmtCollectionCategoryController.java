@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
+import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtCollectionCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,9 @@ public class SitemgmtCollectionCategoryController {
 	@Autowired
 	SitemgmtCollectionCategoryService siteMgmtCollectionCategoryService;
 
+	@Autowired
+	private RenewalSitemgmtCollectionCategoryService renewalSitemgmtCollectionCategoryService;
+
 	// ----------------------------------------------------
 	// collection category setting
 	/**
@@ -49,13 +53,16 @@ public class SitemgmtCollectionCategoryController {
 	 */
 	@RequestMapping(value = "getcollectioncategorylist", method = RequestMethod.POST)
 	@ApiOperation("site management > collection category setting - get CollectionCategory List")
-	public JsonResponse<GetCollectionCategoryListResponse> getCollectionCategoryList(
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCollectionCategoryListResponse> getCollectionCategoryList(
 			@RequestBody GetCollectionCategoryListParameters parameters) {
 
-		JsonResponse<GetCollectionCategoryListResponse> results = new JsonResponse<GetCollectionCategoryListResponse>();
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCollectionCategoryListResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCollectionCategoryListResponse>();
 
-		GetCollectionCategoryListResponse result = siteMgmtCollectionCategoryService
-				.getCollectionCategoryList(parameters);
+//		GetCollectionCategoryListResponse result = siteMgmtCollectionCategoryService
+//				.getCollectionCategoryList(parameters);
+
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetCollectionCategoryListResponse result = renewalSitemgmtCollectionCategoryService.getCollectionCategoryList(parameters);
+
 		results.setData(result);
 		results.setSuccess(true);
 

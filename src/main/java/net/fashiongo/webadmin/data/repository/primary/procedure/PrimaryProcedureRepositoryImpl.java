@@ -11,6 +11,10 @@ import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendor;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendorAssigned;
+import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtAdPageSpot;
+import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtCategory;
+import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtCollectionCategory;
+import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtMapCollectionCategory;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.model.primary.SecurityMenu;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
@@ -21,6 +25,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -216,5 +221,129 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.stream()
 				.distinct()
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public ResultGetCollectionCategory up_wa_GetCollectionCategory(Integer categoryID, Integer expandAll) {
+		if(expandAll == null) expandAll = 1;
+
+		List<SitemgmtCollectionCategory> collectionCategories = this.getCollectionCategory(categoryID, expandAll);
+
+		List<SitemgmtMapCollectionCategory> mapCollectionCategories = new ArrayList<>();
+		List<SitemgmtAdPageSpot> adPageSpots = new ArrayList<>();
+		List<SitemgmtCategory> categories = new ArrayList<>();
+
+		if(categoryID != null && categoryID > 0) {
+			mapCollectionCategories = this.getMapCollectionCategory(categoryID);
+			adPageSpots = this.getAdPageSpot();
+			categories = this.getCategory();
+		}
+
+		return ResultGetCollectionCategory.builder()
+				.collectionCategories(collectionCategories)
+				.mapCollectionCategories(mapCollectionCategories)
+				.adPageSpots(adPageSpots)
+				.categories(categories)
+				.build();
+	}
+
+	private List<SitemgmtCollectionCategory> getCollectionCategory(Integer categoryID, Integer expandAll) {
+		QCollectionCategoryEntity C = new QCollectionCategoryEntity("C");
+		QCollectionCategoryEntity SUB_C = new QCollectionCategoryEntity("SUB_C");
+
+		NumberExpression<Integer> expended = Expressions.asNumber(expandAll == 0 ? 0 : 1);
+		NumberExpression<Long> ZERO = Expressions.asNumber(Long.valueOf(0));
+
+		JPAQuery<SitemgmtCollectionCategory> query = new JPAQuery<>(entityManager);
+
+		if(categoryID == 0) {
+			query.select(Projections.constructor(SitemgmtCollectionCategory.class,
+					C.collectionCategoryID,
+					queryDSLSQLFunctions.isnull(Integer.class, C.parentCollectionCategoryID, 0),
+					C.collectionCategoryName,
+					C.lvl,
+					C.listOrder,
+					C.active,
+					expended,
+					JPAExpressions.select(SUB_C.collectionCategoryID.count().as("NodeCnt")).from(SUB_C).where(SUB_C.parentCollectionCategoryID.eq(C.collectionCategoryID)),
+					C.spotID,
+					C.serviceInUse,
+					C.vendorType,
+					C.vendorTierGroup,
+					C.orderBy,
+					C.modifiedBy,
+					C.modifiedOn))
+					.from(C);
+		} else {
+			query.select(Projections.constructor(SitemgmtCollectionCategory.class,
+					C.collectionCategoryID,
+					queryDSLSQLFunctions.isnull(Integer.class, C.parentCollectionCategoryID, 0),
+					C.collectionCategoryName,
+					C.lvl,
+					C.listOrder,
+					C.active,
+					expended,
+					ZERO,
+					C.spotID,
+					C.serviceInUse,
+					C.vendorType,
+					C.vendorTierGroup,
+					C.orderBy,
+					C.modifiedBy,
+					C.modifiedOn))
+					.from(C);
+		}
+
+		if(categoryID != 0) {
+			query.where(C.collectionCategoryID.eq(categoryID));
+		}
+		query.orderBy(C.listOrder.asc(),C.collectionCategoryName.asc());
+
+		return query.fetch().stream().distinct().collect(Collectors.toList());
+	}
+
+	private List<SitemgmtMapCollectionCategory> getMapCollectionCategory(Integer categoryID) {
+		QMapCollectionCategoryEntity A = new QMapCollectionCategoryEntity("A");
+		QCategoryEntity B = new QCategoryEntity("B");
+
+		JPAQuery<SitemgmtMapCollectionCategory> query = new JPAQuery<>(entityManager);
+		query.select(Projections.constructor(SitemgmtMapCollectionCategory.class,
+				A.mapID,
+				A.collectionCategoryID,
+				A.categoryID,
+				B.categoryName))
+				.from(A)
+				.innerJoin(B).on(A.categoryID.eq(B.categoryId))
+				.where(A.collectionCategoryID.eq(categoryID));
+
+		return query.fetch().stream().distinct().collect(Collectors.toList());
+	}
+
+	private List<SitemgmtAdPageSpot> getAdPageSpot() {
+		QAdPageSpotEntity adPageSpot = QAdPageSpotEntity.adPageSpotEntity;
+
+		JPAQuery<SitemgmtAdPageSpot> query = new JPAQuery<>(entityManager);
+		query.select(Projections.constructor(SitemgmtAdPageSpot.class,
+				adPageSpot.spotId,
+				adPageSpot.spotName))
+				.from(adPageSpot)
+				.where(adPageSpot.pageId.eq(1).and(adPageSpot.active.eq(true).and(adPageSpot.categoryId.isNotNull())));
+
+		return query.fetch().stream().distinct().collect(Collectors.toList());
+	}
+
+	private List<SitemgmtCategory> getCategory() {
+		QCategoryEntity category = QCategoryEntity.categoryEntity;
+
+		JPAQuery<SitemgmtCategory> query = new JPAQuery<>(entityManager);
+		query.select(Projections.constructor(SitemgmtCategory.class,
+                category.categoryId,
+                category.categoryName))
+				.from(category)
+				.where(category.active.eq(true).and(category.lvl.eq(1)))
+				.orderBy(category.listOrder.asc());
+
+		return query.fetch().stream().distinct().collect(Collectors.toList());
 	}
 }

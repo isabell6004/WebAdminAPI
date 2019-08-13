@@ -9,4 +9,6 @@ public interface PrimaryProcedureRepository {
 	ResultGetUserMappingVendor up_wa_GetUserMappingVendor(Integer userId, String alphabet, String companyType, String categories, String vendorType, String vendorKeyword);
 
 	List<SecurityMenus2> up_wa_GetSecurityMenus2(String menuName, Integer parentMenuId, Integer applicationId, Integer active);
+
+	ResultGetCollectionCategory up_wa_GetCollectionCategory(Integer categoryID, Integer expandAll);
 }
