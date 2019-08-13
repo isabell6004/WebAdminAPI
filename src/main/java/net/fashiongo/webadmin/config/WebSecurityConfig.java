@@ -6,7 +6,7 @@ import net.fashiongo.webadmin.config.security.filter.JWTAuthenticationFilter;
 import net.fashiongo.webadmin.config.security.filter.JWTLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties;
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,13 +32,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private AuthenticationFailureHandler failureHandler;
 
 	@Autowired
-	private ManagementServerProperties managementServerProperties;
+	private WebEndpointProperties webEndpointProperties;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		String contextPath = managementServerProperties.getServlet().getContextPath();
-
+		String basePath = webEndpointProperties.getBasePath();
 		http.headers().cacheControl();
 		if(isCheckToken) {
 			http
@@ -55,9 +54,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.POST, "/payment/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/payment/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/bid/getListingAdBidCache/**").permitAll()
-			.antMatchers(HttpMethod.POST,contextPath + "/**").access("hasIpAddress('127.0.0.1')")
-			.antMatchers(HttpMethod.DELETE,contextPath + "/**").access("hasIpAddress('127.0.0.1')")
-			.antMatchers( contextPath + "/**").permitAll()
+			.antMatchers(HttpMethod.POST,basePath + "/**").access("hasIpAddress('127.0.0.1')")
+			.antMatchers(HttpMethod.DELETE,basePath +  "/**").access("hasIpAddress('127.0.0.1')")
+			.antMatchers( basePath +  "/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/bid/setacceptbidsAuto").hasIpAddress("127.0.0.1")
 			.antMatchers(HttpMethod.GET, 
 					"/v2/api-docs", 
