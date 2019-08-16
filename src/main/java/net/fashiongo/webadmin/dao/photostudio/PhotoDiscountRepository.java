@@ -1,15 +1,14 @@
 package net.fashiongo.webadmin.dao.photostudio;
 
-import java.util.List;
-
 import net.fashiongo.webadmin.model.photostudio.PhotoDiscount;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 
-public interface PhotoDiscountRepository extends CrudRepository<PhotoDiscount, Integer>{
-		
-	List<PhotoDiscount> findAll(Sort paramSort);
+import java.util.List;
 
-	boolean existsByDiscountCode(String discountCode);
+public interface PhotoDiscountRepository extends CrudRepository<PhotoDiscount, Integer>, PhotoDiscountRepositoryCustom {
+
+    List<PhotoDiscount> findAll(Sort paramSort);
+
+    boolean existsByDiscountCode(String discountCode);
 }

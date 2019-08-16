@@ -179,6 +179,23 @@ public class PhotoStudioController {
         return response;
     }
 
+    @GetMapping("/discount/check")
+    public JsonResponse<PhotoDiscount> checkDiscountCode(@RequestParam("code") String code) {
+        logger.debug("PhotoStudioController.checkDiscountCode() called!!!");
+        JsonResponse<PhotoDiscount> response = new JsonResponse<>(false, null, null);
+
+        try {
+            PhotoDiscount discount = photoStudioService.checkDiscountCode(code);
+            response.setSuccess(true);
+            response.setData(discount);
+        } catch (Exception e) {
+            logger.error("Exception Error: PhotoStudioController.getDiscount()：", e);
+            response.setMessage(e.getMessage());
+        }
+
+        return response;
+    }
+
     @PostMapping(value = "/discount/save")
     public JsonResponse<?> saveDiscount(@RequestBody PhotoDiscount photoDiscount) {
         logger.debug("PhotoStudioController.saveDiscount() called!!!");

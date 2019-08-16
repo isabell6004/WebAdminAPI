@@ -170,7 +170,7 @@ public class DetailPhotoOrder {
                 .additionalDiscountAmount(photoOrder.getAdditionalDiscountAmount())
                 .discountID(photoOrder.getDiscountID())
                 .discountAmount(photoOrder.getDiscountAmount())
-                .discountCode(photoOrder.getDiscountCode())
+                .discountCode(photoOrder.getDiscountCode() != null ? photoOrder.getDiscountCode().trim() : null)
                 .discountName(photoOrder.getPhotoDiscount() != null ? photoOrder.getPhotoDiscount().getDiscountName() : null)
                 .inHouseNote(photoOrder.getInHouseNote())
                 .specialRequest(photoOrder.getSpecialRequest())

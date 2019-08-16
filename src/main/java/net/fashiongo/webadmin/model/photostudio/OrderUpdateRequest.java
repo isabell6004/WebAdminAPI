@@ -18,6 +18,9 @@ public class OrderUpdateRequest {
 	@JsonProperty("modelID")
 	private Integer modelId;
 
+	@JsonProperty("discountID")
+	private Integer discountId;
+
 	private String photoshootDate;
 
 	public void setPhotoshootDate(String photoshootDate) {

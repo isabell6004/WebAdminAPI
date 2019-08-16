@@ -3,7 +3,8 @@ package net.fashiongo.webadmin.service;
 import com.querydsl.core.QueryResults;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.photostudio.*;
-import net.fashiongo.webadmin.exception.NotEnoughAvailableUnit;
+import net.fashiongo.webadmin.exception.NotEnoughPhotostudioAvailableUnit;
+import net.fashiongo.webadmin.exception.NotFoundPhotostudioDiscount;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioPhotoModel;
 import net.fashiongo.webadmin.model.photostudio.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
@@ -29,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.StreamUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -40,7 +40,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
@@ -1007,6 +1006,11 @@ public class PhotoStudioService extends ApiService {
         return availableModelsResponses;
     }
 
+    public PhotoDiscount checkDiscountCode(String discountCode) {
+        return photoDiscountRepository.findUsableDiscountByDiscountCode(discountCode)
+                .orElse(null);
+    }
+
     public String updatePhotoOrder(OrderUpdateRequest orderUpdateRequest) {
         if (orderUpdateRequest.getOrderId() == null) {
 			return "OrderID does not exist!";
@@ -1066,7 +1070,11 @@ public class PhotoStudioService extends ApiService {
                 modifyInHouseNote(photoOrder, now, username, orderUpdateRequest.getInHouseNote());
                 return null;
             } else if (!isInStyleChangeDueDate && isInAdditionalDiscountChangeDueDate) {
-                modifyNonBookingAndStyleOption(photoOrder, orderUpdateRequest.getAdditionalDiscountAmount(), orderUpdateRequest.getInHouseNote());
+                try {
+                    modifyNonBookingAndStyleOption(photoOrder, orderUpdateRequest.getDiscountId(), orderUpdateRequest.getAdditionalDiscountAmount(), orderUpdateRequest.getInHouseNote());
+                } catch (NotFoundPhotostudioDiscount e) {
+                    return "DiscountID does not exist!";
+                }
                 return null;
             }
 
@@ -1098,11 +1106,20 @@ public class PhotoStudioService extends ApiService {
                 photoOrder.setTotalUnit(totalUnit);
                 photoOrder.setTotalQty(calculateTotalQty(storedItems));
                 photoOrder.setSubtotalAmount(calculateSubtotalPrice(storedItems));
-            } catch (NotEnoughAvailableUnit e) {
+            } catch (NotEnoughPhotostudioAvailableUnit e) {
                 return "There is no available unit";
             }
 
-            photoOrder.setAdditionalDiscountAmount(orderUpdateRequest.getAdditionalDiscountAmount());
+            // Additional Promo Code
+            try {
+                applyDiscount(photoOrder, orderUpdateRequest.getDiscountId());
+            } catch (NotFoundPhotostudioDiscount e) {
+                return "DiscountID does not exist!";
+            }
+
+            if (orderUpdateRequest.getAdditionalDiscountAmount() != null) {
+                applyAdditionalDiscountAmount(photoOrder, orderUpdateRequest.getAdditionalDiscountAmount());
+            }
             photoOrder.setInHouseNote(orderUpdateRequest.getInHouseNote());
             photoOrder.setModifiedOnDate(now);
             photoOrder.setModifiedBY(username);
@@ -1128,6 +1145,56 @@ public class PhotoStudioService extends ApiService {
         return null;
     }
 
+    private void applyDiscount(PhotoOrder order, Integer newDiscountId) {
+        if ((order.getDiscountID() == null && newDiscountId == null)
+        || (order.getDiscountID() != null && order.getDiscountID().equals(newDiscountId))) {
+            return;
+        }
+
+        if (newDiscountId == null) {
+            order.setPhotoDiscount(null);
+            order.setDiscountAmount(null);
+            order.setDiscountCode(null);
+        } else {
+            PhotoDiscount discount = photoDiscountRepository.findById(newDiscountId)
+                    .orElseThrow(NotFoundPhotostudioDiscount::new);
+
+            BigDecimal discountAmount;
+
+            if (discount.getDiscountAmount() != null) {
+                discountAmount = discount.getDiscountAmount();
+            } else {
+                discountAmount = order.getSubtotalAmount().multiply(discount.getDiscountRate());
+            }
+
+            BigDecimal subtotal = order.getSubtotalAmount().subtract(order.getPhotoCreditUsedAmount());
+
+            if (discountAmount.longValue() > subtotal.longValue()) {
+                discountAmount = BigDecimal.valueOf(subtotal.longValue());
+                order.setAdditionalDiscountAmount(BigDecimal.ZERO);
+            } else if (discountAmount.longValue() + order.getAdditionalDiscountAmount().longValue() > subtotal.longValue()) {
+                order.setAdditionalDiscountAmount(BigDecimal.valueOf(subtotal.subtract(discountAmount).longValue()));
+            }
+
+            order.setDiscountAmount(discountAmount);
+            order.setPhotoDiscount(discount);
+            order.setDiscountCode(discount.getDiscountCode());
+        }
+    }
+
+    private void applyAdditionalDiscountAmount(PhotoOrder order, BigDecimal additionalDiscountAmount) {
+        long availableAdditionalDiscountAmount = order.getSubtotalAmount()
+                .subtract(order.getPhotoCreditUsedAmount() != null ? order.getPhotoCreditUsedAmount() : BigDecimal.ZERO)
+                .subtract(order.getDiscountAmount() != null ? order.getDiscountAmount() : BigDecimal.ZERO)
+                .longValue();
+
+        if (availableAdditionalDiscountAmount > additionalDiscountAmount.longValue()) {
+            order.setAdditionalDiscountAmount(additionalDiscountAmount);
+        } else {
+            order.setAdditionalDiscountAmount(BigDecimal.valueOf(availableAdditionalDiscountAmount));
+        }
+    }
+
     private void modifyInHouseNote(PhotoOrder photoOrder, LocalDateTime now, String username, String inHouseNote) {
         photoOrder.setInHouseNote(inHouseNote);
         photoOrder.setModifiedOnDate(now);
@@ -1142,7 +1209,10 @@ public class PhotoStudioService extends ApiService {
         });
     }
 
-    private void modifyNonBookingAndStyleOption(PhotoOrder photoOrder, BigDecimal discountAmount, String inHouseNode) {
+    private void modifyNonBookingAndStyleOption(PhotoOrder photoOrder, Integer discountId, BigDecimal discountAmount, String inHouseNode) {
+        // Additional Promo Code
+        applyDiscount(photoOrder, discountId);
+
         photoOrder.setAdditionalDiscountAmount(discountAmount);
         photoOrder.setInHouseNote(inHouseNode);
         photoOrder.setModifiedOnDate(LocalDateTime.now());
@@ -1617,7 +1687,7 @@ public class PhotoStudioService extends ApiService {
         BigDecimal changedUnit = newTotalUnit.subtract(photoOrder.getTotalUnit());
 
         if (availableUnit.subtract(changedUnit).doubleValue() < 0) {
-            throw new NotEnoughAvailableUnit();
+            throw new NotEnoughPhotostudioAvailableUnit();
         }
 
         return newTotalUnit;
