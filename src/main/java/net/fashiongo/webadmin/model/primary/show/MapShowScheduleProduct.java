@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "Map_ShowSchedule_Product")
 @XmlRootElement
-/*@NamedQueries({ @NamedQuery(name = "MapShowScheduleProduct.findAll", query = "SELECT m FROM MapShowScheduleProduct m"),
+/*@NamedQueries({ @NamedQuery(name = "MapShowScheduleProduct.findDetail", query = "SELECT m FROM MapShowScheduleProduct m"),
 		@NamedQuery(name = "MapShowScheduleProduct.findByMapID", query = "SELECT m FROM MapShowScheduleProduct m WHERE m.mapID = :mapID"),
 		@NamedQuery(name = "MapShowScheduleProduct.findByShowScheduleID", query = "SELECT m FROM MapShowScheduleProduct m WHERE m.showScheduleID = :showScheduleID"),
 		@NamedQuery(name = "MapShowScheduleProduct.findByProductID", query = "SELECT m FROM MapShowScheduleProduct m WHERE m.productID = :productID"),

@@ -37,7 +37,7 @@ import net.fashiongo.common.conversion.LocalDateTimeConverter;
 		// up_wa_SetCollectionCategoryInactive
 		@NamedStoredProcedureQuery(name = "CollectionCategory.upWaSetCollectionCategoryInactive", procedureName = "up_wa_SetCollectionCategoryInactive", parameters = {
 				@StoredProcedureParameter(mode = ParameterMode.IN, name = "CollectionCategoryID", type = Integer.class) }) })
-/*@NamedQueries({ @NamedQuery(name = "CollectionCategory.findAll", query = "SELECT c FROM CollectionCategory c"),
+/*@NamedQueries({ @NamedQuery(name = "CollectionCategory.findDetail", query = "SELECT c FROM CollectionCategory c"),
 		@NamedQuery(name = "CollectionCategory.findByCollectionCategoryID", query = "SELECT c FROM CollectionCategory c WHERE c.collectionCategoryID = :collectionCategoryID"),
 		@NamedQuery(name = "CollectionCategory.findByCollectionCategoryName", query = "SELECT c FROM CollectionCategory c WHERE c.collectionCategoryName = :collectionCategoryName"),
 		@NamedQuery(name = "CollectionCategory.findByParentCollectionCategoryID", query = "SELECT c FROM CollectionCategory c WHERE c.parentCollectionCategoryID = :parentCollectionCategoryID"),

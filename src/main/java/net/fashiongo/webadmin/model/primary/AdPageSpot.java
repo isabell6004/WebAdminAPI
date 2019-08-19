@@ -28,7 +28,7 @@ import net.fashiongo.common.conversion.LocalDateTimeConverter;
 @Entity
 @Table(name = "Ad_PageSpot")
 @XmlRootElement
-/*@NamedQueries({ @NamedQuery(name = "AdPageSpot.findAll", query = "SELECT a FROM AdPageSpot a"),
+/*@NamedQueries({ @NamedQuery(name = "AdPageSpot.findDetail", query = "SELECT a FROM AdPageSpot a"),
 		@NamedQuery(name = "AdPageSpot.findBySpotID", query = "SELECT a FROM AdPageSpot a WHERE a.spotID = :spotID"),
 		@NamedQuery(name = "AdPageSpot.findByPageID", query = "SELECT a FROM AdPageSpot a WHERE a.pageID = :pageID"),
 		@NamedQuery(name = "AdPageSpot.findByCategoryID", query = "SELECT a FROM AdPageSpot a WHERE a.categoryID = :categoryID"),

@@ -56,7 +56,7 @@ spring:
     properties.hibernate.format_sql: true
     properties.hibernate.generate_statistics: false
     properties.javax.persistence.query.timeout: 10000
-    properties.hibernate.dialect: org.hibernate.dialect.SQLServer2008Dialect
+    properties.hibernate.dialect: org.hibernate.dialect.SQLServer2012Dialect
     hibernate.naming.physical-strategy: net.fashiongo.common.dal.MSSQLServerNamingStrategy
   cache:
     type: redis
@@ -126,7 +126,7 @@ logging:
 #              BasicExtractor: TRACE
 
 webAdminapi:
-  fgServiceAPI_EndPoint: http://localhost:29001
+  fgServiceAPI_EndPoint: http://10.10.0.145:29001
   statsAPI_EndPoint: http://10.10.0.145:19101
   jwt:
     develop:

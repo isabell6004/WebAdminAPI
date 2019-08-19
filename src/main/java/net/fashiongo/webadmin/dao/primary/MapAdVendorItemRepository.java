@@ -15,7 +15,7 @@ import net.fashiongo.webadmin.model.primary.MapAdVendorItem;
  */
 public interface MapAdVendorItemRepository extends CrudRepository<MapAdVendorItem, Integer> {
 //	// find all
-//	List<MapShowScheduleProduct> findAll();
+//	List<MapShowScheduleProduct> findDetail();
 //	
 //	// findOneByMapID
 //	MapShowScheduleProduct findOneByMapID(Integer mapID);

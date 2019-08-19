@@ -658,7 +658,7 @@ public class SitemgmtShowService extends ApiService {
 			showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
 		} else {
 //			if (showScheduleID == 0) {
-//				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findAll();
+//				showSchedulePromotionPlanList = showSchedulePromotionPlanRepository.findDetail();
 //			}
 //			else {
 			// -----------------------------------------------------------

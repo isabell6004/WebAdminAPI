@@ -29,7 +29,7 @@ import net.fashiongo.common.conversion.LocalDateTimeConverter;
 @Entity
 @Table(name = "ShowSchedule")
 @XmlRootElement
-/*@NamedQueries({ @NamedQuery(name = "ShowSchedule.findAll", query = "SELECT s FROM ShowSchedule s"),
+/*@NamedQueries({ @NamedQuery(name = "ShowSchedule.findDetail", query = "SELECT s FROM ShowSchedule s"),
 		@NamedQuery(name = "ShowSchedule.findByShowScheduleID", query = "SELECT s FROM ShowSchedule s WHERE s.showScheduleID = :showScheduleID"),
 		@NamedQuery(name = "ShowSchedule.findByShowID", query = "SELECT s FROM ShowSchedule s WHERE s.showID = :showID"),
 		@NamedQuery(name = "ShowSchedule.findByBannerImage", query = "SELECT s FROM ShowSchedule s WHERE s.bannerImage = :bannerImage"),

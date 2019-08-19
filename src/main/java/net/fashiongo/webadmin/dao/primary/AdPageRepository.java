@@ -21,7 +21,7 @@ public interface AdPageRepository extends CrudRepository<AdPage, Integer> {
 	
 	//@Modifying
 	//@Query("select PageID, PageName FROM Ad_Page t1 WHERE EXISTS(SELECT NULL FROM Ad_PageSpot t2 WHERE (((t1.PageID = t2.PageID) AND (t2.Active = 1)) AND (t2.BidEffectiveOn <= CAST(GETDATE() as DATE))))")
-	//List<AdPage> findAll();
+	//List<AdPage> findDetail();
 	
 	//List<AdPage> findByAdPageSpot();
 }

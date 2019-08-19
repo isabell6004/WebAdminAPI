@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "List_Show")
 @XmlRootElement
-/*@NamedQueries({ @NamedQuery(name = "ListShow.findAll", query = "SELECT l FROM ListShow l"),
+/*@NamedQueries({ @NamedQuery(name = "ListShow.findDetail", query = "SELECT l FROM ListShow l"),
 		@NamedQuery(name = "ListShow.findByShowID", query = "SELECT l FROM ListShow l WHERE l.showID = :showID"),
 		@NamedQuery(name = "ListShow.findByShowName", query = "SELECT l FROM ListShow l WHERE l.showName = :showName"),
 		@NamedQuery(name = "ListShow.findByLocation", query = "SELECT l FROM ListShow l WHERE l.location = :location"),
