@@ -2,15 +2,15 @@
 spring:
   profiles: toast
   redis:
-    host: 10.200.24.30
+    host: 10.210.24.30
   datasource:
-    jdbc-url: jdbc:sqlserver://10.200.24.204;databaseName=FG_V2
+    jdbc-url: jdbc:sqlserver://10.210.24.204;databaseName=FG_V2
   datasource2:
-    jdbc-url: jdbc:sqlserver://10.200.24.204;databaseName=FG_PAY
+    jdbc-url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PAY
   datasource3:
-    jdbc-url: jdbc:sqlserver://10.200.24.204;databaseName=FG_EM
+    jdbc-url: jdbc:sqlserver://10.210.24.204;databaseName=FG_EM
   datasource4:
-    jdbc-url: jdbc:sqlserver://10.200.24.204;databaseName=FG_PhotoStudio
+    jdbc-url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PhotoStudio
   
   jpa:
     show-sql: false
@@ -18,7 +18,7 @@ spring:
     properties.hibernate.generate_statistics: false
     
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.200.8.153
+  fgServiceAPI_EndPoint: http://10.210.8.153
   
 server:
   port: 19901
