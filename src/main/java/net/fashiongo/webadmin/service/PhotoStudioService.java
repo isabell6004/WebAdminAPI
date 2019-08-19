@@ -750,7 +750,6 @@ public class PhotoStudioService extends ApiService {
 
         return responseBuilder
                 .orders(orders)
-                .isEditable(isEditable(calendarId, 2))
                 .build();
     }
 
@@ -900,19 +899,7 @@ public class PhotoStudioService extends ApiService {
         result.put("actionLogs", LogPhotoActionDto.build(logPhotoActions));
         result.put("items", DetailOrderQuantity.build(photoOrderDetails));
         result.put("photoStudioUsers", PhotoActionUser.build(securityUsers));
-        result.put("isEditable", isEditable(photoOrder.getPhotoBooking().getMapPhotoCalendarModel().getCalendarID(), 2));
         return result;
-    }
-
-    private boolean isEditable(int calendarId, int businessDay) {
-        PhotoCalendarEntity calendarEntity = photoCalendarRepository.findById(calendarId)
-                .orElse(null);
-
-        PhotoCalendarEntity limitCalendarEntity = photoCalendarRepository.findBeforeBusinessDayFromTheDate(businessDay, LocalDateTime.now().minusDays(1));
-
-        return calendarEntity != null
-                && (calendarEntity.getTheDate().isAfter(limitCalendarEntity.getTheDate())
-                || calendarEntity.getTheDate().isEqual(limitCalendarEntity.getTheDate()));
     }
 
     public List<AvailableModelsResponse> getAvailableModels(Integer orderID, String theDate) {
@@ -1066,18 +1053,6 @@ public class PhotoStudioService extends ApiService {
 				return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
 			}
 		} else {
-            if(!isInStyleChangeDueDate && !isInAdditionalDiscountChangeDueDate) {
-                modifyInHouseNote(photoOrder, now, username, orderUpdateRequest.getInHouseNote());
-                return null;
-            } else if (!isInStyleChangeDueDate && isInAdditionalDiscountChangeDueDate) {
-                try {
-                    modifyNonBookingAndStyleOption(photoOrder, orderUpdateRequest.getDiscountId(), orderUpdateRequest.getAdditionalDiscountAmount(), orderUpdateRequest.getInHouseNote());
-                } catch (NotFoundPhotostudioDiscount e) {
-                    return "DiscountID does not exist!";
-                }
-                return null;
-            }
-
             if (CollectionUtils.isEmpty(orderUpdateRequest.getItems())) {
                 return "At least 1 order has to be on the list";
             } else if (validateInputQty(orderUpdateRequest.getItems())) {
@@ -1193,39 +1168,6 @@ public class PhotoStudioService extends ApiService {
         } else {
             order.setAdditionalDiscountAmount(BigDecimal.valueOf(availableAdditionalDiscountAmount));
         }
-    }
-
-    private void modifyInHouseNote(PhotoOrder photoOrder, LocalDateTime now, String username, String inHouseNote) {
-        photoOrder.setInHouseNote(inHouseNote);
-        photoOrder.setModifiedOnDate(now);
-        photoOrder.setModifiedBY(username);
-        TransactionTemplate template = new TransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        template.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-                photoOrderRepository.save(photoOrder);
-            }
-        });
-    }
-
-    private void modifyNonBookingAndStyleOption(PhotoOrder photoOrder, Integer discountId, BigDecimal discountAmount, String inHouseNode) {
-        // Additional Promo Code
-        applyDiscount(photoOrder, discountId);
-
-        photoOrder.setAdditionalDiscountAmount(discountAmount);
-        photoOrder.setInHouseNote(inHouseNode);
-        photoOrder.setModifiedOnDate(LocalDateTime.now());
-        photoOrder.setModifiedBY(Utility.getUsername());
-
-        TransactionTemplate template = new TransactionTemplate(transactionManager);
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        template.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-                photoOrderRepository.save(photoOrder);
-            }
-        });
     }
 
     public String cancelPhotoOrder(PhotoOrder photoOrder) {
