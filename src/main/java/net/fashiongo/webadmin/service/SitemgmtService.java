@@ -2229,6 +2229,9 @@ public class SitemgmtService extends ApiService {
 		if(keywordType == 2 && newKeyword.getCategoryID() != null) {
 			existKeyword.setCategoryID(newKeyword.getCategoryID());
 		}
+		if(newKeyword.getCategoryID() == null) {
+			existKeyword.setCategoryID(null);
+		}
 
 		existKeyword.setModifiedOn(date);
 		existKeyword.setModifiedBy(userName);
