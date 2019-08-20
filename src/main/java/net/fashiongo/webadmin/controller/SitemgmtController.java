@@ -457,11 +457,12 @@ public class SitemgmtController {
 	 * @return
 	 */
 	@RequestMapping(value="getproductattributes", method=RequestMethod.POST)
-	public JsonResponse<GetProductAttributesResponse> getProductAttributes(@RequestBody GetProductAttributesParameter parameters) {
-		JsonResponse<GetProductAttributesResponse> results = new JsonResponse<GetProductAttributesResponse>(false, null, 0, null);
-		
-		GetProductAttributesResponse result = sitemgmtService.getProductAttributes(parameters);
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse> getProductAttributes(@RequestBody GetProductAttributesParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse>(false, null, 0, null);
+
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse productAttributes = renewalSitemgmtService.getProductAttributes(parameters);
+
+		results.setData(productAttributes);
 		results.setSuccess(true);
 		
 		return results;

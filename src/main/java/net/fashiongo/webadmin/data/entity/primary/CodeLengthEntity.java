@@ -28,5 +28,5 @@ public class CodeLengthEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "LengthID")
-    private List<MapLengthCategory> mapLengthCategoryList;
+    private List<MapLengthCategoryEntity> mapLengthCategoryList;
 }

@@ -28,5 +28,5 @@ public class CodePatternEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "PatternID")
-    private List<MapPatternCategory> mapPatternCategoryList;
+    private List<MapPatternCategoryEntity> mapPatternCategoryList;
 }

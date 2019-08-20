@@ -28,6 +28,6 @@ public class CodeFabricEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "FabricID")
-    private List<MapFabricCategory> mapFabricCategoryList;
+    private List<MapFabricCategoryEntity> mapFabricCategoryList;
 
 }

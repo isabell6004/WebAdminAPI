@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,5 +27,5 @@ public class CodeStyleEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "StyleID")
-    private List<MapStyleCategory> mapStyleCategoryList;
+    private List<MapStyleCategoryEntity> mapStyleCategoryList;
 }

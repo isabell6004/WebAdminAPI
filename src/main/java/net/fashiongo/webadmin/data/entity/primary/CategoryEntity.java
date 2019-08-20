@@ -10,7 +10,7 @@ import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -58,17 +58,17 @@ public class CategoryEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private List<MapFabricCategory> mapFabricCategoryList;
+    private Set<MapFabricCategory> mapFabricCategoryList;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private List<MapLengthCategory> mapLengthCategoryList;
+    private Set<MapLengthCategory> mapLengthCategoryList;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private List<MapPatternCategory> mapPatternCategoryList;
+    private Set<MapPatternCategory> mapPatternCategoryList;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private List<MapStyleCategory> mapStyleCategoryList;
+    private Set<MapStyleCategory> mapStyleCategoryList;
 }
