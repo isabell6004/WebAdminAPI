@@ -1121,8 +1121,7 @@ public class PhotoStudioService extends ApiService {
     }
 
     private void applyDiscount(PhotoOrder order, Integer newDiscountId) {
-        if ((order.getDiscountID() == null && newDiscountId == null)
-        || (order.getDiscountID() != null && order.getDiscountID().equals(newDiscountId))) {
+        if (order.getDiscountID() == null && newDiscountId == null) {
             return;
         }
 
