@@ -5,12 +5,16 @@ import net.fashiongo.webadmin.data.entity.primary.CodeLengthEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodePatternEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodeStyleEntity;
 import net.fashiongo.webadmin.data.model.Total;
+import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
 import net.fashiongo.webadmin.data.model.sitemgmt.CodeData;
 import net.fashiongo.webadmin.data.model.sitemgmt.PolicyAgreement;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
+import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepository;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetProductAttributesParameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +41,17 @@ public class RenewalSitemgmtService {
 
 	private final CodePatternEntityRepository codePatternEntityRepository;
 
+	private final PrimaryProcedureRepository primaryProcedureRepository;
+
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
 		this.codeFabricEntityRepository = codeFabricEntityRepository;
 		this.categoryViewRepository = categoryViewRepository;
 		this.codePatternEntityRepository = codePatternEntityRepository;
+		this.primaryProcedureRepository = primaryProcedureRepository;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -165,6 +172,17 @@ public class RenewalSitemgmtService {
 
 		return builder.codeDataList(codeDataList)
 				.recCnt(Arrays.asList(Total.builder().recCnt((int) totalElements).build()))
+				.build();
+	}
+
+	public GetCategoryListResponse getCategoryList(GetCategoryListParameters parameters) {
+		Integer categoryID = parameters.getCategoryId();
+		Integer expandAll = parameters.getExpandAll();
+
+		List<CategoryList> results = primaryProcedureRepository.up_wa_GetCategoryList(categoryID, expandAll);
+
+		return GetCategoryListResponse.builder()
+				.categoryList(results)
 				.build();
 	}
 }

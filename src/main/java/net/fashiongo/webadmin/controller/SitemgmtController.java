@@ -73,11 +73,12 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getcategorylist", method = RequestMethod.POST)
 	@ApiOperation("site management > collection category setting - get Category List")
-	public JsonResponse<GetCategoryListResponse> getCategoryList(@RequestBody GetCategoryListParameters parameters) {
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse> getCategoryList(@RequestBody GetCategoryListParameters parameters) {
 
-		JsonResponse<GetCategoryListResponse> results = new JsonResponse<GetCategoryListResponse>();
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse>();
 
-		GetCategoryListResponse result = sitemgmtService.getCategoryList(parameters);
+//		GetCategoryListResponse result = sitemgmtService.getCategoryList(parameters);
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse result = renewalSitemgmtService.getCategoryList(parameters);
 		results.setData(result);
 		results.setSuccess(true);
 

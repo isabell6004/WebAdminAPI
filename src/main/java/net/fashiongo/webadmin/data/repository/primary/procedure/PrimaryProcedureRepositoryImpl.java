@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendor;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendorAssigned;
+import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
 import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtAdPageSpot;
 import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtCategory;
 import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtCollectionCategory;
@@ -343,6 +344,45 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.from(category)
 				.where(category.active.eq(true).and(category.lvl.eq(1)))
 				.orderBy(category.listOrder.asc());
+
+		return query.fetch().stream().distinct().collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public List<CategoryList> up_wa_GetCategoryList(Integer categoryID, Integer expandAll) {
+		QCategoryEntity C = new QCategoryEntity("C");
+		QCategoryEntity SUB_C = new QCategoryEntity("SUB_C");
+		QMapCollectionCategoryEntity MCC = new QMapCollectionCategoryEntity("MCC");
+
+		NumberExpression<Integer> expended = Expressions.asNumber(expandAll == null ? 1 : expandAll == 0 ? 0 : 1);
+
+        Expression<Integer> constantZERO = Expressions.constant(0);
+
+        categoryID = categoryID == null ? 0 : categoryID;
+        BooleanExpression categoryIDZero = Expressions.asNumber(categoryID).eq(constantZERO);
+
+		JPAQuery<CategoryList> query = new JPAQuery<>(entityManager);
+
+		query.select(Projections.constructor(CategoryList.class,
+				C.categoryId,
+				C.parentParentCategoryId,
+				C.parentCategoryId,
+				C.categoryName,
+				C.categoryDescription,
+				C.titleImage,
+				C.isLandingPage,
+				C.isFeatured,
+				C.lvl,
+				C.listOrder,
+				C.active,
+				expended,
+				JPAExpressions.select(SUB_C.categoryId.count().as("NodeCnt")).from(SUB_C).where(SUB_C.parentCategoryId.eq(C.categoryId)),
+				MCC.collectionCategoryID))
+				.from(C)
+				.leftJoin(C.mapCollectionCategory, MCC)
+				.where(C.categoryId.eq(categoryID).or(categoryIDZero))
+				.orderBy(C.listOrder.asc(), C.categoryName.asc());
 
 		return query.fetch().stream().distinct().collect(Collectors.toList());
 	}

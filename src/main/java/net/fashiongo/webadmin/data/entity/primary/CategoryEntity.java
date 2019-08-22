@@ -3,10 +3,6 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.fashiongo.webadmin.model.primary.MapFabricCategory;
-import net.fashiongo.webadmin.model.primary.MapLengthCategory;
-import net.fashiongo.webadmin.model.primary.MapPatternCategory;
-import net.fashiongo.webadmin.model.primary.MapStyleCategory;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -58,17 +54,21 @@ public class CategoryEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private Set<MapFabricCategory> mapFabricCategoryList;
+    private Set<MapFabricCategoryEntity> mapFabricCategoryList;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private Set<MapLengthCategory> mapLengthCategoryList;
+    private Set<MapLengthCategoryEntity> mapLengthCategoryList;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private Set<MapPatternCategory> mapPatternCategoryList;
+    private Set<MapPatternCategoryEntity> mapPatternCategoryList;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private Set<MapStyleCategory> mapStyleCategoryList;
+    private Set<MapStyleCategoryEntity> mapStyleCategoryList;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CategoryID")
+    private Set<MapCollectionCategoryEntity> mapCollectionCategory;
 }

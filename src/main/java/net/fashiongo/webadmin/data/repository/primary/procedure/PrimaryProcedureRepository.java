@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.data.repository.primary.procedure;
 
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
+import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface PrimaryProcedureRepository {
 	List<SecurityMenus2> up_wa_GetSecurityMenus2(String menuName, Integer parentMenuId, Integer applicationId, Integer active);
 
 	ResultGetCollectionCategory up_wa_GetCollectionCategory(Integer categoryID, Integer expandAll);
+
+	List<CategoryList> up_wa_GetCategoryList(Integer categoryID, Integer expandAll);
 }
