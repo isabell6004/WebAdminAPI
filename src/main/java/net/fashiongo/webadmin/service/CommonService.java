@@ -92,7 +92,7 @@ public class CommonService extends ApiService {
 	@SuppressWarnings("unchecked")
 	@Cacheable(value="GetCountryStates", key="#countryAbbrev", unless = "#result == null")
 	public JsonResponse<GetCountryStatesResponse> getCountryStates(String countryAbbrev) {
-		JsonResponse<GetCountryStatesResponse> result = httpClient.get("location/countries/".concat(countryAbbrev));
+		JsonResponse<GetCountryStatesResponse> result = httpClient.get("/location/countries/".concat(countryAbbrev));
 		return result;
 	}
 	

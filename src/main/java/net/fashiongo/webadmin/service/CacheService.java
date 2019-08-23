@@ -28,7 +28,7 @@ public class CacheService {
 	 * @return
 	 */
 	public JsonResponse GetRedisCacheEvict(String cacheName, String key) {
-		String request = "cache/".concat(cacheName);
+		String request = "/cache/".concat(cacheName);
 		if(StringUtils.isNotEmpty(key)) {
 			request.concat("/").concat(key);
 		}

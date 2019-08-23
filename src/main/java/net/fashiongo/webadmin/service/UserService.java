@@ -37,7 +37,7 @@ public class UserService extends ApiService {
 		ResultCode results = new ResultCode(true, 1, MSG_CHANGE_SUCCESS);
 		try {
 			String jsonParameters = mapper.writeValueAsString(parameters);
-			JsonResponse<String> result = httpClient.post("security/resetPassword", jsonParameters);
+			JsonResponse<String> result = httpClient.post("/security/resetPassword", jsonParameters);
 			results.setSuccess(result.isSuccess());
 			if(result.getMessage() != "") results.setResultMsg(result.getMessage());
 		} catch (JsonProcessingException e) {
