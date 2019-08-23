@@ -19,7 +19,6 @@ spring:
 
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.145:29011
-  statsAPI_EndPoint: http://10.10.0.145:19101
     
 logging:
   config: classpath:log4j2-stage.xml
