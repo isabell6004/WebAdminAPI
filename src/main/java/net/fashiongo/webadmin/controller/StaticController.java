@@ -108,6 +108,6 @@ public class StaticController {
 		if(orderBy!=null && !orderBy.isEmpty()) params.add("orderBy="+orderBy);
 		
 		//2. Call StatsAPI
-		return statsJsonClient.get("kpi/vendor?" + String.join("&", params));
+		return statsJsonClient.get("/kpi/vendor?" + String.join("&", params));
 	}
 }
