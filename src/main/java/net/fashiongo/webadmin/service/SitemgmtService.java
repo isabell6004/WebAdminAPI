@@ -2226,11 +2226,10 @@ public class SitemgmtService extends ApiService {
 
 		existKeyword.setKeywordText(keywordText);
 		existKeyword.setKeywordType(keywordType);
-		if(keywordType == 2 && newKeyword.getCategoryID() != null) {
-			existKeyword.setCategoryID(newKeyword.getCategoryID());
-		}
-		if(newKeyword.getCategoryID() == null) {
+		if (keywordType == 1) {
 			existKeyword.setCategoryID(null);
+		} else if(keywordType == 2) {
+			existKeyword.setCategoryID(newKeyword.getCategoryID());
 		}
 
 		existKeyword.setModifiedOn(date);
@@ -2269,14 +2268,16 @@ public class SitemgmtService extends ApiService {
 						.filter(tempNewKeyword -> tempNewKeyword.getSortNo() == temp_i)
 						.findFirst();
 
-				if (destKeyword.isPresent() && newKeyword.isPresent()) {
-					if (!validateKeyword(newKeyword.get(), destKeyword.get())) {
+				if (destKeyword.isPresent() && newKeyword.isPresent()) { // modify
+					if (!validateKeywordDuplicate(newKeyword.get(), destKeyword.get())) {
 						continue;
 					}
 
 					destKeyword.get().setKeywordText(newKeyword.get().getKeywordText());
 					destKeyword.get().setKeywordType(newKeyword.get().getKeywordType());
-                    if(newKeyword.get().getKeywordType() == 2 && newKeyword.get().getCategoryID() != null) {
+					if (newKeyword.get().getKeywordType() == 1) {
+                        destKeyword.get().setCategoryID(null);
+                    } else if(newKeyword.get().getKeywordType() == 2) {
 						destKeyword.get().setCategoryID(newKeyword.get().getCategoryID());
                     }
 
@@ -2284,14 +2285,16 @@ public class SitemgmtService extends ApiService {
 					destKeyword.get().setModifiedBy(userName);
 
                     savedKeywordList.add(destKeyword.get());
-				} else if (!destKeyword.isPresent() && newKeyword.isPresent()) {
+				} else if (!destKeyword.isPresent() && newKeyword.isPresent()) { // new
 					TrendDailyKeywordEntity newKeywordEntity = new TrendDailyKeywordEntity();
 
 					newKeywordEntity.setExposeDate(exposeDate);
 					newKeywordEntity.setSortNo(newKeyword.get().getSortNo());
 					newKeywordEntity.setKeywordText(newKeyword.get().getKeywordText());
 					newKeywordEntity.setKeywordType(newKeyword.get().getKeywordType());
-					if(newKeyword.get().getKeywordType() == 2 && newKeyword.get().getCategoryID() != null) {
+					if (newKeyword.get().getKeywordType() == 1) {
+						newKeywordEntity.setCategoryID(null);
+					} else if (newKeyword.get().getKeywordType() == 2) {
 						newKeywordEntity.setCategoryID(newKeyword.get().getCategoryID());
 					}
 
@@ -2301,7 +2304,7 @@ public class SitemgmtService extends ApiService {
 					newKeywordEntity.setModifiedBy(userName);
 
 					savedKeywordList.add(newKeywordEntity);
-				} else if (destKeyword.isPresent() && !newKeyword.isPresent()) {
+				} else if (destKeyword.isPresent() && !newKeyword.isPresent()) { // delete
 					deletedKeywordList.add(destKeyword.get());
 				}
 			}
@@ -2342,7 +2345,7 @@ public class SitemgmtService extends ApiService {
 		return true;
 	}
 
-	private boolean validateKeyword(TrendDailyKeywordEntity newKeyword, TrendDailyKeywordEntity existKeyword) {
+	private boolean validateKeywordDuplicate(TrendDailyKeywordEntity newKeyword, TrendDailyKeywordEntity existKeyword) {
 		// validate duplicate
 		if (newKeyword.getKeywordType() == 1
 				&& newKeyword.getKeywordType() == existKeyword.getKeywordType()
