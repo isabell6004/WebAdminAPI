@@ -24,10 +24,9 @@ public class CouponNotificationInput {
     private String notificationImageFileName;
     @Length(max = 200)
     private String notificationTargetFile;
+    private Integer buyerGroupType;
     private LocalDateTime createdOn;
     private String createdBy;
     private LocalDateTime modifiedOn;
     private String modifiedBy;
-
-    private Boolean isExcludeMember;
 }

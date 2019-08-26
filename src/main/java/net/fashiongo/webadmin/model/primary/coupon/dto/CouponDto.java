@@ -30,9 +30,9 @@ public class CouponDto {
     private LocalDateTime endDate;
     private Boolean isCodeUsed;
     private Boolean isNotified;
-    private Boolean isExcludeMember;
     private Long couponVendorGroupId;
     private Long couponBuyerGroupId;
+    private Integer issueMethod;
     private LocalDateTime createdOn;
     private String createdBy;
     private LocalDateTime modifiedOn;
@@ -62,9 +62,9 @@ public class CouponDto {
                 .endDate(coupon.getEndDate())
                 .isCodeUsed(coupon.getIsCodeUsed())
                 .isNotified(coupon.getIsNotified())
-                .isExcludeMember(coupon.getIsExcludeMember())
                 .couponVendorGroupId(coupon.getCouponVendorGroupId())
                 .couponBuyerGroupId(coupon.getCouponBuyerGroupId())
+                .issueMethod(coupon.getIssueMethod())
                 .createdOn(coupon.getCreatedOn())
                 .createdBy(coupon.getCreatedBy())
                 .modifiedOn(coupon.getModifiedOn())

@@ -15,6 +15,8 @@ public class CouponVendorGroupDto {
 
     private Long id;
     private String groupName;
+    private Integer vendorGroupType;
+    private Integer groupConditionType;
 
     public static CouponVendorGroupDto build(CCouponVendorGroup couponVendorGroup) {
 
@@ -25,6 +27,8 @@ public class CouponVendorGroupDto {
         return builder()
                 .id(couponVendorGroup.getId())
                 .groupName(couponVendorGroup.getCouponVendorGroupName())
+                .vendorGroupType(couponVendorGroup.getVendorGroupType())
+                .groupConditionType(couponVendorGroup.getGroupConditionType())
                 .build();
     }
 

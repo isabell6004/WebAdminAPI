@@ -15,6 +15,10 @@ public class CouponBuyerGroupDto {
 
     private Long id;
     private String groupName;
+    private Integer buyerGroupType;
+    private Integer groupConditionType;
+    private Integer registerType;
+    private Long registerVendorId;
 
     public static CouponBuyerGroupDto build(CCouponBuyerGroup couponBuyerGroup) {
 
@@ -25,6 +29,10 @@ public class CouponBuyerGroupDto {
         return builder()
                 .id(couponBuyerGroup.getId())
                 .groupName(couponBuyerGroup.getCouponBuyerGroupName())
+                .buyerGroupType(couponBuyerGroup.getBuyerGroupType())
+                .groupConditionType(couponBuyerGroup.getGroupConditionType())
+                .registerType(couponBuyerGroup.getRegisterType())
+                .registerVendorId(couponBuyerGroup.getRegisterVendorId())
                 .build();
     }
 

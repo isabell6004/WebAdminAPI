@@ -91,15 +91,14 @@ public class CouponManagementServiceImpl implements CouponManagementService {
             "discount_type",
             "sale_type",
             "generate_type",
-            "notification_method"
+            "notification_method",
+            "issue_method"
     };
 
     @Override
     @CouponActionAuthorityCheck(ResourceAuthorityType.Constants.VIEW)
     @Transactional
     public PagedResult<CouponDto> getCoupons(int pn, int ps) {
-
-//        hasCouponActionAuthority(ResourceAuthorityType.VIEW.getValue());
 
         PagedResult<CouponDto> result = new PagedResult<>();
 
@@ -394,6 +393,10 @@ public class CouponManagementServiceImpl implements CouponManagementService {
             throw new InvalidInputCouponException("invalid notification input.");
         }
 
+        Optional<CCoupon> optionalCCoupon = couponRepository.findById(couponId);
+        CCoupon couponEntity = optionalCCoupon.orElseThrow(() -> new NotFoundCouponException("cannot find coupon: " + couponId));
+        couponNotificationInput.setBuyerGroupType(couponEntity.getCouponBuyerGroup().getBuyerGroupType());
+
         couponNotificationInput.setCouponId(couponId);
         CCouponNotification couponNotificationEntity = couponMapper.toCouponNotification(couponNotificationInput);
 
@@ -403,16 +406,13 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         couponNotificationEntity.setCreatedBy(Utility.getUsername());
         couponNotificationEntity.setModifiedOn(now);
         couponNotificationEntity.setModifiedBy(Utility.getUsername());
-
         couponNotificationRepository.save(couponNotificationEntity);
 
-        //TODO: upload target file
         String originalTargetFileName = targetFile.getOriginalFilename();
         InputStream targetFileInputStream = targetFile.getInputStream();
         uploadEmail(couponNotificationEntity.getId(), originalTargetFileName, targetFileInputStream);
         String targetFilePathAndName = FileNameUtils.updateOBSPrefixNotificationSavedFile(originalTargetFileName);
 
-        //TODO: upload image file
         String originalImageFileName = imageFile.getOriginalFilename();
         InputStream imageFileInputStream = imageFile.getInputStream();
         uploadImage(couponNotificationEntity.getId(), originalImageFileName, imageFileInputStream);
@@ -421,18 +421,6 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         couponNotificationEntity.setNotificationTargetFile(targetFilePathAndName);
         couponNotificationEntity.setNotificationImageFileName(imageFilePathAndName);
         couponNotificationRepository.save(couponNotificationEntity);
-
-        CCoupon couponEntity = couponRepository.getOne(couponId);
-        createCouponHistory(couponEntity);
-
-        if (couponNotificationInput.getIsExcludeMember()) {
-            couponEntity.setIsExcludeMember(true);
-        }
-
-        couponEntity.setIsNotified(true);
-        couponEntity.setModifiedOn(now);
-        couponEntity.setModifiedBy(Utility.getUsername());
-        couponRepository.save(couponEntity);
 
         return CouponNotificationDto.build(couponNotificationEntity, imageRootUrl);
     }
@@ -460,17 +448,16 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         Optional<CCouponNotification> optionalCCouponNotification = couponNotificationRepository.findById(couponNotificationId);
         CCouponNotification couponNotificationEntity = optionalCCouponNotification.orElseThrow(() -> new NotFoundCouponNotificationException("cannot find coupon notification: " + couponNotificationId));
 
+        couponNotificationEntity.setBuyerGroupType(couponEntity.getCouponBuyerGroup().getBuyerGroupType());
         couponMapper.updateCouponNotification(couponNotificationInput, couponNotificationEntity);
 
         LocalDateTime now = LocalDateTime.now();
         couponNotificationEntity.setModifiedOn(now);
         couponNotificationEntity.setModifiedBy(Utility.getUsername());
-
         couponNotificationRepository.save(couponNotificationEntity);
 
         String targetFilePathAndName = null;
         if (!targetFile.isEmpty()) {
-            //TODO: upload target file
             String originalTargetFileName = targetFile.getOriginalFilename();
             InputStream targetFileInputStream = targetFile.getInputStream();
             uploadEmail(couponNotificationEntity.getId(), originalTargetFileName, targetFileInputStream);
@@ -479,7 +466,6 @@ public class CouponManagementServiceImpl implements CouponManagementService {
 
         String imageFilePathAndName = null;
         if (!imageFile.isEmpty()) {
-            //TODO: upload image file
             String originalImageFileName = imageFile.getOriginalFilename();
             InputStream imageFileInputStream = imageFile.getInputStream();
             uploadImage(couponNotificationEntity.getId(), originalImageFileName, imageFileInputStream);
@@ -495,17 +481,6 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         }
 
         couponNotificationRepository.save(couponNotificationEntity);
-
-        createCouponHistory(couponEntity);
-
-        if (couponNotificationInput.getIsExcludeMember()) {
-            couponEntity.setIsExcludeMember(true);
-        }
-
-        couponEntity.setIsNotified(true);
-        couponEntity.setModifiedOn(now);
-        couponEntity.setModifiedBy(Utility.getUsername());
-        couponRepository.save(couponEntity);
 
         return CouponNotificationDto.build(couponNotificationEntity, imageRootUrl);
     }
@@ -525,7 +500,6 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         createCouponHistory(couponEntity);
 
         couponEntity.setIsNotified(false);
-        couponEntity.setIsExcludeMember(false);
         couponEntity.setModifiedOn(LocalDateTime.now());
         couponEntity.setModifiedBy(Utility.getUsername());
 

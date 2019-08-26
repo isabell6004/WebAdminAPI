@@ -18,7 +18,6 @@ public interface CouponMapper {
     @Mapping(target = "isActive", constant = "false")
     @Mapping(target = "isCodeUsed", defaultValue = "false")
     @Mapping(target = "isNotified", defaultValue = "false")
-    @Mapping(target = "isExcludeMember", constant = "false")
     @Mapping(target = "maxCouponCount", constant = "9999999")
     @Mapping(target = "issuedCouponCount", constant = "0")
     @Mapping(target = "isDeleted", constant = "false")

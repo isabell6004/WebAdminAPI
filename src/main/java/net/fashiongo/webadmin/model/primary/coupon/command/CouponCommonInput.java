@@ -32,7 +32,6 @@ public abstract class CouponCommonInput  {
     private LocalDateTime endDate;
     private Boolean isCodeUsed;
     private Boolean isNotified;
-    private Boolean isExcludeMember;
     @JsonProperty(value = "maxCouponCount", required = false, defaultValue = "9999999")
     private Integer maxCouponCount;
     @JsonProperty(value = "issuedCouponCount", required = false, defaultValue = "0")
@@ -41,6 +40,7 @@ public abstract class CouponCommonInput  {
     private Integer registerType;
     private Long couponVendorGroupId;
     private Long couponBuyerGroupId;
+    private Integer issueMethod;
     private LocalDateTime createdOn;
     private String createdBy;
     private LocalDateTime modifiedOn;
