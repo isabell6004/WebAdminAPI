@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowListResponse;
+import net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -51,6 +53,9 @@ public class SitemgmtShowServiceTest {
 
 	@Autowired
 	SitemgmtShowService sitemgmtShowService;
+
+	@Autowired
+	private RenewalSiteManagementShowService renewalSiteManagementShowService;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -81,15 +86,14 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowList(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowListParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService#getShowList(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowListParameters)}.
 	 */
 	@Test
 	public final void testGetShowList() {
-//		fail("Not yet implemented"); // TODO
 		GetShowListParameters p= testGetShowListParameters();
-		GetShowListResponse r = sitemgmtShowService.getShowList(p);
+		AdminShowListResponse response = renewalSiteManagementShowService.getShowList(p);
 		
-		assertFalse(CollectionUtils.isEmpty(r.getShowList()));
+		assertFalse(CollectionUtils.isEmpty(response.getShowList()));
 	}
 
 	private GetShowListParameters testGetShowListParameters() {
@@ -140,8 +144,8 @@ public class SitemgmtShowServiceTest {
 //		fail("Not yet implemented"); // TODO
 
 		GetShowListParameters param = testGetShowListParameters();
-		GetShowListResponse res = sitemgmtShowService.getShowList(param);
-		Integer showId = res.getShowList().get(0).getShowID();
+		AdminShowListResponse response = renewalSiteManagementShowService.getShowList(param);
+		Integer showId = response.getShowList().get(0).getShowId();
 		
 		ResultResponse<ListShow> r = sitemgmtShowService.getShowDetail(showId);
 		

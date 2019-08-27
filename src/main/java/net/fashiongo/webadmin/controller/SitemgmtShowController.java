@@ -6,7 +6,10 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowListResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ShowInfoDto;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
+import net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +25,6 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowParticipatingVendorParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowPromotionPlanParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowScheduleParameters;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowCategoriesResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowListResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowParticipatingVendorsResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowPromotionPlanResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.show.ListShow;
 import net.fashiongo.webadmin.model.primary.show.MapShowSchedulePromotionPlanVendor;
 import net.fashiongo.webadmin.model.primary.show.ShowSchedule;
@@ -47,6 +45,9 @@ public class SitemgmtShowController {
 	@Autowired
 	SitemgmtShowService siteMgmtShowService;
 
+	@Autowired
+	private RenewalSiteManagementShowService renewalSiteManagementShowService;
+
 	/**
 	 * 
 	 * get Show List
@@ -54,17 +55,13 @@ public class SitemgmtShowController {
 	 * @since 2018. 10. 15.
 	 * @author Sanghyup Kim
 	 * @param GetShowListParameters
-	 * @return JsonResponse<GetShowListResponse>
+	 * @return JsonResponse<AdminShowListResponse>
 	 */
 	@RequestMapping(value = "getshowlist", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show list")
-	public JsonResponse<GetShowListResponse> getShowList(@RequestBody GetShowListParameters parameters) {
-
-		GetShowListResponse data = siteMgmtShowService.getShowList(parameters);
-		JsonResponse<GetShowListResponse> results = new JsonResponse<GetShowListResponse>(true, null, data);
-//		results.setData(data);
-
-		return results;
+	public JsonResponse<AdminShowListResponse> getShowList(@RequestBody GetShowListParameters parameters) {
+		AdminShowListResponse data = renewalSiteManagementShowService.getShowList(parameters);
+		return new JsonResponse<>(true, null, data);
 	}
 
 	/**

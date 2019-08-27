@@ -73,8 +73,10 @@ public class SitemgmtShowService extends ApiService {
 	 * @author Sanghyup Kim
 	 * @param
 	 * @return
+	 * @deprecated remove SP (up_wa_GetAdminShowList) (see Dooray task #FG-WEBADMIN-API-RENEWAL/29)
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated()
 	public GetShowListResponse getShowList(GetShowListParameters parameters) {
 
 		// add parameters
