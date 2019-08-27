@@ -248,9 +248,10 @@ public class SitemgmtController {
 	 * @return
 	 */
 	@RequestMapping(value = "getvendorlist", method = RequestMethod.POST)
-	public JsonResponse<GetVendorListResponse> getVendorList(@RequestBody GetVendorListParameter parameters) {
-		JsonResponse<GetVendorListResponse> results = new JsonResponse<GetVendorListResponse>(true, null, null);
-		GetVendorListResponse result = sitemgmtService.getVendorList();
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse> getVendorList(@RequestBody GetVendorListParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse>(true, null, null);
+//		GetVendorListResponse result = sitemgmtService.getVendorList();
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse result = renewalSitemgmtService.getVendorList();
 		results.setData(result);
 
 		return results;

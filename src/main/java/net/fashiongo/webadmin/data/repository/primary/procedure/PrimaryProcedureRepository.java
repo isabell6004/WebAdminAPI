@@ -6,6 +6,8 @@ import net.fashiongo.webadmin.data.model.sitemgmt.TodayDealDetail;
 import org.springframework.data.domain.Page;
 import java.math.BigDecimal;
 import java.util.Date;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetVendorList;
+
 import java.util.List;
 
 public interface PrimaryProcedureRepository {
@@ -20,4 +22,5 @@ public interface PrimaryProcedureRepository {
 
 	Page<TodayDealDetail> up_wa_GetAdminTodayDeal(Integer pageNumber, Integer pageSize, Integer wholeSalerID, String checkedCompanyNo, Integer categoryId, BigDecimal priceFrom, BigDecimal priceTo, Date dateFrom, Date dateTo, Boolean isActive, String orderBy);
 
+	ResultGetVendorList up_GetVendorList();
 }

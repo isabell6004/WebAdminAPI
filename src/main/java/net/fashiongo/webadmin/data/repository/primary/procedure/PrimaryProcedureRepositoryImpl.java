@@ -635,4 +635,73 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.leftJoin(C).on(P.parentParentCategoryID.eq(C.categoryId).and(C.active.eq(true)))
 				.leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)));
 	}
+
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public ResultGetVendorList up_GetVendorList() {
+		JPAQuery<CategoryCount> categoryCountQuery = this.getCategoryCountQuery();
+		JPAQuery<VendorSummary> vendorSummaryQuery = this.getVendorSummaryQuery();
+
+		List<CategoryCount> categoryCounts = categoryCountQuery.fetch().stream().distinct().collect(Collectors.toList());
+		List<VendorSummary> vendorSummaries = vendorSummaryQuery.fetch().stream().distinct().collect(Collectors.toList());
+
+		return ResultGetVendorList.builder()
+				.categoryCountlist(categoryCounts)
+				.vendorSummarylist(vendorSummaries)
+				.build();
+	}
+
+	private JPAQuery<CategoryCount> getCategoryCountQuery() {
+		QProductsEntity P = new QProductsEntity("P");
+		QCategoryEntity C = new QCategoryEntity("C");
+		QCategoryEntity C2 = new QCategoryEntity("C2");
+		QCategoryEntity C1 = new QCategoryEntity("C1");
+
+		JPAQuery<CategoryCount> query = new JPAQuery<>(entityManager);
+
+		query.select(Projections.constructor(CategoryCount.class,
+				C1.categoryId,
+				P.wholeSalerID.countDistinct()))
+				.from(P)
+				.innerJoin(C).on(P.categoryID.eq(C.categoryId))
+				.innerJoin(C2).on(C.parentCategoryId.eq(C2.categoryId).or(C.categoryId.eq(C2.categoryId)))
+				.innerJoin(C1).on(C2.parentCategoryId.eq(C1.categoryId).or(C2.categoryId.eq(C1.categoryId)).or(C.categoryId.eq(C1.categoryId)))
+				.where(P.active.eq(true).and(C1.lvl.eq(1)))
+				.groupBy(C1.categoryId);
+
+		return query;
+	}
+
+	private JPAQuery<VendorSummary> getVendorSummaryQuery() {
+		QProductsEntity P = new QProductsEntity("P");
+		QCategoryEntity C = new QCategoryEntity("C");
+		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
+		QProductImageEntity PRI = new QProductImageEntity("PRI");
+		QVendorCategoryEntity VC = new QVendorCategoryEntity("VC");
+		QProductVideoEntity PRV = new QProductVideoEntity("PRV");
+
+		NumberExpression accessStatus = Expressions.asNumber(2);
+
+		JPAQuery<VendorSummary> query = new JPAQuery<>(entityManager);
+
+		query.select(Projections.constructor(VendorSummary.class,
+				P.wholeSalerID,
+				W.companyName,
+				W.dirName,
+				P.productID.countDistinct(),
+				accessStatus))
+				.from(P)
+						.innerJoin(C).on(P.categoryID.eq(C.categoryId))
+						.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
+						.innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+						.leftJoin(PRI).on(P.productID.eq(PRI.productID).and(PRI.listOrder.eq(1)))
+						.innerJoin(VC).on(P.vendorCategoryID.eq(VC.vendorCategoryID))
+						.leftJoin(PRV).on(P.productID.eq(PRV.productID).and(PRV.active.eq(true)))
+				.where(P.active.eq(true).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true)))
+				.groupBy(P.wholeSalerID, W.companyName, W.dirName)
+				.orderBy(W.companyName.asc());
+
+		return query;
+	}
 }

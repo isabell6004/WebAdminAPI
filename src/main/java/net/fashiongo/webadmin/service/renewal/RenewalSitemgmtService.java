@@ -13,6 +13,8 @@ import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListRespon
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodaydealResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetVendorList;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepository;
@@ -192,7 +194,7 @@ public class RenewalSitemgmtService {
 	}
 
 	public GetTodaydealResponse getTodaydeal(GetTodaydealParameter parameters) throws ParseException {
-		Integer pageNumber  = parameters.getPagenum();
+		Integer pageNumber = parameters.getPagenum();
 		Integer pagesize = parameters.getPagesize();
 		Integer wholesalerid = parameters.getWholesalerid();
 		String checkedCompanyNo = parameters.getCheckedCompanyNo();
@@ -209,6 +211,15 @@ public class RenewalSitemgmtService {
 		return GetTodaydealResponse.builder()
 				.todayDealDetail(todayDealDetails.getContent())
 				.total(Total.builder().recCnt((int) todayDealDetails.getTotalElements()).build())
+				.build();
+	}
+
+	public GetVendorListResponse getVendorList() {
+		ResultGetVendorList result = primaryProcedureRepository.up_GetVendorList();
+
+		return GetVendorListResponse.builder()
+				.categoryCountlist(result.getCategoryCountlist())
+				.vendorSummarylist(result.getVendorSummarylist())
 				.build();
 	}
 }
