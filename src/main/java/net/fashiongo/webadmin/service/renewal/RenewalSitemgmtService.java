@@ -8,23 +8,28 @@ import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
 import net.fashiongo.webadmin.data.model.sitemgmt.CodeData;
 import net.fashiongo.webadmin.data.model.sitemgmt.PolicyAgreement;
+import net.fashiongo.webadmin.data.model.sitemgmt.TodayDealDetail;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepository;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodaydealParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 public class RenewalSitemgmtService {
@@ -183,6 +188,27 @@ public class RenewalSitemgmtService {
 
 		return GetCategoryListResponse.builder()
 				.categoryList(results)
+				.build();
+	}
+
+	public GetTodaydealResponse getTodaydeal(GetTodaydealParameter parameters) throws ParseException {
+		Integer pageNumber  = parameters.getPagenum();
+		Integer pagesize = parameters.getPagesize();
+		Integer wholesalerid = parameters.getWholesalerid();
+		String checkedCompanyNo = parameters.getCheckedCompanyNo();
+		Integer categoryid = parameters.getCategoryid();
+		BigDecimal priceFrom = null;
+		BigDecimal priceTo = null;
+		Date fromdate = parameters.getFromdate();
+		Date todate = parameters.getTodate();
+		Boolean active = parameters.getActive();
+		String orderby = parameters.getOrderby();
+
+		Page<TodayDealDetail> todayDealDetails = primaryProcedureRepository.up_wa_GetAdminTodayDeal(pageNumber, pagesize, wholesalerid, checkedCompanyNo, categoryid, priceFrom, priceTo, fromdate, todate, active, orderby);
+
+		return GetTodaydealResponse.builder()
+				.todayDealDetail(todayDealDetails.getContent())
+				.total(Total.builder().recCnt((int) todayDealDetails.getTotalElements()).build())
 				.build();
 	}
 }

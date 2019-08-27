@@ -58,6 +58,9 @@ public class SimpleWholeSalerEntity implements Serializable {
     @Column(name = "FashionGoExclusive")
     private Boolean fashionGoExclusive;
 
+    @Column(name = "OrderNotice")
+    private String orderNotice;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)
     private SystemImageServersEntity systemImageServersEntity;
@@ -65,4 +68,11 @@ public class SimpleWholeSalerEntity implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "WholeSalerID",referencedColumnName = "VendorID", insertable = false, updatable = false)
     private MapWaUserVendorEntity mapWaUserVendor;
+
+    @Column(name = "CompanyTypeID")
+    private Integer companyTypeID;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CompanyTypeID",referencedColumnName = "CompanyTypeID", insertable = false, updatable = false)
+    private CodeWholeSalerCompanyTypeEntity codeWholeSalerCompanyType;
 }

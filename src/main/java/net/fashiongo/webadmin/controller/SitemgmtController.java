@@ -267,13 +267,14 @@ public class SitemgmtController {
 	 * @throws ParseException
 	 */
 	@RequestMapping(value = "gettodaydeal", method = RequestMethod.POST)
-	public JsonResponse<GetTodaydealResponse> getTodaydeal(@RequestBody GetTodaydealParameter parameters) throws ParseException {
-		JsonResponse<GetTodaydealResponse> results = new JsonResponse<GetTodaydealResponse>(true, null, null);
-		GetTodaydealResponse result = sitemgmtService.getTodaydeal(parameters);
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodaydealResponse> getTodaydeal(@RequestBody GetTodaydealParameter parameters) throws ParseException {
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodaydealResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodaydealResponse>(true, null, null);
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodaydealResponse todaydeal = renewalSitemgmtService.getTodaydeal(parameters);
+		results.setData(todaydeal);
 
 		return results;
 	}
+
 	/**
 	 * Get social media list
 	 * @since Oct 23, 2018.

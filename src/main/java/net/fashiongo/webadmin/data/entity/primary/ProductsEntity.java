@@ -142,7 +142,10 @@ public class ProductsEntity {
 	private String itemLocation;
 
 	@Column(name = "MinTQYNStyle")
-	private Integer minTQYNStyle;
+	private String minTQYNStyle;
+
+	@Column(name = "MinTQStyle")
+	private Integer minTQStyle;
 
 	@Column(name = "FirstInputDate")
 	private Date firstInputDate;

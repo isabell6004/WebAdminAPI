@@ -1,33 +1,34 @@
 package net.fashiongo.webadmin.data.repository.primary.procedure;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.*;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.sql.JPASQLQuery;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendor;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendorAssigned;
-import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
-import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtAdPageSpot;
-import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtCategory;
-import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtCollectionCategory;
-import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtMapCollectionCategory;
+import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
-import net.fashiongo.webadmin.model.primary.SecurityMenu;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,6 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 	@Autowired
 	private QueryDSLSQLFunctions queryDSLSQLFunctions;
-
 
 	@Override
 	@Transactional(value = "primaryTransactionManager")
@@ -357,10 +357,10 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 		NumberExpression<Integer> expended = Expressions.asNumber(expandAll == null ? 1 : expandAll == 0 ? 0 : 1);
 
-        Expression<Integer> constantZERO = Expressions.constant(0);
+		Expression<Integer> constantZERO = Expressions.constant(0);
 
-        categoryID = categoryID == null ? 0 : categoryID;
-        BooleanExpression categoryIDZero = Expressions.asNumber(categoryID).eq(constantZERO);
+		categoryID = categoryID == null ? 0 : categoryID;
+		BooleanExpression categoryIDZero = Expressions.asNumber(categoryID).eq(constantZERO);
 
 		JPAQuery<CategoryList> query = new JPAQuery<>(entityManager);
 
@@ -385,5 +385,254 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.orderBy(C.listOrder.asc(), C.categoryName.asc());
 
 		return query.fetch().stream().distinct().collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public Page<TodayDealDetail> up_wa_GetAdminTodayDeal(Integer pageNumber, Integer pageSize, Integer wholeSalerID, String checkedCompanyNo, Integer categoryId, BigDecimal priceFrom, BigDecimal priceTo, Date dateFrom, Date dateTo, Boolean isActive, String orderBy) {
+//if @OrderBy is null
+//set @OrderBy = 'FromDate desc'
+//
+//set @columnlist = 'TodayDealID, Title, ProductID, FromDate, ToDate, TodayDealPrice, Active, AppliedOn, ApprovedOn,  UnitPrice, ProductName, CompanyName, Case When Active = 1 Then ''Approved'' Else ''Pending'' End As Status, CompanyTypeID, CompanyTypeCode
+//		,CategoryID,OrgCategoryID,CategoryName, WholeSalerID '
+//
+//set @filter = '1=1'
+//
+//if @WholeSalerID != 0
+//set @filter = @filter + ' and WholeSalerID = ' + CONVERT(nvarchar(50), @WholeSalerID)
+//
+//if @CheckedCompanyNo is not null
+//set @filter = @filter + ' and CompanyTypeID In (' + @CheckedCompanyNo + ') '
+//
+//if @CategoryID != 100
+//set @filter = @filter + ' and OrgCategoryID = ' + CONVERT(nvarchar(50), @CategoryID)
+//
+//if @PriceFrom is not null
+//set @filter = @filter + ' and TodayDealPrice >= ' + CONVERT(nvarchar(50), @PriceFrom)
+//
+//if @PriceTo is not null
+//set @filter = @filter + ' and TodayDealPrice <= ' + CONVERT(nvarchar(50), @PriceTo)
+//
+//if @DateFrom is not null
+//set @filter = @filter + ' and Convert(nvarchar(10), FromDate, 120) >= ''' + CONVERT(nvarchar(10), @DateFrom, 120) + ''''
+//
+//if @DateTo is not null
+//set @filter = @filter + ' and Convert(nvarchar(10), ToDate, 120) <= ''' + CONVERT(nvarchar(10), @DateTo, 120) + ''''
+//
+//		--set @filter = @filter + ' and Active = 1 '
+//if @Active is not null
+//set @filter = @filter + ' and Active = ''' + CONVERT(nvarchar(50), @Active) + ''''
+//
+//exec up_GetPage @PageNum, @PageSize, 'vw_wa_TodayDealWebAdmin', @columnlist, @filter, @OrderBy
+
+//CREATE view [dbo].[vw_wa_TodayDealWebAdmin]
+//AS
+//		select
+//t.TodayDealID, t.Title, t.Description, t.FromDate, t.ToDate, t.TodayDealPrice,
+//		t.AppliedOn, t.ApprovedOn, t.Active, t.ModifiedBy, t.ModifiedOn,
+//		p.ProductID, p.ProductName, i.UrlPath ImageUrlRoot, p.DirName, prdi.ImageName PictureGeneral,
+//		p.CompanyName, p.WholeSalerID, p.Price UnitPrice, p.CompanyTypeID,p.CompanyTypeName, ,p.CategoryID,OrgCategoryID,p.CategoryName
+//from
+//TodayDeal t
+//left outer join vw_wa_ProductDetail p on t.ProductID = p.ProductID
+//Left Outer Join Product_Image prdi on t.ProductID = prdi.ProductID and prdi.ListOrder = 1
+//inner join System_ImageServers i on p.ImageServerID = i.ImageServerID
+		long offset = (pageNumber - 1) * pageSize;
+		long limit = pageSize;
+
+		JPASQLQuery<TodayDealDetail> jpasqlQuery = new JPASQLQuery(entityManager,new MSSQLServer2012Templates());
+		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
+		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
+		JPQLQuery vw_wa_ProductDetail = vw_wa_ProductDetail();
+		Path<Object> P = ExpressionUtils.path(Object.class, "P");
+		NumberPath<Integer> pathProductID = Expressions.numberPath(Integer.class,P, "ProductID");
+		StringPath pathProductName = Expressions.stringPath(P, "ProductName");
+		StringPath pathCompanyName = Expressions.stringPath(P, "CompanyName");
+		StringPath pathCategoryName = Expressions.stringPath(P, "CategoryName");
+		NumberPath<BigDecimal> pathUnitPrice = Expressions.numberPath(BigDecimal.class,P, "Price");
+		NumberPath<Integer> pathImageServerID = Expressions.numberPath(Integer.class,P, "ImageServerID");
+		NumberPath<Integer> pathCompanyTypeID = Expressions.numberPath(Integer.class,P, "CompanyTypeID");
+		NumberPath<Integer> pathWholeSalerID = Expressions.numberPath(Integer.class, P, "WholeSalerID");
+		NumberPath<Integer> pathCategoryID = Expressions.numberPath(Integer.class, P, "CategoryID");
+		NumberPath<Integer> pathOrgCategoryID = Expressions.numberPath(Integer.class, P, "OrgCategoryID");
+		StringExpression statusExpression = Expressions.cases()
+				.when(T.active.eq(true)).then("Approved")
+				.otherwise("Pending").as("Status");
+
+		StringExpression comPanyTypeCode = Expressions.cases()
+				.when(pathCompanyTypeID.eq(1)).then("M")
+				.when(pathCompanyTypeID.eq(2)).then("W")
+				.otherwise("D").as("ComPanyTypeCode");
+
+		String orderByColumn = orderBy == null ? "FromDate desc" : orderBy;
+		String[] orderyColumns = orderByColumn.split(" ");
+		String orderyColumn= orderyColumns[0];
+		StringPath sort = Expressions.stringPath(orderyColumn);
+		boolean isAsc = orderyColumns.length == 2 && orderyColumns[1].equalsIgnoreCase("asc") ? true : false;
+		OrderSpecifier<String> orderSpecifier = sort.desc();
+		if(isAsc) {
+			orderSpecifier = sort.asc();
+		}
+		Expression<Integer> constant = Expressions.constant(1);
+		BooleanExpression expression = Expressions.asNumber(1).eq(constant);
+
+		if(checkedCompanyNo != null) {
+			List<Integer> checkedCompanyIds = Arrays.asList(checkedCompanyNo.split(",")).stream()
+					.map(Integer::valueOf)
+					.collect(Collectors.toList());
+			expression = expression.and(pathCompanyTypeID.in(checkedCompanyIds));
+		}
+
+		if(wholeSalerID != 0) {
+			expression = expression.and(pathWholeSalerID.eq(wholeSalerID));
+		}
+
+		if(categoryId != 100) {
+			expression = expression.and(pathOrgCategoryID.eq(categoryId));
+		}
+
+		if(priceFrom != null) {
+			expression = expression.and(T.todayDealPrice.goe(priceFrom));
+		}
+
+		if(priceTo != null) {
+			expression = expression.and(T.todayDealPrice.loe(priceTo));
+		}
+
+		if(dateFrom != null) {
+			expression = expression.and(T.fromDate.goe(new Timestamp(dateFrom.getTime())));
+		}
+
+		if(dateTo != null) {
+			expression = expression.and(T.toDate.loe(new Timestamp(dateTo.getTime())));
+		}
+
+		if(isActive != null) {
+			expression = expression.and(T.active.eq(isActive));
+		}
+
+		jpasqlQuery.select(
+					Projections.constructor(
+							TodayDealDetail.class
+							, T.todayDealId
+							, T.title
+							, pathProductID
+							, T.fromDate
+							, T.toDate
+							, T.todayDealPrice
+							, T.active
+							, T.appliedOn
+							, T.approvedOn
+							, pathUnitPrice.as("UnitPrice")
+							, pathProductName
+							, pathCompanyName
+							, statusExpression
+							, pathCompanyTypeID
+							, comPanyTypeCode
+							, pathCategoryID
+							, pathOrgCategoryID
+							, pathCategoryName
+							, pathWholeSalerID
+					)
+				)
+				.from(T)
+				.leftJoin(vw_wa_ProductDetail,P).on(T.productId.eq(pathProductID))
+				.leftJoin(PRDI).on(PRDI.productID.eq(T.productId).and(PRDI.listOrder.eq(1)))
+				.leftJoin(I).on(I.imageServerID.eq(pathImageServerID))
+				.where(expression)
+				.orderBy(orderSpecifier,T.todayDealId.asc())
+				.offset(offset)
+				.limit(limit);
+
+		QueryResults<TodayDealDetail> tupleQueryResults = jpasqlQuery.fetchResults();
+		List<TodayDealDetail> results = tupleQueryResults.getResults();
+		long resultsTotal = tupleQueryResults.getTotal();
+
+		PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
+		return PageableExecutionUtils.getPage(results,pageRequest,()-> resultsTotal);
+	}
+
+	private JPQLQuery vw_wa_ProductDetail() {
+//CREATE VIEW [dbo].[vw_wa_ProductDetail]
+//AS
+//select	p.ProductID, p.WholeSalerID, p.ProductName, p.ProductName2, p.ProductDescription
+//		, p.CategoryID,p.ParentParentCategoryID As OrgCategoryID,c.CategoryName, p.VendorCategoryID
+//		, prdi.ImageName As PictureGeneral
+//--, p.PictureGeneral, p.PictureEx01, p.PictureEx02, p.PictureEx03, p.PictureEx04
+//		--, p.PictureEx05, p.PictureEx06, p.PictureEx07, p.PictureEx08, p.PictureEx09
+//		, dbo.ufnMinValue(dbo.ufnMinValue(p.UnitPrice, p.UnitPrice1), p.UnitPrice2) Price
+//		, dbo.ufnMaxValue(dbo.ufnMaxValue(p.UnitPrice, p.UnitPrice1), p.UnitPrice2) PriceOld
+//		, p.CallforPrice
+//		, isnull(p.FabricDescription, 'Unspecified') FabricDescription
+//		, isnull(p.MadeIn, 'Unspecified') MadeIn
+//		, isnull(p.StockAvailability, 'Unspecified') StockAvailability
+//		, p.LabelTypeID
+//		, p.EvenColorYN, p.PrePackYN
+//		, isnull(p.Active,0) as HotItems
+//		, p.MinTQYNStyle, p.MinTQStyle
+//		, p.DiscountYN
+//		, w.CompanyName, w.DirName, i.UrlPath ImageUrlRoot
+//		, p.Active,w.Active WholeSalerActive, w.ShopActive WholeSalerShopActive
+//		, p.ActivatedOn, p.PackQtyTotal
+//		, w.OrderNotice, cw.CompanyTypeID, cw.CompanyTypeName, w.ImageServerID
+//from		dbo.Products p
+//inner join dbo.tblWholeSaler w on p.WholeSalerID = w.WholeSalerID
+//inner join dbo.System_ImageServers i on w.ImageServerID = i.ImageServerID
+//inner join dbo.Code_WholeSalerCompanyType cw on w.CompanyTypeID = cw.CompanyTypeID
+//left outer join dbo.category c on p.ParentParentCategoryID = c.CategoryID And c.Active = 1
+//left outer join dbo.Product_Image  prdi on p.ProductID = prdi.ProductID and prdi.ListOrder = 1
+//		-- left outer join dbo.Product_SearchableItem as ps on p.ProductID = ps.ProductID
+//go
+		QProductsEntity P = QProductsEntity.productsEntity;
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
+		QCodeWholeSalerCompanyTypeEntity CW = QCodeWholeSalerCompanyTypeEntity.codeWholeSalerCompanyTypeEntity;
+		QCategoryEntity C = QCategoryEntity.categoryEntity;
+		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+
+		return JPAExpressions.select(
+				P.productID
+				, P.wholeSalerID
+				, P.productName
+				, P.productName2
+				, P.productDescription
+				, P.categoryID
+				, P.parentParentCategoryID.as("OrgCategoryID")
+				, C.categoryName
+				, P.vendorCategoryID
+				, PRDI.imageName.as("PictureGeneral")
+				, queryDSLSQLFunctions.ufnMinValue(BigDecimal.class, queryDSLSQLFunctions.ufnMinValue(BigDecimal.class, P.unitPrice, P.unitPrice1), P.unitPrice2).as("Price")
+				, queryDSLSQLFunctions.ufnMaxValue(BigDecimal.class, queryDSLSQLFunctions.ufnMaxValue(BigDecimal.class, P.unitPrice, P.unitPrice1), P.unitPrice2).as("PriceOld")
+				, P.callforPrice
+				, queryDSLSQLFunctions.isnull(String.class, P.fabricDescription, "Unspecified").as("FabricDescription")
+				, queryDSLSQLFunctions.isnull(String.class, P.madeIn, "Unspecified").as("MadeIn")
+				, queryDSLSQLFunctions.isnull(String.class, P.stockAvailability, "Unspecified").as("StockAvailability")
+				, P.labelTypeID
+				, P.evenColorYN
+				, P.prePackYN
+				, queryDSLSQLFunctions.isnull(Boolean.class, P.active, false).as("HotItems")
+				, P.minTQYNStyle
+				, P.minTQStyle
+				, P.discountYN
+				, W.companyName
+				, W.dirName
+				, I.urlPath.as("ImageUrlRoot")
+				, P.active
+				, W.active.as("WholeSalerActive")
+				, W.shopActive.as("WholeSalerShopActive")
+				, P.activatedOn
+				, P.packQtyTotal
+				, W.orderNotice
+				, CW.companyTypeID
+				, CW.companyTypeName
+				, W.imageServerID
+		)
+				.from(P)
+				.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
+				.innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+				.innerJoin(CW).on(CW.companyTypeID.eq(W.companyTypeID))
+				.leftJoin(C).on(P.parentParentCategoryID.eq(C.categoryId).and(C.active.eq(true)))
+				.leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)));
 	}
 }
