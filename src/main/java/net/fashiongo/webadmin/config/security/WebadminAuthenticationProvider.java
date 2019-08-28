@@ -211,7 +211,16 @@ public class WebadminAuthenticationProvider extends ApiService implements Authen
 	}
 	
 	private boolean checkIPAddress(HttpServletRequest request) {
-		return this.securityListIPRepository.existsByIpAddress(Utility.getIpAddress(request));
+		String ipAddress = Utility.getIpAddress(request);
+		if (ipAddress.startsWith("10.77.252")
+				|| ipAddress.startsWith("10.77.253")
+				|| ipAddress.startsWith("10.77.254")
+				|| ipAddress.startsWith("10.78.232")
+				|| ipAddress.startsWith("10.78.233")) {
+			return true;
+		} else {
+			return this.securityListIPRepository.existsByIpAddress(ipAddress);
+		}
 	}
 	
 	private void validateAuthResponse(Integer loginable, JsonResponse response) {
