@@ -17,7 +17,10 @@ public class LoginService {
 	
 	public boolean checkIP(String ipAddress) {
 		if (ipAddress.startsWith("10.77.252")
-				|| ipAddress.startsWith("10.77.253") || ipAddress.startsWith("10.77.254")) {
+				|| ipAddress.startsWith("10.77.253")
+				|| ipAddress.startsWith("10.77.254")
+				|| ipAddress.startsWith("10.78.232")
+				|| ipAddress.startsWith("10.78.233")) {
 			return true;
 		}
 		boolean result = securityListIPRepository.existsByIpAddress(ipAddress);
