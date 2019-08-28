@@ -13,12 +13,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class LoginServiceTest {
 	
 	@Autowired
-	LoginService loginService;
+	private LoginService loginService;
 
 	@Test
 	public void testCheckIP() {
-		boolean result  = loginService.checkIP("::1");
-		assertTrue(result);
+		assertTrue(loginService.checkIP("8.41.55.212"));
+		assertTrue(loginService.checkIP("10.77.252.136"));
+		assertTrue(loginService.checkIP("10.78.232.251"));
 	}
 
 }

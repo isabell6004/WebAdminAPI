@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.dao.primary.SecurityListIPRepository;
+import org.springframework.util.StringUtils;
 
 /**
  * 
@@ -13,17 +14,17 @@ import net.fashiongo.webadmin.dao.primary.SecurityListIPRepository;
 public class LoginService {
 	
 	@Autowired
-	SecurityListIPRepository securityListIPRepository;
+	private SecurityListIPRepository securityListIPRepository;
 	
 	public boolean checkIP(String ipAddress) {
-		if (ipAddress.startsWith("10.77.252")
-				|| ipAddress.startsWith("10.77.253")
-				|| ipAddress.startsWith("10.77.254")
-				|| ipAddress.startsWith("10.78.232")
-				|| ipAddress.startsWith("10.78.233")) {
-			return true;
-		}
-		boolean result = securityListIPRepository.existsByIpAddress(ipAddress);
-		return result;
+		if (StringUtils.isEmpty(ipAddress)) return false;
+
+		String[] addrs = ipAddress.split("\\.");
+		if (addrs.length != 4) return false;
+
+		String ipAddressCidr8 = String.join(".", addrs[0], addrs[1], addrs[2], "0");
+
+		return securityListIPRepository.existsByIpAddress(ipAddress) ||
+				securityListIPRepository.existsByIpAddress(ipAddressCidr8);
 	}
 }

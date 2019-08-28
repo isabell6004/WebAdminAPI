@@ -12,6 +12,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.fashiongo.webadmin.service.LoginService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -66,6 +67,9 @@ public class WebadminAuthenticationProvider extends ApiService implements Authen
 	
 	@Autowired
 	private SecurityLoginLogRepository securityLoginLogRepository;
+
+	@Autowired
+	private LoginService loginService;
 	
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -125,7 +129,7 @@ public class WebadminAuthenticationProvider extends ApiService implements Authen
 		HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getResponse();
 		AuthuserResponse result = new AuthuserResponse();
 		
-		JsonResponse<AuthuserResponse> res = new JsonResponse<AuthuserResponse>();
+		JsonResponse<AuthuserResponse> res = new JsonResponse<>();
 		res.setSuccess(true);
 		result.setUserID(0);
 		result.setsCodeNo(code);
@@ -140,14 +144,14 @@ public class WebadminAuthenticationProvider extends ApiService implements Authen
 			ostr.flush();
 			ostr.close();
 		} catch(Exception e) {
-			
+			logger.error("WebadminAuthenticationProvider.ResponseException()", e);
 		}
 	}
 	
 	private MenuDS getMenuDS(Integer userId) {
 		MenuDS menuDs = new MenuDS();
 		String spName = "up_wa_Security_GetLeftMenuByUser";
-        List<Object> params = new ArrayList<Object>();
+        List<Object> params = new ArrayList<>();
         
         params.add(userId);
         List<Object> _result = jdbcHelper.executeSP(spName, params, SubMenu.class, MenuPermission.class);
@@ -163,7 +167,7 @@ public class WebadminAuthenticationProvider extends ApiService implements Authen
 		
 		if(securityUser == null) {
 			this.ResponseException(loginable,"The userName and Password combination is invalid.");
-		} else if(securityUser.getActive() == false){
+		} else if(!securityUser.getActive()){
 			this.ResponseException(loginable,"Sorry, this account is inactive or not approved yet!");
 		}
 	}
@@ -203,7 +207,7 @@ public class WebadminAuthenticationProvider extends ApiService implements Authen
 	
 	private Integer checkAccessCode(String accessCode) {
 		SecurityAccessCode acsCode = securityAccessCodeRepository.findFirstByAccessCode(accessCode);
-		if(acsCode != null && acsCode.getExpiredOn().after(new Date()) == true) {
+		if(acsCode != null && acsCode.getExpiredOn().after(new Date())) {
 			return 1;
 		}else {
 			return 5;
@@ -211,16 +215,7 @@ public class WebadminAuthenticationProvider extends ApiService implements Authen
 	}
 	
 	private boolean checkIPAddress(HttpServletRequest request) {
-		String ipAddress = Utility.getIpAddress(request);
-		if (ipAddress.startsWith("10.77.252")
-				|| ipAddress.startsWith("10.77.253")
-				|| ipAddress.startsWith("10.77.254")
-				|| ipAddress.startsWith("10.78.232")
-				|| ipAddress.startsWith("10.78.233")) {
-			return true;
-		} else {
-			return this.securityListIPRepository.existsByIpAddress(ipAddress);
-		}
+		return loginService.checkIP(Utility.getIpAddress(request));
 	}
 	
 	private void validateAuthResponse(Integer loginable, JsonResponse response) {
