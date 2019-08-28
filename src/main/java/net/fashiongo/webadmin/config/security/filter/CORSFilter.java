@@ -20,25 +20,15 @@ import org.springframework.stereotype.Component;
 
 @Component(AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME)
 public class CORSFilter implements Filter{
-    static Logger logger = LoggerFactory.getLogger(CORSFilter.class);
-    @Value("${spring.profiles.active}")
-    String activeProfile;
-    
-    @Value("{client.uri}")
-    String clientUri;
-    
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
+    public void init(FilterConfig filterConfig) {}
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-    	logger.info("current active profile:" + activeProfile);
-    	
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
         String origin = request.getHeader("origin");
-        logger.info("access control allow origin from request:" + origin);
         if (StringUtils.isNotEmpty(origin)) {
             response.setHeader("Access-Control-Allow-Origin", origin);
         } else {
