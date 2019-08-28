@@ -546,7 +546,7 @@ public class SecurityGroupService extends ApiService {
 				
 				if (ret.isSuccess()) {
 					String guid = null;
-					String userByNameSpName = "aspnet_Membership_GetUserByName";  //check security user
+					String userByNameSpName = "aspnet_Membership_GetUserByName";  //check membership user
 					
 					List<Object> userByNameParams = new ArrayList<Object>();
 					userByNameParams.add(appName);
@@ -587,7 +587,7 @@ public class SecurityGroupService extends ApiService {
 					userByNameSuccess = false;
 				}
 			} else {
-				String userByNameSpName = "aspnet_Membership_GetUserByName";  //check security user
+				String userByNameSpName = "aspnet_Membership_GetUserByName";  //check membership user
 				
 				List<Object> userByNameParams = new ArrayList<Object>();
 				userByNameParams.add(appName);
@@ -602,7 +602,7 @@ public class SecurityGroupService extends ApiService {
 				su.setModifiedOn(now);
 			}
 			if (userByNameRes.getUserId() != null) {
-				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";  //update security user
+				String membershipUpdateSpname = "aspnet_Membership_UpdateUser";  //update membership user
 				
 				List<Object> membershipParams = new ArrayList<Object>();
 				membershipParams.add(appName);
