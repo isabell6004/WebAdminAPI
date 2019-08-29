@@ -313,8 +313,10 @@ public class SitemgmtShowService extends ApiService {
 	 * @author Sanghyup Kim
 	 * @param
 	 * @return
+	 * @deprecated remove SP (up_wa_GetAdminShowSchedule2) (see Dooray task #FG-WEBADMIN-API-RENEWAL/33)
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public GetShowScheduleListResponse getShowScheduleList(GetShowScheduleListParameters parameters) {
 
 		// add parameters

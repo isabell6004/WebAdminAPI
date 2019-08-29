@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowListResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowScheduleListResponse;
 import net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -153,7 +154,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowScheduleList(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowScheduleListParameters)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService#getShowScheduleList(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowScheduleListParameters)}.
 	 */
 	@Test
 	public final void testGetShowScheduleList() {
@@ -161,9 +162,9 @@ public class SitemgmtShowServiceTest {
 		
 		GetShowScheduleListParameters p = testGetShowScheduleListParameters();
 		
-		GetShowScheduleListResponse r = sitemgmtShowService.getShowScheduleList(p);
+		AdminShowScheduleListResponse r = renewalSiteManagementShowService.getShowScheduleList(p);
 		
-		assertFalse(CollectionUtils.isEmpty(r.getShowScheduleList()));
+		assertFalse(CollectionUtils.isEmpty(r.getScheduleResponses()));
 		
 	}
 

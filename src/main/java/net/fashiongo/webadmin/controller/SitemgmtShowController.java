@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowListResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowScheduleListResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ShowInfoDto;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
 import net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService;
@@ -121,15 +122,9 @@ public class SitemgmtShowController {
 	 */
 	@RequestMapping(value = "show/schedule", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show schedule list")
-	public JsonResponse<GetShowScheduleListResponse> getShowSchedules(
-			@RequestBody GetShowScheduleListParameters parameters) {
-
-		GetShowScheduleListResponse data = siteMgmtShowService.getShowScheduleList(parameters);
-
-		JsonResponse<GetShowScheduleListResponse> results = new JsonResponse<GetShowScheduleListResponse>(true, null,
-				data);
-//		results.setData(data);
-		return results;
+	public JsonResponse<AdminShowScheduleListResponse> getShowSchedules(@RequestBody GetShowScheduleListParameters parameters) {
+		AdminShowScheduleListResponse response = renewalSiteManagementShowService.getShowScheduleList(parameters);
+		return new JsonResponse<>(true, null, response);
 	}
 
 	/**
