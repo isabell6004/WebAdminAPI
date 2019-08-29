@@ -26,6 +26,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -703,5 +705,165 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.orderBy(W.companyName.asc());
 
 		return query;
+	}
+
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public ResultGetAdminTodayDealCalendarList up_wa_GetAdminTodayDealCalendarList(Date sDate, Integer wholeSalerID) {
+		List<ActiveTodayDealDetail> activeTodayDealDetails = this.getActiveTodayDealDetail(sDate, wholeSalerID);
+		List<InactiveTodayDealDetail> inactiveTodayDealDetails = this.getInactiveTodayDealDetail(sDate);
+
+		return ResultGetAdminTodayDealCalendarList.builder()
+				.activeTodayDealDetails(activeTodayDealDetails)
+				.inactiveTodayDealDetails(inactiveTodayDealDetails)
+				.build();
+	}
+
+	private JPQLQuery vwProductDetail() {
+		QProductsEntity P = QProductsEntity.productsEntity;
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
+		QProductImageEntity PRI = QProductImageEntity.productImageEntity;
+
+		return JPAExpressions.select(
+				P.productID
+				, P.wholeSalerID
+				, P.productName
+				, P.productName2
+				, P.productDescription
+				, P.categoryID
+				, P.vendorCategoryID
+				, JPAExpressions.select(PRI.imageName.as("PictureGeneral")).from(PRI).where(P.productID.eq(PRI.productID).and(PRI.listOrder.eq(1)))
+				, Expressions.cases().when(P.unitPrice1.eq(BigDecimal.valueOf(0))).then(P.unitPrice).otherwise(queryDSLSQLFunctions.ufnMinValue(BigDecimal.class, P.unitPrice, P.unitPrice1)).as("Price")
+				, queryDSLSQLFunctions.ufnMaxValue(BigDecimal.class, P.unitPrice, P.unitPrice1).as("PriceOld")
+				, P.callforPrice
+				, queryDSLSQLFunctions.isnull(String.class, P.fabricDescription, "Unspecified").as("FabricDescription")
+				, queryDSLSQLFunctions.isnull(String.class, P.madeIn, "Unspecified").as("MadeIn")
+				, queryDSLSQLFunctions.isnull(String.class, P.stockAvailability, "Unspecified").as("StockAvailability")
+				, P.labelTypeID
+				, P.evenColorYN
+				, P.prePackYN
+				, P.hotItems
+				, P.minTQYNStyle
+				, P.minTQStyle
+				, P.discountYN
+				, W.companyName
+				, W.dirName
+				, I.urlPath.as("ImageUrlRoot")
+				, P.active
+				, W.active.as("WholeSalerActive")
+				, W.shopActive.as("WholeSalerShopActive")
+				, P.activatedOn
+				, P.packQtyTotal
+				, W.orderNotice
+				, W.imageServerID
+		)
+				.from(P)
+				.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
+				.innerJoin(I).on(W.imageServerID.eq(I.imageServerID));
+	}
+
+	private List<ActiveTodayDealDetail> getActiveTodayDealDetail(Date sDate, Integer wholeSalerID) {
+		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
+		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+
+		JPASQLQuery<ActiveTodayDealDetail> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
+
+		JPQLQuery vwProductDetail = this.vwProductDetail();
+		Path<Object> P = ExpressionUtils.path(Object.class, "P");
+		NumberPath<Integer> pathProductID = Expressions.numberPath(Integer.class,P, "ProductID");
+		StringPath pathProductName = Expressions.stringPath(P, "ProductName");
+		StringPath pathImageUrlRoot = Expressions.stringPath(P, "ImageUrlRoot");
+		StringPath pathDirName = Expressions.stringPath(P, "DirName");
+		StringPath pathCompanyName = Expressions.stringPath(P, "CompanyName");
+		NumberPath<BigDecimal> pathUnitPrice = Expressions.numberPath(BigDecimal.class,P, "Price");
+		NumberPath<Integer> pathWholeSalerID = Expressions.numberPath(Integer.class, P, "WholeSalerID");
+
+		Expression<Integer> constantZERO = Expressions.constant(0);
+
+		wholeSalerID = wholeSalerID == null ? 0 : wholeSalerID;
+		BooleanExpression wholeSalerIDZero = Expressions.asNumber(wholeSalerID).eq(constantZERO);
+		BooleanExpression temp = Expressions.asBoolean(pathWholeSalerID.eq(wholeSalerID));
+
+		Timestamp sDateTimestamp = new Timestamp(sDate.getTime());
+
+		jpasqlQuery.select(Projections.constructor(ActiveTodayDealDetail.class,
+				T.todayDealId,
+				T.title,
+				T.description,
+				T.fromDate,
+				T.toDate,
+				T.todayDealPrice,
+				T.appliedOn,
+				T.approvedOn,
+				T.active,
+				T.modifiedBy,
+				T.modifiedOn,
+				T.createdByVendor,
+				pathProductID,
+				pathProductName,
+				pathImageUrlRoot,
+				pathDirName,
+				PRDI.imageName.as("PictureGeneral"),
+				pathCompanyName,
+				pathWholeSalerID,
+				pathUnitPrice.as("UnitPrice"),
+				T.fromDate.year().as("sYear"),
+				T.fromDate.month().as("sMonth")))
+				.from(T)
+				.leftJoin(vwProductDetail, P).on(T.productId.eq(pathProductID))
+				.leftJoin(PRDI).on(pathProductID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
+				.where(wholeSalerIDZero.and(T.fromDate.eq(sDateTimestamp).and(T.active.eq(true)))
+					.or(wholeSalerIDZero.not().and(pathWholeSalerID.eq(wholeSalerID).and(T.fromDate.eq(sDateTimestamp).and(T.active.eq(true))))))
+				.orderBy(T.todayDealId.asc(), T.fromDate.desc());
+
+		return jpasqlQuery.fetch();
+	}
+
+	private List<InactiveTodayDealDetail> getInactiveTodayDealDetail(Date sDate) {
+		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
+		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+
+		JPASQLQuery<InactiveTodayDealDetail> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
+
+		JPQLQuery vwProductDetail = this.vwProductDetail();
+		Path<Object> P = ExpressionUtils.path(Object.class, "P");
+		NumberPath<Integer> pathProductID = Expressions.numberPath(Integer.class,P, "ProductID");
+		StringPath pathProductName = Expressions.stringPath(P, "ProductName");
+		StringPath pathImageUrlRoot = Expressions.stringPath(P, "ImageUrlRoot");
+		StringPath pathDirName = Expressions.stringPath(P, "DirName");
+		StringPath pathCompanyName = Expressions.stringPath(P, "CompanyName");
+		NumberPath<BigDecimal> pathUnitPrice = Expressions.numberPath(BigDecimal.class,P, "Price");
+		NumberPath<Integer> pathWholeSalerID = Expressions.numberPath(Integer.class, P, "WholeSalerID");
+
+		Timestamp sDateTimestamp = new Timestamp(sDate.getTime());
+
+		jpasqlQuery.select(Projections.constructor(InactiveTodayDealDetail.class,
+				T.todayDealId,
+				T.title,
+				T.description,
+				T.fromDate,
+				T.toDate,
+				T.todayDealPrice,
+				T.modifiedBy,
+				T.modifiedOn,
+				pathProductID,
+				pathProductName,
+				pathImageUrlRoot,
+				pathDirName,
+				PRDI.imageName.as("PictureGeneral"),
+				pathCompanyName,
+				pathWholeSalerID,
+				pathUnitPrice.as("UnitPrice"),
+				T.revokedOn,
+				T.revokedBy,
+				T.notes))
+				.from(T)
+				.leftJoin(vwProductDetail, P).on(T.productId.eq(pathProductID))
+				.leftJoin(PRDI).on(pathProductID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
+				.where(T.fromDate.eq(sDateTimestamp).and(T.active.eq(false)))
+				.orderBy(T.revokedOn.asc(), T.todayDealId.desc());
+
+		return jpasqlQuery.fetch();
 	}
 }

@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.data.repository.primary.procedure;
 
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
 import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetAdminTodayDealCalendarList;
 import net.fashiongo.webadmin.data.model.sitemgmt.TodayDealDetail;
 import org.springframework.data.domain.Page;
 import java.math.BigDecimal;
@@ -23,4 +24,6 @@ public interface PrimaryProcedureRepository {
 	Page<TodayDealDetail> up_wa_GetAdminTodayDeal(Integer pageNumber, Integer pageSize, Integer wholeSalerID, String checkedCompanyNo, Integer categoryId, BigDecimal priceFrom, BigDecimal priceTo, Date dateFrom, Date dateTo, Boolean isActive, String orderBy);
 
 	ResultGetVendorList up_GetVendorList();
+
+	ResultGetAdminTodayDealCalendarList up_wa_GetAdminTodayDealCalendarList(Date sDate, Integer wholeSalerID);
 }

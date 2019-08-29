@@ -8,10 +8,12 @@ import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
 import net.fashiongo.webadmin.data.model.sitemgmt.CodeData;
 import net.fashiongo.webadmin.data.model.sitemgmt.PolicyAgreement;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetAdminTodayDealCalendarList;
 import net.fashiongo.webadmin.data.model.sitemgmt.TodayDealDetail;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarListResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodaydealResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetVendorList;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse;
@@ -21,6 +23,7 @@ import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepositor
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetPolicyDetailParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetProductAttributesParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodayDealCalendarListParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodaydealParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +31,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -220,6 +227,18 @@ public class RenewalSitemgmtService {
 		return GetVendorListResponse.builder()
 				.categoryCountlist(result.getCategoryCountlist())
 				.vendorSummarylist(result.getVendorSummarylist())
+				.build();
+	}
+
+	public GetTodayDealCalendarListResponse getTodayDealCalendarList(GetTodayDealCalendarListParameter parameter) {
+		Date sDate = parameter.getSelectdate();
+		Integer wholeSalerID = parameter.getWholesalerid();
+
+		ResultGetAdminTodayDealCalendarList result = primaryProcedureRepository.up_wa_GetAdminTodayDealCalendarList(sDate, wholeSalerID);
+
+		return GetTodayDealCalendarListResponse.builder()
+				.activeTodayDeals(result.getActiveTodayDealDetails())
+				.inactiveTodayDeals(result.getInactiveTodayDealDetails())
 				.build();
 	}
 }
