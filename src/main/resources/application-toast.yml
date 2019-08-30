@@ -19,6 +19,7 @@ spring:
     
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.210.8.153
+  fgVendorAPI_EndPoint: http://10.210.8.39:18501
   statsAPI_EndPoint: http://10.210.8.154
 server:
   port: 19901
