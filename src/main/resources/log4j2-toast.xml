@@ -52,7 +52,7 @@
     </Appenders>
     
     <Loggers>
-        <Root level="INFO">
+        <Root level="DEBUG">
             <AppenderRef ref="CONSOLE"/>
             <AppenderRef ref="LOG_ROLLING" />
         </Root>
