@@ -680,8 +680,10 @@ public class SitemgmtShowService extends ApiService {
 	 * @author Sanghyup Kim
 	 * @param
 	 * @return
+	 * @deprecated
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public GetShowParticipatingVendorsResponse getShowParticipatingVendors(GetShowParameter parameters) {
 
 		// add parameters

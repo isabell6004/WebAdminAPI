@@ -1,13 +1,12 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import net.fashiongo.webadmin.data.entity.primary.show.ShowPromotionWholesalerJoinRow;
 import net.fashiongo.webadmin.data.entity.primary.show.ShowScheduleWithPromotionEntity;
 import net.fashiongo.webadmin.data.model.sitemgmt.show.*;
-import net.fashiongo.webadmin.data.repository.primary.show.ListShowWithScheduleEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.show.ListShowSelectParameter;
-import net.fashiongo.webadmin.data.repository.primary.show.ScheduleSelectParameter;
-import net.fashiongo.webadmin.data.repository.primary.show.ShowScheduleWithPromotionEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.show.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowListParameters;
 import net.fashiongo.webadmin.data.entity.primary.show.ListShowWithScheduleEntity;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowScheduleListParameters;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,26 +32,23 @@ public class RenewalSiteManagementShowService {
 		this.showScheduleWithPromotionEntityRepository = showScheduleWithPromotionEntityRepository;
 	}
 
-	public AdminShowListResponse getShowList(GetShowListParameters parameters) {
+	public AdminShowResponse<ListShowResponse> getShowList(GetShowListParameters parameters) {
 		ListShowSelectParameter param = mappingParameters(parameters);
 
 		Page<ListShowWithScheduleEntity> page = listShowWithScheduleEntityRepository.getShowList(param);
-		ShowListCountResponse count = ShowListCountResponse.builder().recCnt((int) page.getTotalElements()).build();
-		return AdminShowListResponse.builder()
-				.showList(getListShowResponsesWithRowNumber(page))
-				.countResponses(new ArrayList<>(Collections.singletonList(count)))
-				.build();
+		ShowCountResponse count = ShowCountResponse.builder().recCnt((int) page.getTotalElements()).build();
+		return new AdminShowResponse<>(count, getListShowResponsesWithRowNumber(page));
 	}
 
 	private ListShowSelectParameter mappingParameters(GetShowListParameters parameters) {
 		return ListShowSelectParameter.builder()
-					.pageNum(parameters.getPageNum())
-					.pageSize(parameters.getPageSize())
-					.active(parameters.getActive() == null ? null : parameters.getActive() != 0)
-					.showName(parameters.getShowName())
-					.location(parameters.getLocation())
-					.orderBy(parameters.getOrderBy())
-					.build();
+				.pageNum(parameters.getPageNum())
+				.pageSize(parameters.getPageSize())
+				.active(parameters.getActive() == null ? null : parameters.getActive() != 0)
+				.showName(parameters.getShowName())
+				.location(parameters.getLocation())
+				.orderBy(parameters.getOrderBy())
+				.build();
 	}
 
 	private List<ListShowResponse> getListShowResponsesWithRowNumber(Page<ListShowWithScheduleEntity> page) {
@@ -65,16 +59,13 @@ public class RenewalSiteManagementShowService {
 				.collect(Collectors.toList());
 	}
 
-	public AdminShowScheduleListResponse getShowScheduleList(GetShowScheduleListParameters parameters) {
+	public AdminShowResponse<ShowScheduleResponse> getShowScheduleList(GetShowScheduleListParameters parameters) {
 		ScheduleSelectParameter selectParameter = mappingParameters(parameters);
 		Page<ShowScheduleWithPromotionEntity> page = showScheduleWithPromotionEntityRepository.getShowSchedules(selectParameter);
 
-		ShowListCountResponse count = ShowListCountResponse.builder().totalCount((int) page.getTotalElements()).build();
+		ShowCountResponse count = ShowCountResponse.builder().totalCount((int) page.getTotalElements()).build();
 
-		return AdminShowScheduleListResponse.builder()
-				.countResponses(new ArrayList<>(Collections.singletonList(count)))
-				.scheduleResponses(getScheduleResponsesWithRowNumber(page))
-				.build();
+		return new AdminShowResponse<>(count, getScheduleResponsesWithRowNumber(page));
 	}
 
 	private List<ShowScheduleResponse> getScheduleResponsesWithRowNumber(Page<ShowScheduleWithPromotionEntity> page) {
@@ -98,5 +89,24 @@ public class RenewalSiteManagementShowService {
 				.toDate(StringUtils.isEmpty(parameters.getDateTo()) ? null : LocalDateTime.parse(parameters.getDateTo(), formatter))
 				.orderBy(parameters.getOrderBy())
 				.build();
+	}
+
+	public AdminShowResponse<ShowPromotionVendorResponse> getShowParticipatingVendors(GetShowParameter parameters) {
+		PromotionVendorSelectParameter parameter = PromotionVendorSelectParameter.builder()
+				.scheduleId(parameters.getShowScheduleID())
+				.planId(parameters.getPlanID())
+				.pageNumber(parameters.getPageNum())
+				.pageSize(parameters.getPageSize())
+				.build();
+
+		Page<ShowPromotionWholesalerJoinRow> page = showScheduleWithPromotionEntityRepository.getPromotionVendor(parameter);
+
+		ShowCountResponse count = ShowCountResponse.builder().totalCount((int) page.getTotalElements()).build();
+		List<ShowPromotionVendorResponse> contents = page.getContent()
+				.stream()
+				.map(ShowPromotionVendorResponse::convert)
+				.collect(Collectors.toList());
+
+		return new AdminShowResponse<>(count, contents);
 	}
 }

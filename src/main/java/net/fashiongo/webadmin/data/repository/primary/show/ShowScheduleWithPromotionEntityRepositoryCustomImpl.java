@@ -1,6 +1,10 @@
 package net.fashiongo.webadmin.data.repository.primary.show;
 
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -9,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -132,5 +137,64 @@ public class ShowScheduleWithPromotionEntityRepositoryCustomImpl implements Show
 		}
 
 		return expression;
+	}
+
+	@Override
+	public Page<ShowPromotionWholesalerJoinRow> getPromotionVendor(PromotionVendorSelectParameter parameter) {
+		JPAQuery<ShowPromotionWholesalerJoinRow> base = getBaseQuery(parameter.getScheduleId(), parameter.getPlanId());
+		QueryResults<ShowPromotionWholesalerJoinRow> results;
+		if (parameter.isPaginated()) {
+			results = base.offset(parameter.getOffset()).limit(parameter.getPageSize()).fetchResults();
+		} else {
+			results = base.fetchResults();
+		}
+
+		Pageable pageable;
+		if (parameter.isPaginated()) {
+			pageable = PageRequest.of(parameter.getPageNumber() - 1, parameter.getPageSize());
+		} else {
+			pageable = PageRequest.of(0, results.getTotal() > 0 ? (int) results.getTotal() : 1);
+		}
+		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+	}
+
+	private JPAQuery<ShowPromotionWholesalerJoinRow> getBaseQuery(Integer scheduleId, Integer planId) {
+		QShowScheduleWithPromotionEntity qSchedule = QShowScheduleWithPromotionEntity.showScheduleWithPromotionEntity;
+		QWholesalerWithPromotionEntity qWholesaler = QWholesalerWithPromotionEntity.wholesalerWithPromotionEntity;
+		QMapShowSchedulePromotionPlanVendorEntity qPromotionVendorMap = QMapShowSchedulePromotionPlanVendorEntity.mapShowSchedulePromotionPlanVendorEntity;
+		QShowSchedulePromotionPlanWithVendorEntity qPromotion = QShowSchedulePromotionPlanWithVendorEntity.showSchedulePromotionPlanWithVendorEntity;
+		QMapShowScheduleWholesalerEntity qScheduleWholesalerMap = QMapShowScheduleWholesalerEntity.mapShowScheduleWholesalerEntity;
+
+		Expression[] expressions = new Expression[]{
+				qWholesaler.wholesalerId, qWholesaler.companyName,
+				qPromotionVendorMap.mapId, qPromotionVendorMap.rackCount, qPromotionVendorMap.fee, qPromotionVendorMap.commissionRate,
+				qPromotion.planId, qPromotion.planName, qPromotion.showScheduleId, qPromotion.commissionEffectiveFrom
+		};
+
+		return new JPAQuery<>(entityManager)
+				.select(Projections.constructor(ShowPromotionWholesalerJoinRow.class, expressions))
+				.from(qSchedule)
+				.join(qSchedule.showSchedulePromotionPlans, qPromotion)
+				.join(qPromotion.mapShowSchedulePromotionPlanVendors, qPromotionVendorMap)
+				.join(qPromotionVendorMap.wholesaler, qWholesaler)
+				.join(qSchedule.mapShowScheduleWholesalers, qScheduleWholesalerMap)
+				.where(
+						qPromotionVendorMap.wholesalerId.eq(qScheduleWholesalerMap.wholesalerId)
+								.and(getPromotionVendorPredicate(scheduleId, planId))
+				)
+				.orderBy(qSchedule.showScheduleId.desc(), qPromotionVendorMap.mapId.asc());
+	}
+
+	private Predicate getPromotionVendorPredicate(Integer scheduleId, Integer promotionId) {
+		QShowScheduleWithPromotionEntity qSchedule = QShowScheduleWithPromotionEntity.showScheduleWithPromotionEntity;
+		QShowSchedulePromotionPlanWithVendorEntity qPromotion = QShowSchedulePromotionPlanWithVendorEntity.showSchedulePromotionPlanWithVendorEntity;
+		BooleanExpression predicate = null;
+		if (scheduleId != null) {
+			predicate = qSchedule.showScheduleId.eq(scheduleId);
+		}
+		if (promotionId != null) {
+			predicate = predicate != null ? predicate.and(qPromotion.planId.eq(promotionId)) : qPromotion.planId.eq(promotionId);
+		}
+		return predicate;
 	}
 }

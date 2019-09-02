@@ -9,8 +9,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowListResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowScheduleListResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.show.ListShowResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.show.ShowPromotionVendorResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.show.ShowScheduleResponse;
 import net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -35,10 +37,8 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowParticipating
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowPromotionPlanParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetShowScheduleParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowCategoriesResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowListResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowParticipatingVendorsResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowPromotionPlanResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetShowScheduleListResponse;
 import net.fashiongo.webadmin.model.primary.show.ListShow;
 import net.fashiongo.webadmin.model.primary.show.MapShowSchedulePromotionPlanVendor;
 import net.fashiongo.webadmin.model.primary.show.ShowSchedule;
@@ -92,9 +92,9 @@ public class SitemgmtShowServiceTest {
 	@Test
 	public final void testGetShowList() {
 		GetShowListParameters p= testGetShowListParameters();
-		AdminShowListResponse response = renewalSiteManagementShowService.getShowList(p);
+		AdminShowResponse<ListShowResponse> response = renewalSiteManagementShowService.getShowList(p);
 		
-		assertFalse(CollectionUtils.isEmpty(response.getShowList()));
+		assertFalse(CollectionUtils.isEmpty(response.getContents()));
 	}
 
 	private GetShowListParameters testGetShowListParameters() {
@@ -145,8 +145,8 @@ public class SitemgmtShowServiceTest {
 //		fail("Not yet implemented"); // TODO
 
 		GetShowListParameters param = testGetShowListParameters();
-		AdminShowListResponse response = renewalSiteManagementShowService.getShowList(param);
-		Integer showId = response.getShowList().get(0).getShowId();
+		AdminShowResponse<ListShowResponse> response = renewalSiteManagementShowService.getShowList(param);
+		Integer showId = response.getContents().get(0).getShowId();
 		
 		ResultResponse<ListShow> r = sitemgmtShowService.getShowDetail(showId);
 		
@@ -161,10 +161,10 @@ public class SitemgmtShowServiceTest {
 //		fail("Not yet implemented"); // TODO
 		
 		GetShowScheduleListParameters p = testGetShowScheduleListParameters();
+
+		AdminShowResponse<ShowScheduleResponse> r = renewalSiteManagementShowService.getShowScheduleList(p);
 		
-		AdminShowScheduleListResponse r = renewalSiteManagementShowService.getShowScheduleList(p);
-		
-		assertFalse(CollectionUtils.isEmpty(r.getScheduleResponses()));
+		assertFalse(CollectionUtils.isEmpty(r.getContents()));
 		
 	}
 
@@ -311,7 +311,7 @@ public class SitemgmtShowServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtShowService#getShowParticipatingVendors(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowParameter)}.
+	 * Test method for {@link net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService#getShowParticipatingVendors(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetShowParameter)}.
 	 */
 	@Test
 	public final void testGetShowParticipatingVendors() {
@@ -322,9 +322,9 @@ public class SitemgmtShowServiceTest {
 		p.setShowScheduleID(1);
 		p.setPlanID(1);
 		
-		GetShowParticipatingVendorsResponse r = sitemgmtShowService.getShowParticipatingVendors(p);
+		AdminShowResponse<ShowPromotionVendorResponse> r = renewalSiteManagementShowService.getShowParticipatingVendors(p);
 //		assertFalse(CollectionUtils.isEmpty(r.getShowSchedulePromotionPlanVendorList()));
-		assertNotNull(r.getShowSchedulePromotionPlanVendorList());
+		assertNotNull(r.getContents());
 
 	}
 

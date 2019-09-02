@@ -6,8 +6,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowListResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.show.AdminShowScheduleListResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.show.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.ShowInfoDto;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
 import net.fashiongo.webadmin.service.renewal.RenewalSiteManagementShowService;
@@ -56,12 +55,12 @@ public class SitemgmtShowController {
 	 * @since 2018. 10. 15.
 	 * @author Sanghyup Kim
 	 * @param GetShowListParameters
-	 * @return JsonResponse<AdminShowListResponse>
+	 * @return JsonResponse<AdminShowResponse<ListShowResponse>>
 	 */
 	@RequestMapping(value = "getshowlist", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show list")
-	public JsonResponse<AdminShowListResponse> getShowList(@RequestBody GetShowListParameters parameters) {
-		AdminShowListResponse data = renewalSiteManagementShowService.getShowList(parameters);
+	public JsonResponse<AdminShowResponse<ListShowResponse>> getShowList(@RequestBody GetShowListParameters parameters) {
+		AdminShowResponse<ListShowResponse> data = renewalSiteManagementShowService.getShowList(parameters);
 		return new JsonResponse<>(true, null, data);
 	}
 
@@ -118,12 +117,12 @@ public class SitemgmtShowController {
 	 * @since 2018. 10. 15.
 	 * @author Sanghyup Kim
 	 * @param GetShowScheduleListParameters
-	 * @return JsonResponse<GetShowScheduleListResponse>
+	 * @return JsonResponse<AdminShowResponse<ShowScheduleResponse>>
 	 */
 	@RequestMapping(value = "show/schedule", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show schedule list")
-	public JsonResponse<AdminShowScheduleListResponse> getShowSchedules(@RequestBody GetShowScheduleListParameters parameters) {
-		AdminShowScheduleListResponse response = renewalSiteManagementShowService.getShowScheduleList(parameters);
+	public JsonResponse<AdminShowResponse<ShowScheduleResponse>> getShowSchedules(@RequestBody GetShowScheduleListParameters parameters) {
+		AdminShowResponse<ShowScheduleResponse> response = renewalSiteManagementShowService.getShowScheduleList(parameters);
 		return new JsonResponse<>(true, null, response);
 	}
 
@@ -273,20 +272,13 @@ public class SitemgmtShowController {
 	 * @since 2018. 10. 11.
 	 * @author Sanghyup Kim
 	 * @param GetShowParameter
-	 * @return JsonResponse<GetShowParticipatingVendorsResponse>
+	 * @return JsonResponse<AdminShowResponse<ShowPromotionVendorResponse>>
 	 */
 	@RequestMapping(value = "show/participating-vendor", method = RequestMethod.POST)
 	@ApiOperation("site management > show info. - get show participating vendors")
-	public JsonResponse<GetShowParticipatingVendorsResponse> getShowParticipatingVendors(
-			@RequestBody GetShowParameter parameters) {
-
-		GetShowParticipatingVendorsResponse getShowCategoriesResponse = siteMgmtShowService
-				.getShowParticipatingVendors(parameters);
-
-		JsonResponse<GetShowParticipatingVendorsResponse> results = new JsonResponse<GetShowParticipatingVendorsResponse>(
-				true, null, getShowCategoriesResponse);
-//		results.setData(getShowCategoriesResponse);
-		return results;
+	public JsonResponse<AdminShowResponse<ShowPromotionVendorResponse>> getShowParticipatingVendors(@RequestBody GetShowParameter parameters) {
+		AdminShowResponse<ShowPromotionVendorResponse> response = renewalSiteManagementShowService.getShowParticipatingVendors(parameters);
+		return new JsonResponse<>(true, null, response);
 	}
 
 	/**

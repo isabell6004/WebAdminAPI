@@ -15,37 +15,37 @@ public class ShowSchedulePromotionPlanWithVendorEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "PlanID")
-	private Integer PlanID;
+	private Integer planId;
 
 	@Column(name = "PlanName")
-	private String PlanName;
+	private String planName;
 
 	@Column(name = "ShowScheduleID")
-	private int ShowScheduleID;
+	private int showScheduleId;
 
 	@Column(name = "IsOnline")
-	private boolean IsOnline;
+	private boolean isOnline;
 
 	@Column(name = "IsOffline")
-	private boolean IsOffline;
+	private boolean isOffline;
 
 	@Column(name = "CommissionEffectiveFrom")
-	private LocalDateTime CommissionEffectiveFrom;
+	private LocalDateTime commissionEffectiveFrom;
 
 	@Column(name = "CommissionEffectiveTo")
-	private LocalDateTime CommissionEffectiveTo;
+	private LocalDateTime commissionEffectiveTo;
 
 	@Column(name = "CreatedOn")
-	private LocalDateTime CreatedOn;
+	private LocalDateTime createdOn;
 
 	@Column(name = "CreatedBy")
-	private String CreatedBy;
+	private String createdBy;
 
 	@Column(name = "ModifiedOn")
-	private LocalDateTime ModifiedOn;
+	private LocalDateTime modifiedOn;
 
 	@Column(name = "ModifiedBy")
-	private String ModifiedBy;
+	private String modifiedBy;
 
 	@OneToMany
 	@JoinColumn(name = "PlanID", referencedColumnName = "PlanID")

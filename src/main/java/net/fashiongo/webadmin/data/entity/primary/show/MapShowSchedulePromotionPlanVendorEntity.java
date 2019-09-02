@@ -53,4 +53,8 @@ public class MapShowSchedulePromotionPlanVendorEntity {
 
 	@Column(name = "total_amount")
 	private BigDecimal totalAmount;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "WholeSalerID", referencedColumnName = "WholeSalerID", updatable = false, insertable = false)
+	private WholesalerWithPromotionEntity wholesaler;
 }

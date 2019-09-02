@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Value
 @Builder
-public class ShowListCountResponse {
+public class ShowCountResponse {
 	@JsonProperty("totalCount")
 	private Integer totalCount;
 
