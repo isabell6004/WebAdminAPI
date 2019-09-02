@@ -29,6 +29,8 @@ public class OrderUpdateRequest {
 
 	private String inHouseNote;
 
+	private BigDecimal additionalChargeAmount;
+
 	private BigDecimal additionalDiscountAmount;
 
 	private List<DetailOrderQuantity> items;

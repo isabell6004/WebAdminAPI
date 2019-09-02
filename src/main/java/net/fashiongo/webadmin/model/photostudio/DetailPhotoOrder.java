@@ -94,6 +94,8 @@ public class DetailPhotoOrder {
 
     private BigDecimal photoCreditUsedAmount;
 
+    private BigDecimal additionalChargeAmount;
+
     private BigDecimal additionalDiscountAmount;
 
     private Integer discountID;
@@ -167,6 +169,7 @@ public class DetailPhotoOrder {
                 .totalAmount(photoOrder.getTotalAmount())
                 .totalUnit(photoOrder.getTotalUnit())
                 .photoCreditUsedAmount(photoOrder.getPhotoCreditUsedAmount())
+                .additionalChargeAmount(photoOrder.getAdditionalChargeAmount())
                 .additionalDiscountAmount(photoOrder.getAdditionalDiscountAmount())
                 .discountID(photoOrder.getDiscountID())
                 .discountAmount(photoOrder.getDiscountAmount())

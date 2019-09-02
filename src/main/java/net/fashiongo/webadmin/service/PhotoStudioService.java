@@ -1017,13 +1017,6 @@ public class PhotoStudioService extends ApiService {
         LocalDate nowDate = now.toLocalDate();
         LocalDate photoShootDate = photoOrder.get_photoshootDate().toLocalDate();
         boolean isInScheduleChangeDueDate = nowDate.compareTo(photoShootDate) <= 0;
-        boolean isInStyleChangeDueDate = nowDate.getYear() < photoShootDate.getYear()
-                || (nowDate.getYear() == photoShootDate.getYear() && nowDate.getMonthValue() < photoShootDate.getMonthValue())
-                || (nowDate.getYear() == photoShootDate.getYear()
-					&& nowDate.getMonthValue() == photoShootDate.getMonthValue()
-                    && nowDate.compareTo(photoShootDate.plusDays(2)) <= 0);
-        boolean isInAdditionalDiscountChangeDueDate = nowDate.getYear() < photoShootDate.getYear()
-                || nowDate.getYear() == photoShootDate.getYear() && nowDate.getMonthValue() <= photoShootDate.getMonthValue();
 
 		if(orderUpdateRequest.getPhotoshootDate() != null) {
             if(!isInScheduleChangeDueDate) {
@@ -1085,6 +1078,14 @@ public class PhotoStudioService extends ApiService {
                 return "There is no available unit";
             }
 
+            if (orderUpdateRequest.getAdditionalChargeAmount() != null) {
+                photoOrder.setAdditionalChargeAmount(orderUpdateRequest.getAdditionalChargeAmount());
+            }
+
+            if (orderUpdateRequest.getAdditionalDiscountAmount() != null) {
+                photoOrder.setAdditionalDiscountAmount(orderUpdateRequest.getAdditionalDiscountAmount());
+            }
+
             // Additional Promo Code
             try {
                 applyDiscount(photoOrder, orderUpdateRequest.getDiscountId());
@@ -1092,9 +1093,8 @@ public class PhotoStudioService extends ApiService {
                 return "DiscountID does not exist!";
             }
 
-            if (orderUpdateRequest.getAdditionalDiscountAmount() != null) {
-                applyAdditionalDiscountAmount(photoOrder, orderUpdateRequest.getAdditionalDiscountAmount());
-            }
+            calculateAdditionalAmount(photoOrder);
+
             photoOrder.setInHouseNote(orderUpdateRequest.getInHouseNote());
             photoOrder.setModifiedOnDate(now);
             photoOrder.setModifiedBY(username);
@@ -1145,9 +1145,6 @@ public class PhotoStudioService extends ApiService {
 
             if (discountAmount.longValue() > subtotal.longValue()) {
                 discountAmount = BigDecimal.valueOf(subtotal.longValue());
-                order.setAdditionalDiscountAmount(BigDecimal.ZERO);
-            } else if (discountAmount.longValue() + order.getAdditionalDiscountAmount().longValue() > subtotal.longValue()) {
-                order.setAdditionalDiscountAmount(BigDecimal.valueOf(subtotal.subtract(discountAmount).longValue()));
             }
 
             order.setDiscountAmount(discountAmount);
@@ -1156,15 +1153,14 @@ public class PhotoStudioService extends ApiService {
         }
     }
 
-    private void applyAdditionalDiscountAmount(PhotoOrder order, BigDecimal additionalDiscountAmount) {
+    private void calculateAdditionalAmount(PhotoOrder order) {
         long availableAdditionalDiscountAmount = order.getSubtotalAmount()
+                .add(order.getAdditionalChargeAmount() != null ? order.getAdditionalChargeAmount() : BigDecimal.ZERO)
                 .subtract(order.getPhotoCreditUsedAmount() != null ? order.getPhotoCreditUsedAmount() : BigDecimal.ZERO)
                 .subtract(order.getDiscountAmount() != null ? order.getDiscountAmount() : BigDecimal.ZERO)
                 .longValue();
 
-        if (availableAdditionalDiscountAmount > additionalDiscountAmount.longValue()) {
-            order.setAdditionalDiscountAmount(additionalDiscountAmount);
-        } else {
+        if (availableAdditionalDiscountAmount < order.getAdditionalDiscountAmount().longValue()) {
             order.setAdditionalDiscountAmount(BigDecimal.valueOf(availableAdditionalDiscountAmount));
         }
     }

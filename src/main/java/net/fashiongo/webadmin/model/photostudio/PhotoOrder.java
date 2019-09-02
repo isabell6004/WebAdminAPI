@@ -86,6 +86,9 @@ public class PhotoOrder implements IPersistent, Serializable {
 	@Column(name = "DiscountCode")
 	private String discountCode;
 
+	@Column(name = "AdditionalChargeAmount")
+	private BigDecimal additionalChargeAmount;
+
 	@Column(name = "AdditionalDiscountAmount")
 	private BigDecimal additionalDiscountAmount;
 
