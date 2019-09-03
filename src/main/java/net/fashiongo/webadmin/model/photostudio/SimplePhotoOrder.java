@@ -171,6 +171,7 @@ public class SimplePhotoOrder {
                     .isDelayed(
                             checkDelayedStatus(order)
                     )
+                    .specialRequest(order.getSpecialRequest())
                     .build();
             return simplePhotoOrder;
         }).collect(Collectors.toList());
