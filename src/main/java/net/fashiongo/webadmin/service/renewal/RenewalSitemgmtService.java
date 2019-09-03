@@ -8,6 +8,7 @@ import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
+import net.fashiongo.webadmin.data.repository.primary.procedure.GetAdminTodayDealCalendarResult;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepository;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
@@ -257,4 +258,13 @@ public class RenewalSitemgmtService {
 				.colorListInfolist(colorListInfolist)
 				.build();
     }
+
+	public GetTodayDealCalendarResponse getTodayDealCalendar(GetTodayDealCanlendarParameter parameters) {
+		GetAdminTodayDealCalendarResult getAdminTodayDealCalendarResult = primaryProcedureRepository.up_wa_GetAdminTodayDealCalendar(parameters.getFromdate(), parameters.getTodate());
+
+		return GetTodayDealCalendarResponse.builder()
+				.calendarDetails(getAdminTodayDealCalendarResult.getCalendarDetails())
+				.vendors(getAdminTodayDealCalendarResult.getVendors())
+				.build();
+	}
 }

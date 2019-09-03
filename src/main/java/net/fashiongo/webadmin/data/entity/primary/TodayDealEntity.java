@@ -73,4 +73,8 @@ public class TodayDealEntity {
 	
 	@Column(name = "CreatedByVendor")
 	private Boolean createdByVendor;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ProductID", referencedColumnName = "ProductID",insertable = false,updatable = false)
+	private ProductsEntity products;
 }

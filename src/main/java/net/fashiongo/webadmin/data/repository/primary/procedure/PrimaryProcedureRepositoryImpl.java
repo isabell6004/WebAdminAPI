@@ -1107,5 +1107,156 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 			.orderBy(tw.companyName.asc()).fetch();
 	}
 
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public GetAdminTodayDealCalendarResult up_wa_GetAdminTodayDealCalendar(Date dateFrom, Date dateTo) {
+//		Select
+//		TodayDealID,datepart(dd,FromDate) As Dom, CompanyName,Convert(varchar(10),FromDate,121) As FromDate,Active,WholeSalerID,CreatedByVendor
+//		From vwTodayDealWebAdmin
+//		Where CompanyName is not null
+//		and  FromDate between Convert(varchar(10),@FromDate,121) and Convert(varchar(10),@ToDate,121)
+//		and Active = 1
+//		Order By TodayDealID,FromDate Desc
+//
+//		Select WholeSalerID,CompanyName
+//		From vwTodayDealWebAdmin
+//		Where CompanyName is not null
+//		and  FromDate between Convert(varchar(10),@FromDate,121) and Convert(varchar(10),@ToDate,121)
+//		and Active = 1
+//		group by WholeSalerID,CompanyName
+//		Order By CompanyName asc
 
+
+//CREATE View dbo.vwTodayDealWebAdmin
+//AS
+//	select
+//		t.TodayDealID, t.Title, t.Description, t.FromDate, t.ToDate, t.TodayDealPrice,
+//		t.AppliedOn, t.ApprovedOn, t.Active, t.ModifiedBy, t.ModifiedOn, t.CreatedByVendor,
+//		p.ProductID, p.ProductName, p.ImageUrlRoot, p.DirName, p.PictureGeneral,
+//		p.CompanyName, p.WholeSalerID, p.Price UnitPrice
+//	from
+//		TodayDeal t
+//		left outer join vwProductDetail p on t.ProductID = p.ProductID
+
+
+//CREATE View [dbo].[vwProductDetail]
+//AS
+//select p.ProductID, p.WholeSalerID, p.ProductName, p.ProductName2, p.ProductDescription,
+//		p.CategoryID, p.VendorCategoryID,
+//		(select imagename from product_image pri where p.productid = pri.productid and pri.listOrder = 1 ) PictureGeneral,
+//case when p.UnitPrice1 = 0 then p.UnitPrice else dbo.ufnMinValue(p.UnitPrice, p.UnitPrice1) end Price,
+//dbo.ufnMaxValue(p.UnitPrice, p.UnitPrice1) PriceOld,
+//		p.CallforPrice,
+//		isnull(p.FabricDescription, 'Unspecified') FabricDescription,
+//		isnull(p.MadeIn, 'Unspecified') MadeIn,
+//		isnull(p.StockAvailability, 'Unspecified') StockAvailability,
+//		p.LabelTypeID,
+//		p.EvenColorYN, p.PrePackYN, p.HotItems,
+//		p.MinTQYNStyle, p.MinTQStyle,
+//		p.DiscountYN,
+//		w.CompanyName, w.DirName, i.UrlPath ImageUrlRoot, p.Active,
+//		w.Active WholeSalerActive, w.ShopActive WholeSalerShopActive,
+//		p.ActivatedOn, p.PackQtyTotal
+//		,w.OrderNotice
+//		,p.ItemName
+//from
+//Products p
+//inner join tblWholeSaler w on p.WholeSalerID = w.WholeSalerID
+//inner join System_ImageServers i on w.ImageServerID = i.ImageServerID
+
+
+
+//		SELECT
+//		T.TodayDealID,datepart(dd,T.FromDate) As Dom, W.CompanyName,Convert(varchar(10),T.FromDate,121) As FromDate,T.Active,W.WholeSalerID,T.CreatedByVendor
+//		FROM TodayDeal T
+//		LEFT JOIN Products P ON T.ProductID = P.ProductID
+//		INNER JOIN tblWholeSaler W ON P.WholeSalerID = W.WholeSalerID
+//		INNER JOIN System_ImageServers I ON W.ImageServerID = I.ImageServerID
+//		WHERE
+//		W.CompanyName IS NOT NULL
+//		AND T.FromDate BETWEEN '2019-08-01 00:00:00' AND '2019-08-31 23:59:59'
+//		AND T.Active = 1
+//		ORDER BY T.TodayDealID ASC, T.FromDate DESC;
+//
+//
+//		SELECT W.WholeSalerID , W.CompanyName
+//		FROM TodayDeal T
+//		LEFT JOIN Products P ON T.ProductID = P.ProductID
+//		INNER JOIN tblWholeSaler W ON P.WholeSalerID = W.WholeSalerID
+//		INNER JOIN System_ImageServers I ON W.ImageServerID = I.ImageServerID
+//		WHERE
+//		W.CompanyName IS NOT NULL
+//		AND T.FromDate BETWEEN '2019-08-01 00:00:00' AND '2019-08-31 23:59:59'
+//		AND T.Active = 1
+//		GROUP BY W.WholeSalerID , W.CompanyName
+//		ORDER BY W.CompanyName asc;
+
+		JPAQuery<TodayDealCalendarDetail> jpaQuery1 = new JPAQuery(entityManager);
+		JPAQuery<VendorSummaryDetail> jpaQuery2 = new JPAQuery(entityManager);
+
+		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
+		QProductsEntity P = QProductsEntity.productsEntity;
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
+
+		jpaQuery1
+				.select(
+						Projections.constructor(
+								TodayDealCalendarDetail.class
+								, T.todayDealId
+								, Expressions.asDateTime(T.fromDate).dayOfMonth()
+								, W.companyName
+								, T.fromDate
+								, T.active
+								, W.wholeSalerId
+								, T.createdByVendor
+								)
+				)
+				.from(T)
+				.leftJoin(T.products,P)
+				.innerJoin(P.wholeSaler,W)
+				.innerJoin(W.systemImageServersEntity,I)
+				.where(
+						W.companyName.isNotNull()
+								.and(
+										T.fromDate.between(
+											new Timestamp(dateFrom.getTime())
+											,new Timestamp(dateTo.getTime())
+										)
+								).and(T.active.eq(true))
+				)
+				.orderBy(T.todayDealId.asc(),T.fromDate.desc());
+
+
+		jpaQuery2
+				.select(
+						Projections.constructor(
+								VendorSummaryDetail.class
+								, W.wholeSalerId,W.companyName
+						)
+				)
+				.from(T)
+				.leftJoin(T.products,P)
+				.innerJoin(P.wholeSaler,W)
+				.innerJoin(W.systemImageServersEntity,I)
+				.where(
+						W.companyName.isNotNull()
+								.and(
+										T.fromDate.between(
+												new Timestamp(dateFrom.getTime())
+												,new Timestamp(dateTo.getTime())
+										)
+								).and(T.active.eq(true))
+				)
+				.groupBy(W.wholeSalerId,W.companyName)
+				.orderBy(W.companyName.asc());
+
+		List<TodayDealCalendarDetail> todayDealCalendarDetails = jpaQuery1.fetch();
+		List<VendorSummaryDetail> vendorSummaryDetails = jpaQuery2.fetch();
+
+		return GetAdminTodayDealCalendarResult.builder()
+				.calendarDetails(todayDealCalendarDetails)
+				.vendors(vendorSummaryDetails)
+				.build();
+	}
 }

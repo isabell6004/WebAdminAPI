@@ -342,10 +342,10 @@ public class SitemgmtController {
 	 * @return
 	 */
 	@RequestMapping(value = "gettodaydealcalendar", method = RequestMethod.POST)
-	public JsonResponse<GetTodayDealCalendarResponse> getTodayDealCalendar(@RequestBody GetTodayDealCanlendarParameter parameters) {
-		JsonResponse<GetTodayDealCalendarResponse> results = new JsonResponse<GetTodayDealCalendarResponse>(true, null, null);
-		GetTodayDealCalendarResponse result = sitemgmtService.getTodayDealCalendar(parameters);
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarResponse> getTodayDealCalendar(@RequestBody GetTodayDealCanlendarParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarResponse>(true, null, null);
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarResponse todayDealCalendar = renewalSitemgmtService.getTodayDealCalendar(parameters);
+		results.setData(todayDealCalendar);
 
 		return results;
 	}
