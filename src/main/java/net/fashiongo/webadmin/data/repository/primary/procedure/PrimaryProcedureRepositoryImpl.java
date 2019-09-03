@@ -26,8 +26,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -866,4 +866,246 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 		return jpasqlQuery.fetch();
 	}
+
+	@Override
+	public ResultGetCategoryVendorList up_wa_GetCategoryVendorList(Integer categoryID, String vendorName) {
+		return ResultGetCategoryVendorList.builder()
+				.categoryCountlist(this.getCategory1WholeSalerCount())
+				.categoryVendorList(this.getCategoryVendor(categoryID))
+				.categoryVendorInfoList(this.getCategoryVendorInfo(vendorName))
+				.build();
+	}
+
+	private List<CategoryVendor> getCategoryVendor(Integer categoryID) {
+		JPASQLQuery<CategoryVendor> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
+
+		JPQLQuery vwWholeSalerItemCount = this.vwWholeSalerItemCount();
+		JPQLQuery vwVendorCategory = this.vwVendorCategory();
+
+		Path<Object> A = ExpressionUtils.path(Object.class, "A");
+		Path<Object> B = ExpressionUtils.path(Object.class, "B");
+
+		NumberPath<Integer> pathWholeSalerID = Expressions.numberPath(Integer.class, A, "WholeSalerID");
+		StringPath pathCompanyName = Expressions.stringPath(A, "CompanyName");
+
+		NumberPath<Integer> pathWholeSalerID_B = Expressions.numberPath(Integer.class, B, "WholeSalerID");
+
+		NumberPath<Integer> pathCategoryID = Expressions.numberPath(Integer.class, B, "CategoryID");
+		NumberPath<Integer> pathParentCategoryID = Expressions.numberPath(Integer.class, B, "ParentCategoryID");
+		NumberPath<Integer> pathParentParentCategoryID = Expressions.numberPath(Integer.class, B, "ParentParentCategoryID");
+
+		Expression<Integer> constant = Expressions.constant(1);
+		BooleanExpression expression = Expressions.asNumber(1).eq(constant);
+
+
+		jpasqlQuery.select(Projections.constructor(CategoryVendor.class,
+				pathWholeSalerID,
+				pathCompanyName))
+				.from(vwWholeSalerItemCount, A)
+				.innerJoin(vwVendorCategory, B).on(pathWholeSalerID.eq(pathWholeSalerID_B));
+
+		if(categoryID != null) {
+			jpasqlQuery.where(pathCategoryID.in(categoryID).or(pathParentCategoryID.in(categoryID)).or(pathParentParentCategoryID.in(categoryID)));
+		}
+
+		jpasqlQuery.groupBy(pathWholeSalerID, pathCompanyName)
+				.orderBy(pathCompanyName.asc());
+
+		return jpasqlQuery.fetch();
+	}
+
+	private JPQLQuery vwVendorCategory() {
+		QVendorCategoryEntity VC = QVendorCategoryEntity.vendorCategoryEntity;
+		QCategoryEntity C = QCategoryEntity.categoryEntity;
+
+		return JPAExpressions.select(
+				VC.vendorCategoryID,
+				VC.wholeSalerID,
+				VC.categoryName,
+				VC.categoryDescription,
+				VC.listOrder,
+				VC.active,
+				VC.defaultBodySizeID,
+				VC.defaultFabricDescription,
+				VC.defaultFabricID,
+				VC.defaultInventoryStatusID,
+				VC.defaultLabelID,
+				VC.defaultLengthID,
+				VC.defaultMadeIn,
+				VC.defaultPackID,
+				VC.defaultPatternID,
+				VC.defaultSizeID,
+				VC.defaultStyleID,
+				VC.parentVendorCategoryID,
+				queryDSLSQLFunctions.isnull(Integer.class, VC.categoryID, 0).as("CategoryID"),
+				queryDSLSQLFunctions.isnull(Integer.class, C.parentCategoryId, 0).as("ParentCategoryID"),
+				queryDSLSQLFunctions.isnull(Integer.class, C.parentParentCategoryId, 0).as("ParentParentCategoryID"),
+				C.lvl,
+				VC.createdOn)
+				.from(VC)
+				.leftJoin(C).on(VC.categoryID.eq(C.categoryId));
+	}
+
+	private List<CategoryCount> getCategory1WholeSalerCount() {
+		QProductsEntity P = QProductsEntity.productsEntity;
+		QCategoryEntity C = new QCategoryEntity("C");
+		QCategoryEntity C1 = new QCategoryEntity("C1");
+		QCategoryEntity C2 = new QCategoryEntity("C2");
+
+		JPAQuery<CategoryCount> query = new JPAQuery<>(entityManager);
+
+		query.select(Projections.constructor(CategoryCount.class,
+				C1.categoryId,
+				P.wholeSalerID.countDistinct()))
+				.from(P)
+				.innerJoin(C).on(P.categoryID.eq(C.categoryId))
+				.innerJoin(C2).on(C.parentCategoryId.eq(C2.categoryId).or(C.categoryId.eq(C2.categoryId)))
+				.innerJoin(C1).on(C2.parentCategoryId.eq(C1.categoryId).or(C2.categoryId.eq(C1.categoryId)).or(C.categoryId.eq(C1.categoryId)))
+				.where(P.active.eq(true).and(C1.lvl.eq(1)))
+				.groupBy(C1.categoryId);
+
+		return query.fetch();
+
+	}
+
+	private JPQLQuery vwCatalogProduct() {
+		QProductsEntity P = QProductsEntity.productsEntity;
+		QCategoryEntity C = QCategoryEntity.categoryEntity;
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
+		QProductImageEntity PRI = QProductImageEntity.productImageEntity;
+		QVendorCategoryEntity VC = QVendorCategoryEntity.vendorCategoryEntity;
+		QProductVideoEntity PRV = QProductVideoEntity.productVideoEntity;
+
+		LocalDateTime temp = LocalDateTime.now().minusDays(1);
+		Date lastDate = Date.from(temp.atZone(ZoneId.systemDefault()).toInstant());
+
+
+		return JPAExpressions.select(
+				P.categoryID,
+				C.categoryName,
+				P.parentCategoryID,
+				P.parentParentCategoryID,
+				P.vendorCategoryID,
+				P.productID,
+				P.wholeSalerID,
+				P.productName,
+				P.productName2,
+				P.productDescription,
+				P.itemName,
+				Expressions.cases().when(queryDSLSQLFunctions.isnull(Integer.class, P.unitPrice2, 0).eq(0)).then(P.unitPrice).otherwise(P.unitPrice2).as("Price"),
+				P.unitPrice1,
+				P.unitPrice2,
+				P.patternID,
+				P.lengthID,
+				P.styleID,
+				P.fabricID,
+				P.bodySizeID,
+				PRI.imageName.as("PrictureGeneral"),
+				P.activatedOn,
+				P.createdOn,
+				P.modifiedOn,
+				P.prePackYN,
+				P.evenColorYN,
+				P.minTQStyle,
+				P.minTQYNStyle,
+				P.active.as("IsSearchItem"),
+				P.discountYN,
+				P.salesItem,
+				P.sortNo,
+				W.dirName,
+				W.companyName,
+				W.allowImage2Anony,
+				W.allowImmediateShopping,
+				W.allowAccess2Y3,
+				W.vendorType,
+				I.urlPath.as("ImageUrlRoot"),
+				P.searchKeyword,
+				P.brandName,
+				P.timestamp,
+				P.sizeID,
+				P.packID,
+				P.availableOn,
+				P.madeIn,
+				P.fabricDescription,
+				P.labelTypeID,
+				P.stockAvailability,
+				P.colorCount,
+				P.productMasterColors,
+				queryDSLSQLFunctions.isnull(Boolean.class, P.fashionGoExclusive, 0).as("FashionGoExclusive"),
+				queryDSLSQLFunctions.isnull(Boolean.class, W.fashionGoExclusive, 0).as("ExclusiveVendor"),
+				VC.parentVendorCategoryID,
+				Expressions.cases().when(P.activatedOn.gt(lastDate)).then(1).otherwise(1).as("NewItem"),
+				PRV.videoName)
+				.from(P)
+				.innerJoin(C).on(P.categoryID.eq(C.categoryId))
+				.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
+				.innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+				.leftJoin(PRI).on(P.productID.eq(PRI.productID).and(PRI.listOrder.eq(1)))
+				.innerJoin(VC).on(P.vendorCategoryID.eq(VC.vendorCategoryID))
+				.leftJoin(PRV).on(P.productID.eq(PRV.productID).and(PRV.active.eq(true)))
+				.where(P.active.eq(true).and(W.active.eq(true).and(W.shopActive.eq(true).and(W.orderActive.eq(true)))));
+	}
+
+	private JPQLQuery vwWholeSalerItemCount() {
+		QProductsEntity P = QProductsEntity.productsEntity;
+		QCategoryEntity C = QCategoryEntity.categoryEntity;
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
+		QProductImageEntity PRI = QProductImageEntity.productImageEntity;
+		QVendorCategoryEntity VC = QVendorCategoryEntity.vendorCategoryEntity;
+		QProductVideoEntity PRV = QProductVideoEntity.productVideoEntity;
+
+
+		return JPAExpressions.select(
+				P.wholeSalerID,
+				W.companyName,
+				W.dirName,
+				P.productID.count())
+				.from(P)
+				.innerJoin(C).on(P.categoryID.eq(C.categoryId))
+				.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
+				.innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+				.leftJoin(PRI).on(P.productID.eq(PRI.productID).and(PRI.listOrder.eq(1)))
+				.innerJoin(VC).on(P.vendorCategoryID.eq(VC.vendorCategoryID))
+				.leftJoin(PRV).on(P.productID.eq(PRV.productID).and(PRV.active.eq(true)))
+				.where(P.active.eq(true).and(W.active.eq(true).and(W.shopActive.eq(true).and(W.orderActive.eq(true)))))
+				.groupBy(P.wholeSalerID, W.companyName, W.dirName);
+	}
+
+
+
+	private List<CategoryVendorInfo> getCategoryVendorInfo(String vendorName) {
+		QSimpleWholeSalerEntity tw = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QFeaturedWholeSalerInfo sw = QFeaturedWholeSalerInfo.featuredWholeSalerInfo;
+
+		NumberExpression<Integer> selectChk = Expressions.asNumber(0).as("SelectChk");
+		NumberExpression<Integer> viewChk = Expressions.asNumber(0).as("ViewChk");
+
+		BooleanExpression expression = tw.active.eq(true).and(tw.shopActive.eq(true));
+
+		if(vendorName != null) {
+			expression = expression.and(tw.companyName.like('%'+vendorName+'%'));
+		}
+
+		JPAQuery<FeaturedWholeSalerInfo> query = new JPAQuery<>(entityManager);
+		return query.select(Projections.constructor(CategoryVendorInfo.class,
+				tw.companyName,
+				tw.wholeSalerId,
+				tw.companyTypeID,
+				selectChk,
+				viewChk,
+				sw.buyerRate,
+				sw.vendorRate,
+				sw.vendorTierGroup,
+				queryDSLSQLFunctions.isnull(Boolean.class, sw.isCM, 0),
+				queryDSLSQLFunctions.isnull(Boolean.class, sw.isPG, 0),
+				queryDSLSQLFunctions.isnull(Boolean.class, sw.isCS, 0)))
+			.from(tw)
+			.leftJoin(sw).on(tw.wholeSalerId.eq(sw.wholeSalerID))
+			.where(expression)
+			.orderBy(tw.companyName.asc()).fetch();
+	}
+
+
 }

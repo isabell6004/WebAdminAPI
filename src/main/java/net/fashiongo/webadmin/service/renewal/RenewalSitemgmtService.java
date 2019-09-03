@@ -6,11 +6,14 @@ import net.fashiongo.webadmin.data.entity.primary.CodePatternEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodeStyleEntity;
 import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
+import net.fashiongo.webadmin.data.model.sitemgmt.CategoryVendorInfo;
 import net.fashiongo.webadmin.data.model.sitemgmt.CodeData;
 import net.fashiongo.webadmin.data.model.sitemgmt.PolicyAgreement;
 import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetAdminTodayDealCalendarList;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetCategoryVendorList;
 import net.fashiongo.webadmin.data.model.sitemgmt.TodayDealDetail;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryVendorListResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetPolicyDetailResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarListResponse;
@@ -239,6 +242,16 @@ public class RenewalSitemgmtService {
 		return GetTodayDealCalendarListResponse.builder()
 				.activeTodayDeals(result.getActiveTodayDealDetails())
 				.inactiveTodayDeals(result.getInactiveTodayDealDetails())
+				.build();
+	}
+
+	public GetCategoryVendorListResponse getTest(Integer categoryID, String vendorName) {
+		ResultGetCategoryVendorList result = primaryProcedureRepository.up_wa_GetCategoryVendorList(categoryID, vendorName);
+
+		return GetCategoryVendorListResponse.builder()
+				.categoryCountlist(result.getCategoryCountlist())
+				.categoryVendorList(result.getCategoryVendorList())
+				.categoryVendorInfoList(result.getCategoryVendorInfoList())
 				.build();
 	}
 }

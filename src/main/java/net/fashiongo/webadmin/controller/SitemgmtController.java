@@ -419,9 +419,11 @@ public class SitemgmtController {
     * @return GetCategoryVendorListResponse
     */
 	@RequestMapping(value = "getcategoryvendorlist", method = RequestMethod.POST)
-	public JsonResponse<GetCategoryVendorListResponse> getCategoryVendorList(@RequestBody GetCategoryVendorListParameter parameters) {
-		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
-		return new JsonResponse<GetCategoryVendorListResponse>(true, null, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryVendorListResponse> getCategoryVendorList(@RequestBody GetCategoryVendorListParameter parameters) {
+//		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryVendorListResponse result = renewalSitemgmtService.getTest(parameters.getCategoryid(), parameters.getVendorname());
+//		result.setCategoryVendorInfoList(renewalSitemgmtService.getTest(parameters.getCategoryid(), parameters.getVendorname()).getCategoryVendorInfoList());
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryVendorListResponse>(true, null, result);
 	}
 	
 	/**

@@ -3,6 +3,9 @@ package net.fashiongo.webadmin.data.repository.primary.procedure;
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
 import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
 import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetAdminTodayDealCalendarList;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetCategoryVendorList;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetCollectionCategory;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetUserMappingVendor;
 import net.fashiongo.webadmin.data.model.sitemgmt.TodayDealDetail;
 import org.springframework.data.domain.Page;
 import java.math.BigDecimal;
@@ -26,4 +29,6 @@ public interface PrimaryProcedureRepository {
 	ResultGetVendorList up_GetVendorList();
 
 	ResultGetAdminTodayDealCalendarList up_wa_GetAdminTodayDealCalendarList(Date sDate, Integer wholeSalerID);
+
+	ResultGetCategoryVendorList up_wa_GetCategoryVendorList(Integer categoryID, String vendorName);
 }

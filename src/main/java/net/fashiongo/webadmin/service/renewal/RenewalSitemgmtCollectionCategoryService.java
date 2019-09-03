@@ -6,7 +6,7 @@ import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtCollectionCategory;
 import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtMapCollectionCategory;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCollectionCategoryListResponse;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
-import net.fashiongo.webadmin.data.repository.primary.procedure.ResultGetCollectionCategory;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetCollectionCategory;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import org.springframework.stereotype.Service;
 

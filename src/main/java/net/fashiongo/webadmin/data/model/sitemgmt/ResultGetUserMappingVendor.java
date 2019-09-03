@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.data.repository.primary.procedure;
+package net.fashiongo.webadmin.data.model.sitemgmt;
 
 
 import lombok.Builder;

@@ -7,7 +7,7 @@ import net.fashiongo.webadmin.data.model.admin.response.GetSecurityUserGroupAcce
 import net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse;
 import net.fashiongo.webadmin.data.repository.primary.SecurityGroupProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
-import net.fashiongo.webadmin.data.repository.primary.procedure.ResultGetUserMappingVendor;
+import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetUserMappingVendor;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityGroupPermissionsParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserGroupParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityUserPermissionsParameter;
