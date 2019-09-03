@@ -245,7 +245,7 @@ public class RenewalSitemgmtService {
 				.build();
 	}
 
-	public GetCategoryVendorListResponse getTest(Integer categoryID, String vendorName) {
+	public GetCategoryVendorListResponse getCategoryVendorList(Integer categoryID, String vendorName) {
 		ResultGetCategoryVendorList result = primaryProcedureRepository.up_wa_GetCategoryVendorList(categoryID, vendorName);
 
 		return GetCategoryVendorListResponse.builder()
