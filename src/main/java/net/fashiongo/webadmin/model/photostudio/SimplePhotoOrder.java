@@ -172,6 +172,7 @@ public class SimplePhotoOrder {
                             checkDelayedStatus(order)
                     )
                     .specialRequest(order.getSpecialRequest())
+                    .inHouseNote(order.getInHouseNote())
                     .build();
             return simplePhotoOrder;
         }).collect(Collectors.toList());
