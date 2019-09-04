@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "fg_stats.dbo.Featured_WholeSaler_Info")
 @Getter
-public class FeaturedWholeSalerInfo {
+public class FeaturedWholeSalerInfoEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "WholeSalerID")

@@ -1077,7 +1077,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 	private List<CategoryVendorInfo> getCategoryVendorInfo(String vendorName) {
 		QSimpleWholeSalerEntity tw = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
-		QFeaturedWholeSalerInfo sw = QFeaturedWholeSalerInfo.featuredWholeSalerInfo;
+		QFeaturedWholeSalerInfoEntity sw = QFeaturedWholeSalerInfoEntity.featuredWholeSalerInfoEntity;
 
 		NumberExpression<Integer> selectChk = Expressions.asNumber(0).as("SelectChk");
 		NumberExpression<Integer> viewChk = Expressions.asNumber(0).as("ViewChk");
@@ -1088,7 +1088,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 			expression = expression.and(tw.companyName.like('%'+vendorName+'%'));
 		}
 
-		JPAQuery<FeaturedWholeSalerInfo> query = new JPAQuery<>(entityManager);
+		JPAQuery<FeaturedWholeSalerInfoEntity> query = new JPAQuery<>(entityManager);
 		return query.select(Projections.constructor(CategoryVendorInfo.class,
 				tw.companyName,
 				tw.wholeSalerId,
