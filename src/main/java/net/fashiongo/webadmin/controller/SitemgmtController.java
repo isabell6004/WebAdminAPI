@@ -435,9 +435,10 @@ public class SitemgmtController {
 	 * @return GetProductAttributesTotalResponse
 	 */
 	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
-	public JsonResponse<GetProductAttributesTotalResponse> getProductAttributesTotal() {
-		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
-		return new JsonResponse<GetProductAttributesTotalResponse>(true, null, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesTotalResponse> getProductAttributesTotal() {
+//		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesTotalResponse result = renewalSitemgmtService.getProductAttributesTotal();
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesTotalResponse>(true, null, result);
 	}
 	
 	/**

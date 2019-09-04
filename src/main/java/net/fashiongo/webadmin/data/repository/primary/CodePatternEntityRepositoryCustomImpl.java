@@ -2,20 +2,24 @@ package net.fashiongo.webadmin.data.repository.primary;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.CodePatternEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCodePatternEntity;
+import net.fashiongo.webadmin.data.model.sitemgmt.PatternInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Repository
 public class CodePatternEntityRepositoryCustomImpl implements CodePatternEntityRepositoryCustom {
 
 	@PersistenceContext(unitName = "primaryEntityManager")
@@ -53,5 +57,20 @@ public class CodePatternEntityRepositoryCustomImpl implements CodePatternEntityR
 
 		PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
 		return PageableExecutionUtils.getPage(results,pageRequest,()-> resultsTotal);
+	}
+
+	@Override
+	public List<PatternInfo> findAllOrderByPatternName() {
+		JPAQuery<PatternInfo> query = new JPAQuery<>(entityManager);
+		QCodePatternEntity codePattern = QCodePatternEntity.codePatternEntity;
+
+		query.select(Projections.constructor(PatternInfo.class,
+				codePattern.patternId,
+				codePattern.patternName,
+				codePattern.active))
+				.from(codePattern)
+				.orderBy(codePattern.patternName.asc());
+
+		return query.fetch();
 	}
 }

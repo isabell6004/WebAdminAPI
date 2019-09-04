@@ -5,39 +5,18 @@ import net.fashiongo.webadmin.data.entity.primary.CodeLengthEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodePatternEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodeStyleEntity;
 import net.fashiongo.webadmin.data.model.Total;
-import net.fashiongo.webadmin.data.model.sitemgmt.CategoryList;
-import net.fashiongo.webadmin.data.model.sitemgmt.CategoryVendorInfo;
-import net.fashiongo.webadmin.data.model.sitemgmt.CodeData;
-import net.fashiongo.webadmin.data.model.sitemgmt.PolicyAgreement;
-import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetAdminTodayDealCalendarList;
-import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetCategoryVendorList;
-import net.fashiongo.webadmin.data.model.sitemgmt.TodayDealDetail;
-import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryVendorListResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.response.GetPolicyDetailResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarListResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodaydealResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.ResultGetVendorList;
-import net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.*;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepository;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetPolicyDetailParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetProductAttributesParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodayDealCalendarListParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodaydealParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -60,8 +39,12 @@ public class RenewalSitemgmtService {
 
 	private final PrimaryProcedureRepository primaryProcedureRepository;
 
+	private final CodeBodySizeEntityRepository codeBodySizeEntityRepository;
+
+	private final XColorMasterEntityRepository xColorMasterEntityRepository;
+
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -69,6 +52,8 @@ public class RenewalSitemgmtService {
 		this.categoryViewRepository = categoryViewRepository;
 		this.codePatternEntityRepository = codePatternEntityRepository;
 		this.primaryProcedureRepository = primaryProcedureRepository;
+		this.codeBodySizeEntityRepository = codeBodySizeEntityRepository;
+		this.xColorMasterEntityRepository = xColorMasterEntityRepository;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -254,4 +239,22 @@ public class RenewalSitemgmtService {
 				.categoryVendorInfoList(result.getCategoryVendorInfoList())
 				.build();
 	}
+
+	public GetProductAttributesTotalResponse getProductAttributesTotal() {
+	    List<PatternInfo> patternInfoList = codePatternEntityRepository.findAllOrderByPatternName();
+        List<LengthInfo> lengthInfolist = codeLengthEntityRepository.findAllOrderByLengthName();
+        List<StyleInfo> styleInfolist = codeStyleEntityRepository.findAllOrderByStyleName();
+        List<FabricInfo> fabricInfolist = codeFabricEntityRepository.findAllOrderByFabricName();
+        List<BodySizeInfo> bodySizeInfolist = codeBodySizeEntityRepository.findAllWhereActiveTrue();
+        List<ColorListInfo> colorListInfolist = xColorMasterEntityRepository.findAllColors();
+
+        return GetProductAttributesTotalResponse.builder()
+				.patternInfolist(patternInfoList)
+				.lengthInfolist(lengthInfolist)
+				.styleInfolist(styleInfolist)
+				.fabricInfolist(fabricInfolist)
+				.bodySizeInfolist(bodySizeInfolist)
+				.colorListInfolist(colorListInfolist)
+				.build();
+    }
 }

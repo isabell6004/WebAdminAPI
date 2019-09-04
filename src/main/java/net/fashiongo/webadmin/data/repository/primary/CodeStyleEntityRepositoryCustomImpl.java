@@ -2,20 +2,24 @@ package net.fashiongo.webadmin.data.repository.primary;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.CodeStyleEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCodeStyleEntity;
+import net.fashiongo.webadmin.data.model.sitemgmt.StyleInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Repository
 public class CodeStyleEntityRepositoryCustomImpl implements CodeStyleEntityRepositoryCustom {
 
 	@PersistenceContext(unitName = "primaryEntityManager")
@@ -52,5 +56,20 @@ public class CodeStyleEntityRepositoryCustomImpl implements CodeStyleEntityRepos
 
 		PageRequest pageRequest = PageRequest.of(pageNumber-1, pageSize);
 		return PageableExecutionUtils.getPage(results,pageRequest,()-> resultsTotal);
+	}
+
+	@Override
+	public List<StyleInfo> findAllOrderByStyleName() {
+		JPAQuery<StyleInfo> query = new JPAQuery<>(entityManager);
+		QCodeStyleEntity styleEntity = QCodeStyleEntity.codeStyleEntity;
+
+		query.select(Projections.constructor(StyleInfo.class,
+				styleEntity.styleId,
+				styleEntity.styleName,
+				styleEntity.active))
+				.from(styleEntity)
+				.orderBy(styleEntity.styleName.asc());
+
+		return query.fetch();
 	}
 }
