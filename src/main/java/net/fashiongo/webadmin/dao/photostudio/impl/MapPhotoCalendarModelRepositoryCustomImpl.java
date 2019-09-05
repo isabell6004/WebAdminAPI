@@ -25,6 +25,7 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 		QPhotoCalendarEntity photoCalendar = QPhotoCalendarEntity.photoCalendarEntity;
 		QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
 		QPhotoModel photoModel = QPhotoModel.photoModel;
+		QPhotoOrderEntity photoOrderEntity = QPhotoOrderEntity.photoOrderEntity;
 
 		JPAQuery<MapPhotoCalendarModel> query = new JPAQuery<>(photostudioEntityManager)
 				.select(mapPhotoCalendarModel).distinct()
@@ -32,6 +33,7 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 				.leftJoin(mapPhotoCalendarModel.photoModel, photoModel).fetchJoin()
 				.join(mapPhotoCalendarModel.photoCalendarEntity, photoCalendar).fetchJoin()
 				.leftJoin(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()
+				.join(photoBooking.photoOrder, photoOrderEntity).fetchJoin()
 				.where(photoCalendar.theDate.eq(theDate.atTime(0, 0))
                         .and(photoCalendar.theDate.after(LocalDateTime.now().minusDays(1)))
 						.and(photoCalendar.available.isTrue())
@@ -49,6 +51,7 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 		QMapPhotoCalendarModel mapPhotoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
 		QPhotoCalendarEntity photoCalendar = QPhotoCalendarEntity.photoCalendarEntity;
 		QPhotoBooking photoBooking = QPhotoBooking.photoBooking;
+		QPhotoOrderEntity photoOrderEntity = QPhotoOrderEntity.photoOrderEntity;
 
 		BooleanExpression booleanExpression = photoCalendar.available.isTrue()
 				.and(photoCalendar.isHoliday.isFalse())
@@ -68,6 +71,7 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 				.from(mapPhotoCalendarModel)
 				.join(mapPhotoCalendarModel.photoCalendarEntity, photoCalendar).fetchJoin()
 				.leftJoin(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()
+				.join(photoBooking.photoOrder, photoOrderEntity).fetchJoin()
 				.where(booleanExpression);
 
 		return query.fetch();

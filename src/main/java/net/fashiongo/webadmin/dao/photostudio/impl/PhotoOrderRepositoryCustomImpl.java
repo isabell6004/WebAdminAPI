@@ -274,6 +274,7 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
         QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
         QMapPhotoCalendarModel photoCalendarModel = QMapPhotoCalendarModel.mapPhotoCalendarModel;
         QPhotoModel photoModel = QPhotoModel.photoModel;
+        QPhotoOrderEntity photoOrderEntity = QPhotoOrderEntity.photoOrderEntity;
 
         JPAQuery<PhotoOrder> query = new JPAQuery<>(photostudioEntityManager)
                 .select(photoOrder)
@@ -283,6 +284,7 @@ public class PhotoOrderRepositoryCustomImpl implements PhotoOrderRepositoryCusto
                 .leftJoin(photoBooking.mapPhotoCalendarModel, photoCalendarModel).fetchJoin()
                 .leftJoin(photoCalendarModel.photoModel, photoModel).fetchJoin()
                 .leftJoin(photoCalendarModel.photoBooking, photoBooking).fetchJoin()
+                .join(photoBooking.photoOrder, photoOrderEntity).fetchJoin()
                 .where(photoOrder.orderID.eq(orderId));
 
         return query.fetchOne();

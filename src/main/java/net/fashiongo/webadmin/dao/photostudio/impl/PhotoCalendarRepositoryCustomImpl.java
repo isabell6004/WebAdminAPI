@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -49,5 +51,39 @@ public class PhotoCalendarRepositoryCustomImpl implements PhotoCalendarRepositor
 				.limit(1)
 				.offset(businessDay - 1)
 				.fetchOne();
+	}
+
+	@Override
+	public List<LocalDateTime> getBusinessDayFromTargetDate(LocalDateTime targetDate, int plusMinus) {
+		LocalDateTime date = LocalDateTime.of(targetDate.toLocalDate(), LocalTime.MIN);
+		QPhotoCalendarEntity qCalendar = QPhotoCalendarEntity.photoCalendarEntity;
+
+		JPAQuery<LocalDateTime> underQuery = new JPAQuery<>(photostudioEntityManager)
+				.select(qCalendar.theDate).distinct()
+				.from(qCalendar)
+				.where(
+						qCalendar.theDate.loe(date)
+								.and(qCalendar.isHoliday.isFalse())
+				)
+				.orderBy(qCalendar.theDate.desc())
+				.offset(0)
+				.limit(plusMinus);
+
+		JPAQuery<LocalDateTime> upperQuery = new JPAQuery<>(photostudioEntityManager)
+				.select(qCalendar.theDate).distinct()
+				.from(qCalendar)
+				.where(
+						qCalendar.theDate.gt(date)
+								.and(qCalendar.isHoliday.isFalse())
+				)
+				.orderBy(qCalendar.theDate.asc())
+				.offset(0)
+				.limit(plusMinus);
+
+		List<LocalDateTime> result = underQuery.fetch();
+		result.addAll(upperQuery.fetch());
+		Collections.sort(result);
+
+		return result;
 	}
 }

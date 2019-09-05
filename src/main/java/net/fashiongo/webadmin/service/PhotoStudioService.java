@@ -37,6 +37,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -1023,28 +1025,61 @@ public class PhotoStudioService extends ApiService {
                 return "The photo shoot date can be changed only before the original photo shoot date!";
             }
 
-			List<Object> params = new ArrayList<Object>();
-			params.add(orderUpdateRequest.getOrderId());
-			params.add(orderUpdateRequest.getPhotoshootDate());
-            params.add(orderUpdateRequest.getModelId());
-            params.add(orderUpdateRequest.getAdditionalDiscountAmount());
-            params.add(orderUpdateRequest.getInHouseNote());
-			params.add(username);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDateTime inputDate = LocalDate.parse(orderUpdateRequest.getPhotoshootDate(), formatter).atTime(0, 0);
 
-			List<Object> outputparams = new ArrayList<Object>();
-			outputparams.add("");
-			List<Object> r = jdbcHelperPhotoStudio.executeSP("up_wa_Photo_UpdateOrder", params, outputparams);
+            PhotoCalendarEntity photoCalendarEntity = photoCalendarRepository.getPhotoCalendarWithJoinDate(inputDate, inputDate)
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
 
-			List<Object> outputs = (List<Object>) r.get(0);
-			if (outputs != null && outputs.size() > 0) {
-			    Integer beforeModelID = photoOrder.getPhotoBooking().getMapPhotoCalendarModel().getModelID();
-			    if (beforeModelID != null) {
-                    updateModelPopularity(beforeModelID);
-                    updateModelPopularity(orderUpdateRequest.getModelId());
+            if (photoCalendarEntity == null) {
+                return "selected date is not available.";
+            }
+
+            BigDecimal availableUnit = photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                    .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
+                    .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getModelID().equals(orderUpdateRequest.getModelId()))
+                    .map(mapPhotoCalendarModel -> mapPhotoCalendarModel.getAvailableUnit().subtract(mapPhotoCalendarModel.getPhotoBooking().stream()
+                            .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
+                            .map(PhotoBooking::getBookedUnit)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            if (photoOrder.getTotalUnit().compareTo(availableUnit) > 0) {
+                return "booked units is greater than availableUnits of selected.";
+            }
+
+            PhotoShootSchedule schedule = getScheduleInBusinessDay(inputDate);
+
+            photoOrder.set_photoshootDate(inputDate);
+            photoOrder.set_dropOffDate(schedule.getDropOffDate());
+            photoOrder.set_prepDate(schedule.getPrepDate());
+            photoOrder.set_retouchDate(schedule.getRetouchDate());
+            photoOrder.set_uploadDate(schedule.getUploadDate());
+            photoOrder.setPickupDate(schedule.getPickupDate());
+            photoOrder.setModifiedOnDate(now);
+            photoOrder.setModifiedBY(username);
+
+            photoOrder.getPhotoBooking().setMapPhotoCalendarModel(photoCalendarEntity.getMapPhotoCalendarModel()
+                    .stream()
+                    .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getModelID().equals(orderUpdateRequest.getModelId()))
+                    .findFirst()
+                    .get());
+            photoOrder.getPhotoBooking().setModifiedOnDate(now);
+            photoOrder.getPhotoBooking().setModifiedBY(username);
+
+            TransactionTemplate template = new TransactionTemplate(transactionManager);
+            template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+            template.execute(new TransactionCallbackWithoutResult() {
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                    photoOrderRepository.save(photoOrder);
+                    photoBookingRepository.save(photoOrder.getPhotoBooking());
                 }
+            });
 
-				return outputs.get(0) == null ? null : String.valueOf(outputs.get(0));
-			}
+            return null;
 		} else {
             if (CollectionUtils.isEmpty(orderUpdateRequest.getItems())) {
                 return "At least 1 order has to be on the list";
@@ -1118,6 +1153,37 @@ public class PhotoStudioService extends ApiService {
 		}
 
         return null;
+    }
+
+    private PhotoShootSchedule getScheduleInBusinessDay(LocalDateTime target) {
+        LocalDateTime date = LocalDateTime.of(target.toLocalDate(), LocalTime.MIN);
+        List<LocalDateTime> businessDayList = photoCalendarRepository.getBusinessDayFromTargetDate(date, 11);
+        if (org.springframework.util.CollectionUtils.isEmpty(businessDayList)) {
+            return PhotoShootSchedule.builder()
+                    .checkOutDate(LocalDateTime.now())
+                    .dropOffDate(target)
+                    .prepDate(target)
+                    .retouchDate(target)
+                    .uploadDate(target)
+                    .pickupDate(target)
+                    .build();
+        }
+
+        int photoShootDateIndex = 0;
+        for (int i = 0; i < businessDayList.size(); i ++) {
+            if (businessDayList.get(i).toLocalDate().equals(date.toLocalDate())) {
+                photoShootDateIndex = i;
+            }
+        }
+
+        return PhotoShootSchedule.builder()
+                .dropOffDate(businessDayList.get(photoShootDateIndex - 1 >= 0 ? photoShootDateIndex - 1 : 0))
+                .prepDate(businessDayList.get(photoShootDateIndex - 1 >= 0 ? photoShootDateIndex - 1 : 0))
+                .retouchDate(businessDayList.get(photoShootDateIndex))
+                .uploadDate(businessDayList.get(photoShootDateIndex + 2 < businessDayList.size() ? photoShootDateIndex + 2 : businessDayList.size() - 1))
+                .pickupDate(businessDayList.get(photoShootDateIndex + 2 < businessDayList.size() ? photoShootDateIndex + 2 : businessDayList.size() - 1))
+                .checkOutDate(LocalDateTime.now())
+                .build();
     }
 
     private void applyDiscount(PhotoOrder order, Integer newDiscountId) {
