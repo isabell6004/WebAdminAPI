@@ -451,9 +451,10 @@ public class SitemgmtController {
 	 * @return GetFeaturedItemCountResponse
 	 */
 	@RequestMapping(value = "getfeatureditemcount", method = RequestMethod.POST)
-	public JsonResponse<GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody StartDateParameter parameters) {
-		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());	
-		return new JsonResponse<GetFeaturedItemCountResponse>(true, null, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody StartDateParameter parameters) {
+//		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemCountResponse result = renewalSitemgmtService.getFeaturedItemCount(parameters.getsDate());
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemCountResponse>(true, null, result);
 	}
 	
 	/**

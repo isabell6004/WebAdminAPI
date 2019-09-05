@@ -44,8 +44,10 @@ public class RenewalSitemgmtService {
 
 	private final XColorMasterEntityRepository xColorMasterEntityRepository;
 
+	private final FeaturedItemEntityRepository featuredItemEntityRepository;
+
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -55,6 +57,7 @@ public class RenewalSitemgmtService {
 		this.primaryProcedureRepository = primaryProcedureRepository;
 		this.codeBodySizeEntityRepository = codeBodySizeEntityRepository;
 		this.xColorMasterEntityRepository = xColorMasterEntityRepository;
+		this.featuredItemEntityRepository = featuredItemEntityRepository;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -266,5 +269,14 @@ public class RenewalSitemgmtService {
 				.calendarDetails(getAdminTodayDealCalendarResult.getCalendarDetails())
 				.vendors(getAdminTodayDealCalendarResult.getVendors())
 				.build();
+	}
+
+	public GetFeaturedItemCountResponse getFeaturedItemCount(String sDate) {
+		GetFeaturedItemCountResponse result = new GetFeaturedItemCountResponse();
+
+		result.setFeaturedItemCount(featuredItemEntityRepository.getFeaturedItemCount(sDate));
+		result.setFeaturedItemList(featuredItemEntityRepository.getFeaturedItemList(sDate));
+
+		return result;
 	}
 }
