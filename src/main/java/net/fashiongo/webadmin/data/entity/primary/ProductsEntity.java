@@ -22,16 +22,16 @@ public class ProductsEntity {
 	private Integer productID;
 
 	@Column(name = "WholeSalerID")
-	private int wholeSalerID;
+	private Integer wholeSalerID;
 
 	@Column(name = "SizeID")
-	private int sizeID;
+	private Integer sizeID;
 
 	@Column(name = "SortNo")
-	private int sortNo;
+	private Integer sortNo;
 
 	@Column(name = "PackID")
-	private int packID;
+	private Integer packID;
 
 	@Column(name = "ProductName")
 	private String productName;
@@ -85,49 +85,49 @@ public class ProductsEntity {
 	private String pictureEx09;
 
 	@Column(name = "PackQtyTotal")
-	private int packQtyTotal;
+	private Integer packQtyTotal;
 
 	@Column(name = "PackQty1")
-	private int packQty1;
+	private Integer packQty1;
 
 	@Column(name = "PackQty2")
-	private int packQty2;
+	private Integer packQty2;
 
 	@Column(name = "PackQty3")
-	private int packQty3;
+	private Integer packQty3;
 
 	@Column(name = "PackQty4")
-	private int packQty4;
+	private Integer packQty4;
 
 	@Column(name = "PackQty5")
-	private int packQty5;
+	private Integer packQty5;
 
 	@Column(name = "PackQty6")
-	private int packQty6;
+	private Integer packQty6;
 
 	@Column(name = "PackQty7")
-	private int packQty7;
+	private Integer packQty7;
 
 	@Column(name = "PackQty8")
-	private int packQty8;
+	private Integer packQty8;
 
 	@Column(name = "PackQty9")
-	private int packQty9;
+	private Integer packQty9;
 
 	@Column(name = "PackQty10")
-	private int packQty10;
+	private Integer packQty10;
 
 	@Column(name = "PackQty11")
-	private int packQty11;
+	private Integer packQty11;
 
 	@Column(name = "PackQty12")
-	private int packQty12;
+	private Integer packQty12;
 
 	@Column(name = "PackQty13")
-	private int packQty13;
+	private Integer packQty13;
 
 	@Column(name = "PrePackYN")
-	private char prePackYN = 'N';
+	private Character prePackYN = 'N';
 
 	@Column(name = "SalesItem")
 	private Boolean salesItem;
@@ -279,9 +279,8 @@ public class ProductsEntity {
 	@Column(name = "BrandName")
 	private String brandName;
 
-	@Column(name = "timestamp",insertable = false,updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date timestamp;
+	@Column(name = "timestamp", insertable = false, updatable = false)
+	private Byte[] timestamp;
 
 	@Column(name = "AvailableOn")
 	private Date availableOn;
@@ -304,12 +303,12 @@ public class ProductsEntity {
 	@Column(name = "ItemName")
 	private String itemName;
 
-	@OneToOne(optional = false)
-	@JoinColumn(name = "CategoryID",insertable = false,updatable = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "CategoryID", insertable = false, updatable = false)
 	private CategoryEntity category;
 
-	@OneToOne(optional = false)
-	@JoinColumn(name = "WholeSalerID",insertable = false,updatable = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "WholeSalerID", insertable = false, updatable = false)
 	private SimpleWholeSalerEntity wholeSaler;
 
 	@OneToMany(fetch = FetchType.LAZY)

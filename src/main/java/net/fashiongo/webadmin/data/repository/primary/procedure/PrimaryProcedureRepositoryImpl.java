@@ -97,9 +97,9 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 			predicate = predicate.and(W.companyName.startsWith(alphabet));
 		}
 
-		if(StringUtils.isEmpty(companyType) == false) {
-			predicate = predicate.and(W.companyType.in(companyType));
-		}
+//		if(StringUtils.isEmpty(companyType) == false) {
+//			predicate = predicate.and(W.companyType.in(companyType));
+//		}
 
 		if(StringUtils.isEmpty(vendorKeyword) == false) {
 			StringPath vendorTypePath = Expressions.stringPath(W, vendorType);

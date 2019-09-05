@@ -26,8 +26,8 @@ public class SimpleWholeSalerEntity implements Serializable {
     @Column(name = "CompanyName")
     private String companyName;
 
-    @Column(name = "CompanyType")
-    private String companyType;
+//    @Column(name = "CompanyType")
+//    private String companyType;
 
     @Column(name = "DirName")
     private String dirName;

@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +53,9 @@ public class VendorController {
 	
 	@Autowired
 	VendorService vendorService;
+
+	@Autowired
+	private RenewalVendorService renewalVendorService;
 	
 	@Autowired
     private CacheService cacheService;
@@ -78,11 +83,11 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getproductlist", method=RequestMethod.POST)
-	public JsonResponse<GetProductListResponse> getProductList(@RequestBody GetProductListParameter parameters) {
-		JsonResponse<GetProductListResponse> result = new JsonResponse<GetProductListResponse>(true, null, null);
+	public JsonResponse<VendorProductListResponse> getProductList(@RequestBody GetProductListParameter parameters) {
+		JsonResponse<VendorProductListResponse> result = new JsonResponse<>(true, null, null);
 		
-		GetProductListResponse _result = vendorService.getProductList(parameters);	
-		result.setData(_result);
+		VendorProductListResponse products = renewalVendorService.getProductList(parameters);
+		result.setData(products);
 		
 		return result; 
 	}

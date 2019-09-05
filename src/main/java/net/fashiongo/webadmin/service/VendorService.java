@@ -123,7 +123,9 @@ public class VendorService extends ApiService {
 	 * @author Incheol Jung
 	 * @param parameters
 	 * @return
+	 * @deprecated remove SP
 	 */
+    @Deprecated
 	public GetProductListResponse getProductList(GetProductListParameter parameters) {
 		GetProductListResponse result = new GetProductListResponse();
 		String spName = "up_wa_GetProductsList";
@@ -135,7 +137,7 @@ public class VendorService extends ApiService {
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, ProductSummary.class);
 		result.setProductList((List<ProductSummary>) _result.get(0));
-		
+
 		return result;
 	}
 	
