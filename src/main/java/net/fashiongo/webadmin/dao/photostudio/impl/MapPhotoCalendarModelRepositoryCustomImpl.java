@@ -33,7 +33,7 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 				.leftJoin(mapPhotoCalendarModel.photoModel, photoModel).fetchJoin()
 				.join(mapPhotoCalendarModel.photoCalendarEntity, photoCalendar).fetchJoin()
 				.leftJoin(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()
-				.join(photoBooking.photoOrder, photoOrderEntity).fetchJoin()
+				.leftJoin(photoBooking.photoOrder, photoOrderEntity).fetchJoin()
 				.where(photoCalendar.theDate.eq(theDate.atTime(0, 0))
                         .and(photoCalendar.theDate.after(LocalDateTime.now().minusDays(1)))
 						.and(photoCalendar.available.isTrue())
@@ -71,7 +71,7 @@ public class MapPhotoCalendarModelRepositoryCustomImpl implements MapPhotoCalend
 				.from(mapPhotoCalendarModel)
 				.join(mapPhotoCalendarModel.photoCalendarEntity, photoCalendar).fetchJoin()
 				.leftJoin(mapPhotoCalendarModel.photoBooking, photoBooking).fetchJoin()
-				.join(photoBooking.photoOrder, photoOrderEntity).fetchJoin()
+				.leftJoin(photoBooking.photoOrder, photoOrderEntity).fetchJoin()
 				.where(booleanExpression);
 
 		return query.fetch();
