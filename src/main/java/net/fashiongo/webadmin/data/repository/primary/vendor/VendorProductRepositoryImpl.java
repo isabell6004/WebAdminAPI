@@ -1,12 +1,12 @@
 package net.fashiongo.webadmin.data.repository.primary.vendor;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLServer2012Templates;
-import net.fashiongo.webadmin.data.entity.primary.QProductImageEntity;
-import net.fashiongo.webadmin.data.entity.primary.QProductsEntity;
-import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
-import net.fashiongo.webadmin.data.entity.primary.QSystemImageServersEntity;
+import net.fashiongo.webadmin.data.entity.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.entity.primary.vendor.VendorProductRow;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -55,6 +55,24 @@ public class VendorProductRepositoryImpl implements VendorProductRepository {
 								.and(StringUtils.isNotEmpty(productName) ? qProducts.productName.startsWith(productName) : null)
 				)
 				.orderBy(qProducts.productID.asc())
+				.fetch();
+	}
+
+	@Override
+	public List<ProductColorRow> getColors(int productId) {
+		QProductsEntity qProducts = QProductsEntity.productsEntity;
+		QInventoryEntity qInventory = QInventoryEntity.inventoryEntity;
+		QXColorEntity qColor = QXColorEntity.xColorEntity;
+
+		Expression[] expressions = new Expression[]{qInventory.colorID, qColor.color, qColor.active};
+		return new JPAQuery<>(entityManager)
+				.select(Projections.constructor(ProductColorRow.class, expressions))
+				.from(qProducts)
+				.join(qProducts.inventory, qInventory)
+				.join(qInventory.xColors, qColor)
+				.where(qProducts.productID.eq(productId))
+				.groupBy(qInventory.colorID, qColor.color, qColor.active)
+				.orderBy(qInventory.colorID.asc())
 				.fetch();
 	}
 

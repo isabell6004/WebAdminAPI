@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
@@ -93,11 +94,10 @@ public class VendorController {
 	}
 	
 	@RequestMapping(value="getproductcolor", method=RequestMethod.POST)
-	public JsonResponse<List<ProductColor>> getProductColor(@RequestBody GetProductColorParameter parameters) {
-		JsonResponse<List<ProductColor>> result = new JsonResponse<List<ProductColor>>(true, null, null);
+	public JsonResponse<List<ProductColorRow>> getProductColor(@RequestBody GetProductColorParameter parameters) {
+		JsonResponse<List<ProductColorRow>> result = new JsonResponse<>(true, null, null);
 		
-		List<ProductColor> _result = vendorService.getProductColor(parameters.getProductid());	
-		result.setData(_result);
+		result.setData(renewalVendorService.getProductColor(parameters.getProductid()));
 		
 		return result; 
 	}

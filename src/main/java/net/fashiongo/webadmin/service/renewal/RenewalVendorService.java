@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.entity.primary.vendor.VendorProductRow;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorProductRepository;
@@ -24,5 +25,9 @@ public class RenewalVendorService {
 		return VendorProductListResponse.builder()
 				.products(vendorProducts)
 				.build();
+	}
+
+	public List<ProductColorRow> getProductColor(Integer productId) {
+		return vendorProductRepository.getColors(productId);
 	}
 }

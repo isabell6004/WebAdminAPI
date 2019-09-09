@@ -140,7 +140,8 @@ public class VendorService extends ApiService {
 
 		return result;
 	}
-	
+
+	@Deprecated
 	public List<ProductColor> getProductColor(Integer productId) {
 		String spName = "up_wa_GetProductColors";
 		List<Object> params = new ArrayList<Object>();
