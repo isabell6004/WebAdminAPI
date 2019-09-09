@@ -671,9 +671,11 @@ public class SitemgmtController {
 	 * @return GetFeaturedItemListDayResponse
 	 */
 	@RequestMapping(value = "getfeatureditemlistday", method = RequestMethod.POST)
-    public JsonResponse<GetFeaturedItemListDayResponse> getFeaturedItemListDay(@RequestBody StartDateParameter parameters) {
-			GetFeaturedItemListDayResponse result = sitemgmtService.getFeaturedItemListDay(parameters.getsDate());  
-           return new JsonResponse<GetFeaturedItemListDayResponse>(true, null, result);
+    public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse> getFeaturedItemListDay(@RequestBody StartDateParameter parameters) {
+//		GetFeaturedItemListDayResponse result = sitemgmtService.getFeaturedItemListDay(parameters.getsDate());
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse result = renewalSitemgmtService.getFeaturedItemListDay(parameters.getsDate());
+
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse>(true, null, result);
     }
 	
 	/**

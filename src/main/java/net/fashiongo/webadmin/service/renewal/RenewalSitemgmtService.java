@@ -306,4 +306,12 @@ public class RenewalSitemgmtService {
 				.dmList(dmRequests)
 				.build();
 	}
+
+	public GetFeaturedItemListDayResponse getFeaturedItemListDay(String sDate) {
+		List<FeaturedItemList> featuredItemLists = featuredItemEntityRepository.getFeaturedItemListDay(sDate);
+
+		return GetFeaturedItemListDayResponse.builder()
+				.featuredItemList(featuredItemLists)
+				.build();
+	}
 }

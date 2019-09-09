@@ -15,6 +15,7 @@ import net.fashiongo.webadmin.data.model.sitemgmt.FeaturedItemList;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -108,5 +109,67 @@ public class FeaturedItemEntityRepositoryCustomImpl implements FeaturedItemEntit
         BooleanExpression monthMatch = Expressions.asBoolean(FI.featuredItemDate.month().eq(monthEx));
 
         return yearMatch.and(monthMatch);
+    }
+
+    @Override
+    @Transactional(transactionManager = "primaryTransactionManager")
+    public List<FeaturedItemList> getFeaturedItemListDay(String period) {
+        QFeaturedItemEntity FI = QFeaturedItemEntity.featuredItemEntity;
+        QProductsEntity PRD = QProductsEntity.productsEntity;
+        QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+        QSimpleWholeSalerEntity VDR = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+        QSystemImageServersEntity IMGSVR = QSystemImageServersEntity.systemImageServersEntity;
+
+        JPAQuery<FeaturedItemList> query = new JPAQuery<>(entityManager);
+
+        NumberExpression rowIndex = Expressions.asNumber(0);
+
+        query.select(Projections.constructor(FeaturedItemList.class,
+                FI.featuredItemID,
+                FI.featuredItemDate,
+                FI.bestItemUse,
+                FI.wholeSalerID,
+                FI.wholeSalerName,
+                FI.productID,
+                FI.productName,
+                FI.createdOn,
+                FI.createdBy,
+                PRD.productID,
+                PRD.wholeSalerID,
+                PRD.productName,
+                PRD.unitPrice,
+                PRDI.imageName.as("PictureGeneral"),
+                IMGSVR.urlPath,
+                VDR.dirName,
+                queryDSLSQLFunctions.isnull(Boolean.class, PRD.active, 0).as("Active"),
+                PRD.activatedOn,
+                PRD.createdOn,
+                PRD.modifiedOn,
+                rowIndex
+        ))
+                .from(FI)
+                .leftJoin(FI.productsEntity, PRD)
+                .leftJoin(PRDI).on(PRD.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
+                .leftJoin(PRD.wholeSaler, VDR)
+                .leftJoin(VDR.systemImageServersEntity, IMGSVR)
+                .where(this.isMatchYearMonthDay(FI, period))
+                .orderBy(FI.featuredItemDate.asc(), FI.featuredItemID.asc());
+
+        List<FeaturedItemList> result = query.fetch();
+
+        for(int i = 0; i < result.size(); i++) {
+            result.get(i).setRowIndex(i + 1);
+        }
+
+        return result;
+    }
+
+    private BooleanExpression isMatchYearMonthDay(QFeaturedItemEntity FI, String period) {
+        String day = period.substring(8,10);
+        NumberExpression dayEx = Expressions.asNumber(Integer.valueOf(day));
+
+        BooleanExpression dayMatch = Expressions.asBoolean(FI.featuredItemDate.dayOfMonth().eq(dayEx));
+
+        return this.isMatchYearMonth(FI, period).and(dayMatch);
     }
 }
