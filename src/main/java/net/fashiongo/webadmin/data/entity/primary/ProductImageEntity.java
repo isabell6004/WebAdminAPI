@@ -6,6 +6,8 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Getter
@@ -32,4 +34,8 @@ public class ProductImageEntity {
 
 	@Column(name = "Active")
 	private Boolean active;
+
+	@ManyToOne
+	@JoinColumn(name = "ProductID",insertable = false, updatable = false)
+	private ProductsEntity products;
 }

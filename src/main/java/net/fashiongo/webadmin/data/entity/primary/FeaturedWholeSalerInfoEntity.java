@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +19,7 @@ public class FeaturedWholeSalerInfoEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "WholeSalerID")
+    @Setter(AccessLevel.NONE)
     private Integer wholeSalerID;
 
     @Column(name = "VendorRate")

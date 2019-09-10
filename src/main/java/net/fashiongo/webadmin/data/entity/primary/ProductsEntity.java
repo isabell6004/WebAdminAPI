@@ -311,8 +311,7 @@ public class ProductsEntity {
 	@JoinColumn(name = "WholeSalerID", insertable = false, updatable = false)
 	private SimpleWholeSalerEntity wholeSaler;
 
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ProductID")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "products")
 	private List<ProductImageEntity> productImageEntity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -323,4 +322,11 @@ public class ProductsEntity {
 	@JoinColumn(name = "ProductID")
 	private List<ProductVideoEntity> productVideoEntity;
 
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ProductID", insertable = false, updatable = false)
+	private List<InventoryEntity> inventory;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SizeID", insertable = false, updatable = false)
+	private XSizeChartEntity xSizeChart;
 }

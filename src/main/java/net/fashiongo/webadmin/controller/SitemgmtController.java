@@ -688,9 +688,9 @@ public class SitemgmtController {
 	 * @return GetProductDetailResponse
 	 */
 	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
-	public JsonResponse<GetProductDetailResponse> getProductDetail(@RequestBody GetProductDetailParameter parameters) {
-		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
-		return new JsonResponse<GetProductDetailResponse>(true, null, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse> getProductDetail(@RequestBody GetProductDetailParameter parameters) {
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse result = renewalSitemgmtService.getProductDetail(parameters);
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse>(true, null, result);
 	}
 	
 	/**

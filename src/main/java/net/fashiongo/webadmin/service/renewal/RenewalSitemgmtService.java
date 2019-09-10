@@ -46,8 +46,14 @@ public class RenewalSitemgmtService {
 
 	private final FeaturedItemEntityRepository featuredItemEntityRepository;
 
+	private final ProductsEntityRepository productsEntityRepository;
+
+	private final ProductImageEntityRepository productImageEntityRepository;
+
+	private final TrendReportMapEntityRepository trendReportMapEntityRepository;
+
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -58,6 +64,9 @@ public class RenewalSitemgmtService {
 		this.codeBodySizeEntityRepository = codeBodySizeEntityRepository;
 		this.xColorMasterEntityRepository = xColorMasterEntityRepository;
 		this.featuredItemEntityRepository = featuredItemEntityRepository;
+		this.productsEntityRepository = productsEntityRepository;
+		this.productImageEntityRepository = productImageEntityRepository;
+		this.trendReportMapEntityRepository = trendReportMapEntityRepository;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -312,6 +321,16 @@ public class RenewalSitemgmtService {
 
 		return GetFeaturedItemListDayResponse.builder()
 				.featuredItemList(featuredItemLists)
+				.build();
+	}
+
+	public GetProductDetailResponse getProductDetail(GetProductDetailParameter prameters) {
+		return GetProductDetailResponse.builder()
+				.productInfolist(productsEntityRepository.getProductsInfo(prameters.getProductID()))
+				.productImagelist(productImageEntityRepository.getProductsImage(prameters.getProductID()))
+				.productColorslist(productsEntityRepository.getProductsColors(prameters.getProductID()))
+				.productSizelist(productsEntityRepository.getProductsSizes(prameters.getProductID()))
+				.productSelectChecklist(trendReportMapEntityRepository.getProductsSelectCheck(prameters.getTrendReportID(), prameters.getProductID()))
 				.build();
 	}
 }
