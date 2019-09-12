@@ -4,7 +4,7 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.210.16.31;databaseName=FG_V2
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_V2
     hikari:
       maximumPoolSize: 20
   datasource2:
