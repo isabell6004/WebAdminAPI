@@ -1,11 +1,8 @@
 package net.fashiongo.webadmin.config.datasource;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +12,9 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
 /**
  * @author Andy
@@ -28,10 +28,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 		transactionManagerRef = "photostudioTransactionManager",
         repositoryImplementationPostfix = "CustomImpl")
 public class FgPhotoStudio {
-	@Bean(name = "photostudioDataSource")
-	@ConfigurationProperties(prefix = "spring.datasource4")
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource4")
+    public DataSourceProperties photostudioDataSourceProperties() {
+        return new DataSourceProperties();
+    }
+
+    @Bean(name = "photostudioDataSource")
+	@ConfigurationProperties(prefix = "spring.datasource4.hikari")
 	public DataSource photostudioDataSource() {
-		return DataSourceBuilder.create().build();
+		return photostudioDataSourceProperties().initializeDataSourceBuilder().build();
 	}
 
 	@Bean(name = "photostudioEntityManager")

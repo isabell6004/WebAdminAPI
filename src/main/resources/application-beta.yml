@@ -4,14 +4,22 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.210.24.29;databaseName=FG_V2
+    url: jdbc:sqlserver://10.210.24.29;databaseName=FG_V2
+    hikari:
+      maximumPoolSize: 20
   datasource2:
-    jdbc-url: jdbc:sqlserver://10.210.24.29;databaseName=FG_PAY
+    url: jdbc:sqlserver://10.210.24.29;databaseName=FG_PAY
+    hikari:
+      maximumPoolSize: 20
   datasource3:
-    jdbc-url: jdbc:sqlserver://10.210.24.29;databaseName=FG_EM
+    url: jdbc:sqlserver://10.210.24.29;databaseName=FG_EM
+    hikari:
+      maximumPoolSize: 20
   datasource4:
-    jdbc-url: jdbc:sqlserver://10.210.24.29;databaseName=FG_PhotoStudio
-    
+    url: jdbc:sqlserver://10.210.24.29;databaseName=FG_PhotoStudio
+    hikari:
+      maximumPoolSize: 20
+
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false

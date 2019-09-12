@@ -3,12 +3,9 @@
  */
 package net.fashiongo.webadmin.config.datasource;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +15,9 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
 /**
  * @author Brian
@@ -31,10 +31,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 		transactionManagerRef = "fgpayTransactionManager"
 )
 public class FgPay {
-	@Bean(name = "fgpayDataSource")
-	@ConfigurationProperties(prefix="spring.datasource2")
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource2")
+    public DataSourceProperties fgpayDataSourceProperties() {
+        return new DataSourceProperties();
+    }
+
+    @Bean(name = "fgpayDataSource")
+	@ConfigurationProperties(prefix="spring.datasource2.hikari")
 	public DataSource fgpayDataSource() {
-		return DataSourceBuilder.create().build();
+		return fgpayDataSourceProperties().initializeDataSourceBuilder().build();
 	}
 	
 	@Bean(name="fgpayEntityManager")

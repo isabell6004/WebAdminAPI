@@ -4,16 +4,16 @@ spring:
   redis:
     host: 10.210.24.30
   datasource:
-    jdbc-url: jdbc:sqlserver://10.210.24.204;databaseName=FG_V2
+    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_V2
   datasource2:
-    jdbc-url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PAY
+    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PAY
   datasource3:
-    jdbc-url: jdbc:sqlserver://10.210.24.204;databaseName=FG_EM
+    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_EM
   datasource4:
-    jdbc-url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PhotoStudio
+    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PhotoStudio
   
   jpa:
-    show-sql: false
+    show-sql: fal se
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
     

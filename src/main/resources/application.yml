@@ -17,8 +17,10 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximumPoolSize: 100
-      connectionTestQuery: Select top 1 * from sys.all_objects
-      connectionTimeout: 250
+      connectionTestQuery: select 1
+      connectionTimeout: 250 # 1 second
+      idleTimeout: 600000 # 10 minutes
+      maxLifetime: 3600000 # 1 hour
   # FG Pay DB
   datasource2:
     username: FGWebAdminAPIUser
@@ -28,8 +30,10 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximumPoolSize: 100
-      connectionTestQuery: Select top 1 * from Stripe_Charges
-      connectionTimeout: 250
+      connectionTestQuery: select 1
+      connectionTimeout: 250 # 1 second
+      idleTimeout: 600000 # 10 minutes
+      maxLifetime: 3600000 # 1 hour
   # FG EM DB
   datasource3:
     username: FGWebAdminAPIUser
@@ -39,8 +43,10 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximumPoolSize: 100
-      connectionTestQuery: Select top 1 * from [EM.Billing]
-      connectionTimeout: 250
+      connectionTestQuery: select 1
+      connectionTimeout: 250 # 1 second
+      idleTimeout: 600000 # 10 minutes
+      maxLifetime: 3600000 # 1 hour
   # FG PhtoStudio DB
   datasource4:
     username: FGWebAdminAPIUser
@@ -50,7 +56,10 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       maximumPoolSize: 100
-      connectionTestQuery: Select top 1 * from Photo_Image
+      connectionTestQuery: select 1
+      connectionTimeout: 250 # 1 second
+      idleTimeout: 600000 # 10 minutes
+      maxLifetime: 3600000 # 1 hour
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
@@ -103,13 +112,21 @@ spring:
   redis:
     host: 10.10.0.145
   datasource:
-    jdbc-url: jdbc:sqlserver://10.210.16.31;databaseName=FG_V2
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_V2
+    hikari:
+      maximumPoolSize: 10
   datasource2:
-    jdbc-url: jdbc:sqlserver://10.210.16.31;databaseName=FG_PAY
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_PAY
+    hikari:
+      maximumPoolSize: 10
   datasource3:
-    jdbc-url: jdbc:sqlserver://10.210.16.31;databaseName=FG_EM
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_EM
+    hikari:
+      maximumPoolSize: 10
   datasource4:
-    jdbc-url: jdbc:sqlserver://10.210.16.31;databaseName=FG_PhotoStudio
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_PhotoStudio
+    hikari:
+      maximumPoolSize: 10
 
 logging:
   config: classpath:log4j2-local.xml
@@ -181,13 +198,13 @@ spring:
   redis:
     host: 10.10.0.168
   datasource:
-    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
   datasource2:
-    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
   datasource3:
-    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_EM
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_EM
   datasource4:
-    jdbc-url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PhotoStudio
+    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PhotoStudio
   
   jpa:
     show-sql: false
