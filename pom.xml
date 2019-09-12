@@ -173,7 +173,7 @@
 		<dependency>
 			<groupId>net.fashiongo.common.data</groupId>
 			<artifactId>fashiongo-common-data</artifactId>
-			<version>0.0.4.3</version>
+			<version>0.0.4.6</version>
 		</dependency>
 
         <dependency>
