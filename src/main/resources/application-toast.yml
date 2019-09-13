@@ -13,7 +13,7 @@ spring:
     url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PhotoStudio
   
   jpa:
-    show-sql: fal se
+    show-sql: false
     properties.hibernate.format_sql: false
     properties.hibernate.generate_statistics: false
     
