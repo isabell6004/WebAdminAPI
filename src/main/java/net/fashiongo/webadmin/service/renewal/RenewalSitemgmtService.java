@@ -52,8 +52,10 @@ public class RenewalSitemgmtService {
 
 	private final TrendReportMapEntityRepository trendReportMapEntityRepository;
 
+	private final TrendReportEntityRepository trendReportEntityRepository;
+
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -67,6 +69,7 @@ public class RenewalSitemgmtService {
 		this.productsEntityRepository = productsEntityRepository;
 		this.productImageEntityRepository = productImageEntityRepository;
 		this.trendReportMapEntityRepository = trendReportMapEntityRepository;
+		this.trendReportEntityRepository = trendReportEntityRepository;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -324,13 +327,20 @@ public class RenewalSitemgmtService {
 				.build();
 	}
 
-	public GetProductDetailResponse getProductDetail(GetProductDetailParameter prameters) {
+	public GetProductDetailResponse getProductDetail(GetProductDetailParameter parameters) {
 		return GetProductDetailResponse.builder()
-				.productInfolist(productsEntityRepository.getProductsInfo(prameters.getProductID()))
-				.productImagelist(productImageEntityRepository.getProductsImage(prameters.getProductID()))
-				.productColorslist(productsEntityRepository.getProductsColors(prameters.getProductID()))
-				.productSizelist(productsEntityRepository.getProductsSizes(prameters.getProductID()))
-				.productSelectChecklist(trendReportMapEntityRepository.getProductsSelectCheck(prameters.getTrendReportID(), prameters.getProductID()))
+				.productInfolist(productsEntityRepository.getProductsInfo(parameters.getProductID()))
+				.productImagelist(productImageEntityRepository.getProductsImage(parameters.getProductID()))
+				.productColorslist(productsEntityRepository.getProductsColors(parameters.getProductID()))
+				.productSizelist(productsEntityRepository.getProductsSizes(parameters.getProductID()))
+				.productSelectChecklist(trendReportMapEntityRepository.getProductsSelectCheck(parameters.getTrendReportID(), parameters.getProductID()))
+				.build();
+	}
+
+	public GetTrendReportDefaultResponse getTrendReportDefault(GetTrendReportDefaultParameter parameters) {
+		return GetTrendReportDefaultResponse.builder()
+				.total(trendReportEntityRepository.getRecCnt())
+				.trendReportDefault(trendReportEntityRepository.getTrendReportDefault(parameters.orderby, parameters.orderbygubn))
 				.build();
 	}
 }

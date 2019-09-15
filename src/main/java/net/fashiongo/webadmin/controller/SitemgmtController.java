@@ -703,9 +703,10 @@ public class SitemgmtController {
 	 * @return GetTrendReportDefaultResponse
 	 */
 	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
-	public JsonResponse<GetTrendReportDefaultResponse> getTrendReportDefault(@RequestBody GetTrendReportDefaultParameter parameters) {
-		GetTrendReportDefaultResponse result = sitemgmtService.getTrendReportDefault(parameters);
-		return new JsonResponse<GetTrendReportDefaultResponse>(true, null, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse> getTrendReportDefault(@RequestBody GetTrendReportDefaultParameter parameters) {
+//		GetTrendReportDefaultResponse result = sitemgmtService.getTrendReportDefault(parameters);
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse result = renewalSitemgmtService.getTrendReportDefault(parameters);
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse>(true, null, result);
 	}
 	
 	/**
