@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.util.List;
 
+import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
@@ -182,10 +183,10 @@ public class VendorServiceTest {
 		parameters.setSearchStatus("Pending");
 		parameters.setSearchType(null);
 		parameters.setOrderby(null);
-		GetBannerRequestResponse result = vendorService.getBannerRequest(parameters);
-		if(!CollectionUtils.isEmpty(result.getBannerImageList())) {
-			assertNotNull(result.getBannerImageList());
-			assertNotNull(result.getTotalCount());
+		BannerRequestResponse response = renewalVendorService.getBannerRequest(parameters);
+		if(!CollectionUtils.isEmpty(response.getBannerImageList())) {
+			assertNotNull(response.getBannerImageList());
+			assertNotNull(response.getTotal());
 		}
 	}
 	

@@ -287,7 +287,9 @@ public class VendorService extends ApiService {
 	 * @author Reo
 	 * @param parameters
 	 * @return
+	 * @deprecated remove SP
 	 */
+	@Deprecated
 	public GetBannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters) {
 		GetBannerRequestResponse result = new GetBannerRequestResponse();
 		String spName = "up_wa_GetBannerImage";

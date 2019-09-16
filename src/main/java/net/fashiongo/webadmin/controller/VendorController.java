@@ -8,6 +8,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
+import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
@@ -211,13 +212,10 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getbannerrequest", method=RequestMethod.POST)
-	public JsonResponse<GetBannerRequestResponse> getBannerRequest(@RequestBody GetBannerRequestParameter parameters) {
-		JsonResponse<GetBannerRequestResponse> results = new JsonResponse<GetBannerRequestResponse>(true, null, null);
-		
-		GetBannerRequestResponse result = vendorService.getBannerRequest(parameters);	
-		results.setData(result);
-		
-		return results; 
+	public JsonResponse<BannerRequestResponse> getBannerRequest(@RequestBody GetBannerRequestParameter parameters) {
+		JsonResponse<BannerRequestResponse> results = new JsonResponse<>(true, null, null);
+		results.setData(renewalVendorService.getBannerRequest(parameters));
+		return results;
 	}
 	
 	/**
