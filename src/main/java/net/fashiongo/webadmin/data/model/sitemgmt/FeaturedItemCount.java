@@ -6,15 +6,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class FeaturedItemCount {
+    public FeaturedItemCount() {}
+
+    public FeaturedItemCount(LocalDateTime featuredItemDate, Long totalCount, Integer activeSum, Integer nullTotal, Integer bestItemCount) {
+        this.featuredItemDate = LocalDate.from(featuredItemDate);
+        this.totalCount = totalCount;
+        this.activeSum = activeSum;
+        this.nullTotal = nullTotal;
+        this.bestItemCount = bestItemCount;
+    }
+
     @JsonProperty("FeaturedItemDate")
-    private LocalDateTime featuredItemDate;
+    private LocalDate featuredItemDate;
 
     @JsonProperty("TotalCount")
     private Long totalCount;
