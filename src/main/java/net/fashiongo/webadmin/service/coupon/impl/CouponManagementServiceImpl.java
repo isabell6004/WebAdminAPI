@@ -395,7 +395,6 @@ public class CouponManagementServiceImpl implements CouponManagementService {
 
         Optional<CCoupon> optionalCCoupon = couponRepository.findById(couponId);
         CCoupon couponEntity = optionalCCoupon.orElseThrow(() -> new NotFoundCouponException("cannot find coupon: " + couponId));
-        couponNotificationInput.setBuyerGroupType(couponEntity.getCouponBuyerGroup().getBuyerGroupType());
 
         couponNotificationInput.setCouponId(couponId);
         CCouponNotification couponNotificationEntity = couponMapper.toCouponNotification(couponNotificationInput);
@@ -448,7 +447,6 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         Optional<CCouponNotification> optionalCCouponNotification = couponNotificationRepository.findById(couponNotificationId);
         CCouponNotification couponNotificationEntity = optionalCCouponNotification.orElseThrow(() -> new NotFoundCouponNotificationException("cannot find coupon notification: " + couponNotificationId));
 
-        couponNotificationEntity.setBuyerGroupType(couponEntity.getCouponBuyerGroup().getBuyerGroupType());
         couponMapper.updateCouponNotification(couponNotificationInput, couponNotificationEntity);
 
         LocalDateTime now = LocalDateTime.now();
