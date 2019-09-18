@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
+import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
@@ -259,9 +260,9 @@ public class VendorServiceTest {
 	@Test
 	public void testGetVendorFormsList() {
 		GetVendorFormsListParameter parameters = new GetVendorFormsListParameter();
-		GetVendorFormsListResponse result = vendorService.getVendorFormsList(parameters);
-		if(!CollectionUtils.isEmpty(result.getFashiongoFormList())) {
-			assertNotNull(result.getFashiongoFormList());
+		VendorFormListResponse response = renewalVendorService.getVendorFormsList(parameters);
+		if(!CollectionUtils.isEmpty(response.getFashionGoFormList())) {
+			assertNotNull(response.getFashionGoFormList());
 		}
 	}
 	

@@ -1,14 +1,15 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import net.fashiongo.webadmin.data.entity.primary.FashionGoFormEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorImageRequestEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.entity.primary.vendor.VendorProductRow;
-import net.fashiongo.webadmin.data.model.vendor.BannerRequestCount;
-import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
-import net.fashiongo.webadmin.data.model.vendor.VendorImageRequestResponse;
-import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
+import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.repository.primary.form.FashionGoFormEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.form.FormOrderingType;
 import net.fashiongo.webadmin.data.repository.primary.vendor.*;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,11 +26,15 @@ public class RenewalVendorService {
 
 	private final VendorProductRepository vendorProductRepository;
 	private final VendorImageRequestEntityRepository vendorImageRequestEntityRepository;
+	private final FashionGoFormEntityRepository fashionGoFormEntityRepository;
 
 	@Autowired
-	public RenewalVendorService(VendorProductRepository vendorProductRepository, VendorImageRequestEntityRepository vendorImageRequestEntityRepository) {
+	public RenewalVendorService(VendorProductRepository vendorProductRepository,
+								VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
+								FashionGoFormEntityRepository fashionGoFormEntityRepository) {
 		this.vendorProductRepository = vendorProductRepository;
 		this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
+		this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
 	}
 
 	public VendorProductListResponse getProductList(GetProductListParameter parameters) {
@@ -64,5 +69,14 @@ public class RenewalVendorService {
 				.total(Collections.singletonList(BannerRequestCount.builder().count(result.getTotalElements()).build()))
 				.build();
 
+	}
+
+	public VendorFormListResponse getVendorFormsList(GetVendorFormsListParameter parameters) {
+		// In reality, it is sorted in the front-end app.
+		// FormOrderingType.getFromStringValue(parameters.getOrderBy())
+		List<FashionGoFormEntity> forms = fashionGoFormEntityRepository.getForms(FormOrderingType.FASHION_GO_FORM_ID_DESC);
+		return VendorFormListResponse.builder()
+				.fashionGoFormList(forms.stream().map(VendorFormResponse::convert).collect(Collectors.toList()))
+				.build();
 	}
 }

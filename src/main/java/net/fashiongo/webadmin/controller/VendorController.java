@@ -9,6 +9,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
+import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
@@ -333,13 +334,10 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getvendorformsList", method=RequestMethod.POST)
-	public JsonResponse<GetVendorFormsListResponse> getVendorFormsList(@RequestBody GetVendorFormsListParameter parameters) {
-		JsonResponse<GetVendorFormsListResponse> results = new JsonResponse<GetVendorFormsListResponse>(true, null, null);
-		
-		GetVendorFormsListResponse result = vendorService.getVendorFormsList(parameters);	
-		results.setData(result);
-		
-		return results; 
+	public JsonResponse<VendorFormListResponse> getVendorFormsList(@RequestBody GetVendorFormsListParameter parameters) {
+		JsonResponse<VendorFormListResponse> results = new JsonResponse<>(true, null, null);
+		results.setData(renewalVendorService.getVendorFormsList(parameters));
+		return results;
 	}
 	
 	/**

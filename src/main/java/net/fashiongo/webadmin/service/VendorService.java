@@ -436,7 +436,9 @@ public class VendorService extends ApiService {
 	 * @author Reo
 	 * @param parameters
 	 * @return
+	 * @deprecated remove SP
 	 */
+	@Deprecated
 	public GetVendorFormsListResponse getVendorFormsList(GetVendorFormsListParameter parameters) {
 		GetVendorFormsListResponse result = new GetVendorFormsListResponse();
 		String spName = "up_wa_GetVendorFormList";
