@@ -34,6 +34,8 @@ public class PhotoOrderResponse {
 
     private BigDecimal totalUnit;
 
+    private Integer totalItemCount;
+
     private String typeOfPhotoshoot;
 
     private LocalDateTime checkOutDate;
@@ -69,6 +71,14 @@ public class PhotoOrderResponse {
                 .wholeSalerID(photoOrderEntity.getWholeSalerID())
                 .totalAmount(photoOrderEntity.getTotalAmount())
                 .totalUnit(photoOrderEntity.getTotalUnit())
+                .totalItemCount(photoOrderEntity.getOrderDetails().stream()
+                        .map(photoOrderDetail -> Optional.ofNullable(photoOrderDetail.getStyleQty()).orElse(0)
+                                    + Optional.ofNullable(photoOrderDetail.getColorQty()).orElse(0)
+                                    + Optional.ofNullable(photoOrderDetail.getColorSetQty()).orElse(0)
+                                    + Optional.ofNullable(photoOrderDetail.getBaseColorSetQty()).orElse(0)
+                                    + Optional.ofNullable(photoOrderDetail.getColorSwatchQty()).orElse(0)
+                                    + Optional.ofNullable(photoOrderDetail.getModelSwatchQty()).orElse(0))
+                        .reduce(0, Integer::sum))
                 .typeOfPhotoshoot(photoOrderEntity.getPhotoCategory().getTypeOfPhotoshoot())
                 .checkOutDate(photoOrderEntity.get_checkOutDate())
                 .dropOffDate(photoOrderEntity.get_dropOffDate())

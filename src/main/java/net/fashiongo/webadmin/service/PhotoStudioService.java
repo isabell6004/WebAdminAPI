@@ -848,16 +848,17 @@ public class PhotoStudioService extends ApiService {
         return Msg;
     }
 
-    @SuppressWarnings("unchecked")
     public PagedResult<PhotoOrderResponse> getPhotoOrders(OrderQueryParam queryParam) {
-        QueryResults<PhotoOrderEntity> orderListResult = photoOrderEntityRepository.getPhotoOrderList(queryParam);
+        QueryResults<Integer> orderIdListResult = photoOrderEntityRepository.getPhotoOrderIdList(queryParam);
+
+        List<PhotoOrderEntity> orderListResult = photoOrderEntityRepository.getPhotoOrderListFromIdList(orderIdListResult.getResults(), queryParam.getOrderBy());
 
         SingleValueResult total = new SingleValueResult();
-        total.setTotalCount(new Long(orderListResult.getTotal()).intValue());
+        total.setTotalCount(new Long(orderIdListResult.getTotal()).intValue());
 
         PagedResult result = new PagedResult();
         result.setTotal(total);
-        result.setRecords(orderListResult.getResults().stream()
+        result.setRecords(orderListResult.stream()
                 .map(PhotoOrderResponse::of)
                 .collect(Collectors.toList()));
 

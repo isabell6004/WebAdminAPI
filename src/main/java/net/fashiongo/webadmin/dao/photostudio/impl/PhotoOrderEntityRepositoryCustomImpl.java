@@ -51,34 +51,50 @@ public class PhotoOrderEntityRepositoryCustomImpl implements PhotoOrderEntityRep
     }
 
     @Override
-    public QueryResults<PhotoOrderEntity> getPhotoOrderList(OrderQueryParam queryParam) {
+    public QueryResults<Integer> getPhotoOrderIdList(OrderQueryParam queryParam) {
         QPhotoOrderEntity photoOrder = QPhotoOrderEntity.photoOrderEntity;
-        QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
-        QPhotoPackage photoPackage = QPhotoPackage.photoPackage;
 
         long pageNumber = Optional.ofNullable(queryParam.getPn())
                 .orElse(1);
         long pageSize = Optional.ofNullable(queryParam.getPs())
                 .orElse(20);
 
-        long limit = pageSize;
         long offset = (pageNumber - 1) * pageSize;
 
         PhotoOrderSortInfoHolder sortInfoHolder = PhotoOrderSortInfoParser.parseOrderBy(queryParam.getOrderBy());
         PhotoOrderQueryBuilder<?> queryBuilder = PhotoOrderQueryBuilderFactory.getBuilder(sortInfoHolder);
 
-        JPAQuery<PhotoOrderEntity> query = new JPAQuery<>(photostudioEntityManager)
-                .select(photoOrder)
+        JPAQuery<Integer> query = new JPAQuery<>(photostudioEntityManager)
+                .select(photoOrder.orderID)
                 .from(photoOrder)
-                .innerJoin(photoOrder.photoCategory, photoCategory).fetchJoin()
-                .innerJoin(photoOrder.photoPackage, photoPackage).fetchJoin()
                 .where(makeQuery(queryParam))
                 .orderBy(queryBuilder.makeOrderBy(), defaultSortOrder(sortInfoHolder, false))
                 .offset(offset)
-                .limit(limit);
-
+                .limit(pageSize);
 
         return query.fetchResults();
+    }
+
+    @Override
+    public List<PhotoOrderEntity> getPhotoOrderListFromIdList(List<Integer> orderIdList, String orderBy) {
+        QPhotoOrderEntity photoOrder = QPhotoOrderEntity.photoOrderEntity;
+        QPhotoCategory photoCategory = QPhotoCategory.photoCategory;
+        QPhotoPackage photoPackage = QPhotoPackage.photoPackage;
+        QPhotoOrderDetail photoOrderDetail = QPhotoOrderDetail.photoOrderDetail;
+
+        PhotoOrderSortInfoHolder sortInfoHolder = PhotoOrderSortInfoParser.parseOrderBy(orderBy);
+        PhotoOrderQueryBuilder<?> queryBuilder = PhotoOrderQueryBuilderFactory.getBuilder(sortInfoHolder);
+
+        JPAQuery<PhotoOrderEntity> query = new JPAQuery<>(photostudioEntityManager)
+                .select(photoOrder).distinct()
+                .from(photoOrder)
+                .innerJoin(photoOrder.photoCategory, photoCategory).fetchJoin()
+                .innerJoin(photoOrder.photoPackage, photoPackage).fetchJoin()
+                .innerJoin(photoOrder.orderDetails, photoOrderDetail).fetchJoin()
+                .where(photoOrder.orderID.in(orderIdList))
+                .orderBy(queryBuilder.makeOrderBy(), defaultSortOrder(sortInfoHolder, false));
+
+        return query.fetch();
     }
 
     @Override
