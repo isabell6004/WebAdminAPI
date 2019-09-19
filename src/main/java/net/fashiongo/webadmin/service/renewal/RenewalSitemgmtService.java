@@ -279,4 +279,31 @@ public class RenewalSitemgmtService {
 
 		return result;
 	}
+
+	public GetDMRequestResponse getDMRequest(GetDMRequestParameter parameters) {
+		Integer pagenum = parameters.getPagenum();
+		Integer pagesize = parameters.getPagesize();
+		String status = parameters.getStatus();
+		Integer vendorstatus = parameters.getVendorstatus();
+		Integer wholesalerid = parameters.getWholesalerid();
+		String companytypecd = parameters.getCompanytypecd();
+		Date datefrom = parameters.getDatefrom();
+		Date dateto = parameters.getDateto();
+		String orderby = parameters.getOrderby();
+
+		List<DMRequest> dmRequests = primaryProcedureRepository.up_wa_GetFGCatalog(
+				pagenum
+				, pagesize
+				, status
+				, vendorstatus
+				, wholesalerid
+				, companytypecd
+				, datefrom
+				, dateto
+				, orderby);
+
+		return GetDMRequestResponse.builder()
+				.dmList(dmRequests)
+				.build();
+	}
 }

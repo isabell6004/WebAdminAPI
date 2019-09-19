@@ -789,12 +789,12 @@ public class SitemgmtController {
 	 * @return
 	 */
 	@RequestMapping(value = "getdmrequest", method = RequestMethod.POST)
-	public JsonResponse<GetDMRequestResponse> getDMRequest(@RequestBody GetDMRequestParameter parameters) {
-		JsonResponse<GetDMRequestResponse> results = new JsonResponse<GetDMRequestResponse>(true, null, null);
-		
-		GetDMRequestResponse _result = sitemgmtService.getDMRequest(parameters);
-		results.setData(_result);
-		
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetDMRequestResponse> getDMRequest(@RequestBody GetDMRequestParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetDMRequestResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetDMRequestResponse>(true, null, null);
+
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetDMRequestResponse dmRequest = renewalSitemgmtService.getDMRequest(parameters);
+		results.setData(dmRequest);
+
 		return results;
 	}
 	

@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.data.repository.primary.procedure;
 
+import com.querydsl.core.JoinFlag;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.*;
@@ -7,6 +8,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
+import com.querydsl.sql.SQLExpressions;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendor;
@@ -28,10 +30,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -1258,5 +1257,239 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.calendarDetails(todayDealCalendarDetails)
 				.vendors(vendorSummaryDetails)
 				.build();
+	}
+
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public List<DMRequest> up_wa_GetFGCatalog(Integer pageNumber, Integer pageSize, String status, Integer vendorStatus, Integer wholeSalerID, String companyTypeCD, Date dateFrom, Date dateTo, String orderBy) {
+		long offset = (pageNumber - 1) * pageSize;
+		long limit = pageSize;
+
+		List<Integer> companyTypeIds = Collections.EMPTY_LIST;
+
+		if(StringUtils.hasLength(companyTypeCD)) {
+			companyTypeIds = Arrays.asList(companyTypeCD.split(",")).stream()
+					.map(Integer::valueOf)
+					.collect(Collectors.toList());
+		}
+
+		MSSQLServer2012Templates server2012Templates = new MSSQLServer2012Templates();
+
+		JPASQLQuery subQuery1 = new JPASQLQuery(entityManager,server2012Templates);
+		JPASQLQuery subQuery2 = new JPASQLQuery(entityManager,server2012Templates);
+		JPASQLQuery<DMRequest> query = new JPASQLQuery(entityManager,server2012Templates);
+		QVendorCatalogSendRequestEntity R = new QVendorCatalogSendRequestEntity("R");
+		QVendorCatalogEntity C = new QVendorCatalogEntity("C");
+		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
+		QVendorCatalogSendQueueEntity Q = new QVendorCatalogSendQueueEntity("Q");
+
+		QVendorCatalogSendRequestEntity SUB_R = new QVendorCatalogSendRequestEntity("SUB_R");
+		QVendorCatalogProductEntity SUB_A = new QVendorCatalogProductEntity("SUB_A");
+		QProductsEntity SUB_P = new QProductsEntity("SUB_P");
+		QSimpleWholeSalerEntity SUB_W = new QSimpleWholeSalerEntity("SUB_W");
+		QProductImageEntity SUB_I = new QProductImageEntity("SUB_I");
+
+		Path<Object> sub_r = ExpressionUtils.path(Object.class, "SUB_R_TEMP");
+		Path<Integer> sub_rRequestedCatalogID = ExpressionUtils.path(Integer.class,sub_r, "RequestedCatalogID");
+
+		Path<Object> Z = ExpressionUtils.path(Object.class, "Z");
+		NumberPath<Integer> Z_CatalogID = Expressions.numberPath(Integer.class, Z, "CatalogID");
+		StringPath C1 = Expressions.stringPath(Z, "[1]");
+		StringPath C2 = Expressions.stringPath(Z, "[2]");
+		StringPath C3 = Expressions.stringPath(Z, "[3]");
+		StringPath C4 = Expressions.stringPath(Z, "[4]");
+
+		Path<Object> CP = ExpressionUtils.path(Object.class, "CP");
+		StringPath CP_C1 = Expressions.stringPath(CP, "C1");
+		StringPath CP_C2 = Expressions.stringPath(CP, "C2");
+		StringPath CP_C3 = Expressions.stringPath(CP, "C3");
+		StringPath CP_C4 = Expressions.stringPath(CP, "C4");
+
+		NumberPath<Integer> cp_catalogID = Expressions.numberPath(Integer.class, CP, "CatalogID");
+
+		List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
+		switch (orderBy) {
+			case "CatalogSendRequestID desc":
+				orderSpecifiers.add(R.catalogSendRequestID.desc());
+				break;
+			case "CatalogSendRequestID asc":
+				orderSpecifiers.add(R.catalogSendRequestID.asc());
+				break;
+			case "CompanyName desc":
+				orderSpecifiers.add(W.companyName.desc());
+				break;
+			case "CompanyName asc":
+				orderSpecifiers.add(W.companyName.asc());
+				break;
+			case "CompanyTypeCD desc":
+				orderSpecifiers.add(W.companyTypeID.desc());
+				break;
+			case "CompanyTypeCD asc":
+				orderSpecifiers.add(W.companyTypeID.asc());
+				break;
+			case "CreatedOn desc":
+				orderSpecifiers.add(R.createdOn.desc());
+				break;
+			case "CreatedOn asc":
+				orderSpecifiers.add(R.createdOn.asc());
+				break;
+			case "SentOn desc":
+				orderSpecifiers.add(Q.sentOn.desc());
+				break;
+			case "SentOn asc":
+				orderSpecifiers.add(Q.sentOn.asc());
+				break;
+		}
+		orderSpecifiers.add(R.requestedCatalogID.desc());
+
+		OrderSpecifier[] orderSpec = orderSpecifiers.toArray(new OrderSpecifier[orderSpecifiers.size()]);
+
+		subQuery1
+				.select(SUB_A.catalogID, SUB_I.imageName, SQLExpressions.rowNumber().over().partitionBy(SUB_A.catalogID).orderBy(SUB_A.catalogProductID).as("rowNo"))
+				.from(
+						JPAExpressions.select(SUB_R.requestedCatalogID)
+								.from(SUB_R)
+								.groupBy(SUB_R.requestedCatalogID), sub_r)
+				.innerJoin(SUB_A).on(SUB_A.catalogID.eq(sub_rRequestedCatalogID))
+				.innerJoin(SUB_P).on(SUB_A.productID.eq(SUB_P.productID))
+				.innerJoin(SUB_W).on(SUB_P.wholeSalerID.eq(SUB_W.wholeSalerId))
+				.innerJoin(SUB_I).on(SUB_P.productID.eq(SUB_I.productID).and(SUB_I.listOrder.eq(1)))
+				.where(SUB_P.active.eq(true).and(SUB_W.active.eq(true)).and(SUB_W.shopActive.eq(true)).and(SUB_W.orderActive.eq(true)));
+
+		subQuery2
+				.select(Z_CatalogID,C1.as("C1"),C2.as("C2"),C3.as("C3"),C4.as("C4"))
+				.from(subQuery1,Z).addJoinFlag(" Pivot ( "
+				+ "Min(ImageName) "
+				+ "For rowNo In ([1],[2],[3],[4])"
+				+ ") Z", JoinFlag.Position.END);
+
+		query.select(
+				Projections.constructor(
+						DMRequest.class
+						,SQLExpressions.rowNumber().over().orderBy(orderSpec).as("[row]")
+						,R.catalogSendRequestID
+						,R.catalogSendQueueID
+						,R.fgCatalogID
+						,R.catalogSortNo
+						,R.createdOn
+						,R.modifiedOn
+						,R.active
+						,W.wholeSalerId
+						, Expressions.cases().when(W.companyTypeID.eq(1)).then("M")
+								.when(W.companyTypeID.eq(2)).then("W")
+								.otherwise("D")
+						,W.companyName
+						,Q.sentOn
+						,R.requestedCatalogID
+						,I.urlPath
+						,W.dirName
+						,CP_C1
+						,CP_C2
+						,CP_C3
+						,CP_C4
+						,SQLExpressions.count().over().as("TotalCount")
+						)
+				)
+				.from(R)
+				.innerJoin(C).on(R.requestedCatalogID.eq(C.catalogID))
+				.innerJoin(W).on(W.wholeSalerId.eq(C.vendorID))
+				.innerJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.leftJoin(Q).on(Q.catalogSendQueueID.eq(R.catalogSendQueueID))
+				.leftJoin(subQuery2,CP).on(R.requestedCatalogID.eq(cp_catalogID));
+
+		Expression<Integer> ONE = Expressions.constant(1);
+		BooleanExpression predicate = Expressions.asNumber(1).eq(ONE);
+
+		if(wholeSalerID != null && wholeSalerID > 0) {
+			predicate = predicate.and(W.wholeSalerId.eq(wholeSalerID));
+		}
+
+		if(companyTypeIds.size() > 0) {
+			predicate = predicate.and(W.companyTypeID.in(companyTypeIds));
+		}
+
+		if(dateFrom != null) {
+			Timestamp fromTimestamp = new Timestamp(dateFrom.getTime());
+			BooleanExpression toExpressions = Optional.ofNullable(dateTo).map(date -> R.createdOn.lt(new Timestamp(date.getTime()))).orElse(R.createdOn.isNull());
+
+			predicate = predicate.and(
+					R.createdOn.goe(fromTimestamp)
+							.and(toExpressions)
+			);
+		}
+
+		Timestamp now = new Timestamp(new Date().getTime());
+		JPASQLQuery blockedVendorQuery = new JPASQLQuery(entityManager,server2012Templates);
+		blockedVendorQuery.select(QVendorBlockedEntity.vendorBlockedEntity.wholeSalerId)
+				.from(QVendorBlockedEntity.vendorBlockedEntity);
+		JPASQLQuery logVendorHoldQuery = new JPASQLQuery(entityManager,server2012Templates);
+		logVendorHoldQuery.select(QLogVendorHoldEntity.logVendorHoldEntity.wholeSalerID)
+				.from(QLogVendorHoldEntity.logVendorHoldEntity)
+				.where(
+						QLogVendorHoldEntity.logVendorHoldEntity.active.eq(true)
+								.and(QLogVendorHoldEntity.logVendorHoldEntity.holdFrom.loe(now))
+								.and(QLogVendorHoldEntity.logVendorHoldEntity.holdTo.goe(now))
+				);
+
+		switch (vendorStatus) {
+			case 1:
+				predicate = predicate.and(W.orderActive.eq(true));
+				break;
+			case 2:
+				predicate = predicate.and(
+						W.shopActive.eq(true)
+								.and(W.orderActive.eq(false))
+								.and(W.wholeSalerId.notIn(blockedVendorQuery))
+								.and(W.wholeSalerId.notIn(logVendorHoldQuery))
+								.and(W.contractExpireDate.isNull().or(W.contractExpireDate.gt(now)))
+
+				);
+				break;
+			case 3:
+				predicate = predicate.and(W.active.eq(true).and(W.shopActive.eq(false)).and(W.orderActive.eq(false)));
+				break;
+			case 4:
+				predicate = predicate.and(
+						W.wholeSalerId.in(blockedVendorQuery).and(W.contractExpireDate.isNull().or(W.contractExpireDate.gt(now)))
+				);
+				break;
+			case 5:
+				predicate = predicate.and(
+						W.wholeSalerId.in(logVendorHoldQuery)
+				);
+				break;
+			case 6:
+				predicate = predicate.and(
+						W.contractExpireDate.isNotNull().and(W.contractExpireDate.lt(now))
+				);
+				break;
+			case 7:
+				predicate = predicate.and(W.active.eq(false));
+				break;
+			case 8:
+				predicate = predicate.and(W.actualOpen.eq('Y'));
+				break;
+		}
+
+		switch (status) {
+			case "Requested":
+				predicate = predicate.and(R.catalogSendQueueID.isNull());
+				break;
+			case "Waiting":
+				predicate = predicate.and(R.catalogSendQueueID.isNotNull().and(Q.sentOn.isNull()));
+				break;
+			case "Sent":
+				predicate = predicate.and(R.catalogSendQueueID.isNotNull().and(Q.sentOn.isNotNull()));
+				break;
+		}
+
+		query.where(predicate)
+				.orderBy(orderSpec)
+				.offset(offset)
+				.limit(limit);
+
+		return query
+				.fetch();
 	}
 }
