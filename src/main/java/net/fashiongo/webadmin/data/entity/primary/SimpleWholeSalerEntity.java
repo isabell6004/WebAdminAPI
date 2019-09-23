@@ -68,6 +68,9 @@ public class SimpleWholeSalerEntity implements Serializable {
     @Column(name = "ActualOpen")
     private char actualOpen;
 
+    @Column(name = "PictureLogo")
+    private String pictureLogo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)
     private SystemImageServersEntity systemImageServersEntity;

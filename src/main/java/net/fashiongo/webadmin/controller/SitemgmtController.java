@@ -813,9 +813,9 @@ public class SitemgmtController {
 	@RequestMapping(value = "getdmrequestsendlist", method = RequestMethod.POST)
 	public JsonResponse<JSONObject> getDMRequestSendList(@RequestBody GetDMRequestSendListParameter parameters) {
 		JsonResponse<JSONObject> results = new JsonResponse<JSONObject>(true, null, null);
-		
-		JSONObject _result = sitemgmtService.getDMRequestSendList(parameters);
-		results.setData(_result);
+
+		JSONObject dmRequestSendList = renewalSitemgmtService.getDMRequestSendList(parameters);
+		results.setData(dmRequestSendList);
 		
 		return results;
 	}

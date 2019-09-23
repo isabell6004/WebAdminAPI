@@ -8,10 +8,12 @@ import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
+import net.fashiongo.webadmin.data.repository.primary.procedure.DMSendListMigrationProcedure;
 import net.fashiongo.webadmin.data.repository.primary.procedure.GetAdminTodayDealCalendarResult;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepository;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,8 +57,10 @@ public class RenewalSitemgmtService {
 
 	private final TrendReportEntityRepository trendReportEntityRepository;
 
+	private final DMSendListMigrationProcedure dmSendListMigrationProcedure;
+
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -70,6 +75,7 @@ public class RenewalSitemgmtService {
 		this.productImageEntityRepository = productImageEntityRepository;
 		this.trendReportMapEntityRepository = trendReportMapEntityRepository;
 		this.trendReportEntityRepository = trendReportEntityRepository;
+		this.dmSendListMigrationProcedure = dmSendListMigrationProcedure;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -342,5 +348,32 @@ public class RenewalSitemgmtService {
 				.total(trendReportEntityRepository.getRecCnt())
 				.trendReportDefault(trendReportEntityRepository.getTrendReportDefault(parameters.orderby, parameters.orderbygubn))
 				.build();
+	}
+
+	public JSONObject getDMRequestSendList(GetDMRequestSendListParameter parameters) {
+		JSONObject result = new JSONObject();
+//		String spName = "up_wa_DMSendList_Migration";
+//		List<Object> params = new ArrayList<Object>();
+//		params.add(StringUtils.join(parameters.getDmIds(), ","));
+//
+//		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
+//		List<DMRequestDetail> subList = (List<DMRequestDetail>) _result.get(0);
+//
+//		Map<Integer, List<DMRequestDetail>> HashMapDmList = subList.stream()
+//				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
+//
+//		for (Map.Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
+//			result.put(entry.getKey(), entry.getValue());
+//		}
+		List<DMRequestDetail> dmRequestDetails = dmSendListMigrationProcedure.up_wa_DMSendList_Migration(parameters.getDmIds());
+
+		Map<Integer, List<DMRequestDetail>> HashMapDmList = dmRequestDetails.stream()
+				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
+
+		for (Map.Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
+			result.put(entry.getKey(), entry.getValue());
+		}
+
+		return result;
 	}
 }
