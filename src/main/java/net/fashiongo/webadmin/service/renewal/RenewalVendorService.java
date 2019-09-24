@@ -1,10 +1,12 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.entity.primary.FashionGoFormEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorContractDocumentEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorImageRequestEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.entity.primary.vendor.VendorProductRow;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.data.repository.primary.form.FashionGoFormEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.form.FormOrderingType;
 import net.fashiongo.webadmin.data.repository.primary.vendor.*;
@@ -27,14 +29,16 @@ public class RenewalVendorService {
 	private final VendorProductRepository vendorProductRepository;
 	private final VendorImageRequestEntityRepository vendorImageRequestEntityRepository;
 	private final FashionGoFormEntityRepository fashionGoFormEntityRepository;
+	private final VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository;
 
 	@Autowired
 	public RenewalVendorService(VendorProductRepository vendorProductRepository,
-								VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
-								FashionGoFormEntityRepository fashionGoFormEntityRepository) {
+	                            VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
+	                            FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository) {
 		this.vendorProductRepository = vendorProductRepository;
 		this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
 		this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
+		this.vendorContractDocumentEntityRepository = vendorContractDocumentEntityRepository;
 	}
 
 	public VendorProductListResponse getProductList(GetProductListParameter parameters) {
@@ -77,6 +81,32 @@ public class RenewalVendorService {
 		List<FashionGoFormEntity> forms = fashionGoFormEntityRepository.getForms(FormOrderingType.FASHION_GO_FORM_ID_DESC);
 		return VendorFormListResponse.builder()
 				.fashionGoFormList(forms.stream().map(VendorFormResponse::convert).collect(Collectors.toList()))
+				.build();
+	}
+
+	public GetVendorContractDocumentHistoryResponse getVendorContractDocumentHistory(Integer vendorContractID) {
+
+		List<VendorContractDocumentEntity> vendorContractDocumentEntities = vendorContractDocumentEntityRepository.findAllByVendorContractID(vendorContractID);
+
+		return GetVendorContractDocumentHistoryResponse.builder()
+				.vendorContractDocumentHistoryList(
+						vendorContractDocumentEntities.stream()
+						.map(vendorContractDocumentEntity ->
+								VendorContractDocumentHistory.builder()
+										.vendorContractID(vendorContractDocumentEntity.getVendorContractID())
+										.vendorContractDocumentID(vendorContractDocumentEntity.getVendorContractDocumentID())
+										.documentTypeID(vendorContractDocumentEntity.getDocumentTypeID())
+										.createdBy(vendorContractDocumentEntity.getCreatedBy())
+										.createdOn(vendorContractDocumentEntity.getCreatedOn().toLocalDateTime())
+										.note(vendorContractDocumentEntity.getNote())
+										.receivedBy(vendorContractDocumentEntity.getReceivedBy())
+										.fileName(vendorContractDocumentEntity.getFileName())
+										.fileName2(vendorContractDocumentEntity.getFileName2())
+										.fileName3(vendorContractDocumentEntity.getFileName3())
+										.checkBox(false)
+								.build()
+						).collect(Collectors.toList())
+				)
 				.build();
 	}
 }
