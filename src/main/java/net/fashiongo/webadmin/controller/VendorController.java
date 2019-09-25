@@ -12,7 +12,6 @@ import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.VendorService;
@@ -447,12 +446,12 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getvendordetailinfodata", method=RequestMethod.GET)
-	public JsonResponse<GetVendorDetailInfoDataResponse> getVendorDetailInfoData(@RequestParam(value="WholeSalerID") Integer wholeSalerID) {
-		JsonResponse<GetVendorDetailInfoDataResponse> results = new JsonResponse<GetVendorDetailInfoDataResponse>(true, null, null);
-		
-		GetVendorDetailInfoDataResponse result = vendorService.getVendorDetailInfoData(wholeSalerID);	
-		results.setData(result);
-		
+	public JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse> getVendorDetailInfoData(@RequestParam(value="wid") Integer wholeSalerID) {
+		JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse>(true, null, null);
+
+		net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse vendorDetailInfoData = renewalVendorService.getVendorDetailInfoData(wholeSalerID);
+		results.setData(vendorDetailInfoData);
+
 		return results; 
 	}
 

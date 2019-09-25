@@ -66,10 +66,22 @@ public class SimpleWholeSalerEntity implements Serializable {
     private Timestamp contractExpireDate;
 
     @Column(name = "ActualOpen")
-    private char actualOpen;
+    private String actualOpen;
+
+    @Column(name = "ActualOpenDate")
+    private Timestamp actualOpenDate;
+
+    @Column(name = "LastModifiedDateTime")
+    private Timestamp lastModifiedDateTime;
 
     @Column(name = "PictureLogo")
     private String pictureLogo;
+
+    @Column(name = "LastUser")
+    private String lastUser;
+
+    @Column(name = "UserID")
+    private String userID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)

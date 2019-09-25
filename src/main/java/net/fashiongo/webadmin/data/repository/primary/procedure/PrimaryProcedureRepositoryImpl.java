@@ -1468,7 +1468,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				predicate = predicate.and(W.active.eq(false));
 				break;
 			case 8:
-				predicate = predicate.and(W.actualOpen.eq('Y'));
+				predicate = predicate.and(W.actualOpen.eq("Y"));
 				break;
 		}
 
