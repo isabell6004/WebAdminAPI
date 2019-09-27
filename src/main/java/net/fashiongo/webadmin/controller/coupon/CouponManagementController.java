@@ -1,21 +1,35 @@
 package net.fashiongo.webadmin.controller.coupon;
 
-import net.fashiongo.common.JsonResponse;
-import net.fashiongo.webadmin.model.pojo.common.PagedResult;
-import net.fashiongo.webadmin.model.primary.coupon.command.*;
-import net.fashiongo.webadmin.model.primary.coupon.dto.CouponDto;
-import net.fashiongo.webadmin.model.primary.coupon.dto.CouponNotificationDto;
-import net.fashiongo.webadmin.service.coupon.impl.CouponManagementServiceImpl;
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
+import net.fashiongo.common.JsonResponse;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponCreateInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponNotificationInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponOptionOutput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponQueryParam;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponUpdateInput;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponDto;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponNotificationDto;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponStatisticsDto;
+import net.fashiongo.webadmin.service.coupon.impl.CouponManagementServiceImpl;
 
 @RestController
-@RequestMapping(value = "/coupon", consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/coupon", produces = "application/json")
 public class CouponManagementController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -261,4 +275,24 @@ public class CouponManagementController {
 
         return response;
     }
+    
+    @GetMapping(value = "/statistics", produces = "application/json")
+    public JsonResponse<PagedResult<CouponStatisticsDto>> getCouponStatistics(@ModelAttribute CouponQueryParam q) {
+
+        JsonResponse<PagedResult<CouponStatisticsDto>> response = new JsonResponse<>(false, null, null);
+
+        try {
+            PagedResult<CouponStatisticsDto> result = couponManagementService.getCouponStatistics(q.getPn(), q.getPs());
+
+            response.setSuccess(true);
+            response.setMessage("success");
+            response.setData(result);
+        } catch (Exception ex) {
+            logger.error("Exception Error: {}", ex);
+            response.setMessage(ex.getMessage());
+        }
+
+        return response;
+    }
+    
 }
