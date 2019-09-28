@@ -81,7 +81,18 @@ server:
   port: 29901
   servlet:
     context-path: /api
-  
+  tomcat:
+    basedir: .
+    max-threads: 250
+    min-spare-threads: 10
+    accesslog:
+      enabled: true
+      suffix: .log
+      prefix: access_log
+      file-date-format: .yyyy-MM-dd
+      directory: /home1/irteam/logs/webadmin_api/accesslog
+      pattern: combined
+
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.10.0.145:29001
   fgVendorAPI_EndPoint: http://10.10.0.145:28501
