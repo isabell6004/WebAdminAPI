@@ -671,9 +671,11 @@ public class SitemgmtController {
 	 * @return GetFeaturedItemListDayResponse
 	 */
 	@RequestMapping(value = "getfeatureditemlistday", method = RequestMethod.POST)
-    public JsonResponse<GetFeaturedItemListDayResponse> getFeaturedItemListDay(@RequestBody StartDateParameter parameters) {
-			GetFeaturedItemListDayResponse result = sitemgmtService.getFeaturedItemListDay(parameters.getsDate());  
-           return new JsonResponse<GetFeaturedItemListDayResponse>(true, null, result);
+    public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse> getFeaturedItemListDay(@RequestBody StartDateParameter parameters) {
+//		GetFeaturedItemListDayResponse result = sitemgmtService.getFeaturedItemListDay(parameters.getsDate());
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse result = renewalSitemgmtService.getFeaturedItemListDay(parameters.getsDate());
+
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse>(true, null, result);
     }
 	
 	/**
@@ -686,9 +688,9 @@ public class SitemgmtController {
 	 * @return GetProductDetailResponse
 	 */
 	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
-	public JsonResponse<GetProductDetailResponse> getProductDetail(@RequestBody GetProductDetailParameter parameters) {
-		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
-		return new JsonResponse<GetProductDetailResponse>(true, null, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse> getProductDetail(@RequestBody GetProductDetailParameter parameters) {
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse result = renewalSitemgmtService.getProductDetail(parameters);
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse>(true, null, result);
 	}
 	
 	/**
@@ -701,9 +703,10 @@ public class SitemgmtController {
 	 * @return GetTrendReportDefaultResponse
 	 */
 	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
-	public JsonResponse<GetTrendReportDefaultResponse> getTrendReportDefault(@RequestBody GetTrendReportDefaultParameter parameters) {
-		GetTrendReportDefaultResponse result = sitemgmtService.getTrendReportDefault(parameters);
-		return new JsonResponse<GetTrendReportDefaultResponse>(true, null, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse> getTrendReportDefault(@RequestBody GetTrendReportDefaultParameter parameters) {
+//		GetTrendReportDefaultResponse result = sitemgmtService.getTrendReportDefault(parameters);
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse result = renewalSitemgmtService.getTrendReportDefault(parameters);
+		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse>(true, null, result);
 	}
 	
 	/**
@@ -789,12 +792,12 @@ public class SitemgmtController {
 	 * @return
 	 */
 	@RequestMapping(value = "getdmrequest", method = RequestMethod.POST)
-	public JsonResponse<GetDMRequestResponse> getDMRequest(@RequestBody GetDMRequestParameter parameters) {
-		JsonResponse<GetDMRequestResponse> results = new JsonResponse<GetDMRequestResponse>(true, null, null);
-		
-		GetDMRequestResponse _result = sitemgmtService.getDMRequest(parameters);
-		results.setData(_result);
-		
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetDMRequestResponse> getDMRequest(@RequestBody GetDMRequestParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetDMRequestResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetDMRequestResponse>(true, null, null);
+
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetDMRequestResponse dmRequest = renewalSitemgmtService.getDMRequest(parameters);
+		results.setData(dmRequest);
+
 		return results;
 	}
 	
@@ -810,9 +813,9 @@ public class SitemgmtController {
 	@RequestMapping(value = "getdmrequestsendlist", method = RequestMethod.POST)
 	public JsonResponse<JSONObject> getDMRequestSendList(@RequestBody GetDMRequestSendListParameter parameters) {
 		JsonResponse<JSONObject> results = new JsonResponse<JSONObject>(true, null, null);
-		
-		JSONObject _result = sitemgmtService.getDMRequestSendList(parameters);
-		results.setData(_result);
+
+		JSONObject dmRequestSendList = renewalSitemgmtService.getDMRequestSendList(parameters);
+		results.setData(dmRequestSendList);
 		
 		return results;
 	}

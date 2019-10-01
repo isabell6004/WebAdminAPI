@@ -123,7 +123,9 @@ public class VendorService extends ApiService {
 	 * @author Incheol Jung
 	 * @param parameters
 	 * @return
+	 * @deprecated remove SP
 	 */
+    @Deprecated
 	public GetProductListResponse getProductList(GetProductListParameter parameters) {
 		GetProductListResponse result = new GetProductListResponse();
 		String spName = "up_wa_GetProductsList";
@@ -135,10 +137,11 @@ public class VendorService extends ApiService {
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, ProductSummary.class);
 		result.setProductList((List<ProductSummary>) _result.get(0));
-		
+
 		return result;
 	}
-	
+
+	@Deprecated
 	public List<ProductColor> getProductColor(Integer productId) {
 		String spName = "up_wa_GetProductColors";
 		List<Object> params = new ArrayList<Object>();
@@ -284,7 +287,9 @@ public class VendorService extends ApiService {
 	 * @author Reo
 	 * @param parameters
 	 * @return
+	 * @deprecated remove SP
 	 */
+	@Deprecated
 	public GetBannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters) {
 		GetBannerRequestResponse result = new GetBannerRequestResponse();
 		String spName = "up_wa_GetBannerImage";
@@ -431,7 +436,9 @@ public class VendorService extends ApiService {
 	 * @author Reo
 	 * @param parameters
 	 * @return
+	 * @deprecated remove SP
 	 */
+	@Deprecated
 	public GetVendorFormsListResponse getVendorFormsList(GetVendorFormsListParameter parameters) {
 		GetVendorFormsListResponse result = new GetVendorFormsListResponse();
 		String spName = "up_wa_GetVendorFormList";

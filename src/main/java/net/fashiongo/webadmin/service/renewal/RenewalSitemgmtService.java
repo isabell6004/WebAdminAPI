@@ -8,10 +8,12 @@ import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
+import net.fashiongo.webadmin.data.repository.primary.procedure.DMSendListMigrationProcedure;
 import net.fashiongo.webadmin.data.repository.primary.procedure.GetAdminTodayDealCalendarResult;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepository;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,8 +49,18 @@ public class RenewalSitemgmtService {
 
 	private final FeaturedItemEntityRepository featuredItemEntityRepository;
 
+	private final ProductsEntityRepository productsEntityRepository;
+
+	private final ProductImageEntityRepository productImageEntityRepository;
+
+	private final TrendReportMapEntityRepository trendReportMapEntityRepository;
+
+	private final TrendReportEntityRepository trendReportEntityRepository;
+
+	private final DMSendListMigrationProcedure dmSendListMigrationProcedure;
+
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -58,6 +71,11 @@ public class RenewalSitemgmtService {
 		this.codeBodySizeEntityRepository = codeBodySizeEntityRepository;
 		this.xColorMasterEntityRepository = xColorMasterEntityRepository;
 		this.featuredItemEntityRepository = featuredItemEntityRepository;
+		this.productsEntityRepository = productsEntityRepository;
+		this.productImageEntityRepository = productImageEntityRepository;
+		this.trendReportMapEntityRepository = trendReportMapEntityRepository;
+		this.trendReportEntityRepository = trendReportEntityRepository;
+		this.dmSendListMigrationProcedure = dmSendListMigrationProcedure;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -276,6 +294,85 @@ public class RenewalSitemgmtService {
 
 		result.setFeaturedItemCount(featuredItemEntityRepository.getFeaturedItemCount(sDate));
 		result.setFeaturedItemList(featuredItemEntityRepository.getFeaturedItemList(sDate));
+
+		return result;
+	}
+
+	public GetDMRequestResponse getDMRequest(GetDMRequestParameter parameters) {
+		Integer pagenum = parameters.getPagenum();
+		Integer pagesize = parameters.getPagesize();
+		String status = parameters.getStatus();
+		Integer vendorstatus = parameters.getVendorstatus();
+		Integer wholesalerid = parameters.getWholesalerid();
+		String companytypecd = parameters.getCompanytypecd();
+		Date datefrom = parameters.getDatefrom();
+		Date dateto = parameters.getDateto();
+		String orderby = parameters.getOrderby();
+
+		List<DMRequest> dmRequests = primaryProcedureRepository.up_wa_GetFGCatalog(
+				pagenum
+				, pagesize
+				, status
+				, vendorstatus
+				, wholesalerid
+				, companytypecd
+				, datefrom
+				, dateto
+				, orderby);
+
+		return GetDMRequestResponse.builder()
+				.dmList(dmRequests)
+				.build();
+	}
+
+	public GetFeaturedItemListDayResponse getFeaturedItemListDay(String sDate) {
+		List<FeaturedItemList> featuredItemLists = featuredItemEntityRepository.getFeaturedItemListDay(sDate);
+
+		return GetFeaturedItemListDayResponse.builder()
+				.featuredItemList(featuredItemLists)
+				.build();
+	}
+
+	public GetProductDetailResponse getProductDetail(GetProductDetailParameter parameters) {
+		return GetProductDetailResponse.builder()
+				.productInfolist(productsEntityRepository.getProductsInfo(parameters.getProductID()))
+				.productImagelist(productImageEntityRepository.getProductsImage(parameters.getProductID()))
+				.productColorslist(productsEntityRepository.getProductsColors(parameters.getProductID()))
+				.productSizelist(productsEntityRepository.getProductsSizes(parameters.getProductID()))
+				.productSelectChecklist(trendReportMapEntityRepository.getProductsSelectCheck(parameters.getTrendReportID(), parameters.getProductID()))
+				.build();
+	}
+
+	public GetTrendReportDefaultResponse getTrendReportDefault(GetTrendReportDefaultParameter parameters) {
+		return GetTrendReportDefaultResponse.builder()
+				.total(trendReportEntityRepository.getRecCnt())
+				.trendReportDefault(trendReportEntityRepository.getTrendReportDefault(parameters.orderby, parameters.orderbygubn))
+				.build();
+	}
+
+	public JSONObject getDMRequestSendList(GetDMRequestSendListParameter parameters) {
+		JSONObject result = new JSONObject();
+//		String spName = "up_wa_DMSendList_Migration";
+//		List<Object> params = new ArrayList<Object>();
+//		params.add(StringUtils.join(parameters.getDmIds(), ","));
+//
+//		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
+//		List<DMRequestDetail> subList = (List<DMRequestDetail>) _result.get(0);
+//
+//		Map<Integer, List<DMRequestDetail>> HashMapDmList = subList.stream()
+//				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
+//
+//		for (Map.Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
+//			result.put(entry.getKey(), entry.getValue());
+//		}
+		List<DMRequestDetail> dmRequestDetails = dmSendListMigrationProcedure.up_wa_DMSendList_Migration(parameters.getDmIds());
+
+		Map<Integer, List<DMRequestDetail>> HashMapDmList = dmRequestDetails.stream()
+				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
+
+		for (Map.Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
+			result.put(entry.getKey(), entry.getValue());
+		}
 
 		return result;
 	}

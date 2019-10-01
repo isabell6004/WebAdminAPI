@@ -9,7 +9,11 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.util.List;
 
+import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
+import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
+import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +35,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 
@@ -45,6 +48,9 @@ public class VendorServiceTest {
 	
 	@Autowired
 	VendorService vendorService;
+
+	@Autowired
+	private RenewalVendorService renewalVendorService;
 
 	/**
 	 * 
@@ -79,10 +85,10 @@ public class VendorServiceTest {
 		parameters.setWholesalerid("2858");
 		parameters.setVendorcategoryid("0");
 		parameters.setProductname("t");
-		
-		GetProductListResponse result = vendorService.getProductList(parameters);
-		if(!CollectionUtils.isEmpty(result.getProductList())) {
-			assertNotNull(result.getProductList().get(0).getProductID());
+
+		VendorProductListResponse result = renewalVendorService.getProductList(parameters);
+		if(!CollectionUtils.isEmpty(result.getProducts())) {
+			assertNotNull(result.getProducts().get(0).getProductID());
 		}
 	}
 	
@@ -178,10 +184,10 @@ public class VendorServiceTest {
 		parameters.setSearchStatus("Pending");
 		parameters.setSearchType(null);
 		parameters.setOrderby(null);
-		GetBannerRequestResponse result = vendorService.getBannerRequest(parameters);
-		if(!CollectionUtils.isEmpty(result.getBannerImageList())) {
-			assertNotNull(result.getBannerImageList());
-			assertNotNull(result.getTotalCount());
+		BannerRequestResponse response = renewalVendorService.getBannerRequest(parameters);
+		if(!CollectionUtils.isEmpty(response.getBannerImageList())) {
+			assertNotNull(response.getBannerImageList());
+			assertNotNull(response.getTotal());
 		}
 	}
 	
@@ -254,9 +260,9 @@ public class VendorServiceTest {
 	@Test
 	public void testGetVendorFormsList() {
 		GetVendorFormsListParameter parameters = new GetVendorFormsListParameter();
-		GetVendorFormsListResponse result = vendorService.getVendorFormsList(parameters);
-		if(!CollectionUtils.isEmpty(result.getFashiongoFormList())) {
-			assertNotNull(result.getFashiongoFormList());
+		VendorFormListResponse response = renewalVendorService.getVendorFormsList(parameters);
+		if(!CollectionUtils.isEmpty(response.getFashionGoFormList())) {
+			assertNotNull(response.getFashionGoFormList());
 		}
 	}
 	

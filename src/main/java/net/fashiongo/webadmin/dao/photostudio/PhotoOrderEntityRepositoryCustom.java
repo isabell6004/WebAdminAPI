@@ -10,7 +10,9 @@ import java.util.Optional;
 public interface PhotoOrderEntityRepositoryCustom {
     List<PhotoOrderEntity> getValidOrderWithModelByCalendarIdAndModelId(Integer calendarId, Integer modelId);
 
-    QueryResults<PhotoOrderEntity> getPhotoOrderList(OrderQueryParam queryParam);
+    QueryResults<Integer> getPhotoOrderIdList(OrderQueryParam queryParam);
+
+    List<PhotoOrderEntity> getPhotoOrderListFromIdList(List<Integer> orderIdList, String orderBy);
 
     Optional<String> getPrevOrderNumber(PhotoOrderEntity poNumber, OrderQueryParam queryParam);
 

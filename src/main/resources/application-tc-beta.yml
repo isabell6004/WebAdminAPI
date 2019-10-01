@@ -1,4 +1,4 @@
-# toast
+# tc-beta
 spring:
   profiles: tc-beta
   redis:
@@ -26,11 +26,11 @@ spring:
     properties.hibernate.generate_statistics: false
     
 webAdminapi:
-  fgServiceAPI_EndPoint: http://127.0.0.1:29021
-  fgVendorAPI_EndPoint: http://127.0.0.1:28521
-  statsAPI_EndPoint: http://127.0.0.1:27621
+  fgServiceAPI_EndPoint: http://127.0.0.1:29001
+  fgVendorAPI_EndPoint: http://127.0.0.1:28501
+  statsAPI_EndPoint: http://127.0.0.1:27601
 server:
-  port: 29921
+  port: 29901
 
 logging:
   config: classpath:log4j2-tc-beta.xml

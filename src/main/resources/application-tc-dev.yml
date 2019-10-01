@@ -1,0 +1,83 @@
+# tc-dev
+spring:
+  profiles: tc-dev
+  redis:
+    host: 10.210.16.201
+  datasource:
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_V2
+    hikari:
+      maximumPoolSize: 20
+  datasource2:
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_PAY
+    hikari:
+      maximumPoolSize: 20
+  datasource3:
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_EM
+    hikari:
+      maximumPoolSize: 20
+  datasource4:
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_PhotoStudio
+    hikari:
+      maximumPoolSize: 20
+
+  jpa:
+    show-sql: false
+    properties.hibernate.format_sql: false
+    properties.hibernate.generate_statistics: false
+    
+webAdminapi:
+  fgServiceAPI_EndPoint: http://127.0.0.1:29001
+  fgVendorAPI_EndPoint: http://127.0.0.1:28501
+  statsAPI_EndPoint: http://127.0.0.1:27601
+server:
+  port: 29901
+
+logging:
+  config: classpath:log4j2-tc-dev.xml
+  path: /home1/irteam/logs/
+
+bid-redis:
+  database: 4
+
+photostudio:
+  fullModelPackageIdMap:
+    package1: 1, 7, 18
+    package2: 2, 8, 19
+    package3: 3, 9, 20
+  reportTypeProperties:
+    test: test
+    categoryIdMap:
+      FullModelShotWomen: 1, 5
+      FullModelShotWomenPlusSize: 2, 6
+      FlatProductShotMen: 3, 7
+      FlatProductShotKids: 4, 7
+      FlatProductShotShoes: 7
+      FlatProductShotHandbags: 7
+      FlatProductShotAccessories: 7
+    packageIdMap:
+      FullModelShotWomen: 1, 2, 3, 7, 8, 9, 18, 19, 20
+      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9, 18, 19, 20
+      FlatProductShotMen: 12
+      FlatProductShotKids: 13
+      FlatProductShotShoes: 14
+      FlatProductShotHandbags: 15
+      FlatProductShotAccessories: 16
+
+toast:
+  cloud:
+    storage:
+      object-storage:
+        account: AUTH_7e2eaaa493ce4625a815481da0ec2e1a
+        tenant-id: 7e2eaaa493ce4625a815481da0ec2e1a
+        username: dl_nhnglobal_tc_service@nhnglobal.com
+        password: FG!@#123
+        auth-api-url: https://api-compute.cloud.toast.com/identity/v2.0/tokens
+        api-url: https://api-storage.cloud.toast.com/v1/
+
+coupon:
+  notification:
+    storage:
+      root-email-name: coupon-email-list
+      root-image-name: coupon-banner-images
+      root-name-prefix: dev-
+    image-root: https://rlyfpniry.cdn.toastcloud.com/

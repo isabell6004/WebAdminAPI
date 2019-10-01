@@ -27,4 +27,14 @@ public interface PrimaryProcedureRepository {
 	ResultGetCategoryVendorList up_wa_GetCategoryVendorList(Integer categoryID, String vendorName);
 
 	GetAdminTodayDealCalendarResult up_wa_GetAdminTodayDealCalendar(Date dateFrom, Date dateTo);
+
+	List<DMRequest> up_wa_GetFGCatalog(Integer pageNumber
+			, Integer pageSize
+			, String status
+			, Integer vendorStatus
+			, Integer wholeSalerID
+			, String companyTypeCD
+			, Date dateFrom
+			, Date dateTo
+			, String orderBy);
 }

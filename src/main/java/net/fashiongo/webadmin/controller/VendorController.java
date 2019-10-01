@@ -1,45 +1,30 @@
 package net.fashiongo.webadmin.controller;
 
+import io.netty.util.internal.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
+import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
+import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
+import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.parameter.*;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
+import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.service.CacheService;
+import net.fashiongo.webadmin.service.VendorService;
+import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
+import net.fashiongo.webadmin.utility.JsonResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.model.primary.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import io.netty.util.internal.StringUtil;
-import net.fashiongo.webadmin.model.pojo.common.PagedResult;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
-
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorCreditcardParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductColorParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetVendorCreditCardListParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetBuyerRatingActiveParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorCreditCardParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.SetVendorRatingActiveParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
-import net.fashiongo.webadmin.service.CacheService;
-import net.fashiongo.webadmin.service.VendorService;
-import net.fashiongo.webadmin.utility.JsonResponse;
 
 /**
  * @author roy
@@ -51,6 +36,9 @@ public class VendorController {
 	
 	@Autowired
 	VendorService vendorService;
+
+	@Autowired
+	private RenewalVendorService renewalVendorService;
 	
 	@Autowired
     private CacheService cacheService;
@@ -78,21 +66,20 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getproductlist", method=RequestMethod.POST)
-	public JsonResponse<GetProductListResponse> getProductList(@RequestBody GetProductListParameter parameters) {
-		JsonResponse<GetProductListResponse> result = new JsonResponse<GetProductListResponse>(true, null, null);
+	public JsonResponse<VendorProductListResponse> getProductList(@RequestBody GetProductListParameter parameters) {
+		JsonResponse<VendorProductListResponse> result = new JsonResponse<>(true, null, null);
 		
-		GetProductListResponse _result = vendorService.getProductList(parameters);	
-		result.setData(_result);
+		VendorProductListResponse products = renewalVendorService.getProductList(parameters);
+		result.setData(products);
 		
 		return result; 
 	}
 	
 	@RequestMapping(value="getproductcolor", method=RequestMethod.POST)
-	public JsonResponse<List<ProductColor>> getProductColor(@RequestBody GetProductColorParameter parameters) {
-		JsonResponse<List<ProductColor>> result = new JsonResponse<List<ProductColor>>(true, null, null);
+	public JsonResponse<List<ProductColorRow>> getProductColor(@RequestBody GetProductColorParameter parameters) {
+		JsonResponse<List<ProductColorRow>> result = new JsonResponse<>(true, null, null);
 		
-		List<ProductColor> _result = vendorService.getProductColor(parameters.getProductid());	
-		result.setData(_result);
+		result.setData(renewalVendorService.getProductColor(parameters.getProductid()));
 		
 		return result; 
 	}
@@ -206,13 +193,10 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getbannerrequest", method=RequestMethod.POST)
-	public JsonResponse<GetBannerRequestResponse> getBannerRequest(@RequestBody GetBannerRequestParameter parameters) {
-		JsonResponse<GetBannerRequestResponse> results = new JsonResponse<GetBannerRequestResponse>(true, null, null);
-		
-		GetBannerRequestResponse result = vendorService.getBannerRequest(parameters);	
-		results.setData(result);
-		
-		return results; 
+	public JsonResponse<BannerRequestResponse> getBannerRequest(@RequestBody GetBannerRequestParameter parameters) {
+		JsonResponse<BannerRequestResponse> results = new JsonResponse<>(true, null, null);
+		results.setData(renewalVendorService.getBannerRequest(parameters));
+		return results;
 	}
 	
 	/**
@@ -330,13 +314,10 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getvendorformsList", method=RequestMethod.POST)
-	public JsonResponse<GetVendorFormsListResponse> getVendorFormsList(@RequestBody GetVendorFormsListParameter parameters) {
-		JsonResponse<GetVendorFormsListResponse> results = new JsonResponse<GetVendorFormsListResponse>(true, null, null);
-		
-		GetVendorFormsListResponse result = vendorService.getVendorFormsList(parameters);	
-		results.setData(result);
-		
-		return results; 
+	public JsonResponse<VendorFormListResponse> getVendorFormsList(@RequestBody GetVendorFormsListParameter parameters) {
+		JsonResponse<VendorFormListResponse> results = new JsonResponse<>(true, null, null);
+		results.setData(renewalVendorService.getVendorFormsList(parameters));
+		return results;
 	}
 	
 	/**
@@ -447,11 +428,11 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getvendorcontractdocumenthistory", method=RequestMethod.GET)
-	public JsonResponse<GetVendorContractDocumentHistoryResponse> getVendorContractDocumentHistory(@RequestParam(value="VendorContractID") Integer vendorContractID) {
-		JsonResponse<GetVendorContractDocumentHistoryResponse> results = new JsonResponse<GetVendorContractDocumentHistoryResponse>(true, null, null);
-		
-		GetVendorContractDocumentHistoryResponse result = vendorService.getVendorContractDocumentHistory(vendorContractID);	
-		results.setData(result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse> getVendorContractDocumentHistory(@RequestParam(value="VendorContractID") Integer vendorContractID) {
+		JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse>(true, null, null);
+
+		net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse vendorContractDocumentHistory = renewalVendorService.getVendorContractDocumentHistory(vendorContractID);
+		results.setData(vendorContractDocumentHistory);
 		
 		return results; 
 	}
@@ -465,12 +446,12 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getvendordetailinfodata", method=RequestMethod.GET)
-	public JsonResponse<GetVendorDetailInfoDataResponse> getVendorDetailInfoData(@RequestParam(value="WholeSalerID") Integer wholeSalerID) {
-		JsonResponse<GetVendorDetailInfoDataResponse> results = new JsonResponse<GetVendorDetailInfoDataResponse>(true, null, null);
-		
-		GetVendorDetailInfoDataResponse result = vendorService.getVendorDetailInfoData(wholeSalerID);	
-		results.setData(result);
-		
+	public JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse> getVendorDetailInfoData(@RequestParam(value="wid") Integer wholeSalerID) {
+		JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse>(true, null, null);
+
+		net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse vendorDetailInfoData = renewalVendorService.getVendorDetailInfoData(wholeSalerID);
+		results.setData(vendorDetailInfoData);
+
 		return results; 
 	}
 

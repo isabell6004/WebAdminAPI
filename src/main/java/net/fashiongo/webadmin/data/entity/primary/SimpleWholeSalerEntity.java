@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -25,8 +26,8 @@ public class SimpleWholeSalerEntity implements Serializable {
     @Column(name = "CompanyName")
     private String companyName;
 
-    @Column(name = "CompanyType")
-    private String companyType;
+//    @Column(name = "CompanyType")
+//    private String companyType;
 
     @Column(name = "DirName")
     private String dirName;
@@ -61,7 +62,28 @@ public class SimpleWholeSalerEntity implements Serializable {
     @Column(name = "OrderNotice")
     private String orderNotice;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @Column(name = "ContractExpireDate")
+    private Timestamp contractExpireDate;
+
+    @Column(name = "ActualOpen")
+    private String actualOpen;
+
+    @Column(name = "ActualOpenDate")
+    private Timestamp actualOpenDate;
+
+    @Column(name = "LastModifiedDateTime")
+    private Timestamp lastModifiedDateTime;
+
+    @Column(name = "PictureLogo")
+    private String pictureLogo;
+
+    @Column(name = "LastUser")
+    private String lastUser;
+
+    @Column(name = "UserID")
+    private String userID;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)
     private SystemImageServersEntity systemImageServersEntity;
 

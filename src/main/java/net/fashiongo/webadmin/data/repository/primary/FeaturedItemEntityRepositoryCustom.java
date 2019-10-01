@@ -10,4 +10,6 @@ public interface FeaturedItemEntityRepositoryCustom {
     List<FeaturedItemCount> getFeaturedItemCount(String period);
 
     List<FeaturedItemList> getFeaturedItemList(String period);
+
+    List<FeaturedItemList> getFeaturedItemListDay(String period);
 }
