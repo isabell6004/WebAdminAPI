@@ -1,24 +1,15 @@
 package net.fashiongo.webadmin.service.coupon.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.common.data.enums.coupon.CouponRegisterType;
-import net.fashiongo.common.data.enums.security.ResourceAuthorityType;
-import net.fashiongo.common.data.model.entity.coupon.*;
-import net.fashiongo.common.data.repository.coupon.*;
-import net.fashiongo.webadmin.aop.CouponActionAuthorityCheck;
-import net.fashiongo.webadmin.config.CouponStorageProperties;
-import net.fashiongo.webadmin.exception.coupon.*;
-import net.fashiongo.webadmin.mapper.CouponMapper;
-import net.fashiongo.webadmin.model.pojo.common.PagedResult;
-import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
-import net.fashiongo.webadmin.model.primary.coupon.command.*;
-import net.fashiongo.webadmin.model.primary.coupon.dto.*;
-import net.fashiongo.webadmin.service.SecurityGroupService;
-import net.fashiongo.webadmin.service.coupon.CouponManagementService;
-import net.fashiongo.webadmin.support.FileNameUtils;
-import net.fashiongo.webadmin.support.storage.SwiftApiCallFactory;
-import net.fashiongo.webadmin.utility.Utility;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +20,57 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.common.data.enums.coupon.CouponRegisterType;
+import net.fashiongo.common.data.enums.security.ResourceAuthorityType;
+import net.fashiongo.common.data.model.entity.coupon.CCoupon;
+import net.fashiongo.common.data.model.entity.coupon.CCouponCode;
+import net.fashiongo.common.data.model.entity.coupon.CCouponCondition;
+import net.fashiongo.common.data.model.entity.coupon.CCouponConditionHistory;
+import net.fashiongo.common.data.model.entity.coupon.CCouponHistory;
+import net.fashiongo.common.data.model.entity.coupon.CCouponNotification;
+import net.fashiongo.common.data.model.entity.coupon.CCouponStatistics;
+import net.fashiongo.common.data.repository.coupon.CouponBuyerGroupRepository;
+import net.fashiongo.common.data.repository.coupon.CouponCodeRepository;
+import net.fashiongo.common.data.repository.coupon.CouponCommonRepository;
+import net.fashiongo.common.data.repository.coupon.CouponConditionHistoryRepository;
+import net.fashiongo.common.data.repository.coupon.CouponConditionRepository;
+import net.fashiongo.common.data.repository.coupon.CouponHistoryRepository;
+import net.fashiongo.common.data.repository.coupon.CouponNotificationRepository;
+import net.fashiongo.common.data.repository.coupon.CouponRepository;
+import net.fashiongo.common.data.repository.coupon.CouponStatisticsRepository;
+import net.fashiongo.common.data.repository.coupon.CouponVendorGroupRepository;
+import net.fashiongo.webadmin.aop.CouponActionAuthorityCheck;
+import net.fashiongo.webadmin.config.CouponStorageProperties;
+import net.fashiongo.webadmin.exception.coupon.InvalidInputCouponException;
+import net.fashiongo.webadmin.exception.coupon.NonUniqueCouponCodeException;
+import net.fashiongo.webadmin.exception.coupon.NotAllowedCouponException;
+import net.fashiongo.webadmin.exception.coupon.NotAuthorizedCouponException;
+import net.fashiongo.webadmin.exception.coupon.NotFoundCouponException;
+import net.fashiongo.webadmin.exception.coupon.NotFoundCouponNotificationException;
+import net.fashiongo.webadmin.mapper.CouponMapper;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponCodeCreateInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponCodeUpdateInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponConditionCreateInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponConditionUpdateInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponCreateInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponNotificationInput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponOptionOutput;
+import net.fashiongo.webadmin.model.primary.coupon.command.CouponUpdateInput;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponBuyerGroupDto;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponCommonCodeDto;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponDto;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponNotificationDto;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponStatisticsDto;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponVendorGroupDto;
+import net.fashiongo.webadmin.service.SecurityGroupService;
+import net.fashiongo.webadmin.service.coupon.CouponManagementService;
+import net.fashiongo.webadmin.support.FileNameUtils;
+import net.fashiongo.webadmin.support.storage.SwiftApiCallFactory;
+import net.fashiongo.webadmin.utility.Utility;
 
 @Service
 @Slf4j
@@ -70,6 +104,9 @@ public class CouponManagementServiceImpl implements CouponManagementService {
     @Resource(name = "data.couponCommonRepository")
     private CouponCommonRepository couponCommonRepository;
 
+    @Resource(name = "data.couponStatisticsRepository")
+    private CouponStatisticsRepository couponStatisticsRepository;
+    
     @Autowired
     private SwiftApiCallFactory factory;
 
@@ -87,7 +124,7 @@ public class CouponManagementServiceImpl implements CouponManagementService {
 
     private static final String[] UPPER_COMMON_CODES = {
             "coupon_type",
-            "discount_base_type",
+            "discount_base_type", 
             "discount_type",
             "sale_type",
             "generate_type",
@@ -608,4 +645,36 @@ public class CouponManagementServiceImpl implements CouponManagementService {
                 response
         );
     }
+
+    @CouponActionAuthorityCheck(ResourceAuthorityType.Constants.VIEW)
+    @Transactional
+    public PagedResult<CouponStatisticsDto> getCouponStatistics(int pn, int ps) {
+
+        PagedResult<CouponStatisticsDto> result = new PagedResult<>();
+
+        List<CCouponStatistics> couponStatisticsEntityList = couponStatisticsRepository.getCouponStatistics(PageRequest.of(pn - 1, ps));
+
+        if (CollectionUtils.isEmpty(couponStatisticsEntityList)) {
+            return result;
+        }
+
+        List<Long> couponIdList = couponStatisticsEntityList.stream().map(CCouponStatistics::getCouponId).collect(Collectors.toList());
+
+        //List<CCoupon> couponEntityList = couponRepository.getCoupons(CouponRegisterType.FG.getValue(), PageRequest.of(pn - 1, ps));
+
+        List<CCoupon> couponEntityList =  couponRepository.findByIdIn(couponIdList);
+        
+        List<CCouponCondition> couponConditionEntityList = couponConditionRepository.findByIsDeletedAndCouponIdIn(false, couponIdList);
+        List<CCouponCode> couponCodeEntityList = couponCodeRepository.findByIsDeletedAndCouponIdIn(false, couponIdList);
+        result.setRecords(CouponStatisticsDto.build(couponStatisticsEntityList, couponEntityList, couponConditionEntityList, couponCodeEntityList));
+
+        long couponStatisticsCount = couponStatisticsRepository.getCouponStatCount();
+        SingleValueResult total = new SingleValueResult();
+        total.setTotalCount((int)couponStatisticsCount);
+
+        result.setTotal(total);
+        result.setPageNumber(pn);
+        return result;
+    }
+    
 }
