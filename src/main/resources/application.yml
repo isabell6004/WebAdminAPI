@@ -72,7 +72,7 @@ spring:
     redis:
       time-to-live: 18000000 # expries after 30 min
   redis:
-    host: 10.10.0.145
+    host: 10.210.16.201
     port: 6379
     database: 2
     
@@ -94,11 +94,10 @@ server:
       pattern: combined
 
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.145:29001
-  fgVendorAPI_EndPoint: http://10.10.0.145:28501
+  fgServiceAPI_EndPoint: http://10.210.16.205:29001
+  fgVendorAPI_EndPoint: http://10.210.16.205:28501
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
-#  fgWebAdminAPI_EndPoint: http://localhost:19396/api/
-  statsAPI_EndPoint: http://10.10.0.145:27601
+  statsAPI_EndPoint: http://10.210.16.205:27601
   jwt:
     develop:
       check-token: true
@@ -121,7 +120,7 @@ management:
 spring:
   profiles: local
   redis:
-    host: 10.10.0.145
+    host: 10.210.16.201
   datasource:
     url: jdbc:sqlserver://10.210.16.31;databaseName=FG_V2
     hikari:
@@ -154,7 +153,7 @@ logging:
 #              BasicExtractor: TRACE
 
 webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.145:29001
+  fgServiceAPI_EndPoint: http://localhost:29001
   jwt:
     develop:
       check-token: true
@@ -201,77 +200,3 @@ coupon:
       root-image-name: coupon-banner-images
       root-name-prefix: dev-
     image-root: https://rlyfpniry.cdn.toastcloud.com/
-    
----
-# Prod
-spring:
-  profiles: prod
-  redis:
-    host: 10.10.0.168
-  datasource:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_V2
-  datasource2:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PAY
-  datasource3:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_EM
-  datasource4:
-    url: jdbc:sqlserver://10.10.10.6;databaseName=FG_PhotoStudio
-  
-  jpa:
-    show-sql: false
-    properties.hibernate.format_sql: false
-    properties.hibernate.generate_statistics: false
-    
-webAdminapi:
-  fgServiceAPI_EndPoint: http://10.10.0.150:19002
-  statsAPI_EndPoint: http://10.10.0.150:17601
-  
-server:
-  port: 19901
-
-logging:
-  config: classpath:log4j2-prod.xml
-  path: /var/www/logs/
-
-photostudio:
-  fullModelPackageIdMap:
-    package1: 1, 7, 18
-    package2: 2, 8, 19
-    package3: 3, 9, 20
-  reportTypeProperties:
-    test: test
-    categoryIdMap:
-      FullModelShotWomen: 1, 5
-      FullModelShotWomenPlusSize: 2, 6
-      FlatProductShotMen: 3, 7
-      FlatProductShotKids: 4, 7
-      FlatProductShotShoes: 7
-      FlatProductShotHandbags: 7
-      FlatProductShotAccessories: 7
-    packageIdMap:
-      FullModelShotWomen: 1, 2, 3, 7, 8, 9, 18, 19, 20
-      FullModelShotWomenPlusSize: 1, 2, 3, 7, 8, 9, 18, 19, 20
-      FlatProductShotMen: 12
-      FlatProductShotKids: 13
-      FlatProductShotShoes: 14
-      FlatProductShotHandbags: 15
-      FlatProductShotAccessories: 16
-
-toast:
-  cloud:
-    storage:
-      object-storage:
-        account: AUTH_d2a2372095f2462da8b883294f747273
-        tenant-id: d2a2372095f2462da8b883294f747273
-        username: dl_nhnglobal_tc_service@nhnglobal.com
-        password: FG!@#123
-        auth-api-url: https://api-compute.cloud.toast.com/identity/v2.0/tokens
-        api-url: https://api-storage.cloud.toast.com/v1/
-
-coupon:
-  notification:
-    storage:
-      root-email-name: coupon-email-list
-      root-image-name: coupon-banner-images
-      root-name-prefix: ""
-    image-root: https://rlzwrhbmy.cdn.toastcloud.com/
