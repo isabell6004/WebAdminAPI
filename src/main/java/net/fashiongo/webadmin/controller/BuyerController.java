@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
+import net.fashiongo.webadmin.data.model.buyer.GetAdminRetailerDetailParameter;
 import net.fashiongo.webadmin.data.model.buyer.response.RetailerDetailResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -107,9 +108,9 @@ public class BuyerController {
 	}
 
 	@RequestMapping(value = "getadminretailerdetail", method = RequestMethod.POST)
-	public JsonResponse<RetailerDetailResponse> getAdminRetailerDetail(@RequestParam(value = "retailerid") Integer retailerid) {
+	public JsonResponse<RetailerDetailResponse> getAdminRetailerDetail(@RequestBody GetAdminRetailerDetailParameter getAdminRetailerDetailParameter) {
 		JsonResponse<RetailerDetailResponse> response = new JsonResponse<RetailerDetailResponse>();
-		RetailerDetailResponse adminRetailerDetail = renewalBuyerService.getAdminRetailerDetail(retailerid);
+		RetailerDetailResponse adminRetailerDetail = renewalBuyerService.getAdminRetailerDetail(getAdminRetailerDetailParameter.getRetailerId());
 
 		response.setSuccess(true);
 		response.setData(adminRetailerDetail);
