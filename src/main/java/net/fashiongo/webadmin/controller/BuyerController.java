@@ -1,21 +1,18 @@
 package net.fashiongo.webadmin.controller;
 
-import java.util.List;
-
+import net.fashiongo.webadmin.data.model.buyer.response.RetailerDetailResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.*;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.RetailerCompany;
 import net.fashiongo.webadmin.service.BuyerService;
 import net.fashiongo.webadmin.service.UserService;
+import net.fashiongo.webadmin.service.renewal.RenewalBuyerService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 
@@ -27,6 +24,10 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 public class BuyerController {
 	@Autowired 
 	BuyerService buyerService;
+
+	@Autowired
+	private RenewalBuyerService renewalBuyerService;
+
 	@Autowired
 	private UserService userService;
 	/**
@@ -103,6 +104,17 @@ public class BuyerController {
 		} catch (RuntimeException e) {
 			return -99;
 		}
+	}
+
+	@RequestMapping(value = "getadminretailerdetail", method = RequestMethod.POST)
+	public JsonResponse<RetailerDetailResponse> getAdminRetailerDetail(@RequestParam(value = "retailerid") Integer retailerid) {
+		JsonResponse<RetailerDetailResponse> response = new JsonResponse<RetailerDetailResponse>();
+		RetailerDetailResponse adminRetailerDetail = renewalBuyerService.getAdminRetailerDetail(retailerid);
+
+		response.setSuccess(true);
+		response.setData(adminRetailerDetail);
+
+		return response;
 	}
 
 	/**
