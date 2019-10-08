@@ -2,15 +2,15 @@ package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.entity.primary.AspnetMembershipEntity;
 import net.fashiongo.webadmin.data.entity.primary.LogEmailSentEntity;
+import net.fashiongo.webadmin.data.entity.primary.XShipAddressEntity;
 import net.fashiongo.webadmin.data.model.ListAccountDeactivationReason;
 import net.fashiongo.webadmin.data.model.LogSentEmail;
+import net.fashiongo.webadmin.data.model.buyer.GetShippingAddressParameter;
 import net.fashiongo.webadmin.data.model.buyer.Retailer;
 import net.fashiongo.webadmin.data.model.buyer.RetailerDetail;
 import net.fashiongo.webadmin.data.model.buyer.response.RetailerDetailResponse;
-import net.fashiongo.webadmin.data.repository.primary.AspnetMembershipEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.ListAccountDeactivationReasonEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.LogEmailSentEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.RetailerEntityRepository;
+import net.fashiongo.webadmin.data.model.buyer.response.ShippingAddressResponse;
+import net.fashiongo.webadmin.data.repository.primary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -38,6 +38,9 @@ public class RenewalBuyerService {
 
 	@Autowired
 	private LogEmailSentEntityRepository logEmailSentEntityRepository;
+
+	@Autowired
+	private XShipAddressEntityRepository xShipAddressEntityRepository;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -148,5 +151,30 @@ public class RenewalBuyerService {
 			}
 			return null;
 		}).orElse(null);
+	}
+
+	public List<ShippingAddressResponse> getShippingAddress(GetShippingAddressParameter parameter) {
+		List<XShipAddressEntity> xShipAddressEntityList = xShipAddressEntityRepository.findAllByCustID2(parameter.getRetailerId());
+
+		return xShipAddressEntityList.stream()
+				.map(entity -> ShippingAddressResponse.builder()
+						.active(entity.isActive())
+						.custID2(entity.getCustID2())
+						.defaultYN(entity.isDefaultYN())
+						.isCommercialAddress(entity.getIsCommercialAddress())
+						.shipAddID(entity.getShipAddID())
+						.shipAddress2(entity.getShipAddress2())
+						.shipAddress2B(entity.getShipAddress2B())
+						.shipAttention(entity.getShipAttention())
+						.shipCity2(entity.getShipCity2())
+						.shipCountry2(entity.getShipCountry2())
+						.shipCountry2ID(entity.getShipCountry2ID() == null ? 229 : entity.getShipCountry2ID())
+						.shipFax(entity.getShipFax())
+						.shipPhone(entity.getShipPhone())
+						.shipState2(entity.getShipState2())
+						.shipZip2(entity.getShipZip2())
+						.storeNo(entity.getStoreNo())
+						.build())
+				.collect(Collectors.toList());
 	}
 }

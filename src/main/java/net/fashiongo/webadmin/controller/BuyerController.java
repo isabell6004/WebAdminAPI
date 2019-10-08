@@ -1,7 +1,9 @@
 package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.buyer.GetAdminRetailerDetailParameter;
+import net.fashiongo.webadmin.data.model.buyer.GetShippingAddressParameter;
 import net.fashiongo.webadmin.data.model.buyer.response.RetailerDetailResponse;
+import net.fashiongo.webadmin.data.model.buyer.response.ShippingAddressResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.RetailerCompany;
@@ -134,5 +136,16 @@ public class BuyerController {
 		} catch (RuntimeException e) {
 			return -99;
 		}
+	}
+
+	@RequestMapping(value = "getshippingaddress",method = RequestMethod.POST)
+	public JsonResponse<List<ShippingAddressResponse>> getShippingAddress(@RequestBody GetShippingAddressParameter getShippingAddressParameter) {
+		JsonResponse<List<ShippingAddressResponse>> response = new JsonResponse();
+
+		List<ShippingAddressResponse> shippingAddress = renewalBuyerService.getShippingAddress(getShippingAddressParameter);
+		response.setData(shippingAddress);
+		response.setSuccess(true);
+
+		return response;
 	}
 }
