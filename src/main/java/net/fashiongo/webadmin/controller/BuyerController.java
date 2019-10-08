@@ -1,7 +1,9 @@
 package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.buyer.GetAdminRetailerDetailParameter;
+import net.fashiongo.webadmin.data.model.buyer.GetFraudNoticeParameter;
 import net.fashiongo.webadmin.data.model.buyer.GetShippingAddressParameter;
+import net.fashiongo.webadmin.data.model.buyer.response.FraudNoticeResponse;
 import net.fashiongo.webadmin.data.model.buyer.response.RetailerDetailResponse;
 import net.fashiongo.webadmin.data.model.buyer.response.ShippingAddressResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.*;
@@ -144,6 +146,17 @@ public class BuyerController {
 
 		List<ShippingAddressResponse> shippingAddress = renewalBuyerService.getShippingAddress(getShippingAddressParameter);
 		response.setData(shippingAddress);
+		response.setSuccess(true);
+
+		return response;
+	}
+
+	@RequestMapping(value = "getfraudnotice",method = RequestMethod.POST)
+	public JsonResponse<List<FraudNoticeResponse>> getFraudNotice(@RequestBody GetFraudNoticeParameter parameter) {
+		JsonResponse<List<FraudNoticeResponse>> response = new JsonResponse();
+
+		List<FraudNoticeResponse> fraudNotice = renewalBuyerService.getFraudNotice(parameter);
+		response.setData(fraudNotice);
 		response.setSuccess(true);
 
 		return response;
