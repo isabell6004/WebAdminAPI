@@ -8,6 +8,7 @@ import net.fashiongo.webadmin.data.model.buyer.GetShippingAddressParameter;
 import net.fashiongo.webadmin.data.model.buyer.Retailer;
 import net.fashiongo.webadmin.data.model.buyer.RetailerDetail;
 import net.fashiongo.webadmin.data.model.buyer.response.FraudNoticeResponse;
+import net.fashiongo.webadmin.data.model.buyer.response.ListCommunicationReasonResponse;
 import net.fashiongo.webadmin.data.model.buyer.response.RetailerDetailResponse;
 import net.fashiongo.webadmin.data.model.buyer.response.ShippingAddressResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
@@ -44,6 +45,9 @@ public class RenewalBuyerService {
 
 	@Autowired
 	private FraudNoticeEntityRepository fraudNoticeEntityRepository;
+
+	@Autowired
+	private ListCommunicationReasonEntityRepository listCommunicationReasonEntityRepository;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -200,5 +204,19 @@ public class RenewalBuyerService {
 							.build();
 				})
 				.collect(Collectors.toList());
+	}
+
+	public List<ListCommunicationReasonResponse> getCommunicationReason() {
+
+		List<ListCommunicationReasonEntity> listCommunicationReasonEntityList = listCommunicationReasonEntityRepository.findAllByActive(true);
+
+		return listCommunicationReasonEntityList.stream()
+				.map(entity -> ListCommunicationReasonResponse.builder()
+						.reason(entity.getReason())
+						.active(entity.isActive())
+						.parentID(entity.getParentID())
+						.reasonID(entity.getReasonID())
+						.build()
+				).collect(Collectors.toList());
 	}
 }
