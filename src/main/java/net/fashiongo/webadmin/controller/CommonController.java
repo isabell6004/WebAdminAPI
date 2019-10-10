@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.common.parameter.*;
-import net.fashiongo.webadmin.model.pojo.common.response.GetBidAdPagesResponse;
 import net.fashiongo.webadmin.model.pojo.common.response.GetCountryStatesResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.AdminService;
@@ -222,5 +221,10 @@ public class CommonController {
 
 		results.setData(responseData);
 		return results;
+	}
+
+	@RequestMapping(value = "getcountries",method = RequestMethod.POST)
+	public JsonResponse getCountries() {
+		return renewalCommonService.getCountries();
 	}
 }
