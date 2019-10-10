@@ -3,14 +3,8 @@ package net.fashiongo.webadmin.service.renewal;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.ListAccountDeactivationReason;
 import net.fashiongo.webadmin.data.model.LogSentEmail;
-import net.fashiongo.webadmin.data.model.buyer.GetFraudNoticeParameter;
-import net.fashiongo.webadmin.data.model.buyer.GetShippingAddressParameter;
-import net.fashiongo.webadmin.data.model.buyer.Retailer;
-import net.fashiongo.webadmin.data.model.buyer.RetailerDetail;
-import net.fashiongo.webadmin.data.model.buyer.response.FraudNoticeResponse;
-import net.fashiongo.webadmin.data.model.buyer.response.ListCommunicationReasonResponse;
-import net.fashiongo.webadmin.data.model.buyer.response.RetailerDetailResponse;
-import net.fashiongo.webadmin.data.model.buyer.response.ShippingAddressResponse;
+import net.fashiongo.webadmin.data.model.buyer.*;
+import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +42,9 @@ public class RenewalBuyerService {
 
 	@Autowired
 	private ListCommunicationReasonEntityRepository listCommunicationReasonEntityRepository;
+
+	@Autowired
+	private LogCommunicationEntityRepository logCommunicationEntityRepository;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -216,6 +213,26 @@ public class RenewalBuyerService {
 						.active(entity.isActive())
 						.parentID(entity.getParentID())
 						.reasonID(entity.getReasonID())
+						.build()
+				).collect(Collectors.toList());
+	}
+
+	public List<CommunicationLogResponse> getCommunicationLog(GetCommunicationLogParameter parameter) {
+		List<LogCommunicationEntity> logCommunicationEntityList = logCommunicationEntityRepository.findAllByRetailerIdOrderByModifiedOnDesc(parameter.getRetailerId());
+		return logCommunicationEntityList.stream()
+				.map(entity -> CommunicationLogResponse.builder()
+						.checkedBy(entity.getCheckedBy())
+						.checkedBy2(entity.getCheckedBy2())
+						.checkedOn(entity.getCheckedOn())
+						.checkedOn2(entity.getCheckedOn2())
+						.communicatedOn(entity.getCommunicatedOn())
+						.communicationID(entity.getCommunicationID())
+						.confirmed1(StringUtils.isEmpty(entity.getCheckedBy()) ? false : true)
+						.confirmed2(StringUtils.isEmpty(entity.getCheckedBy2()) ? false : true)
+						.contactedBy(entity.getContactedBy())
+						.notes(entity.getNotes())
+						.reasonID(entity.getReasonID())
+						.reason(entity.getListCommunicationReason().getReason())
 						.build()
 				).collect(Collectors.toList());
 	}

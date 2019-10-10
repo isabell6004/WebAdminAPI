@@ -1,12 +1,10 @@
 package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.buyer.GetAdminRetailerDetailParameter;
+import net.fashiongo.webadmin.data.model.buyer.GetCommunicationLogParameter;
 import net.fashiongo.webadmin.data.model.buyer.GetFraudNoticeParameter;
 import net.fashiongo.webadmin.data.model.buyer.GetShippingAddressParameter;
-import net.fashiongo.webadmin.data.model.buyer.response.FraudNoticeResponse;
-import net.fashiongo.webadmin.data.model.buyer.response.ListCommunicationReasonResponse;
-import net.fashiongo.webadmin.data.model.buyer.response.RetailerDetailResponse;
-import net.fashiongo.webadmin.data.model.buyer.response.ShippingAddressResponse;
+import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.RetailerCompany;
@@ -169,6 +167,17 @@ public class BuyerController {
 
 		List<ListCommunicationReasonResponse> communicationReason = renewalBuyerService.getCommunicationReason();
 		response.setData(communicationReason);
+		response.setSuccess(true);
+
+		return response;
+	}
+
+	@RequestMapping(value = "getcommunicationlog",method = RequestMethod.POST)
+	public JsonResponse<List<CommunicationLogResponse>> getCommunicationLog(@RequestBody GetCommunicationLogParameter parameter) {
+		JsonResponse<List<CommunicationLogResponse>> response = new JsonResponse();
+
+		List<CommunicationLogResponse> communicationLog = renewalBuyerService.getCommunicationLog(parameter);
+		response.setData(communicationLog);
 		response.setSuccess(true);
 
 		return response;
