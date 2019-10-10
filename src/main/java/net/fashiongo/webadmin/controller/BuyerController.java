@@ -1,9 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
-import net.fashiongo.webadmin.data.model.buyer.GetAdminRetailerDetailParameter;
-import net.fashiongo.webadmin.data.model.buyer.GetCommunicationLogParameter;
-import net.fashiongo.webadmin.data.model.buyer.GetFraudNoticeParameter;
-import net.fashiongo.webadmin.data.model.buyer.GetShippingAddressParameter;
+import net.fashiongo.webadmin.data.model.buyer.*;
 import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -179,6 +176,17 @@ public class BuyerController {
 		List<CommunicationLogResponse> communicationLog = renewalBuyerService.getCommunicationLog(parameter);
 		response.setData(communicationLog);
 		response.setSuccess(true);
+
+		return response;
+	}
+
+	@RequestMapping(value = "getadminlogemailsent", method = RequestMethod.POST)
+	public JsonResponse<LogSentEmailResponse> getAdminlogEmailSent(@RequestBody GetAdminLogEmailSentParameter parameter) {
+		JsonResponse<LogSentEmailResponse> response = new JsonResponse();
+		LogSentEmailResponse adminLogEmailSent = renewalBuyerService.getAdminLogEmailSent(parameter);
+
+		response.setSuccess(true);
+		response.setData(adminLogEmailSent);
 
 		return response;
 	}

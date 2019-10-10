@@ -236,4 +236,10 @@ public class RenewalBuyerService {
 						.build()
 				).collect(Collectors.toList());
 	}
+
+	public LogSentEmailResponse getAdminLogEmailSent(GetAdminLogEmailSentParameter parameter) {
+		return LogSentEmailResponse.builder()
+				.logEmailSent(getAdminLogEmailSent(parameter.getRetailerId()))
+				.build();
+	}
 }
