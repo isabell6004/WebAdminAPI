@@ -1,20 +1,25 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.ListAccountDeactivationReason;
 import net.fashiongo.webadmin.data.model.LogSentEmail;
 import net.fashiongo.webadmin.data.model.buyer.*;
 import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
+import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +50,12 @@ public class RenewalBuyerService {
 
 	@Autowired
 	private LogCommunicationEntityRepository logCommunicationEntityRepository;
+
+	@Autowired
+	private JdbcHelper jdbcHelper;
+
+	@Autowired
+	private PrimaryProcedureRepository primaryProcedureRepository;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -240,6 +251,21 @@ public class RenewalBuyerService {
 	public LogSentEmailResponse getAdminLogEmailSent(GetAdminLogEmailSentParameter parameter) {
 		return LogSentEmailResponse.builder()
 				.logEmailSent(getAdminLogEmailSent(parameter.getRetailerId()))
+				.build();
+	}
+
+	public GetOrderHistoryStatisticsResponse getOrderHistoryStatistics(GetOrderHistoryStatisticsParameter parameter) {
+
+		List<Object> param = new ArrayList<>();
+		param.add(parameter.getRetailerId());
+
+//		List<Object> _result = jdbcHelper.executeSP("up_wa_RetailerInfo_OrderSummary", param, OrderHistoryStatistics.class);
+//		List<OrderHistoryStatistics> statistics = ((List<OrderHistoryStatistics>) _result.get(0));
+
+		OrderHistoryStatistics orderHistoryStatistics = primaryProcedureRepository.up_wa_RetailerInfo_OrderSummary(parameter.getRetailerId());
+
+		return GetOrderHistoryStatisticsResponse.builder()
+				.orderHistoryStatistics(Arrays.asList(orderHistoryStatistics))
 				.build();
 	}
 }

@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.data.repository.primary.procedure;
 
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
+import net.fashiongo.webadmin.data.model.buyer.OrderHistoryStatistics;
 import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import org.springframework.data.domain.Page;
 
@@ -37,4 +38,6 @@ public interface PrimaryProcedureRepository {
 			, Date dateFrom
 			, Date dateTo
 			, String orderBy);
+
+	OrderHistoryStatistics up_wa_RetailerInfo_OrderSummary(Integer retailerId);
 }

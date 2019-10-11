@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.data.repository.primary.procedure;
 
 import com.querydsl.core.JoinFlag;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
@@ -13,6 +14,7 @@ import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.admin.SecurityMenus2;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendor;
 import net.fashiongo.webadmin.data.model.admin.UserMappingVendorAssigned;
+import net.fashiongo.webadmin.data.model.buyer.OrderHistoryStatistics;
 import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
@@ -27,10 +29,13 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Repository
@@ -1492,5 +1497,159 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 		return query
 				.fetch();
+	}
+
+	@Override
+	@Transactional(value = "primaryTransactionManager")
+	public OrderHistoryStatistics up_wa_RetailerInfo_OrderSummary(Integer retailerId) {
+		QSummaryOrdersEntity ORDER = QSummaryOrdersEntity.summaryOrdersEntity;
+		NumberExpression<BigDecimal> expressionTotalAmountWSC = Expressions.asNumber(queryDSLSQLFunctions.isnull(BigDecimal.class, ORDER.totalAmountWSC, 0)).sum();
+
+//		declare
+//		@OrderAmount       decimal(18,2)=0,
+//		@OrderCount        int=0,
+//		@OrderQty          int=0,
+//		@VendorQty         int=0,
+//		@CancelAmount      decimal(18,2)=0,
+//		@CancelledByBuyer  decimal(18,2)=0,
+//		@CancelledByVendor decimal(18,2)=0
+
+		Supplier<Tuple> functionOrderAmountAndCount = () -> {
+			//		select @OrderAmount = isnull(sum(isnull(totalamountwsc,0)),0) , @OrderCount = count(*)
+			//		from tblOrders
+			//		where OrderStatusID not in (0)
+			//		and RetailerId = @RetailerID
+			JPAQuery<Tuple> query = new JPAQuery(entityManager);
+			query.select(
+					expressionTotalAmountWSC
+					, ORDER.orderID.count()
+			).from(ORDER)
+					.where(ORDER.retailerID.eq(retailerId).and(ORDER.orderStatusID.notIn(0)));
+
+			return query.fetchOne();
+		};
+		Tuple tuple = functionOrderAmountAndCount.get();
+		BigDecimal orderAmount = tuple.get(expressionTotalAmountWSC).setScale(2, RoundingMode.HALF_UP);
+		Long orderCount = tuple.get(ORDER.orderID.count());
+
+		NumberExpression<Integer> expressionTotalQty = Expressions.asNumber(queryDSLSQLFunctions.isnull(Integer.class, ORDER.totalQty, 0)).sum();
+
+		Supplier<Integer> functionOrderQty = () -> {
+			//		select @OrderQty = isnull(sum(isnull(TotalQty,0)) ,0)
+			//		from tblOrders
+			//		where OrderStatusID not in (0)
+			//		and RetailerId = @RetailerID
+			JPAQuery<Integer> query = new JPAQuery(entityManager);
+			query.select(
+					expressionTotalQty
+			).from(ORDER)
+					.where(ORDER.retailerID.eq(retailerId).and(ORDER.orderStatusID.notIn(0)));
+			return query.fetchOne();
+		};
+		Integer orderQty = functionOrderQty.get();
+
+		Supplier<Long> functionVendorQty = () -> {
+			//		select @VendorQty = count(distinct WholeSalerID)
+			//		from tblOrders
+			//		where OrderStatusID not in (0)
+			//		and RetailerId = @RetailerID
+			NumberExpression<Long> longNumberExpressionVendorQty = ORDER.wholeSalerID.countDistinct();
+			JPAQuery<Long> query = new JPAQuery(entityManager);
+			query.select(
+					longNumberExpressionVendorQty
+			).from(ORDER)
+					.where(ORDER.retailerID.eq(retailerId).and(ORDER.orderStatusID.notIn(0)));
+			return query.fetchOne();
+		};
+		Long vendorQty = functionVendorQty.get();
+
+		Supplier<BigDecimal> functionCancelAmount = () -> {
+			//		select @CancelAmount = isnull(sum(isnull(totalamountwsc,0)) ,0)
+			//		from tblOrders
+			//		where OrderStatusID in (5,51,52,53)
+			//		and RetailerId = @RetailerID
+			JPAQuery<BigDecimal> query = new JPAQuery(entityManager);
+			query.select(
+					expressionTotalAmountWSC
+			).from(ORDER)
+					.where(ORDER.retailerID.eq(retailerId).and(ORDER.orderStatusID.in(5,51,52,53)));
+			return query.fetchOne();
+		};
+		BigDecimal cancelAmount = functionCancelAmount.get().setScale(2, RoundingMode.HALF_UP);;
+
+		Supplier<Long> functionCancelledByBuyer = () -> {
+			//		select @CancelledByBuyer = count(OrderID)
+			//		from tblOrders
+			//		where OrderStatusID = 5 and IsCancelledByBuyer =1
+			//		and RetailerId = @RetailerID
+			JPAQuery<Long> query = new JPAQuery(entityManager);
+			query.select(
+					ORDER.orderID.count()
+			).from(ORDER)
+					.where(ORDER.retailerID.eq(retailerId).and(ORDER.orderStatusID.eq(5)).and(ORDER.isCancelledByBuyer.eq(true)));
+			return query.fetchOne();
+		};
+		BigDecimal cancelledByBuyer = new BigDecimal(functionCancelledByBuyer.get()).setScale(2,RoundingMode.HALF_UP);
+
+		Supplier<Long> functionCancelledByVendor = () -> {
+			//		select @CancelledByVendor = count(OrderID)
+			//		from tblOrders
+			//		where OrderStatusID = 5 and IsCancelledByBuyer =0
+			//		and RetailerId = @RetailerID
+			JPAQuery<Long> query = new JPAQuery(entityManager);
+			query.select(
+					ORDER.orderID.count()
+			).from(ORDER)
+					.where(ORDER.retailerID.eq(retailerId).and(ORDER.orderStatusID.eq(5)).and(ORDER.isCancelledByBuyer.eq(false)));
+			return query.fetchOne();
+		};
+		BigDecimal cancelledByVendor = new BigDecimal(functionCancelledByVendor.get()).setScale(2,RoundingMode.HALF_UP);
+
+//		select case when @OrderCount = 0 then
+//		0
+//               else (@OrderAmount / @OrderCount)
+//		end  Average_Order_Amount
+//         ,@OrderAmount as Total_Order_Amount
+//         ,@OrderQty as Total_Order_Qty
+//         ,@VendorQty as Total_Vendor_Qty
+//
+//		 ,case when @OrderAmount = 0 then
+//		0
+//               else (@CancelAmount / @OrderAmount) * 100
+//		end Order_Amount_VS_Cancel_Ratio
+//		  ,case when @CancelledByBuyer+@CancelledByVendor = 0 then 0 else (@CancelledByBuyer/(@CancelledByBuyer+@CancelledByVendor))*100 end Cancelled_By_Buyer
+//		  ,case when @CancelledByBuyer+@CancelledByVendor = 0 then 0 else (@CancelledByVendor/(@CancelledByBuyer+@CancelledByVendor))*100 end Cancelled_By_Vendor
+
+		Supplier<OrderHistoryStatistics> orderHistoryStatisticsSupplier = () -> {
+			BigDecimal cancelledByBuyerVendor = cancelledByBuyer.add(cancelledByVendor);
+
+			BigDecimal finalCancelledByBuyer = cancelledByBuyerVendor.longValue() == 0 ? BigDecimal.ZERO :
+					cancelledByBuyer.divide(cancelledByBuyerVendor,MathContext.DECIMAL64)
+					.multiply(new BigDecimal(100));
+
+			BigDecimal finalCancelledByVendor = cancelledByBuyerVendor.longValue() == 0 ? BigDecimal.ZERO :
+					cancelledByVendor.divide(cancelledByBuyerVendor,MathContext.DECIMAL64)
+					.multiply(new BigDecimal(100));
+
+			BigDecimal averageOrderAmount = orderCount == 0 ? BigDecimal.ZERO :
+					orderAmount.divide(new BigDecimal(orderCount), MathContext.DECIMAL64);
+
+			BigDecimal orderAmountVSCancelRatio = orderAmount.longValue() == 0 ? BigDecimal.ZERO :
+					cancelAmount.divide(orderAmount,MathContext.DECIMAL64)
+					.multiply(new BigDecimal(100));
+
+			return OrderHistoryStatistics.builder()
+					.totalOrderAmount(orderAmount)
+					.totalOrderQty(orderQty.intValue())
+					.totalVendorQty(vendorQty.intValue())
+					.orderAmountVSCancelRatio(orderAmountVSCancelRatio)
+					.cancelledByBuyer(finalCancelledByBuyer)
+					.cancelledByVendor(finalCancelledByVendor)
+					.averageOrderAmount(averageOrderAmount)
+					.build();
+		};
+
+
+		return orderHistoryStatisticsSupplier.get();
 	}
 }

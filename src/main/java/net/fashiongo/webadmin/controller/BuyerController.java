@@ -190,4 +190,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "getorderhistorystatistics", method = RequestMethod.POST)
+	public JsonResponse<GetOrderHistoryStatisticsResponse> getOrderHistoryStatistics(@RequestBody GetOrderHistoryStatisticsParameter parameter) {
+		JsonResponse<GetOrderHistoryStatisticsResponse> response = new JsonResponse();
+
+		GetOrderHistoryStatisticsResponse orderHistoryStatistics = renewalBuyerService.getOrderHistoryStatistics(parameter);
+
+		response.setSuccess(true);
+		response.setData(orderHistoryStatistics);
+
+		return response;
+	}
 }
