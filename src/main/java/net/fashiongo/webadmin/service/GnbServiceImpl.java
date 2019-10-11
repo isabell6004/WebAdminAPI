@@ -1,13 +1,17 @@
 package net.fashiongo.webadmin.service;
 
+import net.fashiongo.webadmin.dao.primary.GnbVendorGroupMapRepository;
 import net.fashiongo.webadmin.dao.primary.GnbVendorGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SiteSettingRepository;
+import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupEntity;
+import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupMapEntity;
 import net.fashiongo.webadmin.data.entity.primary.SiteSettingEntity;
 import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,12 +20,16 @@ public class GnbServiceImpl implements GnbService {
 
 	private final GnbVendorGroupRepository gnbVendorGroupRepository;
 
+	private final GnbVendorGroupMapRepository gnbVendorGroupMapRepository;
+
 	private final SiteSettingRepository siteSettingRepository;
 
 	@Autowired
 	public GnbServiceImpl(GnbVendorGroupRepository gnbVendorGroupRepository,
+						  GnbVendorGroupMapRepository gnbVendorGroupMapRepository,
 						  SiteSettingRepository siteSettingRepository) {
 		this.gnbVendorGroupRepository = gnbVendorGroupRepository;
+		this.gnbVendorGroupMapRepository = gnbVendorGroupMapRepository;
 		this.siteSettingRepository = siteSettingRepository;
 	}
 
@@ -47,5 +55,24 @@ public class GnbServiceImpl implements GnbService {
 
 		siteSettingEntity.setGnbVendorGroupId(gnbVendorGroupId);
 		siteSettingRepository.save(siteSettingEntity);
+	}
+
+	@Override
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public void deleteGnbVendorGroup(int gnbVendorGroupId) {
+		deleteGnbVendorGroupBatch(Collections.singletonList(gnbVendorGroupId));
+	}
+
+	@Override
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public void deleteGnbVendorGroupBatch(List<Integer> gnbVendorGroupIdList) {
+		List<GnbVendorGroupEntity> gnbVendorGroupEntityList = gnbVendorGroupRepository.findAllByIdListWithGnbVendorGroupMap(gnbVendorGroupIdList);
+		List<GnbVendorGroupMapEntity> gnbVendorGroupMapEntityList = gnbVendorGroupEntityList.stream()
+				.map(GnbVendorGroupEntity::getVendorGroupMaps)
+				.flatMap(List::stream)
+				.collect(Collectors.toList());
+
+		gnbVendorGroupRepository.deleteInBatch(gnbVendorGroupEntityList);
+		gnbVendorGroupMapRepository.deleteInBatch(gnbVendorGroupMapEntityList);
 	}
 }

@@ -8,4 +8,8 @@ public interface GnbService {
 	List<GnbVendorGroupInfo> getGnbVendorGroupList(Integer wholeSalerId, String title);
 
 	void activateGnbVendorGroup(int gnbVendorGroupId);
+
+	void deleteGnbVendorGroup(int gnbVendorGroupId);
+
+	void deleteGnbVendorGroupBatch(List<Integer> gnbVendorGroupIdList);
 }

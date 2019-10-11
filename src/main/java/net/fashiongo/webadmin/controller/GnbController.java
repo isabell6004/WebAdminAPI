@@ -19,8 +19,8 @@ public class GnbController {
 		this.gnbService = gnbService;
 	}
 
-	@GetMapping("/vendor-group-list")
-	public JsonResponse<List<GnbVendorGroupInfo>> getVendorGroupLists(@RequestParam(name = "wholeSalerId", required = false) Integer wholeSalerId,
+	@GetMapping("/vendor-group")
+	public JsonResponse<List<GnbVendorGroupInfo>> getVendorGroupList(@RequestParam(name = "wholeSalerId", required = false) Integer wholeSalerId,
 																	  @RequestParam(name = "title", required = false) String title) {
 		JsonResponse<List<GnbVendorGroupInfo>> response = new JsonResponse<>();
 		response.setSuccess(true);
@@ -30,8 +30,30 @@ public class GnbController {
 		return response;
 	}
 
+	@DeleteMapping("/vendor-group")
+	public JsonResponse<Void> deleteVendorGroupBatch(@RequestParam(name = "ids") List<Integer> gnbVendorGroupIdList) {
+		JsonResponse<Void> response = new JsonResponse<>();
+		response.setSuccess(true);
+		response.setMessage(null);
+
+		gnbService.deleteGnbVendorGroupBatch(gnbVendorGroupIdList);
+
+		return response;
+	}
+
+	@DeleteMapping("/vendor-group/{gnbVendorGroupId}")
+	public JsonResponse<Void> deleteVendorGroup(@PathVariable("gnbVendorGroupId") int gnbVendorGroupId) {
+		JsonResponse<Void> response = new JsonResponse<>();
+		response.setSuccess(true);
+		response.setMessage(null);
+
+		gnbService.deleteGnbVendorGroup(gnbVendorGroupId);
+
+		return response;
+	}
+
 	@PostMapping("/vendor-group/{gnbVendorGroupId}/activate")
-	public JsonResponse<Void> activeVendorGroup(@PathVariable("gnbVendorGroupId") Integer gnbVendorGroupId) {
+	public JsonResponse<Void> activeVendorGroup(@PathVariable("gnbVendorGroupId") int gnbVendorGroupId) {
 		JsonResponse<Void> response = new JsonResponse<>();
 		response.setSuccess(true);
 		response.setMessage(null);
