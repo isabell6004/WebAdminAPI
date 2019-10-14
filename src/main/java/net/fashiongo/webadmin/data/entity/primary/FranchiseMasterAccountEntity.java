@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "Franchise_MasterAccount")
-public class FranchiseMasterAccountEntity {
+public class FranchiseMasterAccountEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)

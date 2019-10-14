@@ -2,12 +2,17 @@ package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.entity.primary.FranchiseMasterAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.RetailerEntity;
+import net.fashiongo.webadmin.data.model.franchise.AutoCompleteParameter;
+import net.fashiongo.webadmin.data.model.franchise.FranchiseBuyer;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterResponse;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseSubResponse;
 import net.fashiongo.webadmin.data.repository.primary.FranchiseMasterAccountEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.FranchiseRetailerEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.MapFranchiseSubAccountEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RenewalFranchiseService {
@@ -17,6 +22,9 @@ public class RenewalFranchiseService {
 
 	@Autowired
 	private MapFranchiseSubAccountEntityRepository mapFranchiseSubAccountEntityRepository;
+
+	@Autowired
+	private FranchiseRetailerEntityRepository franchiseRetailerEntityRepository;
 
 	public FranchiseMasterResponse getFranchiseMaster(Integer retailerId) {
 
@@ -54,5 +62,9 @@ public class RenewalFranchiseService {
 							.retailerId(franchiseMasterAccount.getRetailerId())
 							.build();
 				}).orElse(null);
+	}
+
+	public List<FranchiseBuyer> autoComplete(AutoCompleteParameter parameter) {
+		return franchiseRetailerEntityRepository.findAllByContainsCompanyName(parameter.getSearchText());
 	}
 }

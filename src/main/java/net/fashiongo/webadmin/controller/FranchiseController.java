@@ -1,14 +1,15 @@
 package net.fashiongo.webadmin.controller;
 
+import net.fashiongo.webadmin.data.model.franchise.AutoCompleteParameter;
+import net.fashiongo.webadmin.data.model.franchise.FranchiseBuyer;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterResponse;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseSubResponse;
 import net.fashiongo.webadmin.service.renewal.RenewalFranchiseService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/franchise", produces = "application/json")
@@ -44,6 +45,22 @@ public class FranchiseController {
 
 		response.setSuccess(success);
 		response.setData(franchiseSub);
+		response.setMessage(message);
+
+		return response;
+	}
+
+	@RequestMapping(value = "autoComplete", method = RequestMethod.POST)
+	public JsonResponse<List<FranchiseBuyer>> autoComplete(@RequestBody AutoCompleteParameter parameter) {
+		JsonResponse<List<FranchiseBuyer>> response = new JsonResponse();
+
+		List<FranchiseBuyer> franchiseBuyers = renewalFranchiseService.autoComplete(parameter);
+
+		Boolean success = franchiseBuyers != null;
+		String message = success ? "" : "Failed to retrieve retailers.";
+
+		response.setSuccess(success);
+		response.setData(franchiseBuyers);
 		response.setMessage(message);
 
 		return response;

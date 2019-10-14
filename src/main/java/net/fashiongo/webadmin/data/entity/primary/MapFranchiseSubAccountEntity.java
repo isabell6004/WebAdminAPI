@@ -3,11 +3,12 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Entity
 @Table(name = "Map_Franchise_SubAccount")
-public class MapFranchiseSubAccountEntity {
+public class MapFranchiseSubAccountEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
