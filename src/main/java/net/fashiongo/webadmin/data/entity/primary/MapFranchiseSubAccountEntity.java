@@ -19,4 +19,9 @@ public class MapFranchiseSubAccountEntity {
 
 	@Column(name = "RetailerId")
 	private int retailerId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "FranchiseMasterAccountId", referencedColumnName = "FranchiseMasterAccountId", insertable = false, updatable = false)
+	private FranchiseMasterAccountEntity franchiseMasterAccount;
+
 }

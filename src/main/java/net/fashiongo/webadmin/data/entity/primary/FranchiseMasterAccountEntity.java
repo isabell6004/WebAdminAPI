@@ -30,6 +30,10 @@ public class FranchiseMasterAccountEntity {
 	@JoinColumn(name = "FranchiseMasterAccountId",referencedColumnName = "FranchiseMasterAccountId", insertable = false, updatable = false)
 	private List<MapFranchiseSubAccountEntity> mapFranchiseSubAccounts;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "RetailerId", referencedColumnName = "RetailerId", insertable = false, updatable = false)
+	private RetailerEntity retailer;
+
 	public LocalDateTime getCreatedOn() {
 		return createdOn.toLocalDateTime();
 	}

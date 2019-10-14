@@ -1,7 +1,9 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.entity.primary.FranchiseMasterAccountEntity;
+import net.fashiongo.webadmin.data.entity.primary.RetailerEntity;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterResponse;
+import net.fashiongo.webadmin.data.model.franchise.response.FranchiseSubResponse;
 import net.fashiongo.webadmin.data.repository.primary.FranchiseMasterAccountEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.MapFranchiseSubAccountEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +37,22 @@ public class RenewalFranchiseService {
 				.createdOn(franchiseMasterAccountEntity.getCreatedOn())
 				.totalSubAccounts(countSubAccount)
 				.build();
+	}
+
+	public FranchiseSubResponse getFranchiseSub(Integer retailerId) {
+
+		return mapFranchiseSubAccountEntityRepository.findAllByRetailerId(retailerId).stream().findFirst()
+				.map(mapFranchiseSubAccountEntity -> {
+					FranchiseMasterAccountEntity franchiseMasterAccount = mapFranchiseSubAccountEntity.getFranchiseMasterAccount();
+					RetailerEntity retailer = franchiseMasterAccount.getRetailer();
+					return FranchiseSubResponse.builder()
+							.franchiseMasterAccountId(franchiseMasterAccount.getFranchiseMasterAccountId())
+							.franchiseSubAccountId(mapFranchiseSubAccountEntity.getFranchiseSubAccountId())
+							.companyName(retailer.getCompanyName())
+							.firstName(retailer.getFirstName())
+							.lastName(retailer.getLastName())
+							.retailerId(franchiseMasterAccount.getRetailerId())
+							.build();
+				}).orElse(null);
 	}
 }
