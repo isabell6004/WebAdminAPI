@@ -107,7 +107,7 @@ public class SetShowPromotionPlanParameters {
 	public LocalDateTime getCommissionEffectiveTo() {
 //		return commissionEffectiveTo;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-		return StringUtils.isEmpty(commissionEffectiveTo) ? null : LocalDateTime.parse(commissionEffectiveTo.concat(" 00:00:00"), formatter);
+		return StringUtils.isEmpty(commissionEffectiveTo) ? null : LocalDateTime.parse(commissionEffectiveTo.concat(" 23:59:59"), formatter);
 	}
 
 	public void setCommissionEffectiveTo(String commissionEffectiveTo) {
