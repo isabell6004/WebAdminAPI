@@ -4,15 +4,16 @@ import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.ListAccountDeactivationReason;
 import net.fashiongo.webadmin.data.model.LogSentEmail;
+import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.buyer.*;
 import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -56,6 +57,9 @@ public class RenewalBuyerService {
 
 	@Autowired
 	private PrimaryProcedureRepository primaryProcedureRepository;
+
+	@Autowired
+	private WholeRetailerBlockEntityRepository wholeRetailerBlockEntityRepository;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -266,6 +270,18 @@ public class RenewalBuyerService {
 
 		return GetOrderHistoryStatisticsResponse.builder()
 				.orderHistoryStatistics(Arrays.asList(orderHistoryStatistics))
+				.build();
+	}
+
+	public GetInaccessibleVendorsResponse getInaccessibleVendors(GetInaccessibleVendorsParameter parameter) {
+
+		Page<InaccessibleVendor> wholeRetailerBlockEntities = wholeRetailerBlockEntityRepository.findAllByRetailerIdOrderByStartingDateDesc(parameter.getPagenum(), parameter.getPagesize(), parameter.getRetailerid());
+
+		return GetInaccessibleVendorsResponse.builder()
+				.table(Arrays.asList(Total.builder().recCnt((int) wholeRetailerBlockEntities.getTotalElements()).build()))
+				.table1(
+						wholeRetailerBlockEntities.getContent()
+				)
 				.build();
 	}
 }

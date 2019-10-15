@@ -83,6 +83,9 @@ public class SimpleWholeSalerEntity implements Serializable {
     @Column(name = "UserID")
     private String userID;
 
+    @Column(name = "BlockPolicy")
+    private boolean blockPolicy;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)
     private SystemImageServersEntity systemImageServersEntity;

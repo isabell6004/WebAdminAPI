@@ -202,4 +202,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "getinaccessiblevendors", method = RequestMethod.POST)
+	public JsonResponse<GetInaccessibleVendorsResponse> getInaccessibleVendors(@RequestBody GetInaccessibleVendorsParameter parameter) {
+		JsonResponse<GetInaccessibleVendorsResponse> response = new JsonResponse();
+
+		GetInaccessibleVendorsResponse inaccessibleVendors = renewalBuyerService.getInaccessibleVendors(parameter);
+
+		response.setSuccess(true);
+		response.setData(inaccessibleVendors);
+
+		return response;
+	}
 }
