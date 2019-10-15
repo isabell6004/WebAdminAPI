@@ -18,7 +18,7 @@ public class FranchiseRetailerEntityRepositoryCustomImpl implements FranchiseRet
 	private EntityManager entityManager;
 
 	@Override
-	public List<FranchiseBuyer> findAllByContainsCompanyName(String companyName) {
+	public List<FranchiseBuyer> findAllByContainsCompanyName(String companyName, long limit) {
 		QFranchiseRetailerEntity R = QFranchiseRetailerEntity.franchiseRetailerEntity;
 		QFranchiseMasterAccountEntity FMA = QFranchiseMasterAccountEntity.franchiseMasterAccountEntity;
 		QMapFranchiseSubAccountEntity MFS = QMapFranchiseSubAccountEntity.mapFranchiseSubAccountEntity;
@@ -41,7 +41,7 @@ public class FranchiseRetailerEntityRepositoryCustomImpl implements FranchiseRet
 				.leftJoin(R.mapFranchiseSubAccount,MFS)
 				.where(
 						R.active.eq("Y").and(R.companyName.contains(companyName))
-				);
+				).limit(limit);
 
 		return jpaQuery.fetch();
 	}

@@ -11,7 +11,9 @@ import net.fashiongo.webadmin.data.repository.primary.FranchiseRetailerEntityRep
 import net.fashiongo.webadmin.data.repository.primary.MapFranchiseSubAccountEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -65,6 +67,11 @@ public class RenewalFranchiseService {
 	}
 
 	public List<FranchiseBuyer> autoComplete(AutoCompleteParameter parameter) {
-		return franchiseRetailerEntityRepository.findAllByContainsCompanyName(parameter.getSearchText());
+		String searchText = parameter.getSearchText();
+		if(StringUtils.isEmpty(searchText)) {
+			return Collections.EMPTY_LIST;
+		}
+
+		return franchiseRetailerEntityRepository.findAllByContainsCompanyName(searchText, 100);
 	}
 }
