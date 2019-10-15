@@ -214,4 +214,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "getshoppingbag", method = RequestMethod.POST)
+	public JsonResponse<GetShoppingBagResponse> getShoppingBag(@RequestBody GetShoppingBagParameter parameter) {
+		JsonResponse<GetShoppingBagResponse> response = new JsonResponse();
+
+		GetShoppingBagResponse shoppingBag = renewalBuyerService.getShoppingBag(parameter);
+
+		response.setSuccess(true);
+		response.setData(shoppingBag);
+
+		return response;
+	}
 }

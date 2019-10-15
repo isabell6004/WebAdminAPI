@@ -61,6 +61,9 @@ public class RenewalBuyerService {
 	@Autowired
 	private WholeRetailerBlockEntityRepository wholeRetailerBlockEntityRepository;
 
+	@Autowired
+	private CartItemEntityRepository cartItemEntityRepository;
+
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
 
@@ -282,6 +285,21 @@ public class RenewalBuyerService {
 				.table1(
 						wholeRetailerBlockEntities.getContent()
 				)
+				.build();
+	}
+
+	public GetShoppingBagResponse getShoppingBag(GetShoppingBagParameter parameter) {
+
+		Integer retailerId = parameter.getRetailerId();
+		List<WholeSalerId> wholeSalerIds = cartItemEntityRepository.findAllShoppingBagGroupByWholesalerId(retailerId).stream()
+				.map(integer -> WholeSalerId.builder().wholeSalerID(integer).build())
+				.collect(Collectors.toList());
+
+		List<ShoppingBag> shoppingBagList = cartItemEntityRepository.findAllShoppingBag(retailerId);
+
+		return GetShoppingBagResponse.builder()
+				.table(wholeSalerIds)
+				.table1(shoppingBagList)
 				.build();
 	}
 }
