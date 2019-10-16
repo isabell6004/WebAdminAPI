@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
+import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.common.parameter.*;
 import net.fashiongo.webadmin.model.pojo.common.response.GetCountryStatesResponse;
@@ -226,5 +227,15 @@ public class CommonController {
 	@RequestMapping(value = "getcountries",method = RequestMethod.POST)
 	public JsonResponse getCountries() {
 		return renewalCommonService.getCountries();
+	}
+
+	@RequestMapping(value = "getorderstatus",method = RequestMethod.POST)
+	public JsonResponse<List<CodeOrderStatus>> getOrderstatus() {
+		JsonResponse<List<CodeOrderStatus>> jsonResponse = new JsonResponse();
+		List<CodeOrderStatus> orderstatus = renewalCommonService.getOrderstatus();
+		jsonResponse.setSuccess(true);
+		jsonResponse.setData(orderstatus);
+
+		return jsonResponse;
 	}
 }
