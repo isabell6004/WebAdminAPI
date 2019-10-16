@@ -1503,7 +1503,10 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 	@Transactional(value = "primaryTransactionManager")
 	public OrderHistoryStatistics up_wa_RetailerInfo_OrderSummary(Integer retailerId) {
 		QSummaryOrdersEntity ORDER = QSummaryOrdersEntity.summaryOrdersEntity;
-		NumberExpression<BigDecimal> expressionTotalAmountWSC = Expressions.asNumber(queryDSLSQLFunctions.isnull(BigDecimal.class, ORDER.totalAmountWSC, 0)).sum();
+
+		SimpleTemplate<BigDecimal> expressionTotalAmountWSC = queryDSLSQLFunctions.isnull(BigDecimal.class
+				, Expressions.asNumber(queryDSLSQLFunctions.isnull(BigDecimal.class, ORDER.totalAmountWSC, 0)).sum()
+				, 0);
 
 //		declare
 //		@OrderAmount       decimal(18,2)=0,
@@ -1532,7 +1535,10 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		BigDecimal orderAmount = tuple.get(expressionTotalAmountWSC).setScale(2, RoundingMode.HALF_UP);
 		Long orderCount = tuple.get(ORDER.orderID.count());
 
-		NumberExpression<Integer> expressionTotalQty = Expressions.asNumber(queryDSLSQLFunctions.isnull(Integer.class, ORDER.totalQty, 0)).sum();
+		SimpleTemplate<Integer> expressionTotalQty =
+				queryDSLSQLFunctions.isnull(Integer.class
+						,Expressions.asNumber(queryDSLSQLFunctions.isnull(Integer.class, ORDER.totalQty, 0)).sum()
+						,0);
 
 		Supplier<Integer> functionOrderQty = () -> {
 			//		select @OrderQty = isnull(sum(isnull(TotalQty,0)) ,0)
