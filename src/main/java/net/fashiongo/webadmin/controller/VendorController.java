@@ -4,8 +4,10 @@ import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
+import net.fashiongo.webadmin.data.model.vendor.GetVwPaymentMethodsForVendorParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
+import net.fashiongo.webadmin.data.model.vendor.GetVwPaymentMethodsForVendor;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
@@ -557,18 +559,30 @@ public class VendorController {
         }
     	return response;
     }
-    
+
     @GetMapping(value = "contractplans")
     public JsonResponse<List<ContractPlan>> getContractPlans() {
-    	JsonResponse<List<ContractPlan>> response = new JsonResponse<>(false, null, null);
-    	try {
-    		response.setData(vendorService.getContractPlans());
-    		response.setSuccess(true);
-    	} catch (Exception ex) {
-    		log.error("Exception Error: {}", ex);
-    		response.setMessage(ex.getMessage());
-    	}
-    	return response;
+	    JsonResponse<List<ContractPlan>> response = new JsonResponse<>(false, null, null);
+	    try {
+		    response.setData(vendorService.getContractPlans());
+		    response.setSuccess(true);
+	    } catch (Exception ex) {
+		    log.error("Exception Error: {}", ex);
+		    response.setMessage(ex.getMessage());
+	    }
+	    return response;
+    }
+
+    @PostMapping(value = "getvwpaymentmethodsforvendor")
+	public JsonResponse<List<GetVwPaymentMethodsForVendor>> getvwpaymentmethodsforvendor(@RequestBody GetVwPaymentMethodsForVendorParameter parameter) {
+	    JsonResponse<List<GetVwPaymentMethodsForVendor>> response = new JsonResponse<>();
+
+	    List<GetVwPaymentMethodsForVendor> data = renewalVendorService.getVwPaymentMethodsForVendor(parameter);
+
+	    response.setSuccess(true);
+	    response.setData(data);
+
+		return response;
     }
 }
 	

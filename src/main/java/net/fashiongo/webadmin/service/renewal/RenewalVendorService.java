@@ -1,9 +1,6 @@
 package net.fashiongo.webadmin.service.renewal;
 
-import net.fashiongo.webadmin.data.entity.primary.FashionGoFormEntity;
-import net.fashiongo.webadmin.data.entity.primary.SecurityUserEntity;
-import net.fashiongo.webadmin.data.entity.primary.VendorContractDocumentEntity;
-import net.fashiongo.webadmin.data.entity.primary.VendorImageRequestEntity;
+import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.entity.primary.vendor.VendorProductRow;
 import net.fashiongo.webadmin.data.model.vendor.*;
@@ -41,11 +38,12 @@ public class RenewalVendorService {
 	private final SecurityUserEntityRepository securityUserEntityRepository;
 	private final CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository;
 	private final CodeCountryEntityRepository codeCountryEntityRepository;
+	private final MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository;
 
 	@Autowired
 	public RenewalVendorService(VendorProductRepository vendorProductRepository,
 	                            VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
-	                            FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository) {
+	                            FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository) {
 		this.vendorProductRepository = vendorProductRepository;
 		this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
 		this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
@@ -55,6 +53,7 @@ public class RenewalVendorService {
 		this.securityUserEntityRepository = securityUserEntityRepository;
 		this.codeWholeSalerCompanyTypeEntityRepository = codeWholeSalerCompanyTypeEntityRepository;
 		this.codeCountryEntityRepository = codeCountryEntityRepository;
+		this.mapWholeSalerPaymentMethodEntityRepository = mapWholeSalerPaymentMethodEntityRepository;
 	}
 
 	public VendorProductListResponse getProductList(GetProductListParameter parameters) {
@@ -171,5 +170,24 @@ public class RenewalVendorService {
 				.vendorCompanyTypeList(vendorCompanyTypeList)
 				.countryList(countryList)
 				.build();
+	}
+
+	public List<GetVwPaymentMethodsForVendor> getVwPaymentMethodsForVendor(GetVwPaymentMethodsForVendorParameter parameter) {
+
+		Integer wholesalerId = parameter.getWholesalerId();
+		if(wholesalerId == null) {
+			wholesalerId = 0;
+		}
+
+		List<MapWholeSalerPaymentMethodEntity> mapWholeSalerPaymentMethodEntities = mapWholeSalerPaymentMethodEntityRepository.findAllByWholeSalerIdWithCodePayment(wholesalerId);
+
+		return mapWholeSalerPaymentMethodEntities.stream()
+				.map(entity -> GetVwPaymentMethodsForVendor.builder()
+						.mapID(entity.getMapID())
+						.paymentMethodID(entity.getPaymentMethodID())
+						.wholeSalerID(entity.getWholeSalerID())
+						.paymentMethodName(entity.getCodePaymentMethod() != null ? entity.getCodePaymentMethod().getPaymentMethodName() : null)
+						.build()
+				).collect(Collectors.toList());
 	}
 }
