@@ -4,6 +4,7 @@ import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.Vendor;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
@@ -50,7 +51,7 @@ public class VendorController {
 	@RequestMapping(value="getvendorlistall", method=RequestMethod.POST)
 	public JsonResponse<List<Vendor>> getVendorListAll() {
 		
-		List<Vendor> vendors = vendorService.getVendorList();	
+		List<Vendor> vendors = renewalVendorService.getVendorList();
 		return new JsonResponse<List<Vendor>>(true, null, 0, vendors);
 	}
 	

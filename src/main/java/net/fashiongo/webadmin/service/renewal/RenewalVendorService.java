@@ -211,4 +211,8 @@ public class RenewalVendorService {
 						.build()
 				).collect(Collectors.toList());
 	}
+
+	public List<Vendor> getVendorList() {
+		return wholeSalerEntityRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
+	}
 }
