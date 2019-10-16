@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 public class GnbVendorGroupEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "vendor_group_id")
 	@Setter(AccessLevel.NONE)
 	private Integer vendorGroupId;

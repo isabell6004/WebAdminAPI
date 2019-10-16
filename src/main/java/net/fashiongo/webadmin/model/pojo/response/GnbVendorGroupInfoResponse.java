@@ -6,10 +6,12 @@ import lombok.Getter;
 import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupEntity;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Builder
-public class GnbVendorGroupInfo {
+public class GnbVendorGroupInfoResponse {
 	private int gnbVendorGroupId;
 	
 	private String title;
@@ -25,11 +27,13 @@ public class GnbVendorGroupInfo {
 	@JsonProperty("isActive")
 	private boolean active;
 	
-	public static GnbVendorGroupInfo of(GnbVendorGroupEntity gnbVendorGroupEntity, boolean isActive) {
-		return GnbVendorGroupInfo.builder()
+	public static GnbVendorGroupInfoResponse of(GnbVendorGroupEntity gnbVendorGroupEntity, boolean isActive) {
+		return GnbVendorGroupInfoResponse.builder()
 				.gnbVendorGroupId(gnbVendorGroupEntity.getVendorGroupId())
 				.title(gnbVendorGroupEntity.getVendorGroupTitle())
-				.numberOfVendors(gnbVendorGroupEntity.getVendorGroupMaps().size())
+				.numberOfVendors(Optional.ofNullable(gnbVendorGroupEntity.getVendorGroupMaps())
+						.map(List::size)
+						.orElse(0))
 				.createdBy(gnbVendorGroupEntity.getCreatedBy())
 				.createdOn(gnbVendorGroupEntity.getCreatedOn())
 				.modifiedOn(gnbVendorGroupEntity.getModifiedOn())
