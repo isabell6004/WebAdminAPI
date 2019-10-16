@@ -3,11 +3,7 @@ package net.fashiongo.webadmin.controller;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
-import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
-import net.fashiongo.webadmin.data.model.vendor.GetVwPaymentMethodsForVendorParameter;
-import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
-import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
-import net.fashiongo.webadmin.data.model.vendor.GetVwPaymentMethodsForVendor;
+import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
@@ -584,5 +580,17 @@ public class VendorController {
 
 		return response;
     }
+
+	@PostMapping(value = "getvwshipmethodsforvendor")
+	public JsonResponse<List<GetVwShipMethodsForVendor>> getvwshipmethodsforvendor(@RequestBody GetVwShipMethodsForVendorParameter parameter) {
+		JsonResponse<List<GetVwShipMethodsForVendor>> response = new JsonResponse<>();
+
+		List<GetVwShipMethodsForVendor> data = renewalVendorService.getVwShipMethodsForVendor(parameter);
+
+		response.setSuccess(true);
+		response.setData(data);
+
+		return response;
+	}
 }
 	

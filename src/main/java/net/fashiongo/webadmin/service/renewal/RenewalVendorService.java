@@ -39,11 +39,12 @@ public class RenewalVendorService {
 	private final CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository;
 	private final CodeCountryEntityRepository codeCountryEntityRepository;
 	private final MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository;
+	private final WholeShipMethodEntityRepository wholeShipMethodEntityRepository;
 
 	@Autowired
 	public RenewalVendorService(VendorProductRepository vendorProductRepository,
 	                            VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
-	                            FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository) {
+	                            FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository, WholeShipMethodEntityRepository wholeShipMethodEntityRepository) {
 		this.vendorProductRepository = vendorProductRepository;
 		this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
 		this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
@@ -54,6 +55,7 @@ public class RenewalVendorService {
 		this.codeWholeSalerCompanyTypeEntityRepository = codeWholeSalerCompanyTypeEntityRepository;
 		this.codeCountryEntityRepository = codeCountryEntityRepository;
 		this.mapWholeSalerPaymentMethodEntityRepository = mapWholeSalerPaymentMethodEntityRepository;
+		this.wholeShipMethodEntityRepository = wholeShipMethodEntityRepository;
 	}
 
 	public VendorProductListResponse getProductList(GetProductListParameter parameters) {
@@ -187,6 +189,25 @@ public class RenewalVendorService {
 						.paymentMethodID(entity.getPaymentMethodID())
 						.wholeSalerID(entity.getWholeSalerID())
 						.paymentMethodName(entity.getCodePaymentMethod() != null ? entity.getCodePaymentMethod().getPaymentMethodName() : null)
+						.build()
+				).collect(Collectors.toList());
+	}
+
+	public List<GetVwShipMethodsForVendor> getVwShipMethodsForVendor(GetVwShipMethodsForVendorParameter parameter) {
+		Integer wholesalerId = parameter.getWholesalerId();
+		if(wholesalerId == null) {
+			wholesalerId = 0;
+		}
+
+		List<WholeShipMethodEntity> wholeShipMethodEntities = wholeShipMethodEntityRepository.findAllByWholeSalerIdWithShipMethod(wholesalerId);
+
+		return wholeShipMethodEntities.stream()
+				.map(entity -> GetVwShipMethodsForVendor.builder()
+						.isDefault(entity.isDefault())
+						.shipMethodID(entity.getShipMethodID())
+						.wholeSalerID(entity.getWholeSalerID())
+						.shipMethodName(entity.getShipMethod() != null ? entity.getShipMethod().getShipMethodName() : null)
+						.wholeShipID(entity.getWholeShipID())
 						.build()
 				).collect(Collectors.toList());
 	}
