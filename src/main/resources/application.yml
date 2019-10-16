@@ -200,3 +200,9 @@ coupon:
       root-image-name: coupon-banner-images
       root-name-prefix: dev-
     image-root: https://rlyfpniry.cdn.toastcloud.com/
+
+gnb:
+  banner:
+    image:
+      storage:
+        directory: 'dev-gnb-menu-banner-img'
