@@ -238,4 +238,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "getstorecredit", method = RequestMethod.POST)
+	public JsonResponse<GetStoreCreditResponse> getStoreCredit(@RequestBody GetStoreCreditParameter parameter) {
+		JsonResponse<GetStoreCreditResponse> response = new JsonResponse();
+
+		GetStoreCreditResponse storeCreditResponse = renewalBuyerService.getStoreCredit(parameter);
+
+		response.setSuccess(true);
+		response.setData(storeCreditResponse);
+
+		return response;
+	}
 }

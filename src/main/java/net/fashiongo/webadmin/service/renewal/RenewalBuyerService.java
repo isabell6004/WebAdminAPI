@@ -15,14 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,6 +64,9 @@ public class RenewalBuyerService {
 
 	@Autowired
 	private CreditCardEntityRepository creditCardEntityRepository;
+
+	@Autowired
+	private StoreCreditEntityRepository storeCreditEntityRepository;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -321,5 +322,23 @@ public class RenewalBuyerService {
 						.creditCardTypeID(entity.getCardTypeID())
 						.build()
 				).collect(Collectors.toList());
+	}
+
+	public GetStoreCreditResponse getStoreCredit(GetStoreCreditParameter parameter) {
+
+		Integer retailerId = parameter.getRetailerId();
+		String po = parameter.getPo();
+		String vendor = parameter.getVendor();
+
+		LocalDateTime fromDateTime = Optional.ofNullable(parameter.getFrom()).map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+		LocalDateTime toDateTime = Optional.ofNullable(parameter.getTo()).map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+
+		List<StoreCardSummary> storeCardSummaries = storeCreditEntityRepository.findAllStoreCardSummary(retailerId, vendor, po, fromDateTime, toDateTime);
+
+		List<StoreCardDetail> storeCardDetail = storeCreditEntityRepository.findAllStoreCardDetail(retailerId, vendor, po, fromDateTime, toDateTime);
+		return GetStoreCreditResponse.builder()
+				.table(storeCardSummaries)
+				.table1(storeCardDetail)
+				.build();
 	}
 }
