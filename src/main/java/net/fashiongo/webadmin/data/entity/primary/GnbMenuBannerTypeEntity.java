@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "gnb_menu_banner_type")
 public class GnbMenuBannerTypeEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_banner_type_id")
 	@Setter(AccessLevel.NONE)
 	private Integer menuBannerTypeId;

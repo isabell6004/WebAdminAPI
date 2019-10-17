@@ -24,6 +24,7 @@ public class GnbMenuBannerTypeEntityRepositoryCustomImpl implements GnbMenuBanne
 
 		return new JPAQuery<>(entityManager)
 				.select(qBannerType)
+				.distinct()
 				.from(qBannerType)
 				.leftJoin(qBannerType.banners, qBanner).fetchJoin()
 				.fetch();

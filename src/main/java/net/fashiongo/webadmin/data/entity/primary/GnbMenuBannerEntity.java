@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "gnb_menu_banner")
 public class GnbMenuBannerEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "menu_banner_id")
 	@Setter(AccessLevel.NONE)
 	private Integer menuBannerId;
