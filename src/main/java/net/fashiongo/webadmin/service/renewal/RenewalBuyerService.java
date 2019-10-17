@@ -64,6 +64,9 @@ public class RenewalBuyerService {
 	@Autowired
 	private CartItemEntityRepository cartItemEntityRepository;
 
+	@Autowired
+	private CreditCardEntityRepository creditCardEntityRepository;
+
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
 
@@ -301,5 +304,22 @@ public class RenewalBuyerService {
 				.table(wholeSalerIds)
 				.table1(shoppingBagList)
 				.build();
+	}
+
+	public List<CreditCard> getCreditCard(GetCreditCardParameter parameter) {
+		Integer retailerId = parameter.getRetailerId();
+		if(retailerId == null) {
+			retailerId = 0;
+		}
+
+		return creditCardEntityRepository.findAllByRetailerIdWithCodeCreditCardType(retailerId).stream()
+				.map(entity -> CreditCard.builder()
+						.creditCardID(entity.getCreditCardID())
+						.creditCardType(entity.getCodeCreditCardType().getCreditCardType())
+						.isDefaultCard(entity.isDefaultCard())
+						.last4Digit(entity.getLast4Digit())
+						.creditCardTypeID(entity.getCardTypeID())
+						.build()
+				).collect(Collectors.toList());
 	}
 }

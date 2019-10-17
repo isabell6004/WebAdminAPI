@@ -226,4 +226,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "getcreditcard", method = RequestMethod.POST)
+	public JsonResponse<List<CreditCard>> getCreditcard(@RequestBody GetCreditCardParameter parameter) {
+		JsonResponse<List<CreditCard>> response = new JsonResponse();
+
+		List<CreditCard> creditCardList = renewalBuyerService.getCreditCard(parameter);
+
+		response.setSuccess(true);
+		response.setData(creditCardList);
+
+		return response;
+	}
 }
