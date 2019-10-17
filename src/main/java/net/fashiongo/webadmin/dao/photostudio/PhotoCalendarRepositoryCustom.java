@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 public interface PhotoCalendarRepositoryCustom {
- 	List<PhotoCalendarEntity> getPhotoCalendarWithJoinDate(LocalDateTime fromDate, LocalDateTime toDate);
+ 	List<PhotoCalendarEntity> getPhotoCalendarWithJoinData(LocalDateTime fromDate, LocalDateTime toDate);
 
 	PhotoCalendarEntity findBeforeBusinessDayFromTheDate(int businessDay, LocalDateTime theDate);
 

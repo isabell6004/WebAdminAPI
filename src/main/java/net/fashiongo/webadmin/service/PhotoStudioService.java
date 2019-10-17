@@ -659,7 +659,7 @@ public class PhotoStudioService extends ApiService {
 
         LocalDateTime inputDate = LocalDateTime.of(year, month, 1, 0, 0);
 
-        List<PhotoCalendarEntity> photoCalendarEntityList = photoCalendarRepository.getPhotoCalendarWithJoinDate(inputDate, inputDate.with(TemporalAdjusters.lastDayOfMonth()));
+        List<PhotoCalendarEntity> photoCalendarEntityList = photoCalendarRepository.getPhotoCalendarWithJoinData(inputDate, inputDate.with(TemporalAdjusters.lastDayOfMonth()));
         List<PhotoCalendarResponse> photoCalendarResponseList = photoCalendarEntityList.stream()
                 .map(photoCalendarEntity -> {
                     PhotoCalendarResponse photoCalendarResponse = new PhotoCalendarResponse();
@@ -1029,7 +1029,7 @@ public class PhotoStudioService extends ApiService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDateTime inputDate = LocalDate.parse(orderUpdateRequest.getPhotoshootDate(), formatter).atTime(0, 0);
 
-            PhotoCalendarEntity photoCalendarEntity = photoCalendarRepository.getPhotoCalendarWithJoinDate(inputDate, inputDate)
+            PhotoCalendarEntity photoCalendarEntity = photoCalendarRepository.getPhotoCalendarWithJoinData(inputDate, inputDate)
                     .stream()
                     .findFirst()
                     .orElse(null);
@@ -1038,17 +1038,23 @@ public class PhotoStudioService extends ApiService {
                 return "selected date is not available.";
             }
 
-            BigDecimal availableUnit = photoCalendarEntity.getMapPhotoCalendarModel().stream()
-                    .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getIsDelete() == null || mapPhotoCalendarModel.getIsDelete().equals(false))
-                    .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getModelID().equals(orderUpdateRequest.getModelId()))
-                    .map(mapPhotoCalendarModel -> mapPhotoCalendarModel.getAvailableUnit().subtract(mapPhotoCalendarModel.getPhotoBooking().stream()
-                            .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
-                            .map(PhotoBooking::getBookedUnit)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add)))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            MapPhotoCalendarModel mapPhotoCalendarModel = photoCalendarEntity.getMapPhotoCalendarModel().stream()
+                    .filter(map -> map.getIsDelete() == null || map.getIsDelete().equals(false))
+                    .filter(map -> map.getModelID().equals(orderUpdateRequest.getModelId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (mapPhotoCalendarModel == null) {
+                return "selected model is not available.";
+            }
+
+            BigDecimal availableUnit = mapPhotoCalendarModel.getAvailableUnit().subtract(mapPhotoCalendarModel.getPhotoBooking().stream()
+                    .filter(photoBooking -> photoBooking.getPhotoOrder().getIsCancelledBy() == null || photoBooking.getPhotoOrder().getIsCancelledBy().equals(0))
+                    .map(PhotoBooking::getBookedUnit)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add));
 
             if (photoOrder.getTotalUnit().compareTo(availableUnit) > 0) {
-                return "booked units is greater than availableUnits of selected.";
+                return "booked units of current order is greater than available units of selected model.";
             }
 
             PhotoShootSchedule schedule = getScheduleInBusinessDay(inputDate);
@@ -1062,11 +1068,7 @@ public class PhotoStudioService extends ApiService {
             photoOrder.setModifiedOnDate(now);
             photoOrder.setModifiedBY(username);
 
-            photoOrder.getPhotoBooking().setMapPhotoCalendarModel(photoCalendarEntity.getMapPhotoCalendarModel()
-                    .stream()
-                    .filter(mapPhotoCalendarModel -> mapPhotoCalendarModel.getModelID().equals(orderUpdateRequest.getModelId()))
-                    .findFirst()
-                    .get());
+            photoOrder.getPhotoBooking().setMapPhotoCalendarModel(mapPhotoCalendarModel);
             photoOrder.getPhotoBooking().setModifiedOnDate(now);
             photoOrder.getPhotoBooking().setModifiedBY(username);
 

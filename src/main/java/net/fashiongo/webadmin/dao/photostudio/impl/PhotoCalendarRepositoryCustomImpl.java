@@ -21,7 +21,7 @@ public class PhotoCalendarRepositoryCustomImpl implements PhotoCalendarRepositor
 
 	@Override
 	@Transactional(transactionManager = "photostudioTransactionManager")
-	public List<PhotoCalendarEntity> getPhotoCalendarWithJoinDate(LocalDateTime fromDate, LocalDateTime toDate) {
+	public List<PhotoCalendarEntity> getPhotoCalendarWithJoinData(LocalDateTime fromDate, LocalDateTime toDate) {
 		JPAQuery<PhotoCalendarEntity> query = new JPAQuery<>(photostudioEntityManager)
 				.select(QPhotoCalendarEntity.photoCalendarEntity).distinct()
 				.from(QPhotoCalendarEntity.photoCalendarEntity)
