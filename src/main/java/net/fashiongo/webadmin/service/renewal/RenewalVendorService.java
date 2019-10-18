@@ -141,10 +141,11 @@ public class RenewalVendorService {
 		String securityUserName = vendorContractEntityRepository.findAllByWholeSalerId(wholeSalerID)
 				.stream()
 				.findFirst()
-				.map(vendorContractEntity ->
-						securityUserEntityRepository.findById(vendorContractEntity.getRepID())
+				.map(vendorContractEntity -> {
+						return vendorContractEntity.getRepID() != null ? securityUserEntityRepository.findById(vendorContractEntity.getRepID())
 								.map(SecurityUserEntity::getUserName)
-								.orElse(null)
+								.orElse(null) : null;
+						}
 				).orElse(null);
 
 		List<VendorCompanyType> vendorCompanyTypeList = codeWholeSalerCompanyTypeEntityRepository.findAllByActive(true)
