@@ -17,4 +17,8 @@ public interface GnbBannerService {
 	GnbBannerResponse modifyBanner(int bannerTypeId, int bannerId, String imageFileName, InputStream inputStream, String targetUrl);
 
 	GnbBannerResponse modifyTargetUrl(int bannerTypeId, int bannerId, String targetUrl);
+
+	GnbBannerResponse modifyActivity(int bannerTypeId, int bannerId, boolean isActive);
+
+	int removeBanner(int bannerTypeId, int bannerId);
 }

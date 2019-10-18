@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.common.JsonResponse;
+import net.fashiongo.webadmin.model.pojo.request.GnbBannerActiveRequest;
 import net.fashiongo.webadmin.model.pojo.request.GnbBannerTargetUrlRequest;
 import net.fashiongo.webadmin.model.pojo.response.GnbBannerResponse;
 import net.fashiongo.webadmin.model.pojo.response.GnbBannerTypeResponse;
@@ -79,12 +80,35 @@ public class GnbBannerController {
 
 	@PutMapping("/banner-types/{typeId}/banners/{bannerId}/target-url")
 	public ResponseEntity<Void> modifyTargetUrl(@PathVariable("typeId") int typeId,
-														   @PathVariable("bannerId") int bannerId,
-														   @RequestBody GnbBannerTargetUrlRequest request) {
+												@PathVariable("bannerId") int bannerId,
+												@RequestBody GnbBannerTargetUrlRequest request) {
 		try {
 			gnbBannerService.modifyTargetUrl(typeId, bannerId, request.getTargetUrl());
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@PutMapping("/banner-types/{typeId}/banners/{bannerId}/is-active")
+	public ResponseEntity<Void> modifyActive(@PathVariable("typeId") int typeId,
+											 @PathVariable("bannerId") int bannerId,
+											 @RequestBody GnbBannerActiveRequest request) {
+		try {
+			gnbBannerService.modifyActivity(typeId, bannerId, request.isActive());
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@DeleteMapping("/banner-types/{typeId}/banners/{bannerId}")
+	public ResponseEntity<Void> removeBanner(@PathVariable("typeId") int typeId,
+											 @PathVariable("bannerId") int bannerId) {
+		try {
+			gnbBannerService.removeBanner(typeId, bannerId);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}

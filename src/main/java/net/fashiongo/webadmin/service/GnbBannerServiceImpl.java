@@ -129,4 +129,42 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 		return GnbBannerResponse.convertFrom(bannerEntity, bannerImageUrl);
 	}
+
+	@Override
+	public GnbBannerResponse modifyActivity(int bannerTypeId, int bannerId, boolean isActive) {
+		GnbMenuBannerTypeEntity typeEntity = gnbMenuBannerTypeEntityRepository.getOneFromId(bannerTypeId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid banner type ID."));
+		GnbMenuBannerEntity bannerEntity = typeEntity.getBanners().stream()
+				.filter(b -> b.getMenuBannerId() == bannerId)
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Invalid banner ID."));
+
+		bannerEntity.setActive(isActive);
+		bannerEntity.setModifiedOn(LocalDateTime.now());
+		bannerEntity.setModifiedBy(Utility.getUsername());
+		gnbMenuBannerEntityRepository.save(bannerEntity);
+
+		return GnbBannerResponse.convertFrom(bannerEntity, bannerImageUrl);
+	}
+
+	@Override
+	public int removeBanner(int bannerTypeId, int bannerId) {
+		GnbMenuBannerTypeEntity typeEntity = gnbMenuBannerTypeEntityRepository.getOneFromId(bannerTypeId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid banner type ID."));
+		GnbMenuBannerEntity bannerEntity = typeEntity.getBanners().stream()
+				.filter(b -> b.getMenuBannerId() == bannerId)
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Invalid banner ID."));
+		String removedFileName = bannerEntity.getImageFileName();
+
+		gnbMenuBannerEntityRepository.delete(bannerEntity);
+		typeEntity.setBanners(typeEntity.getBanners().stream().filter(b -> b.getMenuBannerId() != bannerId).collect(Collectors.toList()));
+
+		CloseableHttpResponse deleteResponse = factory.create().files()
+				.delete(bannerContainerName, removedFileName)
+				.executeWithoutHandler();
+		HttpClientUtils.closeQuietly(deleteResponse);
+
+		return bannerId;
+	}
 }
