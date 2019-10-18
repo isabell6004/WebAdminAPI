@@ -61,9 +61,7 @@ public class StaticController {
 	@RequestMapping(value="vpi", method=RequestMethod.GET)
 	public JsonResponse<String> getVpi(
 			HttpServletRequest request) {
-		String url = "vpi/" + "?" + request.getQueryString();
-		
-		return jsonClient.get(url);
+		return jsonClient.get("/vpi/?" + request.getQueryString());
 	}
 	
 	/**
