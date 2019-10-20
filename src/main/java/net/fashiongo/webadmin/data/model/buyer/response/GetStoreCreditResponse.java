@@ -12,9 +12,9 @@ import java.util.List;
 @Builder
 public class GetStoreCreditResponse {
 
-	@JsonProperty("table")
+	@JsonProperty("Table")
 	List<StoreCardSummary> table;
 
-	@JsonProperty("table1")
+	@JsonProperty("Table1")
 	List<StoreCardDetail> table1;
 }
