@@ -3,44 +3,22 @@
  */
 package net.fashiongo.webadmin.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
-import net.fashiongo.webadmin.model.pojo.message.parameter.DelVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetContactUsParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetMessageParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsDetailParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.GetVendorRatingParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.SetContactUsReplyParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.SetMessageReadYNParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.SetRetailerNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.parameter.SetVendorNewsParameter;
-import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
-import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
-import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
-import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerRatingResponse;
-import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
-import net.fashiongo.webadmin.model.pojo.message.response.GetVendorRatingResponse;
+import net.fashiongo.webadmin.model.pojo.message.parameter.*;
+import net.fashiongo.webadmin.model.pojo.message.response.*;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.primary.MessageCategory;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
 import net.fashiongo.webadmin.model.primary.VendorNewsView;
 import net.fashiongo.webadmin.service.MessageService;
+import net.fashiongo.webadmin.service.renewal.RenewalMessageService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Incheol Jung
@@ -51,7 +29,10 @@ public class MessageController {
 	
 	@Autowired
 	MessageService messageService;
-	
+
+	@Autowired
+	RenewalMessageService renewalMessageService;
+
 	/**
 	 * 
 	 * Description Example
@@ -352,8 +333,9 @@ public class MessageController {
 	 * @return 
 	 */
 	@RequestMapping(value="getretailerrating", method=RequestMethod.POST)
-	public JsonResponse<GetRetailerRatingResponse> getRetailerRating(@RequestBody GetVendorRatingParameter param) {
-		GetRetailerRatingResponse result = messageService.getRetailerRating(param);
-		return new JsonResponse<GetRetailerRatingResponse>(true, null, 0, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.message.response.GetRetailerRatingResponse> getRetailerRating(@RequestBody GetVendorRatingParameter param) {
+		net.fashiongo.webadmin.data.model.message.response.GetRetailerRatingResponse retailerRating = renewalMessageService.getRetailerRating(param);
+
+		return new JsonResponse<net.fashiongo.webadmin.data.model.message.response.GetRetailerRatingResponse>(true, null, 0, retailerRating);
 	}
 }
