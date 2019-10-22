@@ -14,8 +14,15 @@ import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupInfoResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,13 +40,21 @@ public class GnbServiceImpl implements GnbService {
 
 	private final SiteSettingRepository siteSettingRepository;
 
+	private final CacheService cacheService;
+
+	private final PlatformTransactionManager transactionManager;
+
 	@Autowired
 	public GnbServiceImpl(GnbVendorGroupRepository gnbVendorGroupRepository,
 						  GnbVendorGroupMapRepository gnbVendorGroupMapRepository,
-						  SiteSettingRepository siteSettingRepository) {
+						  SiteSettingRepository siteSettingRepository,
+						  CacheService cacheService,
+						  @Qualifier("primaryTransactionManager") PlatformTransactionManager transactionManager) {
 		this.gnbVendorGroupRepository = gnbVendorGroupRepository;
 		this.gnbVendorGroupMapRepository = gnbVendorGroupMapRepository;
 		this.siteSettingRepository = siteSettingRepository;
+		this.cacheService = cacheService;
+		this.transactionManager = transactionManager;
 	}
 
 	@Override
@@ -123,19 +138,23 @@ public class GnbServiceImpl implements GnbService {
 	}
 
 	@Override
-	@Transactional(transactionManager = "primaryTransactionManager")
 	public GnbVendorGroupInfoResponse editGnbVendorGroup(int gnbVendorGroupId, GnbVendorGroupSaveRequest request) {
 		LocalDateTime now = LocalDateTime.now();
 		String username = Utility.getUsername();
 
-		Integer activeGnbVendorGroupId = siteSettingRepository.findById(1)
+		GnbVendorGroupEntity gnbVendorGroupEntity = doInTransaction(status -> {
+			GnbVendorGroupEntity entity = updateGnbVendorGroup(gnbVendorGroupId, request, now, username);
+			entity.setVendorGroupMaps(updateGnbVendorGroupMap(entity, request.getWholeSalerIdList(), now, username));
+			return entity;
+		});
+
+		boolean isActive = gnbVendorGroupEntity.getVendorGroupId().equals(siteSettingRepository.findById(1)
 				.orElseThrow(NotFoundSiteSetting::new)
-				.getGnbVendorGroupId();
+				.getGnbVendorGroupId());
 
-		GnbVendorGroupEntity gnbVendorGroupEntity = updateGnbVendorGroup(gnbVendorGroupId, request, now, username);
-		gnbVendorGroupEntity.setVendorGroupMaps(updateGnbVendorGroupMap(gnbVendorGroupEntity, request.getWholeSalerIdList(), now, username));
+		clearCache(isActive);
 
-		return GnbVendorGroupInfoResponse.of(gnbVendorGroupEntity, gnbVendorGroupEntity.getVendorGroupId().equals(activeGnbVendorGroupId));
+		return GnbVendorGroupInfoResponse.of(gnbVendorGroupEntity, isActive);
 	}
 
 	private GnbVendorGroupEntity updateGnbVendorGroup(int gnbVendorGroupId, GnbVendorGroupSaveRequest request, LocalDateTime now, String username) {
@@ -223,12 +242,30 @@ public class GnbServiceImpl implements GnbService {
 	}
 
 	@Override
-	@Transactional(transactionManager = "primaryTransactionManager")
 	public void activateGnbVendorGroup(int gnbVendorGroupId) {
-		SiteSettingEntity siteSettingEntity = siteSettingRepository.findById(1)
-				.orElseThrow(NotFoundSiteSetting::new);
+		doInTransaction(new TransactionCallbackWithoutResult() {
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+				SiteSettingEntity siteSettingEntity = siteSettingRepository.findById(1)
+						.orElseThrow(NotFoundSiteSetting::new);
 
-		siteSettingEntity.setGnbVendorGroupId(gnbVendorGroupId);
-		siteSettingRepository.save(siteSettingEntity);
+				siteSettingEntity.setGnbVendorGroupId(gnbVendorGroupId);
+				siteSettingRepository.save(siteSettingEntity);
+			}
+		});
+
+		clearCache(true);
+	}
+
+	private <T> T doInTransaction(TransactionCallback<T> action) {
+		TransactionTemplate tx = new TransactionTemplate(transactionManager);
+		tx.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		return tx.execute(action);
+	}
+
+	private void clearCache(boolean isActive) {
+		if (isActive) {
+			cacheService.GetRedisCacheEvict("GnbMenuVendorGroup", null);
+		}
 	}
 }
