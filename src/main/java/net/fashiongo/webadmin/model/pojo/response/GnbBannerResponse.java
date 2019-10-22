@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import net.fashiongo.webadmin.data.entity.primary.GnbMenuBannerEntity;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class GnbBannerResponse {
@@ -18,6 +20,8 @@ public class GnbBannerResponse {
 	private String targetUrl;
 	@JsonProperty("isActive")
 	private boolean isActive;
+	@JsonProperty("modifiedOn")
+	private LocalDateTime modifiedOn;
 
 	@JsonProperty("imageUrl")
 	private String imageUrl;
@@ -29,6 +33,7 @@ public class GnbBannerResponse {
 				.imageFileName(entity.getImageFileName())
 				.targetUrl(entity.getTargetUrl())
 				.isActive(entity.isActive())
+				.modifiedOn(entity.getModifiedOn())
 				.imageUrl(imageStorageUrl + "/" + entity.getImageFileName())
 				.build();
 	}
