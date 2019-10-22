@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.model.Total;
+import net.fashiongo.webadmin.data.model.message.GetRetailerRatingParameter;
 import net.fashiongo.webadmin.data.model.message.RetailerRating;
 import net.fashiongo.webadmin.data.model.message.response.GetRetailerRatingResponse;
 import net.fashiongo.webadmin.data.repository.primary.RetailerRatingEntityRepository;
@@ -21,7 +22,7 @@ public class RenewalMessageService {
 	@Autowired
 	private RetailerRatingEntityRepository retailerRatingEntityRepository;
 
-	public GetRetailerRatingResponse getRetailerRating(GetVendorRatingParameter param) {
+	public GetRetailerRatingResponse getRetailerRating(GetRetailerRatingParameter param) {
 
 		Integer retailerID = param.getRetailerID();
 		Integer wholeSalerID = param.getWholeSalerID();

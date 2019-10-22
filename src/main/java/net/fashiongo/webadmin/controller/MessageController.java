@@ -4,6 +4,7 @@
 package net.fashiongo.webadmin.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import net.fashiongo.webadmin.data.model.message.GetRetailerRatingParameter;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
 import net.fashiongo.webadmin.model.pojo.message.parameter.*;
@@ -333,7 +334,7 @@ public class MessageController {
 	 * @return 
 	 */
 	@RequestMapping(value="getretailerrating", method=RequestMethod.POST)
-	public JsonResponse<net.fashiongo.webadmin.data.model.message.response.GetRetailerRatingResponse> getRetailerRating(@RequestBody GetVendorRatingParameter param) {
+	public JsonResponse<net.fashiongo.webadmin.data.model.message.response.GetRetailerRatingResponse> getRetailerRating(@RequestBody GetRetailerRatingParameter param) {
 		net.fashiongo.webadmin.data.model.message.response.GetRetailerRatingResponse retailerRating = renewalMessageService.getRetailerRating(param);
 
 		return new JsonResponse<net.fashiongo.webadmin.data.model.message.response.GetRetailerRatingResponse>(true, null, 0, retailerRating);
