@@ -32,17 +32,21 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 	private final String bannerImageUrl;
 
-	private final String bannerContainerName;
+	private final String rootContainer;
+
+	private final String bannerDirectory;
 
 	@Autowired
 	public GnbBannerServiceImpl(GnbMenuBannerTypeEntityRepository gnbMenuBannerTypeEntityRepository,
 								SwiftApiCallFactory factory,
 								@Value("${toast.cloud.storage.object-storage.api-url}") String objectStorageUrl,
 								@Value("${toast.cloud.storage.object-storage.account}") String objectStorageAuth,
+								@Value("${gnb.banner.image.storage.root-container}") String rootContainer,
 								@Value("${gnb.banner.image.storage.directory}") String bannerDirectory) {
 		this.gnbMenuBannerTypeEntityRepository = gnbMenuBannerTypeEntityRepository;
-		this.bannerContainerName = bannerDirectory;
-		this.bannerImageUrl = objectStorageUrl + objectStorageAuth + "/" + bannerDirectory;
+		this.rootContainer = rootContainer;
+		this.bannerDirectory = bannerDirectory;
+		this.bannerImageUrl = objectStorageUrl + objectStorageAuth + "/" + rootContainer + "/" + bannerDirectory;
 		this.factory = factory;
 	}
 
@@ -61,10 +65,8 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 	public GnbBannerResponse addBanner(int bannerTypeId, String imageFileName, InputStream inputStream, String targetUrl) {
 		GnbMenuBannerTypeEntity typeEntity = gnbMenuBannerTypeEntityRepository.getOneFromId(bannerTypeId)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid banner type ID."));
-		CloseableHttpResponse response = factory.create().files()
-				.upload(bannerContainerName, imageFileName, inputStream, true)
-				.executeWithoutHandler();
-		HttpClientUtils.closeQuietly(response);
+
+		uploadBannerFile(imageFileName, inputStream);
 
 		String username = Utility.getUsername();
 
@@ -94,10 +96,7 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid banner ID."));
 		String previousFileName = bannerEntity.getImageFileName();
 
-		CloseableHttpResponse uploadResponse = factory.create().files()
-				.upload(bannerContainerName, imageFileName, inputStream, true)
-				.executeWithoutHandler();
-		HttpClientUtils.closeQuietly(uploadResponse);
+		uploadBannerFile(imageFileName, inputStream);
 
 		bannerEntity.setImageFileName(imageFileName);
 		bannerEntity.setTargetUrl(targetUrl);
@@ -105,10 +104,7 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 		bannerEntity.setModifiedBy(Utility.getUsername());
 		gnbMenuBannerEntityRepository.save(bannerEntity);
 
-		CloseableHttpResponse deleteResponse = factory.create().files()
-				.delete(bannerContainerName, previousFileName)
-				.executeWithoutHandler();
-		HttpClientUtils.closeQuietly(deleteResponse);
+		deleteBannerFile(previousFileName);
 
 		return GnbBannerResponse.convertFrom(bannerEntity, bannerImageUrl);
 	}
@@ -160,11 +156,26 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 		gnbMenuBannerEntityRepository.delete(bannerEntity);
 		typeEntity.setBanners(typeEntity.getBanners().stream().filter(b -> b.getMenuBannerId() != bannerId).collect(Collectors.toList()));
 
-		CloseableHttpResponse deleteResponse = factory.create().files()
-				.delete(bannerContainerName, removedFileName)
-				.executeWithoutHandler();
-		HttpClientUtils.closeQuietly(deleteResponse);
+		deleteBannerFile(removedFileName);
 
 		return bannerId;
+	}
+
+	private void uploadBannerFile(String fileName, InputStream inputStream) {
+		CloseableHttpResponse uploadResponse = factory.create().files()
+				.upload(rootContainer, getBannerFileNameWithPath(fileName), inputStream, true)
+				.executeWithoutHandler();
+		HttpClientUtils.closeQuietly(uploadResponse);
+	}
+
+	private void deleteBannerFile(String fileName) {
+		CloseableHttpResponse deleteResponse = factory.create().files()
+				.delete(rootContainer, getBannerFileNameWithPath(fileName))
+				.executeWithoutHandler();
+		HttpClientUtils.closeQuietly(deleteResponse);
+	}
+
+	private String getBannerFileNameWithPath(String fileName) {
+		return this.bannerDirectory + "/" + fileName;
 	}
 }

@@ -86,4 +86,5 @@ gnb:
   banner:
     image:
       storage:
-        directory: 'dev-gnb-menu-banner-img'
+        root-container: 'dev'
+        directory: 'gnb-menu-banner-img'
