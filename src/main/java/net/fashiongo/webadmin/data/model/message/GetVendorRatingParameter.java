@@ -3,13 +3,13 @@ package net.fashiongo.webadmin.data.model.message;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
 
-public class GetRetailerRatingParameter {
+public class GetVendorRatingParameter {
 
 	@JsonProperty("wholesalerid")
-	private Integer wholesalerId;
+	private Integer wholeSalerID;
 
 	@JsonProperty("retailerid")
-	private Integer retailerId;
+	private Integer retailerID;
 
 	@JsonProperty("pagenum")
 	private Integer pageNum;
@@ -36,11 +36,11 @@ public class GetRetailerRatingParameter {
 	private String orderby;
 
 	public Integer getWholeSalerID() {
-		return wholesalerId;
+		return wholeSalerID;
 	}
 
 	public Integer getRetailerID() {
-		return retailerId;
+		return retailerID;
 	}
 
 	public Integer getPageNum() {
@@ -76,11 +76,11 @@ public class GetRetailerRatingParameter {
 	}
 
 	public void setWholeSalerID(Integer wholeSalerID) {
-		this.wholesalerId = wholeSalerID;
+		this.wholeSalerID = wholeSalerID;
 	}
 
 	public void setRetailerID(Integer retailerID) {
-		this.retailerId = retailerID;
+		this.retailerID = retailerID;
 	}
 
 	public void setPageNum(Integer pageNum) {

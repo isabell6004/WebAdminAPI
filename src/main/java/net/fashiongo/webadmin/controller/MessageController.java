@@ -5,10 +5,14 @@ package net.fashiongo.webadmin.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import net.fashiongo.webadmin.data.model.message.GetRetailerRatingParameter;
+import net.fashiongo.webadmin.data.model.message.GetVendorRatingParameter;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.ResultMessage;
 import net.fashiongo.webadmin.model.pojo.message.parameter.*;
-import net.fashiongo.webadmin.model.pojo.message.response.*;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageReplyResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetMessageResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerNewsResponse;
+import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
 import net.fashiongo.webadmin.model.primary.MessageCategory;
 import net.fashiongo.webadmin.model.primary.TblRetailerNews;
@@ -320,9 +324,10 @@ public class MessageController {
 	 * @return GetVendorRatingResponse
 	 */
 	@RequestMapping(value="getvendorrating", method=RequestMethod.POST)
-	public JsonResponse<GetVendorRatingResponse> getVendorRating(@RequestBody GetVendorRatingParameter param) {
-		GetVendorRatingResponse result = messageService.getVendorRating(param);
-		return new JsonResponse<GetVendorRatingResponse>(true, null, 0, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.message.response.GetVendorRatingResponse> getVendorRating(@RequestBody GetVendorRatingParameter param) {
+		net.fashiongo.webadmin.data.model.message.response.GetVendorRatingResponse vendorRating = renewalMessageService.getVendorRating(param);
+
+		return new JsonResponse<net.fashiongo.webadmin.data.model.message.response.GetVendorRatingResponse>(true, null, 0, vendorRating);
 	}
 	
 	/**
