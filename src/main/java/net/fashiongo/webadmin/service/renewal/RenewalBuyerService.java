@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.ListAccountDeactivationReason;
@@ -23,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class RenewalBuyerService {
 
@@ -364,5 +366,21 @@ public class RenewalBuyerService {
 				.table(Arrays.asList(Total.builder().recCnt((int) orderHistories.getTotalElements()).build()))
 				.table1(orderHistories.getContent())
 				.build();
+	}
+
+	public Integer delInaccessibleVendors(DelInaccessibleVendorsParameter parameter) {
+
+		Integer wholeretailerblockid = parameter.getWholeretailerblockid();
+		if(wholeretailerblockid == null) {
+			wholeretailerblockid = 0;
+		}
+
+		try {
+			wholeRetailerBlockEntityRepository.deleteByWholeRetailerBlockID(wholeretailerblockid);
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
 	}
 }

@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.data.repository.primary;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
 import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
@@ -11,6 +12,7 @@ import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.support.PageableExecutionUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,5 +63,14 @@ public class WholeRetailerBlockEntityRepositoryCustomImpl implements WholeRetail
 
 		PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
 		return PageableExecutionUtils.getPage(results,pageRequest,()-> resultsTotal);
+	}
+
+	@Override
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public long deleteByWholeRetailerBlockID(Integer wholeRetailerBlockID) {
+		QWholeRetailerBlockEntity T = QWholeRetailerBlockEntity.wholeRetailerBlockEntity;
+		JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,T);
+
+		return jpaDeleteClause.where(T.wholeRetailerBlockID.eq(wholeRetailerBlockID)).execute();
 	}
 }

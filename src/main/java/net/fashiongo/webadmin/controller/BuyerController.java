@@ -262,4 +262,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "delinaccessiblevendors", method = RequestMethod.POST)
+	public JsonResponse<Integer> delInaccessibleVendors(@RequestBody DelInaccessibleVendorsParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+
+		Integer result = renewalBuyerService.delInaccessibleVendors(parameter);
+
+		response.setSuccess(true);
+		response.setData(result);
+
+		return response;
+	}
 }
