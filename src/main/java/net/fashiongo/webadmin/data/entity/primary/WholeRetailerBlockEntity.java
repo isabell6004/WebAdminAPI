@@ -1,10 +1,13 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "tblWholeRetailerBlock")
@@ -13,6 +16,7 @@ public class WholeRetailerBlockEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "WholeRetailerBlockID")
+	@Setter(AccessLevel.NONE)
 	private Integer wholeRetailerBlockID;
 
 	@Column(name = "WholeSalerID")

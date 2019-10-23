@@ -383,4 +383,42 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	public Integer setInaccessibleVendors(SetInaccessibleVendorsParameter parameter,String sessionUserId) {
+		Integer retailerid = parameter.getRetailerid();
+		Integer wholesalerid = parameter.getWholesalerid();
+
+		if(retailerid == null) {
+			retailerid = 0;
+		}
+
+		if(wholesalerid == null) {
+			wholesalerid = 0;
+		}
+
+		if(wholeRetailerBlockEntityRepository.existByWholesalerIdAndRetailerId(wholesalerid,retailerid)) {
+			return -1;
+		}
+
+		try
+		{
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
+			WholeRetailerBlockEntity wholeRetailerBlock = new WholeRetailerBlockEntity();
+			wholeRetailerBlock.setRetailerID(retailerid);
+			wholeRetailerBlock.setWholeSalerID(wholesalerid);
+			wholeRetailerBlock.setLastModifiedDateTime(NOW);
+			wholeRetailerBlock.setStartingDate(NOW);
+			wholeRetailerBlock.setLastUser(sessionUserId);
+
+			wholeRetailerBlockEntityRepository.save(wholeRetailerBlock);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
+
 }

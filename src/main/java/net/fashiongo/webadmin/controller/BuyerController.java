@@ -9,6 +9,7 @@ import net.fashiongo.webadmin.service.BuyerService;
 import net.fashiongo.webadmin.service.UserService;
 import net.fashiongo.webadmin.service.renewal.RenewalBuyerService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -268,6 +269,18 @@ public class BuyerController {
 		JsonResponse<Integer> response = new JsonResponse();
 
 		Integer result = renewalBuyerService.delInaccessibleVendors(parameter);
+
+		response.setSuccess(true);
+		response.setData(result);
+
+		return response;
+	}
+
+	@RequestMapping(value = "setinaccessiblevendors", method = RequestMethod.POST)
+	public JsonResponse<Integer> setInaccessibleVendors(@RequestBody SetInaccessibleVendorsParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		String username = Utility.getUsername();
+		Integer result = renewalBuyerService.setInaccessibleVendors(parameter,username);
 
 		response.setSuccess(true);
 		response.setData(result);

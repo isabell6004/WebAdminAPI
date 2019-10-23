@@ -8,4 +8,6 @@ public interface WholeRetailerBlockEntityRepositoryCustom {
 	Page<InaccessibleVendor> findAllByRetailerIdOrderByStartingDateDesc(int pageNumber, int pageSize, int retailerId);
 
 	long deleteByWholeRetailerBlockID(Integer wholeRetailerBlockID);
+
+	boolean existByWholesalerIdAndRetailerId(Integer wholesalerId,Integer retailerId);
 }

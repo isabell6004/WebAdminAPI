@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.repository.primary;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPADeleteClause;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
 import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
@@ -72,5 +73,20 @@ public class WholeRetailerBlockEntityRepositoryCustomImpl implements WholeRetail
 		JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,T);
 
 		return jpaDeleteClause.where(T.wholeRetailerBlockID.eq(wholeRetailerBlockID)).execute();
+	}
+
+	@Override
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public boolean existByWholesalerIdAndRetailerId(Integer wholesalerId, Integer retailerId) {
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+		QWholeRetailerBlockEntity T = QWholeRetailerBlockEntity.wholeRetailerBlockEntity;
+
+		jpaQuery.select(T)
+				.from(T)
+				.where(
+						T.wholeSalerID.eq(wholesalerId).and(T.retailerID.eq(retailerId))
+				);
+
+		return jpaQuery.fetchCount() > 0;
 	}
 }
