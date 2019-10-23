@@ -68,6 +68,9 @@ public class RenewalBuyerService {
 	@Autowired
 	private StoreCreditEntityRepository storeCreditEntityRepository;
 
+	@Autowired
+	private OrdersEntityRepository ordersEntityRepository;
+
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
 
@@ -339,6 +342,27 @@ public class RenewalBuyerService {
 		return GetStoreCreditResponse.builder()
 				.table(storeCardSummaries)
 				.table1(storeCardDetail)
+				.build();
+	}
+
+	public OrderHistoryResponse getOrderHistory(GetOrderHistoryParameter parameter) {
+		Integer retailerID = parameter.getRetailerID();
+		Integer orderStatusID = parameter.getOrderStatusID();
+		Integer paymentStatusID = parameter.getPaymentStatusID();
+		Integer pageNum = parameter.getPageNum();
+		Integer pageSize = parameter.getPageSize();
+		String wholeCompanyName = parameter.getWholeCompanyName();
+		String poNumber = parameter.getPoNumber();
+		String productName = parameter.getProductName();
+		LocalDateTime fromDate = Optional.ofNullable(parameter.getDateFrom()).map(s -> new Date(s)).map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+		LocalDateTime toDate = Optional.ofNullable(parameter.getDateTo()).map(s -> new Date(s)).map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+		String orderby = parameter.getOrderBy();
+
+		Page<OrderHistory> orderHistories = ordersEntityRepository.up_wa_GetOrderHistoryMaster(pageNum, pageSize, retailerID, wholeCompanyName, paymentStatusID, orderStatusID, fromDate, toDate, poNumber, productName, orderby);
+
+		return OrderHistoryResponse.builder()
+				.table(Arrays.asList(Total.builder().recCnt((int) orderHistories.getTotalElements()).build()))
+				.table1(orderHistories.getContent())
 				.build();
 	}
 }
