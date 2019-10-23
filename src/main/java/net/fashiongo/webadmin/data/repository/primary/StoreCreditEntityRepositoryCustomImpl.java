@@ -4,12 +4,14 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.Union;
 import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.QStoreCreditEntity;
 import net.fashiongo.webadmin.data.entity.primary.QStoreCreditUseEntity;
+import net.fashiongo.webadmin.data.entity.primary.StoreCreditEntity;
 import net.fashiongo.webadmin.data.model.buyer.StoreCardDetail;
 import net.fashiongo.webadmin.data.model.buyer.StoreCardSummary;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
@@ -22,6 +24,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityRepositoryCustom {
 
@@ -281,5 +284,19 @@ public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityR
 
 
 		return jpasqlQuery.fetch();
+	}
+
+	@Override
+	public Optional<StoreCreditEntity> findByRetailerIdAndCreditId(int retailerId, int creditId) {
+		JPAQuery<StoreCreditEntity> jpaQuery = new JPAQuery<>(entityManager);
+		QStoreCreditEntity T = QStoreCreditEntity.storeCreditEntity;
+
+		return jpaQuery.select(T)
+				.from(T)
+				.where(
+						T.retailerID.eq(retailerId).and(T.creditID.eq(creditId))
+				).fetch()
+				.stream()
+				.findFirst();
 	}
 }

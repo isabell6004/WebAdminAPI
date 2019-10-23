@@ -287,4 +287,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "delstorecredit", method = RequestMethod.POST)
+	public JsonResponse<Integer> delStoreCredit(@RequestBody DelStoreCreditParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		String username = Utility.getUsername();
+		Integer result = renewalBuyerService.delStoreCredit(parameter,username);
+
+		response.setSuccess(true);
+		response.setData(result);
+
+		return response;
+	}
 }

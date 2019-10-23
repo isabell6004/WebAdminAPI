@@ -1,11 +1,14 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "StoreCredit")
@@ -14,6 +17,7 @@ public class StoreCreditEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "CreditID")
+	@Setter(AccessLevel.NONE)
 	private Integer creditID;
 
 	@Column(name = "WholeSalerID")

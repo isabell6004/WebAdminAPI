@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedure
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
@@ -421,4 +422,49 @@ public class RenewalBuyerService {
 		}
 	}
 
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer delStoreCredit(DelStoreCreditParameter parameter,String sessionUserId) {
+		Integer creditid = parameter.getCreditid();
+		Integer retailerid = parameter.getRetailerid();
+
+		if(creditid == null) {
+			creditid = 0;
+		}
+
+		if(retailerid == null) {
+			retailerid = 0;
+		}
+
+		try {
+
+			Optional<StoreCreditEntity> storeCreditEntityOptional = storeCreditEntityRepository.findByRetailerIdAndCreditId(retailerid, creditid);
+
+			if(storeCreditEntityOptional.isPresent() == false) {
+				return -1;
+			}
+			StoreCreditEntity storeCreditEntity = storeCreditEntityOptional.get();
+
+			if(storeCreditEntity.getIsUsed()) {
+				return -2;
+			}
+
+			if(storeCreditEntity.getIsDeleted()) {
+				return -3;
+			}
+
+			if(storeCreditEntity.getCreditedAmount().longValue() < 1) {
+				return -4;
+			}
+
+			storeCreditEntity.setIsDeleted(true);
+			storeCreditEntity.setModifiedBy(sessionUserId);
+
+			storeCreditEntityRepository.save(storeCreditEntity);
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }
