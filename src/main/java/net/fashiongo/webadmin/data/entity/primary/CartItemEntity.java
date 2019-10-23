@@ -1,19 +1,25 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "CartItem")
+@DynamicUpdate
 public class CartItemEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "CartID")
+	@Setter(AccessLevel.NONE)
 	private Integer cartID;
 
 	@Column(name = "WholeSalerID")

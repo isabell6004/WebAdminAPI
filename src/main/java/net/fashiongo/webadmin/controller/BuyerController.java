@@ -299,4 +299,22 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setcartitem", method = RequestMethod.POST)
+	public JsonResponse<Integer> setCartItem(@RequestBody SetCartItemParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		Integer count = parameter.getCardItems().size();
+
+		for (SetCardItem cardItem : parameter.getCardItems()) {
+			Integer retValue = renewalBuyerService.setCartItem(cardItem);
+			if(retValue == 1) {
+				count--;
+			}
+		}
+
+		response.setSuccess(true);
+		response.setData(count);
+
+		return response;
+	}
 }

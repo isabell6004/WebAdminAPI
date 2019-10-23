@@ -467,4 +467,38 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setCartItem(SetCardItem parameter) {
+		Integer cartID = parameter.getCartID();
+
+		try {
+			Optional<CartItemEntity> cartItemEntityOptional = cartItemEntityRepository.findById(cartID);
+			if(cartItemEntityOptional.isPresent() == false) {
+				return -1;
+			}
+
+			CartItemEntity cartItemEntity = cartItemEntityOptional.get();
+
+			cartItemEntity.setBQ1(parameter.getBQ1().orElse(0));
+			cartItemEntity.setBQ2(parameter.getBQ2().orElse(0));
+			cartItemEntity.setBQ3(parameter.getBQ3().orElse(0));
+			cartItemEntity.setBQ4(parameter.getBQ4().orElse(0));
+			cartItemEntity.setBQ5(parameter.getBQ5().orElse(0));
+			cartItemEntity.setBQ6(parameter.getBQ6().orElse(0));
+			cartItemEntity.setBQ7(parameter.getBQ7().orElse(0));
+			cartItemEntity.setBQ8(parameter.getBQ8().orElse(0));
+			cartItemEntity.setBQ9(parameter.getBQ9().orElse(0));
+			cartItemEntity.setBQ10(parameter.getBQ10().orElse(0));
+			cartItemEntity.setBQ11(parameter.getBQ11().orElse(0));
+			cartItemEntity.setNoOfPack(parameter.getNoOfPack().orElse(0));
+			cartItemEntity.setTotalQty(parameter.getTotalQty().orElse(0));
+
+			cartItemEntityRepository.saveAndFlush(cartItemEntity);
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }
