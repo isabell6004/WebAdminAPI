@@ -317,4 +317,22 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "delcartitem", method = RequestMethod.POST)
+	public JsonResponse<Integer> delCartItem(@RequestBody DelCartItemParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		Integer count = parameter.getCartIds().size();
+
+		for (Integer cartId : parameter.getCartIds()) {
+			Integer retValue = renewalBuyerService.delCartItem(cartId);
+			if(retValue == 1) {
+				count--;
+			}
+		}
+
+		response.setSuccess(true);
+		response.setData(count);
+
+		return response;
+	}
 }

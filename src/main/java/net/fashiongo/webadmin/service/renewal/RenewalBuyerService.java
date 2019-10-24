@@ -501,4 +501,20 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer delCartItem(Integer cartId) {
+		try {
+			Optional<CartItemEntity> cartItemEntityOptional = cartItemEntityRepository.findById(cartId);
+			if(cartItemEntityOptional.isPresent() == false) {
+				return -1;
+			}
+
+			cartItemEntityRepository.deleteById(cartId);
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }
