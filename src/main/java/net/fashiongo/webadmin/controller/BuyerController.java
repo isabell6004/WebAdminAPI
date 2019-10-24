@@ -361,4 +361,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setshippingstatus", method = RequestMethod.POST)
+	public JsonResponse<Integer> setShippingStatus(@RequestBody SetShippingStatusParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		String username = Utility.getUsername();
+		Integer retValue = renewalBuyerService.setShippingStatus(parameter,username);
+
+		response.setSuccess(true);
+		response.setData(retValue);
+
+		return response;
+	}
 }

@@ -602,4 +602,70 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setShippingStatus(SetShippingStatusParameter parameter, String sessionUserId) {
+		try {
+
+			String type = parameter.getType();
+			if(StringUtils.isEmpty(type)) {
+				return -1;
+			}
+
+			Integer shipaddid = parameter.getShipaddid();
+			if(shipaddid == null) {
+				return -1;
+			}
+
+			Boolean value = parameter.getValue();
+
+			Optional<XShipAddressEntity> xShipAddressEntityOptional = xShipAddressEntityRepository.findById(shipaddid);
+
+			if(xShipAddressEntityOptional.isPresent() ==false) {
+				return -99;
+			}
+
+			XShipAddressEntity shipAddressEntityForStatusChange = xShipAddressEntityOptional.get();
+
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
+			switch (type.toLowerCase()) {
+				case "active":
+					shipAddressEntityForStatusChange.setActive(value);
+					break;
+				case "defaultyn":
+
+					List<XShipAddressEntity> xShipAddressEntityList = xShipAddressEntityRepository.findAllByCustID2(shipAddressEntityForStatusChange.getCustID2());
+
+					xShipAddressEntityList.forEach(x -> {
+						xShipAddressEntityRepository.findById(x.getShipAddID()).ifPresent(xss -> {
+							xss.setDefaultYN(false);
+							xShipAddressEntityRepository.save(xss);
+						});
+					});
+					shipAddressEntityForStatusChange.setDefaultYN(value);
+					break;
+			}
+
+			shipAddressEntityForStatusChange.setLastUser(sessionUserId);
+			shipAddressEntityForStatusChange.setLastModifiedDateTime(NOW);
+			xShipAddressEntityRepository.save(shipAddressEntityForStatusChange);
+
+			retailerEntityRepository.findById(shipAddressEntityForStatusChange.getCustID2()).ifPresent(retailerEntity -> {
+				retailerEntity.setStreetNo(shipAddressEntityForStatusChange.getShipAddress2());
+				retailerEntity.setCity(shipAddressEntityForStatusChange.getShipCity2());
+				retailerEntity.setState(shipAddressEntityForStatusChange.getShipState2());
+				retailerEntity.setZipcode(shipAddressEntityForStatusChange.getShipZip2());
+				retailerEntity.setCountry(shipAddressEntityForStatusChange.getShipCountry2());
+				retailerEntity.setPhone(shipAddressEntityForStatusChange.getShipPhone());
+				retailerEntity.setFax((shipAddressEntityForStatusChange.getShipFax()));
+				retailerEntityRepository.save(retailerEntity);
+			});
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }
