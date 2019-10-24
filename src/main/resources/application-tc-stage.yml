@@ -81,3 +81,10 @@ coupon:
       root-image-name: coupon-banner-images
       root-name-prefix: stage-
     image-root: https://rlyfpniry.cdn.toastcloud.com/
+
+gnb:
+  banner:
+    image:
+      storage:
+        root-container: 'production'
+        directory: 'gnb-menu-banner-img'

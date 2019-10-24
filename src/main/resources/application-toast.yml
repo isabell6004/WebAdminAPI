@@ -70,3 +70,10 @@ coupon:
       root-image-name: coupon-banner-images
       root-name-prefix: ""
     image-root: https://rlzwrhbmy.cdn.toastcloud.com/
+
+gnb:
+  banner:
+    image:
+      storage:
+        root-container: 'production'
+        directory: 'gnb-menu-banner-img'

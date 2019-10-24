@@ -205,5 +205,5 @@ gnb:
   banner:
     image:
       storage:
-        root-container: 'dev'
+        root-container: 'production'
         directory: 'gnb-menu-banner-img'
