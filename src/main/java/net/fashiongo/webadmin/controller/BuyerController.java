@@ -335,4 +335,17 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setbillinginfo", method = RequestMethod.POST)
+	public JsonResponse<Integer> setBillingInfo(@RequestBody SetBillingInfoParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		BillingInfo billingInfo = parameter.getBillingInfo();
+		String username = Utility.getUsername();
+		Integer retValue = renewalBuyerService.setBillingInfo(billingInfo,username);
+
+		response.setSuccess(true);
+		response.setData(retValue);
+
+		return response;
+	}
 }

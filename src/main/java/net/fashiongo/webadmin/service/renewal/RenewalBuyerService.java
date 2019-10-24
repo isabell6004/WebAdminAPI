@@ -517,4 +517,39 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setBillingInfo(BillingInfo billingInfo,String sessionUserId) {
+		try {
+
+			Integer retailerID = billingInfo.getRetailerID();
+
+			Optional<RetailerEntity> retailerEntityOptional = retailerEntityRepository.findById(retailerID);
+			if(retailerEntityOptional.isPresent() == false) {
+				return -99;
+			}
+
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
+			RetailerEntity retailerEntity = retailerEntityOptional.get();
+
+			retailerEntity.setBillStreetNo(billingInfo.getBillStreetNo());
+			retailerEntity.setBillStreetNo2(billingInfo.getBillStreetNo2());
+			retailerEntity.setBillCity(billingInfo.getBillCity());
+			retailerEntity.setBillSTATE(billingInfo.getBillSTATE());
+			retailerEntity.setBillCountry(billingInfo.getBillCountry());
+			retailerEntity.setBillCountryID(billingInfo.getBillCountryID());
+			retailerEntity.setBillZipcode(billingInfo.getBillZipcode());
+			retailerEntity.setBillPhone(billingInfo.getBillPhone());
+			retailerEntity.setBillFax(billingInfo.getBillFax());
+			retailerEntity.setLastUser(sessionUserId);
+			retailerEntity.setLastModifiedDateTime(NOW);
+
+			retailerEntityRepository.saveAndFlush(retailerEntity);
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }

@@ -1,20 +1,26 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "tblRetailer")
+@DynamicUpdate
 public class RetailerEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "RetailerID")
+	@Setter(AccessLevel.NONE)
 	private Integer retailerID;
 
 	@Column(name = "RetailerGUID")
