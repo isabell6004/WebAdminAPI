@@ -348,4 +348,17 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setshippinginfo", method = RequestMethod.POST)
+	public JsonResponse<Integer> setShippingInfo(@RequestBody SetShippingInfoParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		ShippingInfo shippingInfo = parameter.getShippingInfo();
+		String username = Utility.getUsername();
+		Integer retValue = renewalBuyerService.setShippingInfo(shippingInfo,username);
+
+		response.setSuccess(true);
+		response.setData(retValue);
+
+		return response;
+	}
 }

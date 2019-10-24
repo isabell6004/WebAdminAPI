@@ -552,4 +552,54 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setShippingInfo(ShippingInfo shippingInfo, String sessionUserId) {
+		try {
+
+			Integer shipAddID = shippingInfo.getShipAddID();
+			Optional<XShipAddressEntity> xShipAddressEntityOptional = xShipAddressEntityRepository.findById(shipAddID);
+
+			if(xShipAddressEntityOptional.isPresent() ==false) {
+				return -99;
+			}
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
+			XShipAddressEntity xShipAddressEntity = xShipAddressEntityOptional.get();
+
+			xShipAddressEntity.setStoreNo(shippingInfo.getStoreNo());
+			xShipAddressEntity.setShipAttention(shippingInfo.getShipAttention());
+			xShipAddressEntity.setShipAddress2(shippingInfo.getShipAddress2());
+			xShipAddressEntity.setShipAddress2B(shippingInfo.getShipAddress2B());
+			xShipAddressEntity.setShipCity2(shippingInfo.getShipCity2());
+			xShipAddressEntity.setShipState2(shippingInfo.getShipState2());
+			xShipAddressEntity.setShipCountry2(shippingInfo.getShipCountry2());
+			xShipAddressEntity.setShipCountry2ID(shippingInfo.getShipCountry2ID());
+			xShipAddressEntity.setIsCommercialAddress(shippingInfo.isIsCommercialAddress());
+			xShipAddressEntity.setShipZip2(shippingInfo.getShipZip2());
+			xShipAddressEntity.setShipPhone(shippingInfo.getShipPhone());
+			xShipAddressEntity.setShipFax(shippingInfo.getShipFax());
+			xShipAddressEntity.setLastUser(sessionUserId);
+			xShipAddressEntity.setLastModifiedDateTime(NOW);
+
+			if(xShipAddressEntity.isDefaultYN()) {
+				retailerEntityRepository.findById(xShipAddressEntity.getCustID2()).ifPresent(retailerEntity -> {
+					retailerEntity.setStreetNo(shippingInfo.getShipAddress2());
+					retailerEntity.setCity(shippingInfo.getShipCity2());
+					retailerEntity.setState(shippingInfo.getShipState2());
+					retailerEntity.setZipcode(shippingInfo.getShipZip2());
+					retailerEntity.setCountry(shippingInfo.getShipCountry2());
+					retailerEntity.setPhone(shippingInfo.getShipPhone());
+					retailerEntity.setFax(shippingInfo.getShipFax());
+
+					retailerEntityRepository.save(retailerEntity);
+				});
+			}
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }
