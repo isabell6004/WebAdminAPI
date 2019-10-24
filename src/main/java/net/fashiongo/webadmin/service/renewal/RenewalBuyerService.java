@@ -469,7 +469,7 @@ public class RenewalBuyerService {
 	}
 
 	@Transactional(transactionManager = "primaryTransactionManager")
-	public Integer setCartItem(SetCardItem parameter) {
+	public Integer setCartItem(SetCartItem parameter) {
 		Integer cartID = parameter.getCartID();
 
 		try {

@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.Optional;
 
 @Getter
-public class SetCardItem {
+public class SetCartItem {
 
 	@JsonProperty("CartID")
 	private Integer CartID;

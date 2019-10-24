@@ -303,10 +303,10 @@ public class BuyerController {
 	@RequestMapping(value = "setcartitem", method = RequestMethod.POST)
 	public JsonResponse<Integer> setCartItem(@RequestBody SetCartItemParameter parameter) {
 		JsonResponse<Integer> response = new JsonResponse();
-		Integer count = parameter.getCardItems().size();
+		Integer count = parameter.getCartItems().size();
 
-		for (SetCardItem cardItem : parameter.getCardItems()) {
-			Integer retValue = renewalBuyerService.setCartItem(cardItem);
+		for (SetCartItem cartItem : parameter.getCartItems()) {
+			Integer retValue = renewalBuyerService.setCartItem(cartItem);
 			if(retValue == 1) {
 				count--;
 			}

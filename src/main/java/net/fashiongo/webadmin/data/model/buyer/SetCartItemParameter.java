@@ -9,5 +9,5 @@ import java.util.List;
 public class SetCartItemParameter {
 
 	@JsonProperty(value = "obj")
-	private List<SetCardItem> cardItems;
+	private List<SetCartItem> cartItems;
 }
