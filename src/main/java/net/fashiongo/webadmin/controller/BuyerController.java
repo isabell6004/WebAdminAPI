@@ -373,4 +373,15 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setcommunicationlog", method = RequestMethod.POST)
+	public JsonResponse<Integer> setCommunicationLog(@RequestBody SetCommunicationLogParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		Integer retValue = renewalBuyerService.setCommunicationLog(parameter);
+
+		response.setSuccess(true);
+		response.setData(retValue);
+
+		return response;
+	}
 }

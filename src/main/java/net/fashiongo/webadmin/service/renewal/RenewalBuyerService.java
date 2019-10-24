@@ -668,4 +668,70 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setCommunicationLog(SetCommunicationLogParameter parameter) {
+		try {
+
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+			Integer retailerid = parameter.getRetailerid();
+			Integer reasonid = parameter.getReasonid();
+			Integer communicationid = Optional.ofNullable(parameter.getCommunicationid()).orElse(0);
+			Timestamp commnicationedOn = Optional.ofNullable(parameter.getCommunicatedon()).map(s -> new Timestamp(new Date(s).getTime())).orElse(NOW);
+			String contactedby = Optional.ofNullable(parameter.getContactedby()).orElse("");
+			String companyName = Optional.ofNullable(parameter.getCompanyname()).orElse("");
+			String notes = Optional.ofNullable(parameter.getNotes()).orElse("");
+			Boolean confirmed1 = Optional.ofNullable(parameter.getConfirmed1()).orElse(false);
+			Boolean confirmed2 = Optional.ofNullable(parameter.getConfirmed2()).orElse(false);
+
+			if(reasonid == null || retailerid == null || reasonid < 1) {
+				return -1;
+			}
+
+			LogCommunicationEntity logCommunicationEntity = new LogCommunicationEntity();
+
+			if(communicationid > 0) {
+				Optional<LogCommunicationEntity> logCommunicationEntityOptional = logCommunicationEntityRepository.findById(communicationid);
+				if(logCommunicationEntityOptional.isPresent() == false) {
+					return -99;
+				}
+				logCommunicationEntity = logCommunicationEntityOptional.get();
+			} else {
+				logCommunicationEntity.setRetailerID(retailerid);
+				logCommunicationEntity.setCreatedBy(contactedby);
+				logCommunicationEntity.setCreatedOn(commnicationedOn);
+			}
+
+			logCommunicationEntity.setCompanyName(companyName);
+			logCommunicationEntity.setReasonID(reasonid);
+			logCommunicationEntity.setCommunicatedOn(commnicationedOn);
+			logCommunicationEntity.setContactedBy(contactedby);
+			logCommunicationEntity.setModifiedBy(contactedby);
+			logCommunicationEntity.setModifiedOn(NOW);
+			logCommunicationEntity.setNotes(notes);
+
+			if(confirmed1) {
+				logCommunicationEntity.setCheckedBy(contactedby);
+				logCommunicationEntity.setCheckedOn(NOW);
+			} else {
+				logCommunicationEntity.setCheckedBy("");
+				logCommunicationEntity.setCheckedOn(null);
+			}
+
+			if(confirmed2) {
+				logCommunicationEntity.setCheckedBy2(contactedby);
+				logCommunicationEntity.setCheckedOn2(NOW);
+			} else {
+				logCommunicationEntity.setCheckedBy2("");
+				logCommunicationEntity.setCheckedOn2(null);
+			}
+
+			logCommunicationEntityRepository.save(logCommunicationEntity);
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }
