@@ -557,5 +557,18 @@ public class VendorController {
         }
     	return response;
     }
+    
+    @GetMapping(value = "contractplans")
+    public JsonResponse<List<ContractPlan>> getContractPlans() {
+    	JsonResponse<List<ContractPlan>> response = new JsonResponse<>(false, null, null);
+    	try {
+    		response.setData(vendorService.getContractPlans());
+    		response.setSuccess(true);
+    	} catch (Exception ex) {
+    		log.error("Exception Error: {}", ex);
+    		response.setMessage(ex.getMessage());
+    	}
+    	return response;
+    }
 }
 	
