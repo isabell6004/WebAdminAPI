@@ -22,10 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -126,8 +123,8 @@ public class RenewalFranchiseService {
 
 		Integer masterAccountId = Optional.ofNullable(parameter.getMasterAccountId()).orElse(0);
 
-		Integer searchTypeId = Optional.ofNullable(parameter.getSearchTypeId()).orElse(null);
-		Integer countryCode = Optional.ofNullable(parameter.getCountryCode()).orElse(null);
+		Integer searchTypeId = Optional.ofNullable(parameter.getSearchTypeId()).filter(s -> !StringUtils.isEmpty(s)).map(s -> Integer.valueOf(s)).orElse(null);
+		Integer countryCode = Optional.ofNullable(parameter.getCountryCode()).filter(s -> !Objects.equals("ALL",s.toUpperCase())).map(s -> Integer.valueOf(s)).orElse(null);
 
 		Integer pageNumber = Optional.ofNullable(parameter.getPn()).orElse(1);
 		Integer pageSize = Optional.ofNullable(parameter.getPs()).orElse(10);

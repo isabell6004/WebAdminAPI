@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public class GetFranchiseMasterSubAccountParameter {
 	private Integer masterAccountId;
-	private Integer searchTypeId;
-	private Integer countryCode;
+	private String searchTypeId;
+	private String countryCode;
 	private String searchTxt;
 	private String state;
 	private String fromDate;
