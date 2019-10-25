@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.entity.primary.FranchiseMasterAccountEntity;
+import net.fashiongo.webadmin.data.entity.primary.MapFranchiseSubAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.RetailerEntity;
 import net.fashiongo.webadmin.data.model.franchise.AutoCompleteParameter;
 import net.fashiongo.webadmin.data.model.franchise.FranchiseBuyer;
@@ -11,6 +12,7 @@ import net.fashiongo.webadmin.data.repository.primary.FranchiseRetailerEntityRep
 import net.fashiongo.webadmin.data.repository.primary.MapFranchiseSubAccountEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Collections;
@@ -73,5 +75,22 @@ public class RenewalFranchiseService {
 		}
 
 		return franchiseRetailerEntityRepository.findAllByContainsCompanyName(searchText, 100);
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public boolean addSub(int retailerId,int masterAccountId) {
+
+		long count = mapFranchiseSubAccountEntityRepository.countByRetailerId(retailerId);
+
+		if(count == 0) {
+			MapFranchiseSubAccountEntity subAccountEntity = new MapFranchiseSubAccountEntity();
+			subAccountEntity.setRetailerId(retailerId);
+			subAccountEntity.setFranchiseMasterAccountId(masterAccountId);
+
+			mapFranchiseSubAccountEntityRepository.save(subAccountEntity);
+
+			return true;
+		}
+		return false;
 	}
 }

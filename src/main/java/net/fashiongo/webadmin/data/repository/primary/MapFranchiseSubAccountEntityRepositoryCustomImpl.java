@@ -47,4 +47,17 @@ public class MapFranchiseSubAccountEntityRepositoryCustomImpl implements MapFran
 
 		return jpaQuery.fetch();
 	}
+
+	@Override
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public long countByRetailerId(int retailerId) {
+		JPAQuery<Long> jpaQuery = new JPAQuery<>(entityManager);
+		QMapFranchiseSubAccountEntity MFSA = QMapFranchiseSubAccountEntity.mapFranchiseSubAccountEntity;
+
+		return jpaQuery.select(MFSA)
+				.from(MFSA)
+				.where(
+						MFSA.retailerId.eq(retailerId)
+				).fetchCount();
+	}
 }

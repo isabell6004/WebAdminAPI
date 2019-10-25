@@ -9,4 +9,6 @@ public interface MapFranchiseSubAccountEntityRepositoryCustom {
 	long countByFranchiseMasterAccountId(Integer franchiseMasterAccountId);
 
 	List<MapFranchiseSubAccountEntity> findAllByRetailerId(int retailerId);
+
+	long countByRetailerId(int retailerId);
 }

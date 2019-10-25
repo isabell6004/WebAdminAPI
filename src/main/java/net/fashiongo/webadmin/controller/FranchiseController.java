@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.franchise.AutoCompleteParameter;
 import net.fashiongo.webadmin.data.model.franchise.FranchiseBuyer;
+import net.fashiongo.webadmin.data.model.franchise.FranchiseSubAddParameter;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterResponse;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseSubResponse;
 import net.fashiongo.webadmin.service.renewal.RenewalFranchiseService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/franchise", produces = "application/json")
@@ -61,6 +63,26 @@ public class FranchiseController {
 
 		response.setSuccess(success);
 		response.setData(franchiseBuyers);
+		response.setMessage(message);
+
+		return response;
+	}
+
+	@RequestMapping(value = "sub/add", method = RequestMethod.POST)
+	public JsonResponse<String> addSub(@RequestBody FranchiseSubAddParameter parameter) {
+		JsonResponse<String> response = new JsonResponse();
+
+		String message = "Invalid input parameters";
+		boolean result = false;
+		Integer retailerId = Optional.ofNullable(parameter.getRetailerId()).orElse(0);
+		Integer masterAccountId = Optional.ofNullable(parameter.getMasterAccountId()).orElse(0);
+
+		if (retailerId != 0 && masterAccountId != 0) {
+			result = renewalFranchiseService.addSub(retailerId,masterAccountId);
+			message = result ? "" : "Failed to add sub account";
+		}
+
+		response.setSuccess(result);
 		response.setMessage(message);
 
 		return response;
