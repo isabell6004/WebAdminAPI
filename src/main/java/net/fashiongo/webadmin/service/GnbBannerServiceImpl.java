@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.utility.Utility;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +39,9 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 	@Autowired
 	public GnbBannerServiceImpl(GnbMenuBannerTypeEntityRepository gnbMenuBannerTypeEntityRepository,
-								SwiftApiCallFactory factory,
-								@Value("${toast.cloud.storage.object-storage.api-url}") String objectStorageUrl,
-								@Value("${toast.cloud.storage.object-storage.account}") String objectStorageAuth,
+								@Qualifier("gnbBannerSwiftApiCallFactory") SwiftApiCallFactory factory,
+								@Value("${gnb.banner.image.storage.object-storage.api-url}") String objectStorageUrl,
+								@Value("${gnb.banner.image.storage.object-storage.account}") String objectStorageAuth,
 								@Value("${gnb.banner.image.storage.root-container}") String rootContainer,
 								@Value("${gnb.banner.image.storage.directory}") String bannerDirectory) {
 		this.gnbMenuBannerTypeEntityRepository = gnbMenuBannerTypeEntityRepository;
