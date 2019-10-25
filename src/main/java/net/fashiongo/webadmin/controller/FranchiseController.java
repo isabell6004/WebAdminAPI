@@ -1,21 +1,17 @@
 package net.fashiongo.webadmin.controller;
 
-import net.fashiongo.webadmin.data.model.franchise.AutoCompleteParameter;
-import net.fashiongo.webadmin.data.model.franchise.FranchiseBuyer;
-import net.fashiongo.webadmin.data.model.franchise.FranchiseSubAddParameter;
-import net.fashiongo.webadmin.data.model.franchise.FranchiseSubRemoveParameter;
+import net.fashiongo.webadmin.data.model.franchise.*;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterResponse;
+import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterSubAccountsResponse;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseSubResponse;
 import net.fashiongo.webadmin.service.renewal.RenewalFranchiseService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/franchise", produces = "application/json")
@@ -108,6 +104,22 @@ public class FranchiseController {
 
 		response.setSuccess(result);
 		response.setMessage(message);
+
+		return response;
+	}
+
+	@RequestMapping(value = "master/{retailerId}/sub/accounts", method = RequestMethod.POST)
+	public JsonResponse<FranchiseMasterSubAccountsResponse> getFranchiseMasterSubAccounts(
+			@PathVariable(value = "retailerId") Integer retailerId
+			,@RequestBody GetFranchiseMasterSubAccountParameter parameter
+	) {
+		JsonResponse<FranchiseMasterSubAccountsResponse> response = new JsonResponse();
+
+		FranchiseMasterSubAccountsResponse franchiseMasterSubAccounts = renewalFranchiseService.getFranchiseMasterSubAccounts(retailerId,parameter);
+
+		response.setSuccess(true);
+		response.setData(franchiseMasterSubAccounts);
+		response.setMessage("");
 
 		return response;
 	}

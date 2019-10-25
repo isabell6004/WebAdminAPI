@@ -6,18 +6,26 @@ import net.fashiongo.webadmin.data.entity.primary.MapFranchiseSubAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.RetailerEntity;
 import net.fashiongo.webadmin.data.model.franchise.AutoCompleteParameter;
 import net.fashiongo.webadmin.data.model.franchise.FranchiseBuyer;
+import net.fashiongo.webadmin.data.model.franchise.FranchiseSubAccount;
+import net.fashiongo.webadmin.data.model.franchise.GetFranchiseMasterSubAccountParameter;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterResponse;
+import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterSubAccountsResponse;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseSubResponse;
 import net.fashiongo.webadmin.data.repository.primary.FranchiseMasterAccountEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.FranchiseRetailerEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.MapFranchiseSubAccountEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -110,4 +118,37 @@ public class RenewalFranchiseService {
 			return false;
 		}
 	}
+
+	public FranchiseMasterSubAccountsResponse getFranchiseMasterSubAccounts(Integer retailerId, GetFranchiseMasterSubAccountParameter parameter) {
+
+		String searchTxt = Optional.ofNullable(parameter.getSearchTxt()).filter(s -> StringUtils.isEmpty(s) == false).orElse(null);
+		String state = Optional.ofNullable(parameter.getState()).filter(s -> StringUtils.isEmpty(s) == false).orElse(null);
+
+		Integer masterAccountId = Optional.ofNullable(parameter.getMasterAccountId()).orElse(0);
+
+		Integer searchTypeId = Optional.ofNullable(parameter.getSearchTypeId()).orElse(null);
+		Integer countryCode = Optional.ofNullable(parameter.getCountryCode()).orElse(null);
+
+		Integer pageNumber = Optional.ofNullable(parameter.getPn()).orElse(1);
+		Integer pageSize = Optional.ofNullable(parameter.getPs()).orElse(10);
+		String orderBy = Optional.ofNullable(parameter.getOrderBy()).filter(s -> StringUtils.isEmpty(s) == false).orElse(null);
+
+		LocalDateTime fromDate = Optional.ofNullable(parameter.getFromDate())
+				.filter(s -> StringUtils.isEmpty(s) == false)
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.orElse(null);
+
+		LocalDateTime toDate = Optional.ofNullable(parameter.getToDate())
+				.filter(s -> StringUtils.isEmpty(s) == false)
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.orElse(null);
+
+		Page<FranchiseSubAccount> subAccountPage = franchiseMasterAccountEntityRepository.findAllSubAccount(retailerId, pageNumber, pageSize, masterAccountId, searchTypeId, searchTxt, countryCode, state, fromDate, toDate, orderBy);
+
+		return FranchiseMasterSubAccountsResponse.builder()
+				.totalCount(subAccountPage.getTotalElements())
+				.subAccounts(subAccountPage.getContent())
+				.build();
+	}
+
 }
