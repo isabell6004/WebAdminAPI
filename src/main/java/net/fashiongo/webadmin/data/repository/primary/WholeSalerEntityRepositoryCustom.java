@@ -7,4 +7,6 @@ import java.util.List;
 public interface WholeSalerEntityRepositoryCustom {
 
 	List<Vendor> findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
+
+	List<Vendor> findAllByOrderActiveOrderByCompanyNameAsc(boolean isOrderActive);
 }

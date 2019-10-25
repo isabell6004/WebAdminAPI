@@ -31,4 +31,22 @@ public class WholeSalerEntityRepositoryCustomImpl implements WholeSalerEntityRep
 
 		return jpaQuery.fetch();
 	}
+
+	@Override
+	public List<Vendor> findAllByOrderActiveOrderByCompanyNameAsc(boolean isOrderActive) {
+		JPAQuery<Vendor> jpaQuery = new JPAQuery<>(entityManager);
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+
+		jpaQuery.select(
+				Projections.constructor(
+						Vendor.class
+						, W.wholeSalerId
+						, W.companyName
+				)
+		).from(W)
+				.where(W.orderActive.eq(isOrderActive))
+				.orderBy(W.companyName.asc());
+
+		return jpaQuery.fetch();
+	}
 }
