@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.FranchiseMasterAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.MapFranchiseSubAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.RetailerEntity;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 public class RenewalFranchiseService {
 
@@ -92,5 +94,20 @@ public class RenewalFranchiseService {
 			return true;
 		}
 		return false;
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public boolean removeSub(List<Integer> retailerIds, Integer masterAccountId) {
+
+		try {
+			for (Integer retailerId : retailerIds) {
+				mapFranchiseSubAccountEntityRepository.deleteByFranchiseMasterAccountIdAndRetailerId(masterAccountId,retailerId);
+			}
+
+			return true;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return false;
+		}
 	}
 }

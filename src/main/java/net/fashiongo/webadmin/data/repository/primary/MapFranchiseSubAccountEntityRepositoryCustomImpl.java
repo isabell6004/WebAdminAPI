@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.data.repository.primary;
 
+import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.MapFranchiseSubAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.QFranchiseMasterAccountEntity;
@@ -59,5 +60,15 @@ public class MapFranchiseSubAccountEntityRepositoryCustomImpl implements MapFran
 				.where(
 						MFSA.retailerId.eq(retailerId)
 				).fetchCount();
+	}
+
+	@Override
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public long deleteByFranchiseMasterAccountIdAndRetailerId(int franchiseMasterAccountId, int retailerId) {
+		QMapFranchiseSubAccountEntity MFSA = QMapFranchiseSubAccountEntity.mapFranchiseSubAccountEntity;
+		JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,MFSA);
+
+		return jpaDeleteClause.where(MFSA.franchiseMasterAccountId.eq(franchiseMasterAccountId).and(MFSA.retailerId.eq(retailerId)))
+				.execute();
 	}
 }

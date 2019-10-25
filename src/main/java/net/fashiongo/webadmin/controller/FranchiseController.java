@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller;
 import net.fashiongo.webadmin.data.model.franchise.AutoCompleteParameter;
 import net.fashiongo.webadmin.data.model.franchise.FranchiseBuyer;
 import net.fashiongo.webadmin.data.model.franchise.FranchiseSubAddParameter;
+import net.fashiongo.webadmin.data.model.franchise.FranchiseSubRemoveParameter;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseMasterResponse;
 import net.fashiongo.webadmin.data.model.franchise.response.FranchiseSubResponse;
 import net.fashiongo.webadmin.service.renewal.RenewalFranchiseService;
@@ -10,8 +11,11 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/franchise", produces = "application/json")
@@ -80,6 +84,26 @@ public class FranchiseController {
 		if (retailerId != 0 && masterAccountId != 0) {
 			result = renewalFranchiseService.addSub(retailerId,masterAccountId);
 			message = result ? "" : "Failed to add sub account";
+		}
+
+		response.setSuccess(result);
+		response.setMessage(message);
+
+		return response;
+	}
+
+	@RequestMapping(value = "sub/remove", method = RequestMethod.POST)
+	public JsonResponse<String> removeSub(@RequestBody FranchiseSubRemoveParameter parameter) {
+		JsonResponse<String> response = new JsonResponse();
+
+		String message = "Invalid input parameters";
+		boolean result = false;
+		List<Integer> retailerIds = Optional.ofNullable(parameter.getRetailerIds()).orElse(Collections.EMPTY_LIST);
+		Integer masterAccountId = Optional.ofNullable(parameter.getMasterAccountId()).orElse(0);
+
+		if (retailerIds.size() != 0 && masterAccountId != 0) {
+			result = renewalFranchiseService.removeSub(retailerIds,masterAccountId);
+			message = result ? "" : "Failed to delete sub accounts";
 		}
 
 		response.setSuccess(result);
