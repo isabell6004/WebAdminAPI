@@ -105,8 +105,6 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 		bannerEntity.setModifiedBy(Utility.getUsername());
 		gnbMenuBannerEntityRepository.save(bannerEntity);
 
-		deleteBannerFile(previousFileName);
-
 		return GnbBannerResponse.convertFrom(bannerEntity, bannerImageUrl);
 	}
 
@@ -157,8 +155,6 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 		gnbMenuBannerEntityRepository.delete(bannerEntity);
 		typeEntity.setBanners(typeEntity.getBanners().stream().filter(b -> b.getMenuBannerId() != bannerId).collect(Collectors.toList()));
 
-		deleteBannerFile(removedFileName);
-
 		return bannerId;
 	}
 
@@ -169,12 +165,13 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 		HttpClientUtils.closeQuietly(uploadResponse);
 	}
 
-	private void deleteBannerFile(String fileName) {
-		CloseableHttpResponse deleteResponse = factory.create().files()
-				.delete(rootContainer, getBannerFileNameWithPath(fileName))
-				.executeWithoutHandler();
-		HttpClientUtils.closeQuietly(deleteResponse);
-	}
+	// Comment out to prevent DB rollback issue
+//	private void deleteBannerFile(String fileName) {
+//		CloseableHttpResponse deleteResponse = factory.create().files()
+//				.delete(rootContainer, getBannerFileNameWithPath(fileName))
+//				.executeWithoutHandler();
+//		HttpClientUtils.closeQuietly(deleteResponse);
+//	}
 
 	private String getBannerFileNameWithPath(String fileName) {
 		return this.bannerDirectory + "/" + fileName;
