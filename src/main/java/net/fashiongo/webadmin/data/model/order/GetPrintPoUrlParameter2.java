@@ -7,8 +7,8 @@ public class GetPrintPoUrlParameter2 {
 
 	private Integer orderid;
 	private String t;
-	private String tforpdf;
-	private String tresulttype;
-	private String twithimage;
-	private String twithvendorstyleno;
+	private String forpdf;
+	private String resulttype;
+	private String withimage;
+	private String withvendorstyleno;
 }

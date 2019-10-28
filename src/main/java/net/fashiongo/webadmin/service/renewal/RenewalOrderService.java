@@ -48,7 +48,7 @@ public class RenewalOrderService {
 		int orderId = parameters.getOrderid();
 		String orderSessionGUID = ordersEntityRepository.findById(parameters.getOrderid()).map(ordersEntity -> ordersEntity.getOrderSessionGUID()).orElse("");
 
-		String url = "/" + parameters.getTresulttype() + "/po/" + orderSessionGUID + "/" + orderId + "?t=" + parameters.getT() + "&forPdf=" + parameters.getTforpdf() + "&withImage=" + parameters.getTwithimage() + "&withVendorStyleNo=" + parameters.getTwithvendorstyleno();
+		String url = "/" + parameters.getResulttype() + "/po/" + orderSessionGUID + "/" + orderId + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForpdf() + "&withImage=" + parameters.getWithimage() + "&withVendorStyleNo=" + parameters.getWithvendorstyleno();
 		JsonResponse<?> result = httpClient.get(url);
 
 		return result;
@@ -60,7 +60,7 @@ public class RenewalOrderService {
 		String orderSessionGUID = mergeOrdersEntityRepository.getMergeOrderWholesalerGuid(orderId).orElse(null);
 
 
-		String url = "/" + parameters.getTresulttype() + "/merged-po/" + orderSessionGUID + "/" + orderId + "?t=" + parameters.getT() + "&forPdf=" + parameters.getTforpdf() + "&withImage=" + parameters.getTwithimage() + "&withVendorStyleNo=" + parameters.getTwithvendorstyleno();
+		String url = "/" + parameters.getResulttype() + "/merged-po/" + orderSessionGUID + "/" + orderId + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForpdf() + "&withImage=" + parameters.getWithimage() + "&withVendorStyleNo=" + parameters.getWithvendorstyleno();
 		JsonResponse<?> result = httpClient.get(url);
 
 		return result;
