@@ -96,6 +96,9 @@ public class SimpleWholeSalerEntity implements Serializable {
     @Column(name = "ExtraChargeAmountTo")
     private BigDecimal extraChargeAmountTo;
 
+    @Column(name = "WholeSalerGUID")
+    private String wholeSalerGUID;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)
     private SystemImageServersEntity systemImageServersEntity;

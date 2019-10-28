@@ -183,4 +183,8 @@ public class MergeOrdersEntity {
 
 	@Column(name = "TotalAmountWSC")
 	private BigDecimal totalAmountWSC;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "WholeSalerID", referencedColumnName = "WholeSalerID", insertable = false,updatable = false)
+	private SimpleWholeSalerEntity wholeSaler;
 }
