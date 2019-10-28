@@ -1,19 +1,25 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "aspnet_Membership")
+@DynamicUpdate
 public class AspnetMembershipEntity {
 
 	@Id
 	@Column(name = "UserId")
+	@Setter(AccessLevel.NONE)
 	private String userId;
 
 	@Column(name = "ApplicationId")

@@ -384,4 +384,15 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setaccountlockout", method = RequestMethod.POST)
+	public JsonResponse<Integer> setAccountLockOut(@RequestBody SetAccountLockOutParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		Integer retValue = renewalBuyerService.setAccountLockOut(parameter);
+
+		response.setSuccess(true);
+		response.setData(retValue);
+
+		return response;
+	}
 }

@@ -734,4 +734,31 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setAccountLockOut(SetAccountLockOutParameter parameter) {
+		try {
+
+			Integer retailerId = Optional.ofNullable(parameter.getRetailerId()).orElse(0);
+			if(retailerId == 0) {
+				return -1;
+			}
+
+			RetailerEntity retailerEntity = retailerEntityRepository.findById(retailerId).get();
+
+			String retailerGUID = retailerEntity.getRetailerGUID();
+
+			AspnetMembershipEntity aspnetMembershipEntity = aspnetMembershipEntityRepository.findById(retailerGUID).orElse(null);
+
+			aspnetMembershipEntity.setLockedOut(false);
+			aspnetMembershipEntity.setFailedPasswordAttemptCount(0);
+
+			aspnetMembershipEntityRepository.save(aspnetMembershipEntity);
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }
