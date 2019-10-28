@@ -1,10 +1,13 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "Log_EmailSent")
@@ -13,6 +16,7 @@ public class LogEmailSentEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "LogID")
+	@Setter(AccessLevel.NONE)
 	private Integer logID;
 
 	@Column(name = "RetailerID")

@@ -761,4 +761,36 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setLogEmailSent(SetLogEmailSentParameter parameter,String sessionUserId) {
+		try {
+
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+			Integer retailerId = Optional.ofNullable(parameter.getRetailerid()).orElse(0);
+
+			LogEmailSentEntity logEmailSentEntity = new LogEmailSentEntity();
+
+			Integer type = parameter.getType();
+
+			if (type == 999) logEmailSentEntity.setEmailContents(parameter.getEmailcontent());
+			if (type == 2) {
+				logEmailSentEntity.setReferenceID(parameter.getReferenceid());
+				logEmailSentEntity.setReferenceText(parameter.getEmailcontent());
+			}
+
+			logEmailSentEntity.setSentBy(sessionUserId);
+			logEmailSentEntity.setSentOn(NOW);
+			logEmailSentEntity.setRetailerID(retailerId);
+			logEmailSentEntity.setSentEmailTypeID(type);
+			logEmailSentEntity.setReferenceID(parameter.getReferenceid());
+			logEmailSentEntity.setCompanyName(parameter.getCompanyname());
+			logEmailSentEntityRepository.save(logEmailSentEntity);
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }

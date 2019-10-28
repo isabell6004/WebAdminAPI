@@ -395,4 +395,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setlogemailsent", method = RequestMethod.POST)
+	public JsonResponse<Integer> setLogEmailSent(@RequestBody SetLogEmailSentParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse();
+		String username = Utility.getUsername();
+		Integer retValue = renewalBuyerService.setLogEmailSent(parameter,username);
+
+		response.setSuccess(true);
+		response.setData(retValue);
+
+		return response;
+	}
 }
