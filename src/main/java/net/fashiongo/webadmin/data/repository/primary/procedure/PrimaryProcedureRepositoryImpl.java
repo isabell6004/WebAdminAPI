@@ -1092,6 +1092,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				tw.companyName,
 				tw.wholeSalerId,
 				tw.companyTypeID,
+				tw.vendorType,
 				selectChk,
 				viewChk,
 				sw.buyerRate,

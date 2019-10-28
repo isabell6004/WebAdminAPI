@@ -21,6 +21,8 @@ public class CategoryVendorInfo {
 
     @JsonProperty("CompanyTypeID")
     private Integer companyTypeID;
+    
+    private Integer vendorTypeId;
 
     @JsonProperty("SelectChk")
     private Integer selectChk;

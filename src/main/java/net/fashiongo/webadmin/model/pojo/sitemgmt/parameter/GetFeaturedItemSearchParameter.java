@@ -299,5 +299,13 @@ public class GetFeaturedItemSearchParameter {
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
+	
+	private Integer productId;
+	public Integer getProductId() {
+		return productId;
+	}
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
 
 }

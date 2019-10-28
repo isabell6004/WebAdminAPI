@@ -1209,6 +1209,7 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getStyleNo());
 		params.add(parameters.getShowScheduleId());
 		params.add(parameters.getShowItemOnly());
+		params.add(parameters.getProductId());
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class);
         result.setCategoryAdCount((List<CategoryAdCount>) _result.get(0));
@@ -1486,6 +1487,7 @@ public class SitemgmtService extends ApiService {
 		params.add(parameters.getVendorDateFrom());
 		params.add(parameters.getVendorDateTo());
 		params.add(parameters.getNeverUsed());
+		params.add(parameters.getProductId());
 		
 		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryAdCount.class, SelectData.class,
 				VendorCount.class, VendorData1.class, FeaturedVendorDaily.class);

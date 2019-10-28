@@ -202,4 +202,12 @@ public class GetItemsParameter {
 	public Integer getShowScheduleId() { return showScheduleId; }
 
 	public void setShowScheduleId(Integer showScheduleId) { this.showScheduleId = showScheduleId; }
+	
+	public Integer productId;
+	public Integer getProductId() {
+		return productId;
+	}
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
 }
