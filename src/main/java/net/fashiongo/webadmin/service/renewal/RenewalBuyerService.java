@@ -10,11 +10,15 @@ import net.fashiongo.webadmin.data.model.buyer.*;
 import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -73,6 +77,10 @@ public class RenewalBuyerService {
 
 	@Autowired
 	private OrdersEntityRepository ordersEntityRepository;
+
+	@Autowired
+	@Qualifier("serviceJsonClient")
+	private HttpClient httpClient;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -791,6 +799,86 @@ public class RenewalBuyerService {
 		} catch (Exception e) {
 			log.warn(e.getMessage(),e);
 			return -99;
+		}
+	}
+
+	public JsonResponse sendBuyerEmail(SendBuyerEmailParameter parameter) {
+		Map<String,Object> body = new HashMap<>();
+		String httpMethod = "GET";
+		String type = parameter.getType();
+		String username = parameter.getUsername();
+		String reason = parameter.getReason();
+		String d = parameter.getD();
+		String recipient = parameter.getRecipient();
+		String title = parameter.getTitle();
+		String content = parameter.getContent();
+		UriComponentsBuilder componentsBuilder = UriComponentsBuilder.fromPath("/email");
+
+		switch (type)
+		{
+			case "a": // approved
+
+				componentsBuilder.path("/sendRetailerStatusUpdateApproval")
+						.path("/")
+						.path(username);
+
+				break;
+			case "d": // denied
+				componentsBuilder.path("/sendRetailerStatusUpdateDenial")
+						.path("/")
+						.path(username)
+						.path("/")
+						.path(reason);
+
+				break;
+			case "rd": // document request
+				List<String> arr = Arrays.asList(d.split(",")).stream()
+						.filter(s -> StringUtils.isEmpty(s) == false)
+						.collect(Collectors.toList());
+
+				List<String> arr2 = Arrays.asList("sellerpermit", "invoice1", "invoice2", "other");
+				List<String> mergeArr = new ArrayList<>();
+
+				for (int i = 0; i < arr.size() ;i++) {
+
+					if(arr.get(i).equals("true")) {
+						mergeArr.add(arr2.get(i));
+					}
+				}
+
+				String dParam = mergeArr.stream()
+						.reduce((s, s2) -> s + "," + s2).get();
+
+				componentsBuilder.path("/sendDocumentRequest")
+						.path("/")
+						.path(username)
+						.queryParam("d",dParam);
+			break;
+			default: // normal
+				String contentHtml = "<div style='white-space:pre-line;'>" + content + "</span>";
+
+				body.put("additionalInfo",null);
+				body.put("message",contentHtml);
+				body.put("recipientEmailAddress",recipient);
+				body.put("recipientName","FG Retailer");
+				body.put("senderEmailAddress","info@fashiongo.net");
+				body.put("senderName","FG Admin");
+				body.put("subject",title);
+
+				componentsBuilder.path("/sendInfoEmail");
+
+				httpMethod = "POST";
+			break;
+		}
+
+		String url = componentsBuilder.build().encode().toUriString();
+		if (httpMethod == "GET")
+		{
+			return httpClient.get(url);
+		}
+		else // POST
+		{
+			return httpClient.postObject(url,body);
 		}
 	}
 }

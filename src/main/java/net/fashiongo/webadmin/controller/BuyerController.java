@@ -407,4 +407,12 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "sendbuyeremail", method = RequestMethod.POST)
+	public JsonResponse sendBuyerEmail(@RequestBody SendBuyerEmailParameter parameter) {
+
+		JsonResponse response = renewalBuyerService.sendBuyerEmail(parameter);
+
+		return response;
+	}
 }
