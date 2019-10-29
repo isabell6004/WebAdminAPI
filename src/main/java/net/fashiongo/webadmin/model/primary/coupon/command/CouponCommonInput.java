@@ -41,6 +41,10 @@ public abstract class CouponCommonInput  {
     private Long couponVendorGroupId;
     private Long couponBuyerGroupId;
     private Integer issueMethod;
+    @NotNull
+    private LocalDateTime issueStartDate;
+    private LocalDateTime issueEndDate;
+    private Integer validDurationDays;
     private LocalDateTime createdOn;
     private String createdBy;
     private LocalDateTime modifiedOn;
