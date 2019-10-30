@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
+import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
@@ -13,6 +14,7 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.CacheService;
+import net.fashiongo.webadmin.service.UserService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -41,6 +43,9 @@ public class VendorController {
 	
 	@Autowired
     private CacheService cacheService;
+
+	@Autowired
+	private UserService userService;
 	
 	/**
 	 * Get vendor list
@@ -593,5 +598,16 @@ public class VendorController {
 
 		return response;
 	}
+
+    @PostMapping(value = "setnewpassword")
+	public JsonResponse setnewpassword(@RequestBody SetNewPasswordParameter param) {
+		SetModifyPasswordParameter parameter = new SetModifyPasswordParameter();
+		parameter.setUserName(param.getUserid());
+		parameter.setNewPassword(param.getNewpassword());
+
+    	ResultCode result = userService.resetPassword(parameter);
+
+    	return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
+    }
 }
 	
