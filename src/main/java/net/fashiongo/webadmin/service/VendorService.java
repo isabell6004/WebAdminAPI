@@ -91,6 +91,9 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private SecurityUserRepository securityUserRepository;
+	
+	@Autowired
+	private ContractPlanRepository contractPlanRepository;
 
     @PersistenceContext(unitName = "primaryEntityManager")
     private EntityManager entityManager;
@@ -743,5 +746,9 @@ public class VendorService extends ApiService {
      */
 	public List<Vendor> getEditorsPickVendors() {
 		return vendorRepository.getEditorPickVendors();
+	}
+
+	public List<ContractPlan> getContractPlans() {
+		return contractPlanRepository.findAll();
 	}
 }
