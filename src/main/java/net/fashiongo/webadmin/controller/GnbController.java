@@ -8,9 +8,13 @@ import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupInfoResponse;
 import net.fashiongo.webadmin.service.GnbService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/gnb")
@@ -35,7 +39,7 @@ public class GnbController {
 	}
 
 	@PostMapping("/vendor-group")
-	public JsonResponse<GnbVendorGroupInfoResponse> createVendorGroup(@RequestBody GnbVendorGroupSaveRequest request) {
+	public JsonResponse<GnbVendorGroupInfoResponse> createVendorGroup(@RequestBody @Valid GnbVendorGroupSaveRequest request) {
 		JsonResponse<GnbVendorGroupInfoResponse> response = new JsonResponse<>();
 		response.setSuccess(true);
 		response.setMessage(null);
@@ -67,7 +71,7 @@ public class GnbController {
 
 	@PostMapping("/vendor-group/{gnbVendorGroupId}")
 	public JsonResponse<GnbVendorGroupInfoResponse> editVendorGroup(@PathVariable("gnbVendorGroupId") int gnbVendorGroupId,
-																	@RequestBody GnbVendorGroupSaveRequest request) {
+																	@RequestBody @Valid GnbVendorGroupSaveRequest request) {
 		JsonResponse<GnbVendorGroupInfoResponse> response = new JsonResponse<>();
 		response.setSuccess(true);
 		response.setMessage(null);
@@ -112,6 +116,17 @@ public class GnbController {
 		JsonResponse<String> response = new JsonResponse<>();
 		response.setSuccess(false);
 		response.setMessage("Not Found SiteSetting. Please contact developer.");
+
+		return response;
+	}
+
+	@ExceptionHandler({MethodArgumentNotValidException.class})
+	public JsonResponse<String> handleNotFoundGnbVendorGroup(MethodArgumentNotValidException e) {
+		JsonResponse<String> response = new JsonResponse<>();
+		response.setSuccess(false);
+		response.setMessage(e.getBindingResult().getAllErrors().stream()
+				.map(ObjectError::getDefaultMessage)
+				.collect(Collectors.joining(" ")));
 
 		return response;
 	}
