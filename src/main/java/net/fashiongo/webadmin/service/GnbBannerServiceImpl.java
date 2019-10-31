@@ -26,8 +26,7 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 	private final GnbMenuBannerTypeEntityRepository gnbMenuBannerTypeEntityRepository;
 
-	@Autowired
-	private GnbMenuBannerEntityRepository gnbMenuBannerEntityRepository;
+	private final GnbMenuBannerEntityRepository gnbMenuBannerEntityRepository;
 
 	private final SwiftApiCallFactory factory;
 
@@ -39,12 +38,14 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 	@Autowired
 	public GnbBannerServiceImpl(GnbMenuBannerTypeEntityRepository gnbMenuBannerTypeEntityRepository,
+								GnbMenuBannerEntityRepository gnbMenuBannerEntityRepository,
 								@Qualifier("gnbBannerSwiftApiCallFactory") SwiftApiCallFactory factory,
 								@Value("${gnb.banner.image.storage.object-storage.api-url}") String objectStorageUrl,
 								@Value("${gnb.banner.image.storage.object-storage.account}") String objectStorageAuth,
 								@Value("${gnb.banner.image.storage.root-container}") String rootContainer,
 								@Value("${gnb.banner.image.storage.directory}") String bannerDirectory) {
 		this.gnbMenuBannerTypeEntityRepository = gnbMenuBannerTypeEntityRepository;
+		this.gnbMenuBannerEntityRepository = gnbMenuBannerEntityRepository;
 		this.rootContainer = rootContainer;
 		this.bannerDirectory = bannerDirectory;
 		this.bannerImageUrl = objectStorageUrl + objectStorageAuth + "/" + rootContainer + "/" + bannerDirectory;
@@ -69,20 +70,22 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 		uploadBannerFile(imageFileName, inputStream);
 
-		String username = Utility.getUsername();
+		String userName = Utility.getUsername();
+		LocalDateTime now = LocalDateTime.now();
 
 		GnbMenuBannerEntity entity = new GnbMenuBannerEntity();
 		entity.setMenuBannerTypeId(bannerTypeId);
 		entity.setImageFileName(imageFileName);
 		entity.setTargetUrl(targetUrl);
 		entity.setActive(true);
-		entity.setCreatedOn(LocalDateTime.now());
-		entity.setCreatedBy(username);
-		entity.setModifiedOn(LocalDateTime.now());
-		entity.setModifiedBy(username);
+		entity.setCreatedOn(now);
+		entity.setCreatedBy(userName);
+		entity.setModifiedOn(now);
+		entity.setModifiedBy(userName);
 		gnbMenuBannerEntityRepository.save(entity);
 
 		typeEntity.getBanners().add(entity);
+		modifyUpdatingDataOfBannerType(typeEntity, userName, now);
 
 		return GnbBannerResponse.convertFrom(entity, bannerImageUrl);
 	}
@@ -99,11 +102,15 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 		uploadBannerFile(imageFileName, inputStream);
 
+		String userName = Utility.getUsername();
+		LocalDateTime now = LocalDateTime.now();
+
 		bannerEntity.setImageFileName(imageFileName);
 		bannerEntity.setTargetUrl(targetUrl);
-		bannerEntity.setModifiedOn(LocalDateTime.now());
-		bannerEntity.setModifiedBy(Utility.getUsername());
+		bannerEntity.setModifiedOn(now);
+		bannerEntity.setModifiedBy(userName);
 		gnbMenuBannerEntityRepository.save(bannerEntity);
+		modifyUpdatingDataOfBannerType(typeEntity, userName, now);
 
 		return GnbBannerResponse.convertFrom(bannerEntity, bannerImageUrl);
 	}
@@ -117,10 +124,15 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 				.findFirst()
 				.orElseThrow(() -> new IllegalArgumentException("Invalid banner ID."));
 
+		String userName = Utility.getUsername();
+		LocalDateTime now = LocalDateTime.now();
+
 		bannerEntity.setTargetUrl(targetUrl);
-		bannerEntity.setModifiedOn(LocalDateTime.now());
-		bannerEntity.setModifiedBy(Utility.getUsername());
+		bannerEntity.setModifiedOn(now);
+		bannerEntity.setModifiedBy(userName);
 		gnbMenuBannerEntityRepository.save(bannerEntity);
+
+		modifyUpdatingDataOfBannerType(typeEntity, userName, now);
 
 		return GnbBannerResponse.convertFrom(bannerEntity, bannerImageUrl);
 	}
@@ -134,10 +146,14 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 				.findFirst()
 				.orElseThrow(() -> new IllegalArgumentException("Invalid banner ID."));
 
+		String userName = Utility.getUsername();
+		LocalDateTime now = LocalDateTime.now();
+
 		bannerEntity.setActive(isActive);
-		bannerEntity.setModifiedOn(LocalDateTime.now());
-		bannerEntity.setModifiedBy(Utility.getUsername());
+		bannerEntity.setModifiedOn(now);
+		bannerEntity.setModifiedBy(userName);
 		gnbMenuBannerEntityRepository.save(bannerEntity);
+		modifyUpdatingDataOfBannerType(typeEntity, userName, now);
 
 		return GnbBannerResponse.convertFrom(bannerEntity, bannerImageUrl);
 	}
@@ -154,6 +170,7 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 		gnbMenuBannerEntityRepository.delete(bannerEntity);
 		typeEntity.setBanners(typeEntity.getBanners().stream().filter(b -> b.getMenuBannerId() != bannerId).collect(Collectors.toList()));
+		modifyUpdatingDataOfBannerType(typeEntity, Utility.getUsername(),LocalDateTime.now());
 
 		return bannerId;
 	}
@@ -175,5 +192,11 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 
 	private String getBannerFileNameWithPath(String fileName) {
 		return this.bannerDirectory + "/" + fileName;
+	}
+
+	private void modifyUpdatingDataOfBannerType(GnbMenuBannerTypeEntity typeEntity, String userName, LocalDateTime now) {
+		typeEntity.setModifiedOn(now);
+		typeEntity.setModifiedBy(userName);
+		gnbMenuBannerTypeEntityRepository.save(typeEntity);
 	}
 }
