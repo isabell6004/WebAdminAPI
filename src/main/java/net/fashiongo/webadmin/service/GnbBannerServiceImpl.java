@@ -14,11 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -176,10 +179,22 @@ public class GnbBannerServiceImpl implements GnbBannerService {
 	}
 
 	private void uploadBannerFile(String fileName, InputStream inputStream) {
+		if (!isValidFileName(fileName)) {
+			throw new IllegalArgumentException("Invalid file name.");
+		}
 		CloseableHttpResponse uploadResponse = factory.create().files()
 				.upload(rootContainer, getBannerFileNameWithPath(fileName), inputStream, true)
 				.executeWithoutHandler();
 		HttpClientUtils.closeQuietly(uploadResponse);
+	}
+
+	private boolean isValidFileName(String fileName) {
+		if (StringUtils.isEmpty(fileName)) {
+			return false;
+		}
+		Pattern validFileNamePattern = Pattern.compile("[a-zA-Z0-9\\-_.]+");
+		Matcher matcher = validFileNamePattern.matcher(fileName);
+		return matcher.matches();
 	}
 
 	// Comment out to prevent DB rollback issue
