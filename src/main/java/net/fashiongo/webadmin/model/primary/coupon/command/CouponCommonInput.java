@@ -26,9 +26,7 @@ public abstract class CouponCommonInput  {
     private String discountDescription;
     @Length(max = 500)
     private String useDescription;
-    @NotNull
     private LocalDateTime startDate;
-    @NotNull
     private LocalDateTime endDate;
     private Boolean isCodeUsed;
     private Boolean isNotified;
