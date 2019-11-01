@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.service;
 
 import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
+import net.fashiongo.webadmin.data.repository.primary.vendor.ListVendorDocumentTypeEntityRepository;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -94,6 +96,9 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private ContractPlanRepository contractPlanRepository;
+
+	@Autowired
+	private ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository;
 
     @PersistenceContext(unitName = "primaryEntityManager")
     private EntityManager entityManager;
@@ -750,5 +755,9 @@ public class VendorService extends ApiService {
 
 	public List<ContractPlan> getContractPlans() {
 		return contractPlanRepository.findAll();
+	}
+
+	public List<ListVendorDocumentTypeEntity> getListVendorDocumentType() {
+		return listVendorDocumentTypeEntityRepository.findAllListVendorDocumentTypeEntity();
 	}
 }
