@@ -26,15 +26,15 @@ public class CouponDto {
     private Boolean isActive;
     private LocalDateTime activatedOn;
     private String activatedBy;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
     private Boolean isCodeUsed;
     private Boolean isNotified;
     private Long couponVendorGroupId;
     private Long couponBuyerGroupId;
     private Integer issueMethod;
-    private LocalDateTime issueStartDate;
-    private LocalDateTime issueEndDate;    
+    private String issueStartDate;
+    private String issueEndDate;    
     private Integer validDurationDays;    
     private LocalDateTime createdOn;
     private String createdBy;
@@ -61,15 +61,15 @@ public class CouponDto {
                 .isActive(coupon.getIsActive())
                 .activatedOn(coupon.getActivatedOn())
                 .activatedBy(coupon.getActivatedBy())
-                .startDate(coupon.getStartDate())
-                .endDate(coupon.getEndDate())
+                .startDate(coupon.getStartDate() != null ? coupon.getStartDate().toString() : null)
+                .endDate(coupon.getEndDate() != null ? coupon.getEndDate().toString() : null)
                 .isCodeUsed(coupon.getIsCodeUsed())
                 .isNotified(coupon.getIsNotified())
                 .couponVendorGroupId(coupon.getCouponVendorGroupId())
                 .couponBuyerGroupId(coupon.getCouponBuyerGroupId())
                 .issueMethod(coupon.getIssueMethod())
-                .issueStartDate(coupon.getIssueStartDate())
-                .issueEndDate(coupon.getIssueEndDate())
+                .issueStartDate(coupon.getIssueStartDate() != null ? coupon.getIssueStartDate().toString() : null)
+                .issueEndDate(coupon.getIssueEndDate() != null ? coupon.getIssueEndDate().toString() : null)
                 .validDurationDays(coupon.getValidDurationDays())
                 .createdOn(coupon.getCreatedOn())
                 .createdBy(coupon.getCreatedBy())
