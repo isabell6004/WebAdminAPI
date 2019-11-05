@@ -415,4 +415,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setsavedlist", method = RequestMethod.POST)
+	public JsonResponse<Integer> setSavedList(@RequestBody SetSavedListParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse<>();
+		String username = Utility.getUsername();
+
+		Integer result = renewalBuyerService.setSavedList(parameter,username);
+		response.setSuccess(true);
+		response.setData(result);
+
+		return response;
+	}
 }

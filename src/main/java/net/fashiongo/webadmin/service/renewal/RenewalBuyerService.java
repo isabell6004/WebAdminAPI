@@ -79,6 +79,9 @@ public class RenewalBuyerService {
 	private OrdersEntityRepository ordersEntityRepository;
 
 	@Autowired
+	private WASavedSearchEntityRepository waSavedSearchEntityRepository;
+
+	@Autowired
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
 
@@ -880,6 +883,46 @@ public class RenewalBuyerService {
 		else // POST
 		{
 			return httpClient.postObject(url,body);
+		}
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setSavedList(SetSavedListParameter parameter,String sessionUserId) {
+		try {
+
+			Integer savedid = Optional.ofNullable(parameter.getSavedid()).orElse(0);
+			String savedname = Optional.ofNullable(parameter.getSavedname()).filter(s -> !StringUtils.isEmpty(s)).orElse("");
+			String savedtype = Optional.ofNullable(parameter.getSavedtype()).filter(s -> !StringUtils.isEmpty(s)).orElse("");
+			String display = Optional.ofNullable(parameter.getDisplay()).filter(s -> !StringUtils.isEmpty(s)).orElse("");
+			String filter = Optional.ofNullable(parameter.getFilter()).filter(s -> !StringUtils.isEmpty(s)).orElse("");
+			String remark = Optional.ofNullable(parameter.getRemark()).filter(s -> !StringUtils.isEmpty(s)).orElse("");
+
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+			WASavedSearchEntity waSavedSearchEntity = null;
+
+			if(savedid > 0 ) {
+				waSavedSearchEntity = waSavedSearchEntityRepository.findById(savedid).orElseThrow(() -> new RuntimeException("NOT FOUND"));
+			} else {
+				waSavedSearchEntity = new WASavedSearchEntity();
+				waSavedSearchEntity.setCreatedBy(sessionUserId);
+				waSavedSearchEntity.setCreatedOn(NOW);
+			}
+
+			waSavedSearchEntity.setModifiedBy(sessionUserId);
+			waSavedSearchEntity.setModifiedOn(NOW);
+			waSavedSearchEntity.setSavedName(savedname);
+			waSavedSearchEntity.setSavedType(savedtype);
+			waSavedSearchEntity.setDisplayStr(display);
+			waSavedSearchEntity.setFilterStr(filter);
+			waSavedSearchEntity.setRemark(remark);
+			waSavedSearchEntity.setActive(true);
+
+			waSavedSearchEntityRepository.save(waSavedSearchEntity);
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
 		}
 	}
 }
