@@ -925,4 +925,39 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	public SavedListResponse getSavedList(GetSavedListParameter parameter) {
+
+		Integer pagenum = parameter.getPagenum();
+		Integer pagesize = parameter.getPagesize();
+		String keyword = Optional.ofNullable(parameter.getKeyword()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		String orderby = Optional.ofNullable(parameter.getOrderby()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		String savedtype = Optional.ofNullable(parameter.getSavedtype()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		String type = Optional.ofNullable(parameter.getType()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		LocalDateTime startdate = Optional.ofNullable(parameter.getStartdate()).filter(s -> StringUtils.hasLength(s)).map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+		LocalDateTime enddate = Optional.ofNullable(parameter.getEnddate()).filter(s -> StringUtils.hasLength(s)).map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+
+		Page<WASavedSearchEntity> waSavedSearchEntities = waSavedSearchEntityRepository.up_wa_GetSavedSearch(pagenum, pagesize, savedtype, type, keyword, startdate, enddate, orderby);
+
+		return SavedListResponse.builder()
+				.table(Arrays.asList(Total.builder().recCnt((int) waSavedSearchEntities.getTotalElements()).build()))
+				.table1(
+						waSavedSearchEntities.getContent().stream()
+						.map(entity -> SavedSearch.builder()
+								.active(entity.isActive())
+								.createdBy(entity.getCreatedBy())
+								.modifiedBy(entity.getModifiedBy())
+								.createdOn(Optional.ofNullable(entity.getCreatedOn()).map(Timestamp::toLocalDateTime).orElse(null))
+								.modifiedOn(Optional.ofNullable(entity.getModifiedOn()).map(Timestamp::toLocalDateTime).orElse(null))
+								.displayStr(entity.getDisplayStr())
+								.filterStr(entity.getFilterStr())
+								.savedId(entity.getSavedId())
+								.savedName(entity.getSavedName())
+								.savedType(entity.getSavedType())
+								.remark(entity.getRemark())
+								.build())
+						.collect(Collectors.toList())
+				)
+				.build();
+	}
 }
