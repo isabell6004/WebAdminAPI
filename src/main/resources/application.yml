@@ -154,6 +154,7 @@ logging:
 
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.210.16.205:29001
+  fgPaymentAPI_EndPoint: http://10.210.16.205:29201
   jwt:
     develop:
       check-token: true
