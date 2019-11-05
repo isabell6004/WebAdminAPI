@@ -245,4 +245,8 @@ public class RenewalVendorService {
 				.vendorPayoutInfoList(vendorPayoutInfoEntityRepository.findAllByWholeSalerID(wholesalerID))
 				.build();
 	}
+
+	public List<VendorImage> getVendorImage(Integer wid) {
+		return vendorImageRequestEntityRepository.findByWholeSalerID(wid);
+	}
 }
