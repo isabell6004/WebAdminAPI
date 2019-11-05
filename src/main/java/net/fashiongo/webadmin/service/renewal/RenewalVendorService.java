@@ -4,6 +4,7 @@ import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.entity.primary.vendor.VendorProductRow;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
@@ -236,19 +237,12 @@ public class RenewalVendorService {
 		return codeVendorIndustryEntityRepository.findAllCodeVendorIndustriesOrderById();
 	}
 
-	public List<VendorDetailInfo> getVendorDetailInfo(Integer wholesalerID) {
-		return vendorWholeSalerEntityRepository.findAllByID(wholesalerID);
+	public GetVendorBasicInfoResponse getVendorDetailInfo(Integer wholesalerID) {
+		return GetVendorBasicInfoResponse.builder()
+				.vendorDetailInfoList(vendorWholeSalerEntityRepository.findAllByID(wholesalerID))
+				.vendorNameHistoryLogList(vendorNameHistoryLogEntityRepository.findAllByIDOrderByCreatedOn(wholesalerID))
+				.listSocialMediaList(listSocialMediaEntityRepository.findSocialMediaByWholeSalerID(wholesalerID))
+				.vendorPayoutInfoList(vendorPayoutInfoEntityRepository.findAllByWholeSalerID(wholesalerID))
+				.build();
 	}
-
-	public List<VendorNameHistoryLog> getVendorNameHistoryLog(Integer wholeSalerID) {
-		return vendorNameHistoryLogEntityRepository.findAllByIDOrderByCreatedOn(wholeSalerID);
-	}
-
-	public List<ListSocialMedia> getListSocialMedia(Integer wholeSalerID) {
-	    return listSocialMediaEntityRepository.findSocialMediaByWholeSalerID(wholeSalerID);
-    }
-
-    public List<VendorPayoutInfo> getVendorPayoutInfo(Integer wholeSalerID) {
-	    return vendorPayoutInfoEntityRepository.findAllByWholeSalerID(wholeSalerID);
-    }
 }

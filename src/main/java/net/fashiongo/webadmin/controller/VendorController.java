@@ -649,12 +649,7 @@ public class VendorController {
     	Integer wid = param.getWid();
 
     	try {
-    		response.setData(GetVendorBasicInfoResponse.builder()
-					.vendorDetailInfoList(renewalVendorService.getVendorDetailInfo(wid))
-					.vendorNameHistoryLogList(renewalVendorService.getVendorNameHistoryLog(wid))
-					.listSocialMediaList(renewalVendorService.getListSocialMedia(wid))
-					.vendorPayoutInfoList(renewalVendorService.getVendorPayoutInfo(wid))
-					.build());
+    		response.setData(renewalVendorService.getVendorDetailInfo(wid));
     		response.setSuccess(true);
 		} catch (Exception ex) {
     		log.error("Exception Error: {}", ex);
