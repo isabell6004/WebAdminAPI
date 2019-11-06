@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.fashiongo.webadmin.utility.Utility;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -40,4 +41,10 @@ public class GnbVendorGroupEntity {
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vendor_group_id", referencedColumnName = "vendor_group_id", insertable = false, updatable = false)
 	private List<GnbVendorGroupMapEntity> vendorGroupMaps;
+
+	@PreUpdate
+	protected void preUpdate() {
+		modifiedOn = LocalDateTime.now();
+		modifiedBy = Utility.getUsername();
+	}
 }

@@ -143,9 +143,12 @@ public class GnbServiceImpl implements GnbService {
 		String username = Utility.getUsername();
 
 		GnbVendorGroupEntity gnbVendorGroupEntity = doInTransaction(status -> {
-			GnbVendorGroupEntity entity = updateGnbVendorGroup(gnbVendorGroupId, request, now, username);
-			entity.setVendorGroupMaps(updateGnbVendorGroupMap(entity, request.getWholeSalerIdList(), now, username));
-			return entity;
+			GnbVendorGroupEntity vendorGroupEntity = updateGnbVendorGroup(gnbVendorGroupId, request, now, username);
+			List<GnbVendorGroupMapEntity> vendorGroupMapEntityList = updateGnbVendorGroupMap(vendorGroupEntity, request.getWholeSalerIdList(), now, username);
+			vendorGroupEntity = gnbVendorGroupRepository.save(vendorGroupEntity);
+			vendorGroupEntity.setVendorGroupMaps(vendorGroupMapEntityList);
+
+			return vendorGroupEntity;
 		});
 
 		boolean isActive = gnbVendorGroupEntity.getVendorGroupId().equals(siteSettingRepository.findById(1)
@@ -158,35 +161,23 @@ public class GnbServiceImpl implements GnbService {
 	}
 
 	private GnbVendorGroupEntity updateGnbVendorGroup(int gnbVendorGroupId, GnbVendorGroupSaveRequest request, LocalDateTime now, String username) {
-		boolean isUpdated = false;
-
 		GnbVendorGroupEntity gnbVendorGroupEntity = gnbVendorGroupRepository.findAllByIdListWithGnbVendorGroupMap(Collections.singletonList(gnbVendorGroupId))
 				.stream()
 				.findFirst()
 				.orElseThrow(NotFoundGnbVendorGroup::new);
 
-		if (!request.getTitle().equals(gnbVendorGroupEntity.getVendorGroupTitle())) {
-			isUpdated = true;
-			gnbVendorGroupEntity.setVendorGroupTitle(request.getTitle());
-		}
+		gnbVendorGroupEntity.setVendorGroupTitle(request.getTitle());
+		gnbVendorGroupEntity.setAlphabeticalOrder(request.isAlphabeticalOrder());
 
-		if (request.isAlphabeticalOrder() != gnbVendorGroupEntity.isAlphabeticalOrder()) {
-			isUpdated = true;
-			gnbVendorGroupEntity.setAlphabeticalOrder(request.isAlphabeticalOrder());
-		}
-
-		if (isUpdated) {
-			gnbVendorGroupEntity.setModifiedBy(username);
-			gnbVendorGroupEntity.setModifiedOn(now);
-		}
-
-		return gnbVendorGroupRepository.save(gnbVendorGroupEntity);
+		return gnbVendorGroupEntity;
 	}
 
 	private List<GnbVendorGroupMapEntity> updateGnbVendorGroupMap(GnbVendorGroupEntity gnbVendorGroupEntity, List<Integer> vendorIdList, LocalDateTime now, String username) {
 		List<GnbVendorGroupMapEntity> oldMapList = gnbVendorGroupEntity.getVendorGroupMaps();
 		List<GnbVendorGroupMapEntity> newMapList = new ArrayList<>(vendorIdList.size());
 
+		int oldMapListSize = oldMapList.size();
+		boolean isOrderChanged = false;
 		for (int i = 0; i < vendorIdList.size(); i++) {
 			int wholeSalerId = vendorIdList.get(i);
 			GnbVendorGroupMapEntity newMap = null;
@@ -205,6 +196,8 @@ public class GnbServiceImpl implements GnbService {
 					newMap.setModifiedBy(username);
 					newMap.setModifiedOn(now);
 					newMap.setSortNo(i);
+
+					isOrderChanged = true;
 				}
 			} else {
 				GnbVendorGroupMapId id = new GnbVendorGroupMapId();
@@ -221,6 +214,13 @@ public class GnbServiceImpl implements GnbService {
 			}
 
 			newMapList.add(newMap);
+		}
+
+		if (isOrderChanged
+				|| !oldMapList.isEmpty() // There is removed vendor.
+				|| oldMapListSize != newMapList.size()) { // there is created vendor.
+			gnbVendorGroupEntity.setModifiedOn(now);
+			gnbVendorGroupEntity.setModifiedBy(username);
 		}
 
 		gnbVendorGroupMapRepository.deleteInBatch(oldMapList);
