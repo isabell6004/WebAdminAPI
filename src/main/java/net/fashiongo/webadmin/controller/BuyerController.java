@@ -438,4 +438,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "delsavedlist", method = RequestMethod.POST)
+	public JsonResponse<Integer> delSavedList(@RequestBody DelSavedListParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse<>();
+		String username = Utility.getUsername();
+
+		Integer result = renewalBuyerService.delSavedList(parameter,username);
+		response.setSuccess(true);
+		response.setData(result);
+
+		return response;
+	}
 }

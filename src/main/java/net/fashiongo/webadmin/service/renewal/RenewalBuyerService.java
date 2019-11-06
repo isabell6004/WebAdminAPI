@@ -960,4 +960,31 @@ public class RenewalBuyerService {
 				)
 				.build();
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer delSavedList(DelSavedListParameter parameter, String sessionUserId) {
+		try {
+
+			Integer savedid = Optional.ofNullable(parameter.getSavedid()).orElse(0);
+
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
+			if(savedid <= 0 ) {
+				return -1;
+			}
+
+			waSavedSearchEntityRepository.findById(savedid).ifPresent(waSavedSearchEntity -> {
+				waSavedSearchEntity.setModifiedBy(sessionUserId);
+				waSavedSearchEntity.setModifiedOn(NOW);
+				waSavedSearchEntity.setActive(false);
+
+				waSavedSearchEntityRepository.save(waSavedSearchEntity);
+			});
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }
