@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.repository.primary;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanPath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -34,10 +35,19 @@ public class WASavedSearchEntityRepositoryCustomImpl implements  WASavedSearchEn
 
 		BooleanExpression expression = SS.active.eq(true);
 		List<OrderSpecifier> orderSpecifierList = new ArrayList<>();
+		orderSpecifierList.add(SS.modifiedOn.desc());
+		orderSpecifierList.add(SS.createdOn.desc());
 
-		if(StringUtils.isEmpty(orderBy)) {
-			orderSpecifierList.add(SS.modifiedOn.desc());
-			orderSpecifierList.add(SS.createdOn.desc());
+		if(StringUtils.hasLength(orderBy)) {
+			orderSpecifierList.clear();
+			String[] s = orderBy.split(" ");
+
+			BooleanPath booleanPath = Expressions.booleanPath(s[0]);
+			if(s[1].equalsIgnoreCase("asc")) {
+				orderSpecifierList.add(booleanPath.asc());
+			}else {
+				orderSpecifierList.add(booleanPath.desc());
+			}
 		}
 
 		if(StringUtils.hasLength(savedType) ) {
