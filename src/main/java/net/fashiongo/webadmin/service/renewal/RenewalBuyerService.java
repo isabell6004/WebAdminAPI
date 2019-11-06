@@ -987,4 +987,33 @@ public class RenewalBuyerService {
 			return -99;
 		}
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setFilterList(SetFilterListParameter parameter, String sessionUserId) {
+		try {
+
+			Integer savedid = Optional.ofNullable(parameter.getSavedid()).orElse(0);
+			String display = Optional.ofNullable(parameter.getDisplay()).orElse("");
+			String filter = Optional.ofNullable(parameter.getFilter()).orElse("");
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
+			if(savedid <= 0 ) {
+				return -1;
+			}
+
+			waSavedSearchEntityRepository.findById(savedid).ifPresent(waSavedSearchEntity -> {
+				waSavedSearchEntity.setModifiedBy(sessionUserId);
+				waSavedSearchEntity.setModifiedOn(NOW);
+				waSavedSearchEntity.setDisplayStr(display);
+				waSavedSearchEntity.setFilterStr(filter);
+
+				waSavedSearchEntityRepository.save(waSavedSearchEntity);
+			});
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
 }

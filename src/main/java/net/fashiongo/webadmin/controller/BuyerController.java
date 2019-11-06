@@ -450,4 +450,16 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "setfilterlist", method = RequestMethod.POST)
+	public JsonResponse<Integer> setFilterList(@RequestBody SetFilterListParameter parameter) {
+		JsonResponse<Integer> response = new JsonResponse<>();
+		String username = Utility.getUsername();
+
+		Integer result = renewalBuyerService.setFilterList(parameter,username);
+		response.setSuccess(true);
+		response.setData(result);
+
+		return response;
+	}
 }
