@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
@@ -21,9 +22,11 @@ import net.fashiongo.webadmin.service.UserService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -673,6 +676,42 @@ public class VendorController {
 		}
 
 		return response;
+	}
+
+	@PostMapping("setvendorbasicinfo")
+	public Integer setvendorbasicinfo(@RequestBody SetVendorBasicInfoParameter param) {
+    	Integer wid = param.getWid();
+		ObjectMapper mapper = new ObjectMapper();
+		VendorDetailInfo r;
+		try {
+			r = mapper.readValue(param.getVendorBasicInfo(), VendorDetailInfo.class);
+		} catch (IOException e) {
+			log.debug("object mapper parse error");
+			return null;
+		}
+
+		Integer result = renewalVendorService.setVendorBasicInfo(r, 1, null, null, null, 0);
+
+	 	if (result.toString().equals("1")) {
+	 		String companyNameTemp = "";
+	 		if (StringUtils.isNotEmpty(param.getCompanyNameTemp())) {
+	 			companyNameTemp = param.getCompanyNameTemp();
+			}
+
+	 		if (!companyNameTemp.equals("") && companyNameTemp != null && !companyNameTemp.equals(r.getCompanyName()) && !r.getCompanyName().equals("") && r.getCompanyName() != null) {
+	 			if (r.getDirName() == null) r.setDirName("");
+	 			renewalVendorService.setDirCompanyNameChangeHistory(wid, r.getDirName(), r.getDirName(), companyNameTemp, r.getCompanyName());
+			}
+
+		 	cacheService.GetRedisCacheEvict("vendorActivated", null);
+			cacheService.GetRedisCacheEvict("vendorDeactivated", null);
+
+			if (StringUtils.isNotEmpty(String.valueOf(wid))) {
+				cacheService.GetRedisCacheEvict("vendorNameChanged", String.valueOf(wid));
+			}
+		}
+
+		return result;
 	}
 }
 	

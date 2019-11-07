@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.data.entity.primary.QCountEntity;
 import net.fashiongo.webadmin.data.entity.primary.QVendorAdminAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.QVendorLambsKeyEntity;
 import net.fashiongo.webadmin.data.entity.primary.QWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import org.springframework.stereotype.Repository;
 
@@ -59,7 +60,6 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 T.industryType, T.orderActiveLock, T.activeOld, T.shopActiveOld, T.minOrderAmount, T.minOrderAmountYN, T.minTQAllYN, T.minTQAll, T.itemUploadCap, T.defaultMadeInCountryID, T.defaultLabelID,
                 T.defaultInventoryStatusID, T.pictureMain2, T.showFeedback, T.consolidationYN, T.defaultVendorID, T.adminWebServerID, T.wholeSalerGUID, T.fashionGoExclusive, T.sizeChartImage,
                 T.blockPolicy, T.sm_Instagram, T.chargedByCreditCard,
-//                ExpressionUtils.as(JPAExpressions.select(C.categoryName).from(C).where(eqReferenceID(referenceID, C)),"Category"),
                 cateName,
                 ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut).from(ASPM).where(ASPM.userId.eq(T.wholeSalerGUID)),"IsLockedOut"),
                 ExpressionUtils.as(JPAExpressions.select(ASPM.lastLockoutDate).from(ASPM).where(ASPM.userId.eq(T.wholeSalerGUID)), "LstLockoutDate"),
@@ -73,6 +73,17 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 .where(T.wholeSalerID.eq(wholeSalerID));
 
         return query.fetch();
+    }
+
+    @Override
+    public WholeSalerEntity findOneByID(Integer wholeSalerID) {
+        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+
+        JPAQuery<WholeSalerEntity> query = new JPAQuery<>(entityManager);
+
+        query.select(W).from(W).where(W.wholeSalerID.eq(wholeSalerID));
+
+        return query.fetchFirst();
     }
 
     private BooleanExpression eqReferenceID(Integer referenceID, QCategoryEntity C) {

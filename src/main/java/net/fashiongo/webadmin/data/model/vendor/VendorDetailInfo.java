@@ -1,17 +1,23 @@
 package net.fashiongo.webadmin.data.model.vendor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import net.fashiongo.webadmin.utility.LocalDateTimeDeserializer;
+import net.fashiongo.webadmin.utility.LocalDateTimeSerializer;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class VendorDetailInfo {
     @JsonProperty(value = "WholeSalerID")
     private Integer wholeSalerID;
@@ -20,6 +26,8 @@ public class VendorDetailInfo {
     private Integer sortNo;
 
     @JsonProperty(value = "StartingDate")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime startingDate;
 
     @JsonProperty(value = "CompanyName")
@@ -218,6 +226,8 @@ public class VendorDetailInfo {
     private String honote4;
 
     @JsonProperty(value = "ActualOpenDate")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime actualOpenDate;
 
     @JsonProperty(value = "BillingNote2")
@@ -245,12 +255,16 @@ public class VendorDetailInfo {
     private String ownerCountry;
 
     @JsonProperty(value = "ContractExpireDate")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime contractExpireDate;
 
     @JsonProperty(value = "BillReviewHoLee")
     private String billReviewHoLee;
 
     @JsonProperty(value = "OpenDate")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime openDate;
 
     @JsonProperty(value = "CompsolutionNo")
@@ -266,6 +280,8 @@ public class VendorDetailInfo {
     private String retailerOpenList;
 
     @JsonProperty(value = "DateTimeModified")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime dateTimeModified;
 
     @JsonProperty(value = "PrePackYN")
@@ -293,6 +309,8 @@ public class VendorDetailInfo {
     private String lastUser;
 
     @JsonProperty(value = "LastModifiedDateTime")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime lastModifiedDateTime;
 
     @JsonProperty(value = "MinTQYNStyle")

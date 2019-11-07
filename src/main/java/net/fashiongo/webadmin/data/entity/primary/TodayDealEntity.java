@@ -3,7 +3,9 @@
  */
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,11 +18,13 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "TodayDeal")
 @Getter
+@Setter
 public class TodayDealEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "TodayDealID")
+	@Setter(AccessLevel.NONE)
 	private Integer todayDealId;
 	
 	@Column(name = "ProductID")

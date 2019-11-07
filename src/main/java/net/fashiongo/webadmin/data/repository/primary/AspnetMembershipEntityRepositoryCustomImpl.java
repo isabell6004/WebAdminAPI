@@ -32,4 +32,14 @@ public class AspnetMembershipEntityRepositoryCustomImpl implements AspnetMembers
 
 		return Optional.ofNullable(jpaQuery.fetchOne());
 	}
+
+	@Override
+	public AspnetMembershipEntity findOneByWholeSalerGUID(String wholeaSalerGUID) {
+		JPAQuery<AspnetMembershipEntity> query = new JPAQuery<>(entityManager);
+		QAspnetMembershipEntity M = QAspnetMembershipEntity.aspnetMembershipEntity;
+
+		query.select(M).from(M).where(M.userId.eq(wholeaSalerGUID));
+
+		return query.fetchFirst();
+	}
 }

@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,9 +13,11 @@ import java.sql.Timestamp;
 @Getter
 @Entity
 @Table(name = "aspnet_Users")
+@Setter
 public class AspnetUsersEntity {
 
 	@Id
+	@Setter(AccessLevel.NONE)
 	@Column(name = "UserId")
 	private String userId;
 

@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.repository.primary.vendor;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.QVendorPayoutInfoEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorPayoutInfoEntity;
 import net.fashiongo.webadmin.data.model.vendor.VendorPayoutInfo;
 import org.springframework.stereotype.Repository;
 
@@ -31,5 +32,15 @@ public class VendorPayoutInfoEntityRepositoryCustomImpl implements VendorPayoutI
                 .where(VP.wholeSalerID.eq(wholeSalerID));
 
         return query.fetch();
+    }
+
+    @Override
+    public VendorPayoutInfoEntity findOneByWholeSalerID(Integer wholeSalerID) {
+        JPAQuery<VendorPayoutInfoEntity> query = new JPAQuery<>(entityManager);
+        QVendorPayoutInfoEntity VP = QVendorPayoutInfoEntity.vendorPayoutInfoEntity;
+
+        query.select(VP).from(VP).where(VP.wholeSalerID.eq(wholeSalerID));
+
+        return query.fetchFirst();
     }
 }

@@ -19,6 +19,10 @@ spring:
     url: jdbc:sqlserver://10.210.24.29;databaseName=FG_PhotoStudio
     hikari:
       maximumPoolSize: 20
+  datasource5:
+    url: jdbc:sqlserver://10.210.24.29;databaseName=FG_Billing
+    hikari:
+      maximumPoolSize: 10
 
   jpa:
     show-sql: false
