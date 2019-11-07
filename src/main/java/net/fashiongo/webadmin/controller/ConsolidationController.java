@@ -1,16 +1,18 @@
 package net.fashiongo.webadmin.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.controller.response.ShipMethodResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetOrderConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetOrderConsolidationSummaryResponse;
 import net.fashiongo.webadmin.service.ConsolidationService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
+import java.util.List;
+
+@Slf4j
 @RestController
 @RequestMapping(value="/order", produces = "application/json")
 public class ConsolidationController {
@@ -43,4 +45,20 @@ public class ConsolidationController {
 //		return new JsonResponse<GetOrderConsolidationResponse>(true, null, 0, result);
 //	}
 
+	@GetMapping(value = "consolidationShipMethod")
+	public JsonResponse<List<ShipMethodResponse>> getConsolidationShipMethod() {
+		try {
+			return new JsonResponse<>(
+					true,
+					null,
+					consolidationService.getConsolidationShipMethod()
+			);
+		} catch (Exception e) {
+			log.error("ConsolidationController.getConsolidationShipMethod()", e);
+			return new JsonResponse<>(
+					false,
+					e.getMessage(),
+					null);
+		}
+	}
 }
