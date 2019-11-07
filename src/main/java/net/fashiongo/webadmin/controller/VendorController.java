@@ -678,7 +678,7 @@ public class VendorController {
 		return response;
 	}
 
-	@PostMapping("setvendorbasicinfo")
+	@PostMapping(value = "setvendorbasicinfo")
 	public Integer setvendorbasicinfo(@RequestBody SetVendorBasicInfoParameter param) {
     	Integer wid = param.getWid();
 		ObjectMapper mapper = new ObjectMapper();
@@ -703,15 +703,30 @@ public class VendorController {
 	 			renewalVendorService.setDirCompanyNameChangeHistory(wid, r.getDirName(), r.getDirName(), companyNameTemp, r.getCompanyName());
 			}
 
-		 	cacheService.GetRedisCacheEvict("vendorActivated", null);
-			cacheService.GetRedisCacheEvict("vendorDeactivated", null);
-
-			if (StringUtils.isNotEmpty(String.valueOf(wid))) {
-				cacheService.GetRedisCacheEvict("vendorNameChanged", String.valueOf(wid));
-			}
+		 	cacheService.cacheEvictVendor(wid);
 		}
 
 		return result;
+	}
+
+	@PostMapping(value = "setvendorimage")
+	public Integer setvendorimage(@RequestBody SetVendorImageParameter param) {
+    	if (StringUtils.isEmpty(String.valueOf(param.getWid())) || StringUtils.isEmpty(String.valueOf(param.getType())) || StringUtils.isEmpty(param.getFilename())) {
+    		return -1;
+		}
+
+    	Integer wid = param.getWid();
+    	Integer type = param.getType();
+    	String fileName = param.getFilename();
+    	String userID = StringUtils.isEmpty(param.getUserid()) ? "admin" : param.getUserid();
+
+    	Integer result = renewalVendorService.setVendorImage(wid, type, fileName, userID);
+
+		cacheService.GetRedisCacheEvict("VendorPictureLogo", String.valueOf(wid));
+
+		cacheService.cacheEvictVendor(wid);
+
+    	return result;
 	}
 }
 	

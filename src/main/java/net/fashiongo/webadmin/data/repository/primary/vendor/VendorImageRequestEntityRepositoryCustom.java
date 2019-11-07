@@ -10,4 +10,8 @@ public interface VendorImageRequestEntityRepositoryCustom {
 	Page<VendorImageRequestEntity> getVendorImageRequests(VendorImageRequestSelectParameter parameter);
 
 	List<VendorImage> findByWholeSalerID(Integer wid);
+
+	VendorImageRequestEntity findOneByWholeSalerIDAndVendorImageTypeID(Integer wid, Integer type);
+
+	VendorImageRequestEntity findOneByWholeSalerIDAndVendorImageTypeIDAndActiveTrue(Integer wid, Integer type);
 }

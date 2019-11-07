@@ -65,6 +65,32 @@ public class VendorImageRequestEntityRepositoryCustomImpl implements VendorImage
 		return query.fetch();
 	}
 
+	@Override
+	public VendorImageRequestEntity findOneByWholeSalerIDAndVendorImageTypeID(Integer wid, Integer type) {
+		QVendorImageRequestEntity qRequest = QVendorImageRequestEntity.vendorImageRequestEntity;
+
+		JPAQuery<VendorImageRequestEntity> query = new JPAQuery<>(entityManager);
+
+		query.select(qRequest)
+				.from(qRequest)
+				.where(qRequest.wholesalerId.eq(wid).and(qRequest.vendorImageTypeId.eq(type)));
+
+		return query.fetchFirst();
+	}
+
+	@Override
+	public VendorImageRequestEntity findOneByWholeSalerIDAndVendorImageTypeIDAndActiveTrue(Integer wid, Integer type) {
+		QVendorImageRequestEntity qRequest = QVendorImageRequestEntity.vendorImageRequestEntity;
+
+		JPAQuery<VendorImageRequestEntity> query = new JPAQuery<>(entityManager);
+
+		query.select(qRequest)
+				.from(qRequest)
+				.where(qRequest.wholesalerId.eq(wid).and(qRequest.vendorImageTypeId.eq(type)).and(qRequest.active.eq(true)));
+
+		return query.fetchFirst();
+	}
+
 	private Integer findByCompanyName(String name) {
 		QWholesalerCompanyEntity qWholesaler = QWholesalerCompanyEntity.wholesalerCompanyEntity;
 		return new JPAQuery<Long>(entityManager)

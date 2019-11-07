@@ -651,4 +651,41 @@ public class RenewalVendorService extends ApiService {
 			item.setActualPrice(BigDecimal.valueOf(0.00));
 		}
 	}
+
+	public Integer setVendorImage(Integer wid, Integer type, String fileName, String userID) {
+		Integer result = 0;
+
+		try {
+			VendorImageRequestEntity vendorImage = null;
+
+			if (type == 5) {
+				vendorImage = vendorImageRequestEntityRepository.findOneByWholeSalerIDAndVendorImageTypeID(wid, type);
+			} else {
+				vendorImage = vendorImageRequestEntityRepository.findOneByWholeSalerIDAndVendorImageTypeIDAndActiveTrue(wid, type);
+			}
+
+			if (vendorImage == null) {
+				vendorImage = new VendorImageRequestEntity();
+			}
+
+			vendorImage.setActive(true);
+			vendorImage.setOriginalFileName(fileName);
+			vendorImage.setVendorImageTypeId(type);
+			vendorImage.setDecidedOn(LocalDateTime.now());
+			vendorImage.setRequestedOn(LocalDateTime.now());
+			vendorImage.setWholesalerId(wid);
+			vendorImage.setIsApproved(true);
+			vendorImage.setDecidedBy(userID);
+
+			vendorImageRequestEntityRepository.save(vendorImage);
+
+			result = 1;
+
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(),ex);
+			result = -99;
+		}
+
+		return result;
+	}
 }

@@ -53,4 +53,15 @@ public class CacheService {
 		
 		return result;
 	}
+
+	public void cacheEvictVendor(Integer wid) {
+		String wId = String.valueOf(wid);
+
+		GetRedisCacheEvict("vendorActivated", null);
+		GetRedisCacheEvict("vendorDeactivated", null);
+
+		if (org.apache.commons.lang3.StringUtils.isNotEmpty(String.valueOf(wid))) {
+			GetRedisCacheEvict("vendorNameChanged", String.valueOf(wid));
+		}
+	}
 }
