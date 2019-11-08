@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class OrderConsolidationSummary implements Serializable {
+public class ConsolidationSummary implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

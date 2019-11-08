@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.consolidation.parameter;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -7,11 +9,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GetOrderConsolidationSummaryParameter {
+public class GetConsolidationSummaryParameter {
+	@JsonProperty("periodtype")
+	private Integer periodType;
+	
 	@JsonProperty("FromDate")
-	private String fromDate;
+	private LocalDateTime fromDate;
 	
 	@JsonProperty("ToDate")
-	private String toDate;
+	private LocalDateTime toDate;
 	
 }
