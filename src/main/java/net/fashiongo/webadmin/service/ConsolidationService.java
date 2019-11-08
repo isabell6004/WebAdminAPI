@@ -1,12 +1,16 @@
 package net.fashiongo.webadmin.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import net.fashiongo.webadmin.controller.response.ShipMethodResponse;
+import net.fashiongo.webadmin.dao.primary.ConsolidationRepository;
+import net.fashiongo.webadmin.data.entity.primary.Consolidation;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
 import net.fashiongo.webadmin.dao.primary.ShipMethodRepository;
 import net.fashiongo.webadmin.data.entity.primary.ShipMethod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +21,15 @@ import net.fashiongo.webadmin.model.pojo.consolidation.OrderConsolidationSummary
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetOrderConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetOrderConsolidationSummaryResponse;
 import net.fashiongo.webadmin.utility.HttpClient;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 @Service
 public class ConsolidationService extends ApiService {
-	@Autowired
-	@Qualifier("serviceJsonClient")
-	private HttpClient httpClient;
-
-	@Autowired
-	private ShipMethodRepository shipMethodRepository;
+	@Autowired @Qualifier("serviceJsonClient") private HttpClient httpClient;
+	@Autowired private ShipMethodRepository shipMethodRepository;
+	@Autowired private ConsolidationRepository consolidationRepository;
 
 	@SuppressWarnings("unchecked")
 	public GetOrderConsolidationSummaryResponse getOrderConsolidationSummary(GetOrderConsolidationSummaryParameter q) {
@@ -78,5 +81,19 @@ public class ConsolidationService extends ApiService {
 							.shipMethodName(shipMethod.getShipMethodName())
 							.build())
 					.collect(Collectors.toList());
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
+	public void setConsolidationMemo(ConsolidationMemoRequest memoRequest, String userName) throws Exception {
+		if (memoRequest == null) throw new Exception("No memo is requested");
+
+		Optional<Consolidation> cOptional = consolidationRepository.findById(memoRequest.getId());
+		if (!cOptional.isPresent()) throw new Exception("No consolidation exists");
+
+		Consolidation c = cOptional.get();
+		c.setInhouseMemo(memoRequest.getMemo());
+		c.setModifiedBy(userName);
+		c.setModifiedOn(LocalDateTime.now());
+		consolidationRepository.save(c);
 	}
 }

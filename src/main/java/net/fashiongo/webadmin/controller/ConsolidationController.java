@@ -1,7 +1,9 @@
 package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.controller.response.ShipMethodResponse;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
+import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +58,24 @@ public class ConsolidationController {
 		} catch (Exception e) {
 			log.error("ConsolidationController.getConsolidationShipMethod()", e);
 			return new JsonResponse<>(
+					false,
+					e.getMessage(),
+					null);
+		}
+	}
+
+	@PostMapping(value = "consolidationMemo")
+	public JsonResponse<Object> setConsolidationMemo(@RequestBody ConsolidationMemoRequest memoRequest) {
+		try {
+			consolidationService.setConsolidationMemo(memoRequest, Utility.getUsername());
+			return new JsonResponse<Object>(
+					true,
+					null,
+					null
+			);
+		} catch (Exception e) {
+			log.error("ConsolidationController.setConsolidationMemo() memoRequest={}", memoRequest, e);
+			return new JsonResponse<Object>(
 					false,
 					e.getMessage(),
 					null);

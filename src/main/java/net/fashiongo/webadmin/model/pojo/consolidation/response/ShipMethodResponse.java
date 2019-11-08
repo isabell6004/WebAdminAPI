@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.controller.response;
+package net.fashiongo.webadmin.model.pojo.consolidation.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
