@@ -688,4 +688,20 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	public Integer delVendorImage(Integer wid, Integer type) {
+		Integer result = 0;
+
+		try {
+			VendorImageRequestEntity vendorImage = vendorImageRequestEntityRepository.findOneByWholeSalerIDAndVendorImageTypeID(wid, type);
+			vendorImageRequestEntityRepository.delete(vendorImage);
+
+			result = 1;
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(),ex);
+			result = -99;
+		}
+
+		return result;
+	}
 }

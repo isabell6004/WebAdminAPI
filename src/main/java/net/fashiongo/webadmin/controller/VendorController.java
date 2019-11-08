@@ -711,7 +711,7 @@ public class VendorController {
 
 	@PostMapping(value = "setvendorimage")
 	public Integer setvendorimage(@RequestBody SetVendorImageParameter param) {
-    	if (StringUtils.isEmpty(String.valueOf(param.getWid())) || StringUtils.isEmpty(String.valueOf(param.getType())) || StringUtils.isEmpty(param.getFilename())) {
+    	if (param.getWid() == null|| param.getType() == null || StringUtils.isEmpty(param.getFilename())) {
     		return -1;
 		}
 
@@ -727,6 +727,22 @@ public class VendorController {
 		cacheService.cacheEvictVendor(wid);
 
     	return result;
+	}
+
+	@PostMapping(value = "delvendorimage")
+	public Integer delvendorimage(@RequestBody DelVendorImageParameter param) {
+    	if(param.getWid() == null | param.getType() == null) {
+    		return -1;
+		}
+
+    	Integer wid = param.getWid();
+    	Integer type = param.getType();
+
+    	Integer result = renewalVendorService.delVendorImage(wid, type);
+
+		cacheService.GetRedisCacheEvict("VendorPictureLogo", String.valueOf(wid));
+
+		return result;
 	}
 }
 	
