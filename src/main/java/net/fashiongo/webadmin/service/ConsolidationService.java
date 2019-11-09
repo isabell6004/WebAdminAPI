@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import net.fashiongo.webadmin.model.pojo.consolidation.Consolidation;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetail;
+import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetailList;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationSummary;
 import net.fashiongo.webadmin.model.pojo.consolidation.TotalCount;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationDetailParameter;
@@ -72,7 +73,6 @@ public class ConsolidationService extends ApiService {
                 break;
         }
         
-		params.add(q.getPeriodType());
 		params.add(q.getPageNum());
 		params.add(q.getPageSize());
 		params.add(q.getDtFrom());
@@ -85,7 +85,7 @@ public class ConsolidationService extends ApiService {
 		params.add(q.getCn() == "" ? null : q.getCn());
 		params.add(q.getOrderBy());
 		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Consolidation.class);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, Consolidation.class, TotalCount.class);
 		
 		result.setConsolidation((List<Consolidation>) _result.get(0));
 		result.setTotalCount((List<TotalCount>) _result.get(1));
@@ -101,10 +101,10 @@ public class ConsolidationService extends ApiService {
         
 		params.add(q.getConsolidationId());
 		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Consolidation.class);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, ConsolidationDetail.class, ConsolidationDetailList.class);
 		
-		result.setConsolidations((List<Consolidation>) _result.get(0));
-		result.setConsolidationDetail((List<ConsolidationDetail>) _result.get(1));
+		result.setConsolidationDetail((List<ConsolidationDetail>) _result.get(0));
+		result.setConsolidationDetailList((List<ConsolidationDetailList>) _result.get(1));
 		
 		return result;
 	}

@@ -1,6 +1,9 @@
 package net.fashiongo.webadmin.model.pojo.consolidation;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,21 +12,26 @@ import lombok.Data;
 @Data
 public class ConsolidationSummary implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1775046882787109745L;
 
-	@JsonProperty("OrderQty")
+	@JsonProperty("Order_Qty")
+	@Column(name = "Order_Qty")
 	private Integer orderQty;
 
-	@JsonProperty("OrderAmount")
-	private Double orderAmount;
+	@JsonProperty("Order_Amount")
+	@Column(name = "Order_Amount")
+	private BigDecimal orderAmount;
 
-	@JsonProperty("ShippingCharge")
-	private Double shippingCharge;
+	@JsonProperty("Shipping_Charge")
+	@Column(name = "Shipping_Charge")
+	private BigDecimal shippingCharge;
 
-	@JsonProperty("ActualShippingCharge")
-	private Double actualShippingCharge;
+	@JsonProperty("Actual_Shipping_Charge")
+	@Column(name = "Actual_Shipping_Charge")
+	private BigDecimal actualShippingCharge;
 
-	@JsonProperty("AvgShippinProcessingTime")
-	private Integer avgShippinProcessingTime;
+	@JsonProperty("Avg_Shippin_Processing_Time")
+	@Column(name = "Avg_Shippin_Processing_Time")
+	private BigDecimal avgShippinProcessingTime;
 	
 }

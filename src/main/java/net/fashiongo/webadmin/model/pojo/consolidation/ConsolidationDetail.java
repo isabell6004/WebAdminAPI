@@ -1,8 +1,11 @@
 package net.fashiongo.webadmin.model.pojo.consolidation;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,355 +16,240 @@ public class ConsolidationDetail implements Serializable {
 
 	private static final long serialVersionUID = -6444629237787284061L;
 
-	@JsonProperty("OrderID")
-	private Integer orderId;
+	@JsonProperty("ConsolidationID")
+	@Column(name = "ConsolidationID")
+	private Integer consolidationId;
 
-	@JsonProperty("OrderDate")
-	private LocalDateTime orderDate;
+	@JsonProperty("OrderSessionGUID")
+	@Column(name = "OrderSessionGUID")
+	private String orderSessionGUID;
 
-	@JsonProperty("CheckOutDate")
-	private LocalDateTime checkOutDate;
+	@JsonProperty("TotalAmount")
+	@Column(name = "TotalAmount")	
+	private BigDecimal totalAmount;
 
-	@JsonProperty("WholeSalerID")
-	private Integer wholeSalerId;
+	@JsonProperty("TotalQty")
+	@Column(name = "TotalQty")
+	private Integer totalQty;
 
-	@JsonProperty("WholeCompanyName")
-	private String wholeCompanyName;
+	@JsonProperty("orderCount")
+	@Column(name = "orderCount")
+	private Integer orderCount;
 
-	@JsonProperty("WFirstName")
-	private String wFirstName;
+	@JsonProperty("BuyerName")
+	@Column(name = "BuyerName")
+	private String buyerName;
 	
-	@JsonProperty("WLastName")
-	private String wLastName;
+	@JsonProperty("BuyerCompanyName")
+	@Column(name = "BuyerCompanyName")
+	private String buyerCompanyName;
 
-	@JsonProperty("WBillStreetNo")
-	private String wBillStreetNo;
-
-	@JsonProperty("WBillCity")
-	private String wBillCity;
-	
-	@JsonProperty("WBillSTATE")
-	private String wBillState;
-
-	@JsonProperty("WBillZipcode")
-	private String wBillZipcode;
-
-	@JsonProperty("WBillCountry")
-	private String wBillCountry;
-
-	@JsonProperty("WBillPhone")
-	private String wBillPhone;
-
-	@JsonProperty("WBillFax")
-	private String wBillFax;
-	
-	@JsonProperty("WStreetNo")
-	private String wStreetNo;
-
-	@JsonProperty("WCity")
-	private String wCity;
-
-	@JsonProperty("WSTATE")
-	private String wState;
-
-	@JsonProperty("WZipcode")
-	private String wZipcode;
-
-	@JsonProperty("WCountry")
-	private String wCountry;
-
-	@JsonProperty("WPhone")
-	private String wPhone;
-
-	@JsonProperty("WFax")
-	private String wFax;
-
-	@JsonProperty("Email")
-	private String email;
-	
-	@JsonProperty("RetailerID")
-	private Integer retailerId;
-	
-	@JsonProperty("RetailerCompanyName")
-	private String retailerCompanyName;
-
-	@JsonProperty("FirstName")
-	private String FirstName;
-
-	@JsonProperty("LastName")
-	private String lastName;
-
-	@JsonProperty("BillStreetNo")
-	private String billStreetNo;
-
-	@JsonProperty("BillCity")
-	private String billCity;
-
-	@JsonProperty("BillSTATE")
-	private String billState;
-
-	@JsonProperty("BillZipcode")
-	private String billZipcode;
-
-	@JsonProperty("BillCountry")
-	private String billCountry;
-
-	@JsonProperty("BillPhone")
-	private String billPhone;
-	
-	@JsonProperty("BillFax")
-	private String billFax;
+	@JsonProperty("ShipAddressID")
+	@Column(name = "ShipAddressID")
+	private Integer shipAddressId;
 
 	@JsonProperty("StreetNo")
+	@Column(name = "StreetNo")
 	private String streetNo;
-
+	
 	@JsonProperty("City")
+	@Column(name = "City")
 	private String city;
-	
-	@JsonProperty("STATE")
+
+	@JsonProperty("State")
+	@Column(name = "State")
 	private String state;
-	
+
 	@JsonProperty("Zipcode")
-	private Integer zipcode;
+	@Column(name = "Zipcode")
+	private String zipcode;
 
 	@JsonProperty("Country")
+	@Column(name = "Country")
 	private String country;
-	
-	@JsonProperty("Phone")
-	private String phone;
 
+	@JsonProperty("Phone")
+	@Column(name = "Phone")
+	private String phone;
+	
 	@JsonProperty("Fax")
+	@Column(name = "Fax")
 	private String fax;
-	
-	@JsonProperty("REmail")
-	private String rEmail;
-	
-	@JsonProperty("TotalQty")
-	private Integer totalQty;
-	
-	@JsonProperty("TotalAmount")
-	private Double totalAmount;
-	
-	@JsonProperty("Discount")
-	private Double discount;
+
+	@JsonProperty("Email")
+	@Column(name = "Email")
+	private String email;
 
 	@JsonProperty("ShippingCharge")
-	private Double shippingCharge;
+	@Column(name = "ShippingCharge")
+	private BigDecimal shippingCharge;
+
+	@JsonProperty("ActualShippingCharge")
+	@Column(name = "ActualShippingCharge")
+	private BigDecimal actualShippingCharge;
+
+	@JsonProperty("ShipMethodID")
+	@Column(name = "ShipMethodID")	
+	private Integer shipMethodId;
+
+	@JsonProperty("ShipMethodName")
+	@Column(name = "ShipMethodName")	
+	private String shipMethodName;
+
+	@JsonProperty("TrackingNumber")
+	@Column(name = "TrackingNumber")	
+	private String trackingNumber;
+
+	@JsonProperty("PaymentMethodID")
+	@Column(name = "PaymentMethodID")	
+	private Integer paymentMethodId;
+	
+	@JsonProperty("PaymentMethodName")
+	@Column(name = "PaymentMethodName")	
+	private String paymentMethodName;
+	
+	@JsonProperty("CreditCardID")
+	@Column(name = "CreditCardID")
+	private Integer creditCardId;
+
+	@JsonProperty("CardType")
+	@Column(name = "CardType")
+	private String cardType;
 
 	@JsonProperty("CardNumber")
+	@Column(name = "CardNumber")
 	private String cardNumber;
 
 	@JsonProperty("CardExpireMonth")
-	private String cardExpireMonth;
+	@Column(name = "CardExpireMonth")
+	private Integer cardExpireMonth;
 
 	@JsonProperty("CardExpireYear")
-	private String cardExpireYear;
-
-	@JsonProperty("PaymentMethodID")
-	private Integer paymentMethodId;
-
-	@JsonProperty("PaymentMethod")
-	private String paymentMethod;
-
-	@JsonProperty("ShipMethodID")
-	private Integer shipMethodId;
-
-	@JsonProperty("ShipMethod")
-	private String shipMethod;
-	
-	@JsonProperty("InvoiceNo")
-	private String invoiceNo;
-
-	@JsonProperty("PONumber")
-	private String poNumber;
-
-	@JsonProperty("ShipTrackNo")
-	private String shipTrackNo;
-
-	@JsonProperty("OrderConfirm")
-	private String orderConfirm;
-
-	@JsonProperty("ConfirmDate")
-	private LocalDateTime confirmDate;
-
-	@JsonProperty("ShipConfirm")
-	private String shipConfirm;
-
-	@JsonProperty("ShipDate")
-	private LocalDateTime shipDate;
-
-	@JsonProperty("Comments")
-	private String comments;
-
-	@JsonProperty("BillStreetNo2")
-	private String billStreetNo2;
-
-	@JsonProperty("StreetNo2")
-	private String streetNo2;
-
-	@JsonProperty("WBillStreetNo2")
-	private String wBillStreetNo2;
-	
-	@JsonProperty("MinOrderAmountYN")
-	private String minOrderAmountYn;
-
-	@JsonProperty("MinTQYN")
-	private String minTqYn;
-
-	@JsonProperty("MinTQ")
-	private Integer minTq;
-
-	@JsonProperty("Remark")
-	private String remark;
-
-	@JsonProperty("Promotion")
-	private String promotion;
-
-	@JsonProperty("InsertDate")
-	private LocalDateTime InsertDate;
-
-	@JsonProperty("CreditCardID")
-	private Integer creditCardId;
-
-	@JsonProperty("BuyerPONumber")
-	private String buyerPONumber;
-
-	@JsonProperty("CancelTypeID")
-	private Integer cancelTypeId;
-	
-	@JsonProperty("CancelNote")
-	private String cancelNote;
-
-	@JsonProperty("CancelDate")
-	private LocalDateTime cancelDate;
-
-	@JsonProperty("OrderSessionGUID")
-	private String orderSessionGUID;
-
-	@JsonProperty("ShipName")
-	private String shipName;
-	
-	@JsonProperty("StoreNo")
-	private String storeNo;
-
-	@JsonProperty("ShipAttention")
-	private String shipAttention;
-
-	@JsonProperty("ShipAddressID")
-	private Integer shipAddressId;
-
-	@JsonProperty("OrderStatusID")
-	private Integer orderStatusId;
-
-	@JsonProperty("IsCancelledByBuyer")
-	private Boolean isCancelledByBuyer;
-
-	@JsonProperty("ModifiedOn")
-	private LocalDateTime modifiedOn;
-
-	@JsonProperty("IsCCFormSent")
-	private Boolean isCCFormSent;
-
-	@JsonProperty("AdditionalDiscount")
-	private Double additionalDiscount;
-
-	@JsonProperty("IsCouponVerified")
-	private Boolean isCouponVerified;
-
-	@JsonProperty("IsFreeShipping")
-	private Boolean isFreeShipping;
-
-	@JsonProperty("DiscountQualified")
-	private Boolean discountQualified;
-
-	@JsonProperty("DiscountID")
-	private Integer discountId;
-
-	@JsonProperty("HandlingFee")
-	private Double handlingFee;
-	
-	@JsonProperty("CurrentState")
-	private String currentState;
-
-	@JsonProperty("NameOnCard")
-	private String nameOnCard;
-
-	@JsonProperty("CCName")
-	private String ccName;
-
-	@JsonProperty("CardTypeID")
-	private Integer cardTypeId;
-
-	@JsonProperty("Last4Digit")
-	private String last4Digit;
+	@Column(name = "CardExpireYear")
+	private Integer cardExpireYear;
 
 	@JsonProperty("CVV")
+	@Column(name = "CVV")
 	private String cvv;
 
-	@JsonProperty("CreatedByVendor")
-	private String createdByVendor;
+	@JsonProperty("Last4Digit")
+	@Column(name = "Last4Digit")
+	private String last4Digit;
 
-	@JsonProperty("IsConsolidated")
-	private Boolean isConsolidated;
+	@JsonProperty("NameOnCard")
+	@Column(name = "NameOnCard")
+	private String nameOnCard;
 
-	@JsonProperty("ConsolidationID")
-	private Integer consolidationId;
-
-	@JsonProperty("ConsolidationShipCharge")
-	private Double consolidationShipCharge;
-
-	@JsonProperty("MAPISImportedOn")
-	private LocalDateTime mapisImportedOn;
-
-	@JsonProperty("CreditUsed")
-	private Double creditUsed;
-
-	@JsonProperty("TotalAmountWOSC")
-	private Double totalAmountWOSC;
-
-	@JsonProperty("TotalAmountWSC")
-	private Double totalAmountWSC;
-
-	@JsonProperty("ReferenceOrderID")
-	private String referenceOrderId;
-
-	@JsonProperty("BackOrderOn")
-	private LocalDateTime backOrderOn;
-
-	@JsonProperty("SubOrderStatusID")
-	private Integer subOrderStatusId;
-
-	@JsonProperty("ReturnOn")
-	private LocalDateTime returnOn;
-
-	@JsonProperty("CreatedBy")
-	private Integer createdBy;
-
-	@JsonProperty("ModifiedBy")
-	private Integer modifiedBy;
-
-	@JsonProperty("OrderStatusName")
-	private Integer orderStatusName;
+	@JsonProperty("BillStreetNo")
+	@Column(name = "BillStreetNo")
+	private String billStreetNo;
 	
-	@JsonProperty("DroppedBy")
-	private String droppedBy;
+	@JsonProperty("BillCity")
+	@Column(name = "BillCity")
+	private String billCity;
 
-	@JsonProperty("ReceivedBy")
-	private String receivedBy;
+	@JsonProperty("BillState")
+	@Column(name = "BillState")
+	private String BillState;
 
-	@JsonProperty("ReceivedOn")
-	private LocalDateTime receivedOn;
+	@JsonProperty("BillZipcode")
+	@Column(name = "BillZipcode")
+	private String billZipcode;
+	
+	@JsonProperty("BillCountry")
+	@Column(name = "BillCountry")
+	private String billCountry;
+	
+	@JsonProperty("BillCountryID")
+	@Column(name = "BillCountryID")
+	private Integer billCountryId;
 
-	@JsonProperty("NotifiedBy")
-	private String notifiedBy;
+	@JsonProperty("InhouseMemo")
+	@Column(name = "InhouseMemo")
+	private String inhouseMemo;
+	
+	@JsonProperty("ShippedOn")
+	@Column(name = "ShippedOn")
+	private LocalDateTime shippedOn;
 
-	@JsonProperty("NotifiedOn")
-	private LocalDateTime notifiedOn;
+	@JsonProperty("CreatedOn")
+	@Column(name = "CreatedOn")
+	private LocalDateTime createdOn;
+	
+	@JsonProperty("CreatedBy")
+	@Column(name = "CreatedBy")
+	private String createdBy;
+	
+	@JsonProperty("ModifiedOn")
+	@Column(name = "ModifiedOn")
+	private LocalDateTime modifiedOn;
+	
+	@JsonProperty("ModifiedBy")
+	@Column(name = "ModifiedBy")
+	private String modifiedBy;
+	
+	@JsonProperty("RetailerID")
+	@Column(name = "RetailerID")
+	private Integer retailerId;
 
-	@JsonProperty("PaymentStatusID")
-	private Integer paymentStatusId;
+	@JsonProperty("IsCommercialAddress")
+	@Column(name = "IsCommercialAddress")
+	private Boolean isCommercialAddress;
+
+	@JsonProperty("SeqNo")
+	@Column(name = "SeqNo")
+	private Integer seqNo;
+
+	@JsonProperty("CountryID")
+	@Column(name = "CountryID")
+	private Integer countryId;
+
+	@JsonProperty("ShippedStatus")
+	@Column(name = "ShippedStatus")
+	private String ShippedStatus;
+
+	@JsonProperty("LastConsolidOrderOn")
+	@Column(name = "LastConsolidOrderOn")
+	private LocalDateTime LastConsolidOrderOn;
+
+	@JsonProperty("CardNum")
+	@Column(name = "CardNum")
+	private String CardNum;
+	
+	@JsonProperty("RetailerGUID")
+	@Column(name = "RetailerGUID")
+	private String RetailerGUID;
+	
+	@JsonProperty("ShipName")
+	@Column(name = "ShipName")
+	private String ShipName;
+
+	@JsonProperty("ShipAddressVerifiedOn")
+	@Column(name = "ShipAddressVerifiedOn")
+	private LocalDateTime ShipAddressVerifiedOn;
 
 	@JsonProperty("PaymentStatus")
-	private String paymentStatus;
+	@Column(name = "PaymentStatus")
+	private String PaymentStatus;
+
+	@JsonProperty("coupon_amount")
+	@Column(name = "coupon_amount")
+	private BigDecimal couponAmount;
+
+	@JsonProperty("original_shipping_charge")
+	@Column(name = "original_shipping_charge")
+	private BigDecimal originalShippingCharge;
+
+	@JsonProperty("applied_coupon_amount")
+	@Column(name = "applied_coupon_amount")
+	private BigDecimal appliedCouponAmount;
+	
+	@JsonProperty("waived_amount")
+	@Column(name = "waived_amount")
+	private BigDecimal waivedAmount;
+
+	@JsonProperty("waived_amount_by_fg")
+	@Column(name = "waived_amount_by_fg")
+	private BigDecimal waivedAmountByFg;
 	
 }

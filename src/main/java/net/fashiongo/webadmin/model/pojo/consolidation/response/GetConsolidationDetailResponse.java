@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.fashiongo.webadmin.model.pojo.consolidation.Consolidation;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetail;
+import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetailList;
 
 @Getter
 @Setter
@@ -16,9 +16,9 @@ public class GetConsolidationDetailResponse implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("Table")
-	private List<Consolidation> consolidations;
+	private List<ConsolidationDetail> consolidationDetail;
 	
 	@JsonProperty("Table1")
-	private List<ConsolidationDetail> consolidationDetail;
+	private List<ConsolidationDetailList> consolidationDetailList;
 
 }
