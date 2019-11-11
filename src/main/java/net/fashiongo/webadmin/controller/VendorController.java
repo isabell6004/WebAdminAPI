@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
+import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
@@ -757,6 +758,18 @@ public class VendorController {
     	cacheService.cacheEvictVendor(wholeSalerID);
 
     	return result;
+	}
+
+	@PostMapping(value = "setaccountlockout")
+	public Integer setaccountlockout(@RequestBody SetAccountLockOutParameter param) {
+    	Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+    	Boolean active = param.getActive() == null ? false : param.getActive();
+
+		Integer result = renewalVendorService.setAccountLockOut(active, wholeSalerID);
+
+		cacheService.cacheEvictVendor(wholeSalerID);
+
+		return result;
 	}
 }
 	
