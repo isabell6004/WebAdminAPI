@@ -42,4 +42,14 @@ public class AspnetMembershipEntityRepositoryCustomImpl implements AspnetMembers
 
 		return query.fetchFirst();
 	}
+
+	@Override
+	public AspnetMembershipEntity findOneByWholeSalerGUIDAndIsLockedOutTrue(String wholeaSalerGUID) {
+		JPAQuery<AspnetMembershipEntity> query = new JPAQuery<>(entityManager);
+		QAspnetMembershipEntity M = QAspnetMembershipEntity.aspnetMembershipEntity;
+
+		query.select(M).from(M).where(M.userId.eq(wholeaSalerGUID).and(M.isLockedOut.eq(true)));
+
+		return query.fetchFirst();
+	}
 }

@@ -9,4 +9,6 @@ public interface AspnetMembershipEntityRepositoryCustom {
 	Optional<AspnetMembershipEntity> findByUserName(String userName);
 
 	AspnetMembershipEntity findOneByWholeSalerGUID(String wholeaSalerGUID);
+
+	AspnetMembershipEntity findOneByWholeSalerGUIDAndIsLockedOutTrue(String wholeaSalerGUID);
 }

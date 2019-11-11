@@ -771,5 +771,15 @@ public class VendorController {
 
 		return result;
 	}
+
+	@PostMapping(value = "setaccountlockoutsubaccount")
+	public Integer setaccountlockoutsubaccount(@RequestBody SetAccountLockOutParameter param) {
+		Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+		Boolean active = param.getActive() == null ? false : param.getActive();
+
+		Integer result = renewalVendorService.setAccountLockOutSubAccount(active, wholeSalerID);
+
+    	return result;
+	}
 }
 	

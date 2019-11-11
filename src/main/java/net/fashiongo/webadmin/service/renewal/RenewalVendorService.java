@@ -765,4 +765,26 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	public Integer setAccountLockOutSubAccount(boolean active, int wholeSalerID) {
+		Integer result = 0;
+
+		try {
+			List<VendorAdminAccountEntity> vendorAdminAccounts = vendorAdminAccountEntityRepository.findAllByWholeSalerID(wholeSalerID);
+
+			List<AspnetMembershipEntity> membershipList = new ArrayList<>();
+			for(VendorAdminAccountEntity vendorAdminAccount : vendorAdminAccounts) {
+				AspnetMembershipEntity membership = aspnetMembershipEntityRepository.findOneByWholeSalerGUIDAndIsLockedOutTrue(vendorAdminAccount.getUserGUID());
+				membership.setLockedOut(false);
+				membershipList.add(membership);
+			}
+			aspnetMembershipEntityRepository.saveAll(membershipList);
+
+			result = 1;
+		} catch (Exception ex) {
+			result = -99;
+		}
+
+		return result;
+	}
 }
