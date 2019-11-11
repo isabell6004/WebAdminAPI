@@ -744,5 +744,19 @@ public class VendorController {
 
 		return result;
 	}
+
+	@PostMapping(value = "setvendorsnslist")
+	public ResultCode setvendorsnslist(@RequestBody SetVendorSNSListParameter param) {
+    	Integer mapID = param.getMapID() == null ? 0 : param.getMapID();
+    	Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+    	Integer socialMediaID = param.getSocialMediaID() == null ? 0 : param.getSocialMediaID();
+    	String socialMediaUsername = StringUtils.isEmpty(param.getSocialMediaUsername()) ? "" : param.getSocialMediaUsername();
+
+    	ResultCode result = renewalVendorService.setVendorSNSList(mapID, wholeSalerID, socialMediaID, socialMediaUsername);
+
+    	cacheService.cacheEvictVendor(wholeSalerID);
+
+    	return result;
+	}
 }
 	
