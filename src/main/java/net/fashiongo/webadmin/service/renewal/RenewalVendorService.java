@@ -836,4 +836,26 @@ public class RenewalVendorService extends ApiService {
 	public List<VendorCommunicationList> getVendorCommunicationList(Integer wid) {
 		return logCommunicationEntityRepository.findAllByRetailerIDAndIsForVendor(wid);
 	}
+
+	@Transactional
+	public ResultCode delVendorCommunication(Integer communicationID) {
+		ResultCode result = new ResultCode(false, null, null);
+		LogCommunicationEntity trm = logCommunicationEntityRepository.findOneByCommunicationID(communicationID);
+
+		try {
+			logCommunicationEntityRepository.delete(trm);
+
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("deletesuccess");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(),ex);
+
+			result.setSuccess(false);
+			result.setResultCode(-1);
+			result.setResultMsg("deletefailure");
+		}
+
+		return result;
+	}
 }

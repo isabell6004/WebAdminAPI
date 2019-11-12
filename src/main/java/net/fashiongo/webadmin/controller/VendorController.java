@@ -813,5 +813,14 @@ public class VendorController {
 
     	return response;
 	}
+
+	@PostMapping(value = "delvendorcommunication")
+	public ResultCode delvendorcommunication(@RequestBody DelVendorCommunicationParameter param) {
+    	Integer communicationID = param.getCommunicationID() == null ? 0 : param.getCommunicationID();
+
+    	ResultCode result = renewalVendorService.delVendorCommunication(communicationID);
+
+    	return result;
+	}
 }
 	
