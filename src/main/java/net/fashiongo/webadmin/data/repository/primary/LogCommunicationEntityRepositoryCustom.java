@@ -7,4 +7,6 @@ import java.util.List;
 public interface LogCommunicationEntityRepositoryCustom {
 
 	List<LogCommunicationEntity> findAllByRetailerIdOrderByModifiedOnDesc(Integer retailerId);
+
+	LogCommunicationEntity findOneByCommunicationID(Integer communicationID);
 }

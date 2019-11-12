@@ -34,4 +34,14 @@ public class LogCommunicationEntityRepositoryCustomImpl implements LogCommunicat
 
 		return jpaQuery.fetch();
 	}
+
+	@Override
+	public LogCommunicationEntity findOneByCommunicationID(Integer communicationID) {
+		QLogCommunicationEntity L = new QLogCommunicationEntity("L");
+		JPAQuery<LogCommunicationEntity> query = new JPAQuery<>(entityManager);
+
+		query.select(L).from(L).where(L.communicationID.eq(communicationID));
+
+		return query.fetchFirst();
+	}
 }

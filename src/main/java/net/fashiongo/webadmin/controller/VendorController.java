@@ -781,5 +781,18 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "setvendorcommunication")
+	public ResultCode setvendorcommunication(@RequestBody SetVendorCommunicationParameter param) {
+		Integer communitaionID = param.getCommunicationID() == null ? 0 : param.getCommunicationID();
+		String notes = StringUtils.isEmpty(param.getNotes()) ? "" : param.getNotes();
+		Integer wid = param.getWid() == null ? 0 : param.getWid();
+
+		ResultCode result = renewalVendorService.setVendorCommunication(communitaionID, notes, wid);
+
+    	cacheService.cacheEvictVendor(wid);
+
+    	return result;
+	}
 }
 	

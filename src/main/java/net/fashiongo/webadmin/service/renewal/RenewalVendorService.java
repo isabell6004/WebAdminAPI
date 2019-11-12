@@ -71,11 +71,12 @@ public class RenewalVendorService extends ApiService {
 	private final TodayDealEntityRepository todayDealEntityRepository;
 	private final AdVendorItemEntityRepository adVendorItemEntityRepository;
 	private final CustomerSocialMediaEntityRepository customerSocialMediaEntityRepository;
+	private final LogCommunicationEntityRepository logCommunicationEntityRepository;
 
 	@Autowired
 	public RenewalVendorService(VendorProductRepository vendorProductRepository,
 								VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
-								FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository, WholeShipMethodEntityRepository wholeShipMethodEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository, VendorNameHistoryLogEntityRepository vendorNameHistoryLogEntityRepository, ListSocialMediaEntityRepository listSocialMediaEntityRepository, VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository, ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository, CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository, AspnetUsersEntityRepository aspnetUsersEntityRepository, AspnetMembershipEntityRepository aspnetMembershipEntityRepository, VendorAdminAccountRepository vendorAdminAccountRepository, VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository, VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository, EntityActionLogEntityRepository entityActionLogEntityRepository, TodayDealEntityRepository todayDealEntityRepository, AdVendorItemEntityRepository adVendorItemEntityRepository, CustomerSocialMediaEntityRepository customerSocialMediaEntityRepository) {
+								FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository, WholeShipMethodEntityRepository wholeShipMethodEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository, VendorNameHistoryLogEntityRepository vendorNameHistoryLogEntityRepository, ListSocialMediaEntityRepository listSocialMediaEntityRepository, VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository, ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository, CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository, AspnetUsersEntityRepository aspnetUsersEntityRepository, AspnetMembershipEntityRepository aspnetMembershipEntityRepository, VendorAdminAccountRepository vendorAdminAccountRepository, VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository, VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository, EntityActionLogEntityRepository entityActionLogEntityRepository, TodayDealEntityRepository todayDealEntityRepository, AdVendorItemEntityRepository adVendorItemEntityRepository, CustomerSocialMediaEntityRepository customerSocialMediaEntityRepository, LogCommunicationEntityRepository logCommunicationEntityRepository) {
 		this.vendorProductRepository = vendorProductRepository;
 		this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
 		this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
@@ -101,6 +102,7 @@ public class RenewalVendorService extends ApiService {
 		this.todayDealEntityRepository = todayDealEntityRepository;
 		this.adVendorItemEntityRepository = adVendorItemEntityRepository;
 		this.customerSocialMediaEntityRepository = customerSocialMediaEntityRepository;
+		this.logCommunicationEntityRepository = logCommunicationEntityRepository;
 	}
 
 	@Autowired
@@ -783,6 +785,49 @@ public class RenewalVendorService extends ApiService {
 			result = 1;
 		} catch (Exception ex) {
 			result = -99;
+		}
+
+		return result;
+	}
+
+	@Transactional
+	public ResultCode setVendorCommunication(Integer communicationID, String notes, Integer wid) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		try {
+			if (communicationID == 0) {
+				LogCommunicationEntity trm = new LogCommunicationEntity();
+
+				trm.setIsForVendor(true);
+				trm.setNotes(notes);
+				trm.setRetailerID(wid);
+				trm.setCreatedBy(Utility.getUsername());
+				trm.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+				logCommunicationEntityRepository.save(trm);
+
+				result.setSuccess(true);
+				result.setResultCode(1);
+				result.setResultMsg("success");
+			} else if (communicationID > 0) {
+				LogCommunicationEntity logCommunication = logCommunicationEntityRepository.findOneByCommunicationID(communicationID);
+
+				logCommunication.setNotes(notes);
+				logCommunication.setModifiedBy(Utility.getUsername());
+				logCommunication.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+				logCommunicationEntityRepository.save(logCommunication);
+
+				result.setSuccess(true);
+				result.setResultCode(1);
+				result.setResultMsg("success");
+			}
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(),ex);
+
+			result.setSuccess(false);
+			result.setResultCode(-1);
+			result.setResultMsg("savefailure");
 		}
 
 		return result;
