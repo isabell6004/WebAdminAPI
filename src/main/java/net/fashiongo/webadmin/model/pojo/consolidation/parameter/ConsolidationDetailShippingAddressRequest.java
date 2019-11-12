@@ -13,5 +13,9 @@ public class ConsolidationDetailShippingAddressRequest {
     private String zipCode;
     private String country;
     private int countryId;
-    private boolean isCommercialAddress;
+    private String isCommercialAddress;
+
+    public boolean isCommercialAddress() {
+        return isCommercialAddress.equals("true");
+    }
 }
