@@ -8,7 +8,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.fashiongo.webadmin.dao.primary.ConsolidationRepository;
+import net.fashiongo.webadmin.dao.primary.OrderRepository;
 import net.fashiongo.webadmin.data.entity.primary.Consolidation;
+import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
 import net.fashiongo.webadmin.dao.primary.ShipMethodRepository;
@@ -30,6 +33,7 @@ public class ConsolidationService extends ApiService {
 	@Autowired @Qualifier("serviceJsonClient") private HttpClient httpClient;
 	@Autowired private ShipMethodRepository shipMethodRepository;
 	@Autowired private ConsolidationRepository consolidationRepository;
+	@Autowired private OrderRepository orderRepository;
 
 	@SuppressWarnings("unchecked")
 	public GetOrderConsolidationSummaryResponse getOrderConsolidationSummary(GetOrderConsolidationSummaryParameter q) {
@@ -61,6 +65,7 @@ public class ConsolidationService extends ApiService {
 	}
 	*/
 
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
 	public List<ShipMethodResponse> getConsolidationShipMethod() {
 		// Get shipMethods
 		List<ShipMethod> shipMethods =
@@ -95,5 +100,33 @@ public class ConsolidationService extends ApiService {
 		c.setModifiedBy(userName);
 		c.setModifiedOn(LocalDateTime.now());
 		consolidationRepository.save(c);
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
+	public void setConsolidationDetailShippingAddress(ConsolidationDetailShippingAddressRequest addressRequest, String userName) throws Exception {
+		if (addressRequest == null) throw new Exception("No shipping address is requested");
+
+		Optional<Consolidation> cOptional = consolidationRepository.findById(addressRequest.getId());
+		if (!cOptional.isPresent()) throw new Exception("No consolidation exists");
+
+		Consolidation c = cOptional.get();
+		c.setStreetNo(addressRequest.getStreetNo());
+		c.setCity(addressRequest.getCity());
+		c.setState(addressRequest.getState());
+		c.setZipcode(addressRequest.getZipCode());
+		c.setCountry(addressRequest.getCountry());
+		c.setCountryId(addressRequest.getCountryId());
+		c.setIsCommercialAddress(addressRequest.isCommercialAddress());
+		setConsolidationSum(c);
+		c.setModifiedBy(userName);
+		c.setModifiedOn(LocalDateTime.now());
+		consolidationRepository.save(c);
+	}
+
+	private void setConsolidationSum(Consolidation c) {
+		OrderConsolidationSummaryDto summaryDto = orderRepository.getOrderConsolidationSummary(c.getId());
+		c.setOrderCount(summaryDto.getCount().intValue());
+		c.setTotalAmount(summaryDto.getTotalAmount());
+		c.setTotalQty(summaryDto.getTotalQty());
 	}
 }
