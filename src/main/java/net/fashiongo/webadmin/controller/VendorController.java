@@ -10,6 +10,7 @@ import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -793,6 +794,24 @@ public class VendorController {
     	cacheService.cacheEvictVendor(wid);
 
     	return result;
+	}
+
+	@PostMapping(value = "getvendorcommunicationlist")
+	public JsonResponse<GetVendorCommunicationListResponse> getvendorcommunicationlist(@RequestBody GetVendorCommunicationListParameter param) {
+		JsonResponse<GetVendorCommunicationListResponse> response = new JsonResponse<>(false, null, null);
+    	Integer wid = param.getWid() == null ? 0 : param.getWid();
+
+    	try {
+			List<VendorCommunicationList> vclist = renewalVendorService.getVendorCommunicationList(wid);
+
+			response.setSuccess(true);
+			response.setData(GetVendorCommunicationListResponse.builder().vclist(vclist).build());
+		} catch (Exception ex) {
+			log.error("Exception Error: {}", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+    	return response;
 	}
 }
 	

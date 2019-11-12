@@ -832,4 +832,8 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	public List<VendorCommunicationList> getVendorCommunicationList(Integer wid) {
+		return logCommunicationEntityRepository.findAllByRetailerIDAndIsForVendor(wid);
+	}
 }
