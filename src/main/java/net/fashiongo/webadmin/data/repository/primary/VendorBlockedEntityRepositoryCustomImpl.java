@@ -108,4 +108,16 @@ public class VendorBlockedEntityRepositoryCustomImpl implements VendorBlockedEnt
         return queryResults;
     }
 
+    @Override
+    public List<VendorBlockedEntity> findByWholeSalerID(Integer wid) {
+        QVendorBlockedEntity vendorBlockedEntity = QVendorBlockedEntity.vendorBlockedEntity;
+        JPAQuery<VendorBlockedEntity> query = new JPAQuery<>(vendorBlockedEntityManager);
+
+        query.select(vendorBlockedEntity)
+                .from(vendorBlockedEntity)
+                .where(vendorBlockedEntity.wholeSalerId.eq(wid));
+
+        return query.fetch();
+    }
+
 }

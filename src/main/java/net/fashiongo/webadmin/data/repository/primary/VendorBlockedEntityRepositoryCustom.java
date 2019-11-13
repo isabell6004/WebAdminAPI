@@ -11,4 +11,5 @@ public interface VendorBlockedEntityRepositoryCustom {
     List<VendorBlockedEntity> findByCompanyNameContainingIgnoreCase(String searchKeyword);
     List<VendorBlockedEntity> findByBlockedOnBetween(LocalDateTime fromDate, LocalDateTime toDate);
     List<VendorBlockedEntity> findByBlockReasonTitle(String searchKeyword);
+    List<VendorBlockedEntity> findByWholeSalerID(Integer wid);
 }

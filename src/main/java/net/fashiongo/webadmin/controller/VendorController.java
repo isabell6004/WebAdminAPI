@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -821,6 +822,23 @@ public class VendorController {
     	ResultCode result = renewalVendorService.delVendorCommunication(communicationID);
 
     	return result;
+	}
+
+	@PostMapping(value = "getvendorsetting")
+	public JsonResponse<GetVendorSettingResponse> getvendorsetting(@RequestBody GetVendorSettingParameter param) {
+    	JsonResponse<GetVendorSettingResponse> response = new JsonResponse<>(false, null, null);
+
+    	try {
+			GetVendorSettingResponse result = renewalVendorService.getVendorSetting(param.getWid());
+
+			response.setSuccess(true);
+			response.setData(result);
+    	} catch (Exception ex) {
+			log.error("Exception Error: {}", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+    	return response;
 	}
 }
 	

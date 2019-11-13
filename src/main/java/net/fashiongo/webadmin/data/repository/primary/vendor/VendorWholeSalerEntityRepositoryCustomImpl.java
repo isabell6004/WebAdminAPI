@@ -10,10 +10,14 @@ import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.QAspnetMembershipEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCategoryEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCountEntity;
+import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.QVendorAdminAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.QVendorLambsKeyEntity;
 import net.fashiongo.webadmin.data.entity.primary.QWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.SimpleWholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.vendor.QWholesalerCompanyEntity;
+import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import org.springframework.stereotype.Repository;
 
@@ -84,6 +88,16 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         query.select(W).from(W).where(W.wholeSalerID.eq(wholeSalerID));
 
         return query.fetchFirst();
+    }
+
+    @Override
+    public List<WholesalerCompanyEntity> findAllActive() {
+        QWholesalerCompanyEntity W = QWholesalerCompanyEntity.wholesalerCompanyEntity;
+        JPAQuery<WholesalerCompanyEntity> query = new JPAQuery<>(entityManager);
+
+        query.select(W).from(W).where(W.active.eq(true));
+
+        return query.fetch();
     }
 
     private BooleanExpression eqReferenceID(Integer referenceID, QCategoryEntity C) {
