@@ -6,9 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "toast.cloud.storage.object-storage")
-public class SwiftProperties implements SwiftPropertyInterface {
-
+@ConfigurationProperties(prefix = "gnb.banner.image.storage.object-storage")
+public class GnbBannerSwiftProperties implements SwiftPropertyInterface {
 	private String account;
 
 	private String apiUrl;
