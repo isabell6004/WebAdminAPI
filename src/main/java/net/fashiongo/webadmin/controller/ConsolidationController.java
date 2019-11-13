@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,7 +29,7 @@ public class ConsolidationController {
 	 * @return Consolidation Orders List Summary
 	 */
 	@RequestMapping(value="getorderconsolidationsummary", method=RequestMethod.POST)
-	public JsonResponse<GetConsolidationSummaryResponse> getOrderConsolidationListSummary(@RequestBody GetConsolidationSummaryParameter parameters) {
+	public JsonResponse<GetConsolidationSummaryResponse> getOrderConsolidationListSummary(@ModelAttribute GetConsolidationSummaryParameter parameters) {
 		
 		GetConsolidationSummaryResponse result = consolidationService.getOrderConsolidationListSummary(parameters);	
 		return new JsonResponse<GetConsolidationSummaryResponse>(true, null, 0, result);

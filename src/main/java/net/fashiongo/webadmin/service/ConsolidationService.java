@@ -29,7 +29,7 @@ public class ConsolidationService extends ApiService {
 
 	@SuppressWarnings("unchecked")
 	public GetConsolidationSummaryResponse getOrderConsolidationListSummary(GetConsolidationSummaryParameter q) {
-		String spName = "up_wa_GetConsolidationSummary";
+		String spName = "up_wa_GetConsolidationSummary_v1";
 		List<Object> params = new ArrayList<Object>();
 		GetConsolidationSummaryResponse result = new GetConsolidationSummaryResponse();
 
