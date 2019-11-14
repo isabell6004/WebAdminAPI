@@ -23,4 +23,14 @@ public class VendorCapEntityRepositoryCustomImpl implements VendorCapEntityRepos
 
         return query.fetch();
     }
+
+    @Override
+    public VendorCapEntity findOneByVendorCapID(Integer capID) {
+        QVendorCapEntity X = QVendorCapEntity.vendorCapEntity;
+        JPAQuery<VendorCapEntity> query = new JPAQuery<>(entityManager);
+
+        query.select(X).from(X).where(X.vendorCapID.eq(capID));
+
+        return query.fetchFirst();
+    }
 }

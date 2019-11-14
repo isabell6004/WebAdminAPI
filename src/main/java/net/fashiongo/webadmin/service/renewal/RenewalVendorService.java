@@ -887,4 +887,47 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	@Transactional
+	public ResultCode setVendorSetting(Integer wid, Integer capID, Integer vendorCapTypeID, Integer cap) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		VendorCapEntity trm = new VendorCapEntity();
+
+		try {
+			if (capID == 0) {
+				trm.setWholeSalerID(wid);
+				trm.setVendorCapTypeID(vendorCapTypeID);
+				trm.setCap(cap);
+				trm.setCreatedBy(Utility.getUsername());
+				trm.setCreatedOn(LocalDateTime.now());
+				trm.setModifiedBy(Utility.getUsername());
+				trm.setModifiedOn(LocalDateTime.now());
+
+				vendorCapEntityRepository.save(trm);
+
+				result.setSuccess(true);
+				result.setResultCode(1);
+				result.setResultMsg("success");
+			} else if (capID > 0) {
+				trm = vendorCapEntityRepository.findOneByVendorCapID(capID);
+				trm.setCap(cap);
+				trm.setModifiedBy(Utility.getUsername());
+				trm.setModifiedOn(LocalDateTime.now());
+
+				vendorCapEntityRepository.save(trm);
+
+				result.setSuccess(true);
+				result.setResultCode(1);
+				result.setResultMsg("success");
+			}
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+
+			result.setResultCode(-1);
+			result.setResultMsg("savefailure");
+		}
+
+		return result;
+	}
 }

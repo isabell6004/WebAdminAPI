@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface VendorCapEntityRepositoryCustom {
     List<VendorCapEntity> findByWholeSalerID(Integer wid);
+
+    VendorCapEntity findOneByVendorCapID(Integer capID);
 }
