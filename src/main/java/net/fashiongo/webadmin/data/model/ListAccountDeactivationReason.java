@@ -11,6 +11,6 @@ public class ListAccountDeactivationReason {
 	@JsonProperty("ReasonID")
 	private Integer reasonID;
 
-	@JsonProperty("reason")
+	@JsonProperty("Reason")
 	private String reason;
 }
