@@ -155,6 +155,7 @@ public class RenewalBuyerService {
 					.retailerId(retailerEntity.getRetailerID())
 					.retailerPermitNo(retailerEntity.getRetailerPermitNo())
 					.startingDate(retailerEntity.getStartingDate())
+					.sellerPermitFileName(retailerEntity.getSellerPermitFileName())
 					.terminatedNote(retailerEntity.getTerminatedNote())
 					.userId(retailerEntity.getUserID())
 					.webSite(retailerEntity.getWebSite())
