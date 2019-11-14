@@ -898,5 +898,15 @@ public class VendorController {
 
 		return result;
 	}
+
+	@PostMapping(value = "setvendorblockupdate")
+	public Integer setvendorblockupdate(@RequestBody SetVendorBlockUpdate param) {
+		Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+		Integer blockReasonID = param.getBlockReasonID() == null ? 0 : param.getBlockReasonID();
+
+		Integer result = renewalVendorService.setBlockVendorUpdate(wholeSalerID, blockReasonID);
+
+		return result;
+	}
 }
 	

@@ -9,6 +9,7 @@ import net.fashiongo.webadmin.data.entity.primary.LogVendorHoldEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorBlockedEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorCapEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
+import net.fashiongo.webadmin.data.model.vendor.VendorBlock;
 import net.fashiongo.webadmin.data.model.vendor.VendorHistory;
 import net.fashiongo.webadmin.data.model.vendor.VendorSister;
 
@@ -24,7 +25,7 @@ public class GetVendorSettingResponse {
     List<CodeVendorCapTypeEntity> vendorCapDefault;
 
     @JsonProperty(value = "VendorBlock")
-    List<VendorBlockedEntity> vendorBlock;
+    List<VendorBlock> vendorBlock;
 
     @JsonProperty(value = "VendorBlockReason")
     List<ListVendorBlockReasonEntity> vendorBlockReason;

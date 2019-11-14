@@ -18,6 +18,7 @@ import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.primary.VendorBlocked;
 import net.fashiongo.webadmin.service.ApiService;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -875,14 +876,14 @@ public class RenewalVendorService extends ApiService {
 	public GetVendorSettingResponse getVendorSetting(Integer wid) {
 
 		GetVendorSettingResponse result = GetVendorSettingResponse.builder()
-				.vendorCap(vendorCapEntityRepository.findByWholeSalerID(wid)) // VendorCap repo
-				.vendorCapDefault(codeVendorCapTypeEntityRepository.findVendorCapDefault()) // Code_VendorCapType repo
-				.vendorBlock(vendorBlockedEntityRepository.findByWholeSalerID(wid)) // Vendor_Blocked repo
-				.vendorBlockReason(listVendorBlockReasonEntityRepository.findVendorBlockReason()) // List_VendorBlockReasons repo
-				.vendor(vendorWholeSalerEntityRepository.findAllActive()) // tblWholeSaler repo
-				.vendorSister(mapWholeSalerSisterEntityRepository.findVendorSister(wid)) // vwWholeSalerSisters -> Map_WholeSaler_Sister join tblwholesaler
-				.holdVendor(logVendorHoldEntityRepository.findByWholeSalerIDAndActiveAndHoldTo(wid)) // Log_VendorHolds repo
-				.vendorHistory(entityActionLogEntityRepository.findByEntityIDAndEntityTypeID(wid)) // Entity_ActionLogs repo
+				.vendorCap(vendorCapEntityRepository.findByWholeSalerID(wid))
+				.vendorCapDefault(codeVendorCapTypeEntityRepository.findVendorCapDefault())
+				.vendorBlock(vendorBlockedEntityRepository.findByWholeSalerID(wid))
+				.vendorBlockReason(listVendorBlockReasonEntityRepository.findVendorBlockReason())
+				.vendor(vendorWholeSalerEntityRepository.findAllActive())
+				.vendorSister(mapWholeSalerSisterEntityRepository.findVendorSister(wid))
+				.holdVendor(logVendorHoldEntityRepository.findByWholeSalerIDAndActiveAndHoldTo(wid))
+				.vendorHistory(entityActionLogEntityRepository.findByEntityIDAndEntityTypeID(wid))
 			.build();
 
 		return result;
@@ -971,6 +972,24 @@ public class RenewalVendorService extends ApiService {
 
 			result.setResultCode(-1);
 			result.setResultMsg("savefailure");
+		}
+
+		return result;
+	}
+
+	public Integer setBlockVendorUpdate(Integer wholeSalerID, Integer blockReasonID) {
+		Integer result = 0;
+
+		try {
+			VendorBlockedEntity retailer = vendorBlockedEntityRepository.findOneByWholeSalerID(wholeSalerID);
+			retailer.setBlockReasonId(blockReasonID);
+			vendorBlockedEntityRepository.save(retailer);
+
+			result = 1;
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+
+			result = -99;
 		}
 
 		return result;
