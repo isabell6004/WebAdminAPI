@@ -452,11 +452,11 @@ public class RenewalBuyerService {
 			}
 			StoreCreditEntity storeCreditEntity = storeCreditEntityOptional.get();
 
-			if(storeCreditEntity.getIsUsed()) {
+			if(Optional.ofNullable(storeCreditEntity.getIsUsed()).orElse(false)) {
 				return -2;
 			}
 
-			if(storeCreditEntity.getIsDeleted()) {
+			if(Optional.ofNullable(storeCreditEntity.getIsDeleted()).orElse(false)) {
 				return -3;
 			}
 

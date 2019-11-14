@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 @Getter
 @Entity
 @Table(name = "StoreCredit")
+@DynamicUpdate
 public class StoreCreditEntity {
 
 	@Id
