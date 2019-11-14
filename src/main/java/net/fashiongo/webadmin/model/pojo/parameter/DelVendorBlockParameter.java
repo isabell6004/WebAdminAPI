@@ -17,7 +17,7 @@ public class DelVendorBlockParameter implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@JsonProperty("BlockId")
+	@JsonProperty("BlockID")
 	private Integer blockID;
 	
 	@JsonProperty("WholeSalerID")

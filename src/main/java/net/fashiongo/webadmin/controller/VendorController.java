@@ -149,24 +149,6 @@ public class VendorController {
 	}
 	
 	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 12.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@RequestMapping(value="delvendorblock", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> delVendorBlock(@RequestBody DelVendorBlockParameter parameters) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
-		ResultCode result = vendorService.delVendorBlock(parameters);
-		
-		results.setData(result);
-		results.setSuccess(true);
-		return results;
-	}
-	
-	/**
 	 * getCreditCardType
 	 * 
 	 * @since 2018. 11. 12.
@@ -394,24 +376,6 @@ public class VendorController {
 	public JsonResponse<String> setVendorCreditCard(@RequestBody SetVendorCreditCardParameter parameters) {
 		ResultCode result = vendorService.setVendorCreditCard(parameters);
 		return new JsonResponse<String>(true, result.getResultMsg(), result.getResultCode(), null);
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 12. 14.
-	 * @author Reo
-	 * @param wholeSalerID
-	 * @return
-	 */
-	@RequestMapping(value="getvendorcommunicationlist", method=RequestMethod.GET)
-	public JsonResponse<List<LogCommunication>> getVendorCommunicationList(@RequestParam(value="WholeSalerID") Integer wholeSalerID) {
-		JsonResponse<List<LogCommunication>> results = new JsonResponse<List<LogCommunication>>(false, null, 0, null);
-		List<LogCommunication> result = vendorService.getVendorCommunicationList(wholeSalerID);
-		
-		results.setData(result);
-		results.setSuccess(true);
-		return results;
 	}
 	
 	/**
@@ -908,5 +872,15 @@ public class VendorController {
 
 		return result;
 	}
+
+	@PostMapping(value = "delvendorblock")
+	public ResultCode delvendorblock(@RequestBody DelVendorBlockParameter param) {
+        Integer blockID = param.getBlockID() == null ? 0 : param.getBlockID();
+        Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+
+        ResultCode result = renewalVendorService.delVendorBlock(blockID, wholeSalerID);
+
+        return result;
+    }
 }
 	

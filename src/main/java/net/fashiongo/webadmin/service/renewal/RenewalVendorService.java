@@ -956,13 +956,14 @@ public class RenewalVendorService extends ApiService {
 			entityActionLogEntityRepository.save(trm2);
 
 			List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(wholeSalerID);
+			List<AspnetMembershipEntity> aspnetMembershipEntityList = new ArrayList<>();
 			for(VendorAdminAccountEntity va : vendorAdminAccountList) {
 				AspnetMembershipEntity subAccount = aspnetMembershipEntityRepository.findOneByWholeSalerGUID(va.getUserGUID());
 				subAccount.setApproved(false);
 				subAccount.setLockedOut(true);
-
-				aspnetMembershipEntityRepository.save(subAccount);
+				aspnetMembershipEntityList.add(subAccount);
 			}
+			aspnetMembershipEntityRepository.saveAll(aspnetMembershipEntityList);
 
 			result.setSuccess(true);
 			result.setResultCode(1);
@@ -990,6 +991,45 @@ public class RenewalVendorService extends ApiService {
 			log.warn(ex.getMessage(), ex);
 
 			result = -99;
+		}
+
+		return result;
+	}
+
+	@Transactional
+	public ResultCode delVendorBlock(Integer blockID, Integer wholeSalerID) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		try {
+			vendorBlockedEntityRepository.deleteById(blockID);
+
+			EntityActionLogEntity trm2 = new EntityActionLogEntity();
+			trm2.setEntityTypeID(9);
+			trm2.setEntityID(wholeSalerID);
+			trm2.setActionID(9002);
+			trm2.setActedOn(LocalDateTime.now());
+			trm2.setActedBy(Utility.getUsername());
+
+			entityActionLogEntityRepository.save(trm2);
+
+			List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(wholeSalerID);
+			List<AspnetMembershipEntity> aspnetMembershipEntityList = new ArrayList<>();
+			for(VendorAdminAccountEntity va : vendorAdminAccountList) {
+				AspnetMembershipEntity subAccount = aspnetMembershipEntityRepository.findOneByWholeSalerGUID(va.getUserGUID());
+				subAccount.setApproved(true);
+				subAccount.setLockedOut(false);
+				aspnetMembershipEntityList.add(subAccount);
+			}
+			aspnetMembershipEntityRepository.saveAll(aspnetMembershipEntityList);
+
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("deletesucecss");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+
+			result.setResultCode(-1);
+			result.setResultMsg("deletefailure");
 		}
 
 		return result;
