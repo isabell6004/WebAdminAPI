@@ -214,3 +214,8 @@ gnb:
           api-url: https://api-storage.cloud.toast.com/v1/
         root-container: 'production'
         directory: 'gnb-menu-banner-img'
+
+server:
+  tomcat:
+    accesslog:
+      directory: logs/
