@@ -134,7 +134,7 @@ public class ShoppingBag {
 	@JsonProperty("S2")
 	private String s2;
 
-	@JsonProperty("S")
+	@JsonProperty("S3")
 	private String s3;
 
 	@JsonProperty("S4")
