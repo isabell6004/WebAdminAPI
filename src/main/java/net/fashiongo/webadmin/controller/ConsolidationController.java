@@ -29,10 +29,10 @@ public class ConsolidationController {
 	 * @return Consolidation Orders List Summary
 	 */
 	@RequestMapping(value="getorderconsolidationsummary", method=RequestMethod.POST)
-	public JsonResponse<GetConsolidationSummaryResponse> getOrderConsolidationListSummary(@ModelAttribute GetConsolidationSummaryParameter parameters) {
+	public JsonResponse<GetConsolidationSummaryResponse> getOrderConsolidationListSummary(@RequestBody GetConsolidationSummaryParameter parameters) {
 		
 		GetConsolidationSummaryResponse result = consolidationService.getOrderConsolidationListSummary(parameters);	
-		return new JsonResponse<GetConsolidationSummaryResponse>(true, null, 0, result);
+		return new JsonResponse<>(true, null, 0, result);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class ConsolidationController {
 	public JsonResponse<GetConsolidationResponse> getConsolidationList(@RequestBody GetConsolidationParameter parameters) {
 		
 		GetConsolidationResponse result = consolidationService.getConsolidationList(parameters);	
-		return new JsonResponse<GetConsolidationResponse>(true, null, 0, result);
+		return new JsonResponse<>(true, null, 0, result);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class ConsolidationController {
 	public JsonResponse<GetConsolidationDetailResponse> getConsolidationDetailList(@RequestBody GetConsolidationDetailParameter parameters) {
 		
 		GetConsolidationDetailResponse result = consolidationService.getConsolidationDetailList(parameters);	
-		return new JsonResponse<GetConsolidationDetailResponse>(true, null, 0, result);
+		return new JsonResponse<>(true, null, 0, result);
 	}
 
 	

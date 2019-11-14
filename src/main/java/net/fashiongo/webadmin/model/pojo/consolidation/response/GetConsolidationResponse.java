@@ -16,9 +16,8 @@ public class GetConsolidationResponse implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty("Table")
-	private List<Consolidation> consolidation;
-
-	@JsonProperty("Table1")
 	private List<TotalCount> totalCount;
 
+	@JsonProperty("Table1")
+	private List<Consolidation> consolidation;
 }

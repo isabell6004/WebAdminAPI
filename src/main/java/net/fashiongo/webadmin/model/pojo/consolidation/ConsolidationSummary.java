@@ -30,8 +30,8 @@ public class ConsolidationSummary implements Serializable {
 	@Column(name = "Actual_Shipping_Charge")
 	private BigDecimal actualShippingCharge;
 
-	@JsonProperty("Avg_Shippin_Processing_Time")
-	@Column(name = "Avg_Shippin_Processing_Time")
-	private Double avg_Shippin_Processing_Time;
+	@JsonProperty("Avg_Shipping_Process_Time")
+	@Column(name = "Avg_Shipping_Process_Time")
+	private BigDecimal avgShippingProcessTime;
 	
 }

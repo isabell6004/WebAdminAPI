@@ -85,10 +85,10 @@ public class ConsolidationService extends ApiService {
 		params.add(q.getCn() == "" ? null : q.getCn());
 		params.add(q.getOrderBy());
 		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Consolidation.class, TotalCount.class);
-		
-		result.setConsolidation((List<Consolidation>) _result.get(0));
-		result.setTotalCount((List<TotalCount>) _result.get(1));
+		List<Object> _result = jdbcHelper.executeSP(spName, params, TotalCount.class, Consolidation.class);
+
+		result.setTotalCount((List<TotalCount>) _result.get(0));
+		result.setConsolidation((List<Consolidation>) _result.get(1));
 		
 		return result;
 	}
