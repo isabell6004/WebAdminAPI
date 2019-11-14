@@ -17,7 +17,7 @@ public class CouponUpdateInput extends CouponCommonInput {
 
     public void validateCouponRequest() {
 
-        if (this.getStartDate().isAfter(this.getEndDate())) {
+        if (this.getStartDate() != null && this.getStartDate().isAfter(this.getEndDate())) {
             throw new InvalidInputCouponException("Invalid period");
         }
     }

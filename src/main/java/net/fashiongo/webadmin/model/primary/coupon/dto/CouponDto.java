@@ -33,6 +33,9 @@ public class CouponDto {
     private Long couponVendorGroupId;
     private Long couponBuyerGroupId;
     private Integer issueMethod;
+    private LocalDateTime issueStartDate;
+    private LocalDateTime issueEndDate;    
+    private Integer validDurationDays;    
     private LocalDateTime createdOn;
     private String createdBy;
     private LocalDateTime modifiedOn;
@@ -65,6 +68,9 @@ public class CouponDto {
                 .couponVendorGroupId(coupon.getCouponVendorGroupId())
                 .couponBuyerGroupId(coupon.getCouponBuyerGroupId())
                 .issueMethod(coupon.getIssueMethod())
+                .issueStartDate(coupon.getIssueStartDate())
+                .issueEndDate(coupon.getIssueEndDate())
+                .validDurationDays(coupon.getValidDurationDays())
                 .createdOn(coupon.getCreatedOn())
                 .createdBy(coupon.getCreatedBy())
                 .modifiedOn(coupon.getModifiedOn())
