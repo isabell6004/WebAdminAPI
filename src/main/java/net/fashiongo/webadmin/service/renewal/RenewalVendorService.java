@@ -930,4 +930,49 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	@Transactional
+	public ResultCode setVendorBlock(Integer wholeSalerID, Integer blockReasonID, String reason) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		VendorBlockedEntity trm = new VendorBlockedEntity();
+		try {
+			trm.setWholeSalerId(wholeSalerID);
+			trm.setBlockReasonId(blockReasonID);
+			trm.setBlockedOn(LocalDateTime.now());
+			trm.setBlockedBy(Utility.getUsername());
+
+			vendorBlockedEntityRepository.save(trm);
+
+			EntityActionLogEntity trm2 = new EntityActionLogEntity();
+			trm2.setEntityTypeID(9);
+			trm2.setEntityID(wholeSalerID);
+			trm2.setActionID(9001);
+			trm2.setActedOn(LocalDateTime.now());
+			trm2.setActedBy(Utility.getUsername());
+			trm2.setRemark(reason);
+
+			entityActionLogEntityRepository.save(trm2);
+
+			List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(wholeSalerID);
+			for(VendorAdminAccountEntity va : vendorAdminAccountList) {
+				AspnetMembershipEntity subAccount = aspnetMembershipEntityRepository.findOneByWholeSalerGUID(va.getUserGUID());
+				subAccount.setApproved(false);
+				subAccount.setLockedOut(true);
+
+				aspnetMembershipEntityRepository.save(subAccount);
+			}
+
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("success");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+
+			result.setResultCode(-1);
+			result.setResultMsg("savefailure");
+		}
+
+		return result;
+	}
 }
