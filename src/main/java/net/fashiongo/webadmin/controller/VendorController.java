@@ -937,5 +937,16 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "setentityactionlog")
+	public Integer setentityactionlog(@RequestBody SetEntityActionLogParameter param) {
+    	Integer entityTypeID = param.getEntityTypeID() == null ? 0 : param.getEntityTypeID();
+    	Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+    	Integer actionID = param.getActionID() == null ? 0 : param.getActionID();
+
+    	Integer result = renewalVendorService.setEntityActionLog(entityTypeID, wholeSalerID, actionID);
+
+    	return result;
+	}
 }
 	

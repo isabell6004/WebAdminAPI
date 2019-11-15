@@ -633,7 +633,8 @@ public class RenewalVendorService extends ApiService {
 		}
 	}
 
-	private int setEntityActionLog(Integer entityTypeID, Integer wholeSalerID, Integer actionID) {
+	@Transactional
+	public int setEntityActionLog(Integer entityTypeID, Integer wholeSalerID, Integer actionID) {
 		try {
 			EntityActionLogEntity actionLog = new EntityActionLogEntity();
 
