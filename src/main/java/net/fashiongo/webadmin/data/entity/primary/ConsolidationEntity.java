@@ -1,20 +1,22 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+import org.joda.time.LocalDateTime;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "Consolidation")
-public class Consolidation {
+public class ConsolidationEntity {
     @Id @Column(name = "ConsolidationID") private Integer id;
     @Column(name = "TotalAmount", nullable = false) private BigDecimal totalAmount;
     @Column(name = "TotalQty", nullable = false) private Integer totalQty;

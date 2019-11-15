@@ -1,6 +1,6 @@
 package net.fashiongo.webadmin.service;
 
-import java.time.LocalDateTime;
+import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import net.fashiongo.webadmin.dao.primary.ConsolidationRepository;
 import net.fashiongo.webadmin.dao.primary.OrderRepository;
-import net.fashiongo.webadmin.data.entity.primary.Consolidation;
+import net.fashiongo.webadmin.data.entity.primary.ConsolidationEntity;
 import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
@@ -92,10 +92,10 @@ public class ConsolidationService extends ApiService {
 	public void setConsolidationMemo(ConsolidationMemoRequest memoRequest, String userName) throws Exception {
 		if (memoRequest == null) throw new Exception("No memo is requested");
 
-		Optional<Consolidation> cOptional = consolidationRepository.findById(memoRequest.getId());
+		Optional<ConsolidationEntity> cOptional = consolidationRepository.findById(memoRequest.getId());
 		if (!cOptional.isPresent()) throw new Exception("No consolidation exists");
 
-		Consolidation c = cOptional.get();
+		ConsolidationEntity c = cOptional.get();
 		c.setInhouseMemo(memoRequest.getMemo());
 		c.setModifiedBy(userName);
 		c.setModifiedOn(LocalDateTime.now());
@@ -106,10 +106,10 @@ public class ConsolidationService extends ApiService {
 	public void setConsolidationDetailShippingAddress(ConsolidationDetailShippingAddressRequest addressRequest, String userName) throws Exception {
 		if (addressRequest == null) throw new Exception("No shipping address is requested");
 
-		Optional<Consolidation> cOptional = consolidationRepository.findById(addressRequest.getId());
+		Optional<ConsolidationEntity> cOptional = consolidationRepository.findById(addressRequest.getId());
 		if (!cOptional.isPresent()) throw new Exception("No consolidation exists");
 
-		Consolidation c = cOptional.get();
+		ConsolidationEntity c = cOptional.get();
 		c.setStreetNo(addressRequest.getStreetNo());
 		c.setCity(addressRequest.getCity());
 		c.setState(addressRequest.getState());
@@ -123,7 +123,7 @@ public class ConsolidationService extends ApiService {
 		consolidationRepository.save(c);
 	}
 
-	private void setConsolidationSum(Consolidation c) {
+	private void setConsolidationSum(ConsolidationEntity c) {
 		OrderConsolidationSummaryDto summaryDto = orderRepository.getOrderConsolidationSummary(c.getId());
 		c.setOrderCount(summaryDto.getCount().intValue());
 		c.setTotalAmount(summaryDto.getTotalAmount());
