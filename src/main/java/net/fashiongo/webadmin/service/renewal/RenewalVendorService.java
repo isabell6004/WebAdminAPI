@@ -1101,4 +1101,23 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	public Integer setHoldVendorUpdate(Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
+		Integer result = 0;
+
+		try {
+			LogVendorHoldEntity lvh = logVendorHoldEntityRepository.findById(logID).get();
+			lvh.setHoldFrom(holdFrom);
+			lvh.setHoldTo(holdTo);
+			lvh.setActive(active);
+			logVendorHoldEntityRepository.save(lvh);
+
+			result = 1;
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+			result = -99;
+		}
+
+		return result;
+	}
 }

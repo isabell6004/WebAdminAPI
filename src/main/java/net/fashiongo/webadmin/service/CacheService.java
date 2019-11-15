@@ -60,7 +60,7 @@ public class CacheService {
 		GetRedisCacheEvict("vendorActivated", null);
 		GetRedisCacheEvict("vendorDeactivated", null);
 
-		if (org.apache.commons.lang3.StringUtils.isNotEmpty(String.valueOf(wid))) {
+		if (StringUtils.isNotEmpty(String.valueOf(wid))) {
 			GetRedisCacheEvict("vendorNameChanged", String.valueOf(wid));
 		}
 	}

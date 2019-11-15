@@ -912,5 +912,30 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "setholdvendorupdate")
+	public Integer setholdvendorupdate(@RequestBody SetHoldVendorUpdateParameter param) {
+    	Integer logID = param.getLogID() == null ? 0 : param.getLogID();
+    	Boolean active = param.getActive() == null ? false : param.getActive();
+		Date holdFromDate;
+		Date holdToDate;
+		Timestamp holdFrom = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp holdTo = Timestamp.valueOf(LocalDateTime.now());
+		try {
+			holdFromDate = StringUtils.isEmpty(param.getHoldFrom()) ? new Date() : new SimpleDateFormat("MM/dd/yyyy").parse(param.getHoldFrom());
+			holdToDate = StringUtils.isEmpty(param.getHoldTo()) ? new Date() : new SimpleDateFormat("MM/dd/yyyy").parse(param.getHoldTo());
+
+			holdFrom = StringUtils.isEmpty(param.getHoldFrom()) ? Timestamp.valueOf(LocalDateTime.now()) : new Timestamp(holdFromDate.getTime());
+			holdTo = StringUtils.isEmpty(param.getHoldTo()) ? Timestamp.valueOf(LocalDateTime.now()) : new Timestamp(holdToDate.getTime());
+		} catch (ParseException e) {
+			log.warn(e.getMessage(), e);
+		}
+
+		Integer result = renewalVendorService.setHoldVendorUpdate(logID, active,holdFrom, holdTo);
+
+		cacheService.cacheEvictVendor(null);
+
+    	return result;
+	}
 }
 	
