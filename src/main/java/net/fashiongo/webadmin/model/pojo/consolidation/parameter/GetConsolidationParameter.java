@@ -16,7 +16,7 @@ public class GetConsolidationParameter {
 	private Integer periodType;
 
 	@JsonProperty("pagenum")
-	@ApiModelProperty(required = false, example="Test")
+	@ApiModelProperty(required = false, example="1")
 	private Integer pageNum;
 
 	@JsonProperty("pagesize")
