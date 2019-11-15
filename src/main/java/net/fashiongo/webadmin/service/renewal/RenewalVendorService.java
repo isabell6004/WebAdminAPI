@@ -633,7 +633,6 @@ public class RenewalVendorService extends ApiService {
 		}
 	}
 
-	@Transactional
 	public int setEntityActionLog(Integer entityTypeID, Integer wholeSalerID, Integer actionID) {
 		try {
 			EntityActionLogEntity actionLog = new EntityActionLogEntity();
@@ -1120,5 +1119,12 @@ public class RenewalVendorService extends ApiService {
 		}
 
 		return result;
+	}
+
+	public Boolean vendorDirNameCheck(Integer wholeSalerID, String dirName) {
+
+		long resultCount = wholeSalerEntityRepository.countByDirNameAndNotWholeSalerID(wholeSalerID, dirName);
+
+		return resultCount > 0;
 	}
 }

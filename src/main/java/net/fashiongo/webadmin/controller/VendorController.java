@@ -948,5 +948,15 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "vendordirnamecheck")
+	public Boolean vendordirnamecheck(@RequestBody VendorDirNameCheckParameter param) {
+		Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+		String codeName = StringUtils.isEmpty(param.getDirName()) ? "" : param.getDirName();
+
+		Boolean result = renewalVendorService.vendorDirNameCheck(wholeSalerID, codeName);
+
+    	return result;
+	}
 }
 	
