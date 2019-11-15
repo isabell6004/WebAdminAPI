@@ -1034,4 +1034,71 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	@Transactional
+	public ResultCode setHoldVendor(Integer wholeSalerID, Integer holdType, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		try {
+			if (holdType == 1) {
+				LogVendorHoldEntity trm = new LogVendorHoldEntity();
+				trm.setWholeSalerID(wholeSalerID);
+				trm.setHoldFrom(holdFrom);
+				trm.setHoldTo(holdTo);
+				trm.setCreatedBy(Utility.getUsername());
+				trm.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+				logVendorHoldEntityRepository.save(trm);
+			} else if (holdType == 2) {
+				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+
+				if(active) {
+					if(holdFrom.toLocalDateTime().plusDays(1).minusSeconds(1).isAfter(LocalDateTime.now())) {
+						trm.setContractExpireDate(holdFrom.toLocalDateTime().plusDays(1).minusSeconds(1));
+						trm.setLastModifiedDateTime(LocalDateTime.now());
+						trm.setActualOpenDate(null);
+					} else {
+						trm.setContractExpireDate(LocalDateTime.now());
+						trm.setLastModifiedDateTime(LocalDateTime.now());
+						trm.setOrderActive(false);
+						trm.setShopActive(false);
+						trm.setActive(false);
+						trm.setActualOpenDate(null);
+					}
+				} else {
+					trm.setContractExpireDate(null);
+					trm.setLastModifiedDateTime(LocalDateTime.now());
+					trm.setShopActive(true);
+					trm.setActive(true);
+				}
+
+				vendorWholeSalerEntityRepository.save(trm);
+			} else if (holdType == 3) {
+				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+				trm.setLastModifiedDateTime(LocalDateTime.now());
+				trm.setOrderActive(false);
+				trm.setShopActive(true);
+				trm.setActive(true);
+
+				vendorWholeSalerEntityRepository.save(trm);
+			} else if (holdType == 4) {
+				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+				trm.setLastModifiedDateTime(LocalDateTime.now());
+				trm.setOrderActive(true);
+
+				vendorWholeSalerEntityRepository.save(trm);
+			}
+
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("success");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+
+			result.setResultCode(-1);
+			result.setResultMsg("savefailure");
+		}
+
+		return result;
+	}
 }

@@ -30,9 +30,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -882,5 +885,32 @@ public class VendorController {
 
         return result;
     }
+
+    @PostMapping(value = "setholdvendor")
+    public ResultCode setholdvendor(@RequestBody SetHoldVendorParameter param) {
+    	Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+    	Integer holdType = param.getHoldType() == null ? 0 : param.getHoldType();
+    	Boolean active = param.getActive() == null ? false : param.getActive();
+
+		Date holdFromDate;
+		Date holdToDate;
+		Timestamp holdFrom = Timestamp.valueOf(LocalDateTime.now());
+		Timestamp holdTo = Timestamp.valueOf(LocalDateTime.now());
+		try {
+			holdFromDate = StringUtils.isEmpty(param.getHoldFrom()) ? new Date() : new SimpleDateFormat("MM/dd/yyyy").parse(param.getHoldFrom());
+			holdToDate = StringUtils.isEmpty(param.getHoldTo()) ? new Date() : new SimpleDateFormat("MM/dd/yyyy").parse(param.getHoldTo());
+
+			holdFrom = StringUtils.isEmpty(param.getHoldFrom()) ? Timestamp.valueOf(LocalDateTime.now()) : new Timestamp(holdFromDate.getTime());
+			holdTo = StringUtils.isEmpty(param.getHoldTo()) ? Timestamp.valueOf(LocalDateTime.now()) : new Timestamp(holdToDate.getTime());
+		} catch (ParseException e) {
+			log.warn(e.getMessage(), e);
+		}
+
+    	ResultCode result = renewalVendorService.setHoldVendor(wholeSalerID, holdType, active, holdFrom, holdTo);
+
+    	cacheService.cacheEvictVendor(wholeSalerID);
+
+    	return result;
+	}
 }
 	

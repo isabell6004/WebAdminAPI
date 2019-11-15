@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class EntityActionLogEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "LogID")
     private Integer logID;

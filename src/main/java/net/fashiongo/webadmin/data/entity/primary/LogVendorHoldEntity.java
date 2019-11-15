@@ -1,17 +1,21 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Getter
 @Entity
+@Setter
 @Table(name = "Log_VendorHold")
 public class LogVendorHoldEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Setter(AccessLevel.NONE)
 	@Column(name = "LogID")
 	private Integer logID;
 
