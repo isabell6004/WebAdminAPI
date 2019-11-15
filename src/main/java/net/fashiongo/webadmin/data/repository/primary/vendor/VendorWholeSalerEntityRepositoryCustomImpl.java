@@ -100,6 +100,16 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         return query.fetch();
     }
 
+    @Override
+    public Long countByCodeNameAndNotWholeSalerID(Integer wholeSalerID, String codeName) {
+        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        JPAQuery<Long> query = new JPAQuery<>(entityManager);
+
+        query.select(W.wholeSalerID.count()).from(W).where(W.codeName.eq(codeName).and(W.wholeSalerID.ne(wholeSalerID)));
+
+        return query.fetchFirst();
+    }
+
     private BooleanExpression eqReferenceID(Integer referenceID, QCategoryEntity C) {
         if (referenceID == null) {
             return null;

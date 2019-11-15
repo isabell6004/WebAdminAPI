@@ -13,4 +13,6 @@ public interface VendorWholeSalerEntityRepositoryCustom {
     WholeSalerEntity findOneByID(Integer wholeSalerID);
 
     List<WholesalerCompanyEntity> findAllActive();
+
+    Long countByCodeNameAndNotWholeSalerID(Integer wholeSalerID, String codeName);
 }

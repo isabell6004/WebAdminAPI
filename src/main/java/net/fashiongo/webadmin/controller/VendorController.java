@@ -10,6 +10,7 @@ import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
@@ -958,5 +959,26 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "vendorcodenamecheck")
+	public JsonResponse<GetVendorCodeNameCheckResponse> vendorcodenamecheck(@RequestBody VendorCodeNameCheckParameter param) {
+        JsonResponse<GetVendorCodeNameCheckResponse> response = new JsonResponse<>(false, null, null);
+
+        Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+        String codeName = StringUtils.isEmpty(param.getCodeName()) ? "" : param.getCodeName();
+
+        try {
+	        Long result = renewalVendorService.vendorCodeNameCheck(wholeSalerID, codeName);
+
+			response.setSuccess(true);
+			response.setData(GetVendorCodeNameCheckResponse.builder().codeNameCount(result).build());
+			response.setMessage("success");
+		} catch (Exception ex) {
+        	log.warn(ex.getMessage(), ex);
+        	response.setMessage("fail");
+		}
+
+        return response;
+    }
 }
 	

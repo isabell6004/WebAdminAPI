@@ -1122,9 +1122,14 @@ public class RenewalVendorService extends ApiService {
 	}
 
 	public Boolean vendorDirNameCheck(Integer wholeSalerID, String dirName) {
-
 		long resultCount = wholeSalerEntityRepository.countByDirNameAndNotWholeSalerID(wholeSalerID, dirName);
 
 		return resultCount > 0;
+	}
+
+	public Long vendorCodeNameCheck(Integer wholeSalerID, String codeName) {
+		long resultCount = vendorWholeSalerEntityRepository.countByCodeNameAndNotWholeSalerID(wholeSalerID, codeName);
+
+		return resultCount;
 	}
 }
