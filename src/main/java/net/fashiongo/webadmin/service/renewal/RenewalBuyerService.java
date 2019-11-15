@@ -341,8 +341,8 @@ public class RenewalBuyerService {
 	public GetStoreCreditResponse getStoreCredit(GetStoreCreditParameter parameter) {
 
 		Integer retailerId = parameter.getRetailerId();
-		String po = parameter.getPo();
-		String vendor = parameter.getVendor();
+		String po = Optional.ofNullable(parameter.getPo()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		String vendor = Optional.ofNullable(parameter.getVendor()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 
 		LocalDateTime fromDateTime = Optional.ofNullable(parameter.getFrom()).map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
 		LocalDateTime toDateTime = Optional.ofNullable(parameter.getTo()).map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
