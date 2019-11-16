@@ -33,4 +33,28 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 )
                 .fetchFirst();
     }
+    
+    @Override
+    public int getInvalidConsolidationOrderCount(Integer consolidationId) {
+        JPAQuery<Integer> query = new JPAQuery<>(entityManager);
+        QOrder order = QOrder.order;
+
+        return query
+                .select(
+                        Projections.constructor(
+                            Integer.class,
+                                order.id.count()
+                        )
+                )
+                .from(order)
+                .where(
+                        order.consolidationId.eq(consolidationId)
+                        .and(order.orderStatusId.eq(5)
+                        		.or(order.orderStatusId.eq(7))
+                        		.or(order.isConsolidated.isFalse()))
+                        		
+                )
+                .fetchFirst();
+    }
+    
 }

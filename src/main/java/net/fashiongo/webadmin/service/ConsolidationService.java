@@ -1,32 +1,36 @@
 package net.fashiongo.webadmin.service;
 
-import org.joda.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import net.fashiongo.webadmin.dao.primary.ConsolidationRepository;
-import net.fashiongo.webadmin.dao.primary.OrderRepository;
-import net.fashiongo.webadmin.data.entity.primary.ConsolidationEntity;
-import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
-import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
-import net.fashiongo.webadmin.dao.primary.ShipMethodRepository;
-import net.fashiongo.webadmin.data.entity.primary.ShipMethod;
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import net.fashiongo.webadmin.model.pojo.consolidation.OrderConsolidationSummary;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetOrderConsolidationSummaryParameter;
-import net.fashiongo.webadmin.model.pojo.consolidation.response.GetOrderConsolidationSummaryResponse;
-import net.fashiongo.webadmin.utility.HttpClient;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+
+import net.fashiongo.webadmin.dao.primary.ConsolidationRepository;
+import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
+import net.fashiongo.webadmin.dao.primary.OrderRepository;
+import net.fashiongo.webadmin.dao.primary.ShipMethodRepository;
+import net.fashiongo.webadmin.data.entity.primary.ConsolidationEntity;
+import net.fashiongo.webadmin.data.entity.primary.ShipMethod;
+import net.fashiongo.webadmin.model.pojo.consolidation.OrderConsolidationSummary;
+import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailOrderStatusRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetOrderConsolidationSummaryParameter;
+import net.fashiongo.webadmin.model.pojo.consolidation.response.GetOrderConsolidationSummaryResponse;
+import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
+import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.Utility;
 
 @Service
 public class ConsolidationService extends ApiService {
@@ -34,7 +38,8 @@ public class ConsolidationService extends ApiService {
 	@Autowired private ShipMethodRepository shipMethodRepository;
 	@Autowired private ConsolidationRepository consolidationRepository;
 	@Autowired private OrderRepository orderRepository;
-
+	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
+	
 	@SuppressWarnings("unchecked")
 	public GetOrderConsolidationSummaryResponse getOrderConsolidationSummary(GetOrderConsolidationSummaryParameter q) {
 		String spName = "up_wa_GetConsolidationSummary";
@@ -129,4 +134,35 @@ public class ConsolidationService extends ApiService {
 		c.setTotalAmount(summaryDto.getTotalAmount());
 		c.setTotalQty(summaryDto.getTotalQty());
 	}
+
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
+	public void checkConsolidationPaymentStatus(Integer consolidationId) {
+		LocalDateTime modifiedOn = LocalDateTime.now();
+		
+		if (consolidationId == null || consolidationId == 0){
+            return;
+        }
+
+        OrderPaymentStatus orderPaymentStatus = orderPaymentStatusRepository.findOneByReferenceIDAndIsOrder(consolidationId, 0);
+        
+        if(orderPaymentStatus.getOrderPaymentStatusID() == null || orderPaymentStatus.getOrderPaymentStatusID() == 0){
+            return;
+        }
+
+        int totalConsolidatedOrders = orderRepository.countByConsolidationId(consolidationId);
+        
+        //The x.IsConsolidated == false is for the case where the consolidated order was removed.
+        int totalInvalidOrders = orderRepository.getInvalidConsolidationOrderCount(consolidationId);
+
+        if(totalConsolidatedOrders == totalInvalidOrders){
+            //Update the order payment status id to 999
+            orderPaymentStatus.setPrePaymentStatusID(orderPaymentStatus.getPaymentStatusID());
+            orderPaymentStatus.setPaymentStatusID(999);
+            // orderPaymentStatus.setModifiedOn(modifiedOn);
+            orderPaymentStatus.setModifiedBy(Utility.getUsername());
+            orderPaymentStatusRepository.save(orderPaymentStatus);
+        }
+        
+	}
+	
 }

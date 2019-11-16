@@ -1,19 +1,25 @@
 package net.fashiongo.webadmin.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
-import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
-import net.fashiongo.webadmin.utility.Utility;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailOrderStatusRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetOrderConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetOrderConsolidationSummaryResponse;
+import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
 import net.fashiongo.webadmin.service.ConsolidationService;
 import net.fashiongo.webadmin.utility.JsonResponse;
-
-import java.util.List;
+import net.fashiongo.webadmin.utility.Utility;
 
 @Slf4j
 @RestController
@@ -80,4 +86,27 @@ public class ConsolidationController {
 			return new JsonResponse<>( false, e.getMessage(), null);
 		}
 	}
+
+	@PostMapping(value = "checkConsolidationPaymentStatus")
+	public JsonResponse<Object> checkConsolidationPaymentStatus(Integer consolidationId) {
+		try {
+			consolidationService.checkConsolidationPaymentStatus(consolidationId);
+			return new JsonResponse<>(true, null, null);
+		} catch (Exception e) {
+			log.error("ConsolidationController.checkConsolidationPaymentStatus() consolidationId={}", consolidationId, e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+	
+//	@PostMapping(value = "setconsolidationdetailorderstatus")
+//	public JsonResponse<Object> setConsolidationDetailOrderStatus(@RequestBody ConsolidationDetailOrderStatusRequest orderStatusRequest) {
+//		try {
+//			consolidationService.setConsolidationDetailOrderStatus(orderStatusRequest, Utility.getUsername());
+//			return new JsonResponse<>(true, null, null);
+//		} catch (Exception e) {
+//			log.error("ConsolidationController.setConsolidationDetailOrderStatus() orderStatusRequest={}", orderStatusRequest, e);
+//			return new JsonResponse<>(false, e.getMessage(), null);
+//		}
+//	}
+	
 }

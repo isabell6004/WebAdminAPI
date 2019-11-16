@@ -6,4 +6,5 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface OrderRepositoryCustom {
     OrderConsolidationSummaryDto getOrderConsolidationSummary(Integer consolidationId);
+    int getInvalidConsolidationOrderCount(Integer consolidationId);
 }

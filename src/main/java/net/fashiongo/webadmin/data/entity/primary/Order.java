@@ -19,4 +19,5 @@ public class Order {
     @Column(name = "TotalQty") private Integer totalQty;
     @Column(name = "ConsolidationID") private Integer consolidationId;
     @Column(name = "IsConsolidated") private Boolean isConsolidated;
+    @Column(name = "OrderStatusId") private Integer orderStatusId;
 }
