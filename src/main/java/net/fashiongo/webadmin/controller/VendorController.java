@@ -1014,5 +1014,14 @@ public class VendorController {
 		}
 		return response;
 	}
+
+	@PostMapping(value = "setvendorsister")
+	public ResultCode setvendorsister(@RequestBody SetVendorSisterParamer param) {
+    	ResultCode result = renewalVendorService.setVendorSister(param.getWid(), param.getSisterid());
+
+    	cacheService.cacheEvictVendor(param.getWid());
+
+    	return result;
+	}
 }
 	

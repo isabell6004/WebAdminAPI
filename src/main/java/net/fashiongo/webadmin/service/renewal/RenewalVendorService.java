@@ -1144,4 +1144,29 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	@Transactional
+	public ResultCode setVendorSister(Integer wid, Integer sisterId) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		MapWholeSalerSisterEntity trm = new MapWholeSalerSisterEntity();
+
+		try {
+			trm.setWholeSalerID(wid);
+			trm.setSisterWholeSalerID(sisterId);
+			trm.setCreatedBy(Utility.getUsername());
+			trm.setCreatedOn(LocalDateTime.now());
+
+			mapWholeSalerSisterEntityRepository.save(trm);
+
+			result.setResultCode(1);
+			result.setResultMsg("success");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+			result.setResultCode(-1);
+			result.setResultMsg("savefailure");
+		}
+
+		return result;
+	}
 }
