@@ -1159,12 +1159,33 @@ public class RenewalVendorService extends ApiService {
 
 			mapWholeSalerSisterEntityRepository.save(trm);
 
+			result.setSuccess(true);
 			result.setResultCode(1);
 			result.setResultMsg("success");
 		} catch (Exception ex) {
 			log.warn(ex.getMessage(), ex);
 			result.setResultCode(-1);
 			result.setResultMsg("savefailure");
+		}
+
+		return result;
+	}
+
+	@Transactional
+	public ResultCode delVendorSister(Integer mapID) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		try {
+			MapWholeSalerSisterEntity trm = mapWholeSalerSisterEntityRepository.findById(mapID).get();
+			mapWholeSalerSisterEntityRepository.delete(trm);
+
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("deletesuccess");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+			result.setResultCode(-1);
+			result.setResultMsg("deletefailure");
 		}
 
 		return result;

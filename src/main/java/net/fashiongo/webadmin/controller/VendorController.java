@@ -1023,5 +1023,12 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "delvendorsister")
+	public ResultCode delvendorsister(@RequestBody DelVendorSisterParameter param) {
+    	ResultCode result = renewalVendorService.delVendorSister(param.getMapID());
+
+    	return result;
+	}
 }
 	
