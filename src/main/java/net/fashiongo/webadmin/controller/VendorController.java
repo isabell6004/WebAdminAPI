@@ -997,5 +997,22 @@ public class VendorController {
 		}
 		return response;
 	}
+
+	@PostMapping(value = "getvendorsisterchk")
+	public JsonResponse<List<Integer>> getvendorsisterchk(@RequestBody GetVendorSisterChkParameter param) {
+		JsonResponse<List<Integer>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			List<Integer> result = renewalVendorService.getVendorSisterChk(param.getWid(), param.getSisterid());
+
+			response.setSuccess(true);
+			response.setData(result);
+			response.setMessage("success");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+			response.setMessage("fail");
+		}
+		return response;
+	}
 }
 	

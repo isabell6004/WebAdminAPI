@@ -1139,4 +1139,9 @@ public class RenewalVendorService extends ApiService {
 		return result;
 	}
 
+	public List<Integer> getVendorSisterChk(Integer wid, Integer sisterId) {
+		List<Integer> result = mapWholeSalerSisterEntityRepository.findMapIDByWholeSalerIDAndSisterWholeSalerID(wid, sisterId);
+
+		return result;
+	}
 }

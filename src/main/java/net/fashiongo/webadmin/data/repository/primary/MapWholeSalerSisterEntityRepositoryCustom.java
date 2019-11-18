@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MapWholeSalerSisterEntityRepositoryCustom {
     List<VendorSister> findVendorSister(Integer wid);
+
+    List<Integer> findMapIDByWholeSalerIDAndSisterWholeSalerID(Integer wid, Integer sisterID);
 }

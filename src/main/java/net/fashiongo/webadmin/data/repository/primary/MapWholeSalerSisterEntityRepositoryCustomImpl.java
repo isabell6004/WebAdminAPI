@@ -34,4 +34,14 @@ public class MapWholeSalerSisterEntityRepositoryCustomImpl implements MapWholeSa
 
         return query.fetch();
     }
+
+    @Override
+    public List<Integer> findMapIDByWholeSalerIDAndSisterWholeSalerID(Integer wid, Integer sisterID) {
+        QMapWholeSalerSisterEntity M = QMapWholeSalerSisterEntity.mapWholeSalerSisterEntity;
+        JPAQuery<Integer> query = new JPAQuery<>(entityManager);
+
+        query.select(M.mapID).from(M).where(M.wholeSalerID.eq(wid).and(M.sisterWholeSalerID.eq(sisterID)));
+
+        return query.fetch();
+    }
 }
