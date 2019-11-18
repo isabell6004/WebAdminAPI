@@ -170,16 +170,15 @@ public class RenewalBuyerService {
 //				lastLoginDate: "8/10/2018 6:50:40 AM"
 
 				String lastLoginDate = Optional.ofNullable(m.getLastLoginDate())
-						.map(dateTime -> ZonedDateTime.of(dateTime, ZoneOffset.UTC))
-						.map(dateTime -> dateTime.toInstant().atZone(ZoneId.systemDefault()).format(DATETIME_FORMAT))
+//						.map(dateTime -> ZonedDateTime.of(dateTime, ZoneOffset.UTC))
+//						.map(dateTime -> dateTime.toInstant().atZone(ZoneId.systemDefault()).format(DATETIME_FORMAT))
+						.map(dateTime -> dateTime.format(DATETIME_FORMAT))
 						.orElse("n/a");
 
 				boolean isLockOut = m.isLockedOut();
 
-
 				String lastLockoutDateString = Optional.ofNullable(m.getLastLockoutDate())
-						.map(dateTime -> ZonedDateTime.of(dateTime, ZoneOffset.UTC))
-						.map(dateTime -> dateTime.toInstant().atZone(ZoneId.systemDefault()).format(ZONED_DATETIME_FORMAT))
+						.map(dateTime -> ZonedDateTime.of(dateTime, ZoneId.systemDefault()).format(ZONED_DATETIME_FORMAT))
 						.orElse("");
 
 				return Retailer.builder()
