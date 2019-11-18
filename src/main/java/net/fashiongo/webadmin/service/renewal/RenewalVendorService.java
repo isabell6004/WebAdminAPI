@@ -1132,4 +1132,11 @@ public class RenewalVendorService extends ApiService {
 
 		return resultCount;
 	}
+
+	public List<VendorSister> getVendorSister(Integer wid) {
+		List<VendorSister> result = mapWholeSalerSisterEntityRepository.findVendorSister(wid);
+
+		return result;
+	}
+
 }
