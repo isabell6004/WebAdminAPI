@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.controller;
 
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.vendor.*;
@@ -624,6 +625,21 @@ public class VendorController {
 		}
 
     	return response;
+	}
+
+	@PostMapping(value = "getvendorindustry")
+	public JsonResponse<List<CodeVendorIndustryEntity>> getvendorindustry() {
+		JsonResponse<List<CodeVendorIndustryEntity>> response = new JsonResponse<>(false, null, null);
+
+		try {
+			response.setData(vendorService.getCdoeVendorIndustryEntity());
+			response.setSuccess(true);
+		} catch (Exception ex) {
+			log.error("Exception Error: {}", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
 	}
 }
 	
