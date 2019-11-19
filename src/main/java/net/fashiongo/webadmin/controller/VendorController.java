@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1067,6 +1068,49 @@ public class VendorController {
 		}
 
     	return response;
+	}
+
+	@PostMapping(value = "setvendorcontract")
+	public ResultCode setvendorcontract(@RequestBody SetVendorContractParameter param) {
+		Integer vendorContractID = param.getVendorContractID();
+		Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+		Integer contractTypeID = param.getContractTypeID() == null ? 0 : param.getContractTypeID();
+		BigDecimal setupFee = param.getSetupFee();
+		BigDecimal lastMonthServiceFee = param.getLastMonthServiceFee();
+		BigDecimal monthlyFee = param.getMonthlyFee();
+		Integer photoPlanID = param.getPhotoPlanID() == null ? 0 : param.getPhotoPlanID();
+		Boolean useModel = param.getUseModel() == null ? false : param.getUseModel();
+		String useModelStyle = StringUtils.isEmpty(param.getUseModelStyle()) ? "" : param.getUseModelStyle();
+		Integer monthlyItems = StringUtils.isEmpty(param.getUseModelStyle()) ? 0 : Integer.valueOf(param.getUseModelStyle());
+		BigDecimal commisionRate = param.getCommissionRate() == null ? BigDecimal.valueOf(0) : param.getCommissionRate();
+		Integer repID = param.getRepID();
+		Boolean perorder = param.getPerorder() == null ? false : param.getPerorder();
+
+		Date vendorContractFromDate;
+		Timestamp vendorContractFrom = Timestamp.valueOf(LocalDateTime.now());
+		try {
+			vendorContractFromDate = StringUtils.isEmpty(param.getVendorContractFrom()) ? new Date() : new SimpleDateFormat("MM/dd/yyyy").parse(param.getVendorContractFrom());
+
+			vendorContractFrom = StringUtils.isEmpty(param.getVendorContractFrom()) ? Timestamp.valueOf(LocalDateTime.now()) : new Timestamp(vendorContractFromDate.getTime());
+		} catch (ParseException e) {
+			log.warn(e.getMessage(), e);
+		}
+
+		Boolean vendorContractRowAdd = param.getVendorContractRowAdd() == null ? false : param.getVendorContractRowAdd();
+		String memo = StringUtils.isEmpty(param.getMemo()) ? "" : param.getMemo();
+		String isSetupFeeWaived = param.getIsSetupFeeWaived() == null ? "" : param.getIsSetupFeeWaived();
+		String isLastMonthServiceFeeWaived = param.getIsLastMonthServiceFeeWaived() == null ? "" : param.getIsLastMonthServiceFeeWaived();
+		Integer vendorContractPlanID = param.getVendorContractPlanID() == null ? 0 : param.getVendorContractPlanID();
+		Integer commissionBaseDateCode = param.getCommissionBaseDateCode() == null ? 0 : param.getCommissionBaseDateCode();
+
+
+		ResultCode result = renewalVendorService.setVendorContract(vendorContractID, wholeSalerID, contractTypeID, setupFee, lastMonthServiceFee, monthlyFee, photoPlanID, useModel,
+				useModelStyle, monthlyItems, commisionRate, repID, perorder, vendorContractFrom, vendorContractRowAdd, memo,
+				isSetupFeeWaived.equalsIgnoreCase("1"), isLastMonthServiceFeeWaived.equalsIgnoreCase("1"), vendorContractPlanID, commissionBaseDateCode);
+
+		cacheService.cacheEvictVendor(wholeSalerID);
+
+    	return result;
 	}
 }
 	

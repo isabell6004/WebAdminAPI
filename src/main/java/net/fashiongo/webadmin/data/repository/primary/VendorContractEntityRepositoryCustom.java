@@ -10,4 +10,8 @@ public interface VendorContractEntityRepositoryCustom {
 	List<VendorContractEntity> findAllByWholeSalerId(Integer wholeSalerID);
 
 	List<VendorContractHistory> findContractHistoryListByWholeSalerID(Integer wholeSalerID);
+
+	VendorContractEntity findOneByWholeSalerID(Integer wholeSalerID);
+
+	VendorContractEntity findOneByVendorContractID(Integer vendorContractID);
 }

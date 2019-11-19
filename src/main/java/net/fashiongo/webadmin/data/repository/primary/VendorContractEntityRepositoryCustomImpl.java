@@ -57,4 +57,28 @@ public class VendorContractEntityRepositoryCustomImpl implements VendorContractE
 
 		return query.fetch();
 	}
+
+	@Override
+	public VendorContractEntity findOneByWholeSalerID(Integer wholeSalerID) {
+		QVendorContractEntity VC = new QVendorContractEntity("VC");
+		JPAQuery<VendorContractEntity> query = new JPAQuery<>(entityManager);
+
+		query.select(VC)
+				.from(VC)
+				.where(VC.wholeSalerID.eq(wholeSalerID));
+
+		return query.fetchFirst();
+	}
+
+	@Override
+	public VendorContractEntity findOneByVendorContractID(Integer vendorContractID) {
+		QVendorContractEntity VC = new QVendorContractEntity("VC");
+		JPAQuery<VendorContractEntity> query = new JPAQuery<>(entityManager);
+
+		query.select(VC)
+				.from(VC)
+				.where(VC.vendorContractID.eq(vendorContractID));
+
+		return query.fetchFirst();
+	}
 }

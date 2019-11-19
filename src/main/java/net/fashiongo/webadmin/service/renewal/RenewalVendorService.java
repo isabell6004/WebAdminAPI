@@ -1197,4 +1197,133 @@ public class RenewalVendorService extends ApiService {
 	public List<VendorContractHistory> getVendorContractHistoryList(Integer wholeSalerID) {
 		return vendorContractEntityRepository.findContractHistoryListByWholeSalerID(wholeSalerID);
 	}
+
+	@Transactional
+	public ResultCode setVendorContract(Integer vendorContractID, Integer wholeSalerID, Integer contractTypeID, BigDecimal setupFee, BigDecimal lastMonthServiceFee,
+									BigDecimal monthlyFee, Integer photoPlanID, Boolean useModel, String useModelStyle, Integer monthlyItems, BigDecimal commissionRate,
+									Integer repID, Boolean perorder, Timestamp vendorContractFrom, Boolean vendorContractRowAdd, String memo, Boolean isSetupFeeWaived,
+									Boolean isLastMonthServiceFeeWaived, Integer vendorContractPlanID, Integer commissionBaseDateCode) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		VendorContractEntity trm = null;
+		WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+
+		Integer vendorTypeID = contractTypeID != 5 ? 1 : 2;
+
+		try {
+			if (vendorContractID == 0) {
+				trm = vendorContractEntityRepository.findOneByWholeSalerID(wholeSalerID);
+				if (trm == null) {
+					trm = new VendorContractEntity();
+				}
+				trm.setWholeSalerID(wholeSalerID);
+				trm.setContractTypeID(contractTypeID);
+				trm.setSetupFee(setupFee);
+				trm.setLastMonthServiceFee(lastMonthServiceFee);
+				trm.setMonthlyFee(monthlyFee);
+				trm.setPhotoPlanID(photoPlanID);
+				trm.setUseModel(useModel);
+				trm.setUseModelStyle(useModelStyle);
+				trm.setMonthlyItems(monthlyItems);
+				trm.setCommissionRate(commissionRate);
+				trm.setRepID(repID);
+				trm.setPerorder(perorder);
+				trm.setMemo(memo);
+				trm.setCreatedBy(Utility.getUsername());
+				trm.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+				trm.setFromContractDate(vendorContractFrom);
+				trm.setIsSetupFeeWaived(isSetupFeeWaived);
+				trm.setIsLastMonthServiceFeeWaived(isLastMonthServiceFeeWaived);
+				trm.setVendorContractPlanId(vendorContractPlanID);
+				trm.setCommissionBaseDateCode(commissionBaseDateCode);
+
+				vendorContractEntityRepository.save(trm);
+
+				wholeSaler.setVendorType(vendorTypeID);
+				vendorWholeSalerEntityRepository.save(wholeSaler);
+
+				result.setSuccess(true);
+				result.setResultCode(1);
+				result.setResultMsg("success");
+			} else {
+				if (vendorContractRowAdd) {
+					trm = vendorContractEntityRepository.findOneByVendorContractID(vendorContractID);
+					trm.setModifiedBy(Utility.getUsername());
+					trm.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
+					if (vendorContractFrom != null) trm.setToContractDate(Timestamp.valueOf(vendorContractFrom.toLocalDateTime().minusDays(1)));
+					else trm.setToContractDate(vendorContractFrom);
+					vendorContractEntityRepository.save(trm);
+
+					VendorContractEntity trm2 = new VendorContractEntity();
+					trm2.setWholeSalerID(wholeSalerID);
+					trm2.setContractTypeID(contractTypeID);
+					trm2.setSetupFee(setupFee);
+					trm2.setLastMonthServiceFee(lastMonthServiceFee);
+					trm2.setMonthlyFee(monthlyFee);
+					trm2.setPhotoPlanID(photoPlanID);
+					trm2.setUseModel(useModel);
+					trm2.setUseModelStyle(useModelStyle);
+					trm2.setMonthlyItems(monthlyItems);
+					trm2.setCommissionRate(commissionRate);
+					trm2.setRepID(repID);
+					trm2.setPerorder(perorder);
+					trm2.setMemo(memo);
+					trm2.setCreatedBy(Utility.getUsername());
+					trm2.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+					trm2.setModifiedBy(Utility.getUsername());
+					trm2.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
+					trm2.setFromContractDate(vendorContractFrom);
+					trm2.setIsSetupFeeWaived(isSetupFeeWaived);
+					trm2.setIsLastMonthServiceFeeWaived(isLastMonthServiceFeeWaived);
+					trm2.setVendorContractPlanId(vendorContractPlanID);
+					trm2.setCommissionBaseDateCode(commissionBaseDateCode);
+					vendorContractEntityRepository.save(trm2);
+
+					wholeSaler.setVendorType(vendorTypeID);
+					vendorWholeSalerEntityRepository.save(wholeSaler);
+
+					result.setSuccess(true);
+					result.setResultCode(1);
+					result.setResultMsg("success");
+				} else {
+					trm = vendorContractEntityRepository.findOneByVendorContractID(vendorContractID);
+					trm.setWholeSalerID(wholeSalerID);
+					trm.setContractTypeID(contractTypeID);
+					trm.setSetupFee(setupFee);
+					trm.setLastMonthServiceFee(lastMonthServiceFee);
+					trm.setMonthlyFee(monthlyFee);
+					trm.setPhotoPlanID(photoPlanID);
+					trm.setUseModel(useModel);
+					trm.setUseModelStyle(useModelStyle);
+					trm.setMonthlyItems(monthlyItems);
+					trm.setCommissionRate(commissionRate);
+					trm.setRepID(repID);
+					trm.setPerorder(perorder);
+					trm.setMemo(memo);
+					trm.setModifiedBy(Utility.getUsername());
+					trm.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
+					trm.setFromContractDate(vendorContractFrom);
+					trm.setIsSetupFeeWaived(isSetupFeeWaived);
+					trm.setIsLastMonthServiceFeeWaived(isLastMonthServiceFeeWaived);
+					trm.setVendorContractPlanId(vendorContractPlanID);
+					trm.setCommissionBaseDateCode(commissionBaseDateCode);
+
+					vendorContractEntityRepository.save(trm);
+
+					wholeSaler.setVendorType(vendorTypeID);
+					vendorWholeSalerEntityRepository.save(wholeSaler);
+
+					result.setSuccess(true);
+					result.setResultCode(1);
+					result.setResultMsg("success");
+				}
+			}
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+			result.setResultCode(-1);
+			result.setResultMsg("failure");
+		}
+
+		return result;
+	}
 }
