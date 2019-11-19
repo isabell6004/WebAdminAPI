@@ -40,11 +40,17 @@ public class RenewalVendorService {
 	private final CodeCountryEntityRepository codeCountryEntityRepository;
 	private final MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository;
 	private final WholeShipMethodEntityRepository wholeShipMethodEntityRepository;
+	private final VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
+	private final VendorNameHistoryLogEntityRepository vendorNameHistoryLogEntityRepository;
+	private final ListSocialMediaEntityRepository listSocialMediaEntityRepository;
+	private final VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository;
+	private final ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository;
+	private final CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository;
 
 	@Autowired
 	public RenewalVendorService(VendorProductRepository vendorProductRepository,
-	                            VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
-	                            FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository, WholeShipMethodEntityRepository wholeShipMethodEntityRepository) {
+								VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
+								FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository, WholeShipMethodEntityRepository wholeShipMethodEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository, VendorNameHistoryLogEntityRepository vendorNameHistoryLogEntityRepository, ListSocialMediaEntityRepository listSocialMediaEntityRepository, VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository, ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository, CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository) {
 		this.vendorProductRepository = vendorProductRepository;
 		this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
 		this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
@@ -56,6 +62,12 @@ public class RenewalVendorService {
 		this.codeCountryEntityRepository = codeCountryEntityRepository;
 		this.mapWholeSalerPaymentMethodEntityRepository = mapWholeSalerPaymentMethodEntityRepository;
 		this.wholeShipMethodEntityRepository = wholeShipMethodEntityRepository;
+		this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
+		this.vendorNameHistoryLogEntityRepository = vendorNameHistoryLogEntityRepository;
+        this.listSocialMediaEntityRepository = listSocialMediaEntityRepository;
+        this.vendorPayoutInfoEntityRepository = vendorPayoutInfoEntityRepository;
+		this.listVendorDocumentTypeEntityRepository = listVendorDocumentTypeEntityRepository;
+		this.codeVendorIndustryEntityRepository = codeVendorIndustryEntityRepository;
 	}
 
 	public VendorProductListResponse getProductList(GetProductListParameter parameters) {
@@ -215,4 +227,28 @@ public class RenewalVendorService {
 	public List<Vendor> getVendorList() {
 		return wholeSalerEntityRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
 	}
+
+	public List<ListVendorDocumentTypeEntity> getListVendorDocumentType() {
+		return listVendorDocumentTypeEntityRepository.findAllListVendorDocumentTypeEntity();
+	}
+
+	public List<CodeVendorIndustryEntity> getCodeVendorIndustryEntity() {
+		return codeVendorIndustryEntityRepository.findAllCodeVendorIndustriesOrderById();
+	}
+
+	public List<VendorDetailInfo> getVendorDetailInfo(Integer wholesalerID) {
+		return vendorWholeSalerEntityRepository.findAllByID(wholesalerID);
+	}
+
+	public List<VendorNameHistoryLog> getVendorNameHistoryLog(Integer wholeSalerID) {
+		return vendorNameHistoryLogEntityRepository.findAllByIDOrderByCreatedOn(wholeSalerID);
+	}
+
+	public List<ListSocialMedia> getListSocialMedia(Integer wholeSalerID) {
+	    return listSocialMediaEntityRepository.findSocialMediaByWholeSalerID(wholeSalerID);
+    }
+
+    public List<VendorPayoutInfo> getVendorPayoutInfo(Integer wholeSalerID) {
+	    return vendorPayoutInfoEntityRepository.findAllByWholeSalerID(wholeSalerID);
+    }
 }

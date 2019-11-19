@@ -7,6 +7,7 @@ import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -617,7 +618,7 @@ public class VendorController {
     	JsonResponse<List<ListVendorDocumentTypeEntity>> response = new JsonResponse<>(false, null, null);
 
     	try {
-    		response.setData(vendorService.getListVendorDocumentType());
+    		response.setData(renewalVendorService.getListVendorDocumentType());
     		response.setSuccess(true);
 		} catch (Exception ex) {
     		log.error("Exception Error: {}", ex);
@@ -632,7 +633,7 @@ public class VendorController {
 		JsonResponse<List<CodeVendorIndustryEntity>> response = new JsonResponse<>(false, null, null);
 
 		try {
-			response.setData(vendorService.getCdoeVendorIndustryEntity());
+			response.setData(renewalVendorService.getCodeVendorIndustryEntity());
 			response.setSuccess(true);
 		} catch (Exception ex) {
 			log.error("Exception Error: {}", ex);
@@ -640,6 +641,27 @@ public class VendorController {
 		}
 
 		return response;
+	}
+
+	@PostMapping(value = "getvendorbasicinfo")
+	public JsonResponse<GetVendorBasicInfoResponse> getvendorbasicinfo(@RequestBody GetVendorBasicInfoParameter param) {
+    	JsonResponse<GetVendorBasicInfoResponse> response = new JsonResponse<>(false, null, null);
+    	Integer wid = param.getWid();
+
+    	try {
+    		response.setData(GetVendorBasicInfoResponse.builder()
+					.vendorDetailInfoList(renewalVendorService.getVendorDetailInfo(wid))
+					.vendorNameHistoryLogList(renewalVendorService.getVendorNameHistoryLog(wid))
+					.listSocialMediaList(renewalVendorService.getListSocialMedia(wid))
+					.vendorPayoutInfoList(renewalVendorService.getVendorPayoutInfo(wid))
+					.build());
+    		response.setSuccess(true);
+		} catch (Exception ex) {
+    		log.error("Exception Error: {}", ex);
+    		response.setMessage(ex.getMessage());
+		}
+
+    	return response;
 	}
 }
 	
