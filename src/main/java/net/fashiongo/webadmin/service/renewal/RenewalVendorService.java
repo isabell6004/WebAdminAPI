@@ -1190,4 +1190,8 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	public List<SecurityUserEntity> getVendorSecurityUsers() {
+		return securityUserEntityRepository.findAllActive();
+	}
 }

@@ -5,6 +5,7 @@ import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
+import net.fashiongo.webadmin.data.entity.primary.SecurityUserEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
@@ -1029,6 +1030,24 @@ public class VendorController {
     	ResultCode result = renewalVendorService.delVendorSister(param.getMapID());
 
     	return result;
+	}
+
+	@GetMapping(value = "getvendorsecurityusers")
+	public JsonResponse<List<SecurityUserEntity>> getvendorsecurityusers() {
+    	JsonResponse<List<SecurityUserEntity>> response = new JsonResponse<>(false, null, null);
+
+    	try {
+			List<SecurityUserEntity> result = renewalVendorService.getVendorSecurityUsers();
+
+			response.setSuccess(true);
+			response.setData(result);
+			response.setMessage("success");
+		} catch (Exception ex) {
+    		log.warn(ex.getMessage(), ex);
+    		response.setMessage("fail");
+		}
+
+    	return response;
 	}
 }
 	
