@@ -89,6 +89,12 @@ public class VendorContract {
 	@Column(name = "IsLastMonthServiceFeeWaived")
 	private Boolean isLastMonthServiceFeeWaived;
 
+	@Column(name = "vendor_contract_plan_id")
+	private Integer vendorContractPlanId;
+
+	@Column(name = "commission_base_date_code")
+	private Integer commissionBaseDateCode;
+
 	public Integer getVendorContractID() {
 		return vendorContractID;
 	}
@@ -264,6 +270,13 @@ public class VendorContract {
 	public void setIsLastMonthServiceFeeWaived(Boolean isLastMonthServiceFeeWaived) {
 		this.isLastMonthServiceFeeWaived = isLastMonthServiceFeeWaived;
 	}
-	
+
+	public Integer getVendorContractPlanId() { return vendorContractPlanId; }
+
+	public void setVendorContractPlanId(Integer vendorContractPlanId) { this.vendorContractPlanId = vendorContractPlanId; }
+
+	public Integer getCommissionBaseDateCode() { return commissionBaseDateCode; }
+
+	public void setCommissionBaseDateCode(Integer commissionBaseDateCode) { this.commissionBaseDateCode = commissionBaseDateCode; }
 	
 }

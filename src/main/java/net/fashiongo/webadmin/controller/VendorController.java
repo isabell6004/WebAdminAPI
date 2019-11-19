@@ -391,7 +391,7 @@ public class VendorController {
 	 * @return
 	 */
 	@RequestMapping(value="getvendorcontract", method=RequestMethod.GET)
-	public JsonResponse<List<VendorContract>> getVendorContract(@RequestParam(value="WholeSalerID") Integer wholeSalerID) {
+	public JsonResponse<List<VendorContract>> getVendorContract(@RequestParam(value="wid") Integer wholeSalerID) {
 		JsonResponse<List<VendorContract>> results = new JsonResponse<List<VendorContract>>(false, null, 0, null);
 		List<VendorContract> result = vendorService.getVendorContract(wholeSalerID);
 		
