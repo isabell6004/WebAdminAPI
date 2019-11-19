@@ -1128,5 +1128,14 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "delvendorcontractdocument")
+	public ResultCode delvendorcontractdocument(@RequestBody DelVendorContractDocumentParameter param) {
+    	String documentHistoryIDs = StringUtils.isEmpty(param.getDocumentHistoryIDs()) ? "" : param.getDocumentHistoryIDs();
+
+    	ResultCode result = renewalVendorService.delVendorContractDocument(documentHistoryIDs);
+
+    	return result;
+	}
 }
 	

@@ -1374,4 +1374,31 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	public ResultCode delVendorContractDocument(String documentHistoryIDs) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		List<String> documentHistoryIDList = Arrays.asList(documentHistoryIDs.split(","));
+
+		List<VendorContractDocumentEntity> contractDocumentList = new ArrayList<>();
+
+		try {
+			for (String documentHistoryID : documentHistoryIDList) {
+				VendorContractDocumentEntity contractDocument = vendorContractDocumentEntityRepository.findOneByVendorContractDocumentID(Integer.valueOf(documentHistoryID));
+				contractDocumentList.add(contractDocument);
+			}
+
+			vendorContractDocumentEntityRepository.deleteAll(contractDocumentList);
+
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("success");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+			result.setResultCode(-1);
+			result.setResultMsg("failure");
+		}
+
+		return result;
+	}
 }
