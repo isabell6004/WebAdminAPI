@@ -18,7 +18,6 @@ import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.primary.VendorBlocked;
 import net.fashiongo.webadmin.service.ApiService;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -1193,5 +1192,9 @@ public class RenewalVendorService extends ApiService {
 
 	public List<SecurityUserEntity> getVendorSecurityUsers() {
 		return securityUserEntityRepository.findAllActive();
+	}
+
+	public List<VendorContractHistory> getVendorContractHistoryList(Integer wholeSalerID) {
+		return vendorContractEntityRepository.findContractHistoryListByWholeSalerID(wholeSalerID);
 	}
 }

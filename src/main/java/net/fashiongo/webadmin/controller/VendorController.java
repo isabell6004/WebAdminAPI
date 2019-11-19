@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.entity.primary.SecurityUserEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorContractEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
@@ -1042,6 +1043,24 @@ public class VendorController {
 			response.setSuccess(true);
 			response.setData(result);
 			response.setMessage("success");
+		} catch (Exception ex) {
+    		log.warn(ex.getMessage(), ex);
+    		response.setMessage("fail");
+		}
+
+    	return response;
+	}
+
+	@GetMapping(value = "getvendorcontracthistorylist")
+	public JsonResponse<List<VendorContractHistory>> getvendorcontracthistorylist(@RequestParam(value="wid") Integer wholeSalerID) {
+    	JsonResponse<List<VendorContractHistory>> response = new JsonResponse<>(false, null, null);
+
+    	try {
+    		List<VendorContractHistory> result = renewalVendorService.getVendorContractHistoryList(wholeSalerID);
+
+    		response.setSuccess(true);
+    		response.setData(result);
+    		response.setMessage("success");
 		} catch (Exception ex) {
     		log.warn(ex.getMessage(), ex);
     		response.setMessage("fail");
