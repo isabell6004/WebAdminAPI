@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailOrderStatusRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetOrderConsolidationSummaryParameter;
@@ -97,7 +96,7 @@ public class ConsolidationController {
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
-	
+
 //	@PostMapping(value = "setconsolidationdetailorderstatus")
 //	public JsonResponse<Object> setConsolidationDetailOrderStatus(@RequestBody ConsolidationDetailOrderStatusRequest orderStatusRequest) {
 //		try {
@@ -108,5 +107,15 @@ public class ConsolidationController {
 //			return new JsonResponse<>(false, e.getMessage(), null);
 //		}
 //	}
-	
+
+
+	@PostMapping(value = "checkAddressCommercial")
+	public JsonResponse<Boolean> checkAddressCommercial(@RequestBody ConsolidationDetailShippingAddressRequest addressRequest) {
+		try {
+			return new JsonResponse<>(true, null, consolidationService.checkAddressCommercial(addressRequest));
+		} catch (Exception e) {
+			log.error("ConsolidationController.setConsolidationDetailShippingAddress() addressRequest={}", addressRequest, e);
+			return new JsonResponse<>( false, e.getMessage(), null);
+		}
+	}
 }

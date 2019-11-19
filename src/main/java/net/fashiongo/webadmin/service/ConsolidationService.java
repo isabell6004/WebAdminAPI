@@ -1,12 +1,12 @@
 package net.fashiongo.webadmin.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.dao.primary.ConsolidationRepository;
 import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
 import net.fashiongo.webadmin.dao.primary.OrderRepository;
@@ -21,13 +22,17 @@ import net.fashiongo.webadmin.dao.primary.ShipMethodRepository;
 import net.fashiongo.webadmin.data.entity.primary.ConsolidationEntity;
 import net.fashiongo.webadmin.data.entity.primary.ShipMethod;
 import net.fashiongo.webadmin.model.pojo.consolidation.OrderConsolidationSummary;
+import net.fashiongo.webadmin.dao.primary.ShipAddressRepository;
+import net.fashiongo.webadmin.data.entity.primary.ShipAddressEntity;
 import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailOrderStatusRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.Address;
+import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
+import net.fashiongo.webadmin.utility.JsonResponse;
+
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetOrderConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetOrderConsolidationSummaryResponse;
-import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
 import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.Utility;
@@ -39,7 +44,8 @@ public class ConsolidationService extends ApiService {
 	@Autowired private ConsolidationRepository consolidationRepository;
 	@Autowired private OrderRepository orderRepository;
 	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
-	
+	@Autowired private ShipAddressRepository shipAddressRepository;
+
 	@SuppressWarnings("unchecked")
 	public GetOrderConsolidationSummaryResponse getOrderConsolidationSummary(GetOrderConsolidationSummaryParameter q) {
 		String spName = "up_wa_GetConsolidationSummary";
@@ -138,19 +144,19 @@ public class ConsolidationService extends ApiService {
 	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
 	public void checkConsolidationPaymentStatus(Integer consolidationId) {
 		LocalDateTime modifiedOn = LocalDateTime.now();
-		
+
 		if (consolidationId == null || consolidationId == 0){
             return;
         }
 
         OrderPaymentStatus orderPaymentStatus = orderPaymentStatusRepository.findOneByReferenceIDAndIsOrder(consolidationId, 0);
-        
+
         if(orderPaymentStatus.getOrderPaymentStatusID() == null || orderPaymentStatus.getOrderPaymentStatusID() == 0){
             return;
         }
 
         int totalConsolidatedOrders = orderRepository.countByConsolidationId(consolidationId);
-        
+
         //The x.IsConsolidated == false is for the case where the consolidated order was removed.
         int totalInvalidOrders = orderRepository.getInvalidConsolidationOrderCount(consolidationId);
 
@@ -162,7 +168,34 @@ public class ConsolidationService extends ApiService {
             orderPaymentStatus.setModifiedBy(Utility.getUsername());
             orderPaymentStatusRepository.save(orderPaymentStatus);
         }
-        
+
 	}
-	
+
+
+	public Boolean checkAddressCommercial(ConsolidationDetailShippingAddressRequest addressRequest) throws Exception {
+		// Check
+		JsonResponse<?> result = httpClient.post(
+				"/ups/checkAddressCommercial",
+				new ObjectMapper().writeValueAsString(
+						Address.builder()
+								.street(addressRequest.getStreetNo())
+								.city(addressRequest.getCity())
+								.state(addressRequest.getState())
+								.zipcode(addressRequest.getZipCode())
+								.isCommercial(addressRequest.isCommercialAddress())
+								.build()));
+		if (result == null) throw new Exception("Cannot connect to check a commercial address");
+		if (!result.isSuccess()) throw new Exception("Failed to check a commercial address");
+
+		// Update verifiedOn
+		Boolean isValid = (Boolean) result.getData();
+		Optional<ShipAddressEntity> shipAddress = shipAddressRepository.findById(addressRequest.getId());
+		if (shipAddress.isPresent()) {
+			shipAddress.get().setVerifiedOn(
+					(isValid != null && isValid) ? LocalDateTime.now() : null);
+			shipAddressRepository.save(shipAddress.get());
+		}
+
+		return isValid;
+	}
 }

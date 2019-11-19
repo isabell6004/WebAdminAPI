@@ -12,7 +12,7 @@ public class ConsolidationDetailShippingAddressRequest {
     private String state;
     private String zipCode;
     private String country;
-    private int countryId;
+    private Integer countryId;
     private String isCommercialAddress;
 
     public boolean isCommercialAddress() {
