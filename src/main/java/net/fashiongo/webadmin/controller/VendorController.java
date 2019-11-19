@@ -1137,5 +1137,14 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "setvendorsettingaccount")
+	public ResultCode setvendorsettingaccount(@RequestBody SetVendorSettingAccountParamter param) {
+		Integer wid = param.getWid();
+
+		ResultCode result = renewalVendorService.setVendorSettingAccount(wid);
+
+    	return result;
+	}
 }
 	

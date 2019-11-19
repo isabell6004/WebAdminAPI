@@ -1401,4 +1401,26 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	public ResultCode setVendorSettingAccount(Integer wid) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		try {
+			String spname = "up_Setting_Account";
+			List<Object> params = new ArrayList<>();
+			params.add(wid);
+			params.add(Utility.getUsername());
+			jdbcHelperFgBilling.executeSP(spname, params);
+
+			result.setSuccess(true);
+			result.setResultCode(1);
+			result.setResultMsg("success");
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+			result.setResultCode(-1);
+			result.setResultMsg("savefailure");
+		}
+
+		return result;
+	}
 }
