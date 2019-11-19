@@ -1326,4 +1326,52 @@ public class RenewalVendorService extends ApiService {
 
 		return result;
 	}
+
+	@Transactional
+	public ResultCode setVendorContractDocument(Integer vendorContractDocumentID, Integer vendorContractID, Integer documentTypeID, String fileName, String fileName2, String fileName3, String note, String receivedBy) {
+		ResultCode result = new ResultCode(false, null, null);
+
+		VendorContractDocumentEntity trm = new VendorContractDocumentEntity();
+
+		try {
+			if (vendorContractDocumentID == 0) {
+				trm.setVendorContractID(vendorContractID);
+				trm.setDocumentTypeID(documentTypeID);
+				trm.setFileName(fileName);
+				trm.setFileName2(fileName2);
+				trm.setFileName3(fileName3);
+				trm.setNote(note);
+				trm.setReceivedBy(receivedBy);
+				trm.setCreatedBy(Utility.getUsername());
+				trm.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
+				vendorContractDocumentEntityRepository.save(trm);
+
+				result.setSuccess(true);
+				result.setResultCode(1);
+				result.setResultMsg("success");
+			} else {
+				trm = vendorContractDocumentEntityRepository.findOneByVendorContractDocumentID(vendorContractDocumentID);
+				trm.setVendorContractID(vendorContractID);
+				trm.setDocumentTypeID(documentTypeID);
+				trm.setFileName(fileName);
+				trm.setFileName2(fileName2);
+				trm.setFileName3(fileName3);
+				trm.setNote(note);
+				trm.setReceivedBy(receivedBy);
+
+				vendorContractDocumentEntityRepository.save(trm);
+
+				result.setSuccess(true);
+				result.setResultCode(1);
+				result.setResultMsg("success");
+			}
+		} catch (Exception ex) {
+			log.warn(ex.getMessage(), ex);
+			result.setResultCode(-1);
+			result.setResultMsg("failure");
+		}
+
+		return result;
+	}
 }

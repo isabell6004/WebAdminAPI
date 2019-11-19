@@ -1112,5 +1112,21 @@ public class VendorController {
 
     	return result;
 	}
+
+	@PostMapping(value = "setvendorcontractdocument")
+	public ResultCode setvendorcontractdocument(@RequestBody SetVendorContractDocumentParameter param) {
+    	Integer vendorContractDocumentID = param.getVendorContractDocumentID();
+    	Integer vendorContractID = param.getVendorContractID() == null ? 0 : param.getVendorContractID();
+    	Integer documentTypeID = param.getDocumentTypeID() == null ? 0 : param.getDocumentTypeID();
+		String fileName = StringUtils.isEmpty(param.getFileName()) ? "" : param.getFileName();
+		String fileName2 = StringUtils.isEmpty(param.getFileName2()) ? "" : param.getFileName2();
+		String fileName3 = StringUtils.isEmpty(param.getFileName3()) ? "" : param.getFileName3();
+		String note = StringUtils.isEmpty(param.getNote()) ? "" : param.getNote();
+		String receivedBy = StringUtils.isEmpty(param.getReceivedBy()) ? "" : param.getReceivedBy();
+
+		ResultCode result = renewalVendorService.setVendorContractDocument(vendorContractDocumentID, vendorContractID, documentTypeID, fileName, fileName2, fileName3, note, receivedBy);
+
+    	return result;
+	}
 }
 	
