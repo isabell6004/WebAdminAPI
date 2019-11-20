@@ -36,7 +36,6 @@ public class CouponDto {
     private LocalDateTime issueStartDate;
     private LocalDateTime issueEndDate;    
     private Integer validDurationDays;    
-    private Boolean isSendEmail;
     private LocalDateTime createdOn;
     private String createdBy;
     private LocalDateTime modifiedOn;
@@ -72,7 +71,6 @@ public class CouponDto {
                 .issueStartDate(coupon.getIssueStartDate())
                 .issueEndDate(coupon.getIssueEndDate())
                 .validDurationDays(coupon.getValidDurationDays())
-                .isSendEmail(coupon.getIsSendEmail())
                 .createdOn(coupon.getCreatedOn())
                 .createdBy(coupon.getCreatedBy())
                 .modifiedOn(coupon.getModifiedOn())

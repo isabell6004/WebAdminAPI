@@ -43,7 +43,6 @@ public abstract class CouponCommonInput  {
     private LocalDateTime issueStartDate;
     private LocalDateTime issueEndDate;
     private Integer validDurationDays;
-    private Boolean isSendEmail;
     private LocalDateTime createdOn;
     private String createdBy;
     private LocalDateTime modifiedOn;

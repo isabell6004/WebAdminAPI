@@ -1,16 +1,16 @@
 package net.fashiongo.webadmin.model.primary.coupon.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import net.fashiongo.common.data.model.entity.coupon.CCouponNotification;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.CollectionUtils;
-
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.util.CollectionUtils;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import net.fashiongo.common.data.model.entity.coupon.CCouponNotification;
 
 @Getter
 @Setter
@@ -31,6 +31,7 @@ public class CouponNotificationDto {
     private LocalDateTime modifiedOn;
     private String modifiedBy;
     private String imageRootUrl;
+    private Boolean isSendEmail;
 
     public static CouponNotificationDto build(CCouponNotification notification, String imageRootUrl) {
 
@@ -53,6 +54,7 @@ public class CouponNotificationDto {
                 .modifiedOn(notification.getModifiedOn())
                 .modifiedBy(notification.getModifiedBy())
                 .imageRootUrl(imageRootUrl)
+                .isSendEmail(notification.getIsSendEmail())
                 .build();
     }
 
