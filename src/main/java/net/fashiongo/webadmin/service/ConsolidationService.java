@@ -255,4 +255,11 @@ public class ConsolidationService extends ApiService {
 
 		return isValid;
 	}
+
+	public Boolean sendConsolidationEmail(Integer consolidationId) throws Exception {
+		if (consolidationId == null) throw new Exception("No consolidation requested");
+		JsonResponse<?> result = httpClient.get("/email/sendConsolidationShipment/" + consolidationId);
+		if (result == null) throw new Exception("Cannot send a consolidation email");
+		return result.isSuccess();
+	}
 }

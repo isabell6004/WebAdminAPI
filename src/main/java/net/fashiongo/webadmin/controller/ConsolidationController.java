@@ -3,12 +3,7 @@ package net.fashiongo.webadmin.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationDetailParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationParameter;
@@ -131,7 +126,17 @@ public class ConsolidationController {
 		try {
 			return new JsonResponse<>(true, null, consolidationService.checkAddressCommercial(addressRequest));
 		} catch (Exception e) {
-			log.error("ConsolidationController.setConsolidationDetailShippingAddress() addressRequest={}", addressRequest, e);
+			log.error("ConsolidationController.checkAddressCommercial() addressRequest={}", addressRequest, e);
+			return new JsonResponse<>( false, e.getMessage(), null);
+		}
+	}
+
+	@PostMapping(value = "sendConsolidationEmail/{consolidationId}")
+	public JsonResponse<Boolean> sendConsolidationEmail(@PathVariable("consolidationId") Integer consolidationId) {
+		try {
+			return new JsonResponse<>(true, null, consolidationService.sendConsolidationEmail(consolidationId));
+		} catch (Exception e) {
+			log.error("ConsolidationController.sendConsolidationEmail() consolidationId={}", consolidationId, e);
 			return new JsonResponse<>( false, e.getMessage(), null);
 		}
 	}
