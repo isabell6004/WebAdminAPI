@@ -1,9 +1,9 @@
 package net.fashiongo.webadmin.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,7 @@ import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidation
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationSummaryResponse;
 import net.fashiongo.webadmin.utility.HttpClient;
+import org.springframework.util.StringUtils;
 
 @Service
 public class ConsolidationService extends ApiService {
@@ -30,19 +31,15 @@ public class ConsolidationService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public GetConsolidationSummaryResponse getOrderConsolidationListSummary(GetConsolidationSummaryParameter q) {
 		String spName = "up_wa_GetConsolidationSummary_v1";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		GetConsolidationSummaryResponse result = new GetConsolidationSummaryResponse();
 
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime lastDayOfMonth = new LocalDateTime(today.getYear(), today.getMonthOfYear(), 1, 0, 0).plusDays(-1);
-        LocalDateTime lastMonth = new LocalDateTime(lastDayOfMonth.getYear(), lastDayOfMonth.getMonthOfYear(), 1, 0, 0);
-        LocalDateTime firstDayOfMonth = lastMonth.plusMonths(-1 * q.getPeriodType());
-
-        LocalDateTime dtFrom = firstDayOfMonth;
-        LocalDateTime dtTo = lastDayOfMonth;
+        LocalDateTime now = LocalDateTime.now();
+		LocalDateTime firstDayOfMonth = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0, 0);
+		LocalDateTime lastDayOfMonth =  firstDayOfMonth.plusMonths(1).minusNanos(1);
         
-		params.add(dtFrom);
-		params.add(dtTo);
+		params.add(firstDayOfMonth);
+		params.add(lastDayOfMonth);
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, ConsolidationSummary.class);
 		
@@ -54,10 +51,10 @@ public class ConsolidationService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public GetConsolidationResponse getConsolidationList(GetConsolidationParameter q) {
 		String spName = "up_wa_GetConsolidation_v1";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		GetConsolidationResponse result = new GetConsolidationResponse();
 		
-		Integer iShipped = q.getBshipped() == null ? 2 : q.getBshipped();
+		int iShipped = q.getBshipped() == null ? 2 : q.getBshipped();
         Boolean bShipped;
         
         switch (iShipped)
@@ -79,10 +76,10 @@ public class ConsolidationService extends ApiService {
 		params.add(q.getDtTo() != null ? q.getDtTo().plusDays(1) : q.getDtTo());
 		params.add(q.getDateColumn());
 		params.add(bShipped);
-		params.add(q.getWn() == "" ? null : q.getWn());
-		params.add(q.getRn() == "" ? null : q.getRn());
-		params.add(q.getPn() == "" ? null : q.getPn());
-		params.add(q.getCn() == "" ? null : q.getCn());
+		params.add(StringUtils.isEmpty(q.getWn()) ? null : q.getWn());
+		params.add(StringUtils.isEmpty(q.getRn()) ? null : q.getRn());
+		params.add(StringUtils.isEmpty(q.getPn()) ? null : q.getPn());
+		params.add(StringUtils.isEmpty(q.getCn()) ? null : q.getCn());
 		params.add(q.getOrderBy());
 		
 		List<Object> _result = jdbcHelper.executeSP(spName, params, TotalCount.class, Consolidation.class);
@@ -96,7 +93,7 @@ public class ConsolidationService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public GetConsolidationDetailResponse getConsolidationDetailList(GetConsolidationDetailParameter q) {
 		String spName = "up_wa_GetConsolidationDetail";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		GetConsolidationDetailResponse result = new GetConsolidationDetailResponse();
         
 		params.add(q.getConsolidationId());
