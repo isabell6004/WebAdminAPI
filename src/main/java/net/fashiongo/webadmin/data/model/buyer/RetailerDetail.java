@@ -71,7 +71,7 @@ public class RetailerDetail {
 	private String billCountry;
 
 	@JsonProperty("BillCountryID")
-	private int billCountryId;
+	private Integer billCountryId;
 
 	@JsonProperty("BillSTATE")
 	private String billState;

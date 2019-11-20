@@ -128,7 +128,7 @@ public class RenewalBuyerService {
 					.additionalDocumentFileName(retailerEntity.getAdditionalDocumentFileName())
 					.billCity(retailerEntity.getBillCity())
 					.billCountry(retailerEntity.getBillCountry())
-					.billCountryId(retailerEntity.getBillCountryID())
+					.billCountryId(Optional.ofNullable(retailerEntity.getBillCountryID()).orElse(229))
 					.billFax(retailerEntity.getBillFax())
 					.billPhone(retailerEntity.getBillPhone())
 					.billState(retailerEntity.getBillSTATE())
