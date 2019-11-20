@@ -22,7 +22,7 @@ public class ListSocialMedia {
     @JsonProperty(value = "URL")
     private String url;
 
-    @JsonProperty(value = "SocialMediaUserName")
+    @JsonProperty(value = "SocialMediaUsername")
     private String socialMediaUserName;
 
     @JsonProperty(value = "Icon")
