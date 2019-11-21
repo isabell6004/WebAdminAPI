@@ -36,7 +36,7 @@ public class Consolidation implements Serializable {
 	@Column(name = "TotalQty")
 	private Integer totalQty;
 
-	@JsonProperty("orderCount")
+	@JsonProperty("OrderCount")
 	@Column(name = "orderCount")
 	private Integer orderCount;
 
@@ -216,23 +216,23 @@ public class Consolidation implements Serializable {
 	@Column(name = "coupon_issue_id")
 	private BigInteger couponIssueId;
 
-	@JsonProperty("coupon_amount")
+	@JsonProperty("Coupon_Amount")
 	@Column(name = "coupon_amount")
 	private BigDecimal couponAmount;
 
-	@JsonProperty("applied_coupon_amount")
+	@JsonProperty("Applied_Coupon_Amount")
 	@Column(name = "applied_coupon_amount")
 	private BigDecimal appliedCouponAmount;
 
-	@JsonProperty("original_shipping_charge")
+	@JsonProperty("Original_Shipping_Charge")
 	@Column(name = "original_shipping_charge")
 	private BigDecimal originalShippingCharge;
 	
-	@JsonProperty("waived_amount")
+	@JsonProperty("Waived_Amount")
 	@Column(name = "waived_amount")
 	private BigDecimal waivedAmount;
 
-	@JsonProperty("waived_amount_by_fg")
+	@JsonProperty("Waived_Amount_By_FG")
 	@Column(name = "waived_amount_by_fg")
 	private BigDecimal waivedAmountByFg;
 
