@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 public class MapWholeSalerSisterEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "MapID")
     private Integer mapID;
