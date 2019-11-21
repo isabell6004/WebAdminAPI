@@ -60,6 +60,19 @@ spring:
       connectionTimeout: 250 # 1 second
       idleTimeout: 600000 # 10 minutes
       maxLifetime: 3600000 # 1 hour
+  # FG Billing DB
+  datasource5:
+    username: FGWebAdminAPIUser
+    password: APIUser6301
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    # Connection pool for FG Billing DB
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximumPoolSize: 100
+      connectionTestQuery: select 1
+      connectionTimeout: 250 # 1 second
+      idleTimeout: 600000 # 10 minutes
+      maxLifetime: 3600000 # 1 hour
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
@@ -137,6 +150,10 @@ spring:
     url: jdbc:sqlserver://10.210.16.31;databaseName=FG_PhotoStudio
     hikari:
       maximumPoolSize: 10
+  datasource5:
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_Billing
+    hikari:
+      maximumPoolSize: 10
 
 logging:
   config: classpath:log4j2-local.xml
@@ -154,6 +171,7 @@ logging:
 
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.210.16.205:29001
+  fgPaymentAPI_EndPoint: http://10.210.16.205:29201
   jwt:
     develop:
       check-token: true

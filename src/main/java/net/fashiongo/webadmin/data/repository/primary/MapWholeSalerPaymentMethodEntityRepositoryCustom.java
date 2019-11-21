@@ -7,4 +7,6 @@ import java.util.List;
 public interface MapWholeSalerPaymentMethodEntityRepositoryCustom {
 
 	List<MapWholeSalerPaymentMethodEntity> findAllByWholeSalerIdWithCodePayment(int wholesalerId);
+
+	MapWholeSalerPaymentMethodEntity findOneByWholeSalerIDAndPaymentMethodID(int wholesalerID, int paymentMethodID);
 }

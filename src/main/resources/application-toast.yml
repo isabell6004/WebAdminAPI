@@ -11,6 +11,8 @@ spring:
     url: jdbc:sqlserver://10.210.24.204;databaseName=FG_EM
   datasource4:
     url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PhotoStudio
+  datasource5:
+    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_Billing
   
   jpa:
     show-sql: false
@@ -21,6 +23,7 @@ webAdminapi:
   fgServiceAPI_EndPoint: http://10.210.8.153
   fgVendorAPI_EndPoint: http://10.210.8.173
   statsAPI_EndPoint: http://10.210.8.154
+  fgPaymentAPI_EndPoint: http://10.210.8.155
 server:
   port: 19901
 

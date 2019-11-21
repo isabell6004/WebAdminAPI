@@ -9,4 +9,6 @@ public interface WholeSalerEntityRepositoryCustom {
 	List<Vendor> findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
 
 	List<Vendor> findAllByOrderActiveOrderByCompanyNameAsc(boolean isOrderActive);
+
+	long countByDirNameAndNotWholeSalerID(Integer wholeSalerID, String dirName);
 }

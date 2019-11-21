@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,11 +11,13 @@ import java.util.List;
 
 @Getter
 @Entity
+@Setter
 @Table(name = "Vendor_Contract")
 public class VendorContractEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Setter(AccessLevel.NONE)
 	@Column(name = "VendorContractID")
 	private Integer vendorContractID;
 
@@ -82,6 +86,12 @@ public class VendorContractEntity {
 
 	@Column(name = "IsMonthlyFee")
 	private Boolean isMonthlyFee=true;
+
+	@Column(name = "vendor_contract_plan_id")
+	private Integer vendorContractPlanId;
+
+	@Column(name = "commission_base_date_code")
+	private Integer commissionBaseDateCode;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VendorContractID", referencedColumnName = "VendorContractID", insertable = false, updatable =  false)

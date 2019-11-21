@@ -27,4 +27,15 @@ public class MapWholeSalerPaymentMethodEntityRepositoryCustomImpl implements Map
 
 		return jpaQuery.fetch();
 	}
+
+	@Override
+	public MapWholeSalerPaymentMethodEntity findOneByWholeSalerIDAndPaymentMethodID(int wholesalerID, int paymentMethodID) {
+		QMapWholeSalerPaymentMethodEntity MAP = QMapWholeSalerPaymentMethodEntity.mapWholeSalerPaymentMethodEntity;
+
+		JPAQuery<MapWholeSalerPaymentMethodEntity> query = new JPAQuery<>(entityManager);
+
+		query.select(MAP).from(MAP).where(MAP.wholeSalerID.eq(wholesalerID).and(MAP.paymentMethodID.eq(paymentMethodID)));
+
+		return query.fetchFirst();
+	}
 }

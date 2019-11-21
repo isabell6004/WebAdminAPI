@@ -6,9 +6,12 @@ package net.fashiongo.webadmin.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import net.fashiongo.webadmin.model.fgpay.Dispute;
@@ -29,7 +32,11 @@ import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 @Component("paymentService")
 public class PaymentService extends ApiService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
+	@Autowired
+	@Qualifier("paymentApiJsonClient")
+	private HttpClient httpClient;
+
 	@SuppressWarnings("unchecked")
 	public PagedResult<Dispute> getDisputes(QueryParam q) {
 		String spName = "up_wa_Get_DisputeList";
@@ -74,5 +81,11 @@ public class PaymentService extends ApiService {
 		result.setDetailInfo(detailInfo.get(0));
 		result.setDocumentInfo(documentInfo);
 		return result;
+	}
+
+	public JsonResponse<?> getPaymentAccountInfo(Integer wid) {
+		String url = "/account/" + wid;
+		JsonResponse<?> response = httpClient.get(url);
+		return response;
 	}
 }

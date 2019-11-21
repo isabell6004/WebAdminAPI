@@ -33,6 +33,9 @@ public class HttpClientConfig {
 	
 	@Value("${webAdminapi.statsAPI_EndPoint}")
 	private String statsApiService;
+
+	@Value("${webAdminapi.fgPaymentAPI_EndPoint}")
+	private String fgPaymentApiService;
 	
 	@Bean(name = "serviceJsonClient")
 	public HttpClient serviceJsonClient() {
@@ -56,7 +59,12 @@ public class HttpClientConfig {
 	public HttpClient statsApiJsonClient() {
 		return new HttpClient(statsApiService, restTemplate());
 	}
-	
+
+	@Bean(name = "paymentApiJsonClient")
+	public HttpClient paymentApiJsonClient() {
+		return new HttpClient(fgPaymentApiService, restTemplate());
+	}
+
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate(clientHttpRequestFactory());

@@ -30,4 +30,9 @@ public class ApiConfiguration {
 		return new JdbcHelper(jdbcTemplate);
 	}
 
+	@Bean
+	public JdbcHelper jdbcHelperFgBilling(@Qualifier("billingJdbcTemplate") JdbcTemplate jdbcTemplate) {
+		return new JdbcHelper(jdbcTemplate);
+	}
+
 }

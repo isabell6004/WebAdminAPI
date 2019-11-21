@@ -49,4 +49,14 @@ public class WholeSalerEntityRepositoryCustomImpl implements WholeSalerEntityRep
 
 		return jpaQuery.fetch();
 	}
+
+	@Override
+	public long countByDirNameAndNotWholeSalerID(Integer wholeSalerID, String dirName) {
+		JPAQuery<Long> query = new JPAQuery<>(entityManager);
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+
+		query.select(W.wholeSalerId.count()).from(W).where(W.dirName.eq(dirName).and(W.wholeSalerId.ne(wholeSalerID)));
+
+		return query.fetchFirst();
+	}
 }

@@ -22,10 +22,17 @@ public class ApiService {
 	protected JdbcTemplate jdbcTemplatePhotoStudio;
 
 	@Autowired
+	@Qualifier("billingJdbcTemplate")
+	protected JdbcTemplate jdbcTemplateFgBilling;
+
+	@Autowired
 	protected JdbcHelper jdbcHelper;
 
 	@Autowired
 	protected JdbcHelper jdbcHelperPhotoStudio;
+
+	@Autowired
+	protected JdbcHelper jdbcHelperFgBilling;
 
 	// message constant
 	final String MSG_SAVE_SUCCESS = "Saved successfully!";

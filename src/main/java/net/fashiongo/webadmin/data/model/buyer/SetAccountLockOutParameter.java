@@ -9,4 +9,9 @@ public class SetAccountLockOutParameter {
 	@JsonProperty(value = "retailerid")
 	private Integer retailerId;
 
+	@JsonProperty(value = "WholeSalerID")
+	private Integer wholeSalerID;
+
+	@JsonProperty(value = "Active")
+	private Boolean active;
 }

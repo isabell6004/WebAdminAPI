@@ -18,4 +18,7 @@ public class WholesalerCompanyEntity {
 
 	@Column(name = "CompanyName")
 	private String companyName;
+
+	@Column(name = "Active")
+	private Boolean active;
 }
