@@ -32,7 +32,7 @@ public class ConsolidationDetail implements Serializable {
 	@Column(name = "TotalQty")
 	private Integer totalQty;
 
-	@JsonProperty("orderCount")
+	@JsonProperty("OrderCount")
 	@Column(name = "orderCount")
 	private Integer orderCount;
 
@@ -232,23 +232,23 @@ public class ConsolidationDetail implements Serializable {
 	@Column(name = "PaymentStatus")
 	private String PaymentStatus;
 
-	@JsonProperty("coupon_amount")
+	@JsonProperty("CouponAmount")
 	@Column(name = "coupon_amount")
 	private BigDecimal couponAmount;
 
-	@JsonProperty("original_shipping_charge")
+	@JsonProperty("OriginalShippingCharge")
 	@Column(name = "original_shipping_charge")
 	private BigDecimal originalShippingCharge;
 
-	@JsonProperty("applied_coupon_amount")
+	@JsonProperty("AppliedCouponAmount")
 	@Column(name = "applied_coupon_amount")
 	private BigDecimal appliedCouponAmount;
 	
-	@JsonProperty("waived_amount")
+	@JsonProperty("WaivedAmount")
 	@Column(name = "waived_amount")
 	private BigDecimal waivedAmount;
 
-	@JsonProperty("waived_amount_by_fg")
+	@JsonProperty("WaivedAmountByFG")
 	@Column(name = "waived_amount_by_fg")
 	private BigDecimal waivedAmountByFg;
 	
