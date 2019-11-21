@@ -53,7 +53,7 @@ public class PaymentService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public PagedResult<Dispute> getDisputes(QueryParam q) {
 		String spName = "up_wa_Get_DisputeList";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		params.add(q.getPn());
 		params.add(q.getPs());
 		params.add(q.getReason());
@@ -79,7 +79,7 @@ public class PaymentService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public DisputeDetail getDispute(String disputeId, Integer orderType) {
 		String spName = "up_wa_Get_DisputeDetail";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		params.add(disputeId);
 		params.add(orderType);
 		List<Object> _results = jdbcHelper.executeSP(spName, params, DisputeHeaderInfo.class, DisputeMergeOrderInfo.class, DisputeDetailInfo.class, DisputeDocumentInfo.class);
@@ -138,8 +138,10 @@ public class PaymentService extends ApiService {
 		return ids.contains(id);
 	}
 
-	public Boolean setSale(PaymentSaleRequest request) throws JsonProcessingException {
-		JsonResponse response =  paymentApiJsonClient.post("/sale", new ObjectMapper().writeValueAsString(request));
-		return null;
+	public net.fashiongo.common.JsonResponse<Object> setSale(PaymentSaleRequest request) throws JsonProcessingException {
+		JsonResponse response = paymentApiJsonClient.post("/sale", new ObjectMapper().writeValueAsString(request));
+
+		// Parse net.fashiongo.webadmin.utility.JsonResponse(HttpClient) to net.fashiongo.common.JsonResponse(PaymentController)
+		return new net.fashiongo.common.JsonResponse<>(response.isSuccess(), response.getMessage(), response.getData());
 	}
 }

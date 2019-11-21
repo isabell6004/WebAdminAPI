@@ -230,7 +230,7 @@ public class ConsolidationDetail implements Serializable {
 
 	@JsonProperty("PaymentStatus")
 	@Column(name = "PaymentStatus")
-	private String PaymentStatus;
+	private Integer PaymentStatus;
 
 	@JsonProperty("coupon_amount")
 	@Column(name = "coupon_amount")

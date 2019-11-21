@@ -37,10 +37,9 @@ public class PaymentController {
 	@GetMapping("/disputes")
 	public JsonResponse<PagedResult<Dispute>> getDisputes(@ModelAttribute QueryParam queryParam) {
 		JsonResponse<PagedResult<Dispute>> response = new JsonResponse<>(false, null, null);
-		PagedResult<Dispute> disputes = null;
-		
+
 		try {
-			disputes = paymentService.getDisputes(queryParam);
+			PagedResult<Dispute> disputes = paymentService.getDisputes(queryParam);
 			response.setData(disputes);
 			response.setSuccess(true);
 		} catch (Exception e) {
@@ -56,11 +55,11 @@ public class PaymentController {
 		logger.debug("getDisputeDetail() orderId: {}", disputeId);
 		boolean success = false;
 		JsonResponse<Object> response = new JsonResponse<>(false, null, null);
-		DisputeDetail dispute = null;
-		Integer orderType = queryParam.getTypeId();
-		Integer wid = queryParam.getWid();
+
 		try {
-			dispute = paymentService.getDispute(disputeId, orderType);
+			Integer orderType = queryParam.getTypeId();
+			Integer wid = queryParam.getWid();
+			DisputeDetail dispute = paymentService.getDispute(disputeId, orderType);
 			if(dispute.getHeader().getWholesalerId().equals(wid)) {
 				success = true;
 				response.setData(dispute);
@@ -137,9 +136,9 @@ public class PaymentController {
 	}
 
 	@PostMapping(value = "/sale")
-	public JsonResponse<Boolean> setSale(@RequestBody PaymentSaleRequest paymentSaleRequest) {
+	public JsonResponse<Object> setSale(@RequestBody PaymentSaleRequest paymentSaleRequest) {
 		try {
-			return new JsonResponse<>(true, null, paymentService.setSale(paymentSaleRequest));
+			return paymentService.setSale(paymentSaleRequest);
 		} catch (Exception e) {
 			logger.error("PaymentController.setSale()", e);
 			return new JsonResponse<>(false, e.getMessage(), null);
