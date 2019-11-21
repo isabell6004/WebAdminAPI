@@ -34,6 +34,9 @@ public class GetConsolidationParameter {
 	@JsonProperty("bshipped")
 	private Integer bshipped;
 
+	@JsonProperty("paymentStatus")
+	private Integer paymentStatus;
+	
 	@JsonProperty("wn")
 	private String wn;
 
@@ -45,6 +48,9 @@ public class GetConsolidationParameter {
 	
 	@JsonProperty("cn")
 	private String cn;
+
+	@JsonProperty("tn")
+	private String tn;
 	
 	@JsonProperty("orderby")
 	private String orderBy;

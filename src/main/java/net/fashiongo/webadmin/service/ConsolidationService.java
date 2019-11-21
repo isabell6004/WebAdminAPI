@@ -50,7 +50,7 @@ public class ConsolidationService extends ApiService {
 
 	@SuppressWarnings("unchecked")
 	public GetConsolidationResponse getConsolidationList(GetConsolidationParameter q) {
-		String spName = "up_wa_GetConsolidation_v1";
+		String spName = "up_wa_GetConsolidation_v2";
 		List<Object> params = new ArrayList<>();
 		GetConsolidationResponse result = new GetConsolidationResponse();
 		
@@ -76,10 +76,12 @@ public class ConsolidationService extends ApiService {
 		params.add(q.getDtTo() != null ? q.getDtTo().plusDays(1) : q.getDtTo());
 		params.add(q.getDateColumn());
 		params.add(bShipped);
+		params.add(q.getPaymentStatus());		
 		params.add(StringUtils.isEmpty(q.getWn()) ? null : q.getWn());
 		params.add(StringUtils.isEmpty(q.getRn()) ? null : q.getRn());
 		params.add(StringUtils.isEmpty(q.getPn()) ? null : q.getPn());
 		params.add(StringUtils.isEmpty(q.getCn()) ? null : q.getCn());
+		params.add(StringUtils.isEmpty(q.getTn()) ? null : q.getTn());
 		params.add(q.getOrderBy());
 		
 		List<Object> _result = jdbcHelper.executeSP(spName, params, TotalCount.class, Consolidation.class);
