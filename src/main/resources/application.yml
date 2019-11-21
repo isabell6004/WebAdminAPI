@@ -98,6 +98,7 @@ webAdminapi:
   fgVendorAPI_EndPoint: http://10.210.16.205:28501
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
   statsAPI_EndPoint: http://10.210.16.205:27601
+  paymentAPI_EndPoint: http://10.210.16.205:29201
   jwt:
     develop:
       check-token: true
@@ -153,7 +154,7 @@ logging:
 #              BasicExtractor: TRACE
 
 webAdminapi:
-  fgServiceAPI_EndPoint: http://localhost:29001
+  fgServiceAPI_EndPoint: http://10.210.16.205:29001
   jwt:
     develop:
       check-token: true

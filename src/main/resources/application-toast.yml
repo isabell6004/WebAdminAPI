@@ -21,6 +21,7 @@ webAdminapi:
   fgServiceAPI_EndPoint: http://10.210.8.153
   fgVendorAPI_EndPoint: http://10.210.8.173
   statsAPI_EndPoint: http://10.210.8.154
+  paymentAPI_EndPoint: http://10.210.8.155
 server:
   port: 19901
 

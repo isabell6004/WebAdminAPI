@@ -1,14 +1,28 @@
-/**
- * 
- */
 package net.fashiongo.webadmin.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
+import net.fashiongo.webadmin.dao.primary.PaymentCreditCardRepository;
+import net.fashiongo.webadmin.dao.primary.PaymentStatusRepository;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentSaleRequest;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
+import net.fashiongo.webadmin.model.primary.CardStatus;
+import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
+import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
+import net.fashiongo.webadmin.model.primary.PaymentStatus;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import net.fashiongo.webadmin.model.fgpay.Dispute;
@@ -29,6 +43,12 @@ import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 @Component("paymentService")
 public class PaymentService extends ApiService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
+	@Autowired private PaymentCreditCardRepository paymentCreditCardRepository;
+	@Autowired private PaymentStatusRepository paymentStatusRepository;
+	@Autowired private WAPaymentService waPaymentService;
+	@Autowired @Qualifier("paymentApiJsonClient") private HttpClient paymentApiJsonClient;
 	
 	@SuppressWarnings("unchecked")
 	public PagedResult<Dispute> getDisputes(QueryParam q) {
@@ -74,5 +94,52 @@ public class PaymentService extends ApiService {
 		result.setDetailInfo(detailInfo.get(0));
 		result.setDocumentInfo(documentInfo);
 		return result;
+	}
+
+	public PaymentStatusResponse getCreditCardStatus(Integer creditCardId, Integer consolidationId) throws Exception {
+		if (creditCardId == null) throw new Exception("No credit card ID");
+		if (consolidationId == null) throw new Exception("No consolidation ID");
+
+		PaymentCreditCard creditCard = paymentCreditCardRepository.findOneByCreditCardID(creditCardId);
+		if (creditCard == null) throw new Exception("No credit card exists");
+
+		OrderPaymentStatus orderPaymentStatus = orderPaymentStatusRepository.findOneByReferenceIDAndIsOrderOrderByOrderPaymentStatusIDDesc(consolidationId, 0);
+
+		Integer id;
+		if (orderPaymentStatus != null && orderPaymentStatus.getPaymentStatusID() != null) {
+			id = orderPaymentStatus.getPaymentStatusID();
+		} else if (existsCardStatusId(creditCard.getCardStatusID())) {
+			id = 1;
+		} else {
+			id = 99;
+		}
+
+		Optional<PaymentStatus> paymentStatus = paymentStatusRepository.findById(id);
+		String name;
+		if (paymentStatus.isPresent()) {
+			name = paymentStatus.get().getPaymentStatus();
+		} else {
+			name = "Pending";
+		}
+
+		return PaymentStatusResponse.builder()
+				.cardStatusId(creditCard.getCardStatusID())
+				.paymentStatusId(id)
+				.paymentStatusName(name)
+				.build();
+	}
+
+	private boolean existsCardStatusId(Integer id) {
+		if (id == null) return false;
+
+		List<CardStatus> statuses = waPaymentService.getCreditCardStatus();
+		Set<Integer> ids = statuses.stream().map(CardStatus::getCardStatusID).collect(Collectors.toSet());
+
+		return ids.contains(id);
+	}
+
+	public Boolean setSale(PaymentSaleRequest request) throws JsonProcessingException {
+		JsonResponse response =  paymentApiJsonClient.post("/sale", new ObjectMapper().writeValueAsString(request));
+		return null;
 	}
 }

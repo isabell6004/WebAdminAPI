@@ -1,25 +1,16 @@
-/**
- * 
- */
 package net.fashiongo.webadmin.controller;
 
 import java.time.LocalDateTime;
 
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentSaleRequest;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import net.fashiongo.common.JsonResponse;
-import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.dao.primary.DisputeDocumentRepository;
 import net.fashiongo.webadmin.model.fgpay.Dispute;
 import net.fashiongo.webadmin.model.fgpay.DisputeDetail;
@@ -130,5 +121,28 @@ public class PaymentController {
 			
 		}
 		return response;
+	}
+
+	@GetMapping(value = "/creditCardStatus")
+	public JsonResponse<PaymentStatusResponse> getCreditCardStatus(
+			@RequestParam(value = "creditCardId") Integer creditCardId,
+			@RequestParam(value = "consolidationId") Integer consolidationId) {
+		try {
+			return new JsonResponse<>(true, null,
+					paymentService.getCreditCardStatus(creditCardId, consolidationId));
+		} catch (Exception e) {
+			logger.error("PaymentController.getCreditCardStatus()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+
+	@PostMapping(value = "/sale")
+	public JsonResponse<Boolean> setSale(@RequestBody PaymentSaleRequest paymentSaleRequest) {
+		try {
+			return new JsonResponse<>(true, null, paymentService.setSale(paymentSaleRequest));
+		} catch (Exception e) {
+			logger.error("PaymentController.setSale()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
 	}
 }
