@@ -62,7 +62,7 @@ public class SetVendorContractParameter {
     @JsonProperty(value = "IsLastMonthServiceFeeWaived")
     private String isLastMonthServiceFeeWaived;
 
-    @JsonProperty(value = "VendorContractPlanID")
+    @JsonProperty(value = "VendorContractPlanId")
     private Integer vendorContractPlanID;
 
     @JsonProperty(value = "CommissionBaseDateCode")
