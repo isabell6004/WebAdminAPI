@@ -19,6 +19,10 @@ spring:
     url: jdbc:sqlserver://10.210.24.29;databaseName=FG_PhotoStudio
     hikari:
       maximumPoolSize: 20
+  datasource5:
+    url: jdbc:sqlserver://10.210.24.29;databaseName=FG_Billing
+    hikari:
+      maximumPoolSize: 10
 
   jpa:
     show-sql: false
@@ -82,3 +86,17 @@ coupon:
       root-image-name: coupon-banner-images
       root-name-prefix: beta-
     image-root: https://rlyfpniry.cdn.toastcloud.com/
+
+gnb:
+  banner:
+    image:
+      storage:
+        object-storage:
+          account: AUTH_d2a2372095f2462da8b883294f747273
+          tenant-id: d2a2372095f2462da8b883294f747273
+          username: dl_nhnglobal_tc_service@nhnglobal.com
+          password: FG!@#123
+          auth-api-url: https://api-compute.cloud.toast.com/identity/v2.0/tokens
+          api-url: https://api-storage.cloud.toast.com/v1/
+        root-container: 'production'
+        directory: 'gnb-menu-banner-img'

@@ -578,7 +578,7 @@ public class PhotoStudioController {
     }
 
     @GetMapping("/reports")
-    public JsonResponse<?> getReports(@RequestParam Map<String, Object> parmMap) {
+    public String getReports(@RequestParam Map<String, Object> parmMap) {
         logger.debug("PhotoStudioController.getReports() called!!!");
         JsonResponse<Map<String, Object>> response = new JsonResponse<>(false, null, null);
 
@@ -595,7 +595,7 @@ public class PhotoStudioController {
             response.setMessage(ex.getMessage());
         }
 
-        return response;
+        return Utility.xssEscape(response);
     }
 
     @GetMapping("/reports/daily/report")
@@ -606,7 +606,7 @@ public class PhotoStudioController {
     }
 
     @GetMapping("/reports/monthly/csv")
-    public JsonResponse<?> getReportsMonthlyCsv(@RequestParam Map<String, Object> parmMap) {
+    public String getReportsMonthlyCsv(@RequestParam Map<String, Object> parmMap) {
         logger.debug("PhotoStudioController.getReportsMonthlyCsv() called!!!");
         JsonResponse<List<ReportCsvMonthly>> response = new JsonResponse<>(false, null, null);
 
@@ -622,7 +622,7 @@ public class PhotoStudioController {
             response.setMessage(ex.getMessage());
         }
 
-        return response;
+        return Utility.xssEscape(response);
     }
 
     @PostMapping(value = "/credit/save")

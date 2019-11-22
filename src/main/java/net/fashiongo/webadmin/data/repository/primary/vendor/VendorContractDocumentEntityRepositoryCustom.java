@@ -7,4 +7,6 @@ import java.util.List;
 public interface VendorContractDocumentEntityRepositoryCustom {
 
 	List<VendorContractDocumentEntity> findAllByVendorContractID(Integer vendorContractID);
+
+	VendorContractDocumentEntity findOneByVendorContractDocumentID(Integer vendorContractDocumentID);
 }

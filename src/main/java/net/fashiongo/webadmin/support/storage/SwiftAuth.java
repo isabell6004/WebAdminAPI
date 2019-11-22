@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class SwiftAuth {
 
-	private final SwiftProperties swiftConfig;
+	private final SwiftPropertyInterface swiftConfig;
 
 	private ZonedDateTime expireDateTime;
 
@@ -24,7 +24,7 @@ public class SwiftAuth {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
-	public SwiftAuth(SwiftProperties swiftConfig) {
+	public SwiftAuth(SwiftPropertyInterface swiftConfig) {
 		this.swiftConfig = swiftConfig;
 	}
 

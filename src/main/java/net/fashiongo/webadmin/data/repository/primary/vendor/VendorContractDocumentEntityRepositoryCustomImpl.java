@@ -50,4 +50,16 @@ public class VendorContractDocumentEntityRepositoryCustomImpl implements VendorC
 
 		return jpaQuery.fetch();
 	}
+
+	@Override
+	public VendorContractDocumentEntity findOneByVendorContractDocumentID(Integer vendorContractDocumentID) {
+		QVendorContractDocumentEntity VCD = QVendorContractDocumentEntity.vendorContractDocumentEntity;
+		JPAQuery<VendorContractDocumentEntity> query = new JPAQuery<>(entityManager);
+
+		query.select(VCD)
+				.from(VCD)
+				.where(VCD.vendorContractDocumentID.eq(vendorContractDocumentID));
+
+		return query.fetchFirst();
+	}
 }

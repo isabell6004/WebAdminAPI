@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.utility;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
@@ -216,5 +218,38 @@ public class Utility {
 	 */
 	public static boolean isNullOrEmpty(@Nullable String string) {
 	    return string == null || string.length() == 0;
+	}
+
+	public static String xssEscape(JsonResponse jsonResponse) {
+		return xssEscape(jsonResponse.toString());
+	}
+
+	public static String xssEscape(net.fashiongo.common.JsonResponse jsonResponse) {
+		String s;
+		try {
+			s = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(jsonResponse);
+		} catch (IOException e) {
+			log.error("Utility.xssEscape()", e);
+			s = ReflectionToStringBuilder.toString(jsonResponse);
+		}
+		return xssEscape(s);
+	}
+
+	public static String xssEscape(String s) {
+		return s
+				.replaceAll("<", "GreaterThan")
+				.replaceAll(">", "LessThen")
+				.replaceAll("&", "And")
+//				.replaceAll("\"", "") // For JSON "aaa":"bbb"
+				.replaceAll("'", "SingleQuote")
+				.replaceAll("=", "Equal")
+				.replaceAll("\\+", "Plus")
+//                .replaceAll("-", "") // For date "YYYY-MM-DD"
+				.replaceAll("@", "At")
+				.replaceAll("\\|", "Pipe")
+//				.replaceAll("\\[", "squareBracketStart") // For JSON a:[1,2,3]
+//				.replaceAll("]", "squareBracketEnd") // For JSON a:[1,2,3]
+				.replaceAll(";", "Semicolon")
+				;
 	}
 }

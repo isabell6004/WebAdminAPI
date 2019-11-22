@@ -124,6 +124,9 @@ public class SitemgmtService extends ApiService {
 	@Autowired
 	private TrendDailyKeywordEntityRepository trendDailyKeywordEntityRepository;
 
+	@Autowired
+	private CacheService cacheService;
+
 	private net.fashiongo.webadmin.utility.Utility uUtility;
 
 	/**
@@ -574,6 +577,9 @@ public class SitemgmtService extends ApiService {
 			break;
 		}
 
+		try {
+			cacheService.GetRedisCacheEvict("HierarchicalMenuCategories", null);
+		} catch (Exception ignored) {}
 		return result;
 	}
 	

@@ -1,13 +1,10 @@
 package net.fashiongo.webadmin.model.primary.coupon.command;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 import net.fashiongo.webadmin.exception.coupon.InvalidInputCouponException;
-import org.springframework.util.CollectionUtils;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Data
 public class CouponCreateInput extends CouponCommonInput {
@@ -18,7 +15,7 @@ public class CouponCreateInput extends CouponCommonInput {
 
     public void validateCouponCreateInput() {
 
-        if (this.getStartDate().isAfter(this.getEndDate())) {
+        if (this.getStartDate() != null && this.getStartDate().isAfter(this.getEndDate())) {
             throw new InvalidInputCouponException("Invalid period");
         }
 

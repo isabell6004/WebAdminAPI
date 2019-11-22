@@ -1,28 +1,23 @@
 package net.fashiongo.webadmin.controller;
 
-import java.util.List;
-
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.*;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPayoutHistoryResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
+import net.fashiongo.webadmin.model.primary.CardStatus;
+import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
+import net.fashiongo.webadmin.service.WAPaymentService;
+import net.fashiongo.webadmin.service.renewal.RenewalWAPaymentService;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPayoutHistoryParameter;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.SetRestorePendingPaymentTransactionParameter;
-import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
-import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
-import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusSearchOptionResponse;
-import net.fashiongo.webadmin.model.pojo.payment.response.GetPayoutHistoryResponse;
-import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
-import net.fashiongo.webadmin.model.primary.CardStatus;
-import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
-import net.fashiongo.webadmin.service.WAPaymentService;
-import net.fashiongo.webadmin.utility.JsonResponse;
+import java.util.List;
 
 /**
  * 
@@ -34,7 +29,10 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 public class WAPaymentController {
 	@Autowired
 	private WAPaymentService waPaymentService;
-	
+
+	@Autowired
+	private RenewalWAPaymentService renewalWAPaymentService;
+
 	/**
 	 * getPaymentStatusSearchOption
 	 * 
@@ -44,10 +42,10 @@ public class WAPaymentController {
 	 * @return GetPaymentStatusSearchOptionResponse
 	 */
 	@RequestMapping(value = "getPaymentStatusSearchOption", method = RequestMethod.POST)
-	public JsonResponse<GetPaymentStatusSearchOptionResponse> getPaymentStatusSearchOption() {
-		GetPaymentStatusSearchOptionResponse result = waPaymentService.getPaymentStatusSearchOption();
-		
-		return new JsonResponse<GetPaymentStatusSearchOptionResponse>(true, null, 0, result);
+	public JsonResponse<net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse> getPaymentStatusSearchOption() {
+		net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse paymentStatusSearchOption = renewalWAPaymentService.getPaymentStatusSearchOption();
+
+		return new JsonResponse<net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse>(true, null, 0, paymentStatusSearchOption);
 	}
 	
 	/**

@@ -4,9 +4,9 @@ public class SwiftApiCallFactory {
 
 	private SwiftAuth auth;
 
-	private SwiftProperties properties;
+	private SwiftPropertyInterface properties;
 
-	public SwiftApiCallFactory(SwiftAuth auth, SwiftProperties properties) {
+	public SwiftApiCallFactory(SwiftAuth auth, SwiftPropertyInterface properties) {
 		this.auth = auth;
 		this.properties = properties;
 	}

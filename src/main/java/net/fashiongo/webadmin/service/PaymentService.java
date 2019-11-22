@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
@@ -17,8 +19,6 @@ import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
 import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
 import net.fashiongo.webadmin.model.primary.PaymentStatus;
-import net.fashiongo.webadmin.utility.HttpClient;
-import net.fashiongo.webadmin.utility.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +48,11 @@ public class PaymentService extends ApiService {
 	@Autowired private PaymentCreditCardRepository paymentCreditCardRepository;
 	@Autowired private PaymentStatusRepository paymentStatusRepository;
 	@Autowired private WAPaymentService waPaymentService;
-	@Autowired @Qualifier("paymentApiJsonClient") private HttpClient paymentApiJsonClient;
-	
+
+	@Autowired
+	@Qualifier("paymentApiJsonClient")
+	private HttpClient httpClient;
+
 	@SuppressWarnings("unchecked")
 	public PagedResult<Dispute> getDisputes(QueryParam q) {
 		String spName = "up_wa_Get_DisputeList";
@@ -96,6 +99,14 @@ public class PaymentService extends ApiService {
 		return result;
 	}
 
+	public JsonResponse<?> getPaymentAccountInfo(Integer wid) {
+		return (JsonResponse<?>) httpClient.get("/account/" + wid);
+	}
+
+	public JsonResponse<?> setSale(PaymentSaleRequest request) throws JsonProcessingException {
+		return (JsonResponse<?>) httpClient.post("/sale", new ObjectMapper().writeValueAsString(request));
+	}
+
 	public PaymentStatusResponse getCreditCardStatus(Integer creditCardId, Integer consolidationId) throws Exception {
 		if (creditCardId == null) throw new Exception("No credit card ID");
 		if (consolidationId == null) throw new Exception("No consolidation ID");
@@ -136,12 +147,5 @@ public class PaymentService extends ApiService {
 		Set<Integer> ids = statuses.stream().map(CardStatus::getCardStatusID).collect(Collectors.toSet());
 
 		return ids.contains(id);
-	}
-
-	public net.fashiongo.common.JsonResponse<Object> setSale(PaymentSaleRequest request) throws JsonProcessingException {
-		JsonResponse response = paymentApiJsonClient.post("/sale", new ObjectMapper().writeValueAsString(request));
-
-		// Parse net.fashiongo.webadmin.utility.JsonResponse(HttpClient) to net.fashiongo.common.JsonResponse(PaymentController)
-		return new net.fashiongo.common.JsonResponse<>(response.isSuccess(), response.getMessage(), response.getData());
 	}
 }

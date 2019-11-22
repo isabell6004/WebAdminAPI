@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -108,6 +109,7 @@ public class CouponManagementServiceImpl implements CouponManagementService {
     private CouponStatisticsRepository couponStatisticsRepository;
     
     @Autowired
+    @Qualifier("swiftApiCallFactory")
     private SwiftApiCallFactory factory;
 
     @Autowired
@@ -307,7 +309,7 @@ public class CouponManagementServiceImpl implements CouponManagementService {
 
         checkCouponDeletionStatus(coupon.getIsDeleted(), couponId);
         checkCouponPreviousActivationStatus(coupon.getActivatedOn(), couponId);
-        checkCouponActionDueDate(coupon.getStartDate(), "activate", couponId);
+        checkCouponActionDueDate(coupon.getIssueStartDate(), "activate", couponId);
 
         createCouponHistory(coupon);
 

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Getter
@@ -82,6 +83,21 @@ public class SimpleWholeSalerEntity implements Serializable {
 
     @Column(name = "UserID")
     private String userID;
+
+    @Column(name = "BlockPolicy")
+    private boolean blockPolicy;
+
+    @Column(name = "ExtraCharge")
+    private BigDecimal extraCharge;
+
+    @Column(name = "ExtraChargeAmountFrom")
+    private BigDecimal extraChargeAmountFrom;
+
+    @Column(name = "ExtraChargeAmountTo")
+    private BigDecimal extraChargeAmountTo;
+
+    @Column(name = "WholeSalerGUID")
+    private String wholeSalerGUID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)

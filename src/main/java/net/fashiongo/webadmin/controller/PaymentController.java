@@ -2,15 +2,23 @@ package net.fashiongo.webadmin.controller;
 
 import java.time.LocalDateTime;
 
+import net.fashiongo.webadmin.data.model.payment.GetPaymentAccountInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentSaleRequest;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
-import net.fashiongo.common.JsonResponse;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.dao.primary.DisputeDocumentRepository;
 import net.fashiongo.webadmin.model.fgpay.Dispute;
 import net.fashiongo.webadmin.model.fgpay.DisputeDetail;
@@ -122,6 +130,22 @@ public class PaymentController {
 		return response;
 	}
 
+	@PostMapping(value = "getpaymentaccountinfo")
+	public JsonResponse<?> getpaymentaccountinfo(@RequestBody GetPaymentAccountInfoParameter param) {
+		JsonResponse<?> response = new JsonResponse<>(false, null, null);
+		Integer wid = param.getWid();
+
+		try {
+			response = paymentService.getPaymentAccountInfo(wid);
+			response.setSuccess(true);
+		} catch (Exception ex) {
+			logger.error("PaymentController.getpaymentaccountinfo()", ex);
+			response.setMessage(ex.getMessage());
+		}
+
+		return response;
+	}
+
 	@GetMapping(value = "/creditCardStatus")
 	public JsonResponse<PaymentStatusResponse> getCreditCardStatus(
 			@RequestParam(value = "creditCardId") Integer creditCardId,
@@ -136,7 +160,7 @@ public class PaymentController {
 	}
 
 	@PostMapping(value = "/sale")
-	public JsonResponse<Object> setSale(@RequestBody PaymentSaleRequest paymentSaleRequest) {
+	public JsonResponse<?> setSale(@RequestBody PaymentSaleRequest paymentSaleRequest) {
 		try {
 			return paymentService.setSale(paymentSaleRequest);
 		} catch (Exception e) {

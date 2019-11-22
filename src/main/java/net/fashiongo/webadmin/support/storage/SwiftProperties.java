@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "toast.cloud.storage.object-storage")
-public class SwiftProperties {
+public class SwiftProperties implements SwiftPropertyInterface {
 
 	private String account;
 

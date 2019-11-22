@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,7 @@ import net.fashiongo.common.data.repository.coupon.CouponRepository;
 import net.fashiongo.common.data.repository.coupon.CouponStatisticsRepository;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.primary.coupon.command.CouponQueryParam;
+import net.fashiongo.webadmin.model.primary.coupon.dto.CouponDto;
 import net.fashiongo.webadmin.model.primary.coupon.dto.CouponStatisticsDto;
 
 /**
@@ -46,7 +48,37 @@ public class IntegratedCouponManagementServiceTest {
     @Resource(name = "data.couponStatisticsRepository")
     private CouponStatisticsRepository couponStatisticsRepository;
     
+    @Ignore
+    @Test
+    public void getCoupon() {
 
+        Integer pn = 1;
+        Integer ps = 20;
+
+        CouponQueryParam queryParam = new CouponQueryParam();
+        queryParam.setPn(pn);
+        queryParam.setPs(ps);
+
+        PagedResult<CouponDto> results = new PagedResult<>();
+
+        List<CCoupon> couponEntityList = couponRepository.getCoupons(CouponRegisterType.FG.getValue(), PageRequest.of(pn - 1, ps));
+
+        log.info("couponEntityList start ------------------------------------------------------");
+        log.info("couponEntityList.size() : {}", couponEntityList.size());
+        couponEntityList.forEach((x) -> log.info("couponEntityList : {}, {}", 
+        		x.getId(),
+        		x.getCouponName(),
+        		x.getIssueStartDate(),
+        		x.getIssueEndDate(),
+        		x.getValidDurationDays()
+        		));
+        
+        Assert.assertNotNull(couponEntityList);
+        Assert.assertNotEquals(0, couponEntityList.size());
+
+    }
+    
+    @Ignore
     @Test
     public void getCouponStatistics() {
 
