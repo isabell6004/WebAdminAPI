@@ -48,7 +48,7 @@ public class CacheService {
 	 * @return
 	 */
 	public JsonResponse GetRedisCacheEvict_ChangeDirName(String oldDirName, String newDirName) {
-		String request = "misc/shell/changeDirname/".concat(oldDirName).concat("/").concat(newDirName);
+		String request = "/misc/shell/changeDirname/".concat(oldDirName).concat("/").concat(newDirName);
 		JsonResponse result = httpClient.get(request);
 		
 		return result;
