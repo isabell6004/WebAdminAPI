@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class VendorDirNameChangeLogEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "ChangeID")
     private Integer changeID;
