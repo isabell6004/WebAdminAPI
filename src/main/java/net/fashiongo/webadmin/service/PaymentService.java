@@ -1,11 +1,15 @@
 package net.fashiongo.webadmin.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
+import net.fashiongo.webadmin.data.entity.primary.PaymentTransactionEntity;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
 import net.fashiongo.webadmin.dao.primary.PaymentCreditCardRepository;
 import net.fashiongo.webadmin.dao.primary.PaymentStatusRepository;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentSaleRequest;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
@@ -34,6 +38,9 @@ import net.fashiongo.webadmin.model.fgpay.DisputeMergeOrderInfo;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 
 /**
@@ -47,6 +54,7 @@ public class PaymentService extends ApiService {
 	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
 	@Autowired private PaymentCreditCardRepository paymentCreditCardRepository;
 	@Autowired private PaymentStatusRepository paymentStatusRepository;
+	@Autowired private PaymentTransactionEntityRepository paymentTransactionEntityRepository;
 	@Autowired private WAPaymentService waPaymentService;
 
 	@Autowired
@@ -103,8 +111,37 @@ public class PaymentService extends ApiService {
 		return (JsonResponse<?>) httpClient.get("/account/" + wid);
 	}
 
-	public JsonResponse<?> setSale(PaymentSaleRequest request) throws JsonProcessingException {
+	public JsonResponse<?> setSale(PaymentRequest request) throws JsonProcessingException {
 		return (JsonResponse<?>) httpClient.post("/sale", new ObjectMapper().writeValueAsString(request));
+	}
+
+	public JsonResponse<?> setRefund(PaymentRequest request) throws Exception {
+		if (request == null) {
+			throw new Exception("No request");
+		}
+
+		BigDecimal refundAmount = request.getAmount();
+		if (refundAmount == null || refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
+			throw new Exception("Refund amount must be greater than 0");
+		}
+
+		Integer consolidationId = request.getReferenceId();
+		if (consolidationId == null) {
+			throw new Exception("No consolidation is requested");
+		}
+
+		List<PaymentTransactionEntity> transactions =
+				paymentTransactionEntityRepository.findByReferenceIDAndReferenceTypeIDOrderByTransactionIDDesc(
+						consolidationId, 0/* 0 = Consolidation */);
+		BigDecimal authCaptureAmount = getAuthCaptureAmount(transactions);
+		if (authCaptureAmount == null) {
+			throw new Exception("No auth & capture amount exists");
+		}
+		if (authCaptureAmount.compareTo(refundAmount) < 0) {
+			throw new Exception("Refund amount must be less than the shipping amount");
+		}
+
+		return (JsonResponse<?>) httpClient.post("refund", new ObjectMapper().writeValueAsString(request));
 	}
 
 	public PaymentStatusResponse getCreditCardStatus(Integer creditCardId, Integer consolidationId) throws Exception {
@@ -147,5 +184,44 @@ public class PaymentService extends ApiService {
 		Set<Integer> ids = statuses.stream().map(CardStatus::getCardStatusID).collect(Collectors.toSet());
 
 		return ids.contains(id);
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+	public List<PaymentTransactionResponse> getTransactions(Integer consolidationId) throws Exception {
+		if (consolidationId == null) throw new Exception("No consolidation is selected");
+
+		List<PaymentTransactionEntity> transactions =
+				paymentTransactionEntityRepository.findByReferenceIDAndReferenceTypeIDOrderByTransactionIDDesc(
+						consolidationId, 0/* 0 = Consolidation */);
+
+		BigDecimal authCaptureAmount = getAuthCaptureAmount(transactions);
+		return CollectionUtils.isEmpty(transactions) ? null :
+				transactions.stream()
+				.map(t -> PaymentTransactionResponse.builder()
+						.transactionId(t.getTransactionID())
+						.transactionType(t.getTransactionType())
+						.creditCardId(t.getCreditCardID())
+						.amount(t.getAmount())
+						.authCaptureAmount(authCaptureAmount)
+						.success(t.isSuccess())
+						.reasonCode(t.getReasonCode())
+						.detail(t.getDetail())
+						.createdBy(t.getCreatedBy())
+						.createdOn(t.getCreatedOn().toLocalDateTime())
+						.build())
+				.collect(Collectors.toList());
+	}
+
+	private BigDecimal getAuthCaptureAmount(List<PaymentTransactionEntity> transactions) {
+		BigDecimal authCaptureAmount = null;
+		if (!CollectionUtils.isEmpty(transactions)) {
+			for (PaymentTransactionEntity t : transactions) {
+				if (t.isSuccess() && t.getTransactionType() == 3/* 3 = Auth & Capture */) {
+					authCaptureAmount = t.getAmount();
+					break;
+				}
+			}
+		}
+		return authCaptureAmount;
 	}
 }

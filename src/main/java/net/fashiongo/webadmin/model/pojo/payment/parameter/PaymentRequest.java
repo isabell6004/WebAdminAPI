@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class PaymentSaleRequest {
+public class PaymentRequest {
 	private BigDecimal amount;
 	private Integer referenceId;
 	private String referenceType;

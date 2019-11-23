@@ -1,10 +1,12 @@
 package net.fashiongo.webadmin.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import net.fashiongo.webadmin.data.model.payment.GetPaymentAccountInfoParameter;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentSaleRequest;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,9 +162,31 @@ public class PaymentController {
 	}
 
 	@PostMapping(value = "/sale")
-	public JsonResponse<?> setSale(@RequestBody PaymentSaleRequest paymentSaleRequest) {
+	public JsonResponse<?> setSale(@RequestBody PaymentRequest paymentRequest) {
 		try {
-			return paymentService.setSale(paymentSaleRequest);
+			return paymentService.setSale(paymentRequest);
+		} catch (Exception e) {
+			logger.error("PaymentController.setSale()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+
+	@GetMapping(value = "/transactions")
+	public JsonResponse<List<PaymentTransactionResponse>> getTransactions(
+			@RequestParam(value = "consolidationId") Integer consolidationId) {
+		try {
+			return new JsonResponse<>(true, null,
+					paymentService.getTransactions(consolidationId));
+		} catch (Exception e) {
+			logger.error("PaymentController.getTransactions()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+
+	@PostMapping(value = "/refund")
+	public JsonResponse<?> setRefund(@RequestBody PaymentRequest paymentRequest) {
+		try {
+			return paymentService.setRefund(paymentRequest);
 		} catch (Exception e) {
 			logger.error("PaymentController.setSale()", e);
 			return new JsonResponse<>(false, e.getMessage(), null);
