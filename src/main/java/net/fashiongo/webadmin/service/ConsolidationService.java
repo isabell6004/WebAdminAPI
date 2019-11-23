@@ -40,12 +40,12 @@ public class ConsolidationService extends ApiService {
         LocalDateTime lastMonth =  LocalDateTime.of(lastDayOfMonth.getYear(), lastDayOfMonth.getMonth(), 1, 0, 0, 0);
         LocalDateTime firstDayOfMonth =  lastDayOfMonth.minusMonths(1 * (q.getPeriodType() == null ? 1 : q.getPeriodType())).minusSeconds(1);
         
-        logger.info("getPeriodType:"  + q.getPeriodType());
-        logger.info("firstDayOfMonth:" + firstDayOfMonth);
-        logger.info("lastDayOfMonth:" + lastDayOfMonth);
+//        logger.info("getPeriodType:"  + q.getPeriodType());
+//        logger.info("firstDayOfMonth:" + firstDayOfMonth.toLocalDate());
+//        logger.info("lastDayOfMonth:" + lastDayOfMonth.toLocalDate());
         
-		params.add(firstDayOfMonth);
-	    params.add(lastDayOfMonth);
+		params.add(firstDayOfMonth.toString());
+	    params.add(lastDayOfMonth.toString());
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, ConsolidationSummary.class);
 		
