@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Setter
 public class CodeVendorCapTypeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "VendorCapTypeID")
     private Integer vendorCapTypeID;

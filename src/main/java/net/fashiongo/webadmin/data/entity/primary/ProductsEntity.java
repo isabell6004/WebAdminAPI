@@ -17,7 +17,7 @@ public class ProductsEntity {
 
 	@Setter(AccessLevel.NONE)
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ProductID")
 	private Integer productID;
 

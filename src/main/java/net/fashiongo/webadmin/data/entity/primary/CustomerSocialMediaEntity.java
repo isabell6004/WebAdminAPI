@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Setter
 public class CustomerSocialMediaEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "MapID")
     private Integer mapID;

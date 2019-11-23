@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "Vendor_ImageRequest")
 public class VendorImageRequestEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ImageRequestID")
 	@Setter(AccessLevel.NONE)
 	private Integer imageRequestId;

@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 public class VendorAdminAccountEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "VendorAdminAccountID")
     private Integer vendorAdminAccountID;

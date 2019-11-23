@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Setter
 public class AdVendorItemEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "AdVendorItemID")
     private Integer adVendorItemID;

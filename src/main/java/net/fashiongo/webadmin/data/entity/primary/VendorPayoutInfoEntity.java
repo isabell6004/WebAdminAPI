@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 public class VendorPayoutInfoEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "VendorPayoutInfoID")
     private Integer vendorPayoutInfoID;

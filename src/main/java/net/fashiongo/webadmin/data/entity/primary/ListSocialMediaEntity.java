@@ -21,7 +21,7 @@ import java.util.Set;
 @Setter
 public class ListSocialMediaEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "SocialMediaID")
     private Integer socialMediaID;

@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class VendorCapEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "VendorCapID")
     private Integer vendorCapID;
