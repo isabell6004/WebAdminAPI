@@ -462,4 +462,11 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "getadminretailer", method = RequestMethod.POST)
+	public JsonResponse getAdminretailer(@RequestBody GetAdminRetailerParameter parameter) {
+		JsonResponse response = renewalBuyerService.getAdminretailer(parameter);
+
+		return response;
+	}
 }

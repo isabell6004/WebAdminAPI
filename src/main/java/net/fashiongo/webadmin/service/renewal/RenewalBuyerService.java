@@ -20,10 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1014,6 +1014,125 @@ public class RenewalBuyerService {
 		} catch (Exception e) {
 			log.warn(e.getMessage(),e);
 			return -99;
+		}
+	}
+
+	public JsonResponse getAdminretailer(GetAdminRetailerParameter parameter) {
+		Boolean csv = Optional.ofNullable(parameter.getCsv()).orElse(false);
+		Integer pagenum = parameter.getPagenum();
+		Integer pagesize = parameter.getPagesize();
+		String location = Optional.ofNullable(parameter.getLocation()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean active = parameter.getActive();
+		Timestamp checkoutfrom = Optional.ofNullable(parameter.getCheckoutfrom()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
+		Timestamp checkoutto = Optional.ofNullable(parameter.getCheckoutto()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
+		Timestamp loginfrom = Optional.ofNullable(parameter.getLoginfrom()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
+		Timestamp loginto = Optional.ofNullable(parameter.getLoginto()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
+		Timestamp registerfrom = Optional.ofNullable(parameter.getRegisterfrom()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
+		Timestamp registerto = Optional.ofNullable(parameter.getRegisterto()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
+		String country = Optional.ofNullable(parameter.getCountry()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Integer currentstatus = parameter.getCurrentstatus();
+		String documentupload = Optional.ofNullable(parameter.getDocumentupload()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean in1 = parameter.getIn1();
+		Boolean in2 = parameter.getIn2();
+		Integer logincountfrom = parameter.getLogincountfrom();
+		Integer logincountto = parameter.getLogincountto();
+		Boolean o = parameter.getO();
+		Boolean online = parameter.getOnline();
+		String orderby = Optional.ofNullable(parameter.getOrderby()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Integer ordercountfrom = parameter.getOrdercountfrom();
+		Integer ordercountto = parameter.getOrdercountto();
+		Integer ordervendorcountfrom = parameter.getOrdervendorcountfrom();
+		Integer ordervendorcountto = parameter.getOrdervendorcountto();
+		String userid = Optional.ofNullable(parameter.getUserid()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean useridpartialmatch = parameter.getUseridpartialmatch();
+		Integer retailerid = parameter.getRetailerid();
+		String companyname =Optional.ofNullable( parameter.getCompanyname()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean companynamepartialmatch = parameter.getCompanynamepartialmatch();
+		Boolean companynamestartswith = parameter.getCompanynamestartswith();
+		String firstname = Optional.ofNullable(parameter.getFirstname()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean firstnamepartialmatch = parameter.getFirstnamepartialmatch();
+		String lastname = Optional.ofNullable(parameter.getLastname()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean lastnamepartialmatch = parameter.getLastnamepartialmatch();
+		String state = Optional.ofNullable(parameter.getState()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Integer showid = parameter.getShowid();
+		Boolean s = parameter.getS();
+		BigDecimal orderamountfrom = parameter.getOrderamountfrom();
+		BigDecimal orderamountto = parameter.getOrderamountto();
+		Integer wholesalerid = parameter.getWholesalerid();
+
+		List<Object> param = new ArrayList<>();
+
+		if(csv == false) {
+			param.add(pagenum);
+			param.add(pagesize);
+		}
+
+		param.add(userid);
+		param.add(useridpartialmatch);
+		param.add(retailerid);
+		param.add(currentstatus);
+		param.add(companyname);
+		param.add(companynamepartialmatch);
+		param.add(companynamestartswith);
+		param.add(firstname);
+		param.add(firstnamepartialmatch);
+		param.add(lastname);
+		param.add(lastnamepartialmatch);
+		param.add(active);
+		param.add(online);
+		param.add(documentupload);
+		param.add(location);
+		param.add(state);
+		param.add(country);
+		param.add(s);
+		param.add(in1);
+		param.add(in2);
+		param.add(o);
+		param.add(registerfrom);
+		param.add(registerto);
+		param.add(logincountfrom);
+		param.add(logincountto);
+		param.add(loginfrom);
+		param.add(loginto);
+		param.add(ordercountfrom);
+		param.add(ordercountto);
+		param.add(orderamountfrom);
+		param.add(orderamountto);
+		param.add(ordervendorcountfrom);
+		param.add(ordervendorcountto);
+		param.add(checkoutfrom);
+		param.add(checkoutto);
+		param.add(wholesalerid);
+		param.add(orderby);
+		param.add(showid);
+
+		if(csv) {
+			JsonResponse<AdminRetailerCSVResponse> response = new JsonResponse();
+			List<Object> up_wa_advancedSearch_retailer = jdbcHelper.executeSP("up_wa_AdvancedSearch_Retailer_CSV", param, AdminRetailerCSV.class);
+			List<AdminRetailerCSV> adminRetailerList = (List<AdminRetailerCSV>) up_wa_advancedSearch_retailer.get(0);
+
+			AdminRetailerCSVResponse data = AdminRetailerCSVResponse.builder()
+					.table(adminRetailerList)
+					.build();
+
+			response.setSuccess(true);
+			response.setData(data);
+
+			return response;
+		} else {
+			List<Object> up_wa_advancedSearch_retailer = jdbcHelper.executeSP("up_wa_AdvancedSearch_Retailer", param, Total.class, AdminRetailer.class);
+			List<Total> totalList = (List<Total>) up_wa_advancedSearch_retailer.get(0);
+			List<AdminRetailer> adminRetailerList = (List<AdminRetailer>) up_wa_advancedSearch_retailer.get(1);
+
+			JsonResponse<AdminRetailerResponse> response = new JsonResponse();
+			AdminRetailerResponse data = AdminRetailerResponse.builder()
+					.table(totalList)
+					.table1(adminRetailerList)
+					.build();
+
+			response.setSuccess(true);
+			response.setData(data);
+			return response;
 		}
 	}
 }
