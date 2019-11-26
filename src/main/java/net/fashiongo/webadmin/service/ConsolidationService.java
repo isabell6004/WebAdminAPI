@@ -73,8 +73,8 @@ public class ConsolidationService extends ApiService {
         
 		params.add(q.getPageNum());
 		params.add(q.getPageSize());
-		params.add(q.getDtFrom());
-		params.add(q.getDtTo() != null ? q.getDtTo().plusDays(1) : q.getDtTo());
+		params.add(q.getDtFrom() != null ? q.getDtFrom().toString() : null);
+		params.add(q.getDtTo() != null ? q.getDtTo().plusDays(1).toString() : null);
 		params.add(q.getDateColumn());
 		params.add(bShipped);
 		params.add(q.getPaymentStatus());		
