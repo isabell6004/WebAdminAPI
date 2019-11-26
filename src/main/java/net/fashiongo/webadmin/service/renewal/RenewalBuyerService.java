@@ -1030,19 +1030,19 @@ public class RenewalBuyerService {
 		Timestamp registerfrom = Optional.ofNullable(parameter.getRegisterfrom()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
 		Timestamp registerto = Optional.ofNullable(parameter.getRegisterto()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
 		String country = Optional.ofNullable(parameter.getCountry()).filter(s -> StringUtils.hasLength(s)).orElse(null);
-		Integer currentstatus = parameter.getCurrentstatus();
+		Integer currentstatus = Optional.ofNullable(parameter.getCurrentstatus()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
 		String documentupload = Optional.ofNullable(parameter.getDocumentupload()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 		Boolean in1 = parameter.getIn1();
 		Boolean in2 = parameter.getIn2();
-		Integer logincountfrom = parameter.getLogincountfrom();
-		Integer logincountto = parameter.getLogincountto();
+		Integer logincountfrom = Optional.ofNullable(parameter.getLogincountfrom()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
+		Integer logincountto = Optional.ofNullable(parameter.getLogincountto()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
 		Boolean o = parameter.getO();
 		Boolean online = parameter.getOnline();
 		String orderby = Optional.ofNullable(parameter.getOrderby()).filter(s -> StringUtils.hasLength(s)).orElse(null);
-		Integer ordercountfrom = parameter.getOrdercountfrom();
-		Integer ordercountto = parameter.getOrdercountto();
-		Integer ordervendorcountfrom = parameter.getOrdervendorcountfrom();
-		Integer ordervendorcountto = parameter.getOrdervendorcountto();
+		Integer ordercountfrom = Optional.ofNullable(parameter.getOrdercountfrom()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
+		Integer ordercountto = Optional.ofNullable(parameter.getOrdercountto()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
+		Integer ordervendorcountfrom = Optional.ofNullable(parameter.getOrdervendorcountfrom()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
+		Integer ordervendorcountto = Optional.ofNullable(parameter.getOrdervendorcountto()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
 		String userid = Optional.ofNullable(parameter.getUserid()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 		Boolean useridpartialmatch = parameter.getUseridpartialmatch();
 		Integer retailerid = parameter.getRetailerid();
@@ -1054,11 +1054,11 @@ public class RenewalBuyerService {
 		String lastname = Optional.ofNullable(parameter.getLastname()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 		Boolean lastnamepartialmatch = parameter.getLastnamepartialmatch();
 		String state = Optional.ofNullable(parameter.getState()).filter(s -> StringUtils.hasLength(s)).orElse(null);
-		Integer showid = parameter.getShowid();
+		Integer showid = Optional.ofNullable(parameter.getShowid()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
+		BigDecimal orderamountfrom = Optional.ofNullable(parameter.getOrderamountfrom()).filter(s -> StringUtils.hasLength(s)).map(s -> new BigDecimal(s)).orElse(null);
+		BigDecimal orderamountto = Optional.ofNullable(parameter.getOrderamountto()).filter(s -> StringUtils.hasLength(s)).map(s -> new BigDecimal(s)).orElse(null);
+		Integer wholesalerid = Optional.ofNullable(parameter.getWholesalerid()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
 		Boolean s = parameter.getS();
-		BigDecimal orderamountfrom = parameter.getOrderamountfrom();
-		BigDecimal orderamountto = parameter.getOrderamountto();
-		Integer wholesalerid = parameter.getWholesalerid();
 
 		List<Object> param = new ArrayList<>();
 

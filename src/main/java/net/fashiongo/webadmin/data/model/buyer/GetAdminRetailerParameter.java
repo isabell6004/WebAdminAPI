@@ -48,7 +48,7 @@ public class GetAdminRetailerParameter {
 	private Boolean o;
 
 	@JsonProperty("currentstatus")
-	private Integer currentstatus;
+	private String currentstatus;
 
 	@JsonProperty("location")
 	private String location;
@@ -60,7 +60,7 @@ public class GetAdminRetailerParameter {
 	private String country;
 
 	@JsonProperty("showid")
-	private Integer showid;
+	private String showid;
 
 	@JsonProperty("registerfrom")
 	private String registerfrom;
@@ -69,10 +69,10 @@ public class GetAdminRetailerParameter {
 	private String registerto;
 
 	@JsonProperty("logincountfrom")
-	private Integer logincountfrom;
+	private String logincountfrom;
 
 	@JsonProperty("logincountto")
-	private Integer logincountto;
+	private String logincountto;
 
 	@JsonProperty("loginfrom")
 	private String loginfrom;
@@ -81,10 +81,10 @@ public class GetAdminRetailerParameter {
 	private String loginto;
 
 	@JsonProperty("ordercountfrom")
-	private Integer ordercountfrom;
+	private String ordercountfrom;
 
 	@JsonProperty("ordercountto")
-	private Integer ordercountto;
+	private String ordercountto;
 
 	@JsonProperty("checkoutfrom")
 	private String checkoutfrom;
@@ -93,13 +93,13 @@ public class GetAdminRetailerParameter {
 	private String checkoutto;
 
 	@JsonProperty("ordervendorcountfrom")
-	private Integer ordervendorcountfrom;
+	private String ordervendorcountfrom;
 
 	@JsonProperty("ordervendorcountto")
-	private Integer ordervendorcountto;
+	private String ordervendorcountto;
 
 	@JsonProperty("wholesalerid")
-	private Integer wholesalerid;
+	private String wholesalerid;
 
 	@JsonProperty("csv")
 	private Boolean csv;
@@ -112,7 +112,6 @@ public class GetAdminRetailerParameter {
 
 	@JsonProperty("companynamestartswith")
 	private Boolean companynamestartswith;
-
 
 	@JsonProperty("firstname")
 	private String firstname;
@@ -127,8 +126,8 @@ public class GetAdminRetailerParameter {
 	private Boolean lastnamepartialmatch;
 
 	@JsonProperty("orderamountfrom")
-	private BigDecimal orderamountfrom;
+	private String orderamountfrom;
 
 	@JsonProperty("orderamountto")
-	private BigDecimal orderamountto;
+	private String orderamountto;
 }
