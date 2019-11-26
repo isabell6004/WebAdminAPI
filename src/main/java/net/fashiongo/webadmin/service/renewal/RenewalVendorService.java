@@ -424,7 +424,6 @@ public class RenewalVendorService extends ApiService {
 				wholeSaler.setIsADBlock(r.getIsADBlock());
 
 				if (r.getOrderActive()) {
-					//up_wa_SetVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
 					setVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
 					if (wholeSaler.getActualOpenDate() == null) {
 						wholeSaler.setActualOpenDate(LocalDateTime.now());
@@ -449,7 +448,6 @@ public class RenewalVendorService extends ApiService {
 						String dateTimeNowTest = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 						if (actualOpenDateTest.equals(dateTimeNowTest)) {
-							//up_wa_SetVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
 							setVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
 
 							wholeSaler.setActualOpenDate(LocalDateTime.now());
@@ -472,7 +470,6 @@ public class RenewalVendorService extends ApiService {
 						String dateTimeNowTest = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 						if (actualOpenDateTest.equals(dateTimeNowTest)) {
-							//up_wa_SetVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
 							setVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
 
 							wholeSaler.setActualOpenDate(LocalDateTime.now());
@@ -573,7 +570,6 @@ public class RenewalVendorService extends ApiService {
 
 		try {
 			if (result == 1 && saveType == 1) {
-				// FG_Billing.up_Setting_Account(r.getWholeSalerID(), sessionUsrId);
 				String spname = "up_Setting_Account";
 				List<Object> params = new ArrayList<>();
 				params.add(r.getWholeSalerID());
@@ -659,13 +655,15 @@ public class RenewalVendorService extends ApiService {
 			item.setCategoryID(-10);
 			item.setWholeSalerID(wholeSalerId);
 			item.setFromDate(LocalDateTime.now());
-			item.setToDate(LocalDateTime.parse("9999-12-31 00:00:00.000"));
+			item.setToDate(LocalDateTime.parse("9999-12-31 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			item.setCreatedOn(LocalDateTime.now());
 			item.setCreatedBy(sessionUsrID);
 			item.setHowToInput(1);
 			item.setHowToSell(1);
 			item.setItemCount(10);
 			item.setActualPrice(BigDecimal.valueOf(0.00));
+
+			adVendorItemEntityRepository.save(item);
 		}
 	}
 
