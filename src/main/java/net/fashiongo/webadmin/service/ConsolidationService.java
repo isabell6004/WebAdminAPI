@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import net.fashiongo.webadmin.model.pojo.consolidation.Consolidation;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetail;
@@ -20,7 +21,6 @@ import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidation
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationSummaryResponse;
 import net.fashiongo.webadmin.utility.HttpClient;
-import org.springframework.util.StringUtils;
 
 @Service
 public class ConsolidationService extends ApiService {
@@ -39,10 +39,6 @@ public class ConsolidationService extends ApiService {
         LocalDateTime lastDayOfMonth = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0, 0).minusDays(1).minusSeconds(1);
         LocalDateTime lastMonth =  LocalDateTime.of(lastDayOfMonth.getYear(), lastDayOfMonth.getMonth(), 1, 0, 0, 0);
         LocalDateTime firstDayOfMonth =  lastDayOfMonth.minusMonths(1 * (q.getPeriodType() == null ? 1 : q.getPeriodType())).minusSeconds(1);
-        
-//        logger.info("getPeriodType:"  + q.getPeriodType());
-//        logger.info("firstDayOfMonth:" + firstDayOfMonth.toLocalDate());
-//        logger.info("lastDayOfMonth:" + lastDayOfMonth.toLocalDate());
         
 		params.add(firstDayOfMonth.toString());
 	    params.add(lastDayOfMonth.toString());

@@ -2,8 +2,10 @@ package net.fashiongo.webadmin.model.pojo.consolidation;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -30,8 +32,10 @@ public class ConsolidationSummary implements Serializable {
 	@Column(name = "Actual_Shipping_Charge")
 	private BigDecimal actualShippingCharge;
 
-	@JsonProperty("Avg_Shipping_Process_Time")
-	@Column(name = "Avg_Shipping_Process_Time")
-	private BigDecimal avgShippingProcessTime;
-	
+	@Column(name = "totalShippingProcessingHours")	
+	private Integer totalShippingProcessingHours;
+
+	@Column(name = "totalCount")
+	private Integer totalCount;
+
 }
