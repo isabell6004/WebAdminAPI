@@ -49,6 +49,7 @@ public class ConsolidationService extends ApiService {
 	@Autowired private OrderStatusChangeLogRepository orderStatusChangeLogRepository;
 	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
 	@Autowired private ShipAddressRepository shipAddressRepository;
+	private BigDecimal waivedFeeUpperBound = BigDecimal.valueOf(0.5); // waive 0 to 49 cents due to Stripe not accepting
 
 	@SuppressWarnings("unchecked")
 	public GetConsolidationSummaryResponse getOrderConsolidationListSummary(GetConsolidationSummaryParameter q) {
@@ -267,9 +268,8 @@ public class ConsolidationService extends ApiService {
 		if (c == null) throw new Exception("No consolidation exists");
 
 		// Prepare to save
-		BigDecimal wavedFeeUpperBound = BigDecimal.valueOf(500000);
 		setConsolidationShipMethod(c, request.getShipMethodId(), request.getIsShipped(), request.getShippedOn());
-		setConsolidationAmount(c, request.getShippingCharge(), request.getActualShippingCharge(), wavedFeeUpperBound);
+		setConsolidationAmount(c, request.getShippingCharge(), request.getActualShippingCharge(), request.getWaivedAmountByFg());
 		c.setTrackingNumber(request.getTrackingNumber());
 		c.setInhouseMemo(request.getInHouseMemo());
 		c.setModifiedBy(userName);
@@ -281,9 +281,6 @@ public class ConsolidationService extends ApiService {
 		// Save a consolidation
 		setConsolidationSum(c);
 		consolidationRepository.save(c);
-
-		// Update orderPaymentStatus
-		setOrderPaymentStatus(c, userName, wavedFeeUpperBound);
 	}
 
 	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
@@ -295,6 +292,9 @@ public class ConsolidationService extends ApiService {
 
 		// Update orders
 		setOrderStatuses(c, userName, ipAddress);
+
+		// Update orderPaymentStatus
+		setOrderPaymentStatus(c, userName);
 	}
 
 	private void setConsolidationShipMethod(ConsolidationEntity c, Integer shipMethodId, Boolean isShipped, String shippedOn) {
@@ -310,26 +310,35 @@ public class ConsolidationService extends ApiService {
 
 	private void setConsolidationAmount(
 			ConsolidationEntity c,
-			BigDecimal shippingCharge,
+			BigDecimal originalShippingCharge,
 			BigDecimal actualShippingCharge,
-			BigDecimal wavedFeeUpperBound) {
-		BigDecimal originalShippingCharge = shippingCharge;
+			BigDecimal waivedAmountByFg) {
+		BigDecimal totalShippingAmount = originalShippingCharge;
 		BigDecimal appliedCouponAmount = null;
-		BigDecimal wavedAmount = null;
-		if (c.getCouponAmount() != null) {
-			BigDecimal shippingAmountDiff = originalShippingCharge.subtract(c.getCouponAmount());
-			if (greaterThanZero(shippingAmountDiff) && shippingAmountDiff.compareTo(wavedFeeUpperBound) < 0) {
-				wavedAmount = shippingAmountDiff;
-				shippingAmountDiff = shippingAmountDiff.subtract(wavedAmount);
-			}
-			shippingCharge = lessThanZero(shippingAmountDiff) ? BigDecimal.ZERO : shippingAmountDiff;
-			appliedCouponAmount =  lessThanZero(shippingAmountDiff) ? originalShippingCharge : c.getCouponAmount();
+		BigDecimal waivedAmount = BigDecimal.ZERO;
+		BigDecimal couponAmount = nullToZero(c.getCouponAmount());
+		BigDecimal totalDiscounts = couponAmount.add(nullToZero(waivedAmountByFg));
+		//Coupon amount should take precedence over waivedAmountByFG
+		if (greaterThanZero(couponAmount)) {
+			BigDecimal shippingChargeDiff = originalShippingCharge.subtract(couponAmount);
+			appliedCouponAmount = lessThanZero(shippingChargeDiff) ? originalShippingCharge : c.getCouponAmount();
 		}
-		c.setShippingCharge(shippingCharge);
+		if (greaterThanZero(totalDiscounts)) {
+			BigDecimal shippingChargeDiff = originalShippingCharge.subtract(totalDiscounts);
+			// waivedAmount is dedicated to the amount waived due to Stripe not accepting charges ranging from 0 - .49 cents.
+			if (greaterThanZero(shippingChargeDiff) && shippingChargeDiff.compareTo(waivedFeeUpperBound) < 0) {
+				waivedAmount = shippingChargeDiff;
+				shippingChargeDiff = shippingChargeDiff.subtract(waivedAmount);
+			}
+			totalShippingAmount = lessThanZero(shippingChargeDiff) ? BigDecimal.ZERO : shippingChargeDiff;
+		}
+		c.setShippingCharge(totalShippingAmount);
 		c.setActualShippingCharge(actualShippingCharge);
 		c.setAppliedCouponAmount(appliedCouponAmount);
-		c.setWavedAmount(wavedAmount);
 		c.setOriginalShippingCharge(originalShippingCharge);
+		c.setAppliedCouponAmount(appliedCouponAmount);
+		c.setWavedAmount(waivedAmount);
+		c.setWaivedAmountByFg(waivedAmountByFg);
 	}
 
 	private void setOrderCharges(ConsolidationEntity c, String trackingNumber, String userName, String ipAddress) throws Exception {
@@ -419,7 +428,7 @@ public class ConsolidationService extends ApiService {
 		}
 	}
 
-	private void setOrderPaymentStatus(ConsolidationEntity c, String userName, BigDecimal waivedFeeUpperBound) {
+	private void setOrderPaymentStatus(ConsolidationEntity c, String userName) {
 		OrderPaymentStatus ops =
 				orderPaymentStatusRepository.findOneByReferenceIDAndIsOrder(c.getId(), 0);
 
@@ -453,5 +462,9 @@ public class ConsolidationService extends ApiService {
 
 	private boolean greaterThanZero(BigDecimal me) {
 		return me.compareTo(BigDecimal.ZERO) > 0;
+	}
+
+	private BigDecimal nullToZero(BigDecimal me) {
+		return me == null ? BigDecimal.ZERO : me;
 	}
 }

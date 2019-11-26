@@ -40,6 +40,7 @@ public class ConsolidationEntity {
     @Column(name = "original_shipping_charge") private BigDecimal originalShippingCharge;
     @Column(name = "applied_coupon_amount") private BigDecimal appliedCouponAmount;
     @Column(name = "waived_amount") private BigDecimal wavedAmount;
+    @Column(name = "waived_amount_by_fg") private BigDecimal waivedAmountByFg;
     @Column(name = "TrackingNumber") private String trackingNumber;
     @Column(name = "CreditCardID") private Integer creditCardId;
 }

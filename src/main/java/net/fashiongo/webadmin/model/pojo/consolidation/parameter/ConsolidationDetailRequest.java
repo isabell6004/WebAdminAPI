@@ -16,4 +16,5 @@ public class ConsolidationDetailRequest {
 	private BigDecimal actualShippingCharge;
 	private String trackingNumber;
 	private String inHouseMemo;
+	private BigDecimal waivedAmountByFg;
 }
