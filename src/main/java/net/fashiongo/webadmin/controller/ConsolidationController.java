@@ -2,22 +2,20 @@ package net.fashiongo.webadmin.controller;
 
 import java.util.List;
 
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationDetailParameter;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationParameter;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationDetailResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationSummaryResponse;
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
 import net.fashiongo.webadmin.service.ConsolidationService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
@@ -65,6 +63,38 @@ public class ConsolidationController {
 		return new JsonResponse<>(true, null, 0, result);
 	}
 
+	@PostMapping(value = "consolidationDetail")
+	public JsonResponse<Object> setConsolidationDetail(
+			@RequestBody ConsolidationDetailRequest consolidationDetailRequest,
+			HttpServletRequest request) {
+		try {
+			consolidationService.setConsolidationDetail(
+					consolidationDetailRequest,
+					Utility.getUsername(),
+					Utility.getIpAddress(request));
+			return new JsonResponse<>(true, null, null);
+		} catch (Exception e) {
+			log.error("ConsolidationController.setConsolidationDetail() request={}", request, e);
+			return new JsonResponse<>( false, e.getMessage(), null);
+		}
+	}
+
+	@PostMapping(value = "fullyShipped/{consolidationId}")
+	public JsonResponse<Object> setFullyShipped(
+			@PathVariable("consolidationId") Integer consolidationId,
+			HttpServletRequest request) {
+		try {
+			consolidationService.setFullyShipped(
+					consolidationId,
+					Utility.getUsername(),
+					Utility.getIpAddress(request));
+			return new JsonResponse<>(true, null, null);
+		} catch (Exception e) {
+			log.error("ConsolidationController.setFullyShipped() consolidationId={}", consolidationId, e);
+			return new JsonResponse<>( false, e.getMessage(), null);
+		}
+	}
+
 	@GetMapping(value = "consolidationShipMethod")
 	public JsonResponse<List<ShipMethodResponse>> getConsolidationShipMethod() {
 		try {
@@ -76,24 +106,24 @@ public class ConsolidationController {
 	}
 
 	@PostMapping(value = "consolidationMemo")
-	public JsonResponse<Object> setConsolidationMemo(@RequestBody ConsolidationMemoRequest memoRequest) {
+	public JsonResponse<Object> setConsolidationMemo(@RequestBody ConsolidationMemoRequest request) {
 		try {
-			consolidationService.setConsolidationMemo(memoRequest, Utility.getUsername());
+			consolidationService.setConsolidationMemo(request, Utility.getUsername());
 			return new JsonResponse<>(true, null, null);
 		} catch (Exception e) {
-			log.error("ConsolidationController.setConsolidationMemo() memoRequest={}", memoRequest, e);
+			log.error("ConsolidationController.setConsolidationMemo() request={}", request, e);
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
 
 	@PostMapping(value = "consolidationDetailShippingAddress")
 	public JsonResponse<Object> setConsolidationDetailShippingAddress(
-			@RequestBody ConsolidationDetailShippingAddressRequest addressRequest) {
+			@RequestBody ConsolidationDetailShippingAddressRequest request) {
 		try {
-			consolidationService.setConsolidationDetailShippingAddress(addressRequest, Utility.getUsername());
+			consolidationService.setConsolidationDetailShippingAddress(request, Utility.getUsername());
 			return new JsonResponse<>(true, null, null);
 		} catch (Exception e) {
-			log.error("ConsolidationController.setConsolidationDetailShippingAddress() addressRequest={}", addressRequest, e);
+			log.error("ConsolidationController.setConsolidationDetailShippingAddress() request={}", request, e);
 			return new JsonResponse<>( false, e.getMessage(), null);
 		}
 	}

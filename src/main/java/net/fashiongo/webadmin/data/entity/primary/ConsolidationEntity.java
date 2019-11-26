@@ -31,4 +31,15 @@ public class ConsolidationEntity {
     @Column(name = "IsCommercialAddress") private Boolean isCommercialAddress;
     @Column(name = "ModifiedOn") private LocalDateTime modifiedOn;
     @Column(name = "ModifiedBy", length = 50) private String modifiedBy;
+    @Column(name = "ShipMethodID") private Integer shipMethodId;
+    @Column(name = "ShipMethodName", length = 50, nullable = false) private String shipMethodName;
+    @Column(name = "coupon_amount") private BigDecimal couponAmount;
+    @Column(name = "ShippedOn") private LocalDateTime shippedOn;
+    @Column(name = "ShippingCharge") private BigDecimal shippingCharge;
+    @Column(name = "ActualShippingCharge") private BigDecimal actualShippingCharge;
+    @Column(name = "original_shipping_charge") private BigDecimal originalShippingCharge;
+    @Column(name = "applied_coupon_amount") private BigDecimal appliedCouponAmount;
+    @Column(name = "waived_amount") private BigDecimal wavedAmount;
+    @Column(name = "TrackingNumber") private String trackingNumber;
+    @Column(name = "CreditCardID") private Integer creditCardId;
 }

@@ -1,12 +1,19 @@
 package net.fashiongo.webadmin.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.*;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.*;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,18 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.fashiongo.webadmin.dao.primary.ConsolidationRepository;
-import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
-import net.fashiongo.webadmin.dao.primary.OrderRepository;
-import net.fashiongo.webadmin.dao.primary.ShipMethodRepository;
-import net.fashiongo.webadmin.data.entity.primary.ConsolidationEntity;
-import net.fashiongo.webadmin.data.entity.primary.ShipMethod;
-import net.fashiongo.webadmin.dao.primary.ShipAddressRepository;
-import net.fashiongo.webadmin.data.entity.primary.ShipAddressEntity;
 import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.Address;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
@@ -36,9 +32,6 @@ import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetail;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetailList;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationSummary;
 import net.fashiongo.webadmin.model.pojo.consolidation.TotalCount;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationDetailParameter;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationParameter;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationDetailResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationSummaryResponse;
@@ -49,9 +42,11 @@ import net.fashiongo.webadmin.utility.Utility;
 @Service
 public class ConsolidationService extends ApiService {
 	@Autowired @Qualifier("serviceJsonClient") private HttpClient httpClient;
+	@Autowired private PaymentService paymentService;
 	@Autowired private ShipMethodRepository shipMethodRepository;
 	@Autowired private ConsolidationRepository consolidationRepository;
 	@Autowired private OrderRepository orderRepository;
+	@Autowired private OrderStatusChangeLogRepository orderStatusChangeLogRepository;
 	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
 	@Autowired private ShipAddressRepository shipAddressRepository;
 
@@ -157,34 +152,34 @@ public class ConsolidationService extends ApiService {
 	}
 
 	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
-	public void setConsolidationMemo(ConsolidationMemoRequest memoRequest, String userName) throws Exception {
-		if (memoRequest == null) throw new Exception("No memo is requested");
+	public void setConsolidationMemo(ConsolidationMemoRequest memo, String userName) throws Exception {
+		if (memo == null) throw new Exception("No memo is requested");
 
-		Optional<ConsolidationEntity> cOptional = consolidationRepository.findById(memoRequest.getId());
+		Optional<ConsolidationEntity> cOptional = consolidationRepository.findById(memo.getId());
 		if (!cOptional.isPresent()) throw new Exception("No consolidation exists");
 
 		ConsolidationEntity c = cOptional.get();
-		c.setInhouseMemo(memoRequest.getMemo());
+		c.setInhouseMemo(memo.getMemo());
 		c.setModifiedBy(userName);
 		c.setModifiedOn(LocalDateTime.now());
 		consolidationRepository.save(c);
 	}
 
 	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
-	public void setConsolidationDetailShippingAddress(ConsolidationDetailShippingAddressRequest addressRequest, String userName) throws Exception {
-		if (addressRequest == null) throw new Exception("No shipping address is requested");
+	public void setConsolidationDetailShippingAddress(ConsolidationDetailShippingAddressRequest address, String userName) throws Exception {
+		if (address == null) throw new Exception("No shipping address is requested");
 
-		Optional<ConsolidationEntity> cOptional = consolidationRepository.findById(addressRequest.getId());
+		Optional<ConsolidationEntity> cOptional = consolidationRepository.findById(address.getId());
 		if (!cOptional.isPresent()) throw new Exception("No consolidation exists");
 
 		ConsolidationEntity c = cOptional.get();
-		c.setStreetNo(addressRequest.getStreetNo());
-		c.setCity(addressRequest.getCity());
-		c.setState(addressRequest.getState());
-		c.setZipcode(addressRequest.getZipCode());
-		c.setCountry(addressRequest.getCountry());
-		c.setCountryId(addressRequest.getCountryId());
-		c.setIsCommercialAddress(addressRequest.isCommercialAddress());
+		c.setStreetNo(address.getStreetNo());
+		c.setCity(address.getCity());
+		c.setState(address.getState());
+		c.setZipcode(address.getZipCode());
+		c.setCountry(address.getCountry());
+		c.setCountryId(address.getCountryId());
+		c.setIsCommercialAddress(address.isCommercialAddress());
 		setConsolidationSum(c);
 		c.setModifiedBy(userName);
 		c.setModifiedOn(LocalDateTime.now());
@@ -212,12 +207,7 @@ public class ConsolidationService extends ApiService {
             return;
         }
 
-        int totalConsolidatedOrders = orderRepository.countByConsolidationId(consolidationId);
-
-        //The x.IsConsolidated == false is for the case where the consolidated order was removed.
-        int totalInvalidOrders = orderRepository.getInvalidConsolidationOrderCount(consolidationId);
-
-        if(totalConsolidatedOrders == totalInvalidOrders){
+        if(isAllConsolidationsInvalid(consolidationId)){
             //Update the order payment status id to 999
             orderPaymentStatus.setPrePaymentStatusID(orderPaymentStatus.getPaymentStatusID());
             orderPaymentStatus.setPaymentStatusID(999);
@@ -228,6 +218,11 @@ public class ConsolidationService extends ApiService {
 
 	}
 
+	private boolean isAllConsolidationsInvalid(Integer consolidationId) {
+		int totalConsolidatedOrders = orderRepository.countByConsolidationId(consolidationId);
+		int totalInvalidOrders = orderRepository.getInvalidConsolidationOrderCount(consolidationId);
+		return totalConsolidatedOrders == totalInvalidOrders;
+	}
 
 	public Boolean checkAddressCommercial(ConsolidationDetailShippingAddressRequest addressRequest) throws Exception {
 		// Check
@@ -257,9 +252,206 @@ public class ConsolidationService extends ApiService {
 	}
 
 	public Boolean sendConsolidationEmail(Integer consolidationId) throws Exception {
-		if (consolidationId == null) throw new Exception("No consolidation requested");
+		if (consolidationId == null) throw new Exception("No consolidation is requested");
 		JsonResponse<?> result = httpClient.get("/email/sendConsolidationShipment/" + consolidationId);
 		if (result == null) throw new Exception("Cannot send a consolidation email");
 		return result.isSuccess();
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
+	public void setConsolidationDetail(ConsolidationDetailRequest request, String userName, String ipAddress) throws Exception {
+		// Get a consolidation
+		Integer consolidationId = request.getConsolidationId();
+		if (consolidationId == null) throw new Exception("No consolidation is selected");
+		ConsolidationEntity c = consolidationRepository.findOneById(consolidationId);
+		if (c == null) throw new Exception("No consolidation exists");
+
+		// Prepare to save
+		BigDecimal wavedFeeUpperBound = BigDecimal.valueOf(500000);
+		setConsolidationShipMethod(c, request.getShipMethodId(), request.getIsShipped(), request.getShippedOn());
+		setConsolidationAmount(c, request.getShippingCharge(), request.getActualShippingCharge(), wavedFeeUpperBound);
+		c.setTrackingNumber(request.getTrackingNumber());
+		c.setInhouseMemo(request.getInHouseMemo());
+		c.setModifiedBy(userName);
+		c.setModifiedOn(LocalDateTime.now());
+
+		// Update orders
+		setOrderCharges(c, request.getTrackingNumber(), userName, ipAddress);
+
+		// Save a consolidation
+		setConsolidationSum(c);
+		consolidationRepository.save(c);
+
+		// Update orderPaymentStatus
+		setOrderPaymentStatus(c, userName, wavedFeeUpperBound);
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
+	public void setFullyShipped(Integer consolidationId, String userName, String ipAddress) throws Exception {
+		// Get a consolidation
+		if (consolidationId == null) throw new Exception("No consolidation is selected");
+		ConsolidationEntity c = consolidationRepository.findOneById(consolidationId);
+		if (c == null) throw new Exception("No consolidation exists");
+
+		// Update orders
+		setOrderStatuses(c, userName, ipAddress);
+	}
+
+	private void setConsolidationShipMethod(ConsolidationEntity c, Integer shipMethodId, Boolean isShipped, String shippedOn) {
+		Optional<ShipMethod> shipMethodOptional = shipMethodRepository.findById(c.getShipMethodId());
+		String shipMethodName =
+				shipMethodOptional.isPresent() && shipMethodOptional.get().getShipMethodName() != null ?
+						shipMethodOptional.get().getShipMethodName() :
+						"Select Ship Method";
+		c.setShipMethodId(shipMethodId);
+		c.setShipMethodName(shipMethodName);
+		c.setShippedOn(isShipped ? LocalDateTime.now() : LocalDate.parse(shippedOn, DateTimeFormatter.ofPattern("M/d/yyyy")).atStartOfDay());
+	}
+
+	private void setConsolidationAmount(
+			ConsolidationEntity c,
+			BigDecimal shippingCharge,
+			BigDecimal actualShippingCharge,
+			BigDecimal wavedFeeUpperBound) {
+		BigDecimal originalShippingCharge = shippingCharge;
+		BigDecimal appliedCouponAmount = null;
+		BigDecimal wavedAmount = null;
+		if (c.getCouponAmount() != null) {
+			BigDecimal shippingAmountDiff = originalShippingCharge.subtract(c.getCouponAmount());
+			if (greaterThanZero(shippingAmountDiff) && shippingAmountDiff.compareTo(wavedFeeUpperBound) < 0) {
+				wavedAmount = shippingAmountDiff;
+				shippingAmountDiff = shippingAmountDiff.subtract(wavedAmount);
+			}
+			shippingCharge = lessThanZero(shippingAmountDiff) ? BigDecimal.ZERO : shippingAmountDiff;
+			appliedCouponAmount =  lessThanZero(shippingAmountDiff) ? originalShippingCharge : c.getCouponAmount();
+		}
+		c.setShippingCharge(shippingCharge);
+		c.setActualShippingCharge(actualShippingCharge);
+		c.setAppliedCouponAmount(appliedCouponAmount);
+		c.setWavedAmount(wavedAmount);
+		c.setOriginalShippingCharge(originalShippingCharge);
+	}
+
+	private void setOrderCharges(ConsolidationEntity c, String trackingNumber, String userName, String ipAddress) throws Exception {
+		List<Order> orders = orderRepository.findByConsolidationIdAndIsConsolidatedAndOrderStatusIdNotIn(
+				c.getId(), true, Arrays.asList(5/* Cancelled */, 7/* Backordered */));
+		if (CollectionUtils.isEmpty(orders)) return;
+
+		for (Order o : orders) {
+			Integer orderStatusId = o.getOrderStatusId();
+
+			// 5. Cancelled, 6. Returned
+			if (orderStatusId == 5 ||
+					orderStatusId == 51 ||
+					orderStatusId == 52 ||
+					orderStatusId == 53 ||
+					orderStatusId == 6) {
+				continue;
+			}
+
+			o.setConsolidationShipCharge(c.getShippingCharge());
+			o.setShipTrackNo(trackingNumber);
+			o.setModifiedBy(userName);
+			o.setModifiedOn(LocalDateTime.now());
+			orderRepository.save(o);
+
+			// Save a log
+			orderStatusChangeLogRepository.save(
+					OrderStatusChangeLogEntity.builder()
+							.orderId(o.getId())
+							.isAdmin(false)
+							.wholesalerId(0)
+							.userName(userName)
+							.accessIp(ipAddress)
+							.orderStatusId(o.getOrderStatusId())
+							.createdOn(LocalDateTime.now())
+							.happenedAt(4)
+							.referenceTypeId(1)
+							.build());
+		}
+	}
+
+	private void setOrderStatuses(ConsolidationEntity c, String userName, String ipAddress) throws Exception {
+		// Get isCardValid
+		PaymentStatusResponse payment = paymentService.getCreditCardStatus(c.getCreditCardId(), c.getId());
+		boolean isCardCompleted = payment != null && payment.getCardStatusId() == 1;
+
+		// Update orders
+		List<Order> orders = orderRepository.findByConsolidationIdAndIsConsolidatedAndOrderStatusIdNotIn(
+				c.getId(), true, Arrays.asList(5/* Cancelled */, 7/* Backordered */));
+		if (CollectionUtils.isEmpty(orders)) return;
+
+		for (Order o : orders) {
+			Integer orderStatusId = o.getOrderStatusId();
+
+			// 5. Cancelled, 6. Returned
+			if (orderStatusId == 5 ||
+					orderStatusId == 51 ||
+					orderStatusId == 52 ||
+					orderStatusId == 53 ||
+					orderStatusId == 6) {
+				continue;
+			}
+
+			// 1. Newly Placed, 2. Confirmed
+			if (orderStatusId <= 2 && isCardCompleted) {
+				o.setOrderStatusId(4); // Fully shipped
+				o.setShipDate(LocalDateTime.now());
+
+				o.setModifiedBy(userName);
+				o.setModifiedOn(LocalDateTime.now());
+				orderRepository.save(o);
+
+				// Save a log
+				orderStatusChangeLogRepository.save(
+						OrderStatusChangeLogEntity.builder()
+								.orderId(o.getId())
+								.isAdmin(false)
+								.wholesalerId(0)
+								.userName(userName)
+								.accessIp(ipAddress)
+								.orderStatusId(o.getOrderStatusId())
+								.createdOn(LocalDateTime.now())
+								.happenedAt(4)
+								.referenceTypeId(1)
+								.build());
+			}
+		}
+	}
+
+	private void setOrderPaymentStatus(ConsolidationEntity c, String userName, BigDecimal waivedFeeUpperBound) {
+		OrderPaymentStatus ops =
+				orderPaymentStatusRepository.findOneByReferenceIDAndIsOrder(c.getId(), 0);
+
+		if (((isZero(c.getShippingCharge()) && isZero(c.getActualShippingCharge())) // When the shipping charge and actual shipping charge are zero,
+				|| (c.getShippingCharge().compareTo(c.getWavedAmount()) < 0 && c.getCouponAmount() != null)) // Or virtually zero,
+			&& ops != null && ops.getPaymentStatusID() != 999 && ops.getOrderPaymentStatusID() != 0) {
+			// Set the payment status to cancelled.
+			ops.setPaymentStatusID(999);
+			ops.setModifiedOn(LocalDateTime.now());
+			ops.setModifiedBy(userName);
+			orderPaymentStatusRepository.save(ops);
+		} else if ((((greaterThanZero(c.getShippingCharge()) || greaterThanZero(c.getActualShippingCharge())) && c.getCouponAmount() == null) // When shipping charge or actual shipping charge are not zero,
+				|| (c.getShippingCharge().compareTo(waivedFeeUpperBound) >= 0 && c.getCouponAmount() != null)) // Or virtually zero,
+			&& ops != null && ops.getPaymentStatusID() == 999 && isAllConsolidationsInvalid(c.getId())) { // And not set to cancelled due to all the consolidation orders either being cancelled or removed
+			// Set the paymentStatusId back to its previous paymentStatusId
+			ops.setPaymentStatusID(ops.getPrePaymentStatusID() == null ? 1 : ops.getPrePaymentStatusID());
+			ops.setPrePaymentStatusID(ops.getPaymentStatusID());
+			ops.setModifiedOn(LocalDateTime.now());
+			ops.setModifiedBy(userName);
+			orderPaymentStatusRepository.save(ops);
+		}
+	}
+
+	private boolean lessThanZero(BigDecimal me) {
+		return me.compareTo(BigDecimal.ZERO) < 0;
+	}
+
+	private boolean isZero(BigDecimal me) {
+		return me.compareTo(BigDecimal.ZERO) == 0;
+	}
+
+	private boolean greaterThanZero(BigDecimal me) {
+		return me.compareTo(BigDecimal.ZERO) > 0;
 	}
 }
