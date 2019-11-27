@@ -12,7 +12,7 @@ public class Retailer {
 
 	private String lastLoginDate;
 
-	private boolean isLockOut;
+	private Boolean isLockOut;
 
 	private String lastLockoutDate;
 

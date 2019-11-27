@@ -149,7 +149,7 @@ public class RenewalBuyerService {
 					.lastModifiedDateTime(retailerEntity.getLastModifiedDateTime())
 					.lastName(retailerEntity.getLastName())
 					.lastUser(retailerEntity.getLastUser())
-					.loginCount(retailerEntity.getLoginCount())
+					.loginCount(Optional.ofNullable(retailerEntity.getLoginCount()).orElse(0))
 					.memo(retailerEntity.getMemo())
 					.mobilePhoneNo(retailerEntity.getMobilePhoneNo())
 					.retailerId(retailerEntity.getRetailerID())

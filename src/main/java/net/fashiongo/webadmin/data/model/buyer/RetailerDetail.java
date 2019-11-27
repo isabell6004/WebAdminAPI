@@ -23,7 +23,7 @@ public class RetailerDetail {
 	private String email;
 
 	@JsonProperty("CurrentStatus")
-	private int currentStatus;
+	private Integer currentStatus;
 
 	@JsonProperty("Active")
 	private String active;
@@ -50,7 +50,7 @@ public class RetailerDetail {
 	private String retailerPermitNo;
 
 	@JsonProperty("LoginCount")
-	private int loginCount;
+	private Integer loginCount;
 
 	@JsonProperty("LastLoginDate")
 	private LocalDateTime lastLoginDate;
