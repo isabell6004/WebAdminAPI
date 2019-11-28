@@ -469,4 +469,12 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "getmodifiedbybuyerread", method = RequestMethod.POST)
+	public JsonResponse getModifiedByBuyerRead(@RequestBody GetModifiedByBuyerReadParameter parameter) {
+		String username = Utility.getUsername();
+		JsonResponse response = renewalBuyerService.getModifiedByBuyerRead(parameter,username);
+
+		return response;
+	}
 }

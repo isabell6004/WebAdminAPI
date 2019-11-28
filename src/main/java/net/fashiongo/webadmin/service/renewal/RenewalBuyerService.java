@@ -82,6 +82,9 @@ public class RenewalBuyerService {
 	private WASavedSearchEntityRepository waSavedSearchEntityRepository;
 
 	@Autowired
+	private EntityActionLogEntityRepository entityActionLogEntityRepository;
+
+	@Autowired
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
 
@@ -1140,5 +1143,31 @@ public class RenewalBuyerService {
 			response.setData(data);
 			return response;
 		}
+	}
+
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public JsonResponse getModifiedByBuyerRead(GetModifiedByBuyerReadParameter parameter, String sessionUserId) {
+		JsonResponse jsonResponse = new JsonResponse();
+
+		try {
+
+			EntityActionLogEntity actionLogEntity = new EntityActionLogEntity();
+
+			actionLogEntity.setEntityTypeID(2);
+			actionLogEntity.setActionID(4005);
+			actionLogEntity.setEntityID(parameter.getRid());
+			actionLogEntity.setActedOn(LocalDateTime.now());
+			actionLogEntity.setActedBy(sessionUserId);
+
+			entityActionLogEntityRepository.save(actionLogEntity);
+
+			jsonResponse.setSuccess(true);
+			jsonResponse.setCode(1);
+			jsonResponse.setMessage("Saved successfully!");
+		} catch (Exception e) {
+			jsonResponse.setMessage(e.getMessage());
+		}
+
+		return jsonResponse;
 	}
 }
