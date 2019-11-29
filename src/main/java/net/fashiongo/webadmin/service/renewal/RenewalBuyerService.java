@@ -1170,4 +1170,18 @@ public class RenewalBuyerService {
 
 		return jsonResponse;
 	}
+
+	public GetModifiedByBuyerResponse getModifiedByBuyer(GetModifiedByBuyerParameter parameter) {
+		LocalDateTime fromdate = Optional.ofNullable(parameter.getFromdate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> LocalDateTime.parse(s))
+				.orElse(LocalDateTime.MIN);
+		LocalDateTime todate = LocalDateTime.now().plusDays(1);
+
+		List<ModifiedByBuyer> modifiedByBuyers = entityActionLogEntityRepository.up_wa_GetModifiedByBuyer(fromdate,todate);
+
+		return GetModifiedByBuyerResponse.builder()
+				.modifiedByBuyerList(modifiedByBuyers)
+				.build();
+	}
 }

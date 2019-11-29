@@ -477,4 +477,13 @@ public class BuyerController {
 
 		return response;
 	}
+
+	@RequestMapping(value = "getmodifiedbybuyer", method = RequestMethod.POST)
+	public JsonResponse<GetModifiedByBuyerResponse> getModifiedByBuyer(@RequestBody GetModifiedByBuyerParameter parameter) {
+		JsonResponse<GetModifiedByBuyerResponse> response = new JsonResponse<>();
+		GetModifiedByBuyerResponse modifiedByBuyer = renewalBuyerService.getModifiedByBuyer(parameter);
+		response.setSuccess(true);
+		response.setData(modifiedByBuyer);
+		return response;
+	}
 }
