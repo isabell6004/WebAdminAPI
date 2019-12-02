@@ -225,7 +225,7 @@ public class Consolidation implements Serializable {
 	private BigDecimal appliedCouponAmount;
 
 	@JsonProperty("Original_Shipping_Charge")
-	@Column(name = "original_shipping_charge")
+	@Column(name = "Original_Shipping_Charge")
 	private BigDecimal originalShippingCharge;
 	
 	@JsonProperty("Waived_Amount")
