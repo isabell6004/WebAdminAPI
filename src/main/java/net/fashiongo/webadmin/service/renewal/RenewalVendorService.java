@@ -788,6 +788,7 @@ public class RenewalVendorService extends ApiService {
 			List<AspnetMembershipEntity> membershipList = new ArrayList<>();
 			for(VendorAdminAccountEntity vendorAdminAccount : vendorAdminAccounts) {
 				AspnetMembershipEntity membership = aspnetMembershipEntityRepository.findOneByWholeSalerGUIDAndIsLockedOutTrue(vendorAdminAccount.getUserGUID());
+				if (membership == null) continue;
 				membership.setLockedOut(false);
 				membershipList.add(membership);
 			}
