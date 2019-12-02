@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class GetConsolidationParameter {
 	@JsonProperty("periodtype")
-	@ApiModelProperty(required = false, example="1")
+	@ApiModelProperty(required = false, example="6")
 	private Integer periodType;
 
 	@JsonProperty("pagenum")
