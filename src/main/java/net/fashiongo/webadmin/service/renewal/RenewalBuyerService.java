@@ -177,10 +177,12 @@ public class RenewalBuyerService {
 
 				boolean isLockOut = m.isLockedOut();
 
-				String lastLockoutDateString = Optional.ofNullable(m.getLastLockoutDate())
-						.map(dateTime -> ZonedDateTime.of(dateTime, ZoneId.systemDefault()).format(ZONED_DATETIME_FORMAT))
-						.orElse("");
-
+				/**
+				 * FGM/176 fix
+				 * Conversion is not needed since the date time is already in PST.
+				 */
+				String lastLockoutDateString = m.getLastLockoutDate() == null ? null : m.getLastLockoutDate().toString();
+			
 				return Retailer.builder()
 						.isLockOut(isLockOut)
 						.lastLockoutDate(lastLockoutDateString)
