@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class GetConsolidationParameter {
 	@JsonProperty("periodtype")
-	@ApiModelProperty(required = false, example="1")
+	@ApiModelProperty(required = false, example="6")
 	private Integer periodType;
 
 	@JsonProperty("pagenum")
@@ -34,6 +34,9 @@ public class GetConsolidationParameter {
 	@JsonProperty("bshipped")
 	private Integer bshipped;
 
+	@JsonProperty("paymentSatus")
+	private Integer paymentSatus;
+	
 	@JsonProperty("wn")
 	private String wn;
 
@@ -45,6 +48,9 @@ public class GetConsolidationParameter {
 	
 	@JsonProperty("cn")
 	private String cn;
+
+	@JsonProperty("tn")
+	private String tn;
 	
 	@JsonProperty("orderby")
 	private String orderBy;

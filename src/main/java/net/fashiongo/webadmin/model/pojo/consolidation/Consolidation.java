@@ -36,8 +36,8 @@ public class Consolidation implements Serializable {
 	@Column(name = "TotalQty")
 	private Integer totalQty;
 
-	@JsonProperty("orderCount")
-	@Column(name = "orderCount")
+	@JsonProperty("OrderCount")
+	@Column(name = "OrderCount")
 	private Integer orderCount;
 
 	@JsonProperty("BuyerName")
@@ -239,5 +239,9 @@ public class Consolidation implements Serializable {
 	@JsonProperty("histCnt")
 	@Column(name = "histCnt")
 	private Integer histCnt;
-	
+
+	@JsonProperty("PaymentStatusName")
+	@Column(name = "PaymentStatusName")
+	private String paymentStatusName;
+
 }
