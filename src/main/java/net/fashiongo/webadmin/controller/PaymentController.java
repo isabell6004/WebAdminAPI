@@ -6,6 +6,7 @@ package net.fashiongo.webadmin.controller;
 import java.time.LocalDateTime;
 
 import net.fashiongo.webadmin.data.model.payment.GetPaymentAccountInfoParameter;
+import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,5 +146,15 @@ public class PaymentController {
 		}
 
 		return response;
+	}
+
+	@PostMapping(value = "/setpaymentaccountinfo")
+	public JsonResponse<?> setPaymentAccountInfo(@RequestBody SetPaymentAccountInfoParameter param) {
+		try {
+			return paymentService.setPaymentAccountInfo(param);
+		} catch (Exception e) {
+			logger.error("PaymentController.setPaymentAccountInfo()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
 	}
 }
