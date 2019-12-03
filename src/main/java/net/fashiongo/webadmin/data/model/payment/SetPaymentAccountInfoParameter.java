@@ -2,8 +2,10 @@ package net.fashiongo.webadmin.data.model.payment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class SetPaymentAccountInfoParameter {
     @JsonProperty(value = "businessName")
     private String businessName;

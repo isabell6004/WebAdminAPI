@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -94,6 +95,17 @@ public class PaymentService extends ApiService {
 
 	public JsonResponse<?> setPaymentAccountInfo(SetPaymentAccountInfoParameter p) throws JsonProcessingException {
 		String url = "/account/" + p.getWholeSalerId() + "/update";
+		p.setMaxPayoutPerDay(p.getMaxPayoutPerDay() == null ? 0 : p.getMaxPayoutPerDay());
+		p.setPayoutSchedule(p.getPayoutSchedule() == null ? 0 : p.getPayoutSchedule());
+		p.setWholeSalerId(p.getWholeSalerId() == null ? 0 : p.getWholeSalerId());
+
+		return (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
+	}
+
+	public JsonResponse<?> setPaymentAccountBank(SetPaymentAccountBankParameter p) throws JsonProcessingException {
+		String url = "/account/bank/" + p.getWholeSalerId() + "/add";
+		p.setWholeSalerId(p.getWholeSalerId() == null ? 0 : p.getWholeSalerId());
+
 		return (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
 	}
 }
