@@ -40,6 +40,9 @@ public class CouponNotificationEntity {
 	@Column(name = "notification_image_file_name")
 	private String notificationImageFileName;
 
+	@Column(name = "isSendEmail")
+    private Boolean isSendEmail;
+    
 	@Column(name = "created_by")
 	private String createdBy;
 
