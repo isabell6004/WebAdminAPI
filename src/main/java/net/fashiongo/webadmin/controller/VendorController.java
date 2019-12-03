@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.entity.primary.SecurityUserEntity;
-import net.fashiongo.webadmin.data.entity.primary.VendorContractEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
@@ -1145,6 +1144,15 @@ public class VendorController {
 		ResultCode result = renewalVendorService.setVendorSettingAccount(wid);
 
     	return result;
+	}
+
+	@GetMapping(value = "getvendoradminaccountlist")
+	public JsonResponse getvendoradminaccountlist(@RequestParam(value = "WholeSalerID") Integer wholeSalerID) {
+    	Integer wid = wholeSalerID == null ? 0 : wholeSalerID;
+
+    	JsonResponse response = renewalVendorService.getVendorAdminAccountList(wid);
+
+    	return response;
 	}
 }
 	
