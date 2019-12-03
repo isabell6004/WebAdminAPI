@@ -17,13 +17,13 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -375,5 +375,23 @@ public class RenewalSitemgmtService {
 		}
 
 		return result;
+	}
+
+	public GetTrendReportResponse getTrendReport(GetTrendReportParameter parameter) {
+		Integer pagenum = Optional.ofNullable(parameter.getPagenum()).orElse(1);
+		Integer pagesize = Optional.ofNullable(parameter.getPagesize()).orElse(10);
+		String searchtxt = Optional.ofNullable(parameter.getSearchtxt()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		LocalDateTime fromdate = Optional.ofNullable(parameter.getFromdate()).filter(s -> StringUtils.hasLength(s)).map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+		LocalDateTime todate = Optional.ofNullable(parameter.getTodate()).filter(s -> StringUtils.hasLength(s)).map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+		Boolean active = Optional.ofNullable(parameter.getActive()).filter(s -> StringUtils.hasLength(s)).map(s -> Boolean.valueOf(s)).orElse(null);
+		String orderby = Optional.ofNullable(parameter.getOrderby()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		String orderbygubn = Optional.ofNullable(parameter.getOrderbygubn()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+
+		Page<TrendReport> trendReports = trendReportEntityRepository.up_wa_GetAdminTrendReport(pagenum, pagesize, searchtxt, fromdate, todate, orderby, orderbygubn, active);
+
+		return GetTrendReportResponse.builder()
+				.recCnt(Arrays.asList(Total.builder().recCnt((int) trendReports.getTotalElements()).build()))
+				.trendReports(trendReports.getContent())
+				.build();
 	}
 }

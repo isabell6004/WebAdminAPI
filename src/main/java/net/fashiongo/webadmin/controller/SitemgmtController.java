@@ -5,6 +5,8 @@ import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.sitemgmt.GetTrendReportParameter;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportResponse;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
@@ -25,6 +27,7 @@ import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Consumes;
@@ -1008,5 +1011,15 @@ public class SitemgmtController {
 	public JsonResponse<Integer> delTrendKeyword(@RequestBody DelTrendDailyKeywordParameter parameter) {
 		ResultCode result = sitemgmtService.delTrendDailyKeyword(parameter);
 		return new JsonResponse<Integer>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
+	}
+
+	@PostMapping(value = "gettrendreport")
+	public JsonResponse<GetTrendReportResponse> getTrendReport(@RequestBody GetTrendReportParameter parameter) {
+		JsonResponse<GetTrendReportResponse> response = new JsonResponse<GetTrendReportResponse>(true, null, null);
+		GetTrendReportResponse result = renewalSitemgmtService.getTrendReport(parameter);
+
+		response.setSuccess(true);
+		response.setData(result);
+		return response;
 	}
 }
