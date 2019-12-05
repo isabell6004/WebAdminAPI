@@ -18,12 +18,12 @@
     - Case1. AD-API의 API를 reverse proxy 하는 경우
     - Case2. AD-API의 API를 call 한 뒤, 추가 데이터를 merge 해야하는 경우
 - WebAdminAPI 광고 영역 API는 다음과 같은 Prefix 를 갖는다.
-    - /v4/adapi/
+    - /api/adapi/
     - example 1. AD-API 의 POST /v2/pages reverse proxy 하는 경우
-        - POST /v4/adapi/pages -> /v2/pages
+        - POST /api/adapi/pages -> /v2/pages
         - 해당 API는  AD-API 의 ad-api.md 문서로 갈음한다.
     - example 2. AD-API 의 GET /v2/receipts/{receipt-id} 를 merge 하는 경우
-        - GET /v4/adapi/receipts/{receipt-id} -> /v2/receipts/{receipt-id}
+        - GET /api/adapi/receipts/{receipt-id} -> /v2/receipts/{receipt-id}
         - 해당 API 의 응답은 직접 기술 한다.
         - 보통은 HTTP Body > data > references 에 merge 된 객체를 참고한다. 
 
