@@ -10,6 +10,7 @@ import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLogListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
@@ -36,6 +37,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -1153,6 +1155,42 @@ public class VendorController {
     	JsonResponse response = renewalVendorService.getVendorAdminAccountList(wid);
 
     	return response;
+	}
+
+	@GetMapping(value = "getvendoradminaccountloglist")
+	public JsonResponse<GetVendorAdminAccountLogListResponse> getvendoradminaccountloglist(
+			@RequestParam(value = "pagenum") Integer pagenum,
+			@RequestParam(value = "pagesize") Integer pagesize,
+			@RequestParam(value = "WholeSalerID") Integer wholeSalerID,
+			@RequestParam(value = "UserID") String userID,
+			@RequestParam(value = "Date") String dateString,
+			@RequestParam(value = "IPAddress") String ipAddress,
+			@RequestParam(value = "orderby") String orderBy
+	) {
+    	Integer pageNum = pagenum == null ? 0 : pagenum;
+    	Integer pageSize = pagesize == null ? 0 : pagesize;
+    	Integer wid = wholeSalerID == null ? 0 : wholeSalerID;
+    	String uID = StringUtils.isEmpty(userID) ? "" : userID;
+
+    	dateString = dateString.replace("%2F", "/");
+
+		LocalDate dateLocalDate = StringUtils.isEmpty(dateString) ? null : LocalDate.parse(dateString, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+		ipAddress = StringUtils.isEmpty(ipAddress) ? "" : ipAddress;
+
+		JsonResponse<GetVendorAdminAccountLogListResponse> response = new JsonResponse<>(false, null, null);
+
+		try {
+			GetVendorAdminAccountLogListResponse data = renewalVendorService.getVendorAdminAccountLogList(pageNum, pageSize, wid, uID, dateLocalDate, ipAddress, orderBy);
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+			response.setMessage("fail");
+		}
+
+		return response;
 	}
 }
 	
