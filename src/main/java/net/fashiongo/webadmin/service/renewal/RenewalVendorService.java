@@ -12,6 +12,7 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLo
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.form.FashionGoFormEntityRepository;
@@ -1464,6 +1465,43 @@ public class RenewalVendorService extends ApiService {
 		return GetVendorAdminAccountLogListResponse.builder()
 				.total(Total.builder().recCnt((int) result.getTotalElements()).build())
 				.vendorAdminLoginLogs(result.getContent())
+				.build();
+	}
+
+	public GetVendorGroupingResponse getVendorGrouping(
+			Integer wholesalerid,
+			String companyType,
+			String vendorType,
+			String keyword,
+			String categorys,
+			String alphabet) {
+		wholesalerid = wholesalerid == null ? 0 : wholesalerid;
+		companyType = StringUtils.isEmpty(companyType) ? "" : companyType;
+		keyword = StringUtils.isEmpty(keyword) ? " " : keyword;
+		categorys = StringUtils.isEmpty(categorys) ? "" : categorys;
+		String[] categoryList = categorys.replace("'", "").split(",");
+		ArrayList<Integer> categoryIntegerList = new ArrayList<>();
+		for (String t : categoryList) {
+			if (StringUtils.isNotEmpty(t)) {
+				categoryIntegerList.add(Integer.valueOf(t));
+			}
+		}
+		alphabet = StringUtils.isEmpty(alphabet) ? "" : alphabet;
+		vendorType = StringUtils.isEmpty(vendorType) ? "" : vendorType;
+
+		if (vendorType.equalsIgnoreCase("email")) {
+			vendorType = vendorType.toLowerCase();
+		} else {
+			vendorType = vendorType.substring(0, 1).toLowerCase() + vendorType.substring(1);
+		}
+
+
+		List<VendorGroupingSelete> vendorGroupingSeletes = vendorWholeSalerEntityRepository.findListVendorGroupingSelect(wholesalerid, null, keyword, categoryIntegerList, alphabet, vendorType);
+		List<VendorGroupingUnSelete> vendorGroupingUnSeletes = vendorWholeSalerEntityRepository.findListVendorGroupingUnSelect(wholesalerid, null, keyword, categoryIntegerList, alphabet, vendorType);
+
+		return GetVendorGroupingResponse.builder()
+				.vendorGroupingSelete(vendorGroupingSeletes)
+				.vendorGroupingUnSelete(vendorGroupingUnSeletes)
 				.build();
 	}
 }

@@ -14,6 +14,7 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLo
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
@@ -40,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -1182,6 +1184,30 @@ public class VendorController {
 
 		try {
 			GetVendorAdminAccountLogListResponse data = renewalVendorService.getVendorAdminAccountLogList(pageNum, pageSize, wid, uID, dateLocalDate, ipAddress, orderBy);
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+			response.setMessage("fail");
+		}
+
+		return response;
+	}
+
+	@GetMapping(value = "getvendorgrouping")
+	public JsonResponse<GetVendorGroupingResponse> getvendorgrouping(
+			@RequestParam(value = "wholesalerid") Integer wholeSalerID,
+			@RequestParam(value = "CompanyType") String companyType,
+			@RequestParam(value = "vendortype") String vendorType,
+			@RequestParam(value = "searchkeyword") String keyword,
+			@RequestParam(value = "Categorys") String categorys,
+			@RequestParam(value = "alphabet") String alphabet) {
+		JsonResponse<GetVendorGroupingResponse> response = new JsonResponse<>(false, null, null);
+
+		try {
+			GetVendorGroupingResponse data = renewalVendorService.getVendorGrouping(wholeSalerID, companyType, vendorType, keyword, categorys, alphabet);
+
 			response.setSuccess(true);
 			response.setData(data);
 			response.setMessage("success");
