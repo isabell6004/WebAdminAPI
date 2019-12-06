@@ -1218,5 +1218,27 @@ public class VendorController {
 
 		return response;
 	}
+
+	@PostMapping(value = "setvendorgrouping")
+	public JsonResponse<Integer> setvendorgrouping(@RequestBody SetVendorGroupingParameter param) {
+    	JsonResponse<Integer> response = new JsonResponse<Integer>(false, null, null);
+
+    	Integer wid = param.getWid() == null ? 0 : param.getWid();
+    	String saveIds = StringUtils.isEmpty(param.getSaveIds()) ? "" : param.getSaveIds();
+    	String deleteIds = StringUtils.isEmpty(param.getDeleteIds()) ? "" : param.getDeleteIds();
+
+    	try {
+			Integer result = renewalVendorService.setVendorGrouping(wid, saveIds, deleteIds);
+			response.setSuccess(true);
+			response.setData(result);
+			response.setMessage("success");
+		} catch (Exception e) {
+    		response.setMessage("fail");
+		}
+
+    	cacheService.cacheEvictVendor(wid);
+
+    	return response;
+	}
 }
 	

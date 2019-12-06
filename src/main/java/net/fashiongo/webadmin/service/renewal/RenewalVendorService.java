@@ -85,11 +85,12 @@ public class RenewalVendorService extends ApiService {
 	private final MapWholeSalerSisterEntityRepository mapWholeSalerSisterEntityRepository;
 	private final LogVendorHoldEntityRepository logVendorHoldEntityRepository;
 	private final VendorAdminLoginLogEntityRepository vendorAdminLoginLogEntityRepository;
+	private final MapWholeSalerGroupEntityRepository mapWholeSalerGroupEntityRepository;
 
 	@Autowired
 	public RenewalVendorService(VendorProductRepository vendorProductRepository,
 								VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
-								FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository, WholeShipMethodEntityRepository wholeShipMethodEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository, VendorNameHistoryLogEntityRepository vendorNameHistoryLogEntityRepository, ListSocialMediaEntityRepository listSocialMediaEntityRepository, VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository, ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository, CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository, AspnetUsersEntityRepository aspnetUsersEntityRepository, AspnetMembershipEntityRepository aspnetMembershipEntityRepository, VendorAdminAccountRepository vendorAdminAccountRepository, VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository, VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository, EntityActionLogEntityRepository entityActionLogEntityRepository, TodayDealEntityRepository todayDealEntityRepository, AdVendorItemEntityRepository adVendorItemEntityRepository, CustomerSocialMediaEntityRepository customerSocialMediaEntityRepository, LogCommunicationEntityRepository logCommunicationEntityRepository, VendorCapEntityRepository vendorCapEntityRepository, CodeVendorCapTypeEntityRepository codeVendorCapTypeEntityRepository, VendorBlockedEntityRepository vendorBlockedEntityRepository, ListVendorBlockReasonEntityRepository listVendorBlockReasonEntityRepository, MapWholeSalerSisterEntityRepository mapWholeSalerSisterEntityRepository, LogVendorHoldEntityRepository logVendorHoldEntityRepository, VendorAdminLoginLogEntityRepository vendorAdminLoginLogEntityRepository) {
+								FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository, WholeShipMethodEntityRepository wholeShipMethodEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository, VendorNameHistoryLogEntityRepository vendorNameHistoryLogEntityRepository, ListSocialMediaEntityRepository listSocialMediaEntityRepository, VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository, ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository, CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository, AspnetUsersEntityRepository aspnetUsersEntityRepository, AspnetMembershipEntityRepository aspnetMembershipEntityRepository, VendorAdminAccountRepository vendorAdminAccountRepository, VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository, VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository, EntityActionLogEntityRepository entityActionLogEntityRepository, TodayDealEntityRepository todayDealEntityRepository, AdVendorItemEntityRepository adVendorItemEntityRepository, CustomerSocialMediaEntityRepository customerSocialMediaEntityRepository, LogCommunicationEntityRepository logCommunicationEntityRepository, VendorCapEntityRepository vendorCapEntityRepository, CodeVendorCapTypeEntityRepository codeVendorCapTypeEntityRepository, VendorBlockedEntityRepository vendorBlockedEntityRepository, ListVendorBlockReasonEntityRepository listVendorBlockReasonEntityRepository, MapWholeSalerSisterEntityRepository mapWholeSalerSisterEntityRepository, LogVendorHoldEntityRepository logVendorHoldEntityRepository, VendorAdminLoginLogEntityRepository vendorAdminLoginLogEntityRepository, MapWholeSalerGroupEntityRepository mapWholeSalerGroupEntityRepository) {
 		this.vendorProductRepository = vendorProductRepository;
 		this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
 		this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
@@ -123,6 +124,7 @@ public class RenewalVendorService extends ApiService {
 		this.mapWholeSalerSisterEntityRepository = mapWholeSalerSisterEntityRepository;
 		this.logVendorHoldEntityRepository = logVendorHoldEntityRepository;
 		this.vendorAdminLoginLogEntityRepository = vendorAdminLoginLogEntityRepository;
+		this.mapWholeSalerGroupEntityRepository = mapWholeSalerGroupEntityRepository;
 	}
 
 	@Autowired
@@ -1503,5 +1505,47 @@ public class RenewalVendorService extends ApiService {
 				.vendorGroupingSelete(vendorGroupingSeletes)
 				.vendorGroupingUnSelete(vendorGroupingUnSeletes)
 				.build();
+	}
+
+	public Integer setVendorGrouping(Integer wholeSalerID, String saveIds, String deleteIds) {
+		Integer result = null;
+
+		if (StringUtils.isEmpty(saveIds) && StringUtils.isEmpty(deleteIds))
+			return null;
+
+		if (StringUtils.isNotEmpty(deleteIds)) {
+			String[] deleteIDList = deleteIds.split(",");
+			ArrayList<Integer> widList = new ArrayList<>();
+			for(String id : deleteIDList) {
+				if (StringUtils.isNotEmpty(id))
+					widList.add(Integer.valueOf(id));
+			}
+			List<MapWholeSalerGroupEntity> deleteEntities = mapWholeSalerGroupEntityRepository.findAllByIds(widList);
+
+			mapWholeSalerGroupEntityRepository.deleteAll(deleteEntities);
+
+			result = 1;
+		}
+
+		if (StringUtils.isNotEmpty(saveIds)) {
+			String[] saveIDList = saveIds.split(",");
+
+			List<MapWholeSalerGroupEntity> insertEntities = new ArrayList<>();
+			for (String id : saveIDList) {
+				if(StringUtils.isNotEmpty(id)) {
+					MapWholeSalerGroupEntity WG = new MapWholeSalerGroupEntity();
+					WG.setWholeSalerID(wholeSalerID);
+					WG.setWholeSalerID2(Integer.valueOf(id));
+
+					insertEntities.add(WG);
+				}
+			}
+
+			mapWholeSalerGroupEntityRepository.saveAll(insertEntities);
+
+			result = 1;
+		}
+
+		return result;
 	}
 }
