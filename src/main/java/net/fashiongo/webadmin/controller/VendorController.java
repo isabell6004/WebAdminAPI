@@ -305,9 +305,9 @@ public class VendorController {
 	 * @return DeleteCommunicationReasonResponse
 	 */
 	@RequestMapping(value="setvendorratingactive", method=RequestMethod.POST)
-	public JsonResponse<DeleteCommunicationReasonResponse> setVendorRatingActive(@RequestBody SetVendorRatingActiveParameter parameters) {
+	public JsonResponse<Integer> setVendorRatingActive(@RequestBody SetVendorRatingActiveParameter parameters) {
 		Integer result = vendorService.setVendorRatingActive(parameters);
-		return new JsonResponse<DeleteCommunicationReasonResponse>(true, null, result, null);
+		return new JsonResponse<Integer>(true, null, result);
 	}
 	
 	/**
