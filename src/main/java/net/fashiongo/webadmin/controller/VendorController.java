@@ -10,6 +10,7 @@ import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
+import net.fashiongo.webadmin.data.model.vendor.response.GetAssignedUserListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLogListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
@@ -1237,6 +1238,25 @@ public class VendorController {
 		}
 
     	cacheService.cacheEvictVendor(wid);
+
+    	return response;
+	}
+
+	@PostMapping(value = "getassigneduserlist")
+	public JsonResponse<GetAssignedUserListResponse> getassigneduserlist() {
+		JsonResponse<GetAssignedUserListResponse> response = new JsonResponse<GetAssignedUserListResponse>(false, null, null);
+
+		try {
+			GetAssignedUserListResponse data = renewalVendorService.getAssignedUserList();
+
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+
+			response.setMessage("fail");
+		}
 
     	return response;
 	}

@@ -8,6 +8,7 @@ import net.fashiongo.webadmin.data.entity.primary.vendor.VendorProductRow;
 import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.vendor.VendorAdminAccount;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.response.GetAssignedUserListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLogListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse;
@@ -1547,5 +1548,14 @@ public class RenewalVendorService extends ApiService {
 		}
 
 		return result;
+	}
+
+	public GetAssignedUserListResponse getAssignedUserList() {
+		List<Object> param = new ArrayList<>();
+
+		List<Object> up_wa_GetAssignedUserList = jdbcHelper.executeSP("up_wa_GetAssignedUserList", param, AssignedUser.class);
+		List<AssignedUser> data = (List<AssignedUser>) up_wa_GetAssignedUserList.get(0);
+
+		return GetAssignedUserListResponse.builder().assignedUserList(data).build();
 	}
 }
