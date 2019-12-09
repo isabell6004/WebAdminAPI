@@ -14,6 +14,7 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoRespo
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.form.FashionGoFormEntityRepository;
@@ -289,7 +290,7 @@ public class RenewalVendorService extends ApiService {
 				).collect(Collectors.toList());
 	}
 
-	public List<Vendor> getVendorList() {
+	public List<Vendor> getVendorListAll() {
 		return wholeSalerEntityRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
 	}
 
@@ -1557,5 +1558,103 @@ public class RenewalVendorService extends ApiService {
 		List<AssignedUser> data = (List<AssignedUser>) up_wa_GetAssignedUserList.get(0);
 
 		return GetAssignedUserListResponse.builder().assignedUserList(data).build();
+	}
+
+	public GetVendorListResponse getVendorList(GetVendorListParameter vendorListParam) {
+		Integer pageNum = vendorListParam.getPageNum() == null ? 0 : vendorListParam.getPageNum();
+		Integer pageSize = vendorListParam.getPageSize() == null ? 0 : vendorListParam.getPageSize();
+		String userID = StringUtils.isEmpty(vendorListParam.getUserID()) ? null : vendorListParam.getUserID();
+		Boolean userIDPartialMatch = vendorListParam.getUserIdPartialMatch();
+		String companyName = StringUtils.isEmpty(vendorListParam.getCompanyName()) ? null : vendorListParam.getCompanyName();
+		Boolean companyNamePartialMatch = vendorListParam.getCompanyNamePartialMatch();
+		Boolean companyNameStartsWith = null;
+		String firstName = null;
+		Boolean firstNamePartialMatch = false;
+		String lastName = null;
+		Boolean lastNamePartialMatch = false;
+		LocalDateTime createdOnFrom = null;
+		LocalDateTime createOnTo = null;
+		Boolean active = null;
+		Boolean shopActive = null;
+		Boolean orderActive = null;
+		String orderBy = StringUtils.isEmpty(vendorListParam.getOrderBy()) ? null : vendorListParam.getOrderBy();
+		String oldCompanyName = StringUtils.isEmpty(vendorListParam.getOldCompanyName()) ? null : vendorListParam.getOldCompanyName();
+		Integer wholeSalerID = vendorListParam.getWholeSalerID() == null ? 0 : vendorListParam.getWholeSalerID();
+		String companyType = StringUtils.isEmpty(vendorListParam.getCompanyType()) ? "" : vendorListParam.getCompanyType();
+		String location = StringUtils.isEmpty(vendorListParam.getLocation()) ? null : vendorListParam.getLocation();
+		String state = StringUtils.isEmpty(vendorListParam.getState()) ? null : vendorListParam.getState();
+		String country = StringUtils.isEmpty(vendorListParam.getCountry()) ? null : vendorListParam.getCountry();
+		String typeOfContract = StringUtils.isEmpty(vendorListParam.getTypeOfContract()) ? null : vendorListParam.getTypeOfContract();
+		String photoplan = StringUtils.isEmpty(vendorListParam.getPhotoPlan()) ? null : vendorListParam.getPhotoPlan();
+		String chooseType = StringUtils.isEmpty(vendorListParam.getChooseType()) ? null : vendorListParam.getChooseType();
+		String commission = StringUtils.isEmpty(vendorListParam.getCommission()) ? null : vendorListParam.getCommission();
+		LocalDateTime actualOpenFrom = null;
+		LocalDateTime actualOpenTo = null;
+		BigDecimal avgOrderAmountFrom = null;
+		BigDecimal avgOrderAmountTo = null;
+		LocalDateTime checkoutFrom = null;
+		LocalDateTime checkoutTo = null;
+		BigDecimal adSpentAmountFrom = null;
+		BigDecimal adSpentAmountTo = null;
+		LocalDateTime adFrom = null;
+		LocalDateTime adTo = null;
+		Integer recurringFrom = null;
+		Integer recurringTo = null;
+		Integer categoryModel = vendorListParam.getCategoryModel() == null ? 0 : vendorListParam.getCategoryModel();
+		Integer status = vendorListParam.getStatus() == null ? 0 : vendorListParam.getStatus();
+		Integer assignedUser = vendorListParam.getAssignedUser() == null ? 0 : vendorListParam.getAssignedUser();
+		Integer fgExclusiveType = vendorListParam.getFgExclusiveType();
+
+		if (wholeSalerID == 0) wholeSalerID = null;
+
+		List<Object> param = new ArrayList<>();
+		param.add(pageNum);
+		param.add(pageSize);
+		param.add(userID);
+		param.add(userIDPartialMatch);
+		param.add(companyName);
+		param.add(companyNamePartialMatch);
+		param.add(firstName);
+		param.add(firstNamePartialMatch);
+		param.add(lastName);
+		param.add(lastNamePartialMatch);
+		param.add(createdOnFrom);
+		param.add(createOnTo);
+		param.add(active);
+		param.add(shopActive);
+		param.add(orderActive);
+		param.add(oldCompanyName);
+		param.add(wholeSalerID);
+		param.add(companyType);
+		param.add(location);
+		param.add(state);
+		param.add(country);
+		param.add(typeOfContract);
+		param.add(photoplan);
+		param.add(chooseType);
+		param.add(commission);
+		param.add(actualOpenFrom);
+		param.add(actualOpenTo);
+		param.add(avgOrderAmountFrom);
+		param.add(avgOrderAmountTo);
+		param.add(checkoutFrom);
+		param.add(checkoutTo);
+		param.add(adSpentAmountFrom);
+		param.add(adSpentAmountTo);
+		param.add(adFrom);
+		param.add(adTo);
+		param.add(recurringFrom);
+		param.add(recurringTo);
+		param.add(categoryModel);
+		param.add(status);
+		param.add(orderBy);
+		param.add(assignedUser);
+		param.add(fgExclusiveType);
+
+		List<Object> up_wa_AdvancedSearch_Vendor = jdbcHelper.executeSP("up_wa_AdvancedSearch_Vendor", param, Total.class, VendorList.class);
+		List<Total> count = (List<Total>) up_wa_AdvancedSearch_Vendor.get(0);
+		List<VendorList> result = (List<VendorList>) up_wa_AdvancedSearch_Vendor.get(1);
+
+		return GetVendorListResponse.builder().recCnt(count).vendorList(result).build();
 	}
 }

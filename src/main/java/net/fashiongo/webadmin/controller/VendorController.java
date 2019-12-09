@@ -16,12 +16,12 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoRespo
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.*;
@@ -42,7 +42,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +75,7 @@ public class VendorController {
 	@RequestMapping(value="getvendorlistall", method=RequestMethod.POST)
 	public JsonResponse<List<Vendor>> getVendorListAll() {
 		
-		List<Vendor> vendors = renewalVendorService.getVendorList();
+		List<Vendor> vendors = renewalVendorService.getVendorListAll();
 		return new JsonResponse<List<Vendor>>(true, null, 0, vendors);
 	}
 	
@@ -1258,6 +1257,23 @@ public class VendorController {
 			response.setMessage("fail");
 		}
 
+    	return response;
+	}
+
+	@PostMapping(value = "getvendorlist")
+	public JsonResponse getvendorlist(@RequestBody GetVendorListParameter param) {
+    	JsonResponse response = new JsonResponse(false, null, null);
+
+    	try {
+			GetVendorListResponse data = renewalVendorService.getVendorList(param);
+
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+    		log.warn(e.getMessage(), e);
+    		response.setMessage("fail");
+		}
     	return response;
 	}
 }
