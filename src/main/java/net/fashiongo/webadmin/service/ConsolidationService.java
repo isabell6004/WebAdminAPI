@@ -435,7 +435,7 @@ public class ConsolidationService extends ApiService {
 				orderPaymentStatusRepository.findOneByReferenceIDAndIsOrder(c.getId(), 0);
 
 		if (((isZero(c.getShippingCharge()) && isZero(c.getActualShippingCharge())) // When the shipping charge and actual shipping charge are zero,
-				|| (c.getShippingCharge().compareTo(c.getWavedAmount()) < 0 && c.getCouponAmount() != null)) // Or virtually zero,
+				|| (c.getShippingCharge().compareTo(waivedFeeUpperBound) < 0 && c.getCouponAmount() != null)) // Or virtually zero,
 			&& ops != null && ops.getPaymentStatusID() != 999 && ops.getOrderPaymentStatusID() != 0) {
 			// Set the payment status to cancelled.
 			ops.setPaymentStatusID(999);
