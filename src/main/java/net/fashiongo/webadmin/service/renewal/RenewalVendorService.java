@@ -1567,7 +1567,7 @@ public class RenewalVendorService extends ApiService {
 		String userID = StringUtils.isEmpty(vendorListParam.getUserID()) ? null : vendorListParam.getUserID();
 		Boolean userIDPartialMatch = vendorListParam.getUserIdPartialMatch();
 		String companyName = StringUtils.isEmpty(vendorListParam.getCompanyName()) ? null : vendorListParam.getCompanyName();
-		Boolean companyNamePartialMatch = vendorListParam.getCompanyNamePartialMatch();
+		Boolean companyNamePartialMatch = true;
 		Boolean companyNameStartsWith = null;
 		String firstName = null;
 		Boolean firstNamePartialMatch = null;
@@ -1665,7 +1665,7 @@ public class RenewalVendorService extends ApiService {
 		String userID = StringUtils.isEmpty(vendorListParam.getUserID()) ? null : vendorListParam.getUserID();
 		Boolean userIDPartialMatch = vendorListParam.getUserIdPartialMatch();
 		String companyName = StringUtils.isEmpty(vendorListParam.getCompanyName()) ? null : vendorListParam.getCompanyName();
-		Boolean companyNamePartialMatch = vendorListParam.getCompanyNamePartialMatch();
+		Boolean companyNamePartialMatch = true;
 		Boolean companyNameStartsWith = null;
 		String firstName = null;
 		Boolean firstNamePartialMatch = null;
