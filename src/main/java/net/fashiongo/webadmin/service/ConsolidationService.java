@@ -287,6 +287,9 @@ public class ConsolidationService extends ApiService {
 		// Save a consolidation
 		setConsolidationSum(c);
 		consolidationRepository.save(c);
+
+		// Update orderPaymentStatus
+		setOrderPaymentStatus(c, userName);
 	}
 
 	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
