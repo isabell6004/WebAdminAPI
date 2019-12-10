@@ -307,7 +307,7 @@ public class ConsolidationService extends ApiService {
 	}
 
 	private void setConsolidationShipMethod(ConsolidationEntity c, Integer shipMethodId, Boolean isShipped, String shippedOn) {
-		Optional<ShipMethod> shipMethodOptional = shipMethodRepository.findById(c.getShipMethodId());
+		Optional<ShipMethod> shipMethodOptional = shipMethodRepository.findById(shipMethodId);
 		String shipMethodName =
 				shipMethodOptional.isPresent() && shipMethodOptional.get().getShipMethodName() != null ?
 						shipMethodOptional.get().getShipMethodName() :
