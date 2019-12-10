@@ -38,7 +38,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("WFirstName")
 	@Column(name = "WFirstName")
 	private String wFirstName;
-	
+
 	@JsonProperty("WLastName")
 	@Column(name = "WLastName")
 	private String wLastName;
@@ -50,7 +50,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("WBillCity")
 	@Column(name = "WBillCity")
 	private String wBillCity;
-	
+
 	@JsonProperty("WBillSTATE")
 	@Column(name = "WBillSTATE")
 	private String wBillState;
@@ -70,7 +70,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("WBillFax")
 	@Column(name = "WBillFax")
 	private String wBillFax;
-	
+
 	@JsonProperty("WStreetNo")
 	@Column(name = "WStreetNo")
 	private String wStreetNo;
@@ -92,7 +92,7 @@ public class ConsolidationDetailList implements Serializable {
 	private String wCountry;
 
 	@JsonProperty("WPhone")
-	@Column(name = "WPhone")	
+	@Column(name = "WPhone")
 	private String wPhone;
 
 	@JsonProperty("WFax")
@@ -102,11 +102,11 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("Email")
 	@Column(name = "Email")
 	private String email;
-	
+
 	@JsonProperty("RetailerID")
 	@Column(name = "RetailerID")
 	private Integer retailerId;
-	
+
 	@JsonProperty("RetailerCompanyName")
 	@Column(name = "RetailerCompanyName")
 	private String retailerCompanyName;
@@ -142,7 +142,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("BillPhone")
 	@Column(name = "BillPhone")
 	private String billPhone;
-	
+
 	@JsonProperty("BillFax")
 	@Column(name = "BillFax")
 	private String billFax;
@@ -154,19 +154,19 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("City")
 	@Column(name = "City")
 	private String city;
-	
+
 	@JsonProperty("STATE")
-	@Column(name = "STATE")	
+	@Column(name = "STATE")
 	private String state;
-	
+
 	@JsonProperty("Zipcode")
-	@Column(name = "Zipcode")	
+	@Column(name = "Zipcode")
 	private Integer zipcode;
 
 	@JsonProperty("Country")
-	@Column(name = "Country")	
+	@Column(name = "Country")
 	private String country;
-	
+
 	@JsonProperty("Phone")
 	@Column(name = "Phone")
 	private String phone;
@@ -174,19 +174,19 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("Fax")
 	@Column(name = "Fax")
 	private String fax;
-	
+
 	@JsonProperty("REmail")
 	@Column(name = "REmail")
 	private String rEmail;
-	
+
 	@JsonProperty("TotalQty")
 	@Column(name = "TotalQty")
 	private Integer totalQty;
-	
+
 	@JsonProperty("TotalAmount")
 	@Column(name = "TotalAmount")
 	private BigDecimal totalAmount;
-	
+
 	@JsonProperty("Discount")
 	@Column(name = "Discount")
 	private BigDecimal discount;
@@ -222,7 +222,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("ShipMethod")
 	@Column(name = "ShipMethod")
 	private String shipMethod;
-	
+
 	@JsonProperty("InvoiceNo")
 	@Column(name = "InvoiceNo")
 	private String invoiceNo;
@@ -266,7 +266,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("WBillStreetNo2")
 	@Column(name = "WBillStreetNo2")
 	private String wBillStreetNo2;
-	
+
 	@JsonProperty("MinOrderAmountYN")
 	@Column(name = "MinOrderAmountYN")
 	private String minOrderAmountYn;
@@ -302,7 +302,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("CancelTypeID")
 	@Column(name = "CancelTypeID")
 	private Integer cancelTypeId;
-	
+
 	@JsonProperty("CancelNote")
 	@Column(name = "CancelNote")
 	private String cancelNote;
@@ -318,7 +318,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("ShipName")
 	@Column(name = "ShipName")
 	private String shipName;
-	
+
 	@JsonProperty("StoreNo")
 	@Column(name = "StoreNo")
 	private String storeNo;
@@ -370,7 +370,7 @@ public class ConsolidationDetailList implements Serializable {
 	@JsonProperty("HandlingFee")
 	@Column(name = "HandlingFee")
 	private BigDecimal handlingFee;
-	
+
 	@JsonProperty("CurrentState")
 	@Column(name = "CurrentState")
 	private String currentState;
@@ -392,7 +392,7 @@ public class ConsolidationDetailList implements Serializable {
 	private String last4Digit;
 
 	@JsonProperty("CVV")
-	@Column(name = "CVV")	
+	@Column(name = "CVV")
 	private String cvv;
 
 	@JsonProperty("CreatedByVendor")
@@ -400,87 +400,87 @@ public class ConsolidationDetailList implements Serializable {
 	private String createdByVendor;
 
 	@JsonProperty("IsConsolidated")
-	@Column(name = "IsConsolidated")	
+	@Column(name = "IsConsolidated")
 	private Boolean isConsolidated;
 
 	@JsonProperty("ConsolidationID")
-	@Column(name = "ConsolidationID")	
+	@Column(name = "ConsolidationID")
 	private Integer consolidationId;
 
 	@JsonProperty("ConsolidationShipCharge")
-	@Column(name = "ConsolidationShipCharge")	
+	@Column(name = "ConsolidationShipCharge")
 	private BigDecimal consolidationShipCharge;
 
 	@JsonProperty("MAPISImportedOn")
-	@Column(name = "MAPISImportedOn")	
+	@Column(name = "MAPISImportedOn")
 	private LocalDateTime mapisImportedOn;
 
 	@JsonProperty("CreditUsed")
-	@Column(name = "CreditUsed")	
+	@Column(name = "CreditUsed")
 	private BigDecimal creditUsed;
 
 	@JsonProperty("TotalAmountWOSC")
-	@Column(name = "TotalAmountWOSC")	
+	@Column(name = "TotalAmountWOSC")
 	private BigDecimal totalAmountWOSC;
 
 	@JsonProperty("TotalAmountWSC")
-	@Column(name = "TotalAmountWSC")	
+	@Column(name = "TotalAmountWSC")
 	private BigDecimal totalAmountWSC;
 
 	@JsonProperty("ReferenceOrderID")
-	@Column(name = "ReferenceOrderID")	
+	@Column(name = "ReferenceOrderID")
 	private String referenceOrderId;
 
 	@JsonProperty("BackOrderOn")
-	@Column(name = "BackOrderOn")	
+	@Column(name = "BackOrderOn")
 	private LocalDateTime backOrderOn;
 
 	@JsonProperty("SubOrderStatusID")
-	@Column(name = "SubOrderStatusID")	
+	@Column(name = "SubOrderStatusID")
 	private Integer subOrderStatusId;
 
 	@JsonProperty("ReturnOn")
-	@Column(name = "ReturnOn")	
+	@Column(name = "ReturnOn")
 	private LocalDateTime returnOn;
 
 	@JsonProperty("CreatedBy")
-	@Column(name = "CreatedBy")	
+	@Column(name = "CreatedBy")
 	private Integer createdBy;
 
 	@JsonProperty("ModifiedBy")
-	@Column(name = "ModifiedBy")	
+	@Column(name = "ModifiedBy")
 	private Integer modifiedBy;
 
 	@JsonProperty("OrderStatusName")
-	@Column(name = "OrderStatusName")	
-	private Integer orderStatusName;
-	
+	@Column(name = "OrderStatusName")
+	private String orderStatusName;
+
 	@JsonProperty("DroppedBy")
-	@Column(name = "DroppedBy")	
+	@Column(name = "DroppedBy")
 	private String droppedBy;
 
 	@JsonProperty("ReceivedBy")
-	@Column(name = "ReceivedBy")	
+	@Column(name = "ReceivedBy")
 	private String receivedBy;
 
 	@JsonProperty("ReceivedOn")
-	@Column(name = "ReceivedOn")	
+	@Column(name = "ReceivedOn")
 	private LocalDateTime receivedOn;
 
 	@JsonProperty("NotifiedBy")
-	@Column(name = "NotifiedBy")	
+	@Column(name = "NotifiedBy")
 	private String notifiedBy;
 
 	@JsonProperty("NotifiedOn")
-	@Column(name = "NotifiedOn")	
+	@Column(name = "NotifiedOn")
 	private LocalDateTime notifiedOn;
 
 	@JsonProperty("PaymentStatusID")
-	@Column(name = "PaymentStatusID")	
+	@Column(name = "PaymentStatusID")
 	private Integer paymentStatusId;
 
 	@JsonProperty("PaymentStatus")
-	@Column(name = "PaymentStatus")	
+	@Column(name = "PaymentStatus")
 	private String paymentStatus;
-	
+
 }
