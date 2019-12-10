@@ -4,12 +4,12 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
-import net.fashiongo.webadmin.data.entity.primary.QTrendReportEntity;
-import net.fashiongo.webadmin.data.entity.primary.QTrendReportMapCandidateEntity;
-import net.fashiongo.webadmin.data.entity.primary.QTrendReportMapEntity;
+import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReport;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportDefault;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportTotal;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -169,5 +170,99 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
 
         PageRequest pageRequest = PageRequest.of(pageNo-1, pageSize);
         return PageableExecutionUtils.getPage(results,pageRequest,()-> total);
+    }
+
+    @Override
+    @Transactional(transactionManager = "primaryTransactionManager")
+    public void up_wa_AddDelTrendReportItem(String setType, int mapId, int trendreportId, int productId, String modifiedBy) {
+        JPAQuery<Integer> jpaQuery = new JPAQuery(entityManager);
+        QTrendReportEntity T = QTrendReportEntity.trendReportEntity;
+
+        jpaQuery.select(T.curatedType)
+                .from(T)
+                .where(
+                        T.trendReportID.eq(trendreportId)
+                );
+
+
+        Integer curatedType = jpaQuery.fetchOne();
+        LocalDateTime NOW = LocalDateTime.now();
+        if(curatedType != null && curatedType == 4) {
+            if(setType.equalsIgnoreCase("del")) {
+                QTrendReportMapCandidateEntity TRMC = QTrendReportMapCandidateEntity.trendReportMapCandidateEntity;
+                JPAQuery<Integer> productIdQuery = new JPAQuery<>(entityManager);
+
+                Integer selectedProductId = productIdQuery.select(TRMC.productID)
+                        .from(TRMC)
+                        .where(TRMC.candidateID.eq(mapId))
+                        .fetchOne();
+
+                JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,TRMC);
+                jpaDeleteClause.where(TRMC.candidateID.eq(mapId)).execute();
+
+                EntityActionLogEntity entityActionLogEntity = new EntityActionLogEntity();
+                entityActionLogEntity.setEntityTypeID(6);
+                entityActionLogEntity.setActionID(6001);
+                entityActionLogEntity.setEntityID(mapId);
+                entityActionLogEntity.setRemark(selectedProductId.toString());
+                entityActionLogEntity.setActedOn(NOW);
+                entityActionLogEntity.setActedBy(modifiedBy);
+                entityManager.persist(entityActionLogEntity);
+            }
+
+            if(setType.equalsIgnoreCase("add")) {
+                QTrendReportMapCandidateEntity TRMC = QTrendReportMapCandidateEntity.trendReportMapCandidateEntity;
+                JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,TRMC);
+
+                jpaDeleteClause.where(TRMC.trendReportID.eq(trendreportId).and(TRMC.productID.eq(productId))).execute();
+                TrendReportMapCandidateEntity trendReportMapCandidateEntity = new TrendReportMapCandidateEntity();
+                trendReportMapCandidateEntity.setTrendReportID(trendreportId);
+                trendReportMapCandidateEntity.setProductID(productId);
+                trendReportMapCandidateEntity.setListOrder(0);
+                entityManager.persist(trendReportMapCandidateEntity);
+            }
+        } else {
+            if(setType.equalsIgnoreCase("del")) {
+                QTrendReportMapEntity TRM = QTrendReportMapEntity.trendReportMapEntity;
+                JPAQuery<Integer> productIdQuery = new JPAQuery<>(entityManager);
+
+                Integer selectedProductId = productIdQuery.select(TRM.productID)
+                        .from(TRM)
+                        .where(TRM.mapID.eq(mapId))
+                        .fetchOne();
+
+                JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,TRM);
+                jpaDeleteClause.where(TRM.mapID.eq(mapId)).execute();
+
+                EntityActionLogEntity entityActionLogEntity = new EntityActionLogEntity();
+                entityActionLogEntity.setEntityTypeID(6);
+                entityActionLogEntity.setActionID(6001);
+                entityActionLogEntity.setEntityID(mapId);
+                entityActionLogEntity.setRemark(selectedProductId.toString());
+                entityActionLogEntity.setActedOn(NOW);
+                entityActionLogEntity.setActedBy(modifiedBy);
+                entityManager.persist(entityActionLogEntity);
+            }
+
+            if(setType.equalsIgnoreCase("add")) {
+                QTrendReportMapEntity TRM = QTrendReportMapEntity.trendReportMapEntity;
+                JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,TRM);
+
+                jpaDeleteClause.where(TRM.trendReportID.eq(trendreportId).and(TRM.productID.eq(productId))).execute();
+                TrendReportMapEntity trendReportMapEntity = new TrendReportMapEntity();
+                trendReportMapEntity.setTrendReportID(trendreportId);
+                trendReportMapEntity.setProductID(productId);
+                trendReportMapEntity.setSortNo(0);
+                trendReportMapEntity.setCreatedOn(NOW);
+                trendReportMapEntity.setCreatedBy(modifiedBy);
+                entityManager.persist(trendReportMapEntity);
+            }
+        }
+
+        JPAUpdateClause jpaUpdateClause = new JPAUpdateClause(entityManager,T);
+
+        jpaUpdateClause.set(T.modifiedOn,NOW)
+                .where(T.trendReportID.eq(trendreportId))
+                .execute();
     }
 }

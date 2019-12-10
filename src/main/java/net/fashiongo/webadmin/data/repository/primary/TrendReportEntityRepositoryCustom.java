@@ -21,4 +21,10 @@ public interface TrendReportEntityRepositoryCustom {
                                                 ,String orderByGubn
                                                 ,Boolean active);
 
+    void up_wa_AddDelTrendReportItem(String setType
+            , int mapId
+            , int trendreportId
+            , int productId
+            , String modifiedBy);
+
 }

@@ -894,7 +894,9 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "settrendreportmap", method = RequestMethod.POST)
 	public JsonResponse<Integer> setTrendreportMap(@RequestBody SetTrendReportMapParameter parameters) {
-		ResultCode result = sitemgmtService.setTrendReportMap(parameters);
+//		ResultCode result = sitemgmtService.setTrendReportMap(parameters);
+		ResultCode result = renewalSitemgmtService.setTrendReportMap(parameters);
+
 		return new JsonResponse<Integer>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
 	}
 	

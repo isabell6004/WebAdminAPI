@@ -12,6 +12,7 @@ import net.fashiongo.webadmin.data.repository.primary.procedure.DMSendListMigrat
 import net.fashiongo.webadmin.data.repository.primary.procedure.GetAdminTodayDealCalendarResult;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.data.repository.primary.view.CategoryViewRepository;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,8 @@ public class RenewalSitemgmtService {
 	private final TrendReportEntityRepository trendReportEntityRepository;
 
 	private final DMSendListMigrationProcedure dmSendListMigrationProcedure;
+
+	private final String MSG_UPDATE_SUCCESS = "Updated successfully!";
 
 	@Autowired
 	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure) {
@@ -393,5 +396,17 @@ public class RenewalSitemgmtService {
 				.recCnt(Arrays.asList(Total.builder().recCnt((int) trendReports.getTotalElements()).build()))
 				.trendReports(trendReports.getContent())
 				.build();
+	}
+
+	public ResultCode setTrendReportMap(SetTrendReportMapParameter parameters) {
+		String setType = parameters.getSetType();
+		int mapId = parameters.getMapId();
+		int trendreportId = parameters.getTrendreportId();
+		int productId = parameters.getProductId();
+		String modifiedBy = parameters.getModifiedBy();
+
+		trendReportEntityRepository.up_wa_AddDelTrendReportItem(setType,mapId,trendreportId,productId,modifiedBy);
+
+		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
 	}
 }
