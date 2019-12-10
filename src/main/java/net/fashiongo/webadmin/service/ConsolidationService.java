@@ -17,6 +17,7 @@ import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -32,11 +33,13 @@ import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetail;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetailList;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationSummary;
 import net.fashiongo.webadmin.model.pojo.consolidation.TotalCount;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationDetailParameter;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationParameter;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationDetailResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationSummaryResponse;
 import net.fashiongo.webadmin.utility.HttpClient;
-import org.springframework.util.StringUtils;
 import net.fashiongo.webadmin.utility.Utility;
 
 @Service
@@ -58,11 +61,12 @@ public class ConsolidationService extends ApiService {
 		GetConsolidationSummaryResponse result = new GetConsolidationSummaryResponse();
 
         LocalDateTime now = LocalDateTime.now();
-		LocalDateTime firstDayOfMonth = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0, 0);
-		LocalDateTime lastDayOfMonth =  firstDayOfMonth.plusMonths(1).minusNanos(1);
+        LocalDateTime lastDayOfMonth = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0, 0).minusDays(1).minusSeconds(1);
 
-		params.add(firstDayOfMonth);
-		params.add(lastDayOfMonth);
+        params.add(
+				lastDayOfMonth
+				.minusMonths(q.getPeriodType() == null ? 0 : q.getPeriodType()).toString());
+		params.add(lastDayOfMonth.toString());
 
 		List<Object> _result = jdbcHelper.executeSP(spName, params, ConsolidationSummary.class);
 		
@@ -95,11 +99,11 @@ public class ConsolidationService extends ApiService {
 
 		params.add(q.getPageNum());
 		params.add(q.getPageSize());
-		params.add(q.getDtFrom());
-		params.add(q.getDtTo() != null ? q.getDtTo().plusDays(1) : q.getDtTo());
+		params.add(q.getDtFrom() != null ? q.getDtFrom().toString() : null);
+		params.add(q.getDtTo() != null ? q.getDtTo().plusDays(1).toString() : null);
 		params.add(q.getDateColumn());
 		params.add(bShipped);
-		params.add(q.getPaymentSatus());
+		params.add(q.getPaymentStatus());
 		params.add(StringUtils.isEmpty(q.getWn()) ? null : q.getWn());
 		params.add(StringUtils.isEmpty(q.getRn()) ? null : q.getRn());
 		params.add(StringUtils.isEmpty(q.getPn()) ? null : q.getPn());
