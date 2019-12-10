@@ -3,6 +3,9 @@ package net.fashiongo.webadmin.data.model.vendor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Getter
 public class GetVendorListParameter {
     @JsonProperty(value = "pagenum")
@@ -68,16 +71,39 @@ public class GetVendorListParameter {
     @JsonProperty(value = "FGExclusiveType")
     private Integer fgExclusiveType;
 
-    //actualopenfrom:
-    //actualopento:
-    //avgorderamountfrom:
-    //avgorderamountto:
-    //checkoutfrom:
-    //checkoutto:
-    //adspentamountfrom:
-    //adspentamountto:
-    //adfrom:
-    //adto:
-    //recurringfrom:
-    //recurringto:
+    @JsonProperty(value = "actualopenfrom")
+    private String actualopenfrom;
+
+    @JsonProperty(value = "actualopento")
+    private String actualopento;
+
+    @JsonProperty(value = "avgorderamountfrom")
+    private BigDecimal avgorderamountfrom;
+
+    @JsonProperty(value = "avgorderamountto")
+    private BigDecimal avgorderamountto;
+
+    @JsonProperty(value = "checkoutfrom")
+    private String checkoutfrom;
+
+    @JsonProperty(value = "checkoutto")
+    private String checkoutto;
+
+    @JsonProperty(value = "adspentamountfrom")
+    private BigDecimal adspentamountfrom;
+
+    @JsonProperty(value = "adspentamountto")
+    private BigDecimal adspentamountto;
+
+    @JsonProperty(value = "adfrom")
+    private String adfrom;
+
+    @JsonProperty(value = "adto")
+    private String adto;
+
+    @JsonProperty(value = "recurringfrom")
+    private Integer recurringfrom;
+
+    @JsonProperty(value = "recurringto")
+    private Integer recurringto;
 }

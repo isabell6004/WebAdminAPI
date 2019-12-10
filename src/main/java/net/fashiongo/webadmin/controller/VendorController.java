@@ -16,6 +16,7 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoRespo
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListCSVResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
@@ -1275,6 +1276,23 @@ public class VendorController {
     		response.setMessage("fail");
 		}
     	return response;
+	}
+
+	@PostMapping(value = "getvendorlistcsv")
+	public JsonResponse getvendorlistcsv(@RequestBody GetVendorListParameter param) {
+		JsonResponse response = new JsonResponse(false, null, null);
+
+		try {
+			GetVendorListCSVResponse data = renewalVendorService.getvendorlistcsv(param);
+
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+			response.setMessage("fail");
+		}
+		return response;
 	}
 }
 	
