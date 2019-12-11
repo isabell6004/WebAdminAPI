@@ -1,10 +1,12 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.CodeFabricEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodeLengthEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodePatternEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodeStyleEntity;
 import net.fashiongo.webadmin.data.model.Total;
+import net.fashiongo.webadmin.data.model.TotalCount;
 import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
@@ -62,8 +64,10 @@ public class RenewalSitemgmtService {
 
 	private final String MSG_UPDATE_SUCCESS = "Updated successfully!";
 
+	private final JdbcHelper jdbcHelper;
+
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure, JdbcHelper jdbcHelper) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -79,6 +83,7 @@ public class RenewalSitemgmtService {
 		this.trendReportMapEntityRepository = trendReportMapEntityRepository;
 		this.trendReportEntityRepository = trendReportEntityRepository;
 		this.dmSendListMigrationProcedure = dmSendListMigrationProcedure;
+		this.jdbcHelper = jdbcHelper;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -408,5 +413,77 @@ public class RenewalSitemgmtService {
 		trendReportEntityRepository.up_wa_AddDelTrendReportItem(setType,mapId,trendreportId,productId,modifiedBy);
 
 		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
+	}
+
+	public GetItemsResponse getItems(SitemgmtGetItemsParameter parameters) {
+
+		Integer pagenum = Optional.ofNullable(parameters.getPagenum()).orElse(1);
+		Integer pagesize = Optional.ofNullable(parameters.getPagesize()).orElse(10);
+		String fgcat = Optional.ofNullable(parameters.getFgcat()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		String vendorid = Optional.ofNullable(parameters.getVendorid()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		String selectedcategoryid = Optional.ofNullable(parameters.getSelectedcategoryid()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		String searchitemtxt = Optional.ofNullable(parameters.getSearchitemtxt()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean companytypeid1 = Optional.ofNullable(parameters.getCompanytypeid1()).orElse(false);
+		Boolean companytypeid2 = Optional.ofNullable(parameters.getCompanytypeid2()).orElse(false);
+		Boolean companytypeid3 = Optional.ofNullable(parameters.getCompanytypeid3()).orElse(false);
+
+		String checkedCompanyNo = "";
+
+		if (companytypeid1 == true)
+		{
+			checkedCompanyNo = "2,";
+		}
+		if (companytypeid2 == true)
+		{
+			checkedCompanyNo = checkedCompanyNo + "1,";
+		}
+		if (companytypeid3 == true)
+		{
+			checkedCompanyNo = checkedCompanyNo + "3,";
+		}
+		if (companytypeid1 == true || companytypeid2 == true || companytypeid3 == true)
+		{
+			checkedCompanyNo = checkedCompanyNo.substring(0,checkedCompanyNo.length() -1);
+		}
+		else
+		{
+			checkedCompanyNo = null;
+		}
+
+		List<Object> param = new ArrayList<>();
+		param.add(pagenum);
+		param.add(pagesize);
+		param.add(fgcat);
+		param.add(vendorid);
+		param.add(selectedcategoryid);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(searchitemtxt);
+		param.add("ProductName");
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(null);
+		param.add(checkedCompanyNo);
+
+		List<Object> up_wa_getItemsSearch = jdbcHelper.executeSP("up_wa_GetItemsSearch", param, TotalCount.class, Item.class);
+		List<TotalCount> totals = (List<TotalCount>) up_wa_getItemsSearch.get(0);
+		List<Item> items = (List<Item>) up_wa_getItemsSearch.get(1);
+
+		return GetItemsResponse.builder()
+				.totals(totals)
+				.itemList(items)
+				.build();
 	}
 }

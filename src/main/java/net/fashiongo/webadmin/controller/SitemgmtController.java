@@ -5,6 +5,7 @@ import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtGetItemsParameter;
 import net.fashiongo.webadmin.data.model.sitemgmt.GetTrendReportParameter;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportResponse;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
@@ -27,7 +28,6 @@ import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Consumes;
@@ -1023,5 +1023,17 @@ public class SitemgmtController {
 		response.setSuccess(true);
 		response.setData(result);
 		return response;
+	}
+
+	@RequestMapping(value = "getitems", method = RequestMethod.POST)
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetItemsResponse> getItems(@RequestBody SitemgmtGetItemsParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetItemsResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetItemsResponse>(true, null, null);
+
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetItemsResponse response = renewalSitemgmtService.getItems(parameters);
+
+		results.setData(response);
+		results.setSuccess(true);
+
+		return results;
 	}
 }
