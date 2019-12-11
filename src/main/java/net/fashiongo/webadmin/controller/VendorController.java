@@ -1294,5 +1294,11 @@ public class VendorController {
 		}
 		return response;
 	}
+
+	@RequestMapping(value="setretailerratingactive", method=RequestMethod.POST)
+	public JsonResponse<Integer> setRetailerRatingActive(@RequestBody SetRetailerRatingActiveParameter parameters) {
+    	Integer result = renewalVendorService.setRetailerRatingActive(parameters);
+		return new JsonResponse<Integer>(true, null, result);
+	}
 }
 	
