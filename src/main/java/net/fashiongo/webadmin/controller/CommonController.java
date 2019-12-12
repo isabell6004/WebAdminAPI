@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
+import net.fashiongo.webadmin.data.model.common.reponse.ConsolidationOrderStatusResponse;
 import net.fashiongo.webadmin.data.model.vendor.SendEmailParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.common.parameter.*;
@@ -253,6 +254,18 @@ public class CommonController {
 
 		JsonResponse response = renewalCommonService.sendEmail(title, sender, senderName, recipient, recipientName, message);
 
+		return response;
+	}
+
+	@PostMapping(value = "getconsolidationorderstatus")
+	public JsonResponse<ConsolidationOrderStatusResponse> getConsolidationOrderstatus() {
+
+		JsonResponse<ConsolidationOrderStatusResponse> response = new JsonResponse<>();
+
+		ConsolidationOrderStatusResponse result = renewalCommonService.getConsolidationOrderStatus();
+
+		response.setSuccess(true);
+		response.setData(result);
 		return response;
 	}
 }

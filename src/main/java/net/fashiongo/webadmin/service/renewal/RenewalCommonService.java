@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.service.renewal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.data.model.ad.BidAdPage;
 import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
+import net.fashiongo.webadmin.data.model.common.reponse.ConsolidationOrderStatusResponse;
 import net.fashiongo.webadmin.data.model.vendor.SendVendorEmailParamter;
 import net.fashiongo.webadmin.data.repository.primary.AdPageEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.CodeOrderStatusEntityRepository;
@@ -77,5 +78,12 @@ public class RenewalCommonService {
         }
 
         return response;
+    }
+
+    public ConsolidationOrderStatusResponse getConsolidationOrderStatus() {
+        List<CodeOrderStatus> codeOrderStatuses = codeOrderStatusEntityRepository.finAllConsolidationOrders();
+        return ConsolidationOrderStatusResponse.builder()
+                .consolidationOrderStatus(codeOrderStatuses)
+                .build();
     }
 }
