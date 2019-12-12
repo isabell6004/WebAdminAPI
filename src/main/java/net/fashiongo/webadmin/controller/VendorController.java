@@ -6,20 +6,23 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.entity.primary.SecurityUserEntity;
-import net.fashiongo.webadmin.data.entity.primary.VendorContractEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
+import net.fashiongo.webadmin.data.model.vendor.response.GetAssignedUserListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLogListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListCSVResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.primary.*;
@@ -37,6 +40,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -72,7 +76,7 @@ public class VendorController {
 	@RequestMapping(value="getvendorlistall", method=RequestMethod.POST)
 	public JsonResponse<List<Vendor>> getVendorListAll() {
 		
-		List<Vendor> vendors = renewalVendorService.getVendorList();
+		List<Vendor> vendors = renewalVendorService.getVendorListAll();
 		return new JsonResponse<List<Vendor>>(true, null, 0, vendors);
 	}
 	
@@ -302,9 +306,9 @@ public class VendorController {
 	 * @return DeleteCommunicationReasonResponse
 	 */
 	@RequestMapping(value="setvendorratingactive", method=RequestMethod.POST)
-	public JsonResponse<DeleteCommunicationReasonResponse> setVendorRatingActive(@RequestBody SetVendorRatingActiveParameter parameters) {
+	public JsonResponse<Integer> setVendorRatingActive(@RequestBody SetVendorRatingActiveParameter parameters) {
 		Integer result = vendorService.setVendorRatingActive(parameters);
-		return new JsonResponse<DeleteCommunicationReasonResponse>(true, null, result, null);
+		return new JsonResponse<Integer>(true, null, result);
 	}
 	
 	/**
@@ -1145,6 +1149,156 @@ public class VendorController {
 		ResultCode result = renewalVendorService.setVendorSettingAccount(wid);
 
     	return result;
+	}
+
+	@GetMapping(value = "getvendoradminaccountlist")
+	public JsonResponse getvendoradminaccountlist(@RequestParam(value = "WholeSalerID") Integer wholeSalerID) {
+    	Integer wid = wholeSalerID == null ? 0 : wholeSalerID;
+
+    	JsonResponse response = renewalVendorService.getVendorAdminAccountList(wid);
+
+    	return response;
+	}
+
+	@GetMapping(value = "getvendoradminaccountloglist")
+	public JsonResponse<GetVendorAdminAccountLogListResponse> getvendoradminaccountloglist(
+			@RequestParam(value = "pagenum") Integer pagenum,
+			@RequestParam(value = "pagesize") Integer pagesize,
+			@RequestParam(value = "WholeSalerID") Integer wholeSalerID,
+			@RequestParam(value = "UserID") String userID,
+			@RequestParam(value = "Date") String dateString,
+			@RequestParam(value = "IPAddress") String ipAddress,
+			@RequestParam(value = "orderby") String orderBy
+	) {
+    	Integer pageNum = pagenum == null ? 0 : pagenum;
+    	Integer pageSize = pagesize == null ? 0 : pagesize;
+    	Integer wid = wholeSalerID == null ? 0 : wholeSalerID;
+    	String uID = StringUtils.isEmpty(userID) ? "" : userID;
+
+    	dateString = dateString.replace("%2F", "/");
+
+		LocalDate dateLocalDate = StringUtils.isEmpty(dateString) ? null : LocalDate.parse(dateString, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+		ipAddress = StringUtils.isEmpty(ipAddress) ? "" : ipAddress;
+
+		JsonResponse<GetVendorAdminAccountLogListResponse> response = new JsonResponse<>(false, null, null);
+
+		try {
+			GetVendorAdminAccountLogListResponse data = renewalVendorService.getVendorAdminAccountLogList(pageNum, pageSize, wid, uID, dateLocalDate, ipAddress, orderBy);
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+			response.setMessage("fail");
+		}
+
+		return response;
+	}
+
+	@GetMapping(value = "getvendorgrouping")
+	public JsonResponse<GetVendorGroupingResponse> getvendorgrouping(
+			@RequestParam(value = "wholesalerid") Integer wholeSalerID,
+			@RequestParam(value = "CompanyType") String companyType,
+			@RequestParam(value = "vendortype") String vendorType,
+			@RequestParam(value = "searchkeyword") String keyword,
+			@RequestParam(value = "Categorys") String categorys,
+			@RequestParam(value = "alphabet") String alphabet) {
+		JsonResponse<GetVendorGroupingResponse> response = new JsonResponse<>(false, null, null);
+
+		try {
+			GetVendorGroupingResponse data = renewalVendorService.getVendorGrouping(wholeSalerID, companyType, vendorType, keyword, categorys, alphabet);
+
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+			response.setMessage("fail");
+		}
+
+		return response;
+	}
+
+	@PostMapping(value = "setvendorgrouping")
+	public JsonResponse<Integer> setvendorgrouping(@RequestBody SetVendorGroupingParameter param) {
+    	JsonResponse<Integer> response = new JsonResponse<Integer>(false, null, null);
+
+    	Integer wid = param.getWid() == null ? 0 : param.getWid();
+    	String saveIds = StringUtils.isEmpty(param.getSaveIds()) ? "" : param.getSaveIds();
+    	String deleteIds = StringUtils.isEmpty(param.getDeleteIds()) ? "" : param.getDeleteIds();
+
+    	try {
+			Integer result = renewalVendorService.setVendorGrouping(wid, saveIds, deleteIds);
+			response.setSuccess(true);
+			response.setData(result);
+			response.setMessage("success");
+		} catch (Exception e) {
+    		response.setMessage("fail");
+		}
+
+    	cacheService.cacheEvictVendor(wid);
+
+    	return response;
+	}
+
+	@PostMapping(value = "getassigneduserlist")
+	public JsonResponse<GetAssignedUserListResponse> getassigneduserlist() {
+		JsonResponse<GetAssignedUserListResponse> response = new JsonResponse<GetAssignedUserListResponse>(false, null, null);
+
+		try {
+			GetAssignedUserListResponse data = renewalVendorService.getAssignedUserList();
+
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+
+			response.setMessage("fail");
+		}
+
+    	return response;
+	}
+
+	@PostMapping(value = "getvendorlist")
+	public JsonResponse getvendorlist(@RequestBody GetVendorListParameter param) {
+    	JsonResponse response = new JsonResponse(false, null, null);
+
+    	try {
+			GetVendorListResponse data = renewalVendorService.getVendorList(param);
+
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+    		log.warn(e.getMessage(), e);
+    		response.setMessage("fail");
+		}
+    	return response;
+	}
+
+	@PostMapping(value = "getvendorlistcsv")
+	public JsonResponse getvendorlistcsv(@RequestBody GetVendorListParameter param) {
+		JsonResponse response = new JsonResponse(false, null, null);
+
+		try {
+			GetVendorListCSVResponse data = renewalVendorService.getvendorlistcsv(param);
+
+			response.setSuccess(true);
+			response.setData(data);
+			response.setMessage("success");
+		} catch (Exception e) {
+			log.warn(e.getMessage(), e);
+			response.setMessage("fail");
+		}
+		return response;
+	}
+
+	@RequestMapping(value="setretailerratingactive", method=RequestMethod.POST)
+	public JsonResponse<Integer> setRetailerRatingActive(@RequestBody SetRetailerRatingActiveParameter parameters) {
+    	Integer result = renewalVendorService.setRetailerRatingActive(parameters);
+		return new JsonResponse<Integer>(true, null, result);
 	}
 }
 	

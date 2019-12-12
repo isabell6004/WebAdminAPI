@@ -1,28 +1,37 @@
 package net.fashiongo.webadmin.data.repository.primary.vendor;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringExpression;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.sql.JPASQLQuery;
 import net.fashiongo.webadmin.data.entity.primary.QAspnetMembershipEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCategoryEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCountEntity;
-import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.QMapWholeSalerGroupEntity;
 import net.fashiongo.webadmin.data.entity.primary.QVendorAdminAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.QVendorLambsKeyEntity;
 import net.fashiongo.webadmin.data.entity.primary.QWholeSalerEntity;
-import net.fashiongo.webadmin.data.entity.primary.SimpleWholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.QWholesalerCompanyEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
+import net.fashiongo.webadmin.data.model.buyer.ModifiedByBuyer;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
+import net.fashiongo.webadmin.data.model.vendor.VendorGroupingSelete;
+import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnSelete;
+import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -108,6 +117,101 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         query.select(W.wholeSalerID.count()).from(W).where(W.codeName.eq(codeName).and(W.wholeSalerID.ne(wholeSalerID)));
 
         return query.fetchFirst();
+    }
+
+    @Override
+    public List<VendorGroupingSelete> findListVendorGroupingSelect(Integer wholeSalerID, Integer[] companyType, String keyword, ArrayList<Integer> categorys, String alphabet, String vendorType) {
+        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QMapWholeSalerGroupEntity M = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
+        QCountEntity count = QCountEntity.countEntity;
+
+        StringExpression selectChk = Expressions.asString("1").as("SelectChk");
+
+        StringPath pathVendorType = Expressions.stringPath(W, vendorType);
+
+        MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
+        JPASQLQuery<VendorGroupingSelete> jpasqlQuery = new JPASQLQuery<VendorGroupingSelete>(entityManager, mssqlServer2012Templates);
+
+        Expression<Integer> constant = Expressions.constant(1);
+        BooleanExpression expression = Expressions.asNumber(1).eq(constant);
+
+        expression = expression.and(M.wholeSalerID.eq(wholeSalerID));
+        if (companyType != null && companyType.length != 0) {
+            expression = expression.and(W.companyTypeID.in(companyType));
+        }
+        if (categorys != null && categorys.size() != 0) {
+            expression = expression.and(M.wholeSalerID2.in(
+                    JPAExpressions.select(count.entityID).from(count).where(count.countTypeID.eq(2).and(count.referenceID.in(categorys)))));
+        }
+        if (StringUtils.isNotEmpty(alphabet)) {
+            expression = expression.and(W.companyName.startsWith(alphabet));
+        }
+        if (StringUtils.isNotEmpty(keyword) && !keyword.equals(" ")) {
+            expression = expression.and(pathVendorType.startsWith(keyword));
+        }
+
+        jpasqlQuery.select(Projections.constructor(VendorGroupingSelete.class,
+                M.mapID,
+                M.wholeSalerID2.as("WholeSalerID"),
+                W.companyName,
+                W.companyTypeID,
+                selectChk))
+                .from(W)
+                .innerJoin(M).on(W.wholeSalerID.eq(M.wholeSalerID2))
+                .where(expression)
+                .orderBy(W.companyName.asc());
+
+        return jpasqlQuery.fetch();
+    }
+
+    @Override
+    public List<VendorGroupingUnSelete> findListVendorGroupingUnSelect(Integer wholeSalerID, Integer[] companyType, String keyword, ArrayList<Integer> categorys, String alphabet, String vendorType) {
+        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QMapWholeSalerGroupEntity M = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
+        QCountEntity count = QCountEntity.countEntity;
+
+        StringExpression selectChk = Expressions.asString("0").as("SelectChk");
+        StringPath pathVendorType = Expressions.stringPath(W, vendorType);
+
+        MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
+        JPASQLQuery<VendorGroupingUnSelete> jpasqlQuery = new JPASQLQuery<VendorGroupingUnSelete>(entityManager, mssqlServer2012Templates);
+
+        Expression<Integer> constant = Expressions.constant(1);
+        BooleanExpression expression = Expressions.asNumber(1).eq(constant);
+
+        expression = expression.and(W.wholeSalerID.ne(wholeSalerID));
+        if (companyType != null && companyType.length != 0) {
+            expression = expression.and(W.companyTypeID.in(companyType));
+        }
+        if (categorys != null && categorys.size() != 0) {
+            expression = expression.and(M.wholeSalerID2.in(
+                    JPAExpressions.select(count.entityID).from(count).where(count.countTypeID.eq(2).and(count.referenceID.in(categorys)))
+            ));
+        }
+        if (StringUtils.isNotEmpty(alphabet)) {
+            expression = expression.and(W.companyName.startsWith(alphabet));
+        }
+        if (StringUtils.isNotEmpty(keyword) && !keyword.equals(" ")) {
+            expression = expression.and(pathVendorType.startsWith(keyword));
+        }
+
+        ArrayList<Integer> companyTypes = new ArrayList<Integer>();
+        companyTypes.add(1);
+        companyTypes.add(2);
+        companyTypes.add(3);
+
+        jpasqlQuery.select(Projections.constructor(VendorGroupingUnSelete.class,
+                W.wholeSalerID.as("WholeSalerID"),
+                W.companyName,
+                W.companyTypeID,
+                selectChk))
+                .from(W)
+                .leftJoin(M).on(M.wholeSalerID.eq(wholeSalerID).and(W.wholeSalerID.eq(M.wholeSalerID2)))
+                .where(M.wholeSalerID.isNull().and(W.companyTypeID.in(companyTypes)).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true))
+                        .and(expression))
+                .orderBy(W.companyName.asc());
+
+        return jpasqlQuery.fetch();
     }
 
     private BooleanExpression eqReferenceID(Integer referenceID, QCategoryEntity C) {

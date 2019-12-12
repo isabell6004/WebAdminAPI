@@ -1,15 +1,20 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "tblRetailerRating")
+@Setter
 public class RetailerRatingEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "RetailerRatingID")
+	@Setter(AccessLevel.NONE)
 	private Integer retailerRatingID;
 
 	@Column(name = "OrderID")

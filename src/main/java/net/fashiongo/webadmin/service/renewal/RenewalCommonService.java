@@ -1,7 +1,9 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.data.model.ad.BidAdPage;
 import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
+import net.fashiongo.webadmin.data.model.vendor.SendVendorEmailParamter;
 import net.fashiongo.webadmin.data.repository.primary.AdPageEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.CodeOrderStatusEntityRepository;
 import net.fashiongo.webadmin.utility.HttpClient;
@@ -54,5 +56,26 @@ public class RenewalCommonService {
                         .build()
                 ).collect(Collectors.toList());
 
+    }
+
+    public JsonResponse sendEmail(String title, String sender, String senderName, String recipient, String recipientName, String message) {
+        JsonResponse response = new JsonResponse(false, null, null);
+
+        SendVendorEmailParamter param = new SendVendorEmailParamter();
+        param.setMessage(message);
+        param.setRecipientEmailAddress(recipient);
+        param.setRecipientName(recipientName);
+        param.setSenderEmailAddress(sender);
+        param.setSenderName(senderName);
+        param.setSubject(title);
+
+        try {
+            response = jsonClient.post("/email/sendEmail", new ObjectMapper().writeValueAsString(param));
+            response.setData(1);
+        } catch (Exception e) {
+            response.setData(-1);
+        }
+
+        return response;
     }
 }

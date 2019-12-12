@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
+import net.fashiongo.webadmin.data.model.vendor.SendEmailParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.common.parameter.*;
 import net.fashiongo.webadmin.model.pojo.common.response.GetCountryStatesResponse;
@@ -11,7 +12,9 @@ import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
 import net.fashiongo.webadmin.service.renewal.RenewalCommonService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -237,5 +240,19 @@ public class CommonController {
 		jsonResponse.setData(orderstatus);
 
 		return jsonResponse;
+	}
+
+	@PostMapping(value = "sendemail")
+	public JsonResponse sendemail(@RequestBody SendEmailParameter param) {
+		String title = StringUtils.isEmpty(param.getTitle()) ? "" : param.getTitle();
+		String sender = StringUtils.isEmpty(param.getSender()) ? "" : param.getSender();
+		String senderName = StringUtils.isEmpty(param.getSendername()) ? "" : param.getSendername();
+		String recipient = StringUtils.isEmpty(param.getRecipient()) ? "" : param.getRecipient();
+		String recipientName = StringUtils.isEmpty(param.getRecipientname()) ? "" : param.getRecipientname();
+		String message = StringUtils.isEmpty(param.getMessage()) ? "" : param.getMessage();
+
+		JsonResponse response = renewalCommonService.sendEmail(title, sender, senderName, recipient, recipientName, message);
+
+		return response;
 	}
 }
