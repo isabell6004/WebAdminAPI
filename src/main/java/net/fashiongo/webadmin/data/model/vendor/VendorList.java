@@ -19,7 +19,7 @@ public class VendorList {
     private String companyName;
 
     @JsonProperty(value = "CompanyTypeID")
-    private String companyTypeID;
+    private Integer companyTypeID;
 
     @JsonProperty(value = "FirstName")
     private String firstName;
