@@ -21,7 +21,6 @@ import net.fashiongo.webadmin.data.entity.primary.QWholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.QWholesalerCompanyEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
-import net.fashiongo.webadmin.data.model.buyer.ModifiedByBuyer;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingSelete;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnSelete;
