@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "tblNews")
+@DynamicUpdate
 public class NewsEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
