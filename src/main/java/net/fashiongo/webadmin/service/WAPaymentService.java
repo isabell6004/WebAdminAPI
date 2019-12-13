@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fashiongo.webadmin.dao.primary.CardStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,48 +47,27 @@ import net.fashiongo.webadmin.utility.Utility;
  */
 @Service
 public class WAPaymentService extends ApiService {
-	
-	
-	
-	@Autowired
-	private OrderPaymentStatusRepository orderPaymentStatusRepository;
-	@Autowired
-	private EntityActionLogRepository entityActionLogRepository;
-	@Autowired
-	private PaymentCreditCardRepository paymentCreditCardRepository;
-	/**
-	 * 
-	 * 
-	 * @since 2018. 11. 01.
-	 * @author Dahye
-	 * @param 
-	 * @return GetPaymentStatusSearchOptionResponse
-	 */
+	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
+	@Autowired private EntityActionLogRepository entityActionLogRepository;
+	@Autowired private PaymentCreditCardRepository paymentCreditCardRepository;
+	@Autowired private CardStatusRepository cardStatusRepository;
+
 	@SuppressWarnings("unchecked")
 	public GetPaymentStatusSearchOptionResponse getPaymentStatusSearchOption() {
 		GetPaymentStatusSearchOptionResponse result = new GetPaymentStatusSearchOptionResponse();
 		String spName = "up_wa_pay_GetPaymentStatusSearchOption";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		List<Object> _results = jdbcHelper.executeSP(spName, params, Vendor.class, PaymentStatus.class);
 		result.setVendorList((List<Vendor>) _results.get(0));
 		result.setPaymentStatusList((List<PaymentStatus>) _results.get(1));
 		return result;
 	}
-	
-	
-	/**
-	 * getPaymentStatusList
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param GetPaymentStatusListParameter
-	 * @return GetPaymentStatusListResponse
-	 */
+
 	@SuppressWarnings("unchecked")
 	public GetPaymentStatusListResponse getPaymentStatusList(GetPaymentStatusListParameter param) {
 		GetPaymentStatusListResponse result = new GetPaymentStatusListResponse();
 		String spName = "up_wa_pay_GetPaymentStatusList_v1";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		params.add(param.getPageNum());
 		params.add(param.getPageSize());
 		params.add(param.getWholeSalerID());
@@ -105,76 +85,37 @@ public class WAPaymentService extends ApiService {
 		result.setTotal((List<Total>) _results.get(1));
 		return result;
 	}
-	
-	/**
-	 * GetPendingPaymentTransaction
-	 * 
-	 * @since 2018. 11. 22.
-	 * @author Dahye
-	 * @param GetPendingPaymentTransactionParameter
-	 * @return GetPendingPaymentTransactionResponse
-	 */
+
 	@SuppressWarnings("unchecked")
 	public GetPendingPaymentTransactionResponse getPendingPaymentTransaction(GetPendingPaymentTransactionParameter param) {
 		GetPendingPaymentTransactionResponse result = new GetPendingPaymentTransactionResponse();
 		String spName = "up_wa_pay_GetPendingPaymentTransaction";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		params.add(param.getCreditcardid());
 		List<Object> _results = jdbcHelper.executeSP(spName, params, CreditCardStatus.class, OrderPayment.class);
 		result.setCreditCardStatusList((List<CreditCardStatus>) _results.get(0));
 		result.setOrderPaymentStatusList((List<OrderPayment>) _results.get(1));
 		return result;
 	}
-	
-	/**
-	 * GetCreditCardType
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param 
-	 * @return CodeCreditCardType
-	 */
+
 	@SuppressWarnings("unchecked")
 	public List<CodeCreditCardType> getCreditCardType() {
-		List<CodeCreditCardType> result = new ArrayList<CodeCreditCardType>();
 		String spName = "up_wa_Pay_GetCreditCardType";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		List<Object> _results = jdbcHelper.executeSP(spName, params, CodeCreditCardType.class);
-		result = (List<CodeCreditCardType>) _results.get(0);
-		return result;
+		return (List<CodeCreditCardType>) _results.get(0);
 	}
-	
-	/**
-	 * getCreditCardStatus
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param 
-	 * @return 
-	 */
-	@SuppressWarnings("unchecked")
+
 	public List<CardStatus> getCreditCardStatus() {
-		List<CardStatus> result = new ArrayList<CardStatus>();
-		String spName = "up_wa_Pay_GetCreditCardStatus";
-		List<Object> params = new ArrayList<Object>();
-		List<Object> _results = jdbcHelper.executeSP(spName, params, CardStatus.class);
-		result = (List<CardStatus>) _results.get(0);
-		return result;
+//		String spName = "up_wa_Pay_GetCreditCardStatus";
+		return cardStatusRepository.findAll();
 	}
-	
-	/**
-	 * getAllSavedCreditCardInfo
-	 * 
-	 * @since 2018. 11. 26.
-	 * @author Dahye
-	 * @param GetAllSavedCreditCardInfoParameter
-	 * @return GetAllSavedCreditCardInfoResponse
-	 */
+
 	@SuppressWarnings("unchecked")
 	public GetAllSavedCreditCardInfoResponse getAllSavedCreditCardInfo(GetAllSavedCreditCardInfoParameter param) {
 		GetAllSavedCreditCardInfoResponse result = new GetAllSavedCreditCardInfoResponse();
 		String spName = "up_wa_Pay_GetCreditCardList";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		params.add(param.getPageNum());
 		params.add(param.getPageSize());
 		params.add(param.getCardID());
@@ -193,15 +134,7 @@ public class WAPaymentService extends ApiService {
 		result.setTotalList((List<TotalCount>) _results.get(1));
 		return result;		
 	}
-	
-	/**
-	 * SetRestorePendingPaymentTransaction
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param SetRestorePendingPaymentTransactionParameter
-	 * @return 
-	 */
+
 	@Transactional("primaryTransactionManager")
 	public ResultCode setRestorePendingPaymentTransaction(SetRestorePendingPaymentTransactionParameter param) {
 		LocalDateTime modifiedOn = LocalDateTime.now();
@@ -243,19 +176,11 @@ public class WAPaymentService extends ApiService {
 		
 		return new ResultCode(true, 1, "Restore successfully!");
 	}
-	
-	/**
-	 * GetPayoutHistory
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param GetPayoutHistoryParameter
-	 * @return GetPayoutHistoryResponse
-	 */
+
 	public GetPayoutHistoryResponse getPayoutHistory(GetPayoutHistoryParameter param) {
 		GetPayoutHistoryResponse result = new GetPayoutHistoryResponse();
 		String spName = "up_wa_pay_GetPayoutList";
-		List<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<>();
 		params.add(param.getPagenum());
 		params.add(param.getPagesize());
 		params.add(param.getWholesalerid());

@@ -1,13 +1,14 @@
-/**
- * 
- */
 package net.fashiongo.webadmin.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import net.fashiongo.webadmin.data.model.payment.GetPaymentAccountInfoParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.dao.primary.DisputeDocumentRepository;
@@ -47,10 +49,9 @@ public class PaymentController {
 	@GetMapping("/disputes")
 	public JsonResponse<PagedResult<Dispute>> getDisputes(@ModelAttribute QueryParam queryParam) {
 		JsonResponse<PagedResult<Dispute>> response = new JsonResponse<>(false, null, null);
-		PagedResult<Dispute> disputes = null;
 		
 		try {
-			disputes = paymentService.getDisputes(queryParam);
+			PagedResult<Dispute> disputes = paymentService.getDisputes(queryParam);
 			response.setData(disputes);
 			response.setSuccess(true);
 		} catch (Exception e) {
@@ -66,11 +67,10 @@ public class PaymentController {
 		logger.debug("getDisputeDetail() orderId: {}", disputeId);
 		boolean success = false;
 		JsonResponse<Object> response = new JsonResponse<>(false, null, null);
-		DisputeDetail dispute = null;
 		Integer orderType = queryParam.getTypeId();
 		Integer wid = queryParam.getWid();
 		try {
-			dispute = paymentService.getDispute(disputeId, orderType);
+			DisputeDetail dispute = paymentService.getDispute(disputeId, orderType);
 			if(dispute.getHeader().getWholesalerId().equals(wid)) {
 				success = true;
 				response.setData(dispute);
@@ -142,7 +142,7 @@ public class PaymentController {
 			response = paymentService.getPaymentAccountInfo(wid);
 			response.setSuccess(true);
 		} catch (Exception ex) {
-			logger.error("Exception Error: {}", ex);
+			logger.error("PaymentController.getpaymentaccountinfo()", ex);
 			response.setMessage(ex.getMessage());
 		}
 
@@ -165,6 +165,51 @@ public class PaymentController {
 			return paymentService.setPaymentAccountBank(param);
 		} catch (Exception e) {
 			logger.error("PaymentController.setPaymentAccountInfo()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+
+	@GetMapping(value = "/creditCardStatus")
+	public JsonResponse<PaymentStatusResponse> getCreditCardStatus(
+			@RequestParam(value = "creditCardId") Integer creditCardId,
+			@RequestParam(value = "consolidationId") Integer consolidationId) {
+		try {
+			return new JsonResponse<>(true, null,
+					paymentService.getCreditCardStatus(creditCardId, consolidationId));
+		} catch (Exception e) {
+			logger.error("PaymentController.getCreditCardStatus()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+
+	@PostMapping(value = "/sale")
+	public JsonResponse<?> setSale(@RequestBody PaymentRequest paymentRequest) {
+		try {
+			return paymentService.setSale(paymentRequest);
+		} catch (Exception e) {
+			logger.error("PaymentController.setSale()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+
+	@GetMapping(value = "/transactions")
+	public JsonResponse<List<PaymentTransactionResponse>> getTransactions(
+			@RequestParam(value = "consolidationId") Integer consolidationId) {
+		try {
+			return new JsonResponse<>(true, null,
+					paymentService.getTransactions(consolidationId));
+		} catch (Exception e) {
+			logger.error("PaymentController.getTransactions()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+
+	@PostMapping(value = "/refund")
+	public JsonResponse<?> setRefund(@RequestBody PaymentRequest paymentRequest) {
+		try {
+			return paymentService.setRefund(paymentRequest);
+		} catch (Exception e) {
+			logger.error("PaymentController.setSale()", e);
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
