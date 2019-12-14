@@ -167,6 +167,10 @@ bid-redis:
       acquire: 3
       expire: 10
 
+api:
+  endpoint:
+    newVendorApi: http://localhost:21811
+
 management:
   endpoints:
     web:

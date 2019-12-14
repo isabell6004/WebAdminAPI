@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class SetVendorContractDocumentParameter {
+
     @JsonProperty(value = "VendorContractDocumentID")
     private Integer vendorContractDocumentID;
 
@@ -28,4 +29,5 @@ public class SetVendorContractDocumentParameter {
 
     @JsonProperty(value = "ReceivedBy")
     private String receivedBy;
+
 }

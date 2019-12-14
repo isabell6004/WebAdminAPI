@@ -397,42 +397,6 @@ public class VendorController {
 	 * @param wholeSalerID
 	 * @return
 	 */
-	@RequestMapping(value="getvendorcontract", method=RequestMethod.GET)
-	public JsonResponse<List<VendorContract>> getVendorContract(@RequestParam(value="wid") Integer wholeSalerID) {
-		JsonResponse<List<VendorContract>> results = new JsonResponse<List<VendorContract>>(false, null, 0, null);
-		List<VendorContract> result = vendorService.getVendorContract(wholeSalerID);
-		
-		results.setData(result);
-		results.setSuccess(true);
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 12. 14.
-	 * @author Reo
-	 * @param vendorContractID
-	 * @return
-	 */
-	@RequestMapping(value="getvendorcontractdocumenthistory", method=RequestMethod.GET)
-	public JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse> getVendorContractDocumentHistory(@RequestParam(value="VendorContractID") Integer vendorContractID) {
-		JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse>(true, null, null);
-
-		net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse vendorContractDocumentHistory = renewalVendorService.getVendorContractDocumentHistory(vendorContractID);
-		results.setData(vendorContractDocumentHistory);
-		
-		return results; 
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 12. 14.
-	 * @author Reo
-	 * @param wholeSalerID
-	 * @return
-	 */
 	@RequestMapping(value="getvendordetailinfodata", method=RequestMethod.GET)
 	public JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse> getVendorDetailInfoData(@RequestParam(value="wid") Integer wholeSalerID) {
 		JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse>(true, null, null);
@@ -1055,92 +1019,6 @@ public class VendorController {
 		}
 
     	return response;
-	}
-
-	@GetMapping(value = "getvendorcontracthistorylist")
-	public JsonResponse<List<VendorContractHistory>> getvendorcontracthistorylist(@RequestParam(value="wid") Integer wholeSalerID) {
-    	JsonResponse<List<VendorContractHistory>> response = new JsonResponse<>(false, null, null);
-
-    	try {
-    		List<VendorContractHistory> result = renewalVendorService.getVendorContractHistoryList(wholeSalerID);
-
-    		response.setSuccess(true);
-    		response.setData(result);
-    		response.setMessage("success");
-		} catch (Exception ex) {
-    		log.warn(ex.getMessage(), ex);
-    		response.setMessage("fail");
-		}
-
-    	return response;
-	}
-
-	@PostMapping(value = "setvendorcontract")
-	public ResultCode setvendorcontract(@RequestBody SetVendorContractParameter param) {
-		Integer vendorContractID = param.getVendorContractID();
-		Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
-		Integer contractTypeID = param.getContractTypeID() == null ? 0 : param.getContractTypeID();
-		BigDecimal setupFee = param.getSetupFee();
-		BigDecimal lastMonthServiceFee = param.getLastMonthServiceFee();
-		BigDecimal monthlyFee = param.getMonthlyFee();
-		Integer photoPlanID = param.getPhotoPlanID() == null ? 0 : param.getPhotoPlanID();
-		Boolean useModel = param.getUseModel() == null ? false : param.getUseModel();
-		String useModelStyle = StringUtils.isEmpty(param.getUseModelStyle()) ? "" : param.getUseModelStyle();
-		Integer monthlyItems = StringUtils.isEmpty(param.getUseModelStyle()) ? 0 : Integer.valueOf(param.getUseModelStyle());
-		BigDecimal commisionRate = param.getCommissionRate() == null ? BigDecimal.valueOf(0) : param.getCommissionRate();
-		Integer repID = param.getRepID();
-		Boolean perorder = param.getPerorder() == null ? false : param.getPerorder();
-
-		Date vendorContractFromDate;
-		Timestamp vendorContractFrom = Timestamp.valueOf(LocalDateTime.now());
-		try {
-			vendorContractFromDate = StringUtils.isEmpty(param.getVendorContractFrom()) ? new Date() : new SimpleDateFormat("MM/dd/yyyy").parse(param.getVendorContractFrom());
-
-			vendorContractFrom = StringUtils.isEmpty(param.getVendorContractFrom()) ? Timestamp.valueOf(LocalDateTime.now()) : new Timestamp(vendorContractFromDate.getTime());
-		} catch (ParseException e) {
-			log.warn(e.getMessage(), e);
-		}
-
-		Boolean vendorContractRowAdd = param.getVendorContractRowAdd() == null ? false : param.getVendorContractRowAdd();
-		String memo = StringUtils.isEmpty(param.getMemo()) ? "" : param.getMemo();
-		String isSetupFeeWaived = param.getIsSetupFeeWaived() == null ? "" : param.getIsSetupFeeWaived();
-		String isLastMonthServiceFeeWaived = param.getIsLastMonthServiceFeeWaived() == null ? "" : param.getIsLastMonthServiceFeeWaived();
-		Integer vendorContractPlanID = param.getVendorContractPlanID() == null ? 0 : param.getVendorContractPlanID();
-		Integer commissionBaseDateCode = param.getCommissionBaseDateCode() == null ? 0 : param.getCommissionBaseDateCode();
-
-
-		ResultCode result = renewalVendorService.setVendorContract(vendorContractID, wholeSalerID, contractTypeID, setupFee, lastMonthServiceFee, monthlyFee, photoPlanID, useModel,
-				useModelStyle, monthlyItems, commisionRate, repID, perorder, vendorContractFrom, vendorContractRowAdd, memo,
-				isSetupFeeWaived.equalsIgnoreCase("1"), isLastMonthServiceFeeWaived.equalsIgnoreCase("1"), vendorContractPlanID, commissionBaseDateCode);
-
-		cacheService.cacheEvictVendor(wholeSalerID);
-
-    	return result;
-	}
-
-	@PostMapping(value = "setvendorcontractdocument")
-	public ResultCode setvendorcontractdocument(@RequestBody SetVendorContractDocumentParameter param) {
-    	Integer vendorContractDocumentID = param.getVendorContractDocumentID();
-    	Integer vendorContractID = param.getVendorContractID() == null ? 0 : param.getVendorContractID();
-    	Integer documentTypeID = param.getDocumentTypeID() == null ? 0 : param.getDocumentTypeID();
-		String fileName = StringUtils.isEmpty(param.getFileName()) ? "" : param.getFileName();
-		String fileName2 = StringUtils.isEmpty(param.getFileName2()) ? "" : param.getFileName2();
-		String fileName3 = StringUtils.isEmpty(param.getFileName3()) ? "" : param.getFileName3();
-		String note = StringUtils.isEmpty(param.getNote()) ? "" : param.getNote();
-		String receivedBy = StringUtils.isEmpty(param.getReceivedBy()) ? "" : param.getReceivedBy();
-
-		ResultCode result = renewalVendorService.setVendorContractDocument(vendorContractDocumentID, vendorContractID, documentTypeID, fileName, fileName2, fileName3, note, receivedBy);
-
-    	return result;
-	}
-
-	@PostMapping(value = "delvendorcontractdocument")
-	public ResultCode delvendorcontractdocument(@RequestBody DelVendorContractDocumentParameter param) {
-    	String documentHistoryIDs = StringUtils.isEmpty(param.getDocumentHistoryIDs()) ? "" : param.getDocumentHistoryIDs();
-
-    	ResultCode result = renewalVendorService.delVendorContractDocument(documentHistoryIDs);
-
-    	return result;
 	}
 
 	@PostMapping(value = "setvendorsettingaccount")
