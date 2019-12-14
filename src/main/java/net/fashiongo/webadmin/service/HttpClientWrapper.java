@@ -36,26 +36,47 @@ public class HttpClientWrapper {
     }
 
     public ResponseEntity<JsonResponse> post(String endpoint, Object request) {
-        try {
-            return post(endpoint, mapper.writeValueAsString(request));
-        } catch (JsonProcessingException e) {
-            log.warn("fail to generate from object to json.");
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return post(endpoint, request, null);
     }
 
     public ResponseEntity<JsonResponse> post(String endpoint, String payload, Map<String, String> headerMap) {
+        return execute(endpoint, payload, headerMap, HttpMethod.POST);
+    }
 
+    private ResponseEntity<JsonResponse> execute(String endpoint, String payload, Map<String, String> headerMap, HttpMethod method) {
         HttpHeaders headers = new HttpHeaders();
         if(MapUtils.isNotEmpty(headerMap)) {
             headerMap.keySet().forEach(x -> headers.add(x, headerMap.get(x)));
         }
 
         HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
-        return restTemplateWrapper.exchange(endpoint, HttpMethod.POST, requestEntity, JsonResponse.class);
+        return restTemplateWrapper.exchange(endpoint, method, requestEntity, JsonResponse.class);
     }
 
     public ResponseEntity<JsonResponse> post(String endpoint, String payload) {
         return post(endpoint, payload, null);
     }
+
+    public ResponseEntity<JsonResponse> put(String endpoint, String payload, Map<String, String> headerMap) {
+        return execute(endpoint, payload, headerMap, HttpMethod.PUT);
+    }
+
+    public ResponseEntity<JsonResponse> put(String endpoint, String payload) {
+        return execute(endpoint, payload, null, HttpMethod.PUT);
+    }
+
+    public ResponseEntity<JsonResponse> put(String endpoint, Object request) {
+        return put(endpoint, request, null);
+    }
+
+    public ResponseEntity<JsonResponse> put(String endpoint, Object request, Map<String, String> headerMap) {
+        try {
+            return put(endpoint, mapper.writeValueAsString(request), headerMap);
+        } catch (JsonProcessingException e) {
+            log.warn("fail to generate from object to json.");
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+
 }
