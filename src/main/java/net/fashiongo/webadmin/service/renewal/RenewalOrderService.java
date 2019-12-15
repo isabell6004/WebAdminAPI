@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.service.renewal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.data.entity.primary.ConsolidationOrdersEntity;
+import net.fashiongo.webadmin.data.entity.primary.NewsEntity;
 import net.fashiongo.webadmin.data.model.order.GetPrintPoUrlParameter2;
 import net.fashiongo.webadmin.data.repository.primary.ConsolidationOrdersEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.MergeOrdersEntityRepository;
@@ -120,6 +121,73 @@ public class RenewalOrderService {
 							});
 				}
 
+				return true;
+
+			});
+		} catch (Exception ex) {
+			bSuccess = false;
+			retCode = -1;
+			retMsg = ex.getMessage();
+		}
+
+		JsonResponse result = new JsonResponse(bSuccess,retMsg,retCode,"");
+		return result;
+	}
+
+	public JsonResponse setConsolidationDetailMessage(Integer orderId, Integer consolidationId, Integer wholesalerId, String newsTitle, String newsContent, String lastUser, LocalDateTime fromDate, LocalDateTime toDate) {
+		boolean bSuccess = false;
+		int retCode = 1;
+		String retMsg = "Send successfully!";
+
+		try {
+
+			TransactionTemplate tx = new TransactionTemplate(platformTransactionManager);
+
+			bSuccess = tx.execute(transactionStatus -> {
+				LocalDateTime now = LocalDateTime.now();
+				// 1. insert news
+				NewsEntity newsEntity = new NewsEntity();
+
+				newsEntity.setWholeSalerId(wholesalerId);
+				newsEntity.setNewsTitle(newsTitle);
+				newsEntity.setNewsContent(newsContent);
+				newsEntity.setStartingDate(fromDate);
+				newsEntity.setFromDate(fromDate);
+				newsEntity.setToDate(toDate);
+				newsEntity.setShowBanner(true);
+				newsEntity.setNewsType("C");
+				newsEntity.setActive(true);
+				newsEntity.setLastModifiedDateTime(now);
+				newsEntity.setLastUser(lastUser);
+
+				newsEntity = newsEntityRepository.save(newsEntity);
+
+				Integer newsId = newsEntity.getNewsId();
+
+				// 2. update order consolidation status
+				ConsolidationOrdersEntity consolidationOrders = consolidationOrdersEntityRepository.findById(orderId).orElseGet(() -> {
+					ConsolidationOrdersEntity consolidationOrdersEntity = new ConsolidationOrdersEntity();
+					consolidationOrdersEntity.setOrderID(orderId);
+					consolidationOrdersEntity.setConsolidationID(consolidationId);
+					return consolidationOrdersEntity;
+				});
+
+				consolidationOrders.setNotifiedBy(lastUser);
+				consolidationOrders.setNotifiedOn(Timestamp.valueOf(now));
+
+				if (consolidationOrders.getDropReferenceID() != null) {
+
+					newsEntityRepository.findById(consolidationOrders.getDropReferenceID())
+							.ifPresent(news -> {
+								news.setActive(false);
+								news.setLastModifiedDateTime(now);
+								newsEntityRepository.save(news);
+							});
+				}
+
+				consolidationOrders.setDropReferenceID(newsId);
+
+				consolidationOrdersEntityRepository.save(consolidationOrders);
 				return true;
 
 			});

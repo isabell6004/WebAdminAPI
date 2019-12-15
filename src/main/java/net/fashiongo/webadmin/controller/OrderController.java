@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import net.fashiongo.webadmin.data.model.order.GetPrintPoUrlParameter2;
 import net.fashiongo.webadmin.data.model.order.SetConsolidationDetailDroppedByParameter;
+import net.fashiongo.webadmin.data.model.order.SetConsolidationDetailMessageParameter;
 import net.fashiongo.webadmin.model.pojo.order.parameter.GetPrintPoUrlParameter;
 import net.fashiongo.webadmin.service.OrderService;
 import net.fashiongo.webadmin.service.renewal.RenewalOrderService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -78,6 +81,46 @@ public class OrderController {
 		String sessionUserName = Utility.getUsername();
 
 		JsonResponse results = renewalOrderService.setConsolidationDetailDroppedBy(orderId,consolidationId,droppedBy,receivedBy,receivedOn,sessionUserName);
+
+		return results;
+	}
+
+	@RequestMapping(value="setconsolidationdetailmessage", method=RequestMethod.POST)
+	public JsonResponse setConsolidationDetailMessage(@RequestBody SetConsolidationDetailMessageParameter parameters) throws JsonProcessingException {
+		Integer orderId = Optional.ofNullable(parameters.getOrderId()).orElse(0);
+		Integer consolidationId = Optional.ofNullable(parameters.getConsolidationId()).orElse(0);
+		Integer wholesalerId = Optional.ofNullable(parameters.getWholesalerId()).orElse(0);
+		String newsTitle = parameters.getNewsTitle();
+		String newsContent = Optional.ofNullable(parameters.getNewsContent())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> {
+					try {
+						return URLDecoder.decode(s, "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						throw new RuntimeException(e);
+					}
+				}).orElse(null);
+
+		String lastUser = parameters.getLastUser();
+		LocalDateTime fromDate = Optional.ofNullable(parameters.getFromDate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.orElse(LocalDateTime.of(1970,1,1,0,0,0,0));
+
+		fromDate = LocalDateTime.now().minusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+		LocalDateTime toDate = Optional.ofNullable(parameters.getToDate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.map(dateTime -> {
+					if(dateTime.getHour() == 0) {
+						return dateTime.plusDays(1).minusSeconds(1);
+					}
+					return dateTime;
+				})
+				.orElse(LocalDateTime.of(2099,12,31,0,0,0,0));
+
+		JsonResponse results = renewalOrderService.setConsolidationDetailMessage(orderId,consolidationId,wholesalerId,newsTitle,newsContent,lastUser,fromDate,toDate);
 
 		return results;
 	}
