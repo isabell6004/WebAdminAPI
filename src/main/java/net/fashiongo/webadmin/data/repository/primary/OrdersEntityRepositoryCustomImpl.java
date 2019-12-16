@@ -282,4 +282,19 @@ public class OrdersEntityRepositoryCustomImpl implements OrdersEntityRepositoryC
 
 		return jpaQuery.fetchOne();
 	}
+
+	@Override
+	public boolean hasOrderByConsolidationIdAndIsConsolidate(int consolidationId, boolean isConsolidate) {
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+		QOrdersEntity ORDER = QOrdersEntity.ordersEntity;
+
+		jpaQuery.select(ORDER)
+				.from(ORDER)
+				.where(
+						ORDER.consolidationID.eq(consolidationId)
+						.and(ORDER.isConsolidated.eq(isConsolidate))
+				);
+
+		return jpaQuery.fetchCount() > 0 ? true : false;
+	}
 }

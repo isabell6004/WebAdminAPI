@@ -1,10 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import net.fashiongo.webadmin.data.model.order.GetPrintPoUrlParameter2;
-import net.fashiongo.webadmin.data.model.order.SetConsolidationDetailDroppedByParameter;
-import net.fashiongo.webadmin.data.model.order.SetConsolidationDetailMessageParameter;
-import net.fashiongo.webadmin.data.model.order.SetUndoRemoveConsolidationDetailParameter;
+import net.fashiongo.webadmin.data.model.order.*;
 import net.fashiongo.webadmin.model.pojo.order.parameter.GetPrintPoUrlParameter;
 import net.fashiongo.webadmin.service.OrderService;
 import net.fashiongo.webadmin.service.renewal.RenewalOrderService;
@@ -21,7 +18,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -132,6 +131,16 @@ public class OrderController {
 		String sessionUserName = Utility.getUsername();
 
 		JsonResponse results = renewalOrderService.setUndoRemoveConsolidationDetail(orderId,sessionUserName);
+
+		return results;
+	}
+
+	@RequestMapping(value="setremoveconsolidationdetail", method=RequestMethod.POST)
+	public JsonResponse setRemoveConsolidationDetail(@RequestBody SetRemoveConsolidationDetailParameter parameters) throws JsonProcessingException {
+		List<Integer> orderId = Optional.ofNullable(parameters.getDatas()).orElse(Collections.EMPTY_LIST);
+		String sessionUserName = Utility.getUsername();
+
+		JsonResponse results = renewalOrderService.setRemoveConsolidationDetail(orderId,sessionUserName);
 
 		return results;
 	}

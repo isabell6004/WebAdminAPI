@@ -21,4 +21,6 @@ public interface OrdersEntityRepositoryCustom {
 			, String orderBy);
 
 	ConsolidationOrderSummary summaryByConsolidationId(int consolidationId);
+
+	boolean hasOrderByConsolidationIdAndIsConsolidate(int consolidationId,boolean isConsolidate);
 }

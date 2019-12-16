@@ -28,4 +28,19 @@ public class WholeShipMethodEntityRepositoryCustomImpl implements WholeShipMetho
 				);
 		return jpaQuery.fetch();
 	}
+
+	@Override
+	public WholeShipMethodEntity findFirstWithShipMethod(boolean isDefault, int wholeSalerId, boolean isShipMethodActive) {
+		QWholeShipMethodEntity WSM = QWholeShipMethodEntity.wholeShipMethodEntity;
+		QShipMethodEntity SM = QShipMethodEntity.shipMethodEntity;
+		JPAQuery<WholeShipMethodEntity> jpaQuery = new JPAQuery<>(entityManager);
+
+		jpaQuery.select(WSM)
+				.from(WSM)
+				.leftJoin(WSM.shipMethod,SM).fetchJoin()
+				.where(
+						WSM.isDefault.eq(isDefault).and(WSM.wholeSalerID.eq(wholeSalerId).and(WSM.active.eq(isShipMethodActive)))
+				).limit(1);
+		return jpaQuery.fetchOne();
+	}
 }
