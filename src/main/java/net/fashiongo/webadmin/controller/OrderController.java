@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
@@ -141,6 +142,19 @@ public class OrderController {
 		String sessionUserName = Utility.getUsername();
 
 		JsonResponse results = renewalOrderService.setRemoveConsolidationDetail(orderId,sessionUserName);
+
+		return results;
+	}
+
+	@RequestMapping(value="setconsolidationdetailorderstatus", method=RequestMethod.POST)
+	public JsonResponse setConsolidationDetailOrderStatus(HttpServletRequest httpServletRequest, @RequestBody SetConsolidationDetailOrderStatusParameter parameters) throws JsonProcessingException {
+		Integer consolidationId = Optional.ofNullable(parameters.getConsolidationId()).orElse(0);
+		Integer orderId = Optional.ofNullable(parameters.getOrderId()).orElse(0);
+		Integer orderStatusId = Optional.ofNullable(parameters.getOrderStatusId()).orElse(0);
+		String sessionUserName = Utility.getUsername();
+		String ipAddress = Utility.getIpAddress(httpServletRequest);
+
+		JsonResponse results = renewalOrderService.setConsolidationDetailOrderStatus(orderId,consolidationId,orderStatusId,sessionUserName,ipAddress);
 
 		return results;
 	}

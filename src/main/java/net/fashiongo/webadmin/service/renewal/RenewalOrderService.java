@@ -2,10 +2,13 @@ package net.fashiongo.webadmin.service.renewal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.fashiongo.webadmin.dao.primary.OrderRepository;
+import net.fashiongo.webadmin.dao.primary.OrderStatusChangeLogRepository;
 import net.fashiongo.webadmin.data.entity.primary.ConsolidationOrdersEntity;
 import net.fashiongo.webadmin.data.entity.primary.ConsolidationShipMethodEntity;
 import net.fashiongo.webadmin.data.entity.primary.NewsEntity;
 import net.fashiongo.webadmin.data.entity.primary.ShipMethodEntity;
+import net.fashiongo.webadmin.data.entity.primary.OrderStatusChangeLogEntity;
 import net.fashiongo.webadmin.data.entity.primary.WholeShipMethodEntity;
 import net.fashiongo.webadmin.data.model.order.ConsolidationOrderSummary;
 import net.fashiongo.webadmin.data.model.order.GetPrintPoUrlParameter2;
@@ -64,6 +67,9 @@ public class RenewalOrderService {
 
 	@Autowired
 	private WholeShipMethodEntityRepository wholeShipMethodEntityRepository;
+
+	@Autowired
+	private OrderStatusChangeLogEntityRepository orderStatusChangeLogEntityRepository;
 
 	/**
 	 *
@@ -425,5 +431,81 @@ public class RenewalOrderService {
 		long totalConsolidatedOrders = ordersEntityRepository.countByConsolidationID(consolidationId);
 		long totalInvalidOrders = ordersEntityRepository.countInvalidConsolidationOrder(consolidationId);
 		return totalConsolidatedOrders == totalInvalidOrders;
+	}
+
+	public JsonResponse setConsolidationDetailOrderStatus(Integer orderId, Integer consolidationId, Integer orderStatusId, String sessionUserName, String ipAddress) {
+		boolean bSuccess = false;
+		int retCode = 1;
+		String retMsg = "success";
+
+		try {
+
+			TransactionTemplate tx = new TransactionTemplate(platformTransactionManager);
+
+			bSuccess = tx.execute(transactionStatus -> {
+				ordersEntityRepository.findById(orderId).ifPresent(ordersEntity -> {
+
+					Integer currentOrderStatusID = ordersEntity.getOrderStatusID();
+					LocalDateTime NOW = LocalDateTime.now();
+					Timestamp timestampNow = Timestamp.valueOf(NOW);
+					ordersEntity.setOrderStatusID(orderStatusId);
+
+					switch (orderStatusId)
+					{
+						case 1: // Newly Created
+							ordersEntity.setCheckOutDate(timestampNow);
+							break;
+						case 2: // Confirmed
+							ordersEntity.setConfirmDate(timestampNow);
+							break;
+						case 4: // Fully Shipped
+							ordersEntity.setShipDate(timestampNow);
+							break;
+						case 5: // Cancelled
+							ordersEntity.setCancelDate(timestampNow);
+							break;
+
+						default:
+							break;
+					}
+					ordersEntity.setModifiedOn(timestampNow);
+					ordersEntity.setModifiedBy(sessionUserName);
+
+					ordersEntityRepository.save(ordersEntity);
+
+					//SetConsolidationSum(consolidationId);
+
+					if(currentOrderStatusID != ordersEntity.getOrderStatusID()){
+
+						OrderStatusChangeLogEntity orderStatusChangeLogEntity = new OrderStatusChangeLogEntity();
+
+						orderStatusChangeLogEntity.setOrderId(orderId);
+						orderStatusChangeLogEntity.setIsAdmin(false);
+						orderStatusChangeLogEntity.setWholesalerId(0);
+						orderStatusChangeLogEntity.setUserName(sessionUserName);
+						orderStatusChangeLogEntity.setAccessIp(ipAddress);
+						orderStatusChangeLogEntity.setOrderStatusId(ordersEntity.getOrderStatusID());
+						orderStatusChangeLogEntity.setCreatedOn(NOW);
+						orderStatusChangeLogEntity.setHappenedAt(4);
+						orderStatusChangeLogEntity.setReferenceTypeId(1);
+
+						orderStatusChangeLogEntityRepository.save(orderStatusChangeLogEntity);
+					}
+
+					if(orderStatusId == 5 && consolidationId != null){
+						checkConsolidationPaymentStatus(consolidationId);
+					}
+				});
+
+				return true;
+			});
+		} catch (Exception ex) {
+			bSuccess = false;
+			retCode = -1;
+			retMsg = ex.getMessage();
+		}
+
+		JsonResponse result = new JsonResponse(bSuccess,retMsg,retCode,"");
+		return result;
 	}
 }
