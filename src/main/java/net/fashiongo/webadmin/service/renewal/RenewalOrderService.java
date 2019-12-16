@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.data.entity.primary.ConsolidationOrdersEntity;
 import net.fashiongo.webadmin.data.entity.primary.NewsEntity;
+import net.fashiongo.webadmin.data.model.order.ConsolidationOrderSummary;
 import net.fashiongo.webadmin.data.model.order.GetPrintPoUrlParameter2;
-import net.fashiongo.webadmin.data.repository.primary.ConsolidationOrdersEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.MergeOrdersEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.NewsEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.OrdersEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.model.pojo.order.parameter.GetPrintPoUrlParameter;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -45,6 +44,18 @@ public class RenewalOrderService {
 
 	@Autowired
 	private NewsEntityRepository newsEntityRepository;
+
+	@Autowired
+	private ConsolidationShipMethodEntityRepository consolidationShipMethodEntityRepository;
+
+	@Autowired
+	private ShipMethodEntityRepository shipMethodEntityRepository;
+
+	@Autowired
+	private OrderPaymentStatusEntityRepository orderPaymentStatusEntityRepository;
+
+	@Autowired
+	private ConsolidationEntityRepository consolidationEntityRepository;
 
 	/**
 	 *
@@ -199,5 +210,102 @@ public class RenewalOrderService {
 
 		JsonResponse result = new JsonResponse(bSuccess,retMsg,retCode,"");
 		return result;
+	}
+
+	public JsonResponse setUndoRemoveConsolidationDetail(Integer orderId, String sessionUserName) {
+		boolean bSuccess = false;
+		int retCode = 1;
+		String retMsg = "Successfully restored the consolidation order!";
+
+		try {
+
+			TransactionTemplate tx = new TransactionTemplate(platformTransactionManager);
+			LocalDateTime NOW = LocalDateTime.now();
+
+			bSuccess = tx.execute(transactionStatus -> {
+
+				ordersEntityRepository.findById(orderId).ifPresent(ordersEntity -> {
+
+					Integer consolidationID = ordersEntity.getConsolidationID();
+
+					//Restore default consolidation shipping method
+					int defaultConsolidationShipMethodId = 10001;
+
+					consolidationShipMethodEntityRepository.findOneByIdAndActive(defaultConsolidationShipMethodId,true)
+							.map(consolidationShipMethodEntity -> shipMethodEntityRepository.findById(consolidationShipMethodEntity.getShipMethodID()).orElse(null))
+							.ifPresent(shipMethodEntity -> {
+
+								ordersEntity.setShipMethodID(shipMethodEntity.getShipMethodID());
+								ordersEntity.setShipMethod(shipMethodEntity.getShipMethodName());
+								ordersEntity.setIsConsolidated(true);
+								ordersEntity.setModifiedOn(Timestamp.valueOf(NOW));
+								ordersEntity.setModifiedBy(sessionUserName);
+
+								ordersEntityRepository.save(ordersEntity);
+
+								//NEWS CHECK
+								consolidationOrdersEntityRepository.findByConsolidationId(consolidationID)
+										.stream()
+										.findFirst()
+										.ifPresent(consolidationOrdersEntity -> {
+											Integer dropReferenceID = consolidationOrdersEntity.getDropReferenceID();
+
+											if(dropReferenceID != null) {
+
+												newsEntityRepository.findById(dropReferenceID).ifPresent(newsEntity -> {
+													newsEntity.setActive(true);
+													newsEntity.setLastModifiedDateTime(NOW);
+													newsEntityRepository.save(newsEntity);
+												});
+											}
+										});
+
+								setConsolidationSum(consolidationID,sessionUserName);
+
+								orderPaymentStatusEntityRepository.findFirst(consolidationID,0,999)
+										.ifPresent(orderPaymentStatusEntity -> {
+
+											Integer prePaymentStatusID = orderPaymentStatusEntity.getPrePaymentStatusID();
+											orderPaymentStatusEntity.setPrePaymentStatusID(999);
+											orderPaymentStatusEntity.setModifiedBy(sessionUserName);
+											orderPaymentStatusEntity.setModifiedOn(Timestamp.valueOf(NOW));
+											orderPaymentStatusEntity.setPaymentStatusID(prePaymentStatusID == null ? 1 : prePaymentStatusID);
+											orderPaymentStatusEntityRepository.save(orderPaymentStatusEntity);
+										});
+							});
+				});
+				return true;
+			});
+		} catch (Exception ex) {
+			bSuccess = false;
+			retCode = -1;
+			retMsg = ex.getMessage();
+		}
+
+		JsonResponse result = new JsonResponse(bSuccess,retMsg,retCode,"");
+		return result;
+	}
+
+	private void setConsolidationSum(int consolidationId,String sessionUserId) {
+
+		consolidationEntityRepository.findById(consolidationId)
+				.ifPresent(consolidationEntity -> {
+
+					ConsolidationOrderSummary consolidationOrderSummary = ordersEntityRepository.summaryByConsolidationId(consolidationId);
+					if(consolidationOrderSummary != null) {
+						consolidationEntity.setOrderCount(consolidationOrderSummary.getOrderCount().intValue());
+						consolidationEntity.setTotalQty(consolidationOrderSummary.getSumTotalQty());
+						consolidationEntity.setTotalAmount(consolidationOrderSummary.getSumTotalAmount());
+					} else {
+						consolidationEntity.setOrderCount(0);
+						consolidationEntity.setTotalQty(0);
+						consolidationEntity.setTotalAmount(BigDecimal.ZERO);
+					}
+
+					consolidationEntity.setModifiedBy(sessionUserId);
+					consolidationEntity.setModifiedOn(LocalDateTime.now());
+
+					consolidationEntityRepository.save(consolidationEntity);
+				});
 	}
 }

@@ -1,18 +1,24 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "Order_PaymentStatus")
+@DynamicUpdate
 public class OrderPaymentStatusEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "OrderPaymentStatusID")
+	@Setter(AccessLevel.NONE)
 	private Integer orderPaymentStatusID;
 
 	@Column(name = "ReferenceID")

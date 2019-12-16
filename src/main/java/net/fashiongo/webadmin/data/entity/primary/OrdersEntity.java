@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,9 +11,11 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "tblOrders")
+@DynamicUpdate
 public class OrdersEntity {
 
 	@Id

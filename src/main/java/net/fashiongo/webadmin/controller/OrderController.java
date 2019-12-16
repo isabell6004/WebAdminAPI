@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import net.fashiongo.webadmin.data.model.order.GetPrintPoUrlParameter2;
 import net.fashiongo.webadmin.data.model.order.SetConsolidationDetailDroppedByParameter;
 import net.fashiongo.webadmin.data.model.order.SetConsolidationDetailMessageParameter;
+import net.fashiongo.webadmin.data.model.order.SetUndoRemoveConsolidationDetailParameter;
 import net.fashiongo.webadmin.model.pojo.order.parameter.GetPrintPoUrlParameter;
 import net.fashiongo.webadmin.service.OrderService;
 import net.fashiongo.webadmin.service.renewal.RenewalOrderService;
@@ -121,6 +122,16 @@ public class OrderController {
 				.orElse(LocalDateTime.of(2099,12,31,0,0,0,0));
 
 		JsonResponse results = renewalOrderService.setConsolidationDetailMessage(orderId,consolidationId,wholesalerId,newsTitle,newsContent,lastUser,fromDate,toDate);
+
+		return results;
+	}
+
+	@RequestMapping(value="setundoremoveconsolidationdetail", method=RequestMethod.POST)
+	public JsonResponse setUndoRemoveConsolidationDetail(@RequestBody SetUndoRemoveConsolidationDetailParameter parameters) throws JsonProcessingException {
+		Integer orderId = Optional.ofNullable(parameters.getOrderId()).orElse(0);
+		String sessionUserName = Utility.getUsername();
+
+		JsonResponse results = renewalOrderService.setUndoRemoveConsolidationDetail(orderId,sessionUserName);
 
 		return results;
 	}

@@ -6,10 +6,12 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.buyer.OrderHistory;
+import net.fashiongo.webadmin.data.model.order.ConsolidationOrderSummary;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,5 +259,27 @@ public class OrdersEntityRepositoryCustomImpl implements OrdersEntityRepositoryC
 		;
 
 		return jpasqlQuery;
+	}
+
+	@Override
+	public ConsolidationOrderSummary summaryByConsolidationId(int consolidationId) {
+		QOrdersEntity ORDER = QOrdersEntity.ordersEntity;
+		JPAQuery<ConsolidationOrderSummary> jpaQuery = new JPAQuery(entityManager);
+
+		jpaQuery.select(
+				Projections.constructor(ConsolidationOrderSummary.class
+						,ORDER.consolidationID
+						,ORDER.totalAmount.sum()
+						,ORDER.totalQty.sum()
+						,ORDER.orderID.count()
+				)
+		).from(ORDER)
+				.where(
+						ORDER.consolidationID.eq(consolidationId)
+						.and(ORDER.isConsolidated.eq(true))
+				)
+				.groupBy(ORDER.consolidationID);
+
+		return jpaQuery.fetchOne();
 	}
 }
