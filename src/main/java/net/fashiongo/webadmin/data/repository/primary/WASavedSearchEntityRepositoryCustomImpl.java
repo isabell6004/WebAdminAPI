@@ -5,7 +5,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.BooleanPath;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.QWASavedSearchEntity;
 import net.fashiongo.webadmin.data.entity.primary.WASavedSearchEntity;
@@ -57,8 +57,8 @@ public class WASavedSearchEntityRepositoryCustomImpl implements  WASavedSearchEn
 		if(StringUtils.hasLength(keyword)) {
 			switch (type.toLowerCase()) {
 				case "groupid":
-					StringPath path = Expressions.stringPath(SS, "SavedId");
-					expression = expression.and(path.contains(keyword));
+					StringTemplate stringTemplate = Expressions.stringTemplate("CONVERT(VARCHAR(14),{0})", SS.savedId);
+					expression = expression.and(stringTemplate.contains(keyword));
 					break;
 				case "groupname":
 					expression = expression.and(SS.savedName.contains(keyword));
