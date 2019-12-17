@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>net.fashiongo.common</groupId>
 			<artifactId>fashiongo-common-library</artifactId>
-			<version>0.5.4</version>
+			<version>0.5.5</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
