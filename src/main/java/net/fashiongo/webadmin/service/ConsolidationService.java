@@ -301,9 +301,6 @@ public class ConsolidationService extends ApiService {
 
 		// Update orders
 		setOrderStatuses(c, userName, ipAddress);
-
-		// Update orderPaymentStatus
-		setOrderPaymentStatus(c, userName);
 	}
 
 	private void setConsolidationShipMethod(ConsolidationEntity c, Integer shipMethodId, Boolean isShipped, String shippedOn) {
