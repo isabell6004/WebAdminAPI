@@ -23,7 +23,5 @@ public class VendorPayoutInfo {
 
     @JsonProperty(value = "VerifiedOn")
     private LocalDateTime verifiedOn;
-    
-    @JsonProperty(value = "IsLocked")
-    private Boolean isLocked;
+
 }

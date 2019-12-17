@@ -125,6 +125,4 @@ public class VendorPayoutInfoEntity {
     @Column(name = "ModifiedBy")
     private String modifiedBy;
     
-    @Column(name = "IsLocked")
-    private Boolean isLocked;
 }
