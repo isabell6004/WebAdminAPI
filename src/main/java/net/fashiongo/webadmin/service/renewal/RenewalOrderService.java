@@ -3,7 +3,9 @@ package net.fashiongo.webadmin.service.renewal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.data.entity.primary.ConsolidationOrdersEntity;
+import net.fashiongo.webadmin.data.entity.primary.ConsolidationShipMethodEntity;
 import net.fashiongo.webadmin.data.entity.primary.NewsEntity;
+import net.fashiongo.webadmin.data.entity.primary.ShipMethodEntity;
 import net.fashiongo.webadmin.data.model.order.ConsolidationOrderSummary;
 import net.fashiongo.webadmin.data.model.order.GetPrintPoUrlParameter2;
 import net.fashiongo.webadmin.data.repository.primary.*;
@@ -231,48 +233,60 @@ public class RenewalOrderService {
 					//Restore default consolidation shipping method
 					int defaultConsolidationShipMethodId = 10001;
 
-					consolidationShipMethodEntityRepository.findOneByIdAndActive(defaultConsolidationShipMethodId,true)
-							.map(consolidationShipMethodEntity -> shipMethodEntityRepository.findById(consolidationShipMethodEntity.getShipMethodID()).orElse(null))
-							.ifPresent(shipMethodEntity -> {
-
-								ordersEntity.setShipMethodID(shipMethodEntity.getShipMethodID());
-								ordersEntity.setShipMethod(shipMethodEntity.getShipMethodName());
-								ordersEntity.setIsConsolidated(true);
-								ordersEntity.setModifiedOn(Timestamp.valueOf(NOW));
-								ordersEntity.setModifiedBy(sessionUserName);
-
-								ordersEntityRepository.save(ordersEntity);
-
-								//NEWS CHECK
-								consolidationOrdersEntityRepository.findByConsolidationId(consolidationID)
-										.stream()
-										.findFirst()
-										.ifPresent(consolidationOrdersEntity -> {
-											Integer dropReferenceID = consolidationOrdersEntity.getDropReferenceID();
-
-											if(dropReferenceID != null) {
-
-												newsEntityRepository.findById(dropReferenceID).ifPresent(newsEntity -> {
-													newsEntity.setActive(true);
-													newsEntity.setLastModifiedDateTime(NOW);
-													newsEntityRepository.save(newsEntity);
-												});
-											}
-										});
-
-								setConsolidationSum(consolidationID,sessionUserName);
-
-								orderPaymentStatusEntityRepository.findFirst(consolidationID,0,999)
-										.ifPresent(orderPaymentStatusEntity -> {
-
-											Integer prePaymentStatusID = orderPaymentStatusEntity.getPrePaymentStatusID();
-											orderPaymentStatusEntity.setPrePaymentStatusID(999);
-											orderPaymentStatusEntity.setModifiedBy(sessionUserName);
-											orderPaymentStatusEntity.setModifiedOn(Timestamp.valueOf(NOW));
-											orderPaymentStatusEntity.setPaymentStatusID(prePaymentStatusID == null ? 1 : prePaymentStatusID);
-											orderPaymentStatusEntityRepository.save(orderPaymentStatusEntity);
-										});
+					ConsolidationShipMethodEntity consolidationShipMethodEntity = consolidationShipMethodEntityRepository.findOneByIdAndActive(defaultConsolidationShipMethodId, true)
+							.orElseGet(() -> {
+								ConsolidationShipMethodEntity shipMethodEntity = new ConsolidationShipMethodEntity();
+								shipMethodEntity.setConsolidationShipMethodID(defaultConsolidationShipMethodId);
+								shipMethodEntity.setActive(true);
+								shipMethodEntity.setShipMethodID(-1);
+								return shipMethodEntity;
 							});
+
+					ShipMethodEntity shipMethodEntity = shipMethodEntityRepository.findById(consolidationShipMethodEntity.getShipMethodID()).orElseGet(() -> {
+						ShipMethodEntity entity = new ShipMethodEntity();
+						return entity;
+					});
+
+					if(shipMethodEntity != null ) {
+
+						ordersEntity.setShipMethodID(shipMethodEntity.getShipMethodID());
+						ordersEntity.setShipMethod(shipMethodEntity.getShipMethodName());
+						ordersEntity.setIsConsolidated(true);
+						ordersEntity.setModifiedOn(Timestamp.valueOf(NOW));
+						ordersEntity.setModifiedBy(sessionUserName);
+
+						ordersEntityRepository.save(ordersEntity);
+
+						//NEWS CHECK
+						consolidationOrdersEntityRepository.findByConsolidationId(consolidationID)
+								.stream()
+								.findFirst()
+								.ifPresent(consolidationOrdersEntity -> {
+									Integer dropReferenceID = consolidationOrdersEntity.getDropReferenceID();
+
+									if(dropReferenceID != null) {
+
+										newsEntityRepository.findById(dropReferenceID).ifPresent(newsEntity -> {
+											newsEntity.setActive(true);
+											newsEntity.setLastModifiedDateTime(NOW);
+											newsEntityRepository.save(newsEntity);
+										});
+									}
+								});
+
+						setConsolidationSum(consolidationID,sessionUserName);
+
+						orderPaymentStatusEntityRepository.findFirst(consolidationID,0,999)
+								.ifPresent(orderPaymentStatusEntity -> {
+
+									Integer prePaymentStatusID = orderPaymentStatusEntity.getPrePaymentStatusID();
+									orderPaymentStatusEntity.setPrePaymentStatusID(999);
+									orderPaymentStatusEntity.setModifiedBy(sessionUserName);
+									orderPaymentStatusEntity.setModifiedOn(Timestamp.valueOf(NOW));
+									orderPaymentStatusEntity.setPaymentStatusID(prePaymentStatusID == null ? 1 : prePaymentStatusID);
+									orderPaymentStatusEntityRepository.save(orderPaymentStatusEntity);
+								});
+					}
 				});
 				return true;
 			});
