@@ -170,4 +170,24 @@ public class ConsolidationController {
 			return new JsonResponse<>( false, e.getMessage(), null);
 		}
 	}
+	
+	@PostMapping(value = "/consolidation/get/dropoff")
+	public JsonResponse<Object> getDropOff(@RequestBody ConsolidationDropOffRequest dropoffRequest) {
+		try {
+			return new JsonResponse<>(true, null, consolidationService.getDropOffConsolidationOrder(dropoffRequest.getPoNumber()));
+		} catch (Exception e) {
+			log.error("ConsolidationController.getDropOff() dropoffRequest={}", dropoffRequest.getPoNumber(), e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+	
+	@PostMapping(value = "/consolidation/set/dropoff")
+	public JsonResponse<Boolean> setDropOff(@RequestBody ConslidationDropOffSaveRequest dropoffSaveRequest) {
+		try {
+			return new JsonResponse<>(true, null, consolidationService.setDropOffConsolidationOrder(dropoffSaveRequest));
+		} catch (Exception e) {
+			log.error("ConsolidationController.setDropOff() dropoffSaveRequest={}", dropoffSaveRequest, e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
 }

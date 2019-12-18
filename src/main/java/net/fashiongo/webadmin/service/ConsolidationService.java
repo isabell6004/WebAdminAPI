@@ -23,19 +23,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.fashiongo.webadmin.model.pojo.consolidation.Dto.DropOffConsolidationOrderDto;
 import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
 import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
+import net.fashiongo.webadmin.model.primary.consolidation.ConsolidatedOrder;
+import net.fashiongo.webadmin.model.primary.consolidation.ConsolidationOrders;
 import net.fashiongo.webadmin.model.pojo.consolidation.Consolidation;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetail;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetailList;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationSummary;
 import net.fashiongo.webadmin.model.pojo.consolidation.TotalCount;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationDetailParameter;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationParameter;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationDetailResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationSummaryResponse;
@@ -52,6 +53,8 @@ public class ConsolidationService extends ApiService {
 	@Autowired private OrderStatusChangeLogRepository orderStatusChangeLogRepository;
 	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
 	@Autowired private ShipAddressRepository shipAddressRepository;
+	@Autowired private ConsolidationDropoffRepository consolidationDropoffRepository;
+	@Autowired private ConsolidationOrdersRepository consolidationOrdersRepository;
 	private BigDecimal waivedFeeUpperBound = BigDecimal.valueOf(0.5); // waive 0 to 49 cents due to Stripe not accepting
 
 	@SuppressWarnings("unchecked")
@@ -475,5 +478,35 @@ public class ConsolidationService extends ApiService {
 
 	private BigDecimal nullToZero(BigDecimal me) {
 		return me == null ? BigDecimal.ZERO : me;
+	}
+	
+	public List<DropOffConsolidationOrderDto> getDropOffConsolidationOrder(String poNumber) {
+		List<ConsolidatedOrder> consolidationOrders = consolidationDropoffRepository.getDropOffConsolidationOrder(poNumber);
+		List<DropOffConsolidationOrderDto> results = DropOffConsolidationOrderDto.build(consolidationOrders);
+		return results;
+	}
+	
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
+	public Boolean setDropOffConsolidationOrder(ConslidationDropOffSaveRequest dropoffSaveRequest) {
+		boolean result = false;
+		Integer orderId = dropoffSaveRequest.getOrderId();
+		ConsolidationOrders order = consolidationOrdersRepository.findOneByOrderId(orderId);
+		if(order != null && order.getDroppedBy() != null) {
+			return result;
+		}
+		if(order == null) {
+			order = new ConsolidationOrders();
+			order.setOrderId(orderId);
+			order.setConsolidationId(dropoffSaveRequest.getConsolidationId());
+		}
+		order.setDroppedBy(dropoffSaveRequest.getDropOffBy());
+		order.setReceivedBy(dropoffSaveRequest.getReceivedBy());
+		order.setReceivedOn(dropoffSaveRequest.getDropOffTime());
+		order.setItemQty(dropoffSaveRequest.getItemQty());
+		order.setBoxQty(dropoffSaveRequest.getBoxQty());
+		order.setMemo(dropoffSaveRequest.getMemo());
+		consolidationOrdersRepository.save(order);
+		result = true;
+		return result;
 	}
 }
