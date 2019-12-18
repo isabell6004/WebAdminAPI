@@ -1063,19 +1063,19 @@ public class RenewalVendorService extends ApiService {
 				logVendorHoldEntityRepository.save(trm);
 			} else if (holdType == 2) {
 				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-
+				
 				if(active) {
 					if(holdFrom.toLocalDateTime().plusDays(1).minusSeconds(1).isAfter(LocalDateTime.now())) {
 						trm.setContractExpireDate(holdFrom.toLocalDateTime().plusDays(1).minusSeconds(1));
 						trm.setLastModifiedDateTime(LocalDateTime.now());
-						trm.setActualOpenDate(null);
+						//trm.setActualOpenDate(null);
 					} else {
 						trm.setContractExpireDate(LocalDateTime.now());
 						trm.setLastModifiedDateTime(LocalDateTime.now());
 						trm.setOrderActive(false);
 						trm.setShopActive(false);
 						trm.setActive(false);
-						trm.setActualOpenDate(null);
+						//trm.setActualOpenDate(null);
 					}
 				} else {
 					trm.setContractExpireDate(null);
@@ -1773,5 +1773,5 @@ public class RenewalVendorService extends ApiService {
 		}
 
 		return 1;
-	}
+	}	
 }
