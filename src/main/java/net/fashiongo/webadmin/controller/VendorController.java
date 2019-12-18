@@ -558,21 +558,6 @@ public class VendorController {
     	return new JsonResponse<String>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
     }
 
-    @PostMapping(value = "getvendordocumenttypelist")
-	public JsonResponse<List<ListVendorDocumentTypeEntity>> getvendordocumenttypelist() {
-    	JsonResponse<List<ListVendorDocumentTypeEntity>> response = new JsonResponse<>(false, null, null);
-
-    	try {
-    		response.setData(renewalVendorService.getListVendorDocumentType());
-    		response.setSuccess(true);
-		} catch (Exception ex) {
-    		log.error("Exception Error: {}", ex);
-    		response.setMessage(ex.getMessage());
-		}
-
-    	return response;
-	}
-
 	@PostMapping(value = "getvendorindustry")
 	public JsonResponse<List<CodeVendorIndustryEntity>> getvendorindustry() {
 		JsonResponse<List<CodeVendorIndustryEntity>> response = new JsonResponse<>(false, null, null);

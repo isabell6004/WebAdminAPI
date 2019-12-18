@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
@@ -11,8 +12,14 @@ import java.util.List;
 public interface VendorContractNewService {
 
     @Async
-    Boolean createAndModifyVendorContractDocument(SetVendorContractDocumentParameter request);
+    void modifyVendorContractDocument(SetVendorContractDocumentParameter request);
 
     @Async
-    Boolean deleteVendorContractDocument(List<Long> documentIds);
+    void createVendorContractDocument(SetVendorContractDocumentParameter request);
+
+    @Async
+    void deleteVendorContractDocument(List<Long> documentIds);
+
+    @Async
+    void createAndModifyVendorContractHistory(SetVendorContractParameter request);
 }

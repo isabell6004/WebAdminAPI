@@ -3,19 +3,16 @@ package net.fashiongo.webadmin.service.renewal.impl;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
 import net.fashiongo.webadmin.service.renewal.VendorContractNewService;
-import net.fashiongo.webadmin.utility.JsonResponse;
-import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 
 /**
  * Created by jinwoo on 2019-12-12.
@@ -34,25 +31,85 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public Boolean createAndModifyVendorContractDocument(SetVendorContractDocumentParameter request) {
+    public void createVendorContractDocument(SetVendorContractDocumentParameter request) {
         final String endpoint = newVendorApi + "/v1.0/contract/document";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
-        return isApiCallResult(httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader()));
+        httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
     }
 
     @Override
-    public Boolean deleteVendorContractDocument(List<Long> documentIds) {
-        final String endpoint = newVendorApi + "/v1.0/contract/document/delete";
-        ContractDocumentCommand newRequest = new ContractDocumentCommand(documentIds);
-        return isApiCallResult(httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader()));
+    public void modifyVendorContractDocument(SetVendorContractDocumentParameter request) {
+        final String endpoint = newVendorApi + "/v1.0/contract/document";
+        ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
+        httpCaller.put(endpoint, newRequest, VendorApiHeader.getHeader());
     }
 
-    private boolean isApiCallResult(ResponseEntity<JsonResponse> response) {
-        if(response == null || response.getStatusCode() != HttpStatus.OK || response.getBody() == null)
-            return false;
-        else
-            return response.getBody().isSuccess();
+
+    @Override
+    public void deleteVendorContractDocument(List<Long> documentIds) {
+        final String endpoint = newVendorApi + "/v1.0/contract/document/delete";
+        ContractDocumentCommand newRequest = new ContractDocumentCommand(documentIds);
+        httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
     }
+
+    @Override
+    public void createAndModifyVendorContractHistory(SetVendorContractParameter request) {
+        final String endpoint = newVendorApi + "/v1.0/contract/contract";
+        ContractHistoryCommand newRequest = new ContractHistoryCommand(request);
+        httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
+    }
+
+//    private boolean isApiCallResult(ResponseEntity<JsonResponse> response) {
+//        if(response == null || response.getStatusCode() != HttpStatus.OK || response.getBody() == null)
+//            return false;
+//        else
+//            return response.getBody().isSuccess();
+//    }
+
+    @Getter
+    private class ContractHistoryCommand {
+
+        private Long contractHistoryId;
+
+        //    private Integer typeCode;
+        private Long planId;
+
+        private BigDecimal setupFee;
+        private Boolean isSetupFeeWaived;
+
+        private BigDecimal lastMonthServiceFee;
+        private Boolean isLastMonthServiceFeeWaived;
+        private BigDecimal monthlyFee;
+        private Integer monthlyItemCap;
+
+        private Integer accountExecutiveId;
+        private String accountExecutiveBy;
+
+        private BigDecimal commissionRate;
+        private LocalDateTime dateFrom;
+//    private LocalDateTime dateTo;
+
+        private String memo;
+        private Boolean isContractRevised;
+
+        private ContractHistoryCommand(SetVendorContractParameter request) {
+            this.contractHistoryId = Long.valueOf(request.getVendorContractID());
+            this.planId = Long.valueOf(request.getVendorContractPlanID());
+            this.setupFee = request.getSetupFee();
+            this.isSetupFeeWaived = Optional.ofNullable(request.getIsSetupFeeWaived()).orElse("").equalsIgnoreCase("1");
+            this.lastMonthServiceFee = request.getLastMonthServiceFee();
+            this.isLastMonthServiceFeeWaived = Optional.ofNullable(request.getIsLastMonthServiceFeeWaived()).orElse("").equalsIgnoreCase("1");
+            this.monthlyFee = request.getMonthlyFee();
+            this.monthlyItemCap = request.getMonthlyItems();
+            this.accountExecutiveId = request.getRepID();
+            this.commissionRate = request.getCommissionRate();
+            this.dateFrom = SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()).toLocalDateTime();
+//            this.dateTo = Timestamp.valueOf(SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()).toLocalDateTime().minusDays(1)).toLocalDateTime();
+            this.memo = request.getMemo();
+            this.isContractRevised = request.getVendorContractRowAdd();
+        }
+    }
+
 
     @Getter
     private class ContractDocumentCommand {

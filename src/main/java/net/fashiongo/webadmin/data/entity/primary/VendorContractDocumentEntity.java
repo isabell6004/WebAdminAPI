@@ -57,7 +57,6 @@ public class VendorContractDocumentEntity {
 
     public static VendorContractDocumentEntity create(SetVendorContractDocumentParameter request, String username) {
         return builder()
-                .vendorContractID(request.getVendorContractDocumentID())
                 .documentTypeID(request.getVendorContractID() == null ? 0 : request.getVendorContractID())
                 .fileName(StringUtils.isEmpty(request.getFileName()) ? "" : request.getFileName())
                 .fileName2(StringUtils.isEmpty(request.getFileName2()) ? "" : request.getFileName2())
