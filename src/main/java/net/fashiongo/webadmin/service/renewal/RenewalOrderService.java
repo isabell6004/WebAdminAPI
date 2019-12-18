@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service.renewal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.fashiongo.webadmin.dao.primary.OrderRepository;
 import net.fashiongo.webadmin.data.entity.primary.ConsolidationOrdersEntity;
 import net.fashiongo.webadmin.data.entity.primary.ConsolidationShipMethodEntity;
 import net.fashiongo.webadmin.data.entity.primary.NewsEntity;
@@ -40,9 +39,6 @@ public class RenewalOrderService {
 
 	@Autowired
 	private OrdersEntityRepository ordersEntityRepository;
-
-	@Autowired
-	private OrderRepository orderRepository;
 
 	@Autowired
 	@Qualifier("primaryTransactionManager")
@@ -426,8 +422,8 @@ public class RenewalOrderService {
 	}
 
 	private boolean isAllConsolidationsInvalid(Integer consolidationId) {
-		int totalConsolidatedOrders = orderRepository.countByConsolidationId(consolidationId);
-		int totalInvalidOrders = orderRepository.getInvalidConsolidationOrderCount(consolidationId);
+		long totalConsolidatedOrders = ordersEntityRepository.countByConsolidationID(consolidationId);
+		long totalInvalidOrders = ordersEntityRepository.countInvalidConsolidationOrder(consolidationId);
 		return totalConsolidatedOrders == totalInvalidOrders;
 	}
 }

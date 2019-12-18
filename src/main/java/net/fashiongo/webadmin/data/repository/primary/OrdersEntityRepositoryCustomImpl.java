@@ -297,4 +297,21 @@ public class OrdersEntityRepositoryCustomImpl implements OrdersEntityRepositoryC
 
 		return jpaQuery.fetchCount() > 0 ? true : false;
 	}
+
+	@Override
+	public long countInvalidConsolidationOrder(Integer consolidationId) {
+		JPAQuery<Integer> query = new JPAQuery<>(entityManager);
+		QOrdersEntity order = QOrdersEntity.ordersEntity;
+
+		return query.select(order)
+				.from(order)
+				.where(
+						order.consolidationID.eq(consolidationId)
+								.and(order.orderStatusID.eq(5)
+										.or(order.orderStatusID.eq(7))
+										.or(order.isConsolidated.isFalse()))
+
+				)
+				.fetchCount();
+	}
 }

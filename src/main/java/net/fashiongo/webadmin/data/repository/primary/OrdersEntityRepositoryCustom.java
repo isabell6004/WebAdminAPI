@@ -23,4 +23,6 @@ public interface OrdersEntityRepositoryCustom {
 	ConsolidationOrderSummary summaryByConsolidationId(int consolidationId);
 
 	boolean hasOrderByConsolidationIdAndIsConsolidate(int consolidationId,boolean isConsolidate);
+
+	long countInvalidConsolidationOrder(Integer consolidationId);
 }
