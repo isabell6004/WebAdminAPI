@@ -4,7 +4,9 @@
 package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.statistics.GetHotSearchKeywordParameter;
 import net.fashiongo.webadmin.data.model.statistics.GetHotSearchParameter;
+import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.model.pojo.statics.response.GetDashboardResponse;
 import net.fashiongo.webadmin.service.StaticService;
@@ -159,6 +161,32 @@ public class StaticController {
 		}
 
 		GetHotSearchResponse getHotSearchResponse = renewalStaticService.getHotSearch(top, fromDate, toDate, orderBy, searchfield, searchkeyword);
+		return new JsonResponse<>(true,"",getHotSearchResponse);
+	}
+
+	@PostMapping(value = "gethotsearchkeyword")
+	public JsonResponse<GetHotSearchKeywordResponse> getHotSearchKeyword(@RequestBody GetHotSearchKeywordParameter parameter) {
+		Integer periodType = Optional.ofNullable(parameter.getPeriodtype()).orElse(0);
+
+		LocalDateTime fromDate = Optional.ofNullable(parameter.getFromdate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.orElse(LocalDateTime.of(1970,1,1,0,0,0,0));
+
+		LocalDateTime toDate = Optional.ofNullable(parameter.getTodate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.map(dateTime -> {
+					if(dateTime.getHour() == 0) {
+						return dateTime.plusDays(1).minusSeconds(1);
+					}
+					return dateTime;
+				})
+				.orElse(LocalDateTime.of(2099,12,31,0,0,0,0));
+
+		String keyword = parameter.getKeyword();
+
+		GetHotSearchKeywordResponse getHotSearchResponse = renewalStaticService.getHotSearchKeyword(periodType, fromDate, toDate, keyword);
 		return new JsonResponse<>(true,"",getHotSearchResponse);
 	}
 }
