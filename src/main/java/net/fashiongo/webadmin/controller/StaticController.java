@@ -3,23 +3,25 @@
  */
 package net.fashiongo.webadmin.controller;
 
-import java.util.ArrayList;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.statistics.GetHotSearchParameter;
+import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.model.pojo.statics.response.GetDashboardResponse;
 import net.fashiongo.webadmin.service.StaticService;
+import net.fashiongo.webadmin.service.renewal.RenewalStaticService;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author Incheol Jung
@@ -31,7 +33,10 @@ public class StaticController {
 	
 	@Autowired
 	StaticService staticService;
-	
+
+	@Autowired
+	private RenewalStaticService renewalStaticService;
+
 	@Autowired
 	@Qualifier("vendorApiJsonClient")
 	HttpClient jsonClient;
@@ -107,5 +112,53 @@ public class StaticController {
 		
 		//2. Call StatsAPI
 		return statsJsonClient.get("/kpi/vendor?" + String.join("&", params));
+	}
+
+	@PostMapping(value = "gethotsearch")
+	public JsonResponse<GetHotSearchResponse> getHotSearch(@RequestBody GetHotSearchParameter parameter) {
+		Integer top = Optional.ofNullable(parameter.getTop()).orElse(0);
+		Integer periodType = Optional.ofNullable(parameter.getPeriodtype()).orElse(0);
+
+		LocalDateTime fromDate = Optional.ofNullable(parameter.getFromdate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.orElse(LocalDateTime.of(1970,1,1,0,0,0,0));
+
+		LocalDateTime toDate = Optional.ofNullable(parameter.getTodate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.map(dateTime -> {
+					if(dateTime.getHour() == 0) {
+						return dateTime.plusDays(1).minusSeconds(1);
+					}
+					return dateTime;
+				})
+				.orElse(LocalDateTime.of(2099,12,31,0,0,0,0));
+
+
+		String orderBy = parameter.getOrderby();
+		String searchfield = parameter.getSearchfield();
+		String searchkeyword = parameter.getSearchkeyword();
+
+		LocalDateTime today = LocalDateTime.now();
+		LocalDateTime lastDayOfMonth = LocalDateTime.of(today.getYear(), today.getMonth(), 1,0,0).minusDays(1);
+
+		switch (periodType)
+		{
+			case 0:
+
+				break;
+			case 1:
+				fromDate = LocalDateTime.of(lastDayOfMonth.getYear(), lastDayOfMonth.getMonth(), 1,0,0);;
+				break;
+			case 12:
+				fromDate = LocalDateTime.of(lastDayOfMonth.getYear(), lastDayOfMonth.getMonth(), 1,0,0).minusMonths(11);
+				break;
+			default:
+				break;
+		}
+
+		GetHotSearchResponse getHotSearchResponse = renewalStaticService.getHotSearch(top, fromDate, toDate, orderBy, searchfield, searchkeyword);
+		return new JsonResponse<>(true,"",getHotSearchResponse);
 	}
 }
