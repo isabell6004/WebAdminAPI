@@ -26,6 +26,8 @@ public class GnbVendorGroupSaveRequest {
 	@Pattern(regexp = titlePattern, message = titlePatternMismatchMessage)
 	private String title;
 
+	private String targetUrl;
+
 	@JsonProperty("isAlphabeticalOrder")
 	private boolean isAlphabeticalOrder;
 

@@ -23,6 +23,9 @@ public class GnbVendorGroupEntity {
 	@Column(name = "vendor_group_title")
 	private String vendorGroupTitle;
 
+	@Column(name = "target_url")
+	private String targetUrl;
+
 	@Column(name = "is_alphabetical_order")
 	private boolean isAlphabeticalOrder;
 

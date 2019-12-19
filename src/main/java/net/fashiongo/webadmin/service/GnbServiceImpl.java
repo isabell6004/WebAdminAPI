@@ -86,6 +86,7 @@ public class GnbServiceImpl implements GnbService {
 	private GnbVendorGroupEntity createGnbVendorGroup(GnbVendorGroupSaveRequest request, LocalDateTime now, String username) {
 		GnbVendorGroupEntity gnbVendorGroupEntity = new GnbVendorGroupEntity();
 		gnbVendorGroupEntity.setVendorGroupTitle(request.getTitle());
+		gnbVendorGroupEntity.setTargetUrl(request.getTargetUrl());
 		gnbVendorGroupEntity.setAlphabeticalOrder(request.isAlphabeticalOrder());
 		gnbVendorGroupEntity.setCreatedBy(username);
 		gnbVendorGroupEntity.setCreatedOn(now);
@@ -167,6 +168,7 @@ public class GnbServiceImpl implements GnbService {
 				.orElseThrow(NotFoundGnbVendorGroup::new);
 
 		gnbVendorGroupEntity.setVendorGroupTitle(request.getTitle());
+		gnbVendorGroupEntity.setTargetUrl(request.getTargetUrl());
 		gnbVendorGroupEntity.setAlphabeticalOrder(request.isAlphabeticalOrder());
 
 		return gnbVendorGroupEntity;
