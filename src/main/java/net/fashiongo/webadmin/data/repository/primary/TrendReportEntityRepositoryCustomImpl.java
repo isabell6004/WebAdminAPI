@@ -265,4 +265,17 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
                 .where(T.trendReportID.eq(trendreportId))
                 .execute();
     }
+
+    @Override
+    public TrendReportEntity findOneByTrendReportIDAndCuratedType(Integer trendReportID) {
+        QTrendReportEntity TR = QTrendReportEntity.trendReportEntity;
+
+        JPAQuery<TrendReportEntity> query = new JPAQuery<>(entityManager);
+
+        query.select(TR)
+                .from(TR)
+                .where(TR.trendReportID.eq(trendReportID).and(TR.curatedType.eq(4)));
+
+        return query.fetchFirst();
+    }
 }

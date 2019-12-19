@@ -1,0 +1,335 @@
+
+<style type="text/css">
+    @import url('https://fonts.googleapis.com/css?family=Titillium+Web:400,600');
+
+    body {
+        margin: 0;
+        font-family: 'Titillium Web', sans-serif;
+    }
+
+    .kmm_wrapper {
+        width: 1128px;
+        padding: 33px 0;
+    }
+
+    .kmm_wrapper img {
+        vertical-align: top;
+        border: 0;
+    }
+
+    .kmm_wrapper .section {
+        width: 820px;
+        height: 100%;
+        margin: 0 auto 80px;
+    }
+
+    .kmm_wrapper .title {
+        position: relative;
+        text-align: center;
+        font-size: 26px;
+        font-weight: normal;
+        color: #000;
+        margin: 0px 0 25px 0;
+        height: 26px;
+        line-height: 1;
+    }
+
+    .kmm_wrapper .title:before {
+        position: absolute;
+        content: "";
+        display: block;
+        width: 84px;
+        height: 3px;
+        background-color: #ea388c;
+        left: 50%;
+        top: -15px;
+        margin-left: -42px;
+    }
+
+    .kmm_wrapper .content {
+        font-size: 16px;
+        line-height: 1.5;
+        color: #333;
+        text-align: justify;
+        margin: 0;
+    }
+
+    .kmm_wrapper .content--sm {
+        font-size: 14px;
+        line-height: 1.36;
+        margin: 22px 0 0;
+    }
+
+    .kmm_wrapper .product_list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        margin-bottom: -20px;
+        padding-top: 9px;
+    }
+
+    .kmm_wrapper .product_list:after {
+        display: block;
+        overflow: hidden;
+        clear: both;
+        height: 0;
+        content: "";
+    }
+
+    .kmm_wrapper .product_item {
+        position: relative;
+        width: 158px;
+        height: 238px;
+        float: left;
+        margin-right: 5px;
+        margin-bottom: 20px;
+        border: solid 0.5px #dddddd;
+    }
+
+    .kmm_wrapper .product_item:nth-child(5n) {
+        margin-right: 0;
+    }
+
+    .kmm_wrapper .product_item .info {
+        display: none;
+    }
+
+    .kmm_wrapper .product_item img {
+        max-width: 158px;
+        max-height: 237px;
+    }
+
+    .kmm_wrapper .product_item:hover .info {
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 32px;
+        bottom: 0;
+        text-align: center;
+        background: rgba(0,0,0,.5);
+        color: #fff;
+        line-height: 32px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: -0.1px;
+    }
+
+    .kmm_wrapper .product_item .info .vd_name {
+        display: block;
+        padding: 0 10px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .kmm_wrapper .product_item .info:hover .vd_name {
+        text-decoration: underline;
+    }
+
+    .kmm_wrapper .qna_list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .kmm_wrapper .qna_item {
+        color: #333;
+        margin: 30px 0 0;
+    }
+
+    .kmm_wrapper .qna_item--q {
+        font-size: 17px;
+        font-weight: bold;
+        padding: 0px 0 5px 0;
+        margin: 0;
+    }
+
+    .kmm_wrapper .qna_item--a {
+        font-size: 14px;
+        line-height: 1.36;
+        margin: 0;
+    }
+
+    .kmm_wrapper .btn_kmm {
+        position: relative;
+        display: block;
+        width: 591px;
+        height: 103px;
+        background-color: #fac8c8;
+        margin: 0 auto;
+        text-align: center;
+        color: #243860;
+        text-decoration: none;
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.04;
+        padding: 25px 0;
+        box-sizing: border-box;
+    }
+
+    .kmm_wrapper .btn_kmm .date {
+        display: block;
+        font-size: 20px;
+        line-height: 1.35;
+    }
+
+    .kmm_wrapper .ico_hand {
+        position: absolute;
+        top: 50px;
+        right: -30px;
+    }
+
+    .kmm_wrapper .share_list {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 2.72;
+        color: #c6c6c6;
+        text-align: center;
+        margin: 50px 0 0;
+    }
+
+    .kmm_wrapper .share_list span {
+        display: inline-block;
+        overflow: hidden;
+    }
+
+    .kmm_wrapper .share_list a {
+        display: inline-block;
+        width: 47px;
+        height: 46px;
+    }
+
+    .kmm_wrapper .share_list .fb {
+        background: url("https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/facebook.png");
+    }
+
+    .kmm_wrapper .share_list .fb:hover {
+        background: url("https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/facebook_p.png");
+    }
+
+    .kmm_wrapper .share_list .tw {
+        background: url("https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/twitter.png");
+    }
+
+    .kmm_wrapper .share_list .tw:hover {
+        background: url("https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/twitter_p.png");
+    }
+
+    .kmm_wrapper .share_list .pt {
+        background: url("https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/pinterest.png");
+    }
+
+    .kmm_wrapper .share_list .pt:hover {
+        background: url("https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/pinterest_p.png");
+    }
+
+    .kmm_wrapper .share_list .gp {
+        background: url("https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/googlePlus.png");
+    }
+
+    .kmm_wrapper .share_list .gp:hover {
+        background: url("https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/googlePlus_p.png");
+    }
+</style>
+<div class="kmm_wrapper">
+    <div class="section">
+        <img id="kmmImageBanner1" src="https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/kmm-top.jpg" />
+    </div>
+
+    <div class="section">
+        <h2 class="title">SUMMER DATE NIGHT</h2>
+        <p class="content">Warm evening breezes, cool cocktails and lingering looks…nothing heats up summer like a date night out on the town. Whether that means dining al fresco at an urban hotspot, toasting the sunset at a beachside overlook, or dancing the night away at a concert under the stars, summer date dressing should be flirty, comfy and show just enough skin. From ruffles and light denim to strappy sandals and tropical accessories, these looks are worth swiping right! </p>
+    </div>
+
+    <div class="section">
+        <h2 class="title">WHO IS DOING IT RIGHT</h2>
+        <ul class="product_list">
+            <li class="product_item"><a href="/Item/8857216" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="8857216"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/Storia/ProductImage/large/JD1140_W-115.jpg" /><div class="info"><span class="vd_name">Storia</span></div></a></li>
+            <li class="product_item"><a href="/Item/8897607" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="8897607"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/maitai/ProductImage/large/d22c357a-1003-4bf6-a33c-d5281f924b9b.jpg" /><div class="info"><span class="vd_name">Maitai</span></div></a></li>
+
+            <li class="product_item"><a href="/Item/8258992" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="8258992"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/143story/ProductImage/large/0_825964a9-ff90-413d-97b0-2336e2bdce59.jpg" /><div class="info"><span class="vd_name">143 Story</span></div></a></li>
+
+            <li class="product_item"><a href="/Item/8311905" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="8311905"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/vervet/ProductImage/large/8311905_4e606190-306c-4bd1-9b51-c2afba73d9d4.jpg" /><div class="info"><span class="vd_name">Vervet</span></div></a></li>
+
+            <li class="product_item"><a href="/Item/8652231" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="8652231"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/1styleinusa/ProductImage/large/0_3c53f21a-a437-45d7-917a-e2f4b5321779.jpg" /><div class="info"><span class="vd_name">1 Style in USA</span></div></a></li>
+
+            <li class="product_item"><a href="/Item/8840216" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="8840216"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/strutnbolt/ProductImage/large/0_3cf76bd5-7d83-4318-a940-b180d1386525.jpg" /><div class="info"><span class="vd_name">Strut & Bolt</span></div></a></li>
+
+            <li class="product_item"><a href="/Item/7949341" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="7949341"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/honeybelle/ProductImage/large/7949341_2c738774-2154-4e81-bead-185493771d57.jpg" /><div class="info"><span class="vd_name">Honey Belle</span></div></a></li>
+
+            <li class="product_item" style="border: solid 1px #dddddd"><a href="/Item/8873850" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="8873850"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/toesty/ProductImage/large/8873850_a0ca2234-a6a4-45ff-bd11-1045c232ba6d.jpg" /><div class="info"><span class="vd_name">Toes-ty</span></div></a></li>
+
+            <li class="product_item" style="border: solid 1px #dddddd"><a href="/Item/8881065" class="nclick" nclick-name="kmm.item" nclick-rank="1" nclick-id="8881065"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/cjshoe/ProductImage/large/0_7ce13b68-994d-47b0-b991-831adc64af9b.jpg" /><div class="info"><span class="vd_name">CJ Shoes</span></div></a></li>
+
+            <li class="product_item" style="border: solid 1px #dddddd"><a href="/Item/8863737"><img src="https://d2x7souugjz072.cloudfront.net/Vendors/melrosestyles/ProductImage/large/8863737_da3cb8d3-fde2-4c34-ac17-ff13d5fbe29b.jpg" /><div class="info"><span class="vd_name">Melrose Styles</span></div></a></li>
+            <!-- <li class="product_item"><a href="#"><img src="img/img02.png" /><div class="info"><span class="vd_name">Brand</span></div></a></li>
+             <li class="product_item"><a href="#"><img src="img/img03.png" /><div class="info"><span class="vd_name">Brand</span></div></a></li>
+             <li class="product_item"><a href="#"><img src="img/img01.png" /><div class="info"><span class="vd_name">Brand</span></div></a></li>
+             <li class="product_item"><a href="#"><img src="img/img02.png" /><div class="info"><span class="vd_name">Brand</span></div></a></li>
+             <li class="product_item"><a href="#"><img src="img/img03.png" /><div class="info"><span class="vd_name">Brand</span></div></a></li>-->
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2 class="title">STORE Q&A</h2>
+
+        <img id="kmmImageBanner2" style="padding-top:9px;" src="https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/kmm-middle.png" />
+        <p class="content content--sm">Belle and Broome is a new fashion and accessories e-commerce site dedicated to the plus size woman. Owner Kali Hancock discusses how she targets this increasingly important niche with amazing fashion options and body positivity.</p>
+        <ul class="qna_list">
+            <li class="qna_item">
+                <p class="qna_item--q">Tell us about Belle and Broome. What made you decide to target the plus-size consumer?</p>
+                <p class="qna_item--a">Based in Williamsburg, Brooklyn, <a href="https://belleandbroome.com/" target="_blank" style="color: #ea388c">BelleandBroome.com</a> is only six months old. I was a fashion designer in the industry for 10 years, most recently working at Vince Camuto. I could see that in the industry overall, the plus-size consumer wasn't really being catered to from an insider perspective. She was an afterthought. I created Belle and Broome to service this customer. And while I’m not plus-size myself, I’m petite, and I still find shopping challenging (I have to get everything altered and often can’t find what I want). I know how shopping can be frustrating when you’re not average sized. I also had a side business selling my jewelry on Etsy, so I’ve been in retail before.</p>
+            </li>
+            <li class="qna_item">
+                <p class="qna_item--q">How does FashionGo help you find what you need as a retailer? </p>
+                <p class="qna_item--a">FashionGo has a filter for Plus Size, which is great. Otherwise I would have to ask every brand what sizes they go up to! While not everyone in the industry sells plus size, it is increasing. And those who do sell to this market have extensive lines. It gives me options. </p>
+            </li>
+            <li class="qna_item">
+                <p class="qna_item--q">What are the hottest trends selling in plus size now? Are they the same as the regular sizing? </p>
+                <p class="qna_item--a">What’s different now is that plus-size women want to be seen and not hide. The rules of wearing all black no longer apply. Plus size women still want to be current and on trend, but styles are adapted a bit. There’s still a lot of off-the-shoulder and cold shoulder dressing, but lately I’m seeing a lot of matched sets for this market such as a matched top and short or a matched top and skirt. I sell the pieces separately, though, as women might be different sizes on top and bottom. </p>
+            </li>
+
+            <li>
+                <div style="font-size:25px; text-align:center; line-height:28px; padding-top: 13px; color:#ea388c; padding:40px 0px 20px 0px ">
+                    “Now, plus size women <br>
+                    want to be seen and not hide"
+                </div>
+            </li>
+            <li class="qna_item">
+                <p class="qna_item--q">How does Belle and Broome go beyond just selling product and address body positivity as an overall concept? </p>
+                <p class="qna_item--a">On our Instagram @bellandbroome, we post a body positivity quote once a week and encourage people to comment. One post said, “If you see this, you have to comment 3 things you love about your body.” We got a lot of comments. We want to foster a sense of positivity and community among our consumers. </p>
+            </li>
+            <li class="qna_item">
+                <p class="qna_item--q">Who are the biggest influencers that you follow in the plus size world? </p>
+                <p class="qna_item--a">Ashley Graham (@ashleygraham) is a plus-size model with 7 million followers. She is really important to the plus-size community when it comes to body positivity. She’s gorgeous and proud of her curves. Another one is Australian model La'Tecia Thomas, who goes by @Lateciat, with 888K followers. I work with microinfluencers who put looks together and they post on their site and mine. The Curvy Trini (@thecurvytrini) is one I’ve worked with recently. </p>
+            </li>
+            <li class="qna_item">
+                <p class="qna_item--q">What do you love most about being a retailer? </p>
+                <p class="qna_item--a">I love the creative freedom to merchandise as I want. I love styling and giving fashion advice. We send a newsletter out every Friday with a timely theme and the upcoming one is how to dress for Summer Weddings. I shoot everything on plus-size models, style the outfits, and our Complete the Look pop-up helps our shoppers find accessories and coordinating ready-to-wear. </p>
+            </li>
+
+            <li class="qna_item">
+                <p class="qna_item--q">Many retailers think it’s one-size-fits all when it comes to accessories, but Belle and Broome knows that’s not true, right? </p>
+                <p class="qna_item--a">It’s not true at all. Necklaces need to be larger, or at least come with adjustable extender chains. Cuffs should be bigger. And then there’s the whole issue of proportion. A larger women needs bolder accessories that balance the look and don’t get lost. Statement earrings and statement necklaces are key too, as many women like to keep attention up around the face. That said, our accessories are for all bodies. And since I was a jewelry designer before (my line was Kali Day), I know how to add extender chains if need be. </p>
+            </li>
+
+            <li class="qna_item">
+                <p class="qna_item--q">Are you planning on anything new in the near future? </p>
+                <p class="qna_item--a">I am creating a line of Belle and Broome branded body chains that women can wear over a bathing suit or peeking out from under a low-cut top or dress. I’ve always loved body chains and I haven’t found any that can fit the plus-size woman. I’m making for up to a 45-inch waist and to fit a size 12-24. </p>
+            </li>
+        </ul>
+
+
+
+    </div>
+
+
+    <a href="https://ubmfashion.com/shows/wwdmagic" class="btn_kmm" target="_blank">CLICK HERE TO REGISTER FOR MAGIC<span class="date">AUGUST 13-15, 2018 </span><img src="https://s3-us-west-2.amazonaws.com/fg-business-data/trend_report/hand.png" class="ico_hand" /></a>
+
+    <!-- <div class="share_list">
+         <span>Share this:</span>
+         <a href="https://www.facebook.com/" class="fb"></a>
+         <a href="https://twitter.com/" class="tw"></a>
+         <a href="https://www.pinterest.com/" class="pt"></a>
+         <a href="https://plus.google.com/discover" class="gp"></a>
+     </div>-->
+</div>

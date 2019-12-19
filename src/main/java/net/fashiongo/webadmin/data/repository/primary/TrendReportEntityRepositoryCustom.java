@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.data.repository.primary;
 
+import net.fashiongo.webadmin.data.entity.primary.TrendReportEntity;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReport;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportDefault;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportTotal;
@@ -26,5 +27,7 @@ public interface TrendReportEntityRepositoryCustom {
             , int trendreportId
             , int productId
             , String modifiedBy);
+
+    TrendReportEntity findOneByTrendReportIDAndCuratedType(Integer trendReportID);
 
 }
