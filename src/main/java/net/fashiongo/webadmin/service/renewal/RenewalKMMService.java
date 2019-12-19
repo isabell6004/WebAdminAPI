@@ -80,4 +80,10 @@ public class RenewalKMMService {
 
         return trendReportItems;
     }
+
+    public List<KmmCandidateItems> getKmmSelectedItems(Integer trendReportId) {
+        List<KmmCandidateItems> trendReportItems = trendReportEntityRepository.up_wa_GetTrendReportProductType1(trendReportId);
+
+        return trendReportItems;
+    }
 }

@@ -31,5 +31,6 @@ public interface TrendReportEntityRepositoryCustom {
 
     TrendReportEntity findOneByTrendReportIDAndCuratedType(Integer trendReportID);
 
+    List<KmmCandidateItems> up_wa_GetTrendReportProductType1(Integer trendReportId);
     List<KmmCandidateItems> up_wa_GetTrendReportProductType2(Integer trendReportId);
 }

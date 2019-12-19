@@ -56,4 +56,22 @@ public class KellysMagicMondayController {
 
         return response;
     }
+
+    @GetMapping("/{trendReportId}/items")
+    public JsonResponse<List<KmmCandidateItems>> getKmmSelectedItems(@PathVariable("trendReportId") Integer trendReportId) {
+        JsonResponse<List<KmmCandidateItems>> response = new JsonResponse<>(false, null,null);
+
+        try {
+            List<KmmCandidateItems> data = renewalKMMService.getKmmSelectedItems(trendReportId);
+
+            response.setSuccess(true);
+            response.setData(data);
+            response.setMessage("success");
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
+            response.setMessage("fail");
+        }
+
+        return response;
+    }
 }

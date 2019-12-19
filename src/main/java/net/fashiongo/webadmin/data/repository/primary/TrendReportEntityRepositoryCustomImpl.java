@@ -281,6 +281,37 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
         return query.fetchFirst();
     }
 
+
+    @Override
+    public List<KmmCandidateItems> up_wa_GetTrendReportProductType1(Integer trendReportId) {
+        //		select p.ProductID,p.ProductName,p.DirName,p.ImageUrlRoot,p.PictureGeneral,p.CompanyName
+        //		  from TrendReport_Map tm
+        //		  inner join vw_wa_CatalogProduct p on p.ProductID = tm.ProductID
+        //		 where TrendReportID = @TrendReportID
+        QTrendReportMapEntity TRM = QTrendReportMapEntity.trendReportMapEntity;
+        QProductsEntity P = QProductsEntity.productsEntity;
+        QCategoryEntity C = QCategoryEntity.categoryEntity;
+        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
+        QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+
+        JPASQLQuery<KmmCandidateItems> query = new JPASQLQuery<>(entityManager,new MSSQLServer2012Templates());
+        query.select(Projections.constructor(KmmCandidateItems.class,
+                P.productID,
+                P.productName,
+                I.urlPath.concat("/Vendors/").concat(W.dirName).concat("/ProductImage/list/").concat(PRDI.imageName),
+                W.companyName))
+                .from(TRM)
+                .innerJoin(P).on(TRM.productID.eq(P.productID))
+                .innerJoin(C).on(P.categoryID.eq(C.categoryId))
+                .innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerID))
+                .innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+                .leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
+                .where(P.active.eq(true).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true)).and(TRM.trendReportID.eq(trendReportId)));
+
+        return query.fetch();
+    }
+
     @Override
     public List<KmmCandidateItems> up_wa_GetTrendReportProductType2(Integer trendReportId) {
         QTrendReportMapCandidateEntity TRMC = QTrendReportMapCandidateEntity.trendReportMapCandidateEntity;
