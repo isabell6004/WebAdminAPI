@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.kmm.KmmCandidateItems;
 import net.fashiongo.webadmin.data.model.kmm.KmmDetail;
 import net.fashiongo.webadmin.service.renewal.RenewalKMMService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,6 +27,24 @@ public class KellysMagicMondayController {
 
         try {
             KmmDetail data = renewalKMMService.getKmmDetail(trendReportId);
+
+            response.setSuccess(true);
+            response.setData(data);
+            response.setMessage("success");
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
+            response.setMessage("fail");
+        }
+
+        return response;
+    }
+
+    @GetMapping("/{trendReportId}/candidateItems")
+    public JsonResponse<List<KmmCandidateItems>> getKmmCandidateItems(@PathVariable("trendReportId") Integer trendReportId) {
+        JsonResponse<List<KmmCandidateItems>> response = new JsonResponse<>(false, null,null);
+
+        try {
+            List<KmmCandidateItems> data = renewalKMMService.getKmmCandidateItems(trendReportId);
 
             response.setSuccess(true);
             response.setData(data);

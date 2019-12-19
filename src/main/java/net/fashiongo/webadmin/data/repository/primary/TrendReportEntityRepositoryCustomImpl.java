@@ -10,9 +10,11 @@ import com.querydsl.jpa.impl.JPAUpdateClause;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
 import net.fashiongo.webadmin.data.entity.primary.*;
+import net.fashiongo.webadmin.data.model.kmm.KmmCandidateItems;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReport;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportDefault;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportTotal;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportItem;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -277,5 +279,31 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
                 .where(TR.trendReportID.eq(trendReportID).and(TR.curatedType.eq(4)));
 
         return query.fetchFirst();
+    }
+
+    @Override
+    public List<KmmCandidateItems> up_wa_GetTrendReportProductType2(Integer trendReportId) {
+        QTrendReportMapCandidateEntity TRMC = QTrendReportMapCandidateEntity.trendReportMapCandidateEntity;
+        QProductsEntity P = QProductsEntity.productsEntity;
+        QCategoryEntity C = QCategoryEntity.categoryEntity;
+        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
+        QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+
+        JPASQLQuery<KmmCandidateItems> query = new JPASQLQuery<>(entityManager,new MSSQLServer2012Templates());
+        query.select(Projections.constructor(KmmCandidateItems.class,
+                P.productID,
+                P.productName,
+                I.urlPath.concat("/Vendors/").concat(W.dirName).concat("/ProductImage/list/").concat(PRDI.imageName),
+                W.companyName))
+                .from(TRMC)
+                .innerJoin(P).on(TRMC.productID.eq(P.productID))
+                .innerJoin(C).on(P.categoryID.eq(C.categoryId))
+                .innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerID))
+                .innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+                .leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
+                .where(P.active.eq(true).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true)).and(TRMC.trendReportID.eq(trendReportId)));
+
+        return query.fetch();
     }
 }

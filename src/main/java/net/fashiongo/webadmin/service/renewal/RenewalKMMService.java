@@ -3,12 +3,14 @@ package net.fashiongo.webadmin.service.renewal;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.TrendReportContentsEntity;
 import net.fashiongo.webadmin.data.entity.primary.TrendReportEntity;
+import net.fashiongo.webadmin.data.model.kmm.KmmCandidateItems;
 import net.fashiongo.webadmin.data.model.kmm.KmmDetail;
 import net.fashiongo.webadmin.data.repository.primary.TrendReportContentsEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.TrendReportEntityRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -71,5 +73,11 @@ public class RenewalKMMService {
         }
 
         return kmmDetail;
+    }
+
+    public List<KmmCandidateItems> getKmmCandidateItems(Integer trendReportId) {
+        List<KmmCandidateItems> trendReportItems = trendReportEntityRepository.up_wa_GetTrendReportProductType2(trendReportId);
+
+        return trendReportItems;
     }
 }
