@@ -1,16 +1,21 @@
 package net.fashiongo.webadmin.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import net.fashiongo.webadmin.data.model.admin.GetUserLoginTrackingParameter;
 import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessCodesResponse;
+import net.fashiongo.webadmin.data.model.admin.response.GetUserLoginTrackingResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.service.AdminService;
 import net.fashiongo.webadmin.service.SecurityGroupService;
 import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
 import net.fashiongo.webadmin.service.renewal.RenewalSecurityGroupService;
+import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -618,6 +623,39 @@ public class AdminController {
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
+		return results;
+	}
+
+	@RequestMapping(value="getuserlogintracking", method=RequestMethod.POST)
+	public JsonResponse<GetUserLoginTrackingResponse> getUserLoginTracking(@RequestBody GetUserLoginTrackingParameter parameters) {
+		JsonResponse<GetUserLoginTrackingResponse> results = new JsonResponse<GetUserLoginTrackingResponse>(true, null, 0, null);
+
+
+		String userType = parameters.getUsertype();
+		String userName = parameters.getUsername();
+		String companyName = parameters.getCompanyname();
+		String ip = parameters.getIp();
+		LocalDateTime sDate = DateUtils.convertToLocalDateTime(parameters.getSdate(),"F");
+		LocalDateTime eDate = DateUtils.convertToLocalDateTime(parameters.getEdate(),"T");
+		int pageNum = Optional.ofNullable(parameters.getPagenum()).orElse(0);
+		int pageSize = Optional.ofNullable(parameters.getPagesize()).orElse(0);
+		String sortField = parameters.getSortfield();
+		String sortDir = parameters.getSortdir();
+
+		GetUserLoginTrackingResponse result = renewalAdminService.getUserLoginTracking(pageNum,
+				pageSize,
+				sortField,
+				sortDir,
+				userType,
+				userName,
+				companyName,
+				ip,
+				sDate,
+				eDate);
+		results.setSuccess(true);
+		results.setCode(0);
+		results.setMessage("");
+		results.setData(result);
 		return results;
 	}
 }

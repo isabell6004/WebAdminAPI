@@ -1,15 +1,12 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.data.model.admin.*;
-import net.fashiongo.webadmin.data.model.admin.response.GetSecurityMenus2Response;
-import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessCodesResponse;
-import net.fashiongo.webadmin.data.model.admin.response.GetSecurityAccessIpsResponse;
-import net.fashiongo.webadmin.data.model.admin.response.GetSecurityLogsResponse;
-import net.fashiongo.webadmin.data.model.admin.response.GetSecurityResourcesResponse;
+import net.fashiongo.webadmin.data.model.admin.response.*;
 import net.fashiongo.webadmin.data.repository.primary.SecurityAccessCodeEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SecurityListIPEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SecurityLoginLogEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SecurityResourceEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.procedure.GetUserLoginTrackingProcedure;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityAccessCodesParameters;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityLogsParameter;
@@ -23,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,14 +36,17 @@ public class RenewalAdminService {
 
     private final PrimaryProcedureRepository primaryProcedureRepository;
 
+    private final GetUserLoginTrackingProcedure userLoginTrackingProcedure;
+
     @Autowired
-    public RenewalAdminService(SecurityAccessCodeEntityRepository securityAccessCodeEntityRepository, SecurityLoginLogEntityRepository securityLoginLogEntityRepository, SecurityListIPEntityRepository securityListIPEntityRepository, SecurityResourceEntityRepository securityResourceEntityRepository, PrimaryProcedureRepository primaryProcedureRepository) {
+    public RenewalAdminService(SecurityAccessCodeEntityRepository securityAccessCodeEntityRepository, SecurityLoginLogEntityRepository securityLoginLogEntityRepository, SecurityListIPEntityRepository securityListIPEntityRepository, SecurityResourceEntityRepository securityResourceEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, GetUserLoginTrackingProcedure userLoginTrackingProcedure) {
 
         this.securityAccessCodeEntityRepository = securityAccessCodeEntityRepository;
         this.securityLoginLogEntityRepository = securityLoginLogEntityRepository;
         this.securityListIPEntityRepository = securityListIPEntityRepository;
         this.securityResourceEntityRepository = securityResourceEntityRepository;
         this.primaryProcedureRepository = primaryProcedureRepository;
+        this.userLoginTrackingProcedure = userLoginTrackingProcedure;
     }
 
     @Transactional(transactionManager = "primaryTransactionManager")
@@ -119,5 +118,26 @@ public class RenewalAdminService {
         return GetSecurityMenus2Response.builder()
                 .securityMenus2(securityMenus2s)
                 .build();
+    }
+
+    public GetUserLoginTrackingResponse getUserLoginTracking(int pageNum, int pageSize, String sortField, String sortDir, String userType, String userName, String companyName, String ip, LocalDateTime sDate, LocalDateTime eDate) {
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        List<Object> param = new ArrayList<>();
+//        param.add(pageNum);
+//        param.add(pageSize);
+//        param.add(sortField);
+//        param.add(sortDir);
+//        param.add(userType);
+//        param.add(userName);
+//        param.add(companyName);
+//        param.add(ip);
+//        param.add(Optional.ofNullable(sDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
+//        param.add(Optional.ofNullable(eDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
+//
+//        List<Object> up_wa_getUserLoginTracking = jdbcHelper.executeSP("up_wa_GetUserLoginTracking", param, UserLogin.class, ColumnCount.class);
+//        List<UserLogin> userLogins = (List<UserLogin>) up_wa_getUserLoginTracking.get(0);
+//        List<ColumnCount> columnCounts = (List<ColumnCount>) up_wa_getUserLoginTracking.get(1);
+
+        return userLoginTrackingProcedure.up_wa_GetUserLoginTracking(pageNum,pageSize,sortField,sortDir,userType,userName,companyName,ip,sDate,eDate);
     }
 }

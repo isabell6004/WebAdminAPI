@@ -1,10 +1,9 @@
 package net.fashiongo.webadmin.utility;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.Local;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -12,6 +11,7 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * Created by jinwoo on 2019. 2. 5..
@@ -97,6 +97,66 @@ public class DateUtils {
 
     public static LocalDateTime convertToLocalDateTime(Date data) {
         return data.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    public static LocalDateTime convertToLocalDateTime(String dateString,String type) {
+
+//        if (string.IsNullOrEmpty(dateFormat))
+//        {
+//            dateFormat = "NaN";
+//        }
+//
+//        var r = DateTime.Now;
+//        if (dateFormat.Contains("NaN"))
+//        {
+//            switch (typ)
+//            {
+//                case "F":
+//                    r = new DateTime(1970, 1, 1);
+//                    break;
+//                case "T":
+//                    r = new DateTime(2099, 12, 31);
+//                    //r = DateTime.Today.AddDays(1);
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//        else
+//        {
+//            r = Convert.ToDateTime(dateFormat);
+//            if (typ == "T")
+//            {
+//                if (r.Hour == 0)
+//                {
+//                    r = r.AddDays(1).AddSeconds(-1);
+//                }
+//            }
+//        }
+//
+//        return r;
+        return Optional.ofNullable(dateString)
+                .filter(s -> StringUtils.hasLength(s))
+                .map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+                .map(dateTime -> {
+                    if ("T".equalsIgnoreCase(type)) {
+                        if (dateTime.getHour() == 0) {
+                            return dateTime.plusDays(1).minusSeconds(1);
+                        }
+                    }
+                    return dateTime;
+                }).orElseGet(() -> {
+                    LocalDateTime now = LocalDateTime.now();
+
+                    switch (type) {
+                        case "F":
+                            return LocalDateTime.of(1970, 1, 1, 0, 0, 0, 0);
+                        case "T":
+                            return LocalDateTime.of(2099, 12, 31, 0, 0, 0, 0);
+                    }
+
+                    return now;
+                });
     }
 
 }
