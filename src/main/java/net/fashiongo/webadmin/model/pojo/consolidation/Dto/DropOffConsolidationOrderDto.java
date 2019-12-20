@@ -18,9 +18,12 @@ import net.fashiongo.webadmin.model.primary.consolidation.ConsolidatedOrder;
 @Builder
 public class DropOffConsolidationOrderDto {
 	private Integer orderId;
+	private Integer orderStatusId;
 	private Integer consolidationId;
 	private String poNumber;
 	private String vendorName;
+	private String buyer;
+	private String buyerName;
 	private LocalDateTime dropOffTime;
 	private String dropOffBy;
 	private String receivedBy;
@@ -34,9 +37,12 @@ public class DropOffConsolidationOrderDto {
 		}
 		return builder()
 				.orderId(order.getOrderId())
+				.orderStatusId(order.getOrderStatusId())
 				.consolidationId(order.getConsolidationId())
 				.poNumber(order.getPoNumber())
 				.vendorName(order.getVendorName())
+				.buyer(order.getBuyer())
+				.buyerName(order.getFirstName() + " " + order.getLastName())
 				.dropOffTime(order.getConsolidationOrder() != null ? order.getConsolidationOrder().getReceivedOn() : null)
 				.dropOffBy(order.getConsolidationOrder() != null ? order.getConsolidationOrder().getDroppedBy() : null)
 				.receivedBy(order.getConsolidationOrder() != null ? order.getConsolidationOrder().getReceivedBy() : null)

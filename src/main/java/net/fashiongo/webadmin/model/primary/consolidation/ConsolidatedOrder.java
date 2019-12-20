@@ -37,6 +37,18 @@ public class ConsolidatedOrder {
 	@Column(name = "ConsolidationID")
 	private Integer consolidationId;
 	
+	@Column(name = "RetailerCompanyName")
+	private String buyer;
+	
+	@Column(name = "FirstName")
+	private String firstName;
+	
+	@Column(name = "LastName")
+	private String lastName;
+	
+	@Column(name = "OrderStatusID")
+	private Integer orderStatusId;
+	
 	@OneToOne(targetEntity = ConsolidationOrders.class, fetch = FetchType.LAZY)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@JoinColumn(name = "OrderID", insertable = false, updatable = false)
