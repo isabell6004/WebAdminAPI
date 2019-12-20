@@ -51,4 +51,7 @@ public class SetPaymentAccountInfoParameter {
 
     @JsonProperty(value = "wholeSalerId")
     private Integer wholeSalerId;
+    
+    @JsonProperty(value = "isLocked")
+    private Boolean isLocked;
 }

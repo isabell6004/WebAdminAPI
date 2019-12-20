@@ -124,4 +124,5 @@ public class VendorPayoutInfoEntity {
 
     @Column(name = "ModifiedBy")
     private String modifiedBy;
+    
 }

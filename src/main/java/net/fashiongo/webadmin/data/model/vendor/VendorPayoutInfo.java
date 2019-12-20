@@ -23,4 +23,5 @@ public class VendorPayoutInfo {
 
     @JsonProperty(value = "VerifiedOn")
     private LocalDateTime verifiedOn;
+
 }
