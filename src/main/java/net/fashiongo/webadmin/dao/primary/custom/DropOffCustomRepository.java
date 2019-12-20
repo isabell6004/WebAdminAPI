@@ -6,4 +6,5 @@ import net.fashiongo.webadmin.model.primary.consolidation.ConsolidatedOrder;
 
 public interface DropOffCustomRepository {
 	List<ConsolidatedOrder> getDropOffConsolidationOrder(String poNumber);
+	List<ConsolidatedOrder> getDropOffConsolidationReceipt(Integer orderId);
 }

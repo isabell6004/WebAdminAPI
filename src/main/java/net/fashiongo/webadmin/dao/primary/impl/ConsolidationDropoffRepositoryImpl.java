@@ -29,4 +29,17 @@ public class ConsolidationDropoffRepositoryImpl implements DropOffCustomReposito
 				.fetch();
 		
 	}
+
+	@Override
+	public List<ConsolidatedOrder> getDropOffConsolidationReceipt(Integer orderId) {
+		JPAQuery<ConsolidatedOrder> query = new JPAQuery<>(entityManager);
+		QConsolidatedOrder consolidatedOrder = QConsolidatedOrder.consolidatedOrder;
+		QConsolidationOrders consolidationOrder = QConsolidationOrders.consolidationOrders;
+		
+		return query.select(consolidatedOrder)
+				.from(consolidatedOrder)
+				.leftJoin(consolidatedOrder.consolidationOrder, consolidationOrder).fetchJoin()
+				.where(consolidatedOrder.orderId.eq(orderId))
+				.fetch();
+	}
 }

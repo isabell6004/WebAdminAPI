@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 public class ConsolidationController {
 	@Autowired
 	private ConsolidationService consolidationService;
+	
+	
 
 	/**
 	 * Get Consolidation Orders List Summary
@@ -187,6 +189,26 @@ public class ConsolidationController {
 			return new JsonResponse<>(true, null, consolidationService.setDropOffConsolidationOrder(dropoffSaveRequest));
 		} catch (Exception e) {
 			log.error("ConsolidationController.setDropOff() dropoffSaveRequest={}", dropoffSaveRequest, e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+	
+	@GetMapping(value = "/consolidation/detail/{consolidationId}")
+	public JsonResponse getConsolidationDetail(@PathVariable("consolidationId") Integer consolidationId) {
+		try {
+			return consolidationService.getConsolidationDetail(consolidationId);
+		} catch (Exception e) {
+			log.error("ConsolidationController.getConsolidationDetail() consolidationId={}", consolidationId, e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+	
+	@GetMapping(value = "/consolidation/receipt/{orderId}")
+	public JsonResponse getConsolidationOrderReceipt(@PathVariable("orderId") Integer orderId) {
+		try {
+			return new JsonResponse<>(true, null, consolidationService.getConsolidationReceipt(orderId));
+		} catch (Exception e) {
+			log.error("ConsolidationController.getConsolidationOrderReceipt() orderId={}", orderId, e);
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
