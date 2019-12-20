@@ -7,6 +7,9 @@ import net.fashiongo.webadmin.data.entity.primary.CodePatternEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodeStyleEntity;
 import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.TotalCount;
+import net.fashiongo.webadmin.data.model.kmm.GetKmmListParameter;
+import net.fashiongo.webadmin.data.model.kmm.GetKmmListResponse;
+import net.fashiongo.webadmin.data.model.kmm.KmmListDetail;
 import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
@@ -498,6 +501,25 @@ public class RenewalSitemgmtService {
 		return GetItemsResponse.builder()
 				.totals(totals)
 				.itemList(items)
+				.build();
+	}
+
+	public GetKmmListResponse getTrendReport2(GetKmmListParameter parameter) {
+		Integer pagenum = Optional.ofNullable(parameter.getPagenum()).orElse(1);
+		Integer pagesize = Optional.ofNullable(parameter.getPagesize()).orElse(10);
+		String searchtxt = Optional.ofNullable(parameter.getSearchtxt()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		LocalDateTime fromdate = Optional.ofNullable(parameter.getFromdate()).filter(s -> StringUtils.hasLength(s)).map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+		LocalDateTime todate = Optional.ofNullable(parameter.getTodate()).filter(s -> StringUtils.hasLength(s)).map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
+		Boolean active = Optional.ofNullable(parameter.getActive()).filter(s -> StringUtils.hasLength(s)).map(s -> Boolean.valueOf(s)).orElse(null);
+		String orderby = null;
+		String orderbygubn = null;
+		Integer curatedType = 4;
+
+		Page<KmmListDetail> kmmList = trendReportEntityRepository.up_wa_GetAdminTrendReport2(pagenum, pagesize, searchtxt, fromdate, todate, orderby, orderbygubn, active, curatedType);
+
+		return GetKmmListResponse.builder()
+				.recCnt(Arrays.asList(Total.builder().recCnt((int) kmmList.getTotalElements()).build()))
+				.kmmList(kmmList.getContent())
 				.build();
 	}
 }

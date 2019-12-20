@@ -11,6 +11,7 @@ import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.kmm.KmmCandidateItems;
+import net.fashiongo.webadmin.data.model.kmm.KmmListDetail;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReport;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportDefault;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportTotal;
@@ -336,5 +337,104 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
                 .where(P.active.eq(true).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true)).and(TRMC.trendReportID.eq(trendReportId)));
 
         return query.fetch();
+    }
+
+    @Override
+    public Page<KmmListDetail> up_wa_GetAdminTrendReport2(int pageNo, int pageSize, String searchText, LocalDateTime fromDate, LocalDateTime toDate, String orderBy, String orderByGubn, Boolean active, Integer curatedType) {
+        long offset = (pageNo - 1) * pageSize;
+        long limit = pageSize;
+
+        JPASQLQuery<KmmListDetail> jpasqlQuery = new JPASQLQuery(entityManager,new MSSQLServer2012Templates());
+        QTrendReportEntity T = QTrendReportEntity.trendReportEntity;
+        QTrendReportMapEntity TRM = QTrendReportMapEntity.trendReportMapEntity;
+        QTrendReportMapCandidateEntity TRMC = QTrendReportMapCandidateEntity.trendReportMapCandidateEntity;
+        DateTimePath<Timestamp> t_DateFrom = Expressions.dateTimePath(Timestamp.class, T, T.dateFrom.getMetadata().getName());
+        DateTimePath<Timestamp> t_DateTo = Expressions.dateTimePath(Timestamp.class, T, T.dateTo.getMetadata().getName());
+        BooleanExpression expression = Expressions.ONE.eq(1);
+
+        if(searchText != null) {
+            expression = expression.and(T.title.contains(searchText).or(T.createdBy.contains(searchText)));
+        }
+
+        if(fromDate != null) {
+            String format = fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            ComparableTemplate<String> fromDateTemplate = Expressions.comparableTemplate(String.class, "CONVERT(VARCHAR(10),{0},121)", T.dateFrom);
+            expression = expression.and(fromDateTemplate.goe(format));
+        }
+
+        if(toDate != null) {
+            String format = toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            ComparableTemplate<String> toDateTemplate = Expressions.comparableTemplate(String.class, "CONVERT(VARCHAR(10),{0},121)", T.dateTo);
+            expression = expression.and(toDateTemplate.loe(format));
+        }
+
+        if(active != null) {
+            expression = expression.and(T.active.eq(active));
+        }
+
+        if(curatedType != null) {
+            expression = expression.and(T.curatedType.eq(curatedType));
+        }
+
+        OrderSpecifier orderSpecifier = null;
+        if(orderBy == null) {
+            orderSpecifier = T.trendReportID.desc();
+        } else {
+            StringPath path = Expressions.stringPath(orderBy);
+
+            if(orderByGubn.toLowerCase().equals("desc")) {
+                orderSpecifier = path.desc();
+            } else {
+                orderSpecifier = path.asc();
+            }
+        }
+
+        jpasqlQuery.select(
+                Projections.constructor(KmmListDetail.class
+                        ,T.trendReportID
+                        ,T.title
+                        ,T.image
+                        ,T.squareImage
+                        ,T.miniImage
+                        ,T.curatedType
+                        ,T.trDescription
+                        ,t_DateFrom
+                        ,t_DateTo
+                        ,T.listOrder
+                        ,T.active
+                        ,T.createdBy
+                        ,Expressions.cases()
+                                .when(
+                                        T.curatedType.eq(4)
+                                ).then(
+                                        SQLExpressions.select(TRMC.candidateID.count())
+                                                .from(TRMC)
+                                                .where(TRMC.trendReportID.eq(T.trendReportID))
+                                ).otherwise(
+                                        SQLExpressions.select(TRM.trendReportID.count())
+                                                .from(TRM)
+                                                .where(TRM.trendReportID.eq(T.trendReportID))
+                                ).as("ItemCount")
+                        ,T.kmmImage1
+                        ,T.kmmImage2
+                        ,T.sticky
+                        ,T.showID
+                        ,T.showScheduleID
+                        ,SQLExpressions.rowNumber().over().orderBy(orderSpecifier).as("row"))
+        )
+                .from(T)
+                .where(
+                        expression
+                )
+                .orderBy(orderSpecifier)
+                .offset(offset)
+                .limit(limit);
+
+        QueryResults<KmmListDetail> trendReportQueryResults = jpasqlQuery.fetchResults();
+        long total = trendReportQueryResults.getTotal();
+        List<KmmListDetail> results = trendReportQueryResults.getResults();
+
+        PageRequest pageRequest = PageRequest.of(pageNo-1, pageSize);
+        return PageableExecutionUtils.getPage(results,pageRequest,()-> total);
     }
 }

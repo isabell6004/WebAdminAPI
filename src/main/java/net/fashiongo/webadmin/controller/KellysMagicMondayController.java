@@ -1,13 +1,15 @@
 package net.fashiongo.webadmin.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.kmm.GetKmmListParameter;
+import net.fashiongo.webadmin.data.model.kmm.GetKmmListResponse;
 import net.fashiongo.webadmin.data.model.kmm.KmmCandidateItems;
 import net.fashiongo.webadmin.data.model.kmm.KmmDetail;
 import net.fashiongo.webadmin.data.model.kmm.KmmSavePayload;
 import net.fashiongo.webadmin.data.model.kmm.SaveKmmRequest;
 import net.fashiongo.webadmin.service.renewal.RenewalKMMService;
+import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,10 @@ import java.util.List;
 public class KellysMagicMondayController {
 
     @Autowired
-    RenewalKMMService renewalKMMService;
+    private RenewalKMMService renewalKMMService;
+
+    @Autowired
+    private RenewalSitemgmtService renewalSitemgmtService;
 
     @GetMapping("/{trendReportId}")
     public JsonResponse<KmmDetail> getKmmDeatil(@PathVariable("trendReportId") Integer trendReportId) {
@@ -106,6 +111,16 @@ public class KellysMagicMondayController {
             response.setMessage("Error occurred");
         }
 
+        return response;
+    }
+
+    @PostMapping("")
+    public JsonResponse<GetKmmListResponse> getKmmList(@RequestBody GetKmmListParameter param) {
+        JsonResponse<GetKmmListResponse> response = new JsonResponse<>(true, null, null);
+        GetKmmListResponse result = renewalSitemgmtService.getTrendReport2(param);
+
+        response.setSuccess(true);
+        response.setData(result);
         return response;
     }
 }

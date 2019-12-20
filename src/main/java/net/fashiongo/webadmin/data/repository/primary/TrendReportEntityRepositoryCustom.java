@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.data.repository.primary;
 
 import net.fashiongo.webadmin.data.entity.primary.TrendReportEntity;
 import net.fashiongo.webadmin.data.model.kmm.KmmCandidateItems;
+import net.fashiongo.webadmin.data.model.kmm.KmmListDetail;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReport;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportDefault;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportTotal;
@@ -33,4 +34,14 @@ public interface TrendReportEntityRepositoryCustom {
 
     List<KmmCandidateItems> up_wa_GetTrendReportProductType1(Integer trendReportId);
     List<KmmCandidateItems> up_wa_GetTrendReportProductType2(Integer trendReportId);
+
+    Page<KmmListDetail> up_wa_GetAdminTrendReport2(int pageNo
+                                                , int pageSize
+                                                , String searchText
+                                                , LocalDateTime fromDate
+                                                , LocalDateTime toDate
+                                                , String orderBy
+                                                , String orderByGubn
+                                                , Boolean active
+                                                , Integer curatedType);
 }
