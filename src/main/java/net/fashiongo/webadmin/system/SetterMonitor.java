@@ -59,7 +59,8 @@ public class SetterMonitor implements ThrowsAdvice {
 	 * Desc : error log
 	 */
 	@AfterThrowing(pointcut = "execution(* net.fashiongo.webadmin.service..*(..)) " +
-			"&& !execution(* net.fashiongo.webadmin.service.BidService.*(..))" +
+			"&& !execution(* net.fashiongo.webadmin.service.BidService.*(..)) " +
+			"&& !execution(* net.fashiongo.webadmin.service.WAPaymentService.*(..)) " +
 			"&& !execution(* net.fashiongo.webadmin.service.GnbService.*(..))", throwing="e")
 	public void callMethodException(JoinPoint joinPoint, Throwable e) throws Throwable {
 

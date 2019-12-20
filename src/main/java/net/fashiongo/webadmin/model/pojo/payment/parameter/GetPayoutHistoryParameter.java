@@ -1,103 +1,80 @@
 package net.fashiongo.webadmin.model.pojo.payment.parameter;
 
-import java.time.LocalDateTime;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-/**
- * 
- * @author DAHYE
- *
- */
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+@Getter
+@Setter
 public class GetPayoutHistoryParameter {
-	@JsonProperty("pagenum")
-	private Integer pagenum;
-	
-	@JsonProperty("pagesize")
-	private Integer pagesize;
-	
-	@JsonProperty("wholesalerid")
-	private Integer wholesalerid;
-	
-	@JsonProperty("fromdate")
-	private String fromdate;
-	
-	@JsonProperty("todate")
-	private String todate;
-	
-	@JsonProperty("payoutstatus")
-	private String payoutstatus;
-	
-	@JsonProperty("payoutschedule")
-	private String payoutschedule;
-	
-	@JsonProperty("orderby")
-	private String orderby;
 
-	public Integer getPagenum() {
-		return pagenum == null ? 0 : pagenum;
-	}
+    private static final String ALLOW_ALPHANUMERIC_PATTERN = "^[a-zA-Z0-9]+$";
+    private static final String ALLOW_ALPHANUMERIC_PATTERN_MESSAGE = "Alphanumeric characters are only allowed";
+    private static final String ALLOW_ALPHABET_PATTERN = "^[A-Za-z]+$";
+    private static final String ALLOW_ALPHABET_PATTERN_MESSAGE = "Alphabet characters are only allowed";
+    private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s !&,-.?_\']+$";
+    private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
 
-	public Integer getPagesize() {
-		return pagesize == null ? 0 : pagesize;
-	}
+    @JsonProperty("pagenum")
+    @NotNull
+    private Integer pageNum;
 
-	public Integer getWholesalerid() {
-		return wholesalerid;
-	}
+    @JsonProperty("pagesize")
+    @NotNull
+    private Integer pageSize;
 
-	public String getFromdate() {
-		return StringUtils.isEmpty(fromdate) ? null : fromdate;
-	}
+    @JsonProperty("wholesalerid")
+    private Integer wholesalerId;
 
-	public String getTodate() {
-		return StringUtils.isEmpty(todate) ? null : todate;
-	}
+    @JsonProperty("fromdate")
+    @SQLInjectionSafe
+    private String fromDate;
 
-	public String getPayoutstatus() {
-		return StringUtils.isEmpty(payoutstatus) ? null : payoutstatus;
-	}
+    @JsonProperty("todate")
+    @SQLInjectionSafe
+    private String toDate;
 
-	public String getPayoutschedule() {
-		return StringUtils.isEmpty(payoutschedule) ? null : payoutschedule.equalsIgnoreCase("manually") ? "Manual" : payoutschedule;
-	}
+    @JsonProperty("payoutstatus")
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String payoutStatus;
 
-	public String getOrderby() {
-		return StringUtils.isEmpty(orderby) ? null : orderby;
-	}
+    @JsonProperty("payoutschedule")
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String payoutSchedule;
 
-	public void setPagenum(Integer pagenum) {
-		this.pagenum = pagenum;
-	}
+    @JsonProperty("orderby")
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String orderBy;
 
-	public void setPagesize(Integer pagesize) {
-		this.pagesize = pagesize;
-	}
+    public String getFromDate() {
+        return StringUtils.isEmpty(fromDate) ? null : fromDate;
+    }
 
-	public void setWholesalerid(Integer wholesalerid) {
-		this.wholesalerid = wholesalerid;
-	}
+    public String getToDate() {
+        return StringUtils.isEmpty(toDate) ? null : toDate;
+    }
 
-	public void setFromdate(String fromdate) {
-		this.fromdate = fromdate;
-	}
+    public String getPayoutStatus() {
+        return StringUtils.isEmpty(payoutStatus) ? null : payoutStatus;
+    }
 
-	public void setTodate(String todate) {
-		this.todate = todate;
-	}
+    public String getPayoutSchedule() {
+        if (StringUtils.isEmpty(payoutSchedule)) {
+            return null;
+        }
+        return payoutSchedule.equalsIgnoreCase("manually") ? "Manual" : payoutSchedule;
+    }
 
-	public void setPayoutstatus(String payoutstatus) {
-		this.payoutstatus = payoutstatus;
-	}
+    public String getOrderBy() {
+        return StringUtils.isEmpty(orderBy) ? null : orderBy;
+    }
 
-	public void setPayoutschedule(String payoutschedule) {
-		this.payoutschedule = payoutschedule;
-	}
-
-	public void setOrderby(String orderby) {
-		this.orderby = orderby;
-	}
-	
-	
 }

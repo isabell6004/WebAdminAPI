@@ -1,130 +1,116 @@
 package net.fashiongo.webadmin.model.pojo.payment.parameter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.Setter;
-
-/**
- * 
- * @author DAHYE
- *
- */
+@Getter
 @Setter
 public class GetPaymentStatusListParameter {
-	
-	@ApiModelProperty(required = false, example="1")
-	@JsonProperty("PageNum")
-	private String pageNum;
-	
-	@ApiModelProperty(required = false, example="20")
-	@JsonProperty("PageSize")
-	private String pageSize;
-	
-	@ApiModelProperty(required = false, example="2858")
-	@JsonProperty("WholeSalerID")
-	private String wholeSalerID;
-	
-	@ApiModelProperty(required = false, example="2")
-	@JsonProperty("PaymentStatusID")
-	private String paymentStatusID;
-	
-	@ApiModelProperty(required = false, example="2017-01-01 00:00:00.000")
-	@JsonProperty("FromDate")
-	private String fromDate;
-	
-	@ApiModelProperty(required = false, example="2017-12-31 00:00:00.000")
-	@JsonProperty("ToDate")
-	private String toDate;
-	
-	@ApiModelProperty(required = false, example="test")
-	@JsonProperty("PONumber")
-	private String poNumber;
-	
-	@ApiModelProperty(required = false, example="2")
-	@JsonProperty("ConsolidationID")
-	private String consolidationID;
-	
-	@ApiModelProperty(required = false, example="test")
-	@JsonProperty("BuyerName")
-	private String buyerName;
-	
-	@ApiModelProperty(required = false, example="0")
-	@JsonProperty("TransactionType")
-	private String transactionType;
-	
-	@ApiModelProperty(required = false, example="1")
-	@JsonProperty("searchSuccess")
-	private String searchSuccess;
-	
-	@ApiModelProperty(required = false, example="1")
-	@JsonProperty("OrderBy")
-	private String orderBy;
 
-	public Integer getPageNum() {
-		return StringUtils.isEmpty(pageNum) ? 1 : Integer.parseInt(pageNum);
-	}
+    private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s !&,-.?_\']+$";
+    private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
 
-	public Integer getPageSize() {
-		return StringUtils.isEmpty(pageSize) ? 10 : Integer.parseInt(pageSize);
-	}
+    @ApiModelProperty(required = false, example = "1")
+    @JsonProperty("PageNum")
+    private Integer pageNum;
 
-	public Integer getWholeSalerID() {
-		return StringUtils.isEmpty(wholeSalerID) ? null : Integer.parseInt(wholeSalerID);
-	}
+    @ApiModelProperty(required = false, example = "20")
+    @JsonProperty("PageSize")
+    private Integer pageSize;
 
-	public Integer getPaymentStatusID() {
-		return StringUtils.isEmpty(paymentStatusID) ? null : Integer.parseInt(paymentStatusID);
-	}
+    @ApiModelProperty(required = false, example = "2858")
+    @JsonProperty("WholeSalerID")
+    private Integer wholeSalerID;
 
-	public LocalDateTime getFromDate() {
-		if (StringUtils.isNotEmpty(fromDate)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-			return LocalDateTime.parse(fromDate, formatter);
-		}
-		return null;
-	}
-	
-	
+    @ApiModelProperty(required = false, example = "2")
+    @JsonProperty("PaymentStatusID")
+    private Integer paymentStatusID;
 
-	public LocalDateTime getToDate() {
-		if (StringUtils.isNotEmpty(toDate)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-			return LocalDateTime.parse(toDate, formatter);
-		}
-		return null;
-	}
+    @ApiModelProperty(required = false, example = "2017-01-01 00:00:00.000")
+    @JsonProperty("FromDate")
+    @SQLInjectionSafe
+    private String fromDate;
 
-	public String getPoNumber() {
-		return StringUtils.isEmpty(poNumber) ? null : poNumber;
-	}
+    @ApiModelProperty(required = false, example = "2017-12-31 00:00:00.000")
+    @JsonProperty("ToDate")
+    @SQLInjectionSafe
+    private String toDate;
 
-	public Integer getConsolidationID() {
-		return StringUtils.isEmpty(consolidationID) ? null : Integer.parseInt(consolidationID);
-	}
+    @ApiModelProperty(required = false, example = "test")
+    @JsonProperty("PONumber")
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String poNumber;
 
-	public String getBuyerName() {
-		return StringUtils.isEmpty(buyerName) ? null : buyerName;
-	}
+    @ApiModelProperty(required = false, example = "2")
+    @JsonProperty("ConsolidationID")
+    private Integer consolidationID;
 
-	public Integer getTransactionType() {
-		return StringUtils.isEmpty(transactionType) ? null : Integer.parseInt(transactionType);
-	}
+    @ApiModelProperty(required = false, example = "test")
+    @JsonProperty("BuyerName")
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String buyerName;
 
-	public Integer getSearchSuccess() {
-		return StringUtils.isEmpty(searchSuccess) ? null : Integer.parseInt(searchSuccess);
-	}
+    @ApiModelProperty(required = false, example = "0")
+    @JsonProperty("TransactionType")
+    private Integer transactionType;
 
-	public String getOrderBy() {
-		return StringUtils.isEmpty(orderBy) ? null : orderBy;
-	}
+    @ApiModelProperty(required = false, example = "1")
+    @JsonProperty("searchSuccess")
+    private Integer searchSuccess;
 
+    @ApiModelProperty(required = false, example = "1")
+    @JsonProperty("OrderBy")
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String orderBy;
 
-	
+    public Integer getPageNum() {
+        return pageNum == null ? 1 : pageNum;
+    }
+
+    public Integer getPageSize() {
+        return pageSize == null ? 10 : pageSize;
+    }
+
+    public LocalDateTime getFromDate() {
+        if (StringUtils.isNotEmpty(fromDate)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            return LocalDateTime.parse(fromDate, formatter);
+        }
+        return null;
+    }
+
+    public LocalDateTime getToDate() {
+        if (StringUtils.isNotEmpty(toDate)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            return LocalDateTime.parse(toDate, formatter);
+        }
+        return null;
+    }
+
+    public String getPoNumber() {
+        return StringUtils.isEmpty(poNumber) ? null : poNumber;
+    }
+
+    public String getBuyerName() {
+        return StringUtils.isEmpty(buyerName) ? null : buyerName;
+    }
+
+    public String getOrderBy() {
+        return StringUtils.isEmpty(orderBy) ? null : orderBy;
+    }
+
 }

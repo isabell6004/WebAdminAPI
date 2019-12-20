@@ -1,123 +1,132 @@
 package net.fashiongo.webadmin.model.pojo.payment.parameter;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
-/**
- * 
- * @author DAHYE
- *
- */
+import javax.validation.constraints.Pattern;
+
 @Setter
 public class GetAllSavedCreditCardInfoParameter {
 
-	@ApiModelProperty(required = false, example="1")
-	@JsonProperty("pagenum")
-	private Integer pageNum;
+    private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s !&,-.?_\']+$";
+    private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
 
-	@ApiModelProperty(required = false, example="30")
-	@JsonProperty("pagesize")
-	private Integer pageSize;
+    @ApiModelProperty(required = false, example = "1")
+    @JsonProperty("pagenum")
+    private Integer pageNum;
 
-	@ApiModelProperty(hidden=true)
-	@JsonProperty("cardid")
-	private String cardID;
+    @ApiModelProperty(required = false, example = "30")
+    @JsonProperty("pagesize")
+    private Integer pageSize;
 
-	@ApiModelProperty(hidden=true)
-	@JsonProperty("isdefaultcard")
-	private String defaultCard;
+    @ApiModelProperty(hidden = true)
+    @JsonProperty("cardid")
+    @SQLInjectionSafe
+    private String cardID;
 
-	@ApiModelProperty(hidden=true)
-	@JsonProperty("cardtypeid")
-	private Integer cardTypeID;
+    @ApiModelProperty(hidden = true)
+    @JsonProperty("isdefaultcard")
+    @SQLInjectionSafe
+    private String defaultCard;
 
-	@ApiModelProperty(hidden=true)
-	@JsonProperty("cardstatusid")
-	private Integer cardStatusID;
+    @ApiModelProperty(hidden = true)
+    @JsonProperty("cardtypeid")
+    private Integer cardTypeID;
 
-	@ApiModelProperty(hidden=true)
-	@JsonProperty("billingid")
-	private String billingID;
+    @ApiModelProperty(hidden = true)
+    @JsonProperty("cardstatusid")
+    private Integer cardStatusID;
 
-	@ApiModelProperty(required = false, example="ALL")
-	@JsonProperty("creditcountry")
-	private String creditCountry;
+    @ApiModelProperty(hidden = true)
+    @JsonProperty("billingid")
+    @SQLInjectionSafe
+    private String billingID;
 
-	@ApiModelProperty(required = false, example="ALL")
-	@JsonProperty("creditstate")
-	private String creditState;
+    @ApiModelProperty(required = false, example = "ALL")
+    @JsonProperty("creditcountry")
+    @SQLInjectionSafe
+    private String creditCountry;
 
-	@ApiModelProperty(hidden=true)
-	@JsonProperty("buyer")
-	private String buyer;
+    @ApiModelProperty(required = false, example = "ALL")
+    @JsonProperty("creditstate")
+    @SQLInjectionSafe
+    private String creditState;
 
-	@ApiModelProperty(hidden=true)
-	@JsonProperty("referenceid")
-	private String referenceID;
+    @ApiModelProperty(hidden = true)
+    @JsonProperty("buyer")
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String buyer;
 
-	@ApiModelProperty(required = false, example="CreatedOn")
-	@JsonProperty("orderby")
-	private String orderBy;
+    @ApiModelProperty(hidden = true)
+    @JsonProperty("referenceid")
+    @SQLInjectionSafe
+    private String referenceID;
 
-	@ApiModelProperty(required = false, example="Desc")
-	@JsonProperty("orderbygubun")
-	private String orderGubn;
+    @ApiModelProperty(required = false, example = "CreatedOn")
+    @JsonProperty("orderby")
+    @SQLInjectionSafe
+    private String orderBy;
 
-	public Integer getPageNum() {
-		return pageNum == null ? 1 : pageNum;
-	}
+    @ApiModelProperty(required = false, example = "Desc")
+    @JsonProperty("orderbygubun")
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String orderGubn;
 
-	public Integer getPageSize() {
-		return pageSize == null ? 10 : pageSize;
-	}
+    public Integer getPageNum() {
+        return pageNum == null ? 1 : pageNum;
+    }
 
-	public String getCardID() {
-		return StringUtils.isEmpty(cardID) ? null : cardID;
-	}
+    public Integer getPageSize() {
+        return pageSize == null ? 10 : pageSize;
+    }
 
-	public Boolean getDefaultCard() {
-		return StringUtils.isEmpty(defaultCard) ? null : defaultCard.equals("1");
-	}
+    public String getCardID() {
+        return StringUtils.isEmpty(cardID) ? null : cardID;
+    }
 
-	public Integer getCardTypeID() {
-		return cardTypeID == null ? 0 : cardTypeID;
-	}
+    public Boolean getDefaultCard() {
+        return StringUtils.isEmpty(defaultCard) ? null : defaultCard.equals("1");
+    }
 
-	public Integer getCardStatusID() {
-		return cardStatusID == null ? 0 : cardStatusID;
-	}
+    public Integer getCardTypeID() {
+        return cardTypeID == null ? 0 : cardTypeID;
+    }
 
-	public String getBillingID() {
-		return StringUtils.isEmpty(billingID) ? null : billingID;
-	}
+    public Integer getCardStatusID() {
+        return cardStatusID == null ? 0 : cardStatusID;
+    }
 
-	public String getCreditCountry() {
-		return StringUtils.isEmpty(creditCountry) ? "" : creditCountry;
-	}
+    public String getBillingID() {
+        return StringUtils.isEmpty(billingID) ? null : billingID;
+    }
 
-	public String getCreditState() {
-		return StringUtils.isEmpty(creditState) ? null : creditState;
-	}
+    public String getCreditCountry() {
+        return StringUtils.isEmpty(creditCountry) ? "" : creditCountry;
+    }
 
-	public String getBuyer() {
-		return StringUtils.isEmpty(buyer) ? null : buyer;
-	}
+    public String getCreditState() {
+        return StringUtils.isEmpty(creditState) ? null : creditState;
+    }
 
-	public String getReferenceID() {
-		return StringUtils.isEmpty(referenceID) ? null : referenceID;
-	}
+    public String getBuyer() {
+        return StringUtils.isEmpty(buyer) ? null : buyer;
+    }
 
-	public String getOrderBy() {
-		return StringUtils.isEmpty(orderBy) ? null : orderBy;
-	}
+    public String getReferenceID() {
+        return StringUtils.isEmpty(referenceID) ? null : referenceID;
+    }
 
-	public String getOrderGubn() {
-		return StringUtils.isEmpty(orderGubn) ? null : orderGubn;
-	}	
-	
-	
+    public String getOrderBy() {
+        return StringUtils.isEmpty(orderBy) ? null : orderBy;
+    }
+
+    public String getOrderGubn() {
+        return StringUtils.isEmpty(orderGubn) ? null : orderGubn;
+    }
+
 }

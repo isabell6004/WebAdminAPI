@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.*;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
@@ -12,137 +13,113 @@ import net.fashiongo.webadmin.service.WAPaymentService;
 import net.fashiongo.webadmin.service.renewal.RenewalWAPaymentService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.jdbc.UncategorizedSQLException;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * 
- * @author DAHYE
- *
- */
+@Slf4j
 @RestController
 @RequestMapping(value = "/payment", produces = "application/json")
 public class WAPaymentController {
-	@Autowired
-	private WAPaymentService waPaymentService;
 
-	@Autowired
-	private RenewalWAPaymentService renewalWAPaymentService;
+    @Autowired
+    private WAPaymentService waPaymentService;
 
-	/**
-	 * getPaymentStatusSearchOption
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param 
-	 * @return GetPaymentStatusSearchOptionResponse
-	 */
-	@RequestMapping(value = "getPaymentStatusSearchOption", method = RequestMethod.POST)
-	public JsonResponse<net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse> getPaymentStatusSearchOption() {
-		net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse paymentStatusSearchOption = renewalWAPaymentService.getPaymentStatusSearchOption();
+    @Autowired
+    private RenewalWAPaymentService renewalWAPaymentService;
 
-		return new JsonResponse<net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse>(true, null, 0, paymentStatusSearchOption);
-	}
-	
-	/**
-	 * getPaymentStatusList
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param GetPaymentStatusListParameter
-	 * @return GetPaymentStatusListResponse
-	 */
-	@RequestMapping(value = "getPaymentStatusList", method = RequestMethod.POST)
-	public JsonResponse<GetPaymentStatusListResponse> getPaymentStatusList(@RequestBody GetPaymentStatusListParameter parameters) {
-		GetPaymentStatusListResponse result = waPaymentService.getPaymentStatusList(parameters);
-		return new JsonResponse<GetPaymentStatusListResponse>(true, null, 0, result);
-	}
-	
-	/**
-	 * GetPendingPaymentTransaction
-	 * 
-	 * @since 2018. 11. 22.
-	 * @author Dahye
-	 * @param GetPendingPaymentTransactionParameter
-	 * @return 
-	 */
-	@RequestMapping(value = "getpendingpaymenttransaction", method = RequestMethod.POST)
-	public JsonResponse<GetPendingPaymentTransactionResponse> getPendingPaymentTransaction(@RequestBody GetPendingPaymentTransactionParameter parameters) {
-		GetPendingPaymentTransactionResponse result = waPaymentService.getPendingPaymentTransaction(parameters);
-		return new JsonResponse<GetPendingPaymentTransactionResponse>(true, null, 0, result);
-	}
-	
-	/**
-	 * GetCreditCardType
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param 
-	 * @return CodeCreditCardType
-	 */
-	@RequestMapping(value = "getCreditCardType", method = RequestMethod.POST)
-	public JsonResponse<List<CodeCreditCardType>> getCreditCardType() {
-		List<CodeCreditCardType> result = waPaymentService.getCreditCardType();
-		return new JsonResponse<List<CodeCreditCardType>>(true, null, 0, result);
-	}
-	
-	/**
-	 * getCreditCardStatus
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param 
-	 * @return 
-	 */
-	@RequestMapping(value = "getCreditCardStatus", method = RequestMethod.POST)
-	public JsonResponse<List<CardStatus>> getCreditCardStatus() {
-		List<CardStatus> result = waPaymentService.getCreditCardStatus();
-		return new JsonResponse<List<CardStatus>>(true, null, 0, result);
-	}
-	
-	/**
-	 * getAllSavedCreditCardInfo
-	 * 
-	 * @since 2018. 11. 26.
-	 * @author Dahye
-	 * @param GetAllSavedCreditCardInfoParameter
-	 * @return GetAllSavedCreditCardInfoResponse
-	 */
-	@RequestMapping(value = "getAllSavedCreditCardInfo", method = RequestMethod.POST)
-	public JsonResponse<GetAllSavedCreditCardInfoResponse> getAllSavedCreditCardInfo(@RequestBody GetAllSavedCreditCardInfoParameter param) {
-		GetAllSavedCreditCardInfoResponse result = waPaymentService.getAllSavedCreditCardInfo(param);
-		return new JsonResponse<GetAllSavedCreditCardInfoResponse>(true, null, 0, result);
-	}
-	
-	/**
-	 * SetRestorePendingPaymentTransaction
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param SetRestorePendingPaymentTransactionParameter
-	 * @return 
-	 */
-	@RequestMapping(value = "setrestorependingpaymenttransaction", method = RequestMethod.POST)
-	public JsonResponse<String> setRestorePendingPaymentTransaction(@RequestBody SetRestorePendingPaymentTransactionParameter param) {
-		ResultCode result = waPaymentService.setRestorePendingPaymentTransaction(param);
-		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
-	}
-	
-	/**
-	 * GetPayoutHistory
-	 * 
-	 * @since 2018. 11. 20.
-	 * @author Dahye
-	 * @param GetPayoutHistoryParameter
-	 * @return GetPayoutHistoryResponse
-	 */
-	@RequestMapping(value = "getpayouthistory", method = RequestMethod.POST)
-	public JsonResponse<GetPayoutHistoryResponse> getPayoutHistory(@RequestBody GetPayoutHistoryParameter param) {
-		GetPayoutHistoryResponse result = waPaymentService.getPayoutHistory(param);
-		return new JsonResponse<GetPayoutHistoryResponse>(true, null, 0, result);
-	}
+    @PostMapping(value = "getPaymentStatusSearchOption")
+    public JsonResponse<net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse> getPaymentStatusSearchOption() {
+        net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse paymentStatusSearchOption = renewalWAPaymentService.getPaymentStatusSearchOption();
+        return new JsonResponse<>(true, null, 0, paymentStatusSearchOption);
+    }
+
+    @PostMapping(value = "getPaymentStatusList")
+    public JsonResponse<GetPaymentStatusListResponse> getPaymentStatusList(
+            @Valid @RequestBody GetPaymentStatusListParameter parameters) {
+        GetPaymentStatusListResponse result = waPaymentService.getPaymentStatusList(parameters);
+        return new JsonResponse<>(true, null, 0, result);
+    }
+
+    @PostMapping(value = "getpendingpaymenttransaction")
+    public JsonResponse<GetPendingPaymentTransactionResponse> getPendingPaymentTransaction(
+            @Valid @RequestBody GetPendingPaymentTransactionParameter parameters) {
+        GetPendingPaymentTransactionResponse result = waPaymentService.getPendingPaymentTransaction(parameters);
+        return new JsonResponse<>(true, null, 0, result);
+    }
+
+    @PostMapping(value = "getCreditCardType")
+    public JsonResponse<List<CodeCreditCardType>> getCreditCardType() {
+        List<CodeCreditCardType> result = waPaymentService.getCreditCardType();
+        return new JsonResponse<>(true, null, 0, result);
+    }
+
+    @PostMapping(value = "getCreditCardStatus")
+    public JsonResponse<List<CardStatus>> getCreditCardStatus() {
+        List<CardStatus> result = waPaymentService.getCreditCardStatus();
+        return new JsonResponse<>(true, null, 0, result);
+    }
+
+    @PostMapping(value = "getAllSavedCreditCardInfo")
+    public JsonResponse<GetAllSavedCreditCardInfoResponse> getAllSavedCreditCardInfo(
+            @Valid @RequestBody GetAllSavedCreditCardInfoParameter param) {
+        GetAllSavedCreditCardInfoResponse result = waPaymentService.getAllSavedCreditCardInfo(param);
+        return JsonResponse.success(result);
+    }
+
+    @PostMapping(value = "setrestorependingpaymenttransaction")
+    public JsonResponse<String> setRestorePendingPaymentTransaction(
+            @Valid @RequestBody SetRestorePendingPaymentTransactionParameter param) {
+        ResultCode result = waPaymentService.setRestorePendingPaymentTransaction(param);
+        return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);
+    }
+
+    @PostMapping(value = "getpayouthistory")
+    public JsonResponse<GetPayoutHistoryResponse> getPayoutHistory(
+            @Valid @RequestBody GetPayoutHistoryParameter param) {
+        GetPayoutHistoryResponse result = waPaymentService.getPayoutHistory(param);
+        return new JsonResponse<>(true, null, 0, result);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        log.error("MethodArgumentNotValidException: ", ex);
+        return new ResponseEntity<>(JsonResponse.fail("Bad Request: " + ex.getBindingResult().getFieldErrors().stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(Collectors.joining(" "))), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UncategorizedSQLException.class)
+    public ResponseEntity<Object> handleUncategorizedSQLException(UncategorizedSQLException ex) {
+        log.error("UncategorizedSQLException: ", ex);
+        return new ResponseEntity<>(JsonResponse.fail("Query Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(BadSqlGrammarException.class)
+    public ResponseEntity<Object> handleBadSqlGrammarException(BadSqlGrammarException ex) {
+        log.error("BadSqlGrammarException: ", ex);
+        return new ResponseEntity<>(JsonResponse.fail("Query Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        log.error("HttpMessageNotReadableException: ", ex);
+        return new ResponseEntity<>(JsonResponse.fail("Request Message Not Readable"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleException(Exception ex) {
+        log.error("Exception: ", ex);
+        return new ResponseEntity<>(JsonResponse.fail("Unknown Error"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
