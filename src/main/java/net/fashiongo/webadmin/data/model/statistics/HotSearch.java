@@ -8,8 +8,8 @@ public class HotSearch {
 	private String SearchQuery;
 
 	@JsonProperty("Count")
-	private Long Count;
+	private Integer Count;
 
 	@JsonProperty("rankno")
-	private Integer rankno;
+	private Long rankno;
 }
