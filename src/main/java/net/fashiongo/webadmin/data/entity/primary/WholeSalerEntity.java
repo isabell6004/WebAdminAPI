@@ -529,19 +529,19 @@ public class WholeSalerEntity {
     private Boolean useCreditCardPaymentService = false;
 
     @Column(name = "TransactionFeeRate1")
-    private double transactionFeeRate1 = 0.029;
+    private Double  transactionFeeRate1 = 0.029;
 
     @Column(name = "TransactionFeeRate2")
-    private double transactionFeeRate2 = 0.029;
+    private Double transactionFeeRate2 = 0.029;
 
     @Column(name = "TransactionFeeRate1Intl")
-    private double transactionFeeRate1Intl = 0.0415;
+    private Double transactionFeeRate1Intl = 0.0415;
 
     @Column(name = "TransactionFeeRate2Intl")
-    private double transactionFeeRate2Intl = 0.048;
+    private Double transactionFeeRate2Intl = 0.048;
 
     @Column(name = "TransactionFeeFixed")
-    private double transactionFeeFixed = 0.30;
+    private Double transactionFeeFixed = 0.30;
 
     @Column(name = "CommissionRate")
     private Double commissionRate;
