@@ -32,4 +32,7 @@ public class SitemgmtGetItemsParameter {
 
 	@JsonProperty("companytypeid3")
 	private Boolean companytypeid3;
+
+	@JsonProperty("inventory")
+	private String inventory;
 }

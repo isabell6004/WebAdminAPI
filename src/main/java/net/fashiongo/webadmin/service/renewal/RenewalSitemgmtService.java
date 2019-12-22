@@ -426,6 +426,20 @@ public class RenewalSitemgmtService {
 		Boolean companytypeid1 = Optional.ofNullable(parameters.getCompanytypeid1()).orElse(false);
 		Boolean companytypeid2 = Optional.ofNullable(parameters.getCompanytypeid2()).orElse(false);
 		Boolean companytypeid3 = Optional.ofNullable(parameters.getCompanytypeid3()).orElse(false);
+		String inventory = Optional.ofNullable(parameters.getInventory()).filter(s -> StringUtils.hasLength(s)).orElse("");
+		Boolean isPreOrder = null;
+		Boolean inStockOnly = null;
+
+		if(inventory.equals("")) {
+			isPreOrder = null;
+			inStockOnly = null;
+		} else if (inventory.equals("PO")){
+			isPreOrder = true;
+			inStockOnly = null;
+		} else if (inventory.equals("IS")){
+			isPreOrder = null;
+			inStockOnly = true;
+		}
 
 		String checkedCompanyNo = "";
 
@@ -468,13 +482,13 @@ public class RenewalSitemgmtService {
 		param.add(null);
 		param.add(searchitemtxt);
 		param.add("ProductName");
+		param.add(isPreOrder);
 		param.add(null);
 		param.add(null);
 		param.add(null);
 		param.add(null);
 		param.add(null);
-		param.add(null);
-		param.add(null);
+		param.add(inStockOnly);
 		param.add(checkedCompanyNo);
 
 		List<Object> up_wa_getItemsSearch = jdbcHelper.executeSP("up_wa_GetItemsSearch", param, TotalCount.class, Item.class);
