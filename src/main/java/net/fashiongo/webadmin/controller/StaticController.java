@@ -6,6 +6,7 @@ package net.fashiongo.webadmin.controller;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.statistics.GetHotSearchKeywordParameter;
 import net.fashiongo.webadmin.data.model.statistics.GetHotSearchParameter;
+import net.fashiongo.webadmin.data.model.statistics.GetVendorStatParameter;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.model.pojo.statics.response.GetDashboardResponse;
@@ -23,6 +24,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -188,5 +191,31 @@ public class StaticController {
 
 		GetHotSearchKeywordResponse getHotSearchResponse = renewalStaticService.getHotSearchKeyword(periodType, fromDate, toDate, keyword);
 		return new JsonResponse<>(true,"",getHotSearchResponse);
+	}
+
+	@PostMapping(value = "getvendorstat")
+	public JsonResponse<List<Map<String, Object>>> getVendorStat(@RequestBody GetVendorStatParameter parameter) {
+		LocalDateTime fromDate = Optional.ofNullable(parameter.getFromDate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.orElse(LocalDateTime.of(1970,1,1,0,0,0,0));
+
+		LocalDateTime toDate = Optional.ofNullable(parameter.getToDate())
+				.filter(s -> StringUtils.hasLength(s))
+				.map(s -> new Date(s).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+				.map(dateTime -> {
+					if(dateTime.getHour() == 0) {
+						return dateTime.plusDays(1).minusSeconds(1);
+					}
+					return dateTime;
+				})
+				.orElse(LocalDateTime.of(2099,12,31,0,0,0,0));
+
+		Integer interval = Optional.ofNullable(parameter.getInterval()).orElse(0);
+		Integer wholeSalerId = Optional.ofNullable(parameter.getWholeSalerID()).orElse(0);
+
+		List<Map<String,Object>> result = renewalStaticService.getVendorStat(fromDate, toDate, interval, wholeSalerId);
+
+		return new JsonResponse<>(true, "", result);
 	}
 }
