@@ -21,6 +21,7 @@ import net.fashiongo.webadmin.data.entity.primary.QWholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.QWholesalerCompanyEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
+import net.fashiongo.webadmin.data.model.common.VendorsCompanyName;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingSelete;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnSelete;
@@ -211,6 +212,21 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 .orderBy(W.companyName.asc());
 
         return jpasqlQuery.fetch();
+    }
+
+    @Override
+    public List<VendorsCompanyName> findVendors() {
+        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        JPAQuery<VendorsCompanyName> query = new JPAQuery<>(entityManager);
+
+        query.select(Projections.constructor(VendorsCompanyName.class,
+                W.wholeSalerID,
+                W.companyName))
+        .from(W)
+        .where(W.active.eq(true))
+        .orderBy(W.companyName.asc());
+
+        return query.fetch();
     }
 
     private BooleanExpression eqReferenceID(Integer referenceID, QCategoryEntity C) {

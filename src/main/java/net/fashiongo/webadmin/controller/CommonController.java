@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
 import net.fashiongo.webadmin.data.model.common.reponse.ConsolidationOrderStatusResponse;
+import net.fashiongo.webadmin.data.model.common.reponse.GetVendorsResponse;
 import net.fashiongo.webadmin.data.model.vendor.SendEmailParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityResourcesParameter;
 import net.fashiongo.webadmin.model.pojo.common.parameter.*;
@@ -15,6 +16,7 @@ import net.fashiongo.webadmin.service.renewal.RenewalCommonService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -266,6 +268,19 @@ public class CommonController {
 
 		response.setSuccess(true);
 		response.setData(result);
+		return response;
+	}
+
+	@GetMapping(value = "getvendors")
+	public JsonResponse<GetVendorsResponse> getVendors() {
+		JsonResponse<GetVendorsResponse> response = new JsonResponse<>();
+
+		GetVendorsResponse data = renewalCommonService.getVendors();
+
+		response.setSuccess(true);
+		response.setMessage("success");
+		response.setData(data);
+
 		return response;
 	}
 }

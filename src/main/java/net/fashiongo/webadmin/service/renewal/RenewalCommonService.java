@@ -3,10 +3,13 @@ package net.fashiongo.webadmin.service.renewal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.data.model.ad.BidAdPage;
 import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
+import net.fashiongo.webadmin.data.model.common.VendorsCompanyName;
 import net.fashiongo.webadmin.data.model.common.reponse.ConsolidationOrderStatusResponse;
+import net.fashiongo.webadmin.data.model.common.reponse.GetVendorsResponse;
 import net.fashiongo.webadmin.data.model.vendor.SendVendorEmailParamter;
 import net.fashiongo.webadmin.data.repository.primary.AdPageEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.CodeOrderStatusEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +28,16 @@ public class RenewalCommonService {
     private final CodeOrderStatusEntityRepository codeOrderStatusEntityRepository;
 
     @Autowired
+    private final VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
+
+    @Autowired
     @Qualifier("serviceJsonClient")
     private HttpClient jsonClient;
 
-    public RenewalCommonService(AdPageEntityRepository adPageEntityRepository, CodeOrderStatusEntityRepository codeOrderStatusEntityRepository) {
+    public RenewalCommonService(AdPageEntityRepository adPageEntityRepository, CodeOrderStatusEntityRepository codeOrderStatusEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository) {
         this.adPageEntityRepository = adPageEntityRepository;
         this.codeOrderStatusEntityRepository = codeOrderStatusEntityRepository;
+        this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
     }
 
     public net.fashiongo.webadmin.data.model.ad.response.GetBidAdPagesResponse getBidAdPages() {
@@ -86,4 +93,12 @@ public class RenewalCommonService {
                 .consolidationOrderStatus(codeOrderStatuses)
                 .build();
     }
+
+    public GetVendorsResponse getVendors() {
+        List<VendorsCompanyName> vendorsCompanyNames = vendorWholeSalerEntityRepository.findVendors();
+        return GetVendorsResponse.builder()
+                .vendorsCompanyNames(vendorsCompanyNames)
+                .build();
+    }
+
 }
