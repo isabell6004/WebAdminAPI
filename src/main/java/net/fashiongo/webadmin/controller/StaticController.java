@@ -6,12 +6,15 @@ package net.fashiongo.webadmin.controller;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.statistics.GetHotSearchKeywordParameter;
 import net.fashiongo.webadmin.data.model.statistics.GetHotSearchParameter;
+import net.fashiongo.webadmin.data.model.statistics.GetStatWholeSalerItemParamter;
 import net.fashiongo.webadmin.data.model.statistics.GetVendorStatParameter;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
+import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
 import net.fashiongo.webadmin.model.pojo.statics.response.GetDashboardResponse;
 import net.fashiongo.webadmin.service.StaticService;
 import net.fashiongo.webadmin.service.renewal.RenewalStaticService;
+import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -217,5 +221,20 @@ public class StaticController {
 		List<Map<String,Object>> result = renewalStaticService.getVendorStat(fromDate, toDate, interval, wholeSalerId);
 
 		return new JsonResponse<>(true, "", result);
+	}
+
+	@PostMapping(value = "getstatwholesaleritem")
+	public JsonResponse<GetStatWholeSalerItemResponse> getstatwholesaleritem(@RequestBody GetStatWholeSalerItemParamter parameter) {
+
+		Integer adminWebServerID = Optional.ofNullable(parameter.getAdminWebServerID()).orElse(0);
+		Integer imageServerID = Optional.ofNullable(parameter.getImageServerID()).orElse(0);
+		String vendorName = parameter.getVendorname();
+
+//		LocalDateTime df = DateUtils.convertToLocalDateTime(parameter.getFromDate(),"F").toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy");
+//		LocalDateTime dt = DateUtils.convertToLocalDateTime(parameter.getToDate(),"T").toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+		GetStatWholeSalerItemResponse data = renewalStaticService.getStatWholeSalerItem(adminWebServerID, imageServerID, vendorName, null, null);
+
+		return new JsonResponse<>(true, "", data);
 	}
 }

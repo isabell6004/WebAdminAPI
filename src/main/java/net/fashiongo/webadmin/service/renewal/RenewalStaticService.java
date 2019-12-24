@@ -1,10 +1,17 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.common.dal.JdbcHelper;
+import net.fashiongo.webadmin.data.model.statistics.AdminServerProducts;
 import net.fashiongo.webadmin.data.model.statistics.HotSearch;
 import net.fashiongo.webadmin.data.model.statistics.HotSearchKeyword;
+import net.fashiongo.webadmin.data.model.statistics.ImageServerUrl;
+import net.fashiongo.webadmin.data.model.statistics.VendorAdminWebServerUrl;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
+import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
+import net.fashiongo.webadmin.data.repository.primary.ProductsEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.SystemImageServersEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.SystemVendorAdminWebServerEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -12,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +31,15 @@ public class RenewalStaticService {
 	protected JdbcHelper jdbcHelper;
 
 	private final JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private SystemImageServersEntityRepository systemImageServersEntityRepository;
+
+	@Autowired
+	private SystemVendorAdminWebServerEntityRepository systemVendorAdminWebServerEntityRepository;
+
+	@Autowired
+	private ProductsEntityRepository productsEntityRepository;
 
 	public RenewalStaticService(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -73,5 +90,21 @@ public class RenewalStaticService {
 		List<Map<String, Object>> up_wa_GetVendorStatistics = this.jdbcTemplate.queryForList("exec up_wa_GetVendorStatistics ?, ?, ?, ?", param.get(0), param.get(1), param.get(2), param.get(3));
 
 		return up_wa_GetVendorStatistics;
+	}
+
+	public GetStatWholeSalerItemResponse getStatWholeSalerItem(Integer adminWebServerID, Integer imageServerID, String vendorName, LocalDateTime df, LocalDateTime dt) {
+
+		List<VendorAdminWebServerUrl> table = systemVendorAdminWebServerEntityRepository.findURLGroupByWebServerIDAndAdminWebServerID();
+		List<ImageServerUrl> table1 = systemImageServersEntityRepository.findImageServerURlGroupByImageServerID();
+		List<AdminServerProducts> table2 = productsEntityRepository.getAdminServerProducts(adminWebServerID, imageServerID, vendorName);
+		List<Long> table3 = Collections.singletonList(productsEntityRepository.getTotalItemCount(adminWebServerID, imageServerID));
+
+
+		return GetStatWholeSalerItemResponse.builder()
+				.vendorAdminWebServerUrl(table)
+				.imageServerUrl(table1)
+				.adminServerProducts(table2)
+				.totalItemCount(table3)
+				.build();
 	}
 }
