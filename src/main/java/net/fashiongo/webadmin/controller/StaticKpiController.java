@@ -5,6 +5,7 @@ package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.statistics.GetFGKPIParameter;
+import net.fashiongo.webadmin.data.model.statistics.GetVendorsGeneralInfoParameter;
 import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -80,6 +81,75 @@ public class StaticKpiController {
 
 		if(StringUtils.hasLength(orderBy)) {
 			componentsBuilder.queryParam("orderBy",orderBy);
+		}
+
+		String uri = componentsBuilder.build().toUriString();
+
+		return httpClient.get(uri);
+	}
+
+	@PostMapping(value = "getvendorsgeneralinfo")
+	public JsonResponse getVendorsGeneralInfo(@RequestBody GetVendorsGeneralInfoParameter parameter) {
+		UriComponentsBuilder componentsBuilder = UriComponentsBuilder.fromPath("/vendor/info");
+
+		Integer pn = Optional.ofNullable(parameter.getPn()).orElse(0);
+		Integer ps = Optional.ofNullable(parameter.getPs()).orElse(0);
+		String orderBy = Optional.ofNullable(parameter.getOrderBy()).filter(s -> StringUtils.hasLength(s)).orElse("");
+		if (orderBy.contains("undefined")) { orderBy = ""; }
+		String so = Optional.ofNullable(parameter.getSo()).orElse(null);
+		String sq = Optional.ofNullable(parameter.getSq()).orElse(null);
+		Integer vendorStatus = Optional.ofNullable(parameter.getVendorStatus()).orElse(0);
+		Integer vendorCategory = Optional.ofNullable(parameter.getVendorCategory()).orElse(0);
+		String vendorType = Optional.ofNullable(parameter.getVendorType()).orElse(null);
+		String state = Optional.ofNullable(parameter.getState()).orElse(null);
+
+		int location = 0;
+		if (!StringUtils.isEmpty(parameter.getLocation())) { location = Integer.parseInt(parameter.getLocation()); }
+		int assignedUser = 0;
+		if (!StringUtils.isEmpty(parameter.getAssignedUser())) { location = Integer.parseInt(parameter.getAssignedUser()); }
+
+		if(pn > 0) {
+			componentsBuilder.queryParam("pn",pn);
+		}
+
+		if(ps > 0) {
+			componentsBuilder.queryParam("ps",ps);
+		}
+
+		if(StringUtils.hasLength(orderBy)) {
+			componentsBuilder.queryParam("orderBy", orderBy);
+		}
+
+		if(StringUtils.hasLength(so)) {
+			componentsBuilder.queryParam("so", so);
+		}
+
+		if(StringUtils.hasLength(sq)) {
+			componentsBuilder.queryParam("sq", sq);
+		}
+
+		if(vendorStatus != 0) {
+			componentsBuilder.queryParam("vendorStatus", vendorStatus);
+		}
+
+		if(vendorCategory != 0) {
+			componentsBuilder.queryParam("vendorCategory", vendorCategory);
+		}
+
+		if(StringUtils.hasLength(vendorType)) {
+			componentsBuilder.queryParam("vendorType", vendorType);
+		}
+
+		if(location != 0) {
+			componentsBuilder.queryParam("location", location);
+		}
+
+		if(StringUtils.hasLength(state)) {
+			componentsBuilder.queryParam("state", state);
+		}
+
+		if(assignedUser != 0) {
+			componentsBuilder.queryParam("assignedUser", assignedUser);
 		}
 
 		String uri = componentsBuilder.build().toUriString();
