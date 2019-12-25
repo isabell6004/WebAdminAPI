@@ -1,11 +1,7 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.common.dal.JdbcHelper;
-import net.fashiongo.webadmin.data.model.statistics.AdminServerProducts;
-import net.fashiongo.webadmin.data.model.statistics.HotSearch;
-import net.fashiongo.webadmin.data.model.statistics.HotSearchKeyword;
-import net.fashiongo.webadmin.data.model.statistics.ImageServerUrl;
-import net.fashiongo.webadmin.data.model.statistics.VendorAdminWebServerUrl;
+import net.fashiongo.webadmin.data.model.statistics.*;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
@@ -13,16 +9,15 @@ import net.fashiongo.webadmin.data.repository.primary.ProductsEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemImageServersEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemVendorAdminWebServerEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RenewalStaticService {
@@ -106,5 +101,74 @@ public class RenewalStaticService {
 				.adminServerProducts(table2)
 				.totalItemCount(table3)
 				.build();
+	}
+
+	public Map<String, Object> getStatReport(Integer intervalType, Boolean samepoint, Integer reporttype, LocalDateTime dtStart, LocalDateTime dtEnd) {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		Map<String, Object> result = new HashMap<>();
+
+		String sql = new StringBuilder("exec up_wa_GetStatReport")
+				.append(" ")
+				.append(intervalType)
+				.append(",")
+				.append(samepoint)
+				.append(",")
+				.append("'")
+				.append(Optional.ofNullable(dtStart).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null))
+				.append("'")
+				.append(",")
+				.append("'")
+				.append(Optional.ofNullable(dtEnd).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null))
+				.append("'")
+				.append(",")
+				.append(reporttype)
+				.toString();
+
+		List<List<Map<String, Object>>> lists = executeProcedure(sql);
+
+		final int[] tableCount = {0};
+
+		lists.stream().forEach(maps -> {
+			if(tableCount[0] == 0) {
+				result.put("Table",maps);
+			} else {
+				result.put("Table" + tableCount[0],maps);
+			}
+			tableCount[0]++;
+		});
+
+		return result;
+	}
+
+	public List<List<Map<String, Object>>> executeProcedure(final String sql) {
+		return jdbcTemplate.execute(new CallableStatementCreator() {
+			@Override
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				return con.prepareCall(sql);
+			}
+		}, new CallableStatementCallback<List<List<Map<String, Object>>>>() {
+			@Override
+			public List<List<Map<String, Object>>> doInCallableStatement(CallableStatement cs) throws SQLException {
+				boolean resultsAvailable = cs.execute();
+				List<List<Map<String, Object>>> list = new ArrayList<List<Map<String, Object>>>();
+				while (resultsAvailable) {
+					ResultSet resultSet = cs.getResultSet();
+					List<Map<String, Object>> subList = new ArrayList<Map<String, Object>>();
+					while (resultSet.next()) {
+						ResultSetMetaData meta = resultSet.getMetaData();
+						int colcount = meta.getColumnCount();
+						Map<String, Object> map = new HashMap<String, Object>();
+						for (int i = 1; i <= colcount; i++) {
+							String name = meta.getColumnLabel(i);
+							map.put(name, resultSet.getString(i));
+						}
+						subList.add(map);
+					}
+					list.add(subList);
+					resultsAvailable = cs.getMoreResults();
+				}
+				return list;
+			}
+		});
 	}
 }

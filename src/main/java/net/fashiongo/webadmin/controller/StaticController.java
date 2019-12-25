@@ -4,10 +4,7 @@
 package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.data.model.statistics.GetHotSearchKeywordParameter;
-import net.fashiongo.webadmin.data.model.statistics.GetHotSearchParameter;
-import net.fashiongo.webadmin.data.model.statistics.GetStatWholeSalerItemParamter;
-import net.fashiongo.webadmin.data.model.statistics.GetVendorStatParameter;
+import net.fashiongo.webadmin.data.model.statistics.*;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
@@ -25,12 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Incheol Jung
@@ -236,5 +228,19 @@ public class StaticController {
 		GetStatWholeSalerItemResponse data = renewalStaticService.getStatWholeSalerItem(adminWebServerID, imageServerID, vendorName, null, null);
 
 		return new JsonResponse<>(true, "", data);
+	}
+
+	@PostMapping(value = "getstatreport")
+	public JsonResponse<Map<String, Object>> getStatReport(@RequestBody GetStatReportParameter parameter) {
+
+		Integer intervalType = Optional.ofNullable(parameter.getInterval_type()).orElse(0);
+		Boolean samepoint = Optional.ofNullable(parameter.getSamepoint()).orElse(false);
+		Integer reporttype = Optional.ofNullable(parameter.getReporttype()).orElse(0);
+		LocalDateTime dtStart = DateUtils.convertToLocalDateTime(parameter.getStartdate(), "F");
+		LocalDateTime dtEnd = DateUtils.convertToLocalDateTime(parameter.getEnddate(), "T");
+
+		Map<String, Object> statReport = renewalStaticService.getStatReport(intervalType, samepoint, reporttype, dtStart, dtEnd);
+
+		return new JsonResponse<>(true, "", statReport);
 	}
 }
