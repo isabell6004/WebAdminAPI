@@ -3,11 +3,13 @@ package net.fashiongo.webadmin.service.renewal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.data.model.ad.BidAdPage;
 import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
+import net.fashiongo.webadmin.data.model.common.SubCategories;
 import net.fashiongo.webadmin.data.model.common.VendorsCompanyName;
 import net.fashiongo.webadmin.data.model.common.reponse.ConsolidationOrderStatusResponse;
 import net.fashiongo.webadmin.data.model.common.reponse.GetVendorsResponse;
 import net.fashiongo.webadmin.data.model.vendor.SendVendorEmailParamter;
 import net.fashiongo.webadmin.data.repository.primary.AdPageEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.CategoryEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.CodeOrderStatusEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.utility.HttpClient;
@@ -31,13 +33,17 @@ public class RenewalCommonService {
     private final VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
 
     @Autowired
+    private final CategoryEntityRepository categoryEntityRepository;
+
+    @Autowired
     @Qualifier("serviceJsonClient")
     private HttpClient jsonClient;
 
-    public RenewalCommonService(AdPageEntityRepository adPageEntityRepository, CodeOrderStatusEntityRepository codeOrderStatusEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository) {
+    public RenewalCommonService(AdPageEntityRepository adPageEntityRepository, CodeOrderStatusEntityRepository codeOrderStatusEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository, CategoryEntityRepository categoryEntityRepository) {
         this.adPageEntityRepository = adPageEntityRepository;
         this.codeOrderStatusEntityRepository = codeOrderStatusEntityRepository;
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
+        this.categoryEntityRepository = categoryEntityRepository;
     }
 
     public net.fashiongo.webadmin.data.model.ad.response.GetBidAdPagesResponse getBidAdPages() {
@@ -101,4 +107,7 @@ public class RenewalCommonService {
                 .build();
     }
 
+    public List<SubCategories> getSubCategories(Integer lvl, Integer parentCateId) {
+        return categoryEntityRepository.findAllByLvlAndParentCateID(lvl,parentCateId);
+    }
 }

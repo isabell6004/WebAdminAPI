@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.common.CodeOrderStatus;
+import net.fashiongo.webadmin.data.model.common.GetSubCategoriesParameter;
+import net.fashiongo.webadmin.data.model.common.SubCategories;
 import net.fashiongo.webadmin.data.model.common.reponse.ConsolidationOrderStatusResponse;
 import net.fashiongo.webadmin.data.model.common.reponse.GetVendorsResponse;
 import net.fashiongo.webadmin.data.model.vendor.SendEmailParameter;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -282,5 +285,14 @@ public class CommonController {
 		response.setData(data);
 
 		return response;
+	}
+
+	@PostMapping(value = "getsubcategories")
+	public JsonResponse<List<SubCategories>> getSubCategories(@RequestBody GetSubCategoriesParameter parameter) {
+		Integer lvl = Optional.ofNullable(parameter.getLvl()).orElse(0);
+		Integer parentCateId = Optional.ofNullable(parameter.getParentCateId()).orElse(0);
+
+		List<SubCategories> data = renewalCommonService.getSubCategories(lvl, parentCateId);
+		return new JsonResponse<List<SubCategories>>(true, "success", data);
 	}
 }
