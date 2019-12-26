@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.model.statistics.*;
+import net.fashiongo.webadmin.data.model.statistics.response.GetBestItemsResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
@@ -170,5 +171,27 @@ public class RenewalStaticService {
 				return list;
 			}
 		});
+	}
+
+	public GetBestItemsResponse getBestItems(Integer pageNo, Integer pageSize, LocalDateTime fromDate, LocalDateTime toDate,
+											 Integer statisticsType, Integer lastCategoryID, Integer wholeSalerId, String orderBy) {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		List<Object> param = new ArrayList<>();
+		param.add(pageNo);
+		param.add(pageSize);
+		param.add(Optional.ofNullable(fromDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
+		param.add(Optional.ofNullable(toDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
+		param.add(statisticsType);
+		param.add(lastCategoryID);
+		param.add(wholeSalerId);
+		param.add(orderBy);
+
+		List<Object> outputParam = new ArrayList<>();
+		param.add(0);
+
+		List<Object> up_wa_GetStatisticsBestItem = jdbcHelper.executeSP("up_wa_GetStatisticsBestItem", param, outputParam, BestItems.class);
+		List<BestItems> bestItems = (List<BestItems>) up_wa_GetStatisticsBestItem.get(0);
+
+		return GetBestItemsResponse.builder().bestItems(bestItems).build();
 	}
 }

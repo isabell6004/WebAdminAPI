@@ -5,6 +5,7 @@ package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.statistics.*;
+import net.fashiongo.webadmin.data.model.statistics.response.GetBestItemsResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
@@ -242,5 +243,37 @@ public class StaticController {
 		Map<String, Object> statReport = renewalStaticService.getStatReport(intervalType, samepoint, reporttype, dtStart, dtEnd);
 
 		return new JsonResponse<>(true, "", statReport);
+	}
+
+	@PostMapping(value = "getbestitems2")
+	public JsonResponse<GetBestItemsResponse> getBestItems2(@RequestBody GetBestItemsParamter parameter) {
+
+		Integer pageNo = Optional.ofNullable(parameter.getPageno()).orElse(0);
+		Integer pageSize = Optional.ofNullable(parameter.getPagesize()).orElse(0);
+
+		LocalDateTime fromDate = DateUtils.convertToLocalDateTime(parameter.getFromDate(), "F");
+		LocalDateTime toDate = DateUtils.convertToLocalDateTime(parameter.getToDate(), "T");
+
+		Integer statisticsType = Optional.ofNullable(parameter.getStatisticsType()).orElse(0);
+		Integer cateId = Optional.ofNullable(parameter.getCateId()).orElse(0);
+		Integer subCateId = Optional.ofNullable(parameter.getSubCateId()).orElse(0);
+		Integer subSubCateId = Optional.ofNullable(parameter.getSubSubCateId()).orElse(0);
+
+		Integer wholeSalerId = Optional.ofNullable(parameter.getWholesalerId()).orElse(0);
+		String orderBy = parameter.getOrderBy();
+
+		Integer lastCategoryID = 0;
+
+		if(subSubCateId > 0) {
+			lastCategoryID = subSubCateId;
+		} else if (subCateId > 0) {
+			lastCategoryID = subCateId;
+		} else {
+			lastCategoryID = cateId;
+		}
+
+		GetBestItemsResponse data = renewalStaticService.getBestItems(pageNo, pageSize, fromDate, toDate, statisticsType, lastCategoryID, wholeSalerId, orderBy);
+
+		return new JsonResponse<GetBestItemsResponse>(true, "success", data);
 	}
 }
