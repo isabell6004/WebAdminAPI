@@ -44,6 +44,10 @@ public class GnbServiceImpl implements GnbService {
 
 	private final PlatformTransactionManager transactionManager;
 
+	private final String VENDOR_GROUP_CACHE = "GnbMenuVendorGroup";
+
+	private final String VENDOR_GROUP_ID_CACHE = "GnbMenuVendorGroupId";
+
 	@Autowired
 	public GnbServiceImpl(GnbVendorGroupRepository gnbVendorGroupRepository,
 						  GnbVendorGroupMapRepository gnbVendorGroupMapRepository,
@@ -156,7 +160,7 @@ public class GnbServiceImpl implements GnbService {
 				.orElseThrow(NotFoundSiteSetting::new)
 				.getGnbVendorGroupId());
 
-		clearCache(isActive);
+		clearCache(VENDOR_GROUP_CACHE);
 
 		return GnbVendorGroupInfoResponse.of(gnbVendorGroupEntity, isActive);
 	}
@@ -256,7 +260,7 @@ public class GnbServiceImpl implements GnbService {
 			}
 		});
 
-		clearCache(true);
+		clearCache(VENDOR_GROUP_ID_CACHE);
 	}
 
 	private <T> T doInTransaction(TransactionCallback<T> action) {
@@ -265,9 +269,7 @@ public class GnbServiceImpl implements GnbService {
 		return tx.execute(action);
 	}
 
-	private void clearCache(boolean isActive) {
-		if (isActive) {
-			cacheService.GetRedisCacheEvict("GnbMenuVendorGroup", null);
-		}
+	private void clearCache(String cacheName) {
+		cacheService.GetRedisCacheEvict(cacheName, null);
 	}
 }
