@@ -196,8 +196,8 @@ public class ConsolidationService extends ApiService {
 	private void setConsolidationSum(ConsolidationEntity c) {
 		OrderConsolidationSummaryDto summaryDto = orderRepository.getOrderConsolidationSummary(c.getId());
 		c.setOrderCount(summaryDto.getCount().intValue());
-		c.setTotalAmount(summaryDto.getTotalAmount());
-		c.setTotalQty(summaryDto.getTotalQty());
+		c.setTotalAmount(summaryDto.getTotalAmount() == null ? BigDecimal.ZERO : summaryDto.getTotalAmount());
+		c.setTotalQty(summaryDto.getTotalQty() == null ? 0 : summaryDto.getTotalQty());
 	}
 
 	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
