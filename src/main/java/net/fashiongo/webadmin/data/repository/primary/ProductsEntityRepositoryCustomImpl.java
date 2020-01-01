@@ -125,11 +125,11 @@ public class ProductsEntityRepositoryCustomImpl implements ProductsEntityReposit
         Expression<Integer> constant = Expressions.constant(1);
         BooleanExpression expression = Expressions.asNumber(1).eq(constant);
 
-        if (adminWebServerID != null) {
-            expression.and(W.adminWebServerID.eq(adminWebServerID));
+        if (adminWebServerID != null && adminWebServerID != 0) {
+            expression = expression.and(W.adminWebServerID.eq(adminWebServerID));
         }
-        if (imageServerID != null) {
-            expression.and(W.imageServerID.eq(imageServerID));
+        if (imageServerID != null && imageServerID != 0) {
+            expression = expression.and(W.imageServerID.eq(imageServerID));
         }
 
         JPAQuery<Long> query = new JPAQuery<>(entityManager);
@@ -154,13 +154,13 @@ public class ProductsEntityRepositoryCustomImpl implements ProductsEntityReposit
         BooleanExpression expression = Expressions.asNumber(1).eq(constant);
         BooleanExpression expression1 = Expressions.asNumber(1).eq(constant);
 
-        if (adminWebServerID != null) {
-            expression.and(W.adminWebServerID.eq(adminWebServerID));
-            expression1.and(W1.adminWebServerID.eq(adminWebServerID));
+        if (adminWebServerID != null && adminWebServerID != 0) {
+            expression = expression.and(W.adminWebServerID.eq(adminWebServerID));
+            expression1 = expression1.and(W1.adminWebServerID.eq(adminWebServerID));
         }
-        if (imageServerID != null) {
-            expression.and(W.imageServerID.eq(imageServerID));
-            expression1.and(W1.imageServerID.eq(imageServerID));
+        if (imageServerID != null && imageServerID != 0) {
+            expression = expression.and(W.imageServerID.eq(imageServerID));
+            expression1 = expression1.and(W1.imageServerID.eq(imageServerID));
         }
 
         JPAQuery<AdminServerProducts> query = new JPAQuery<>(entityManager);
