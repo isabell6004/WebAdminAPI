@@ -78,5 +78,11 @@ public class HttpClientWrapper {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    public ResponseEntity<JsonResponse> delete(String endpoint) {
+        return delete(endpoint, null);
+    }
 
+    public ResponseEntity<JsonResponse> delete(String endpoint, Map<String, String> headerMap) {
+        return execute(endpoint, null, headerMap, HttpMethod.DELETE);
+    }
 }

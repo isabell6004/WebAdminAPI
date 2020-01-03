@@ -174,78 +174,6 @@ public class VendorController {
 	}
 	
 	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @return
-	 */
-	@RequestMapping(value="getvendorimagetype", method=RequestMethod.POST)
-	public JsonResponse<List<ListVendorImageType>> getVendorImageType() {
-		JsonResponse<List<ListVendorImageType>> results = new JsonResponse<List<ListVendorImageType>>(false, null, 0, null);
-		List<ListVendorImageType> result = vendorService.getVendorImageType();
-		
-		results.setData(result);
-		results.setSuccess(true);
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@RequestMapping(value="getbannerrequest", method=RequestMethod.POST)
-	public JsonResponse<BannerRequestResponse> getBannerRequest(@RequestBody GetBannerRequestParameter parameters) {
-		JsonResponse<BannerRequestResponse> results = new JsonResponse<>(true, null, null);
-		results.setData(renewalVendorService.getBannerRequest(parameters));
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@RequestMapping(value="setdenybanner", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setDenyBanner(@RequestBody SetDenyBannerParameter parameters) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
-		
-		ResultCode result = vendorService.setDenyBanner(parameters);
-		
-		results.setData(result);
-		cacheService.GetRedisCacheEvict("vendorActivated", null);
-		cacheService.GetRedisCacheEvict("vendorDeactivated", null);
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@RequestMapping(value="setapprovebanner", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setApproveBanner(@RequestBody SetDenyBannerParameter parameters) {
-        JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
-		
-		ResultCode result = vendorService.setApproveBanner(parameters);
-		
-		results.setData(result);
-		cacheService.GetRedisCacheEvict("vendorActivated", null);
-		cacheService.GetRedisCacheEvict("vendorDeactivated", null);
-		return results;
-	}
-	
-	/**
 	 * DelVendorCreditCard
 	 * 
 	 * @since 2018. 11. 19.
@@ -257,44 +185,6 @@ public class VendorController {
 	public JsonResponse<String> delVendorCreditCard(@RequestBody DelVendorCreditcardParameter parameters) {
 		vendorService.delVendorCreditCard(parameters);
 		return new JsonResponse<String>();
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@RequestMapping(value="setrestorebanner", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setRestoreBanner(@RequestBody SetDenyBannerParameter parameters) {
-        JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
-		
-		ResultCode result = vendorService.setRestoreBanner(parameters);
-		
-		results.setData(result);
-		cacheService.GetRedisCacheEvict("vendorActivated", null);
-		cacheService.GetRedisCacheEvict("vendorDeactivated", null);
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@RequestMapping(value="delbannerbanner", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> delBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
-        JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(true, null, 0, null);
-		
-		ResultCode result = vendorService.delBannerRequest(parameters);
-		
-		results.setData(result);
-		return results;
 	}
 	
 	/**
