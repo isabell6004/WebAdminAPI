@@ -183,7 +183,7 @@ public class VendorServiceTest {
 		parameters.setSearchStatus("Pending");
 		parameters.setSearchType(null);
 		parameters.setOrderby(null);
-		BannerRequestResponse response = renewalVendorService.getBannerRequest(parameters);
+		BannerRequestResponse response = bannerRequestService.getBannerRequest(parameters);
 		if(!CollectionUtils.isEmpty(response.getBannerImageList())) {
 			assertNotNull(response.getBannerImageList());
 			assertNotNull(response.getTotal());

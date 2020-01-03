@@ -758,56 +758,6 @@ public class VendorController {
         return response;
     }
 
-    @PostMapping(value = "getvendorsister")
-    public JsonResponse<List<VendorSister>> getvendorsister(@RequestBody GetVendorSisterParameter param) {
-		JsonResponse<List<VendorSister>> response = new JsonResponse<>(false, null, null);
-
-		try {
-			List<VendorSister> result = renewalVendorService.getVendorSister(param.getWid());
-
-			response.setSuccess(true);
-			response.setData(result);
-			response.setMessage("success");
-		} catch (Exception ex) {
-			log.warn(ex.getMessage(), ex);
-			response.setMessage("fail");
-		}
-		return response;
-	}
-
-	@PostMapping(value = "getvendorsisterchk")
-	public JsonResponse<List<Integer>> getvendorsisterchk(@RequestBody GetVendorSisterChkParameter param) {
-		JsonResponse<List<Integer>> response = new JsonResponse<>(false, null, null);
-
-		try {
-			List<Integer> result = renewalVendorService.getVendorSisterChk(param.getWid(), param.getSisterid());
-
-			response.setSuccess(true);
-			response.setData(result);
-			response.setMessage("success");
-		} catch (Exception ex) {
-			log.warn(ex.getMessage(), ex);
-			response.setMessage("fail");
-		}
-		return response;
-	}
-
-	@PostMapping(value = "setvendorsister")
-	public ResultCode setvendorsister(@RequestBody SetVendorSisterParamer param) {
-    	ResultCode result = renewalVendorService.setVendorSister(param.getWid(), param.getSisterid());
-
-    	cacheService.cacheEvictVendor(param.getWid());
-
-    	return result;
-	}
-
-	@PostMapping(value = "delvendorsister")
-	public ResultCode delvendorsister(@RequestBody DelVendorSisterParameter param) {
-    	ResultCode result = renewalVendorService.delVendorSister(param.getMapID());
-
-    	return result;
-	}
-
 	@GetMapping(value = "getvendorsecurityusers")
 	public JsonResponse<List<SecurityUserEntity>> getvendorsecurityusers() {
     	JsonResponse<List<SecurityUserEntity>> response = new JsonResponse<>(false, null, null);

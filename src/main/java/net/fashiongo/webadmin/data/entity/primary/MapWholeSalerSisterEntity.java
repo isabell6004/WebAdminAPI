@@ -1,24 +1,16 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@Builder(toBuilder = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "Map_WholeSaler_Sister")
-@Getter
-@Setter
 public class MapWholeSalerSisterEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,4 +33,13 @@ public class MapWholeSalerSisterEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SisterWholeSalerID", referencedColumnName = "WholeSalerID", updatable = false, insertable = false)
     private WholeSalerEntity wholeSaler;
+
+    public static MapWholeSalerSisterEntity create(Integer vendorId, Integer sisterVendorId, String username) {
+        return builder()
+                .wholeSalerID(vendorId)
+                .sisterWholeSalerID(sisterVendorId)
+                .createdOn(LocalDateTime.now())
+                .createdBy(username)
+                .build();
+    }
 }

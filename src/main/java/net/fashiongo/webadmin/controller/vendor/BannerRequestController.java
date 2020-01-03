@@ -20,14 +20,11 @@ import java.util.List;
 public class BannerRequestController {
 
     private final BannerRequestService bannerRequestService;
-    private final RenewalVendorService renewalVendorService;
     private final CacheService cacheService;
 
     public BannerRequestController(BannerRequestService bannerRequestService,
-                                   RenewalVendorService renewalVendorService,
                                    CacheService cacheService) {
         this.bannerRequestService = bannerRequestService;
-        this.renewalVendorService = renewalVendorService;
         this.cacheService = cacheService;
     }
 
@@ -67,7 +64,7 @@ public class BannerRequestController {
 
         try {
             response.setSuccess(true);
-            response.setData(renewalVendorService.getBannerRequest(parameters));
+            response.setData(bannerRequestService.getBannerRequest(parameters));
         } catch (Exception e) {
             log.error("fail to get banner requests", e);
             response.setMessage("failure");
@@ -85,13 +82,14 @@ public class BannerRequestController {
      * @return
      */
     @PostMapping("setdenybanner")
-    public JsonResponse<ResultCode> setDenyBanner(@RequestBody SetDenyBannerParameter parameters) {
+    public JsonResponse<ResultCode> denyBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);
 
         try {
             bannerRequestService.setDenyBanner(parameters);
 
             response.setSuccess(true);
+            response.setData(new ResultCode(true, 1, null));
 
             cacheService.GetRedisCacheEvict("vendorActivated", null);
             cacheService.GetRedisCacheEvict("vendorDeactivated", null);
@@ -112,13 +110,14 @@ public class BannerRequestController {
      * @return
      */
     @PostMapping("setapprovebanner")
-    public JsonResponse<ResultCode> setApproveBanner(@RequestBody SetDenyBannerParameter parameters) {
+    public JsonResponse<ResultCode> approveBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);
 
         try {
             bannerRequestService.setApproveBanner(parameters);
 
             response.setSuccess(true);
+            response.setData(new ResultCode(true, 1, null));
 
             cacheService.GetRedisCacheEvict("vendorActivated", null);
             cacheService.GetRedisCacheEvict("vendorDeactivated", null);
@@ -139,13 +138,14 @@ public class BannerRequestController {
      * @return
      */
     @PostMapping("setrestorebanner")
-    public JsonResponse<ResultCode> setRestoreBanner(@RequestBody SetDenyBannerParameter parameters) {
+    public JsonResponse<ResultCode> restoreBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);
 
         try {
             bannerRequestService.setRestoreBanner(parameters);
 
             response.setSuccess(true);
+            response.setData(new ResultCode(true, 1, null));
 
             cacheService.GetRedisCacheEvict("vendorActivated", null);
             cacheService.GetRedisCacheEvict("vendorDeactivated", null);
@@ -166,13 +166,14 @@ public class BannerRequestController {
      * @return
      */
     @PostMapping("delbannerbanner")
-    public JsonResponse<ResultCode> delBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
+    public JsonResponse<ResultCode> deleteBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);
 
         try {
             bannerRequestService.delBannerRequest(parameters);
 
             response.setSuccess(true);
+            response.setData(new ResultCode(true, 1, "Deleted successfully!"));
         } catch (Exception e) {
             log.error("fail to delete banner request", e);
             response.setMessage("failure");

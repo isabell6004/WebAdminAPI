@@ -148,29 +148,6 @@ public class RenewalVendorService extends ApiService {
         return vendorProductRepository.getColors(productId);
     }
 
-    public BannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters) {
-        VendorImageRequestSelectParameter parameter = VendorImageRequestSelectParameter.builder()
-                .pageNumber(parameters.getPageNum())
-                .pageSize(parameters.getPageSize())
-                .wholesalerId(null)
-                .wholesalerName(parameters.getSearchKeyword())
-                .vendorImageTypeId(parameters.getSearchType())
-                .approvalType(VendorImageRequestApprovalType.getType(parameters.getSearchStatus()))
-                .active(null)
-                .searchFrom(parameters.getFromDate() != null ? LocalDateTime.parse(parameters.getFromDate(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")) : null)
-                .searchTo(parameters.getToDate() != null ? LocalDateTime.parse(parameters.getToDate(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")) : null)
-                .orderingType(VendorImageRequestOrderingType.getType(parameters.getOrderby()))
-                .showDeleted(null)
-                .build();
-        Page<VendorImageRequestEntity> result = vendorImageRequestEntityRepository.getVendorImageRequests(parameter);
-
-        return BannerRequestResponse.builder()
-                .bannerImageList(result.getContent().stream().map(VendorImageRequestResponse::convert).collect(Collectors.toList()))
-                .total(Collections.singletonList(BannerRequestCount.builder().count(result.getTotalElements()).build()))
-                .build();
-
-    }
-
     public VendorFormListResponse getVendorFormsList(GetVendorFormsListParameter parameters) {
         // In reality, it is sorted in the front-end app.
         // FormOrderingType.getFromStringValue(parameters.getOrderBy())
@@ -1064,64 +1041,6 @@ public class RenewalVendorService extends ApiService {
         long resultCount = vendorWholeSalerEntityRepository.countByCodeNameAndNotWholeSalerID(wholeSalerID, codeName);
 
         return resultCount;
-    }
-
-    public List<VendorSister> getVendorSister(Integer wid) {
-        List<VendorSister> result = mapWholeSalerSisterEntityRepository.findVendorSister(wid);
-
-        return result;
-    }
-
-    public List<Integer> getVendorSisterChk(Integer wid, Integer sisterId) {
-        List<Integer> result = mapWholeSalerSisterEntityRepository.findMapIDByWholeSalerIDAndSisterWholeSalerID(wid, sisterId);
-
-        return result;
-    }
-
-    @Transactional
-    public ResultCode setVendorSister(Integer wid, Integer sisterId) {
-        ResultCode result = new ResultCode(false, null, null);
-
-        MapWholeSalerSisterEntity trm = new MapWholeSalerSisterEntity();
-
-        try {
-            trm.setWholeSalerID(wid);
-            trm.setSisterWholeSalerID(sisterId);
-            trm.setCreatedBy(Utility.getUsername());
-            trm.setCreatedOn(LocalDateTime.now());
-
-            mapWholeSalerSisterEntityRepository.save(trm);
-
-            result.setSuccess(true);
-            result.setResultCode(1);
-            result.setResultMsg("success");
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-            result.setResultCode(-1);
-            result.setResultMsg("savefailure");
-        }
-
-        return result;
-    }
-
-    @Transactional
-    public ResultCode delVendorSister(Integer mapID) {
-        ResultCode result = new ResultCode(false, null, null);
-
-        try {
-            MapWholeSalerSisterEntity trm = mapWholeSalerSisterEntityRepository.findById(mapID).get();
-            mapWholeSalerSisterEntityRepository.delete(trm);
-
-            result.setSuccess(true);
-            result.setResultCode(1);
-            result.setResultMsg("deletesuccess");
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-            result.setResultCode(-1);
-            result.setResultMsg("deletefailure");
-        }
-
-        return result;
     }
 
     public List<SecurityUserEntity> getVendorSecurityUsers() {
