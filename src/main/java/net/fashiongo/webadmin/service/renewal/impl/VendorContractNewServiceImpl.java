@@ -59,13 +59,6 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
     }
 
-//    private boolean isApiCallResult(ResponseEntity<JsonResponse> response) {
-//        if(response == null || response.getStatusCode() != HttpStatus.OK || response.getBody() == null)
-//            return false;
-//        else
-//            return response.getBody().isSuccess();
-//    }
-
     @Getter
     private class ContractHistoryCommand {
 
@@ -109,7 +102,6 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
             this.isContractRevised = request.getVendorContractRowAdd();
         }
     }
-
 
     @Getter
     private class ContractDocumentCommand {

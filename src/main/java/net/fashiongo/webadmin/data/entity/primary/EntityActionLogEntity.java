@@ -1,8 +1,8 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockParameter;
+import net.fashiongo.webadmin.utility.Utility;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,10 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "Entity_ActionLog")
 @Getter
 @Setter
+@Builder(toBuilder = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Entity
+@Table(name = "Entity_ActionLog")
 public class EntityActionLogEntity {
 
     @Id
@@ -48,4 +51,25 @@ public class EntityActionLogEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ActionID", referencedColumnName = "EntityActionID", updatable = false, insertable = false)
     private ListEntityActionEntity listEntityAction;
+
+    public static EntityActionLogEntity create(Integer entityTypeID, Integer wholeSalerID, Integer actionID) {
+        return builder()
+                .entityTypeID(entityTypeID)
+                .entityID(wholeSalerID)
+                .actionID(actionID)
+                .actedOn(LocalDateTime.now())
+                .actedBy(Utility.getUsername())
+                .build();
+    }
+
+    public static EntityActionLogEntity create(Integer entityTypeID, Integer wholeSalerID, Integer actionID, String detailLog) {
+        return builder()
+                .entityTypeID(entityTypeID)
+                .entityID(wholeSalerID)
+                .actionID(actionID)
+                .remark(detailLog)
+                .actedOn(LocalDateTime.now())
+                .actedBy(Utility.getUsername())
+                .build();
+    }
 }

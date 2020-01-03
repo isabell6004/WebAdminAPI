@@ -626,16 +626,8 @@ public class RenewalVendorService extends ApiService {
 
     private int setEntityActionLogDetail(Integer entityTypeID, Integer wholeSalerID, Integer actionID, String detailLog) {
         try {
-            EntityActionLogEntity actionLog = new EntityActionLogEntity();
-
-            actionLog.setEntityTypeID(entityTypeID);
-            actionLog.setActionID(actionID);
-            actionLog.setEntityID(wholeSalerID);
-            actionLog.setRemark(detailLog);
-            actionLog.setActedOn(LocalDateTime.now());
-            actionLog.setActedBy(Utility.getUsername());
+            EntityActionLogEntity actionLog = EntityActionLogEntity.create(entityTypeID, wholeSalerID, actionID, detailLog);
             entityActionLogEntityRepository.save(actionLog);
-
             return 1;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
@@ -645,15 +637,8 @@ public class RenewalVendorService extends ApiService {
 
     public int setEntityActionLog(Integer entityTypeID, Integer wholeSalerID, Integer actionID) {
         try {
-            EntityActionLogEntity actionLog = new EntityActionLogEntity();
-
-            actionLog.setEntityTypeID(entityTypeID);
-            actionLog.setActionID(actionID);
-            actionLog.setEntityID(wholeSalerID);
-            actionLog.setActedOn(LocalDateTime.now());
-            actionLog.setActedBy(Utility.getUsername());
+            EntityActionLogEntity actionLog = EntityActionLogEntity.create(entityTypeID, wholeSalerID, actionID);
             entityActionLogEntityRepository.save(actionLog);
-
             return 1;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
@@ -941,109 +926,6 @@ public class RenewalVendorService extends ApiService {
 
             result.setResultCode(-1);
             result.setResultMsg("savefailure");
-        }
-
-        return result;
-    }
-
-    @Transactional
-    public ResultCode setVendorBlock(Integer wholeSalerID, Integer blockReasonID, String reason) {
-        ResultCode result = new ResultCode(false, null, null);
-
-        VendorBlockedEntity trm = new VendorBlockedEntity();
-        try {
-            trm.setWholeSalerId(wholeSalerID);
-            trm.setBlockReasonId(blockReasonID);
-            trm.setBlockedOn(LocalDateTime.now());
-            trm.setBlockedBy(Utility.getUsername());
-
-            vendorBlockedEntityRepository.save(trm);
-
-            EntityActionLogEntity trm2 = new EntityActionLogEntity();
-            trm2.setEntityTypeID(9);
-            trm2.setEntityID(wholeSalerID);
-            trm2.setActionID(9001);
-            trm2.setActedOn(LocalDateTime.now());
-            trm2.setActedBy(Utility.getUsername());
-            trm2.setRemark(reason);
-
-            entityActionLogEntityRepository.save(trm2);
-
-            List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(wholeSalerID);
-            List<AspnetMembershipEntity> aspnetMembershipEntityList = new ArrayList<>();
-            for (VendorAdminAccountEntity va : vendorAdminAccountList) {
-                AspnetMembershipEntity subAccount = aspnetMembershipEntityRepository.findOneByWholeSalerGUID(va.getUserGUID());
-                subAccount.setApproved(false);
-                subAccount.setLockedOut(true);
-                aspnetMembershipEntityList.add(subAccount);
-            }
-            aspnetMembershipEntityRepository.saveAll(aspnetMembershipEntityList);
-
-            result.setSuccess(true);
-            result.setResultCode(1);
-            result.setResultMsg("success");
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-
-            result.setResultCode(-1);
-            result.setResultMsg("savefailure");
-        }
-
-        return result;
-    }
-
-    public Integer setBlockVendorUpdate(Integer wholeSalerID, Integer blockReasonID) {
-        Integer result = 0;
-
-        try {
-            VendorBlockedEntity retailer = vendorBlockedEntityRepository.findOneByWholeSalerID(wholeSalerID);
-            retailer.setBlockReasonId(blockReasonID);
-            vendorBlockedEntityRepository.save(retailer);
-
-            result = 1;
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-
-            result = -99;
-        }
-
-        return result;
-    }
-
-    @Transactional
-    public ResultCode delVendorBlock(Integer blockID, Integer wholeSalerID) {
-        ResultCode result = new ResultCode(false, null, null);
-
-        try {
-            vendorBlockedEntityRepository.deleteById(blockID);
-
-            EntityActionLogEntity trm2 = new EntityActionLogEntity();
-            trm2.setEntityTypeID(9);
-            trm2.setEntityID(wholeSalerID);
-            trm2.setActionID(9002);
-            trm2.setActedOn(LocalDateTime.now());
-            trm2.setActedBy(Utility.getUsername());
-
-            entityActionLogEntityRepository.save(trm2);
-
-            List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(wholeSalerID);
-            List<AspnetMembershipEntity> aspnetMembershipEntityList = new ArrayList<>();
-            for (VendorAdminAccountEntity va : vendorAdminAccountList) {
-                AspnetMembershipEntity subAccount = aspnetMembershipEntityRepository.findOneByWholeSalerGUID(va.getUserGUID());
-                subAccount.setApproved(true);
-                subAccount.setLockedOut(false);
-                aspnetMembershipEntityList.add(subAccount);
-            }
-            aspnetMembershipEntityRepository.saveAll(aspnetMembershipEntityList);
-
-            result.setSuccess(true);
-            result.setResultCode(1);
-            result.setResultMsg("deletesucecss");
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-
-            result.setResultCode(-1);
-            result.setResultMsg("deletefailure");
         }
 
         return result;

@@ -107,44 +107,7 @@ public class VendorController {
 		
 		return result; 
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 12.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 * @throws ParseException 
-	 */
-	@RequestMapping(value="getvendorblockList", method=RequestMethod.POST)
-	public JsonResponse<List<VwVendorBlocked>> getVendorBlockList(@RequestBody GetVendorBlockListParameter parameters) throws ParseException {
-		JsonResponse<List<VwVendorBlocked>> results = new JsonResponse<List<VwVendorBlocked>>(false, null, 0, null);
-		List<VwVendorBlocked> result = vendorService.getVendorBlockList(parameters);
-		
-		results.setData(result);
-		results.setSuccess(true);
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 12.
-	 * @author Reo
-	 * @param wholeSalerID
-	 * @return
-	 */
-	@RequestMapping(value="getvendorblockhistoryList", method=RequestMethod.GET)
-	public JsonResponse<List<EntityActionLog>> getVendorBlockHistoryList(@RequestParam(value="WholeSalerID") Integer wholeSalerID) {
-		JsonResponse<List<EntityActionLog>> results = new JsonResponse<List<EntityActionLog>>(false, null, 0, null);
-		List<EntityActionLog> result = vendorService.getVendorBlockHistoryList(wholeSalerID);
-		
-		results.setData(result);
-		results.setSuccess(true);
-		return results;
-	}
-	
+
 	/**
 	 * getVendorCreditCardList
 	 * 
@@ -699,39 +662,6 @@ public class VendorController {
 
     	return result;
 	}
-
-	@PostMapping(value = "setvendorblock")
-	public ResultCode setvendorblock(@RequestBody SetVendorBlockParameter param) {
-		Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
-		Integer blockReasonID = param.getBlockReasonID() == null ? 0 : param.getBlockReasonID();
-		String reason = param.getReason();
-
-		ResultCode result = renewalVendorService.setVendorBlock(wholeSalerID, blockReasonID, reason);
-
-		cacheService.cacheEvictVendor(wholeSalerID);
-
-		return result;
-	}
-
-	@PostMapping(value = "setvendorblockupdate")
-	public Integer setvendorblockupdate(@RequestBody SetVendorBlockUpdate param) {
-		Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
-		Integer blockReasonID = param.getBlockReasonID() == null ? 0 : param.getBlockReasonID();
-
-		Integer result = renewalVendorService.setBlockVendorUpdate(wholeSalerID, blockReasonID);
-
-		return result;
-	}
-
-	@PostMapping(value = "delvendorblock")
-	public ResultCode delvendorblock(@RequestBody DelVendorBlockParameter param) {
-        Integer blockID = param.getBlockID() == null ? 0 : param.getBlockID();
-        Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
-
-        ResultCode result = renewalVendorService.delVendorBlock(blockID, wholeSalerID);
-
-        return result;
-    }
 
     @PostMapping(value = "setholdvendor")
     public ResultCode setholdvendor(@RequestBody SetHoldVendorParameter param) {
