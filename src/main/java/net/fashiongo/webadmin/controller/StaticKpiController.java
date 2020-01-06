@@ -94,19 +94,23 @@ public class StaticKpiController {
 
 		Integer pn = Optional.ofNullable(parameter.getPn()).orElse(0);
 		Integer ps = Optional.ofNullable(parameter.getPs()).orElse(0);
+
 		String orderBy = Optional.ofNullable(parameter.getOrderBy()).filter(s -> StringUtils.hasLength(s)).orElse("");
 		if (orderBy.contains("undefined")) { orderBy = ""; }
+
 		String so = Optional.ofNullable(parameter.getSo()).orElse(null);
 		String sq = Optional.ofNullable(parameter.getSq()).orElse(null);
+
 		Integer vendorStatus = Optional.ofNullable(parameter.getVendorStatus()).orElse(0);
 		Integer vendorCategory = Optional.ofNullable(parameter.getVendorCategory()).orElse(0);
 		String vendorType = Optional.ofNullable(parameter.getVendorType()).orElse(null);
+
 		String state = Optional.ofNullable(parameter.getState()).orElse(null);
 
 		int location = 0;
 		if (!StringUtils.isEmpty(parameter.getLocation())) { location = Integer.parseInt(parameter.getLocation()); }
 		int assignedUser = 0;
-		if (!StringUtils.isEmpty(parameter.getAssignedUser())) { location = Integer.parseInt(parameter.getAssignedUser()); }
+		if (!StringUtils.isEmpty(parameter.getAssignedUser())) { assignedUser = Integer.parseInt(parameter.getAssignedUser()); }
 
 		if(pn > 0) {
 			componentsBuilder.queryParam("pn",pn);
