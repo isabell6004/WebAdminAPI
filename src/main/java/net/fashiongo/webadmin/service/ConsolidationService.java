@@ -52,8 +52,12 @@ public class ConsolidationService extends ApiService {
 	@Autowired private OrderStatusChangeLogRepository orderStatusChangeLogRepository;
 	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
 	@Autowired private ShipAddressRepository shipAddressRepository;
+	
 	private BigDecimal waivedFeeUpperBound = BigDecimal.valueOf(0.5); // waive 0 to 49 cents due to Stripe not accepting
-
+	private static final int UPS_GROUND_ID = 3;
+	private static final int FEDEX_GROUND_ID = 9;
+	private static final int USPS_PRIORITY_ID = 25;
+	
 	@SuppressWarnings("unchecked")
 	public GetConsolidationSummaryResponse getOrderConsolidationListSummary(GetConsolidationSummaryParameter q) {
 		String spName = "up_wa_GetConsolidationSummary_v1";
@@ -142,8 +146,9 @@ public class ConsolidationService extends ApiService {
 				shipMethodRepository.findByActiveAndIdIn(
 						true,
 						Arrays.asList(
-								3, // UPS
-								9 // Fedex
+								UPS_GROUND_ID, // UPS
+								FEDEX_GROUND_ID, // Fedex
+								USPS_PRIORITY_ID
 						)
 				);
 
