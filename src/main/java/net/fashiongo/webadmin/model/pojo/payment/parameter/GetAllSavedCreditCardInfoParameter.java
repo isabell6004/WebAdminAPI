@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Setter;
+import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.Pattern;
@@ -73,7 +74,7 @@ public class GetAllSavedCreditCardInfoParameter {
 
     @ApiModelProperty(required = false, example = "Desc")
     @JsonProperty("orderbygubun")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String orderGubn;
 
