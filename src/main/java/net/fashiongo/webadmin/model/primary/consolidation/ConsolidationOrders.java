@@ -49,6 +49,9 @@ public class ConsolidationOrders {
 	@Column(name = "BoxQty")
 	private Integer boxQty;
 	
+	@Column(name = "BagQty")
+	private Integer bagQty;
+	
 	@Column(name = "Memo")
 	private String memo;
 }

@@ -29,6 +29,7 @@ public class DropOffConsolidationOrderDto {
 	private String receivedBy;
 	private Integer itemQty;
 	private Integer boxQty;
+	private Integer bagQty;
 	private String memo;
 	
 	public static DropOffConsolidationOrderDto build(ConsolidatedOrder order) {
@@ -48,6 +49,7 @@ public class DropOffConsolidationOrderDto {
 				.receivedBy(order.getConsolidationOrder() != null ? order.getConsolidationOrder().getReceivedBy() : null)
 				.itemQty(order.getConsolidationOrder() != null ? order.getConsolidationOrder().getItemQty() : null)
 				.boxQty(order.getConsolidationOrder() != null ? order.getConsolidationOrder().getBoxQty() : null)
+				.bagQty(order.getConsolidationOrder() != null ? order.getConsolidationOrder().getBagQty() : null)
 				.memo(order.getConsolidationOrder() != null ? order.getConsolidationOrder().getMemo() : null)
 				.build();
 	}

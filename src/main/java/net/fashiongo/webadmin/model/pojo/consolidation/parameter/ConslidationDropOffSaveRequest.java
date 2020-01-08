@@ -17,5 +17,6 @@ public class ConslidationDropOffSaveRequest {
 	private String receivedBy;
 	private Integer itemQty;
 	private Integer boxQty;
+	private Integer bagQty;
 	private String memo;
 }

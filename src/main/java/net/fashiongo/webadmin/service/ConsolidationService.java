@@ -532,6 +532,7 @@ public class ConsolidationService extends ApiService {
 		order.setReceivedOn(dropoffSaveRequest.getDropOffTime());
 		order.setItemQty(dropoffSaveRequest.getItemQty());
 		order.setBoxQty(dropoffSaveRequest.getBoxQty());
+		order.setBagQty(dropoffSaveRequest.getBagQty());
 		order.setMemo(dropoffSaveRequest.getMemo());
 		consolidationOrdersRepository.save(order);
 		result = true;
