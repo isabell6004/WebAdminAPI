@@ -14,8 +14,6 @@ public class SetDenyBannerParameter {
 	@JsonProperty("denialreason")
 	private String denialReason;
 
-	private Integer vendorId;
-
 	public Integer getImageRequestId() {
 		return imageRequestId;
 	}
@@ -30,13 +28,5 @@ public class SetDenyBannerParameter {
 
 	public void setDenialReason(String denialReason) {
 		this.denialReason = denialReason;
-	}
-
-	public Integer getVendorId() {
-		return vendorId;
-	}
-
-	public void setVendorId(Integer vendorId) {
-		this.vendorId = vendorId;
 	}
 }

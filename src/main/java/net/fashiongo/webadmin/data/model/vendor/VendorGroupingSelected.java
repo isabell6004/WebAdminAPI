@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class VendorGroupingSelete {
+public class VendorGroupingSelected {
     @JsonProperty(value = "MapID")
     private Integer mapID;
 

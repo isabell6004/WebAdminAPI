@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class VendorGroupingUnSelete {
+public class VendorGroupingUnselect {
     @JsonProperty(value = "WholeSalerID")
     private Integer wholeSalerID;
 

@@ -5,11 +5,11 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface BannerRequestNewService {
     @Async
-    void approveBanner(SetDenyBannerParameter request);
+    void approveBanner(Integer vendorId, SetDenyBannerParameter request);
 
     @Async
-    void rejectBanner(SetDenyBannerParameter request);
+    void rejectBanner(Integer vendorId, SetDenyBannerParameter request);
 
     @Async
-    void deleteBanner(SetDenyBannerParameter request);
+    void deleteBanner(Integer vendorId, SetDenyBannerParameter request);
 }

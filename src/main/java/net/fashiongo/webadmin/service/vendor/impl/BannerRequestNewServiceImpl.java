@@ -20,22 +20,22 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
     }
 
     @Override
-    public void approveBanner(SetDenyBannerParameter request) {
-        final String endpoint = newVendorApi + "/v1.0/banner/" + request.getImageRequestId() + "/approve";
-        httpCaller.put(endpoint, null, VendorApiHeader.getHeader(request.getVendorId().toString()));
+    public void approveBanner(Integer vendorId, SetDenyBannerParameter request) {
+        final String endpoint = newVendorApi + "/vendor/" + vendorId + "/banner/" + request.getImageRequestId() + "/approve";
+        httpCaller.put(endpoint, null, VendorApiHeader.getHeader());
     }
 
     @Override
-    public void rejectBanner(SetDenyBannerParameter request) {
-        final String endpoint = newVendorApi + "/v1.0/banner/" + request.getImageRequestId() + "/reject";
+    public void rejectBanner(Integer vendorId, SetDenyBannerParameter request) {
+        final String endpoint = newVendorApi + "/vendor/" + vendorId + "/banner/" + request.getImageRequestId() + "/reject";
         BannerRequestCommand newRequest = new BannerRequestCommand(request);
-        httpCaller.put(endpoint, newRequest, VendorApiHeader.getHeader(request.getVendorId().toString()));
+        httpCaller.put(endpoint, newRequest, VendorApiHeader.getHeader());
     }
 
     @Override
-    public void deleteBanner(SetDenyBannerParameter request) {
-        final String endpoint = newVendorApi + "/v1.0/banner/" + request.getImageRequestId();
-        httpCaller.delete(endpoint, VendorApiHeader.getHeader(request.getVendorId().toString()));
+    public void deleteBanner(Integer vendorId, SetDenyBannerParameter request) {
+        final String endpoint = newVendorApi + "/vendor/" + vendorId + "/banner/" + request.getImageRequestId();
+        httpCaller.delete(endpoint, VendorApiHeader.getHeader());
     }
 
     @Getter

@@ -1,31 +1,24 @@
 package net.fashiongo.webadmin.controller.vendor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
-import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.entity.primary.SecurityUserEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
-import net.fashiongo.webadmin.data.model.vendor.Vendor;
-import net.fashiongo.webadmin.data.model.vendor.response.GetAssignedUserListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLogListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListCSVResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.*;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.*;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
-import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.model.primary.CreditCardType;
+import net.fashiongo.webadmin.model.primary.SecurityUser;
+import net.fashiongo.webadmin.model.primary.VendorAutocomplete;
+import net.fashiongo.webadmin.model.primary.VendorContent;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.UserService;
 import net.fashiongo.webadmin.service.VendorService;
@@ -33,11 +26,8 @@ import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,21 +45,24 @@ import java.util.Map;
 @RequestMapping(value="/vendor", produces = "application/json")
 @Slf4j
 public class VendorController {
-	
-	@Autowired
-	VendorService vendorService;
 
-	@Autowired
-	private RenewalVendorService renewalVendorService;
-	
-	@Autowired
-    private CacheService cacheService;
+	private final VendorService vendorService;
+	private final RenewalVendorService renewalVendorService;
+    private final CacheService cacheService;
+	private final UserService userService;
+    private final VendorInfoService vendorInfoService;
 
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-    private VendorInfoService vendorInfoService;
+    public VendorController(VendorService vendorService,
+							RenewalVendorService renewalVendorService,
+							CacheService cacheService,
+							UserService userService,
+							VendorInfoService vendorInfoService) {
+    	this.vendorService = vendorService;
+    	this.renewalVendorService = renewalVendorService;
+    	this.cacheService = cacheService;
+    	this.userService = userService;
+    	this.vendorInfoService = vendorInfoService;
+	}
 
 	/**
 	 * Get vendor list
@@ -674,52 +667,6 @@ public class VendorController {
 		}
 
 		return response;
-	}
-
-	@GetMapping(value = "getvendorgrouping")
-	public JsonResponse<GetVendorGroupingResponse> getvendorgrouping(
-			@RequestParam(value = "wholesalerid") Integer wholeSalerID,
-			@RequestParam(value = "CompanyType") String companyType,
-			@RequestParam(value = "vendortype") String vendorType,
-			@RequestParam(value = "searchkeyword") String keyword,
-			@RequestParam(value = "Categorys") String categorys,
-			@RequestParam(value = "alphabet") String alphabet) {
-		JsonResponse<GetVendorGroupingResponse> response = new JsonResponse<>(false, null, null);
-
-		try {
-			GetVendorGroupingResponse data = renewalVendorService.getVendorGrouping(wholeSalerID, companyType, vendorType, keyword, categorys, alphabet);
-
-			response.setSuccess(true);
-			response.setData(data);
-			response.setMessage("success");
-		} catch (Exception e) {
-			log.warn(e.getMessage(), e);
-			response.setMessage("fail");
-		}
-
-		return response;
-	}
-
-	@PostMapping(value = "setvendorgrouping")
-	public JsonResponse<Integer> setvendorgrouping(@RequestBody SetVendorGroupingParameter param) {
-    	JsonResponse<Integer> response = new JsonResponse<Integer>(false, null, null);
-
-    	Integer wid = param.getWid() == null ? 0 : param.getWid();
-    	String saveIds = StringUtils.isEmpty(param.getSaveIds()) ? "" : param.getSaveIds();
-    	String deleteIds = StringUtils.isEmpty(param.getDeleteIds()) ? "" : param.getDeleteIds();
-
-    	try {
-			Integer result = renewalVendorService.setVendorGrouping(wid, saveIds, deleteIds);
-			response.setSuccess(true);
-			response.setData(result);
-			response.setMessage("success");
-		} catch (Exception e) {
-    		response.setMessage("fail");
-		}
-
-    	cacheService.cacheEvictVendor(wid);
-
-    	return response;
 	}
 
 	@PostMapping(value = "getassigneduserlist")

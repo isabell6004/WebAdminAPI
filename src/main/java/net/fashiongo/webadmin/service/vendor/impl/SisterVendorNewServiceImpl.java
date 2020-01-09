@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
-import net.fashiongo.webadmin.service.renewal.impl.VendorApiHeader;
 import net.fashiongo.webadmin.service.vendor.SisterVendorNewService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,14 +20,14 @@ public class SisterVendorNewServiceImpl implements SisterVendorNewService {
 
     @Override
     public void createSisterVendor(Integer vendorId, Integer sisterVendorId) {
-        final String endpoint = newVendorApi + "/v1.0/sister";
+        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/sister";
         CreateSisterVendorCommand newRequest = new CreateSisterVendorCommand(sisterVendorId.longValue());
         httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader(vendorId.toString()));
     }
 
     @Override
     public void deleteSisterVendor(Integer vendorId, Integer mapId) {
-        final String endpoint = newVendorApi + "/v1.0/sister/" + mapId;
+        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/v1.0/sister/" + mapId;
         httpCaller.delete(endpoint, VendorApiHeader.getHeader(vendorId.toString()));
     }
 

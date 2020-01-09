@@ -203,13 +203,7 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
                 JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,TRMC);
                 jpaDeleteClause.where(TRMC.candidateID.eq(mapId)).execute();
 
-                EntityActionLogEntity entityActionLogEntity = new EntityActionLogEntity();
-                entityActionLogEntity.setEntityTypeID(6);
-                entityActionLogEntity.setActionID(6001);
-                entityActionLogEntity.setEntityID(mapId);
-                entityActionLogEntity.setRemark(selectedProductId.toString());
-                entityActionLogEntity.setActedOn(NOW);
-                entityActionLogEntity.setActedBy(modifiedBy);
+                EntityActionLogEntity entityActionLogEntity = EntityActionLogEntity.create(6, mapId, 6001, selectedProductId.toString(), NOW, modifiedBy);
                 entityManager.persist(entityActionLogEntity);
             }
 
@@ -237,13 +231,7 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
                 JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,TRM);
                 jpaDeleteClause.where(TRM.mapID.eq(mapId)).execute();
 
-                EntityActionLogEntity entityActionLogEntity = new EntityActionLogEntity();
-                entityActionLogEntity.setEntityTypeID(6);
-                entityActionLogEntity.setActionID(6001);
-                entityActionLogEntity.setEntityID(mapId);
-                entityActionLogEntity.setRemark(selectedProductId.toString());
-                entityActionLogEntity.setActedOn(NOW);
-                entityActionLogEntity.setActedBy(modifiedBy);
+                EntityActionLogEntity entityActionLogEntity = EntityActionLogEntity.create(6, mapId, 6001, selectedProductId.toString(), NOW, modifiedBy);
                 entityManager.persist(entityActionLogEntity);
             }
 

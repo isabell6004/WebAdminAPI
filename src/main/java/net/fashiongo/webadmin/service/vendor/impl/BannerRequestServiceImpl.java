@@ -96,8 +96,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.save(vendorImageRequest);
 
         // TODO: call vendor API - done
-        request.setVendorId(vendorImageRequest.getWholeSalerID());
-        bannerRequestNewService.rejectBanner(request);
+        bannerRequestNewService.rejectBanner(vendorImageRequest.getWholeSalerID(), request);
     }
 
     /**
@@ -114,8 +113,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.save(vendorImageRequest);
 
         // TODO: call vendor API - done
-        request.setVendorId(vendorImageRequest.getWholeSalerID());
-        bannerRequestNewService.approveBanner(request);
+        bannerRequestNewService.approveBanner(vendorImageRequest.getWholeSalerID(), request);
     }
 
     /**
@@ -146,8 +144,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.delete(vendorImageRequest);
 
         // TODO: call vendor API - done
-        request.setVendorId(vendorImageRequest.getWholeSalerID());
-        bannerRequestNewService.deleteBanner(request);
+        bannerRequestNewService.deleteBanner(vendorImageRequest.getWholeSalerID(), request);
     }
 
     private VendorImageRequest getVendorImageRequest(Integer id) {

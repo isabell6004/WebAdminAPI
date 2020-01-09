@@ -52,24 +52,35 @@ public class EntityActionLogEntity {
     @JoinColumn(name = "ActionID", referencedColumnName = "EntityActionID", updatable = false, insertable = false)
     private ListEntityActionEntity listEntityAction;
 
-    public static EntityActionLogEntity create(Integer entityTypeID, Integer wholeSalerID, Integer actionID) {
+    public static EntityActionLogEntity create(Integer entityTypeID, Integer entityId, Integer actionID) {
         return builder()
                 .entityTypeID(entityTypeID)
-                .entityID(wholeSalerID)
+                .entityID(entityId)
                 .actionID(actionID)
                 .actedOn(LocalDateTime.now())
                 .actedBy(Utility.getUsername())
                 .build();
     }
 
-    public static EntityActionLogEntity create(Integer entityTypeID, Integer wholeSalerID, Integer actionID, String detailLog) {
+    public static EntityActionLogEntity create(Integer entityTypeID, Integer entityId, Integer actionID, String detailLog) {
         return builder()
                 .entityTypeID(entityTypeID)
-                .entityID(wholeSalerID)
+                .entityID(entityId)
                 .actionID(actionID)
                 .remark(detailLog)
                 .actedOn(LocalDateTime.now())
                 .actedBy(Utility.getUsername())
+                .build();
+    }
+
+    public static EntityActionLogEntity create(Integer entityTypeID, Integer entityId, Integer actionID, String detailLog, LocalDateTime actedOn, String actedBy) {
+        return builder()
+                .entityTypeID(entityTypeID)
+                .entityID(entityId)
+                .actionID(actionID)
+                .remark(detailLog)
+                .actedOn(actedOn)
+                .actedBy(actedBy)
                 .build();
     }
 }

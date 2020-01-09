@@ -1186,15 +1186,7 @@ public class RenewalBuyerService {
 		JsonResponse jsonResponse = new JsonResponse();
 
 		try {
-
-			EntityActionLogEntity actionLogEntity = new EntityActionLogEntity();
-
-			actionLogEntity.setEntityTypeID(2);
-			actionLogEntity.setActionID(4005);
-			actionLogEntity.setEntityID(parameter.getRid());
-			actionLogEntity.setActedOn(LocalDateTime.now());
-			actionLogEntity.setActedBy(sessionUserId);
-
+			EntityActionLogEntity actionLogEntity = EntityActionLogEntity.create(2, parameter.getRid(), 4005);
 			entityActionLogEntityRepository.save(actionLogEntity);
 
 			jsonResponse.setSuccess(true);
