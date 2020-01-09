@@ -10,36 +10,55 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import net.fashiongo.webadmin.dao.primary.*;
-import net.fashiongo.webadmin.data.entity.primary.*;
-import net.fashiongo.webadmin.model.pojo.consolidation.parameter.*;
-import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
-import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
-import net.fashiongo.webadmin.utility.JsonResponse;
 
-import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
+import net.fashiongo.webadmin.dao.primary.ConsolidationDropoffRepository;
+import net.fashiongo.webadmin.dao.primary.ConsolidationOrdersRepository;
+import net.fashiongo.webadmin.dao.primary.ConsolidationRepository;
+import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
+import net.fashiongo.webadmin.dao.primary.OrderRepository;
+import net.fashiongo.webadmin.dao.primary.OrderStatusChangeLogRepository;
+import net.fashiongo.webadmin.dao.primary.ShipAddressRepository;
+import net.fashiongo.webadmin.dao.primary.ShipMethodRepository;
+import net.fashiongo.webadmin.data.entity.primary.ConsolidationEntity;
+import net.fashiongo.webadmin.data.entity.primary.Order;
+import net.fashiongo.webadmin.data.entity.primary.OrderStatusChangeLogEntity;
+import net.fashiongo.webadmin.data.entity.primary.ShipAddressEntity;
+import net.fashiongo.webadmin.data.entity.primary.ShipMethod;
 import net.fashiongo.webadmin.model.pojo.consolidation.Consolidation;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetail;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetailList;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationSummary;
 import net.fashiongo.webadmin.model.pojo.consolidation.TotalCount;
+import net.fashiongo.webadmin.model.pojo.consolidation.Dto.DropOffConsolidationOrderDto;
+import net.fashiongo.webadmin.model.pojo.consolidation.Dto.OrderConsolidationSummaryDto;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.Address;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConslidationDropOffSaveRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationDetailShippingAddressRequest;
+import net.fashiongo.webadmin.model.pojo.consolidation.parameter.ConsolidationMemoRequest;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationDetailParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.GetConsolidationSummaryParameter;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationDetailResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationResponse;
 import net.fashiongo.webadmin.model.pojo.consolidation.response.GetConsolidationSummaryResponse;
+import net.fashiongo.webadmin.model.pojo.consolidation.response.ShipMethodResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
+import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
+import net.fashiongo.webadmin.model.primary.consolidation.ConsolidatedOrder;
+import net.fashiongo.webadmin.model.primary.consolidation.ConsolidationOrders;
 import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 
 @Service
@@ -52,7 +71,8 @@ public class ConsolidationService extends ApiService {
 	@Autowired private OrderStatusChangeLogRepository orderStatusChangeLogRepository;
 	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
 	@Autowired private ShipAddressRepository shipAddressRepository;
-	
+	@Autowired private ConsolidationDropoffRepository consolidationDropoffRepository;
+	@Autowired private ConsolidationOrdersRepository consolidationOrdersRepository;
 	private BigDecimal waivedFeeUpperBound = BigDecimal.valueOf(0.5); // waive 0 to 49 cents due to Stripe not accepting
 	private static final int UPS_GROUND_ID = 3;
 	private static final int FEDEX_GROUND_ID = 9;
@@ -477,5 +497,68 @@ public class ConsolidationService extends ApiService {
 
 	private BigDecimal nullToZero(BigDecimal me) {
 		return me == null ? BigDecimal.ZERO : me;
+	}
+	
+	public DropOffConsolidationOrderDto getDropOffConsolidationOrder(String poNumber) throws Exception{
+		List<ConsolidatedOrder> consolidationOrders = consolidationDropoffRepository.getDropOffConsolidationOrder(poNumber);
+		List<DropOffConsolidationOrderDto> orders = DropOffConsolidationOrderDto.build(consolidationOrders);
+		if(CollectionUtils.isEmpty(orders)) {
+			throw new Exception("Order does not exist. Please try again.");
+		}
+		DropOffConsolidationOrderDto result = orders.get(0);
+		if(result.getDropOffBy() != null || result.getDropOffTime() != null) {
+			throw new Exception("This order has already been dropped off.");
+		}
+		if(result.getOrderStatusId().equals(5)) {
+			throw new Exception("This consolidation order has been cancelled.");
+		}
+		return result;
+	}
+	
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
+	public Boolean setDropOffConsolidationOrder(ConslidationDropOffSaveRequest dropoffSaveRequest) throws Exception {
+		boolean result = false;
+		Integer orderId = dropoffSaveRequest.getOrderId();
+		ConsolidationOrders order = consolidationOrdersRepository.findOneByOrderId(orderId);
+		if(order != null && order.getDroppedBy() != null && order.getReceivedOn() != null) {
+			throw new Exception("This order has already been dropped off.");
+		}
+		if(order == null) {
+			order = new ConsolidationOrders();
+			order.setOrderId(orderId);
+			order.setConsolidationId(dropoffSaveRequest.getConsolidationId());
+		}
+		order.setDroppedBy(dropoffSaveRequest.getDropOffBy());
+		order.setReceivedBy(dropoffSaveRequest.getReceivedBy());
+		order.setReceivedOn(dropoffSaveRequest.getDropOffTime());
+		order.setItemQty(dropoffSaveRequest.getItemQty());
+		order.setBoxQty(dropoffSaveRequest.getBoxQty());
+		order.setBagQty(dropoffSaveRequest.getBagQty());
+		order.setMemo(dropoffSaveRequest.getMemo());
+		consolidationOrdersRepository.save(order);
+		result = true;
+		return result;
+	}
+	
+	public JsonResponse getConsolidationDetail(Integer consolidationId) throws JsonProcessingException {
+		String url = "/pdf/consolidation/detail/" + consolidationId;
+		JsonResponse<?> result = httpClient.get(url);
+		return result;
+	}
+	
+	public DropOffConsolidationOrderDto getConsolidationReceipt(Integer orderId) throws Exception {
+		List<ConsolidatedOrder> consolidationOrders = consolidationDropoffRepository.getDropOffConsolidationReceipt(orderId);
+		List<DropOffConsolidationOrderDto> orders = DropOffConsolidationOrderDto.build(consolidationOrders);
+		if(CollectionUtils.isEmpty(orders)) {
+			throw new Exception("Order does not exist. Please try again.");
+		}
+		DropOffConsolidationOrderDto result = orders.get(0);
+		if(result.getDropOffBy() == null || result.getDropOffTime() == null) {
+			throw new Exception("Did not received this order yet.");
+		}
+		if(result.getOrderStatusId().equals(5)) {
+			throw new Exception("This order has been cancelled.");
+		}
+		return result;
 	}
 }
