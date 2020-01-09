@@ -148,12 +148,14 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 //		SELECT COUNT(MapID) AS Assigned FROM Map_Wa_User_Vendor AS m
 //		WHERE m.UserID='+CONVERT(NVARCHAR,@UserID)
 		QMapWaUserVendorEntity M = new QMapWaUserVendorEntity("M");
-
+		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");	
+			
 		JPAQuery jpaQuery = new JPAQuery(entityManager);
 
-		jpaQuery.select(M)
-				.from(M)
-				.where(M.userID.eq(userId));
+		jpaQuery.select(M)		
+				.from(M)	
+					.innerJoin(W).on(W.wholeSalerId.eq(M.vendorID).and(M.userID.eq(userId)))
+				    .where(W.active.eq(true).and(W.shopActive.eq(true)));
 
 		return jpaQuery.fetchCount();
 	}
