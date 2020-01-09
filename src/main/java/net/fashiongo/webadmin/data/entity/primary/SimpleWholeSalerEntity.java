@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -103,9 +104,9 @@ public class SimpleWholeSalerEntity implements Serializable {
     @JoinColumn(name = "ImageServerID", insertable = false, updatable = false)
     private SystemImageServersEntity systemImageServersEntity;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "WholeSalerID",referencedColumnName = "VendorID", insertable = false, updatable = false)
-    private MapWaUserVendorEntity mapWaUserVendor;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "VendorID",referencedColumnName = "WholeSalerID", insertable = false, updatable = false)
+    private Set<MapWaUserVendorEntity> mapWaUserVendorEntities;
 
     @Column(name = "CompanyTypeID")
     private Integer companyTypeID;
