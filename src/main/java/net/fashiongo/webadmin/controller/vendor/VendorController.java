@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.controller;
+package net.fashiongo.webadmin.controller.vendor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.util.internal.StringUtil;
@@ -30,6 +30,7 @@ import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.UserService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
+import net.fashiongo.webadmin.service.vendor.VendorInfoService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,10 @@ public class VendorController {
 
 	@Autowired
 	private UserService userService;
-	
+
+	@Autowired
+    private VendorInfoService vendorInfoService;
+
 	/**
 	 * Get vendor list
 	 * @since 2018. 10. 15.
@@ -442,103 +446,6 @@ public class VendorController {
     	return response;
 	}
 
-	@PostMapping(value = "getvendorimage")
-	public JsonResponse<List<VendorImage>> getvendorimage(@RequestBody GetVendorImageParameter param) {
-    	JsonResponse<List<VendorImage>> response = new JsonResponse<>(false, null, null);
-		Integer wid = param.getWid();
-
-		try {
-			response.setData(renewalVendorService.getVendorImage(wid));
-			response.setSuccess(true);
-		} catch (Exception ex) {
-			log.error("Exception Error: {}", ex);
-			response.setMessage(ex.getMessage());
-		}
-
-		return response;
-	}
-
-	@PostMapping(value = "setvendorbasicinfo")
-	public Integer setvendorbasicinfo(@RequestBody SetVendorBasicInfoParameter param) {
-    	Integer wid = param.getWid();
-		ObjectMapper mapper = new ObjectMapper();
-		VendorDetailInfo r;
-		try {
-			r = mapper.readValue(param.getVendorBasicInfo(), VendorDetailInfo.class);
-		} catch (IOException e) {
-			log.debug("object mapper parse error");
-			return null;
-		}
-
-		Integer result = renewalVendorService.setVendorBasicInfo(r, 1, null, null, null, 0);
-
-	 	if (result.toString().equals("1")) {
-	 		String companyNameTemp = "";
-	 		if (StringUtils.isNotEmpty(param.getCompanyNameTemp())) {
-	 			companyNameTemp = param.getCompanyNameTemp();
-			}
-
-	 		if (!companyNameTemp.equals("") && companyNameTemp != null && !companyNameTemp.equals(r.getCompanyName()) && !r.getCompanyName().equals("") && r.getCompanyName() != null) {
-	 			if (r.getDirName() == null) r.setDirName("");
-	 			renewalVendorService.setDirCompanyNameChangeHistory(wid, r.getDirName(), r.getDirName(), companyNameTemp, r.getCompanyName());
-			}
-
-		 	cacheService.cacheEvictVendor(wid);
-		}
-
-		return result;
-	}
-
-	@PostMapping(value = "setvendorimage")
-	public Integer setvendorimage(@RequestBody SetVendorImageParameter param) {
-    	if (param.getWid() == null|| param.getType() == null || StringUtils.isEmpty(param.getFilename())) {
-    		return -1;
-		}
-
-    	Integer wid = param.getWid();
-    	Integer type = param.getType();
-    	String fileName = param.getFilename();
-    	String userID = StringUtils.isEmpty(param.getUserid()) ? "admin" : param.getUserid();
-
-    	Integer result = renewalVendorService.setVendorImage(wid, type, fileName, userID);
-
-		cacheService.GetRedisCacheEvict("VendorPictureLogo", String.valueOf(wid));
-
-		cacheService.cacheEvictVendor(wid);
-
-    	return result;
-	}
-
-	@PostMapping(value = "delvendorimage")
-	public Integer delvendorimage(@RequestBody DelVendorImageParameter param) {
-    	if(param.getWid() == null | param.getType() == null) {
-    		return -1;
-		}
-
-    	Integer wid = param.getWid();
-    	Integer type = param.getType();
-
-    	Integer result = renewalVendorService.delVendorImage(wid, type);
-
-		cacheService.GetRedisCacheEvict("VendorPictureLogo", String.valueOf(wid));
-
-		return result;
-	}
-
-	@PostMapping(value = "setvendorsnslist")
-	public ResultCode setvendorsnslist(@RequestBody SetVendorSNSListParameter param) {
-    	Integer mapID = param.getMapID() == null ? 0 : param.getMapID();
-    	Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
-    	Integer socialMediaID = param.getSocialMediaID() == null ? 0 : param.getSocialMediaID();
-    	String socialMediaUsername = StringUtils.isEmpty(param.getSocialMediaUsername()) ? "" : param.getSocialMediaUsername();
-
-    	ResultCode result = renewalVendorService.setVendorSNSList(mapID, wholeSalerID, socialMediaID, socialMediaUsername);
-
-    	cacheService.cacheEvictVendor(wholeSalerID);
-
-    	return result;
-	}
-
 	@PostMapping(value = "setaccountlockout")
 	public Integer setaccountlockout(@RequestBody SetAccountLockOutParameter param) {
     	Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
@@ -597,68 +504,6 @@ public class VendorController {
     	Integer communicationID = param.getCommunicationID() == null ? 0 : param.getCommunicationID();
 
     	ResultCode result = renewalVendorService.delVendorCommunication(communicationID);
-
-    	return result;
-	}
-
-	@PostMapping(value = "getvendorsetting")
-	public JsonResponse<GetVendorSettingResponse> getvendorsetting(@RequestBody GetVendorSettingParameter param) {
-    	JsonResponse<GetVendorSettingResponse> response = new JsonResponse<>(false, null, null);
-
-    	try {
-			GetVendorSettingResponse result = renewalVendorService.getVendorSetting(param.getWid());
-
-			response.setSuccess(true);
-			response.setData(result);
-    	} catch (Exception ex) {
-			log.error("Exception Error: {}", ex);
-			response.setMessage(ex.getMessage());
-		}
-
-    	return response;
-	}
-
-	@PostMapping(value = "setvendorsetting")
-	public Integer setvendorsetting(@RequestBody SetVendorSettingParameter param) {
-    	Integer wid = param.getWid();
-    	Integer adminAccount = param.getAdminAccount() == null ? 0 : param.getAdminAccount();
-    	Integer vendorCategory = param.getVendorCategory() == null ? 0 : param.getVendorCategory();
-    	Integer fraudReport = param.getFraudReport() == null ? 0 : param.getFraudReport();
-    	Integer item = param.getItem() == null ? 0 : param.getItem();
-    	Integer adminAccountID = param.getAdminAccountID() == null ? 0 : param.getAdminAccountID();
-    	Integer vendorCategoryID = param.getVendorCategoryID() == null ? 0 : param.getVendorCategoryID();
-    	Integer fraudReportID = param.getFraudReportID() == null ? 0 : param.getFraudReportID();
-    	Integer itemID = param.getItemID() == null ? 0 : param.getItemID();
-    	LocalDateTime actualOpenDateTemp = StringUtils.isEmpty(param.getActualOpenDateTemp()) ? null : LocalDateTime.parse(param.getActualOpenDateTemp());
-
-		renewalVendorService.setVendorSetting(wid, adminAccountID, 1, adminAccount);
-		renewalVendorService.setVendorSetting(wid, vendorCategoryID, 2, vendorCategory);
-		renewalVendorService.setVendorSetting(wid, fraudReportID, 3, fraudReport);
-		renewalVendorService.setVendorSetting(wid, itemID, 4, item);
-
-		Integer payoutSchedule = param.getPayoutSchedule();
-		Integer payoutScheduleWM = param.getPayoutScheduleWM();
-		Integer maxPayoutPerDay = param.getMaxPayoutPerDay();
-		Integer payoutCount = param.getPayoutCount();
-
-		ObjectMapper mapper = new ObjectMapper();
-		VendorDetailInfo r;
-		try {
-			r = mapper.readValue(param.getVendorBasicInfo(), VendorDetailInfo.class);
-		} catch (IOException e) {
-			log.debug("object mapper parse error");
-			return null;
-		}
-
-		Integer result = renewalVendorService.setVendorBasicInfo(r, 2, payoutSchedule, payoutScheduleWM, maxPayoutPerDay, payoutCount);
-
-		if(result == -1) {
-			return result;
-		}
-
-		String dirNameTemp = StringUtils.isEmpty(param.getDirNameTemp()) ? "" : param.getDirNameTemp();
-
-		cacheService.cacheEvictVendor(wid);
 
     	return result;
 	}
@@ -722,7 +567,8 @@ public class VendorController {
     	Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
     	Integer actionID = param.getActionID() == null ? 0 : param.getActionID();
 
-    	Integer result = renewalVendorService.setEntityActionLog(entityTypeID, wholeSalerID, actionID);
+    	// TODO
+    	Integer result = vendorInfoService.setEntityActionLog(entityTypeID, wholeSalerID, actionID);
 
     	return result;
 	}
@@ -893,40 +739,6 @@ public class VendorController {
 		}
 
     	return response;
-	}
-
-	@PostMapping(value = "getvendorlist")
-	public JsonResponse getvendorlist(@RequestBody GetVendorListParameter param) {
-    	JsonResponse response = new JsonResponse(false, null, null);
-
-    	try {
-			GetVendorListResponse data = renewalVendorService.getVendorList(param);
-
-			response.setSuccess(true);
-			response.setData(data);
-			response.setMessage("success");
-		} catch (Exception e) {
-    		log.warn(e.getMessage(), e);
-    		response.setMessage("fail");
-		}
-    	return response;
-	}
-
-	@PostMapping(value = "getvendorlistcsv")
-	public JsonResponse getvendorlistcsv(@RequestBody GetVendorListParameter param) {
-		JsonResponse response = new JsonResponse(false, null, null);
-
-		try {
-			GetVendorListCSVResponse data = renewalVendorService.getvendorlistcsv(param);
-
-			response.setSuccess(true);
-			response.setData(data);
-			response.setMessage("success");
-		} catch (Exception e) {
-			log.warn(e.getMessage(), e);
-			response.setMessage("fail");
-		}
-		return response;
 	}
 
 	@RequestMapping(value="setretailerratingactive", method=RequestMethod.POST)

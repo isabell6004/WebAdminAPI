@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.service.renewal.impl;
+package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.AspnetMembershipEntity;
@@ -13,8 +13,8 @@ import net.fashiongo.webadmin.data.repository.primary.VendorAdminAccountEntityRe
 import net.fashiongo.webadmin.data.repository.primary.VendorBlockedEntityRepository;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.service.CacheService;
-import net.fashiongo.webadmin.service.renewal.VendorBlockNewService;
-import net.fashiongo.webadmin.service.renewal.VendorBlockService;
+import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
+import net.fashiongo.webadmin.service.vendor.VendorBlockService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

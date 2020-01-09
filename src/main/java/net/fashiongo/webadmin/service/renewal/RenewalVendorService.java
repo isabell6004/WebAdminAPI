@@ -1,32 +1,20 @@
 package net.fashiongo.webadmin.service.renewal;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.dao.primary.VendorAdminAccountRepository;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.entity.primary.vendor.VendorProductRow;
 import net.fashiongo.webadmin.data.model.Total;
-import net.fashiongo.webadmin.data.model.vendor.VendorAdminAccount;
 import net.fashiongo.webadmin.data.model.vendor.*;
-import net.fashiongo.webadmin.data.model.vendor.response.GetAssignedUserListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLogListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorDetailInfoDataResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListCSVResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.form.FashionGoFormEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.form.FormOrderingType;
 import net.fashiongo.webadmin.data.repository.primary.vendor.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.service.ApiService;
-import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
@@ -38,20 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class RenewalVendorService extends ApiService {
-
-    @Autowired
-    private CacheService cacheService;
 
     private final VendorProductRepository vendorProductRepository;
     private final VendorImageRequestEntityRepository vendorImageRequestEntityRepository;
@@ -70,13 +52,9 @@ public class RenewalVendorService extends ApiService {
     private final VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository;
     private final ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository;
     private final CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository;
-    private final AspnetUsersEntityRepository aspnetUsersEntityRepository;
     private final AspnetMembershipEntityRepository aspnetMembershipEntityRepository;
     private final VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository;
-    private final VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository;
     private final EntityActionLogEntityRepository entityActionLogEntityRepository;
-    private final TodayDealEntityRepository todayDealEntityRepository;
-    private final AdVendorItemEntityRepository adVendorItemEntityRepository;
     private final CustomerSocialMediaEntityRepository customerSocialMediaEntityRepository;
     private final LogCommunicationEntityRepository logCommunicationEntityRepository;
     private final VendorCapEntityRepository vendorCapEntityRepository;
@@ -86,13 +64,39 @@ public class RenewalVendorService extends ApiService {
     private final MapWholeSalerSisterEntityRepository mapWholeSalerSisterEntityRepository;
     private final LogVendorHoldEntityRepository logVendorHoldEntityRepository;
     private final VendorAdminLoginLogEntityRepository vendorAdminLoginLogEntityRepository;
-    private final MapWholeSalerGroupEntityRepository mapWholeSalerGroupEntityRepository;
     private final RetailerRatingEntityRepository retailerRatingEntityRepository;
 
     @Autowired
     public RenewalVendorService(VendorProductRepository vendorProductRepository,
                                 VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
-                                FashionGoFormEntityRepository fashionGoFormEntityRepository, VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository, WholeSalerEntityRepository wholeSalerEntityRepository, VendorContractEntityRepository vendorContractEntityRepository, SecurityUserEntityRepository securityUserEntityRepository, CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository, CodeCountryEntityRepository codeCountryEntityRepository, MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository, WholeShipMethodEntityRepository wholeShipMethodEntityRepository, VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository, VendorNameHistoryLogEntityRepository vendorNameHistoryLogEntityRepository, ListSocialMediaEntityRepository listSocialMediaEntityRepository, VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository, ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository, CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository, AspnetUsersEntityRepository aspnetUsersEntityRepository, AspnetMembershipEntityRepository aspnetMembershipEntityRepository, VendorAdminAccountRepository vendorAdminAccountRepository, VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository, VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository, EntityActionLogEntityRepository entityActionLogEntityRepository, TodayDealEntityRepository todayDealEntityRepository, AdVendorItemEntityRepository adVendorItemEntityRepository, CustomerSocialMediaEntityRepository customerSocialMediaEntityRepository, LogCommunicationEntityRepository logCommunicationEntityRepository, VendorCapEntityRepository vendorCapEntityRepository, CodeVendorCapTypeEntityRepository codeVendorCapTypeEntityRepository, VendorBlockedEntityRepository vendorBlockedEntityRepository, ListVendorBlockReasonEntityRepository listVendorBlockReasonEntityRepository, MapWholeSalerSisterEntityRepository mapWholeSalerSisterEntityRepository, LogVendorHoldEntityRepository logVendorHoldEntityRepository, VendorAdminLoginLogEntityRepository vendorAdminLoginLogEntityRepository, MapWholeSalerGroupEntityRepository mapWholeSalerGroupEntityRepository, RetailerRatingEntityRepository retailerRatingEntityRepository) {
+                                FashionGoFormEntityRepository fashionGoFormEntityRepository,
+                                VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository,
+                                WholeSalerEntityRepository wholeSalerEntityRepository,
+                                VendorContractEntityRepository vendorContractEntityRepository,
+                                SecurityUserEntityRepository securityUserEntityRepository,
+                                CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository,
+                                CodeCountryEntityRepository codeCountryEntityRepository,
+                                MapWholeSalerPaymentMethodEntityRepository mapWholeSalerPaymentMethodEntityRepository,
+                                WholeShipMethodEntityRepository wholeShipMethodEntityRepository,
+                                VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
+                                VendorNameHistoryLogEntityRepository vendorNameHistoryLogEntityRepository,
+                                ListSocialMediaEntityRepository listSocialMediaEntityRepository,
+                                VendorPayoutInfoEntityRepository vendorPayoutInfoEntityRepository,
+                                ListVendorDocumentTypeEntityRepository listVendorDocumentTypeEntityRepository,
+                                CodeVendorIndustryEntityRepository codeVendorIndustryEntityRepository,
+                                AspnetMembershipEntityRepository aspnetMembershipEntityRepository,
+                                VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository,
+                                EntityActionLogEntityRepository entityActionLogEntityRepository,
+                                CustomerSocialMediaEntityRepository customerSocialMediaEntityRepository,
+                                LogCommunicationEntityRepository logCommunicationEntityRepository,
+                                VendorCapEntityRepository vendorCapEntityRepository,
+                                CodeVendorCapTypeEntityRepository codeVendorCapTypeEntityRepository,
+                                VendorBlockedEntityRepository vendorBlockedEntityRepository,
+                                ListVendorBlockReasonEntityRepository listVendorBlockReasonEntityRepository,
+                                MapWholeSalerSisterEntityRepository mapWholeSalerSisterEntityRepository,
+                                LogVendorHoldEntityRepository logVendorHoldEntityRepository,
+                                VendorAdminLoginLogEntityRepository vendorAdminLoginLogEntityRepository,
+                                RetailerRatingEntityRepository retailerRatingEntityRepository) {
         this.vendorProductRepository = vendorProductRepository;
         this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
         this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
@@ -110,13 +114,9 @@ public class RenewalVendorService extends ApiService {
         this.vendorPayoutInfoEntityRepository = vendorPayoutInfoEntityRepository;
         this.listVendorDocumentTypeEntityRepository = listVendorDocumentTypeEntityRepository;
         this.codeVendorIndustryEntityRepository = codeVendorIndustryEntityRepository;
-        this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
         this.vendorAdminAccountEntityRepository = vendorAdminAccountEntityRepository;
-        this.vendorDirNameChangeLogEntityRepository = vendorDirNameChangeLogEntityRepository;
         this.entityActionLogEntityRepository = entityActionLogEntityRepository;
-        this.todayDealEntityRepository = todayDealEntityRepository;
-        this.adVendorItemEntityRepository = adVendorItemEntityRepository;
         this.customerSocialMediaEntityRepository = customerSocialMediaEntityRepository;
         this.logCommunicationEntityRepository = logCommunicationEntityRepository;
         this.vendorCapEntityRepository = vendorCapEntityRepository;
@@ -126,7 +126,6 @@ public class RenewalVendorService extends ApiService {
         this.mapWholeSalerSisterEntityRepository = mapWholeSalerSisterEntityRepository;
         this.logVendorHoldEntityRepository = logVendorHoldEntityRepository;
         this.vendorAdminLoginLogEntityRepository = vendorAdminLoginLogEntityRepository;
-        this.mapWholeSalerGroupEntityRepository = mapWholeSalerGroupEntityRepository;
         this.retailerRatingEntityRepository = retailerRatingEntityRepository;
     }
 
@@ -289,450 +288,6 @@ public class RenewalVendorService extends ApiService {
                 .build();
     }
 
-    public List<VendorImage> getVendorImage(Integer wid) {
-        return vendorImageRequestEntityRepository.findByWholeSalerID(wid);
-    }
-
-    @Transactional
-    public Integer setVendorBasicInfo(VendorDetailInfo r, Integer saveType, Integer payoutSchedule, Integer payoutScheduleWM, Integer maxPayoutPerDay, Integer payoutCount) {
-        Integer result;
-        String sessionUsrId = Utility.getUsername();
-
-        try {
-            WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(r.getWholeSalerID());
-            if (saveType == 1) {
-                try {
-                    if (!wholeSaler.getUserId().equals(r.getUserId())) {
-                        AspnetUsersEntity aspUserDuplicateCheck = aspnetUsersEntityRepository.findOneByUserNameAndWholeSalerGUID(r.getUserId(), wholeSaler.getWholeSalerGUID());
-
-                        if (aspUserDuplicateCheck == null) {
-                            AspnetUsersEntity aspUser = aspnetUsersEntityRepository.findOneByWholeSalerGUID(wholeSaler.getWholeSalerGUID());
-                            aspUser.setUserName(r.getUserId());
-                            aspUser.setLoweredUserName(r.getUserId().toLowerCase());
-                            aspnetUsersEntityRepository.save(aspUser);
-                        } else {
-                            return 97;
-                        }
-                    }
-                } catch (Exception ex) {
-                    return 98;
-                }
-            }
-
-            if (StringUtils.isNotEmpty(wholeSaler.getDirName()) && StringUtils.isNotEmpty(r.getDirName())) {
-                if (!wholeSaler.getDirName().equals(r.getDirName())) {
-                    JsonResponse retVal = cacheService.GetRedisCacheEvict_ChangeDirName(wholeSaler.getDirName(), r.getDirName());
-
-                    if (!retVal.isSuccess() && this.getActiveProfiles().contains("toast")) {
-                        return -1;
-                    }
-
-                    setDirCompanyNameChangeHistory(wholeSaler.getWholeSalerID(), wholeSaler.getDirName(), r.getDirName(), r.getCompanyName(), r.getCompanyName());
-                }
-            }
-
-            wholeSaler.setFirstName(r.getFirstName());
-            wholeSaler.setLastName(r.getLastName());
-            wholeSaler.setCompanyName(r.getCompanyName());
-
-            wholeSaler.setUserId(r.getUserId());
-            wholeSaler.setRegCompanyName(r.getRegCompanyName());
-            wholeSaler.setEmail(r.getEmail());
-            wholeSaler.setCompanyTypeID(r.getCompanyTypeID());
-            wholeSaler.setBusinessCategory(r.getBusinessCategory());
-            wholeSaler.setEstablishedYear(r.getEstablishedYear());
-            wholeSaler.setWebSite(r.getWebSite());
-            wholeSaler.setDescription(r.getDescription());
-            wholeSaler.setBillStreetNo(r.getBillStreetNo());
-            wholeSaler.setBillStreetNo2(r.getBillStreetNo2());
-            wholeSaler.setBillCity(r.getBillCity());
-            wholeSaler.setBillState(r.getBillState());
-            wholeSaler.setBillZipcode(r.getBillZipcode());
-            wholeSaler.setCountry(r.getCountry());
-            wholeSaler.setBillPhone(r.getBillPhone());
-            wholeSaler.setBillFax(r.getBillFax());
-            wholeSaler.setStreetNo(r.getStreetNo());
-            wholeSaler.setStreetNo2(r.getStreetNo2());
-
-            wholeSaler.setCity(r.getCity());
-            wholeSaler.setState(r.getState());
-            wholeSaler.setZipcode(r.getZipcode());
-            wholeSaler.setCountry(r.getCountry());
-            wholeSaler.setPhone(r.getPhone());
-            wholeSaler.setFax(r.getFax());
-
-            if (saveType == 2) {
-                if (r.getOrderActive() != wholeSaler.getOrderActive() || r.getShopActive() != wholeSaler.getShopActive() || r.getActive() != wholeSaler.getActive()) {
-                    String logDetail = "Active = " + r.getActive() + ",ShopActive = " + r.getShopActive() + ",OrderActive = " + r.getOrderActive();
-                    setEntityActionLogDetail(1, r.getWholeSalerID(), 3003, logDetail);
-                }
-                if (wholeSaler.getTransactionFeeRate1() != r.getTransactionFeeRate1() || wholeSaler.getTransactionFeeRate2() != r.getTransactionFeeRate2()
-                        || wholeSaler.getTransactionFeeRate1Intl() != r.getTransactionFeeRate1Intl() || wholeSaler.getTransactionFeeRate2Intl() != r.getTransactionFeeRate2Intl()
-                        || wholeSaler.getTransactionFeeFixed() != r.getTransactionFeeFixed() || wholeSaler.getCommissionRate() != r.getCommissionRate()) {
-                    String logDetail = "TransactionFeeRate1 = " + r.getTransactionFeeRate1() + ",TransactionFeeRate2 = " + r.getTransactionFeeRate2() +
-                            ",TransactionFeeRate1Intl = " + r.getTransactionFeeRate1Intl() + ",TransactionFeeRate2Intl = " + r.getTransactionFeeRate2Intl() +
-                            ",TransactionFeeFixed = " + r.getTransactionFeeFixed() + ",CommissionRate = " + r.getCommissionRate();
-                    setEntityActionLogDetail(1, r.getWholeSalerID(), 3004, logDetail);
-                }
-                if (wholeSaler.getShopActive() != r.getShopActive() && r.getShopActive()) {
-                    AspnetMembershipEntity membership = aspnetMembershipEntityRepository.findOneByWholeSalerGUID(wholeSaler.getWholeSalerGUID());
-                    membership.setApproved(true);
-                    aspnetMembershipEntityRepository.save(membership);
-                }
-            }
-
-            if (saveType == 2 && wholeSaler.getActive() && !r.getActive()) {
-                //up_wa_SetVendorCloseTodaysDealAllRevoke(r.getWholeSalerID(), sessionUsrId);
-                List<TodayDealEntity> todayDealList = todayDealEntityRepository.findAllByWholeSalerID(r.getWholeSalerID());
-                List<TodayDealEntity> todayDealListUpdate = new ArrayList<>();
-                for (TodayDealEntity todayDeal : todayDealList) {
-                    todayDeal.setActive(false);
-                    todayDeal.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
-                    todayDeal.setModifiedBy(sessionUsrId);
-
-                    todayDealListUpdate.add(todayDeal);
-                }
-
-                todayDealEntityRepository.saveAll(todayDealListUpdate);
-            }
-
-			wholeSaler.setActive(r.getActive());
-			wholeSaler.setShopActive(r.getShopActive());
-			wholeSaler.setOrderActive(r.getOrderActive());
-			wholeSaler.setImageServerID(r.getImageServerID());
-			wholeSaler.setDirName(r.getDirName());
-			wholeSaler.setAdminWebServerID(r.getAdminWebServerID());
-			wholeSaler.setCodeName(r.getCodeName());
-			wholeSaler.setLastModifiedDateTime(new Timestamp(System.currentTimeMillis()));
-			wholeSaler.setLastUser(sessionUsrId);
-			wholeSaler.setMemo(r.getMemo());
-			wholeSaler.setInHouseMemo(r.getInHouseMemo());
-			wholeSaler.setOrderNotice(r.getOrderNotice());
-			wholeSaler.setNoticeToAll(r.getNoticeToAll());
-			wholeSaler.setSourceType(r.getSourceType());
-
-            if (saveType == 2) {
-                wholeSaler.setNewCustYN(r.getNewCustYN());
-                wholeSaler.setIsADBlock(r.getIsADBlock());
-
-				if (r.getOrderActive()) {
-					setVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
-					if (wholeSaler.getActualOpenDate() == null) {
-						wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
-						setEntityActionLog(1, r.getWholeSalerID(), 3001);
-						wholeSaler.setContractExpireDate(null);
-					} else {
-						String actualOpenDateTest = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")) : "0";
-						String dateTimeNowTest = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-						int actualOpenDateTestInt = Integer.parseInt(actualOpenDateTest);
-						int dateTimeNowTestInt = Integer.parseInt(dateTimeNowTest);
-
-						if (actualOpenDateTestInt > dateTimeNowTestInt) {
-							wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
-							setEntityActionLog(1, r.getWholeSalerID(), 3001);
-							wholeSaler.setContractExpireDate(null);
-
-                        }
-                    }
-                } else if (!r.getOrderActive() && wholeSaler.getActualOpenDate() == null) {
-                    if (r.getActualOpenDate() != null) {
-                        String actualOpenDateTest = r.getActualOpenDate() != null ? r.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
-                        String dateTimeNowTest = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-                        if (actualOpenDateTest.equals(dateTimeNowTest)) {
-                            setVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
-
-							wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
-							wholeSaler.setOrderActive(true);
-							wholeSaler.setShopActive(true);
-							wholeSaler.setActive(true);
-
-							setEntityActionLog(1, r.getWholeSalerID(), 3001);
-							wholeSaler.setContractExpireDate(null);
-						} else {
-							wholeSaler.setActualOpenDate(Timestamp.valueOf(r.getActualOpenDate()));
-						}
-					}
-				} else if (!r.getOrderActive() && wholeSaler.getActualOpenDate() != null) {
-					String actualOpenDateTest2 = r.getActualOpenDate() != null ? r.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
-					String actualOpenDateTest3 = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
-
-                    if (r.getActualOpenDate() != null && !actualOpenDateTest2.equals(actualOpenDateTest3)) {
-                        String actualOpenDateTest = r.getActualOpenDate() != null ? r.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
-                        String dateTimeNowTest = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-                        if (actualOpenDateTest.equals(dateTimeNowTest)) {
-                            setVendorNewVendorAdVendorItemAdd(r.getWholeSalerID(), sessionUsrId);
-
-							wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
-							wholeSaler.setOrderActive(true);
-							wholeSaler.setShopActive(true);
-							wholeSaler.setActive(true);
-
-							setEntityActionLog(1, r.getWholeSalerID(), 3001);
-							wholeSaler.setContractExpireDate(null);
-						} else {
-							wholeSaler.setActualOpenDate(Timestamp.valueOf(r.getActualOpenDate()));
-						}
-					}
-				}
-
-                try {
-                    wholeSaler.setTransactionFeeRate1(r.getTransactionFeeRate1());
-                    wholeSaler.setTransactionFeeRate2(r.getTransactionFeeRate2());
-                    wholeSaler.setTransactionFeeRate1Intl(r.getTransactionFeeRate1Intl());
-                    wholeSaler.setTransactionFeeRate2Intl(r.getTransactionFeeRate2Intl());
-                    wholeSaler.setTransactionFeeFixed(r.getTransactionFeeFixed());
-                    wholeSaler.setCommissionRate(r.getCommissionRate());
-
-                    MapWholeSalerPaymentMethodEntity mapWholeSalerPaymentMethod = null;
-                    if (r.getUseCreditCardPaymentService()) {
-                        mapWholeSalerPaymentMethod = mapWholeSalerPaymentMethodEntityRepository.findOneByWholeSalerIDAndPaymentMethodID(r.getWholeSalerID(), 100);
-                        if (mapWholeSalerPaymentMethod != null) {
-                            mapWholeSalerPaymentMethod.setPaymentMethodID(6);
-                            mapWholeSalerPaymentMethodEntityRepository.save(mapWholeSalerPaymentMethod);
-                        }
-                    } else {
-                        mapWholeSalerPaymentMethod = mapWholeSalerPaymentMethodEntityRepository.findOneByWholeSalerIDAndPaymentMethodID(r.getWholeSalerID(), 6);
-                        if (mapWholeSalerPaymentMethod != null) {
-                            mapWholeSalerPaymentMethod.setPaymentMethodID(100);
-                            mapWholeSalerPaymentMethodEntityRepository.save(mapWholeSalerPaymentMethod);
-                        }
-                    }
-
-                    wholeSaler.setUseCreditCardPaymentService(r.getUseCreditCardPaymentService());
-                    if (payoutCount > 0) {
-                        if (payoutSchedule == 1 || payoutSchedule == 2) {
-                            VendorPayoutInfoEntity vp = vendorPayoutInfoEntityRepository.findOneByWholeSalerID(r.getWholeSalerID());
-                            vp.setPayoutSchedule(payoutSchedule);
-                            vp.setMaxPayoutPerDay(maxPayoutPerDay);
-                            vp.setModifiedBy(sessionUsrId);
-                            vp.setWeekday(null);
-                            vp.setDayOfMonth(null);
-                            vendorPayoutInfoEntityRepository.save(vp);
-
-                        } else if (payoutSchedule == 3) {
-                            VendorPayoutInfoEntity vp = vendorPayoutInfoEntityRepository.findOneByWholeSalerID(r.getWholeSalerID());
-                            vp.setPayoutSchedule(payoutSchedule);
-                            vp.setMaxPayoutPerDay(maxPayoutPerDay);
-                            vp.setModifiedBy(sessionUsrId);
-                            vp.setWeekday(payoutScheduleWM);
-                            vp.setDayOfMonth(null);
-                            vendorPayoutInfoEntityRepository.save(vp);
-                        } else if (payoutSchedule == 4) {
-                            VendorPayoutInfoEntity vp = vendorPayoutInfoEntityRepository.findOneByWholeSalerID(r.getWholeSalerID());
-                            vp.setPayoutSchedule(payoutSchedule);
-                            vp.setMaxPayoutPerDay(maxPayoutPerDay);
-                            vp.setModifiedBy(sessionUsrId);
-                            vp.setWeekday(null);
-                            vp.setDayOfMonth(payoutScheduleWM);
-                            vendorPayoutInfoEntityRepository.save(vp);
-                        }
-                    }
-                } catch (Exception ex) {
-                }
-            }
-
-            wholeSaler.setIndustryType(r.getIndustryType());
-            wholeSaler.setConsolidationYN(r.getConsolidationYN());
-            wholeSaler.setChargedByCreditCard(r.getChargedByCreditCard());
-            vendorWholeSalerEntityRepository.save(wholeSaler);
-
-            if (!r.getActive()) {
-                List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(r.getWholeSalerID());
-                for (VendorAdminAccountEntity va : vendorAdminAccountList) {
-                    AspnetMembershipEntity subAccount = aspnetMembershipEntityRepository.findOneByWholeSalerGUID(va.getUserGUID());
-                    subAccount.setApproved(false);
-                    subAccount.setLockedOut(true);
-                    aspnetMembershipEntityRepository.save(subAccount);
-
-                    VendorAdminAccountEntity subAccount1 = vendorAdminAccountEntityRepository.findOneByVendorAdminAccountID(va.getVendorAdminAccountID());
-                    subAccount1.setActive(false);
-                    vendorAdminAccountEntityRepository.save(subAccount1);
-                }
-            }
-
-            result = 1;
-
-
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-            return -99;
-        }
-
-        try {
-            if (result == 1 && saveType == 1) {
-                String spname = "up_Setting_Account";
-                List<Object> params = new ArrayList<>();
-                params.add(r.getWholeSalerID());
-                params.add(sessionUsrId);
-                jdbcHelperFgBilling.executeSP(spname, params);
-            }
-        } catch (Exception ex) {
-        }
-
-        return result;
-    }
-
-    public ResultCode setDirCompanyNameChangeHistory(Integer wholeSalerID, String sourceDirName, String targetDirName, String oldCompanyName, String newCompanyName) {
-        ResultCode result = new ResultCode(false, -1, null);
-
-        VendorDirNameChangeLogEntity trm = new VendorDirNameChangeLogEntity();
-
-        try {
-            trm.setSourceDirName(sourceDirName);
-            trm.setTargetDirName(targetDirName);
-            trm.setOldCompanyName(oldCompanyName);
-            trm.setNewCompanyName(newCompanyName);
-            trm.setCreatedOn(LocalDateTime.now());
-
-            vendorDirNameChangeLogEntityRepository.save(trm);
-
-            result.setSuccess(true);
-            result.setResultCode(1);
-            result.setResultMsg("success");
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-
-            result.setSuccess(false);
-            result.setResultCode(-1);
-            result.setResultMsg("savefailure");
-        }
-        return result;
-    }
-
-    private int setEntityActionLogDetail(Integer entityTypeID, Integer wholeSalerID, Integer actionID, String detailLog) {
-        try {
-            EntityActionLogEntity actionLog = EntityActionLogEntity.create(entityTypeID, wholeSalerID, actionID, detailLog);
-            entityActionLogEntityRepository.save(actionLog);
-            return 1;
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-            return -99;
-        }
-    }
-
-    public int setEntityActionLog(Integer entityTypeID, Integer wholeSalerID, Integer actionID) {
-        try {
-            EntityActionLogEntity actionLog = EntityActionLogEntity.create(entityTypeID, wholeSalerID, actionID);
-            entityActionLogEntityRepository.save(actionLog);
-            return 1;
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-            return -99;
-        }
-    }
-
-    private void setVendorNewVendorAdVendorItemAdd(Integer wholeSalerId, String sessionUsrID) {
-        long count = adVendorItemEntityRepository.getCountByWholeSalerID(wholeSalerId);
-
-        if (count == 0) {
-            AdVendorItemEntity item = new AdVendorItemEntity();
-
-            item.setCategoryID(-10);
-            item.setWholeSalerID(wholeSalerId);
-            item.setFromDate(LocalDateTime.now());
-            item.setToDate(LocalDateTime.parse("9999-12-31 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            item.setCreatedOn(LocalDateTime.now());
-            item.setCreatedBy(sessionUsrID);
-            item.setHowToInput(1);
-            item.setHowToSell(1);
-            item.setItemCount(10);
-            item.setActualPrice(BigDecimal.valueOf(0.00));
-
-            adVendorItemEntityRepository.save(item);
-        }
-    }
-
-    public Integer setVendorImage(Integer wid, Integer type, String fileName, String userID) {
-        Integer result = 0;
-
-        try {
-            VendorImageRequestEntity vendorImage = null;
-
-            if (type == 5) {
-                vendorImage = vendorImageRequestEntityRepository.findOneByWholeSalerIDAndVendorImageTypeID(wid, type);
-            } else {
-                vendorImage = vendorImageRequestEntityRepository.findOneByWholeSalerIDAndVendorImageTypeIDAndActiveTrue(wid, type);
-            }
-
-            if (vendorImage == null) {
-                vendorImage = new VendorImageRequestEntity();
-            }
-
-            vendorImage.setActive(true);
-            vendorImage.setOriginalFileName(fileName);
-            vendorImage.setVendorImageTypeId(type);
-            vendorImage.setDecidedOn(LocalDateTime.now());
-            vendorImage.setRequestedOn(LocalDateTime.now());
-            vendorImage.setWholesalerId(wid);
-            vendorImage.setIsApproved(true);
-            vendorImage.setDecidedBy(userID);
-
-            vendorImageRequestEntityRepository.save(vendorImage);
-
-            result = 1;
-
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-            result = -99;
-        }
-
-        return result;
-    }
-
-    public Integer delVendorImage(Integer wid, Integer type) {
-        Integer result = 0;
-
-        try {
-            VendorImageRequestEntity vendorImage = vendorImageRequestEntityRepository.findOneByWholeSalerIDAndVendorImageTypeID(wid, type);
-            vendorImageRequestEntityRepository.delete(vendorImage);
-
-            result = 1;
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-            result = -99;
-        }
-
-        return result;
-    }
-
-    @Transactional
-    public ResultCode setVendorSNSList(Integer mapID, Integer wholeSalerID, Integer socialMediaID, String url) {
-        ResultCode result = new ResultCode();
-
-        try {
-            if (mapID == 0) {
-                CustomerSocialMediaEntity customerSocialMedia = new CustomerSocialMediaEntity();
-                customerSocialMedia.setReferenceID(wholeSalerID);
-                customerSocialMedia.setUserTypeID(2);
-                customerSocialMedia.setSocialMediaID(socialMediaID);
-                customerSocialMedia.setSocialMediaUsername(url);
-                customerSocialMediaEntityRepository.save(customerSocialMedia);
-
-                result.setSuccess(true);
-                result.setResultCode(1);
-                result.setResultMsg("success");
-            } else {
-                CustomerSocialMediaEntity customerSocialMedia = customerSocialMediaEntityRepository.findOneByMapID(mapID);
-                customerSocialMedia.setSocialMediaUsername(url);
-                customerSocialMediaEntityRepository.save(customerSocialMedia);
-
-                result.setSuccess(true);
-                result.setResultCode(1);
-                result.setResultMsg("success");
-            }
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-
-            result.setSuccess(false);
-            result.setResultCode(-1);
-            result.setResultMsg("failure");
-        }
-
-        return result;
-    }
-
     @Transactional
     public Integer setAccountLockOut(boolean active, int wholeSalerID) {
         Integer result = 0;
@@ -759,8 +314,8 @@ public class RenewalVendorService extends ApiService {
     public Integer setAccountLockOutSubAccount(boolean active, int wholeSalerID) {
         Integer result = 0;
 
-        try {
-            List<VendorAdminAccountEntity> vendorAdminAccounts = vendorAdminAccountEntityRepository.findAllByWholeSalerID(wholeSalerID);
+		try {
+			List<VendorAdminAccountEntity> vendorAdminAccounts = vendorAdminAccountEntityRepository.findAllByWholeSalerID(wholeSalerID);
 
             List<AspnetMembershipEntity> membershipList = new ArrayList<>();
             for (VendorAdminAccountEntity vendorAdminAccount : vendorAdminAccounts) {
@@ -857,176 +412,9 @@ public class RenewalVendorService extends ApiService {
 				.vendorBlockReason(listVendorBlockReasonEntityRepository.findVendorBlockReason())
 				.vendor(vendorWholeSalerEntityRepository.findAllActive())
 				.vendorSister(mapWholeSalerSisterEntityRepository.findVendorSister(wid))
-				//.holdVendor(logVendorHoldEntityRepository.findByWholeSalerIDAndActiveAndHoldTo(wid))
 				.holdVendor(logVendorHoldEntityRepository.findByWholeSalerIDAndActive(wid))
 				.vendorHistory(entityActionLogEntityRepository.findByEntityIDAndEntityTypeID(wid))
 			.build();
-
-        return result;
-    }
-
-    @Transactional
-    public ResultCode setVendorSetting(Integer wid, Integer capID, Integer vendorCapTypeID, Integer cap) {
-        ResultCode result = new ResultCode(false, null, null);
-
-        VendorCapEntity trm = new VendorCapEntity();
-
-        try {
-            if (capID == 0) {
-                trm.setWholeSalerID(wid);
-                trm.setVendorCapTypeID(vendorCapTypeID);
-                trm.setCap(cap);
-                trm.setCreatedBy(Utility.getUsername());
-                trm.setCreatedOn(LocalDateTime.now());
-                trm.setModifiedBy(Utility.getUsername());
-                trm.setModifiedOn(LocalDateTime.now());
-
-                vendorCapEntityRepository.save(trm);
-
-                result.setSuccess(true);
-                result.setResultCode(1);
-                result.setResultMsg("success");
-            } else if (capID > 0) {
-                trm = vendorCapEntityRepository.findOneByVendorCapID(capID);
-                trm.setCap(cap);
-                trm.setModifiedBy(Utility.getUsername());
-                trm.setModifiedOn(LocalDateTime.now());
-
-                vendorCapEntityRepository.save(trm);
-
-                result.setSuccess(true);
-                result.setResultCode(1);
-                result.setResultMsg("success");
-            }
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-
-            result.setResultCode(-1);
-            result.setResultMsg("savefailure");
-        }
-
-        return result;
-    }
-
-    @Transactional
-    public ResultCode setHoldVendor(Integer wholeSalerID, Integer holdType, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
-        ResultCode result = new ResultCode(false, null, null);
-
-		try {
-			if (holdType == 1) {
-				LogVendorHoldEntity trm = new LogVendorHoldEntity();
-				trm.setWholeSalerID(wholeSalerID);
-				trm.setHoldFrom(holdFrom);
-				trm.setHoldTo(holdTo);
-				trm.setActive(active);
-				trm.setCreatedBy(Utility.getUsername());
-				trm.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
-
-				logVendorHoldEntityRepository.save(trm);
-			} else if (holdType == 2) {
-				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-
-				if(active) {
-					if(holdFrom.toLocalDateTime().plusDays(1).minusSeconds(1).isAfter(LocalDateTime.now())) {
-						trm.setContractExpireDate(Timestamp.valueOf(holdFrom.toLocalDateTime().plusDays(1).minusSeconds(1)));
-						trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-						//trm.setActualOpenDate(null);
-					} else {
-						trm.setContractExpireDate(Timestamp.valueOf(LocalDateTime.now()));
-						trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-						trm.setOrderActive(false);
-						trm.setShopActive(false);
-						trm.setActive(false);
-						//trm.setActualOpenDate(null);
-					}
-				} else {
-					trm.setContractExpireDate(null);
-					trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-					trm.setShopActive(true);
-					trm.setActive(true);
-				}
-
-				vendorWholeSalerEntityRepository.save(trm);
-			} else if (holdType == 3) {
-				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-				trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-				trm.setOrderActive(false);
-				trm.setShopActive(true);
-				trm.setActive(true);
-
-				vendorWholeSalerEntityRepository.save(trm);
-			} else if (holdType == 4) {
-				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-				trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-				trm.setOrderActive(true);
-
-                vendorWholeSalerEntityRepository.save(trm);
-            }
-
-            result.setSuccess(true);
-            result.setResultCode(1);
-            result.setResultMsg("success");
-        } catch (Exception ex) {
-            log.warn(ex.getMessage(), ex);
-
-            result.setResultCode(-1);
-            result.setResultMsg("savefailure");
-        }
-
-        return result;
-    }
-
-	public Integer setHoldVendorUpdate(Integer wholeSalerID,Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
-		Integer result = 0;
-
-		try {
-			LogVendorHoldEntity lvh = logVendorHoldEntityRepository.findById(logID).get();
-
-			if(active) {
-				lvh.setHoldFrom(holdFrom);
-				lvh.setHoldTo(holdTo);
-			}
-
-			lvh.setActive(active);
-			logVendorHoldEntityRepository.save(lvh);
-
-			if(!active) {
-				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-				trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-				trm.setLastUser(Utility.getUsername());
-				trm.setOrderActive(true);
-
-				vendorWholeSalerEntityRepository.save(trm);
-			}
-			else {
-				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
-				int result1 = holdFrom.compareTo(timestamp);
-
-				if (result1 == -1 || result1 == 0) {
-					WholeSalerEntity trm1 = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-					trm1.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-					trm1.setOrderActive(false);
-					trm1.setShopActive(true);
-					trm1.setActive(true);
-					trm1.setLastUser(Utility.getUsername());
-
-					vendorWholeSalerEntityRepository.save(trm1);
-				}
-				else {
-					WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-					trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-					trm.setLastUser(Utility.getUsername());
-					trm.setOrderActive(true);
-
-					vendorWholeSalerEntityRepository.save(trm);
-				}
-			}
-			result = 1;
-		} catch (Exception ex) {
-			log.warn(ex.getMessage(), ex);
-			result = -99;
-		}
 
         return result;
     }
@@ -1106,87 +494,8 @@ public class RenewalVendorService extends ApiService {
                 .build();
     }
 
-    public GetVendorGroupingResponse getVendorGrouping(
-            Integer wholesalerid,
-            String companyType,
-            String vendorType,
-            String keyword,
-            String categorys,
-            String alphabet) {
-        wholesalerid = wholesalerid == null ? 0 : wholesalerid;
-        companyType = StringUtils.isEmpty(companyType) ? "" : companyType;
-        keyword = StringUtils.isEmpty(keyword) ? " " : keyword;
-        categorys = StringUtils.isEmpty(categorys) ? "" : categorys;
-        String[] categoryList = categorys.replace("'", "").split(",");
-        ArrayList<Integer> categoryIntegerList = new ArrayList<>();
-        for (String t : categoryList) {
-            if (StringUtils.isNotEmpty(t)) {
-                categoryIntegerList.add(Integer.valueOf(t));
-            }
-        }
-        alphabet = StringUtils.isEmpty(alphabet) ? "" : alphabet;
-        vendorType = StringUtils.isEmpty(vendorType) ? "" : vendorType;
-
-        if (vendorType.equalsIgnoreCase("email")) {
-            vendorType = vendorType.toLowerCase();
-        } else {
-            vendorType = vendorType.substring(0, 1).toLowerCase() + vendorType.substring(1);
-        }
-
-
-        List<VendorGroupingSelete> vendorGroupingSeletes = vendorWholeSalerEntityRepository.findListVendorGroupingSelect(wholesalerid, null, keyword, categoryIntegerList, alphabet, vendorType);
-        List<VendorGroupingUnSelete> vendorGroupingUnSeletes = vendorWholeSalerEntityRepository.findListVendorGroupingUnSelect(wholesalerid, null, keyword, categoryIntegerList, alphabet, vendorType);
-
-        return GetVendorGroupingResponse.builder()
-                .vendorGroupingSelete(vendorGroupingSeletes)
-                .vendorGroupingUnSelete(vendorGroupingUnSeletes)
-                .build();
-    }
-
-    public Integer setVendorGrouping(Integer wholeSalerID, String saveIds, String deleteIds) {
-        Integer result = null;
-
-        if (StringUtils.isEmpty(saveIds) && StringUtils.isEmpty(deleteIds))
-            return null;
-
-        if (StringUtils.isNotEmpty(deleteIds)) {
-            String[] deleteIDList = deleteIds.split(",");
-            ArrayList<Integer> widList = new ArrayList<>();
-            for (String id : deleteIDList) {
-                if (StringUtils.isNotEmpty(id))
-                    widList.add(Integer.valueOf(id));
-            }
-            List<MapWholeSalerGroupEntity> deleteEntities = mapWholeSalerGroupEntityRepository.findAllByIds(widList);
-
-            mapWholeSalerGroupEntityRepository.deleteAll(deleteEntities);
-
-            result = 1;
-        }
-
-        if (StringUtils.isNotEmpty(saveIds)) {
-            String[] saveIDList = saveIds.split(",");
-
-            List<MapWholeSalerGroupEntity> insertEntities = new ArrayList<>();
-            for (String id : saveIDList) {
-                if (StringUtils.isNotEmpty(id)) {
-                    MapWholeSalerGroupEntity WG = new MapWholeSalerGroupEntity();
-                    WG.setWholeSalerID(wholeSalerID);
-                    WG.setWholeSalerID2(Integer.valueOf(id));
-
-                    insertEntities.add(WG);
-                }
-            }
-
-            mapWholeSalerGroupEntityRepository.saveAll(insertEntities);
-
-            result = 1;
-        }
-
-        return result;
-    }
-
-	public GetAssignedUserListResponse getAssignedUserList() {
-		List<AssignedUser> data = securityUserEntityRepository.findAssignedUserList();
+    public GetAssignedUserListResponse getAssignedUserList() {
+        List<AssignedUser> data = securityUserEntityRepository.findAssignedUserList();
 
         return GetAssignedUserListResponse.builder().assignedUserList(data).build();
     }

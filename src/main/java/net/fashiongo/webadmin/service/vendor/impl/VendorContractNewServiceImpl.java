@@ -1,11 +1,11 @@
-package net.fashiongo.webadmin.service.renewal.impl;
+package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
-import net.fashiongo.webadmin.service.renewal.VendorContractNewService;
+import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.service.renewal.impl;
+package net.fashiongo.webadmin.service.vendor.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.service.renewal;
+package net.fashiongo.webadmin.service.vendor;
 
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockUpdate;

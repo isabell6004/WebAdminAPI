@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.service.renewal.impl;
+package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.VendorContractDocumentEntity;
@@ -12,10 +12,9 @@ import net.fashiongo.webadmin.data.repository.primary.vendor.VendorContractDocum
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorException;
 import net.fashiongo.webadmin.service.CacheService;
-import net.fashiongo.webadmin.service.renewal.VendorContractNewService;
-import net.fashiongo.webadmin.service.renewal.VendorContractService;
+import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
+import net.fashiongo.webadmin.service.vendor.VendorContractService;
 import net.fashiongo.webadmin.utility.Utility;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

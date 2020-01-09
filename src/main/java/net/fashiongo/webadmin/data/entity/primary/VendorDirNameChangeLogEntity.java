@@ -1,8 +1,7 @@
 package net.fashiongo.webadmin.data.entity.primary;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.NotFound;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +13,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "VendorDirName_ChangeLog")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(toBuilder = true)
 @Getter
 @Setter
 public class VendorDirNameChangeLogEntity {
@@ -38,4 +40,15 @@ public class VendorDirNameChangeLogEntity {
 
     @Column(name = "CreatedOn")
     private LocalDateTime createdOn;
+
+    public static VendorDirNameChangeLogEntity create(String sourceDirName, String targetDirName, String oldCompanyName, String newCompanyName) {
+
+        return builder()
+                .sourceDirName(sourceDirName)
+                .targetDirName(targetDirName)
+                .oldCompanyName(oldCompanyName)
+                .newCompanyName(newCompanyName)
+                .createdOn(LocalDateTime.now()).build();
+
+    }
 }

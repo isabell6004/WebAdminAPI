@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.service.renewal.impl;
+package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,7 @@ import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockUpdate;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
-import net.fashiongo.webadmin.service.renewal.VendorBlockNewService;
+import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     private void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId) {
         final String endpoint = newVendorApi + "/v1.0/vendor/" + wholeSalerId;
 
-        VendorBlockNewServiceImpl.VendorBlockStatusCommand newRequest = VendorBlockNewServiceImpl.VendorBlockStatusCommand.create(isBlock, blockReasonId);
+        VendorBlockStatusCommand newRequest = VendorBlockStatusCommand.create(isBlock, blockReasonId);
         Map<String, Object> wrappedRequest = new HashMap<>();
         wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
 
@@ -55,7 +55,7 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     public void modifyBlockReason(SetVendorBlockUpdate request) {
         final String endpoint = newVendorApi + "/v1.0/vendor/" + request.getWholeSalerID();
 
-        VendorBlockNewServiceImpl.VendorBlockStatusCommand newRequest = VendorBlockNewServiceImpl.VendorBlockStatusCommand.create(request.getIsBlock(), Long.valueOf(request.getBlockReasonID()));
+        VendorBlockStatusCommand newRequest = VendorBlockStatusCommand.create(request.getIsBlock(), Long.valueOf(request.getBlockReasonID()));
         Map<String, Object> wrappedRequest = new HashMap<>();
         wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
 

@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.service.vendor.impl;
 import lombok.Getter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
-import net.fashiongo.webadmin.service.renewal.impl.VendorApiHeader;
 import net.fashiongo.webadmin.service.vendor.BannerRequestNewService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
