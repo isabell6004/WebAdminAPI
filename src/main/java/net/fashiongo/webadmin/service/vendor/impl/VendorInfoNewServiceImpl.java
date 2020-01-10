@@ -177,6 +177,11 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
                 command.scheduledStatusDate = vendorDetailInfo.getActualOpenDate().toString();
             }
 
+            if(vendorDetailInfo.getContractExpireDate() != null) {
+                command.scheduledStatusCode = StatusType.CLOSED.getValue();
+                command.scheduledStatusDate = vendorDetailInfo.getContractExpireDate().toString();
+            }
+
             command.statusCode = vendorStatusType.getValue();
             command.isAdBlock = vendorDetailInfo.getIsADBlock();
 
