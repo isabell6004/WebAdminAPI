@@ -13,7 +13,4 @@ public interface VendorImageNewService {
 
     @Async
     void insert(SetVendorImageParameter request);
-
-    @Async
-    void update(SetVendorImageParameter request, Integer oldBannerId);
 }

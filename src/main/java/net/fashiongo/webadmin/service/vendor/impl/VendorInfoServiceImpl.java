@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBasicInfoParameter;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.data.repository.primary.*;
+import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.service.CacheService;
@@ -69,6 +71,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private VendorInfoNewService vendorInfoNewService;
 
+    private VendorCapEntityRepository vendorCapEntityRepository;
+
     private CacheService cacheService;
 
     public VendorInfoServiceImpl(VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
@@ -82,6 +86,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  AdVendorItemEntityRepository adVendorItemEntityRepository,
                                  VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository,
                                  VendorInfoNewService vendorInfoNewService,
+                                 VendorCapEntityRepository vendorCapEntityRepository,
                                  CacheService cacheService) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
@@ -94,6 +99,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.adVendorItemEntityRepository = adVendorItemEntityRepository;
         this.vendorDirNameChangeLogEntityRepository = vendorDirNameChangeLogEntityRepository;
         this.vendorInfoNewService = vendorInfoNewService;
+        this.vendorCapEntityRepository = vendorCapEntityRepository;
         this.cacheService = cacheService;
     }
 
@@ -442,6 +448,75 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
             return -99;
+        }
+    }
+
+    @Override
+    public Integer setVendorSettingInfo(SetVendorSettingParameter request) {
+
+        Integer wid = request.getWid();
+        Integer adminAccount = request.getAdminAccount() == null ? 0 : request.getAdminAccount();
+        Integer vendorCategory = request.getVendorCategory() == null ? 0 : request.getVendorCategory();
+        Integer fraudReport = request.getFraudReport() == null ? 0 : request.getFraudReport();
+        Integer item = request.getItem() == null ? 0 : request.getItem();
+        Integer adminAccountID = request.getAdminAccountID() == null ? 0 : request.getAdminAccountID();
+        Integer vendorCategoryID = request.getVendorCategoryID() == null ? 0 : request.getVendorCategoryID();
+        Integer fraudReportID = request.getFraudReportID() == null ? 0 : request.getFraudReportID();
+        Integer itemID = request.getItemID() == null ? 0 : request.getItemID();
+
+        setVendorSetting(wid, adminAccountID, 1, adminAccount);
+        setVendorSetting(wid, vendorCategoryID, 2, vendorCategory);
+        setVendorSetting(wid, fraudReportID, 3, fraudReport);
+        setVendorSetting(wid, itemID, 4, item);
+
+        Integer payoutSchedule = request.getPayoutSchedule();
+        Integer payoutScheduleWM = request.getPayoutScheduleWM();
+        Integer maxPayoutPerDay = request.getMaxPayoutPerDay();
+        Integer payoutCount = request.getPayoutCount();
+
+        ObjectMapper mapper = new ObjectMapper();
+        VendorDetailInfo vendorDetailInfo;
+        try {
+            vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
+        } catch (IOException e) {
+            log.debug("object mapper parse error");
+            return null;
+        }
+
+        Integer result = setVendorBasicInfo(vendorDetailInfo, 2, payoutSchedule, payoutScheduleWM, maxPayoutPerDay, payoutCount);
+        if (result == -1) {
+            return result;
+        }
+
+        cacheService.cacheEvictVendor(wid);
+        vendorInfoNewService.updateDetailInfo(request, vendorDetailInfo);
+
+        return result;
+    }
+
+    private void setVendorSetting(Integer wid, Integer capID, Integer vendorCapTypeID, Integer cap) {
+        VendorCapEntity trm = new VendorCapEntity();
+        try {
+            if (capID == 0) {
+                trm.setWholeSalerID(wid);
+                trm.setVendorCapTypeID(vendorCapTypeID);
+                trm.setCap(cap);
+                trm.setCreatedBy(Utility.getUsername());
+                trm.setCreatedOn(LocalDateTime.now());
+                trm.setModifiedBy(Utility.getUsername());
+                trm.setModifiedOn(LocalDateTime.now());
+
+                vendorCapEntityRepository.save(trm);
+            } else if (capID > 0) {
+                trm = vendorCapEntityRepository.findOneByVendorCapID(capID);
+                trm.setCap(cap);
+                trm.setModifiedBy(Utility.getUsername());
+                trm.setModifiedOn(LocalDateTime.now());
+
+                vendorCapEntityRepository.save(trm);
+            }
+        } catch (Exception ex) {
+            log.warn(ex.getMessage(), ex);
         }
     }
 

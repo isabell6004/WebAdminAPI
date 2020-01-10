@@ -2,16 +2,19 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.model.vendor.AddressType;
 import net.fashiongo.webadmin.model.vendor.EmailType;
 import net.fashiongo.webadmin.model.vendor.IndustryType;
+import net.fashiongo.webadmin.model.vendor.StatusType;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -36,9 +39,9 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         httpCaller.put(endpoint, vendorAccountCommand, VendorApiHeader.getHeader());
     }
 
-    private void updateCompanyInfo(VendorDetailInfo request) {
+    private void updateVendorBasicInfo(VendorDetailInfo request) {
         final String endpoint = newVendorApi + "/v1.0/vendor/" + request.getWholeSalerID();
-        VendorInfoCommand vendorInfoCommand = VendorInfoCommand.create(request);
+        VendorInfoCommand vendorInfoCommand = VendorInfoCommand.createForUpdatingBasicInfo(request);
         httpCaller.put(endpoint, vendorInfoCommand, VendorApiHeader.getHeader());
     }
 
@@ -47,7 +50,14 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         // account
         updateAccount(request.getWholeSalerID(), request.getUserId(), request.getFirstName(), request.getLastName());
         // vendor basic info
-        updateCompanyInfo(request);
+        updateVendorBasicInfo(request);
+    }
+
+    @Override
+    public void updateDetailInfo(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo) {
+        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorDetailInfo.getWholeSalerID();
+        VendorInfoCommand vendorInfoCommand = VendorInfoCommand.createForUpdatingDetailInfo(request, vendorDetailInfo);
+        httpCaller.put(endpoint, vendorInfoCommand, VendorApiHeader.getHeader());
     }
 
     @Getter
@@ -124,7 +134,70 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     }
 
     @Getter
-    private static class VendorSettingInfoCommand {
+    private static class VendorDetailSettingInfoCommand {
+
+        private String codename;
+        private String dirname;
+
+        private Integer statusCode;
+        private Integer scheduledStatusCode;
+        private String scheduledStatusDate;
+
+        private Boolean isAdBlock;
+
+        private BigDecimal transactionFeeRate1;
+        private BigDecimal transactionFeeRate2;
+        private BigDecimal transactionFeeRate1Intl;
+        private BigDecimal transactionFeeRate2Intl;
+        private BigDecimal transactionFeeFixed;
+
+        private Integer capAccount;
+        private Integer capCategory;
+        private Integer capFraudReport;
+        private Integer capItem;
+
+        static VendorDetailSettingInfoCommand create(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo) {
+
+            VendorDetailSettingInfoCommand command = new VendorDetailSettingInfoCommand();
+
+            command.dirname = vendorDetailInfo.getDirName();
+            command.codename = vendorDetailInfo.getCodeName();
+
+            StatusType vendorStatusType = StatusType.INACTIVE;
+            if(vendorDetailInfo.getOrderActive()) {
+                vendorStatusType = StatusType.ORDER_ACTIVE;
+            } else if (vendorDetailInfo.getShopActive()) {
+                vendorStatusType = StatusType.SHOP_ACTIVE;
+            } else if (vendorDetailInfo.getActive()) {
+                vendorStatusType = StatusType.ACTIVE;
+            }
+
+            if(vendorDetailInfo.getActualOpenDate() != null) {
+                command.scheduledStatusCode = StatusType.ORDER_ACTIVE.getValue();
+                command.scheduledStatusDate = vendorDetailInfo.getActualOpenDate().toString();
+            }
+
+            command.statusCode = vendorStatusType.getValue();
+            command.isAdBlock = vendorDetailInfo.getIsADBlock();
+
+            command.transactionFeeFixed = BigDecimal.valueOf(vendorDetailInfo.getTransactionFeeFixed());
+            command.transactionFeeRate1 = BigDecimal.valueOf(vendorDetailInfo.getTransactionFeeRate1());
+            command.transactionFeeRate1Intl = BigDecimal.valueOf(vendorDetailInfo.getTransactionFeeRate1Intl());
+            command.transactionFeeRate2 = BigDecimal.valueOf(vendorDetailInfo.getTransactionFeeRate2());
+            command.transactionFeeRate2Intl = BigDecimal.valueOf(vendorDetailInfo.getTransactionFeeRate2Intl());
+
+            command.capAccount = request.getAdminAccount();
+            command.capFraudReport = request.getFraudReport();
+            command.capCategory = request.getVendorCategory();
+            command.capItem = request.getItem();
+
+            return command;
+        }
+
+    }
+
+    @Getter
+    private static class VendorBasicSettingInfoCommand {
 
         private String codename;
         private String dirname;
@@ -137,8 +210,8 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         private String buyerNotice;
         private String memo;
 
-        static VendorSettingInfoCommand create(VendorDetailInfo request) {
-            VendorSettingInfoCommand command = new VendorSettingInfoCommand();
+        static VendorBasicSettingInfoCommand create(VendorDetailInfo request) {
+            VendorBasicSettingInfoCommand command = new VendorBasicSettingInfoCommand();
 
             command.codename = request.getCodeName();
             command.dirname = request.getDirName();
@@ -155,7 +228,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     }
 
     @Getter
-    private static class VendorInfoCommand {
+    private static class VendorInfoCommand<T> {
 
         private String name;
         private String dbaName;
@@ -168,10 +241,10 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         private VendorAccountCommand account;
         private List<VendorEmailCommand> emails;
         private List<VendorAddressCommand> addresses;
-        private VendorSettingInfoCommand setting;
+        private T setting;
         private List<Integer> industries;
 
-        static VendorInfoCommand create(VendorDetailInfo request) {
+        static VendorInfoCommand createForUpdatingBasicInfo(VendorDetailInfo request) {
             VendorInfoCommand command = new VendorInfoCommand();
 
             command.name = request.getCompanyName();
@@ -182,7 +255,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             command.website = request.getWebSite();
             command.establishedYear = request.getEstablishedYear();
             command.account = VendorAccountCommand.create(request.getFirstName(), request.getLastName(), request.getUserId());
-            command.setting = VendorSettingInfoCommand.create(request);
+            command.setting = VendorBasicSettingInfoCommand.create(request);
             command.emails = Arrays.asList(
                     VendorEmailCommand.create(EmailType.ORDER.getValue(), request.getEmail())
                     , VendorEmailCommand.create(EmailType.BILLING1.getValue(), request.getBillingEmail1())
@@ -238,6 +311,12 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             }
             command.industries = industries;
 
+            return command;
+        }
+
+        static VendorInfoCommand createForUpdatingDetailInfo(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo) {
+            VendorInfoCommand command = new VendorInfoCommand();
+            command.setting = VendorDetailSettingInfoCommand.create(request, vendorDetailInfo);
             return command;
         }
     }

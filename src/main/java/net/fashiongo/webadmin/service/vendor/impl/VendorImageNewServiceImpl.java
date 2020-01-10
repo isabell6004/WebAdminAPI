@@ -33,8 +33,8 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
         try {
             Integer bannerId = insert(request.getWid(), request.getType(), request.getFilename());
             approve(request.getWid(), bannerId);
+            activate(request.getWid(), bannerId);
         } catch (Exception e) {
-
         }
     }
 
@@ -42,17 +42,6 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
     public void delete(Integer vendorId, Integer bannerId) {
         final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId;
         httpCaller.delete(endpoint);
-    }
-
-    @Override
-    public void update(SetVendorImageParameter request, Integer oldBannerId) {
-        inactive(oldBannerId);
-        try {
-            Integer bannerId = insert(request.getWid(), request.getType(), request.getFilename());
-            approve(request.getWid(), bannerId);
-        } catch(Exception e) {
-
-        }
     }
 
     private Integer insert(Integer vendorId, Integer bannerTypeId, String fileName) {
@@ -73,9 +62,9 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
         ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, VendorApiHeader.getHeader());
     }
 
-    private void inactive(Integer bannerId) {
-
-        // TODO
+    private void activate(Integer vendorId, Integer bannerId) {
+        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
+        ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, VendorApiHeader.getHeader());
     }
 
     @Getter

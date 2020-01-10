@@ -1,6 +1,6 @@
 package net.fashiongo.webadmin.service.vendor;
 
-import net.fashiongo.webadmin.data.model.vendor.SetVendorBasicInfoParameter;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import org.springframework.scheduling.annotation.Async;
 
@@ -11,4 +11,7 @@ public interface VendorInfoNewService {
 
     @Async
     void update(VendorDetailInfo request);
+
+    @Async
+    void updateDetailInfo(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo);
 }

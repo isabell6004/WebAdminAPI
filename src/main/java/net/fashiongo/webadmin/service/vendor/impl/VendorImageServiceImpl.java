@@ -46,6 +46,10 @@ public class VendorImageServiceImpl implements VendorImageService {
         Integer result = setVendorImage(request);
         cacheService.GetRedisCacheEvict("VendorPictureLogo", String.valueOf(request.getWid()));
         cacheService.cacheEvictVendor(request.getWid());
+
+        if(result == 1)
+            vendorImageNewService.insert(request);
+
         return result;
     }
 
@@ -91,8 +95,6 @@ public class VendorImageServiceImpl implements VendorImageService {
                 vendorImage.setIsApproved(true);
                 vendorImage.setDecidedBy(userID);
                 vendorImageRequestEntityRepository.save(vendorImage);
-
-                vendorImageNewService.insert(request);
             } else {
                 vendorImage.setOriginalFileName(fileName);
                 vendorImage.setVendorImageTypeId(type);
@@ -101,8 +103,6 @@ public class VendorImageServiceImpl implements VendorImageService {
                 vendorImage.setWholesalerId(wid);
                 vendorImage.setDecidedBy(userID);
                 vendorImageRequestEntityRepository.save(vendorImage);
-
-                vendorImageNewService.update(request, vendorImage.getImageRequestId());
             }
             return 1;
         } catch (Exception ex) {

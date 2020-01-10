@@ -56,49 +56,12 @@ public class VendorInfoController {
     }
 
     @PostMapping(value = "vendor/setvendorsetting")
-    public Integer setvendorsetting(@RequestBody SetVendorSettingParameter param) {
-        Integer wid = param.getWid();
-        Integer adminAccount = param.getAdminAccount() == null ? 0 : param.getAdminAccount();
-        Integer vendorCategory = param.getVendorCategory() == null ? 0 : param.getVendorCategory();
-        Integer fraudReport = param.getFraudReport() == null ? 0 : param.getFraudReport();
-        Integer item = param.getItem() == null ? 0 : param.getItem();
-        Integer adminAccountID = param.getAdminAccountID() == null ? 0 : param.getAdminAccountID();
-        Integer vendorCategoryID = param.getVendorCategoryID() == null ? 0 : param.getVendorCategoryID();
-        Integer fraudReportID = param.getFraudReportID() == null ? 0 : param.getFraudReportID();
-        Integer itemID = param.getItemID() == null ? 0 : param.getItemID();
-        LocalDateTime actualOpenDateTemp = StringUtils.isEmpty(param.getActualOpenDateTemp()) ? null : LocalDateTime.parse(param.getActualOpenDateTemp());
+    public Integer setvendorsetting(@RequestBody SetVendorSettingParameter request) {
 
-        renewalVendorService.setVendorSetting(wid, adminAccountID, 1, adminAccount);
-        renewalVendorService.setVendorSetting(wid, vendorCategoryID, 2, vendorCategory);
-        renewalVendorService.setVendorSetting(wid, fraudReportID, 3, fraudReport);
-        renewalVendorService.setVendorSetting(wid, itemID, 4, item);
-
-        Integer payoutSchedule = param.getPayoutSchedule();
-        Integer payoutScheduleWM = param.getPayoutScheduleWM();
-        Integer maxPayoutPerDay = param.getMaxPayoutPerDay();
-        Integer payoutCount = param.getPayoutCount();
-
-        ObjectMapper mapper = new ObjectMapper();
-        VendorDetailInfo r;
-        try {
-            r = mapper.readValue(param.getVendorBasicInfo(), VendorDetailInfo.class);
-        } catch (IOException e) {
-            log.debug("object mapper parse error");
+        if (request.getWid() == null || request.getWid() == 0)
             return null;
-        }
 
-        // TODO
-        Integer result = vendorInfoService.setVendorBasicInfo(r, 2, payoutSchedule, payoutScheduleWM, maxPayoutPerDay, payoutCount);
-
-        if (result == -1) {
-            return result;
-        }
-
-        String dirNameTemp = StringUtils.isEmpty(param.getDirNameTemp()) ? "" : param.getDirNameTemp();
-
-        cacheService.cacheEvictVendor(wid);
-
-        return result;
+        return vendorInfoService.setVendorSettingInfo(request);
     }
 
     @PostMapping(value = "vendor/setvendorbasicinfo", produces = "application/json")
