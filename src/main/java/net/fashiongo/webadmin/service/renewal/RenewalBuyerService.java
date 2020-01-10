@@ -9,6 +9,7 @@ import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.buyer.*;
 import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
+import net.fashiongo.webadmin.data.repository.primary.buyer.AdvancedSearchRetailerRepository;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -24,7 +25,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,6 +87,9 @@ public class RenewalBuyerService {
 	@Autowired
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
+
+	@Autowired
+	private AdvancedSearchRetailerRepository advancedSearchRetailerRepository;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -1026,12 +1029,6 @@ public class RenewalBuyerService {
 		Integer pagesize = parameter.getPagesize();
 		String location = Optional.ofNullable(parameter.getLocation()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 		Boolean active = parameter.getActive();
-//		Timestamp checkoutfrom = Optional.ofNullable(parameter.getCheckoutfrom()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
-//		Timestamp checkoutto = Optional.ofNullable(parameter.getCheckoutto()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
-//		Timestamp loginfrom = Optional.ofNullable(parameter.getLoginfrom()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
-//		Timestamp loginto = Optional.ofNullable(parameter.getLoginto()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
-//		Timestamp registerfrom = Optional.ofNullable(parameter.getRegisterfrom()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
-//		Timestamp registerto = Optional.ofNullable(parameter.getRegisterto()).map(s -> new Timestamp(new Date(s).getTime())).orElse(null);
 		String checkoutfrom = Optional.ofNullable(parameter.getCheckoutfrom()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 		String checkoutto = Optional.ofNullable(parameter.getCheckoutto()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 		String loginfrom = Optional.ofNullable(parameter.getLoginfrom()).filter(s -> StringUtils.hasLength(s)).orElse(null);
@@ -1117,8 +1114,47 @@ public class RenewalBuyerService {
 
 		if(csv) {
 			JsonResponse<AdminRetailerCSVResponse> response = new JsonResponse();
-			List<Object> up_wa_advancedSearch_retailer = jdbcHelper.executeSP("up_wa_AdvancedSearch_Retailer_CSV", param, AdminRetailerCSV.class);
-			List<AdminRetailerCSV> adminRetailerList = (List<AdminRetailerCSV>) up_wa_advancedSearch_retailer.get(0);
+//			List<Object> up_wa_advancedSearch_retailer = jdbcHelper.executeSP("up_wa_AdvancedSearch_Retailer_CSV", param, AdminRetailerCSV.class);
+//			List<AdminRetailerCSV> adminRetailerList = (List<AdminRetailerCSV>) up_wa_advancedSearch_retailer.get(0);
+
+			List<AdminRetailerCSV> adminRetailerList = advancedSearchRetailerRepository.advancedSearchRetailerCSV(userid,
+					useridpartialmatch,
+					retailerid,
+					currentstatus,
+					companyname,
+					companynamepartialmatch,
+					companynamestartswith,
+					firstname,
+					firstnamepartialmatch,
+					lastname,
+					lastnamepartialmatch,
+					active,
+					online,
+					documentupload,
+					location,
+					state,
+					country,
+					s,
+					in1,
+					in2,
+					o,
+					registerfrom,
+					registerto,
+					logincountfrom,
+					logincountto,
+					loginfrom,
+					loginto,
+					ordercountfrom,
+					ordercountto,
+					orderamountfrom,
+					orderamountto,
+					ordervendorcountfrom,
+					ordervendorcountto,
+					checkoutfrom,
+					checkoutto,
+					wholesalerid,
+					orderby,
+					showid);
 
 			AdminRetailerCSVResponse data = AdminRetailerCSVResponse.builder()
 					.table(adminRetailerList)

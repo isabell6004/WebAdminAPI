@@ -3,7 +3,9 @@ package net.fashiongo.webadmin.data.model.buyer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class AdminRetailerCSV {
 
@@ -87,8 +89,26 @@ public class AdminRetailerCSV {
 	@JsonProperty("Registration Device")
 	private String RegistrationDevice;
 
-
-
-
-
+	public AdminRetailerCSV(Integer id, String companyName, String firstName, String lastName, String email, String phone, String billingStreet, String billingCity, String billingStateAddress, String billingZipCode, String billingCountry, String shippingStreet, String shippingCity, String shippingState, String shippingZipcode, String shippingCountry, String active, Integer currentStatus, Timestamp createdOn, String registrationDevice) {
+		this.id = id;
+		this.companyName = companyName;
+		this.firstName = firstName;
+		this.LastName = lastName;
+		this.email = email;
+		this.Phone = phone;
+		this.billingStreet = billingStreet;
+		this.billingCity = billingCity;
+		this.billingStateAddress = billingStateAddress;
+		this.billingZipCode = billingZipCode;
+		this.billingCountry = billingCountry;
+		this.ShippingStreet = shippingStreet;
+		this.ShippingCity = shippingCity;
+		this.ShippingState = shippingState;
+		this.ShippingZipcode = shippingZipcode;
+		this.ShippingCountry = shippingCountry;
+		this.active = active;
+		this.currentStatus = currentStatus;
+		this.createdOn = Optional.ofNullable(createdOn).map(Timestamp::toLocalDateTime).orElse(null);
+		this.RegistrationDevice = registrationDevice;
+	}
 }
