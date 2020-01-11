@@ -432,6 +432,7 @@ public class RenewalVendorService extends ApiService {
 			wholeSaler.setInHouseMemo(r.getInHouseMemo());
 			wholeSaler.setOrderNotice(r.getOrderNotice());
 			wholeSaler.setNoticeToAll(r.getNoticeToAll());
+			wholeSaler.setSourceType(r.getSourceType());
 
 			if (saveType == 2) {
 				wholeSaler.setNewCustYN(r.getNewCustYN());
