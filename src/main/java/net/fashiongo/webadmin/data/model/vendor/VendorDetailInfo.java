@@ -601,7 +601,7 @@ public class VendorDetailInfo {
     @JsonProperty(value = "IsADBlock")
     private Boolean isADBlock;
 
-    @JsonProperty(value = "SourceType")
-    private Boolean sourceType;
+    @JsonProperty(value = "Source_Type")
+    private Integer sourceType;
 
 }

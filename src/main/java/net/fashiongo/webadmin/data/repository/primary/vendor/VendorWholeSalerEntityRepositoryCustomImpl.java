@@ -81,7 +81,8 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 T.commissionRate, T.billingEmail1, T.billingEmail2, T.billingEmail3, T.showRoomStreetNo, T.showRoomCity, T.showRoomCountry, T.showRoomState,
                 T.showRoomZipcode, T.showRoomPhone, T.showRoomFax,
                 ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser"),
-                T.isADBlock.as("IsADBlock")
+                T.isADBlock.as("IsADBlock"),
+                T.sourceType
                 )).from(T)
                 .where(T.wholeSalerID.eq(wholeSalerID));
 
