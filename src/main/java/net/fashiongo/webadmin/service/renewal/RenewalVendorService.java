@@ -432,7 +432,6 @@ public class RenewalVendorService extends ApiService {
 			wholeSaler.setInHouseMemo(r.getInHouseMemo());
 			wholeSaler.setOrderNotice(r.getOrderNotice());
 			wholeSaler.setNoticeToAll(r.getNoticeToAll());
-			wholeSaler.setSourceType(r.getSourceType());
 
 			if (saveType == 2) {
 				wholeSaler.setNewCustYN(r.getNewCustYN());
@@ -1591,7 +1590,7 @@ public class RenewalVendorService extends ApiService {
 		String typeOfContract = StringUtils.isEmpty(vendorListParam.getTypeOfContract()) ? null : vendorListParam.getTypeOfContract();
 		String photoplan = StringUtils.isEmpty(vendorListParam.getPhotoPlan()) ? null : vendorListParam.getPhotoPlan();
 		String chooseType = StringUtils.isEmpty(vendorListParam.getChooseType()) ? null : vendorListParam.getChooseType();
-		String commission = StringUtils.isEmpty(vendorListParam.getCommission()) ? null : vendorListParam.getCommission();		
+		String commission = StringUtils.isEmpty(vendorListParam.getCommission()) ? null : vendorListParam.getCommission();
 		String actualOpenFrom = StringUtils.isEmpty(vendorListParam.getActualopenfrom()) ? null : vendorListParam.getActualopenfrom();
 		String actualOpenTo = StringUtils.isEmpty(vendorListParam.getActualopento()) ? null : vendorListParam.getActualopento();
 		BigDecimal avgOrderAmountFrom = vendorListParam.getAvgorderamountfrom();
@@ -1608,7 +1607,6 @@ public class RenewalVendorService extends ApiService {
 		Integer status = vendorListParam.getStatus() == null ? 0 : vendorListParam.getStatus();
 		Integer assignedUser = vendorListParam.getAssignedUser() == null ? 0 : vendorListParam.getAssignedUser();
 		Integer fgExclusiveType = vendorListParam.getFgExclusiveType();
-		Integer sourcetype = vendorListParam.getSourcetype() == null ? 0 : vendorListParam.getSourcetype();
 
 		if (wholeSalerID == 0) wholeSalerID = null;
 
@@ -1636,7 +1634,7 @@ public class RenewalVendorService extends ApiService {
 		param.add(country);
 		param.add(typeOfContract);
 		param.add(photoplan);
-		param.add(chooseType);		
+		param.add(chooseType);
 		param.add(commission);
 		param.add(actualOpenFrom);
 		param.add(actualOpenTo);
@@ -1655,7 +1653,6 @@ public class RenewalVendorService extends ApiService {
 		param.add(orderBy);
 		param.add(assignedUser);
 		param.add(fgExclusiveType);
-		param.add(sourcetype);
 
 		List<Object> up_wa_AdvancedSearch_Vendor = jdbcHelper.executeSP("up_wa_AdvancedSearch_Vendor", param, Total.class, VendorList.class);
 		List<Total> count = (List<Total>) up_wa_AdvancedSearch_Vendor.get(0);

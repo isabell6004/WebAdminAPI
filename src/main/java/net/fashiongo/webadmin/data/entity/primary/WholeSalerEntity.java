@@ -596,7 +596,4 @@ public class WholeSalerEntity {
 
     @Column(name = "PrivacyPolicy_Url")
     private String privacyPolicyUrl;
-    
-    @Column(name = "Source_Type")
-    private Integer sourceType = 1;
 }
