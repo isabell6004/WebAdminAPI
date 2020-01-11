@@ -89,7 +89,4 @@ public class VendorList {
 
     @JsonProperty(value = "FashionGoExclusive")
     private Boolean fashionGoExclusive;
-    
-    @JsonProperty(value = "Source_Type")
-    private Boolean sourceType;
 }

@@ -67,9 +67,6 @@ public class GetVendorListParameter {
 
     @JsonProperty(value = "Commission")
     private String commission;
-    
-    @JsonProperty(value = "SourceType")
-    private Integer sourcetype;
 
     @JsonProperty(value = "FGExclusiveType")
     private Integer fgExclusiveType;
