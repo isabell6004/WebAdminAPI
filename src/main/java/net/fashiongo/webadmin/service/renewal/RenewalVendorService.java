@@ -1439,21 +1439,16 @@ public class RenewalVendorService extends ApiService {
 	}
 
 	public JsonResponse getVendorAdminAccountList(Integer wid) {
-		List<Object> param = new ArrayList<>();
-		param.add(wid);
-		param.add(null);
-
 		JsonResponse<List<VendorAdminAccount>> response = new JsonResponse<>(false, null, null);
 
 		try {
-			List<Object> up_wa_GetVendorAdminAccountList = jdbcHelper.executeSP("up_wa_GetVendorAdminAccountList", param, VendorAdminAccount.class);
-			List<VendorAdminAccount> vendorAdminAccountList = (List<VendorAdminAccount>) up_wa_GetVendorAdminAccountList.get(0);
+			List<VendorAdminAccount> vendorAdminAccounts = wholeSalerEntityRepository.findVendorAdminAccountList(wid);
 
 			response.setSuccess(true);
-			response.setData(vendorAdminAccountList);
-
+			response.setData(vendorAdminAccounts);
 		} catch (Exception e) {
 			response.setMessage("fail");
+			log.warn(e.getMessage(), e);
 		}
 
 		return response;
