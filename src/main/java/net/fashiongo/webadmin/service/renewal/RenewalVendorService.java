@@ -1551,10 +1551,7 @@ public class RenewalVendorService extends ApiService {
 	}
 
 	public GetAssignedUserListResponse getAssignedUserList() {
-		List<Object> param = new ArrayList<>();
-
-		List<Object> up_wa_GetAssignedUserList = jdbcHelper.executeSP("up_wa_GetAssignedUserList", param, AssignedUser.class);
-		List<AssignedUser> data = (List<AssignedUser>) up_wa_GetAssignedUserList.get(0);
+		List<AssignedUser> data = securityUserEntityRepository.findAssignedUserList();
 
 		return GetAssignedUserListResponse.builder().assignedUserList(data).build();
 	}
