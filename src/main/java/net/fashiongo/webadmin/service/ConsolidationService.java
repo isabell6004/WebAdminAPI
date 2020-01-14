@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import net.fashiongo.webadmin.data.entity.primary.*;
+import net.fashiongo.webadmin.data.repository.primary.NewsEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -29,11 +31,6 @@ import net.fashiongo.webadmin.dao.primary.OrderRepository;
 import net.fashiongo.webadmin.dao.primary.OrderStatusChangeLogRepository;
 import net.fashiongo.webadmin.dao.primary.ShipAddressRepository;
 import net.fashiongo.webadmin.dao.primary.ShipMethodRepository;
-import net.fashiongo.webadmin.data.entity.primary.ConsolidationEntity;
-import net.fashiongo.webadmin.data.entity.primary.Order;
-import net.fashiongo.webadmin.data.entity.primary.OrderStatusChangeLogEntity;
-import net.fashiongo.webadmin.data.entity.primary.ShipAddressEntity;
-import net.fashiongo.webadmin.data.entity.primary.ShipMethod;
 import net.fashiongo.webadmin.model.pojo.consolidation.Consolidation;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetail;
 import net.fashiongo.webadmin.model.pojo.consolidation.ConsolidationDetailList;
@@ -73,6 +70,7 @@ public class ConsolidationService extends ApiService {
 	@Autowired private ShipAddressRepository shipAddressRepository;
 	@Autowired private ConsolidationDropoffRepository consolidationDropoffRepository;
 	@Autowired private ConsolidationOrdersRepository consolidationOrdersRepository;
+	@Autowired private NewsEntityRepository newsEntityRepository;
 	private BigDecimal waivedFeeUpperBound = BigDecimal.valueOf(0.5); // waive 0 to 49 cents due to Stripe not accepting
 	private static final int UPS_GROUND_ID = 3;
 	private static final int FEDEX_GROUND_ID = 9;
@@ -536,14 +534,23 @@ public class ConsolidationService extends ApiService {
 		order.setBagQty(dropoffSaveRequest.getBagQty());
 		order.setMemo(dropoffSaveRequest.getMemo());
 		consolidationOrdersRepository.save(order);
-		result = true;
-		return result;
+		inactivateDropOffNotification(dropoffSaveRequest.getConsolidationId(), dropoffSaveRequest.getOrderId());
+		return true;
+	}
+
+	private void inactivateDropOffNotification(Integer consolidationId, Integer orderId) {
+		NewsEntity news = newsEntityRepository.getActiveNews(consolidationId, orderId);
+		if (news == null) return;
+		news.setActive(false);
+		news.setShowBanner(false);
+		news.setLastModifiedDateTime(LocalDateTime.now());
+		news.setLastUser(Utility.getUsername());
+		newsEntityRepository.save(news);
 	}
 	
-	public JsonResponse getConsolidationDetail(Integer consolidationId) throws JsonProcessingException {
+	public JsonResponse<?> getConsolidationDetail(Integer consolidationId) {
 		String url = "/pdf/consolidation/detail/" + consolidationId;
-		JsonResponse<?> result = httpClient.get(url);
-		return result;
+		return (JsonResponse<?>) httpClient.get(url);
 	}
 	
 	public DropOffConsolidationOrderDto getConsolidationReceipt(Integer orderId) throws Exception {

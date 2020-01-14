@@ -376,7 +376,8 @@ public class RenewalOrderService {
 												if(dropReferenceID != null) {
 
 													newsEntityRepository.findById(dropReferenceID).ifPresent(newsEntity -> {
-														newsEntity.setActive(true);
+														newsEntity.setActive(false);
+														newsEntity.setShowBanner(false);
 														newsEntity.setLastModifiedDateTime(NOW);
 														newsEntityRepository.save(newsEntity);
 													});
