@@ -9,9 +9,9 @@ import net.fashiongo.webadmin.service.vendor.VendorSisterAccountNewService;
 import net.fashiongo.webadmin.service.vendor.VendorSisterAccountService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -37,32 +37,27 @@ public class VendorSisterAccountServiceImpl implements VendorSisterAccountServic
         this.cacheService = cacheService;
     }
 
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED, readOnly = true)
     public List<VendorSister> getVendorSister(Integer wid) {
         List<VendorSister> result = mapWholeSalerSisterEntityRepository.findVendorSister(wid);
 
         return result;
     }
 
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED, readOnly = true)
     public List<Integer> getVendorSisterChk(Integer wid, Integer sisterId) {
         List<Integer> result = mapWholeSalerSisterEntityRepository.findMapIDByWholeSalerIDAndSisterWholeSalerID(wid, sisterId);
-
         return result;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public Boolean setVendorSister(Integer wid, Integer sisterVendorId) {
-        MapWholeSalerSisterEntity trm = new MapWholeSalerSisterEntity();
         try {
-            trm.setWholeSalerID(wid);
-            trm.setSisterWholeSalerID(sisterVendorId);
-            trm.setCreatedBy(Utility.getUsername());
-            trm.setCreatedOn(LocalDateTime.now());
-
+            MapWholeSalerSisterEntity trm = MapWholeSalerSisterEntity.create(wid, sisterVendorId, Utility.getUsername());
             mapWholeSalerSisterEntityRepository.save(trm);
             cacheService.cacheEvictVendor(wid);
 
             vendorSisterAccountNerService.regist(wid, sisterVendorId);
-
             return true;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
@@ -70,14 +65,13 @@ public class VendorSisterAccountServiceImpl implements VendorSisterAccountServic
         }
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public Boolean delVendorSister(Integer mapID) {
         try {
             MapWholeSalerSisterEntity trm = mapWholeSalerSisterEntityRepository.findById(mapID).orElseThrow(() -> new RuntimeException("can not find the data."));
             mapWholeSalerSisterEntityRepository.delete(trm);
 
             vendorSisterAccountNerService.delete(trm.getWholeSalerID(), trm.getSisterWholeSalerID());
-
             return true;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);

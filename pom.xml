@@ -38,7 +38,17 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
-	</repositories>
+
+        <repository>
+            <id>nhn.nexus.repository</id>
+            <name>NHN Maven Repository</name>
+            <url>http://nexus.nhnent.com/content/groups/public/</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+
+    </repositories>
 
 	<dependencies>
 	
@@ -59,23 +69,6 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 		</dependency>
 
-		<!-- log4j2 -->
-		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-log4j2</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-api</artifactId>
-		   <version>2.11.1</version>
-		 </dependency>
-		 <dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-core</artifactId>
-		    <version>2.11.1</version>
-		 </dependency>
-		<!-- //log4j2 -->
-		
 		<!-- redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -307,14 +300,25 @@
 			<version>2.6.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.github.rkpunjal.sqlsafe</groupId>
-			<artifactId>sql-injection-safe</artifactId>
-			<version>1.0.2</version>
-		</dependency>
+        <dependency>
+            <groupId>com.github.rkpunjal.sqlsafe</groupId>
+            <artifactId>sql-injection-safe</artifactId>
+            <version>1.0.2</version>
+        </dependency>
 
-	</dependencies>
-	
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.toast.java.logncrash.logback</groupId>
+            <artifactId>logncrash-java-sdk3</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+    </dependencies>
+
 	<build>
 		<plugins>
 			<plugin>

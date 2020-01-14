@@ -9,6 +9,7 @@ import net.fashiongo.webadmin.service.vendor.VendorSNSNewService;
 import net.fashiongo.webadmin.service.vendor.VendorSNSService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -35,7 +36,7 @@ public class VendorSNSServiceImpl implements VendorSNSService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public boolean modifyVendorSNSInfo(SetVendorSNSListParameter request) {
         Boolean result = setVendorSNSList(request);
         cacheService.cacheEvictVendor(request.getWholeSalerID());

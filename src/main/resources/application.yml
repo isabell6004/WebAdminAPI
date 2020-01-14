@@ -205,7 +205,7 @@ spring:
       maxTotal: 10
 
 logging:
-  config: classpath:log4j2-local.xml
+  config: classpath:logback-spring.xml
   path: logs/
   level:
     sql: TRACE

@@ -45,7 +45,7 @@ public class VendorSNSNewServiceImpl implements VendorSNSNewService {
     }
 
     @Getter
-    private static class VendorSocialMediaCommand {
+    static class VendorSocialMediaCommand {
         private Integer socialMediaId;
         private String uri;
 

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <springProperty name="SERVER_PORT" source="server.port" />
+    <springProperty name="LOG_PATH" source="logging.path" />
+
+    <Property name="LOG_PATTERN"
+              value="%highlight{%d{HH:mm:ss.SSS} %-5level %logger{36}.%M() @%L - %msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=black, DEBUG=green, TRACE=blue}" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>${LOG_PATTERN}</Pattern>
+        </layout>
+    </appender>
+
+    <appender name="LOG_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}WebAdminAPI_${SERVER_PORT}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}WebAdminAPI_${SERVER_PORT}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>300MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M:%line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="PERFORMANCE_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}WebAdminAPI_PERFORMANCE_${SERVER_PORT}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}WebAdminAPI_PERFORMANCE_${SERVER_PORT}.%d{yyyy-MM-dd}..%i.log.gz</fileNamePattern>
+            <maxFileSize>300MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}WebAdminAPI_ERROR_${SERVER_PORT}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}WebAdminAPI_ERROR_${SERVER_PORT}.%d{yyyy-MM-dd}..%i.log.gz</fileNamePattern>
+            <maxFileSize>300MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <springProperty scope="context" name="ACTIVE_PROFILE" source="spring.profiles.active"/>
+    <springProfile name="local,tc-dev,tc-stage,tc-beta">
+        <property name="appKey" value="DX9IqlKAKNbOxYXR" />
+    </springProfile>
+    <springProfile name="toast">
+        <property name="appKey" value="3hTFATueom0f68dE" />
+    </springProfile>
+
+    <appender name="logNCrashLogger" class="ch.qos.logback.classic.AsyncAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="2048"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+
+        <appender name="logNCrashHttpAsync" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
+            <param name="appKey" value="${appKey}"/>
+            <param name="logType" value="webadmin-api"/>
+            <param name="logSource" value="${ACTIVE_PROFILE}"/>
+            <param name="version" value="0.0.1-SNAPSHOT"/>
+            <param name="debug" value="true"/>
+            <param name="errorCodeType" value="action"/>
+        </appender>
+    </appender>
+
+    <springProfile name="local">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </root>
+        <logger name="org.hibernate.SQL" level="INFO" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="ERROR" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="net.fashiongo.webadmin" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+    </springProfile>
+
+    <springProfile name="tc-dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </root>
+        <logger name="org.hibernate.SQL" level="INFO" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="ERROR" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="net.fashiongo.webadmin" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+    </springProfile>
+
+    <springProfile name="tc-stage">
+        <Root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </Root>
+        <logger name="org.hibernate.SQL" level="INFO" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="ERROR" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="net.fashiongo.webadmin" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+    </springProfile>
+
+    <springProfile name="tc-beta">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </root>
+        <logger name="org.hibernate.SQL" level="INFO" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="ERROR" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="net.fashiongo.webadmin" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+    </springProfile>
+
+    <springProfile name="toast">
+        <root level="WARN">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+        </root>
+        <logger name="org.hibernate.SQL" level="ERROR" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="ERROR" additivity="false">
+            <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="net.fashiongo.webadmin" level="ERROR" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+            <appender-ref ref="logNCrashLogger" />
+        </logger>
+    </springProfile>
+</configuration>
