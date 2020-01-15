@@ -1,12 +1,6 @@
 package net.fashiongo.webadmin.system;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.LoggerContext;
+import net.fashiongo.webadmin.utility.Utility;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -14,19 +8,22 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.ThrowsAdvice;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import net.fashiongo.webadmin.utility.Utility;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 
 @Aspect
 @Component
 public class SetterMonitor implements ThrowsAdvice {
-	protected final Logger logger = LogManager.getLogger();
-	LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
-	
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
 	/**
 	 * 
 	 * @since 2018. 9. 13.

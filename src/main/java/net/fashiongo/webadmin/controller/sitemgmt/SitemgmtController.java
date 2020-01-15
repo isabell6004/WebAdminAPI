@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.controller;
+package net.fashiongo.webadmin.controller.sitemgmt;
 
 
 import io.netty.util.internal.StringUtil;
@@ -18,11 +18,9 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
-import net.fashiongo.webadmin.model.primary.SocialMedia;
 import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
-import net.fashiongo.webadmin.service.SocialMediaService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtService;
 import net.fashiongo.webadmin.service.renewal.RenewalSocialMediaService;
@@ -51,9 +49,6 @@ public class SitemgmtController {
 	@Autowired
 	SitemgmtService sitemgmtService;
 
-	@Autowired
-	SocialMediaService socialMediaService;
-	
     @Autowired
     private CacheService cacheService;
     
@@ -282,45 +277,6 @@ public class SitemgmtController {
 		results.setData(todaydeal);
 
 		return results;
-	}
-
-	/**
-	 * Get social media list
-	 * @since Oct 23, 2018.
-	 * @author roy
-	 * @return JsonResponse<List<SocialMedia>>
-	 */
-	@RequestMapping(value = "getsocialmedialist", method = RequestMethod.GET)
-	public JsonResponse<List<SocialMedia>> getSocialMediaList() {
-		List<SocialMedia> socialMediaList = socialMediaService.getSocialMedias();
-		return new JsonResponse<>(true, null, socialMediaList);
-	}
-	
-	/**
-	 * Delete social media
-	 * @since Oct 25, 2018.
-	 * @author roy
-	 * @param DelSocialMediaParameter
-	 * @return JsonResponse<String>
-	 */
-	@RequestMapping(value = "delsocialmedia", method = RequestMethod.POST)
-	public JsonResponse<String> deleteSocialMedias(@RequestBody DelSocialMediaParameter delSocialMediaParameter) {
-		boolean result = renewalSocialMediaService.deleteSocialMedias(delSocialMediaParameter.getSocialMediaIds());
-		return new JsonResponse<>(result, null, "");
-	}
-	
-	/**
-	 * Save social media
-	 * @since Oct 26, 2018.
-	 * @author roy
-	 * @param SocialMedia
-	 * @return JsonResponse<String>
-	 */
-	@RequestMapping(value = "setsocialmedialist", method = RequestMethod.POST)
-	public JsonResponse<String> saveSocialMedia(@RequestBody SocialMedia socialMedia) {
-		ResultCode result = socialMediaService.saveSocialMedia(socialMedia);
-		return new JsonResponse<>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), "");
-
 	}
 
 	/**

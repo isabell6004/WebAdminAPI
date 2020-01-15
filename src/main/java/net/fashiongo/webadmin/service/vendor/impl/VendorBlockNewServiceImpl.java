@@ -6,6 +6,7 @@ import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockUpdate;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiHeader;
 import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,8 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
 
     private final static String Vendor_Request_Command_Key_Name = "setting";
 
-    @Value("${api.endpoint.newVendorApi}")
-    private String newVendorApi;
+    @Value("${fashionGoApi.fashionGo-api.endpoint}")
+    private String fashionGoApi;
 
     private HttpClientWrapper httpCaller;
 
@@ -32,13 +33,13 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     }
 
     private void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId) {
-        final String endpoint = newVendorApi + "/v1.0/vendor/" + wholeSalerId;
+        final String endpoint = fashionGoApi + "/v1.0/vendor/" + wholeSalerId;
 
         VendorBlockStatusCommand newRequest = VendorBlockStatusCommand.create(isBlock, blockReasonId);
         Map<String, Object> wrappedRequest = new HashMap<>();
         wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
 
-        httpCaller.put(endpoint, wrappedRequest, VendorApiHeader.getHeader());
+        httpCaller.put(endpoint, wrappedRequest, FashionGoApiHeader.getHeader());
     }
 
     @Override
@@ -53,13 +54,13 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
 
     @Override
     public void modifyBlockReason(SetVendorBlockUpdate request) {
-        final String endpoint = newVendorApi + "/v1.0/vendor/" + request.getWholeSalerID();
+        final String endpoint = fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID();
 
         VendorBlockStatusCommand newRequest = VendorBlockStatusCommand.create(request.getIsBlock(), Long.valueOf(request.getBlockReasonID()));
         Map<String, Object> wrappedRequest = new HashMap<>();
         wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
 
-        httpCaller.post(endpoint, wrappedRequest, VendorApiHeader.getHeader());
+        httpCaller.post(endpoint, wrappedRequest, FashionGoApiHeader.getHeader());
     }
 
     @Getter

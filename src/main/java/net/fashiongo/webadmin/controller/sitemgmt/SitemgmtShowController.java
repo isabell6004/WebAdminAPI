@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.controller;
+package net.fashiongo.webadmin.controller.sitemgmt;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.service.vendor.impl;
+package net.fashiongo.webadmin.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,7 @@ import java.util.UUID;
  * Created by jinwoo on 2019-12-13.
  */
 @Slf4j
-public class VendorApiHeader {
+public class FashionGoApiHeader {
 
     private final static String ServiceType = "FG";
     private final static String ApplicationType = "WebAdmin";

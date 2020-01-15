@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiHeader;
 import net.fashiongo.webadmin.service.vendor.SimilarVendorNewService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,8 @@ import java.util.List;
 @Service
 public class SimilarVendorNewServiceImpl implements SimilarVendorNewService {
 
-    @Value("${api.endpoint.newVendorApi}")
-    private String newVendorApi;
+    @Value("${fashionGoApi.fashionGo-api.endpoint}")
+    private String fashionGoApi;
 
     private final HttpClientWrapper httpCaller;
 
@@ -22,16 +23,16 @@ public class SimilarVendorNewServiceImpl implements SimilarVendorNewService {
 
     @Override
     public void addSimilarVendor(Integer vendorId, List<Integer> similarVendorIdList) {
-        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/similar";
+        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/similar";
         CreateSimilarVendorCommand newRequest = new CreateSimilarVendorCommand(similarVendorIdList);
-        httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
     @Override
     public void deleteSimilarVendor(Integer vendorId, List<Integer> mapIdList) {
-        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/similar/delete";
+        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/similar/delete";
         DeleteSimilarVendorCommand newRequest = new DeleteSimilarVendorCommand(mapIdList);
-        httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
     @Getter

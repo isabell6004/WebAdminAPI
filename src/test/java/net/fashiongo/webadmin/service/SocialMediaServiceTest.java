@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import net.fashiongo.webadmin.service.sitemgmt.SocialMediaService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,7 +28,7 @@ import net.fashiongo.webadmin.model.primary.SocialMedia;
 public class SocialMediaServiceTest {
 	
 	@Autowired
-	SocialMediaService socialMediaService;
+    SocialMediaService socialMediaService;
 
 	@Test
 	public void testGetSocialMedias() {

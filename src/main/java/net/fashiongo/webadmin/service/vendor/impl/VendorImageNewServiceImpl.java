@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiHeader;
 import net.fashiongo.webadmin.service.vendor.VendorImageNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +20,8 @@ import java.util.Map;
 @Service
 public class VendorImageNewServiceImpl implements VendorImageNewService {
 
-    @Value("${api.endpoint.newVendorApi}")
-    private String newVendorApi;
+    @Value("${fashionGoApi.fashionGo-api.endpoint}")
+    private String fashionGoApi;
 
     private HttpClientWrapper httpCaller;
 
@@ -40,14 +41,14 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
 
     @Override
     public void delete(Integer vendorId, Integer bannerId) {
-        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId;
+        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId;
         httpCaller.delete(endpoint);
     }
 
     private Integer insert(Integer vendorId, Integer bannerTypeId, String fileName) {
-        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/banner";
+        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner";
         VendorBannerImageCommand vendorBannerImageCommand = VendorBannerImageCommand.create(bannerTypeId, fileName);
-        ResponseEntity<JsonResponse> response = httpCaller.post(endpoint, vendorBannerImageCommand, VendorApiHeader.getHeader());
+        ResponseEntity<JsonResponse> response = httpCaller.post(endpoint, vendorBannerImageCommand, FashionGoApiHeader.getHeader());
 
         if(response.getBody().isSuccess()) {
             Map<String, Integer> result = (Map<String, Integer>) response.getBody().getData();
@@ -58,13 +59,13 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
     }
 
     private void approve(Integer vendorId, Integer bannerId) {
-        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/approve";
-        ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, VendorApiHeader.getHeader());
+        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/approve";
+        ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
     }
 
     private void activate(Integer vendorId, Integer bannerId) {
-        final String endpoint = newVendorApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
-        ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, VendorApiHeader.getHeader());
+        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
+        ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
     }
 
     @Getter

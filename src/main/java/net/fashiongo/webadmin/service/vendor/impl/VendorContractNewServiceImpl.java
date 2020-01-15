@@ -5,13 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiHeader;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -21,8 +22,8 @@ import java.util.Optional;
 @Slf4j
 public class VendorContractNewServiceImpl implements VendorContractNewService {
 
-    @Value("${api.endpoint.newVendorApi}")
-    private String newVendorApi;
+    @Value("${fashionGoApi.fashionGo-api.endpoint}")
+    private String fashionGoApi;
 
     private HttpClientWrapper httpCaller;
 
@@ -32,31 +33,33 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
     @Override
     public void createVendorContractDocument(SetVendorContractDocumentParameter request) {
-        final String endpoint = newVendorApi + "/v1.0/contract/document";
+        final String endpoint = fashionGoApi + "/v1.0/contract/document";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
-        httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
     @Override
     public void modifyVendorContractDocument(SetVendorContractDocumentParameter request) {
-        final String endpoint = newVendorApi + "/v1.0/contract/document";
+        final String endpoint = fashionGoApi + "/v1.0/contract/document";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
-        httpCaller.put(endpoint, newRequest, VendorApiHeader.getHeader());
+        httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
 
     @Override
     public void deleteVendorContractDocument(List<Long> documentIds) {
-        final String endpoint = newVendorApi + "/v1.0/contract/document/delete";
+        final String endpoint = fashionGoApi + "/v1.0/contract/document/delete";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(documentIds);
-        httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
     @Override
     public void createAndModifyVendorContractHistory(SetVendorContractParameter request) {
-        final String endpoint = newVendorApi + "/v1.0/contract/contract";
+        final String endpoint = fashionGoApi + "/v1.0/contract";
+        log.debug("call the vendor api:{}", endpoint);
         ContractHistoryCommand newRequest = new ContractHistoryCommand(request);
-        httpCaller.post(endpoint, newRequest, VendorApiHeader.getHeader());
+        Map<String, String> headers = FashionGoApiHeader.getHeader();
+        httpCaller.post(endpoint, newRequest, headers);
     }
 
     @Getter
@@ -64,6 +67,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
         private Long contractHistoryId;
 
+        private Integer vendorId;
         //    private Integer typeCode;
         private Long planId;
 
@@ -79,13 +83,14 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         private String accountExecutiveBy;
 
         private BigDecimal commissionRate;
-        private LocalDateTime dateFrom;
+        private String dateFrom;
 //    private LocalDateTime dateTo;
 
         private String memo;
         private Boolean isContractRevised;
 
         private ContractHistoryCommand(SetVendorContractParameter request) {
+            this.vendorId = request.getWholeSalerID();
             this.contractHistoryId = Long.valueOf(request.getVendorContractID());
             this.planId = Long.valueOf(request.getVendorContractPlanID());
             this.setupFee = request.getSetupFee();
@@ -96,7 +101,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
             this.monthlyItemCap = request.getMonthlyItems();
             this.accountExecutiveId = request.getRepID();
             this.commissionRate = request.getCommissionRate();
-            this.dateFrom = SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()).toLocalDateTime();
+            this.dateFrom = SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()).toLocalDateTime().toString();
 //            this.dateTo = Timestamp.valueOf(SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()).toLocalDateTime().minusDays(1)).toLocalDateTime();
             this.memo = request.getMemo();
             this.isContractRevised = request.getVendorContractRowAdd();
