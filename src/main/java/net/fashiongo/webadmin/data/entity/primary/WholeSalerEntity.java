@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,7 +29,7 @@ public class WholeSalerEntity {
     private Integer sortNo;
 
     @Column(name = "StartingDate")
-    private LocalDateTime startingDate;
+    private Timestamp startingDate;
 
     @Column(name = "CompanyName")
     private String companyName;
@@ -253,7 +254,7 @@ public class WholeSalerEntity {
     private String ownerCountry;
 
     @Column(name = "ContractExpireDate")
-    private LocalDateTime contractExpireDate;
+    private Timestamp contractExpireDate;
 
     @Column(name = "BillReviewHoLee")
     private String billReviewHoLee;
@@ -301,7 +302,7 @@ public class WholeSalerEntity {
     private String lastUser;
 
     @Column(name = "LastModifiedDateTime")
-    private LocalDateTime lastModifiedDateTime;
+    private Timestamp lastModifiedDateTime;
 
     @Column(name = "MinTQYNStyle")
     private String minTQYNStyle;
