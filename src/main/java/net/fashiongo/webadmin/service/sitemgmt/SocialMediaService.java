@@ -1,14 +1,11 @@
-/**
- * 
- */
 package net.fashiongo.webadmin.service.sitemgmt;
 
 import net.fashiongo.common.dal.JdbcHelper;
-import net.fashiongo.webadmin.dao.primary.SocialMediaRepository;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.primary.SocialMedia;
+import net.fashiongo.webadmin.data.entity.primary.sitemgmt.SocialMedia;
+import net.fashiongo.webadmin.data.model.sitemgmt.SocialMediaParameter;
+import net.fashiongo.webadmin.data.repository.primary.sitemgmt.SocialMediaRepository;
+import net.fashiongo.webadmin.exception.NotFoundSitemgmtException;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,10 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @author roy
- *
- */
 @Service
 public class SocialMediaService {
 
@@ -38,23 +31,10 @@ public class SocialMediaService {
         this.jdbcHelper = jdbcHelper;
     }
 
-	/**
-	 * Get social media list
-	 * @since Oct 23, 2018.
-	 * @author roy
-	 * @return List<SocialMedia>
-	 */
 	public List<SocialMedia> getSocialMedias() {
 		return socialMediaRepository.findAllByOrderBySocialMediaIdAsc();
 	}
 	
-	/**
-	 * Delete social medias
-	 * @since Oct 23, 2018.
-	 * @author roy
-	 * @param String socialMediaIds
-	 * @return boolean
-	 */
 	public boolean deleteSocialMedias(String socialMediaIds) {
 
 	    if(StringUtils.isEmpty(socialMediaIds)) {
@@ -73,18 +53,20 @@ public class SocialMediaService {
 		return true;
 	}
 	
-	/**
-	 * Save social media
-	 * @since Oct 25, 2018.
-	 * @author roy
-	 * @param SocialMedia
-	 * @return ResultCode
-	 */
-	public Boolean saveSocialMedia(SocialMedia socialMedia) {
+	public Boolean saveSocialMedia(SocialMediaParameter request) {
 		try {
-			socialMediaRepository.save(socialMedia);
+		    if(request.getSocialMediaId() == null || request.getSocialMediaId() == 0) {
+		        SocialMedia socialMedia = SocialMedia.create(request);
+                socialMediaRepository.save(socialMedia);
 
-			socialMediaNewService.registOrUpdate(socialMedia);
+                socialMediaNewService.regist(socialMedia);
+            } else {
+                SocialMedia socialMedia = socialMediaRepository.findById(request.getSocialMediaId()).orElseThrow(NotFoundSitemgmtException::new);
+                socialMedia.update(request);
+                socialMediaRepository.save(socialMedia);
+
+                socialMediaNewService.update(socialMedia);
+            }
 			return true;
 		} catch (Exception e) {
 			return false;

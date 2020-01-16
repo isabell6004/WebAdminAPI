@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.fashiongo.webadmin.model.pojo.sitemgmt.parameter;
+package net.fashiongo.webadmin.data.model.sitemgmt;
 
 import java.util.List;
 

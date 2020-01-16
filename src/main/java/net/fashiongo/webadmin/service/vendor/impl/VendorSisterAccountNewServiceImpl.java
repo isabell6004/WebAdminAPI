@@ -2,10 +2,10 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.VendorSisterAccountNewService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class VendorSisterAccountNewServiceImpl implements VendorSisterAccountNewService {
 
-    @Value("${fashionGoApi.fashionGo-api.endpoint}")
-    private String fashionGoApi;
-
     private HttpClientWrapper httpCaller;
 
     public VendorSisterAccountNewServiceImpl(HttpClientWrapper httpCaller) {
@@ -26,14 +23,14 @@ public class VendorSisterAccountNewServiceImpl implements VendorSisterAccountNew
 
     @Override
     public void regist(Integer vendorId, Integer sisterVendorId) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister";
         SisterAccountCommand newRequest = SisterAccountCommand.create(sisterVendorId);
         httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
     @Override
     public void delete(Integer vendorId, Integer sisterVendorId) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister/" + sisterVendorId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister/" + sisterVendorId;
         httpCaller.post(endpoint, FashionGoApiHeader.getHeader());
     }
 

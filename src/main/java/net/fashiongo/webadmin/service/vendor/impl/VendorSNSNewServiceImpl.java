@@ -3,10 +3,10 @@ package net.fashiongo.webadmin.service.vendor.impl;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSNSListParameter;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.VendorSNSNewService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,9 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class VendorSNSNewServiceImpl implements VendorSNSNewService {
 
-    @Value("${fashionGoApi.fashionGo-api.endpoint}")
-    private String fashionGoApi;
-
     private HttpClientWrapper httpCaller;
 
     public VendorSNSNewServiceImpl(HttpClientWrapper httpCaller) {
@@ -27,20 +24,20 @@ public class VendorSNSNewServiceImpl implements VendorSNSNewService {
 
     @Override
     public void create(SetVendorSNSListParameter request) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns";
         VendorSocialMediaCommand command = VendorSocialMediaCommand.create(request.getSocialMediaID(), request.getSocialMediaUsername());
         httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader());
     }
 
     @Override
     public void delete(SetVendorSNSListParameter request) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns/" + request.getSocialMediaID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns/" + request.getSocialMediaID();
         httpCaller.delete(endpoint, FashionGoApiHeader.getHeader());
     }
 
     @Override
     public void modify(SetVendorSNSListParameter request) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns/" + request.getSocialMediaID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns/" + request.getSocialMediaID();
         VendorSocialMediaCommand command = VendorSocialMediaCommand.create(request.getSocialMediaUsername());
         httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader());
     }

@@ -15,13 +15,13 @@ import java.util.UUID;
 @Slf4j
 public class FashionGoApiHeader {
 
-    private final static String ServiceType = "FG";
     private final static String ApplicationType = "WebAdmin";
 
     public static Map<String, String> getHeader() {
 
         Map<String, String> header = new HashMap<>();
-        header.put("Referer-Service-Type", ServiceType);
+        header.put("Connection", "close");
+        header.put("Content-Type", "application/json");
         header.put("Referer-Application-Type", ApplicationType);
         header.put("Request-Id", UUID.randomUUID().toString());
 

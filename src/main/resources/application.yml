@@ -159,7 +159,7 @@ webAdminapi:
   jwt:
     develop:
       check-token: true
-  fashiongo-api:
+  fashionGoApi:
       endpoint: http://10.210.16.205:21811
 
 bid-redis:

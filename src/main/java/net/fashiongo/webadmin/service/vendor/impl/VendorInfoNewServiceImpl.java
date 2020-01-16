@@ -8,15 +8,17 @@ import net.fashiongo.webadmin.model.vendor.AddressType;
 import net.fashiongo.webadmin.model.vendor.EmailType;
 import net.fashiongo.webadmin.model.vendor.IndustryType;
 import net.fashiongo.webadmin.model.vendor.StatusType;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by jinwoo on 2020-01-06.
@@ -25,9 +27,6 @@ import java.util.*;
 @Slf4j
 public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
-    @Value("${fashionGoApi.fashionGo-api.endpoint}")
-    private String fashionGoApi;
-
     private HttpClientWrapper httpCaller;
 
     public VendorInfoNewServiceImpl(HttpClientWrapper httpCaller) {
@@ -35,13 +34,13 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     }
 
     private void updateAccount(Integer vendorId, String userId, String firstName, String lastName) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/account/" + userId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/account/" + userId;
         VendorAccountCommand vendorAccountCommand = VendorAccountCommand.create(firstName, lastName, userId);
         httpCaller.put(endpoint, vendorAccountCommand, FashionGoApiHeader.getHeader());
     }
 
     private void updateVendorBasicInfo(VendorDetailInfo request) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID();
         VendorInfoCommand vendorInfoCommand = VendorInfoCommand.createForUpdatingBasicInfo(request);
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader());
     }
@@ -56,7 +55,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
     @Override
     public void updateDetailInfo(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorDetailInfo.getWholeSalerID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorDetailInfo.getWholeSalerID();
         VendorInfoCommand vendorInfoCommand = VendorInfoCommand.createForUpdatingDetailInfo(request, vendorDetailInfo);
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader());
     }

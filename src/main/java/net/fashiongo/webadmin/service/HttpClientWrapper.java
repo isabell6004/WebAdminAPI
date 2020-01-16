@@ -49,8 +49,14 @@ public class HttpClientWrapper {
             headerMap.keySet().forEach(x -> headers.add(x, headerMap.get(x)));
         }
 
+        log.debug("endpoint: {}, payload : {}", endpoint, payload);
         HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
-        return restTemplateWrapper.exchange(endpoint, method, requestEntity, JsonResponse.class);
+        ResponseEntity<JsonResponse> response = restTemplateWrapper.exchange(endpoint, method, requestEntity, JsonResponse.class);
+        log.debug("status code:{}, body:{}", response.getStatusCode(), response.toString());
+        if( response.getStatusCode() != HttpStatus.OK ) {
+            log.warn("fail to call the api: {}, {}", endpoint, payload);
+        }
+        return response;
     }
 
     public ResponseEntity<JsonResponse> post(String endpoint, String payload) {

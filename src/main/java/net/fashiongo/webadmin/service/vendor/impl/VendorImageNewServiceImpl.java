@@ -3,11 +3,11 @@ package net.fashiongo.webadmin.service.vendor.impl;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.VendorImageNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,6 @@ import java.util.Map;
 @Slf4j
 @Service
 public class VendorImageNewServiceImpl implements VendorImageNewService {
-
-    @Value("${fashionGoApi.fashionGo-api.endpoint}")
-    private String fashionGoApi;
 
     private HttpClientWrapper httpCaller;
 
@@ -41,12 +38,12 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
 
     @Override
     public void delete(Integer vendorId, Integer bannerId) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId;
         httpCaller.delete(endpoint);
     }
 
     private Integer insert(Integer vendorId, Integer bannerTypeId, String fileName) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner";
         VendorBannerImageCommand vendorBannerImageCommand = VendorBannerImageCommand.create(bannerTypeId, fileName);
         ResponseEntity<JsonResponse> response = httpCaller.post(endpoint, vendorBannerImageCommand, FashionGoApiHeader.getHeader());
 
@@ -59,12 +56,12 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
     }
 
     private void approve(Integer vendorId, Integer bannerId) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/approve";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/approve";
         ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
     }
 
     private void activate(Integer vendorId, Integer bannerId) {
-        final String endpoint = fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
         ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
     }
 

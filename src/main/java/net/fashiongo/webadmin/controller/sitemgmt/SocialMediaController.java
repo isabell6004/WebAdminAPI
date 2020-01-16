@@ -2,9 +2,9 @@ package net.fashiongo.webadmin.controller.sitemgmt;
 
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DelSocialMediaParameter;
-import net.fashiongo.webadmin.model.primary.SocialMedia;
+import net.fashiongo.webadmin.data.model.sitemgmt.DelSocialMediaParameter;
+import net.fashiongo.webadmin.data.model.sitemgmt.SocialMediaParameter;
+import net.fashiongo.webadmin.data.entity.primary.sitemgmt.SocialMedia;
 import net.fashiongo.webadmin.service.sitemgmt.SocialMediaService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,7 +64,7 @@ public class SocialMediaController {
      * @return JsonResponse<String>
      */
     @RequestMapping(value = "sitemgmt/setsocialmedialist", method = RequestMethod.POST, produces = "application/json")
-    public JsonResponse<String> saveSocialMedia(@RequestBody SocialMedia socialMedia) {
+    public JsonResponse<String> saveSocialMedia(@RequestBody SocialMediaParameter socialMedia) {
         if(socialMediaService.saveSocialMedia(socialMedia)) {
             return new JsonResponse<>(true, "Saved successfully!", 1, "");
         } else {

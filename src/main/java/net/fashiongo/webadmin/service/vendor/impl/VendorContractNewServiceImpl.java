@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,9 +22,6 @@ import java.util.Optional;
 @Slf4j
 public class VendorContractNewServiceImpl implements VendorContractNewService {
 
-    @Value("${fashionGoApi.fashionGo-api.endpoint}")
-    private String fashionGoApi;
-
     private HttpClientWrapper httpCaller;
 
     public VendorContractNewServiceImpl(HttpClientWrapper httpCaller) {
@@ -33,33 +30,31 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
     @Override
     public void createVendorContractDocument(SetVendorContractDocumentParameter request) {
-        final String endpoint = fashionGoApi + "/v1.0/contract/document";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/contract/document";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
         httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
     @Override
     public void modifyVendorContractDocument(SetVendorContractDocumentParameter request) {
-        final String endpoint = fashionGoApi + "/v1.0/contract/document";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/contract/document";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
         httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
-
     @Override
     public void deleteVendorContractDocument(List<Long> documentIds) {
-        final String endpoint = fashionGoApi + "/v1.0/contract/document/delete";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/contract/document/delete";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(documentIds);
         httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
     @Override
     public void createAndModifyVendorContractHistory(SetVendorContractParameter request) {
-        final String endpoint = fashionGoApi + "/v1.0/contract";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/contract";
         log.debug("call the vendor api:{}", endpoint);
         ContractHistoryCommand newRequest = new ContractHistoryCommand(request);
-        Map<String, String> headers = FashionGoApiHeader.getHeader();
-        httpCaller.post(endpoint, newRequest, headers);
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
     @Getter
