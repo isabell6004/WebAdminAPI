@@ -9,9 +9,9 @@ import org.springframework.scheduling.annotation.Async;
  */
 public interface VendorInfoNewService {
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void update(VendorDetailInfo request);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void updateDetailInfo(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo);
 }

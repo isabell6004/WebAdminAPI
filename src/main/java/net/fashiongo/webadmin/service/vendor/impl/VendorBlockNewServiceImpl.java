@@ -14,9 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by jinwoo on 2020-01-02.
- */
 @Service
 @Slf4j
 public class VendorBlockNewServiceImpl implements VendorBlockNewService {
@@ -32,7 +29,7 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     private void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + wholeSalerId;
 
-        VendorBlockStatusCommand newRequest = VendorBlockStatusCommand.create(isBlock, blockReasonId);
+        VendorBlockStatusCommand newRequest = new VendorBlockStatusCommand(isBlock, blockReasonId);
         Map<String, Object> wrappedRequest = new HashMap<>();
         wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
 
@@ -53,7 +50,7 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     public void modifyBlockReason(SetVendorBlockUpdate request) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID();
 
-        VendorBlockStatusCommand newRequest = VendorBlockStatusCommand.create(request.getIsBlock(), Long.valueOf(request.getBlockReasonID()));
+        VendorBlockStatusCommand newRequest = new VendorBlockStatusCommand(request.getIsBlock(), Long.valueOf(request.getBlockReasonID()));
         Map<String, Object> wrappedRequest = new HashMap<>();
         wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
 
@@ -61,15 +58,13 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     }
 
     @Getter
-    private static class VendorBlockStatusCommand {
+    private class VendorBlockStatusCommand {
         private Boolean isBlock;
         private Long blockReasonId;
 
-        static VendorBlockStatusCommand create(Boolean isBlock, Long blockReasonId) {
-            VendorBlockStatusCommand command = new VendorBlockStatusCommand();
-            command.isBlock = isBlock;
-            command.blockReasonId = blockReasonId;
-            return command;
+        private VendorBlockStatusCommand(Boolean isBlock, Long blockReasonId) {
+            this.isBlock = isBlock;
+            this.blockReasonId = blockReasonId;
         }
     }
 }

@@ -5,9 +5,9 @@ import org.springframework.scheduling.annotation.Async;
 import java.util.List;
 
 public interface SimilarVendorNewService {
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void addSimilarVendor(Integer vendorId, List<Integer> similarVendorIdList);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void deleteSimilarVendor(Integer vendorId, List<Integer> mapIdList);
 }

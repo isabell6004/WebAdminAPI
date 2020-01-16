@@ -12,10 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
-/**
- * Created by jinwoo on 2020-01-08.
- */
 @Slf4j
 @Service
 public class VendorImageNewServiceImpl implements VendorImageNewService {
@@ -28,12 +26,9 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
 
     @Override
     public void insert(SetVendorImageParameter request) {
-        try {
-            Integer bannerId = insert(request.getWid(), request.getType(), request.getFilename());
-            approve(request.getWid(), bannerId);
-            activate(request.getWid(), bannerId);
-        } catch (Exception e) {
-        }
+        Integer bannerId = insert(request.getWid(), request.getType(), request.getFilename());
+        approve(request.getWid(), bannerId);
+        activate(request.getWid(), bannerId);
     }
 
     @Override
@@ -44,39 +39,37 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
 
     private Integer insert(Integer vendorId, Integer bannerTypeId, String fileName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner";
-        VendorBannerImageCommand vendorBannerImageCommand = VendorBannerImageCommand.create(bannerTypeId, fileName);
+        VendorBannerImageCommand vendorBannerImageCommand = new VendorBannerImageCommand(bannerTypeId, fileName);
         ResponseEntity<JsonResponse> response = httpCaller.post(endpoint, vendorBannerImageCommand, FashionGoApiHeader.getHeader());
 
-        if(response.getBody().isSuccess()) {
+        if(Optional.ofNullable(response.getBody()).orElseThrow(RuntimeException::new).isSuccess()) {
             Map<String, Integer> result = (Map<String, Integer>) response.getBody().getData();
-            return Integer.valueOf(result.get("content"));
+            return Optional.ofNullable(result.get("content")).orElse(0);
         } else {
             throw new RuntimeException();
         }
     }
 
-    private void approve(Integer vendorId, Integer bannerId) {
+    private ResponseEntity<JsonResponse> approve(Integer vendorId, Integer bannerId) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/approve";
-        ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
+        return httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
     }
 
-    private void activate(Integer vendorId, Integer bannerId) {
+    private ResponseEntity<JsonResponse> activate(Integer vendorId, Integer bannerId) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
-        ResponseEntity<JsonResponse> response = httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
+        return httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
     }
 
     @Getter
-    static class VendorBannerImageCommand {
+    private class VendorBannerImageCommand {
 
         private Integer bannerTypeId;
 
         private String fileName;
 
-        static VendorBannerImageCommand create(Integer bannerTypeId, String fileName) {
-            VendorBannerImageCommand command = new VendorBannerImageCommand();
-            command.bannerTypeId = bannerTypeId;
-            command.fileName = fileName;
-            return command;
+        private VendorBannerImageCommand(Integer bannerTypeId, String fileName) {
+            this.bannerTypeId = bannerTypeId;
+            this.fileName = fileName;
         }
     }
 }

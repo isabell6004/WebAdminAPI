@@ -8,12 +8,12 @@ import org.springframework.scheduling.annotation.Async;
  */
 public interface VendorSNSNewService {
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void create(SetVendorSNSListParameter request);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void delete(SetVendorSNSListParameter request);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void modify(SetVendorSNSListParameter request);
 }

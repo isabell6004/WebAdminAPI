@@ -10,12 +10,12 @@ import org.springframework.scheduling.annotation.Async;
  */
 public interface VendorBlockNewService {
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void blockVendor(SetVendorBlockParameter request);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void modifyBlockReason(SetVendorBlockUpdate request);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void unblockVendor(DelVendorBlockParameter request);
 }

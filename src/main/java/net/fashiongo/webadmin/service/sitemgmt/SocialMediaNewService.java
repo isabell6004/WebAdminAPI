@@ -16,12 +16,12 @@ import java.util.List;
 @Service
 public interface SocialMediaNewService {
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void delete(List<Long> delIds);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void regist(SocialMedia socialMedia);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void update(SocialMedia socialMedia);
 }

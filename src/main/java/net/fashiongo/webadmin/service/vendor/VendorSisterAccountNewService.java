@@ -7,9 +7,9 @@ import org.springframework.scheduling.annotation.Async;
  */
 public interface VendorSisterAccountNewService {
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void regist(Integer vendorId, Integer sisterVendorId);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void delete(Integer vendorId, Integer sisterVendorId);
 }

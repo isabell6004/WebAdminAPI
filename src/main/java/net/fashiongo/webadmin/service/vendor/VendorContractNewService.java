@@ -11,15 +11,15 @@ import java.util.List;
  */
 public interface VendorContractNewService {
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void modifyVendorContractDocument(SetVendorContractDocumentParameter request);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void createVendorContractDocument(SetVendorContractDocumentParameter request);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void deleteVendorContractDocument(List<Long> documentIds);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void createAndModifyVendorContractHistory(SetVendorContractParameter request);
 }

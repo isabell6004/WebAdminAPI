@@ -3,9 +3,9 @@ package net.fashiongo.webadmin.service.vendor;
 import org.springframework.scheduling.annotation.Async;
 
 public interface SisterVendorNewService {
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void createSisterVendor(Integer vendorId, Integer sisterVendorId);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void deleteSisterVendor(Integer vendorId, Integer mapId);
 }

@@ -12,12 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-/**
- * Created by jinwoo on 2019-12-12.
- */
 @Service
 @Slf4j
 public class VendorContractNewServiceImpl implements VendorContractNewService {

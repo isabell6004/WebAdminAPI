@@ -24,7 +24,7 @@ public class VendorSisterAccountNewServiceImpl implements VendorSisterAccountNew
     @Override
     public void regist(Integer vendorId, Integer sisterVendorId) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister";
-        SisterAccountCommand newRequest = SisterAccountCommand.create(sisterVendorId);
+        SisterAccountCommand newRequest = new SisterAccountCommand(sisterVendorId);
         httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
     }
 
@@ -35,14 +35,12 @@ public class VendorSisterAccountNewServiceImpl implements VendorSisterAccountNew
     }
 
     @Getter
-    static class SisterAccountCommand {
+    private class SisterAccountCommand {
 
         private Integer sisterVendorId;
 
-        static SisterAccountCommand create(Integer sisterVendorId) {
-            SisterAccountCommand command = new SisterAccountCommand();
-            command.sisterVendorId = sisterVendorId;
-            return command;
+        private SisterAccountCommand(Integer sisterVendorId) {
+            this.sisterVendorId = sisterVendorId;
         }
     }
 

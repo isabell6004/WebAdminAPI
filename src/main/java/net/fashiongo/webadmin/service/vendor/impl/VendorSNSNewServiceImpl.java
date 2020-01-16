@@ -25,7 +25,7 @@ public class VendorSNSNewServiceImpl implements VendorSNSNewService {
     @Override
     public void create(SetVendorSNSListParameter request) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns";
-        VendorSocialMediaCommand command = VendorSocialMediaCommand.create(request.getSocialMediaID(), request.getSocialMediaUsername());
+        VendorSocialMediaCommand command = new VendorSocialMediaCommand(request.getSocialMediaID(), request.getSocialMediaUsername());
         httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader());
     }
 
@@ -38,26 +38,22 @@ public class VendorSNSNewServiceImpl implements VendorSNSNewService {
     @Override
     public void modify(SetVendorSNSListParameter request) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns/" + request.getSocialMediaID();
-        VendorSocialMediaCommand command = VendorSocialMediaCommand.create(request.getSocialMediaUsername());
+        VendorSocialMediaCommand command = new VendorSocialMediaCommand(request.getSocialMediaUsername());
         httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader());
     }
 
     @Getter
-    static class VendorSocialMediaCommand {
+    private class VendorSocialMediaCommand {
         private Integer socialMediaId;
         private String uri;
 
-        static VendorSocialMediaCommand create(Integer socialMediaId, String uri) {
-            VendorSocialMediaCommand command = new VendorSocialMediaCommand();
-            command.socialMediaId = socialMediaId;
-            command.uri = uri;
-            return command;
+        private VendorSocialMediaCommand(Integer socialMediaId, String uri) {
+            this.socialMediaId = socialMediaId;
+            this.uri = uri;
         }
 
-        static VendorSocialMediaCommand create(String uri) {
-            VendorSocialMediaCommand command = new VendorSocialMediaCommand();
-            command.uri = uri;
-            return command;
+        private VendorSocialMediaCommand(String uri) {
+            this.uri = uri;
         }
     }
 }

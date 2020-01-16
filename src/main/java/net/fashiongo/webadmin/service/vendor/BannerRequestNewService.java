@@ -4,12 +4,12 @@ import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import org.springframework.scheduling.annotation.Async;
 
 public interface BannerRequestNewService {
-    @Async
-    void approveBanner(Integer vendorId, SetDenyBannerParameter request);
-
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void rejectBanner(Integer vendorId, SetDenyBannerParameter request);
 
-    @Async
+    @Async("fashionGoApiThreadPoolTaskExecutor")
+    void approveBanner(Integer vendorId, SetDenyBannerParameter request);
+
+    @Async("fashionGoApiThreadPoolTaskExecutor")
     void deleteBanner(Integer vendorId, SetDenyBannerParameter request);
 }
