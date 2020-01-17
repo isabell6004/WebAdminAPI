@@ -160,7 +160,7 @@ webAdminapi:
     develop:
       check-token: true
   fashionGoApi:
-      endpoint: http://10.210.16.205:21811
+      endpoint: http://10.210.16.205:27301
 
 bid-redis:
   database: 3
