@@ -6,13 +6,14 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.SimplePath;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
-import com.querydsl.sql.SQLQuery;
 import net.fashiongo.webadmin.data.entity.primary.QAdVendorEntity;
 import net.fashiongo.webadmin.data.entity.primary.QAspnetMembershipEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCategoryEntity;
@@ -358,8 +359,6 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
         QMapWholeSalerGroupEntity MWG = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
         QVendorContractEntity VC = QVendorContractEntity.vendorContractEntity;
-        QOrdersEntity O = QOrdersEntity.ordersEntity;
-        QAdVendorEntity AV = QAdVendorEntity.adVendorEntity;
         QCountEntity C = QCountEntity.countEntity;
         QVendorNameHistoryEntity V = QVendorNameHistoryEntity.vendorNameHistoryEntity;
 
@@ -407,7 +406,13 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 .leftJoin(VC).on(W.wholeSalerID.eq(VC.wholeSalerID).and(VC.vendorContractID.in(SQLExpressions.select(VC.vendorContractID.max()).from(VC).groupBy(VC.wholeSalerID))));
 
         if (avgOrderAmountFrom != null || avgOrderAmountTo != null || checkoutFrom != null || checkoutTo != null) {
-            BooleanExpression subFilter = O.orderStatusID.ne(0);
+            SimplePath<Object> pathO = Expressions.path(Object.class, "O");
+
+            QOrdersEntity O = new QOrdersEntity("O");
+            NumberPath<Double> pathO_totalOrderAmount = Expressions.numberPath(Double.class, pathO, "totalorderamount");
+
+            BooleanExpression subFilter = O.orderStatusID.notIn(0);
+            JPASQLQuery queryOrder = new JPASQLQuery(entityManager,mssqlServer2012Templates);
 
             if (wholeSalerID != null) {
                 subFilter = subFilter.and(O.wholeSalerID.eq(wholeSalerID));
@@ -421,22 +426,26 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 subFilter = subFilter.and(O.checkOutDate.loe(checkoutToTimestamp));
             }
 
-            jpasqlQuery.innerJoin(O).on(W.wholeSalerID.eq(O.wholeSalerID)).where(subFilter)
-                    .groupBy(W.contractExpireDate,W.wholeSalerID,W.companyName,W.companyTypeID,W.firstName,W.lastName,W.email,W.userId,W.active,W.shopActive,W.orderActive,
-                            W.startingDate,W.lastModifiedDateTime,V.nameHistory,W.businessCategory,W.billCountryID,W.billState,VC.contractTypeID,VC.photoPlanID,VC.useModel,
-                            VC.commissionRate,W.fashionGoExclusive,W.sourceType);
+            queryOrder.select(O.wholeSalerID,O.totalAmountWSC.sum().divide(O.orderID.count()).as("totalorderamount")).from(O).where(subFilter).groupBy(O.wholeSalerID);
+            jpasqlQuery.innerJoin(queryOrder,pathO).on(W.wholeSalerID.eq(O.wholeSalerID));
 
             if (avgOrderAmountFrom != null) {
-                jpasqlQuery.having(O.totalAmountWSC.sum().divide(O.orderID.count()).goe(avgOrderAmountFrom));
+                filter = filter.and(pathO_totalOrderAmount.goe(avgOrderAmountFrom));
             }
 
             if (avgOrderAmountTo != null) {
-                jpasqlQuery.having(O.totalAmountWSC.sum().divide(O.orderID.count()).loe(avgOrderAmountTo));
+                filter = filter.and(pathO_totalOrderAmount.loe(avgOrderAmountTo));
             }
         }
 
         if (adSpentAmountFrom != null || adSpentAmountTo != null || adFrom != null || adTo != null) {
+            SimplePath<Object> pathAV = Expressions.path(Object.class, "AV");
+
+            QAdVendorEntity AV = new QAdVendorEntity("AV");
+            NumberPath<Double> pathAV_totalAdAmount = Expressions.numberPath(Double.class, pathAV, "totaladamount");
+
             BooleanExpression subFilter = Expressions.asNumber(1).eq(constant).and(AV.howtoSell.eq(2)).and(AV.active.eq(true));
+            JPASQLQuery queryAV = new JPASQLQuery(entityManager,mssqlServer2012Templates);
 
             if (wholeSalerID != null) {
                 subFilter = subFilter.and(AV.wholeSalerID.eq(wholeSalerID));
@@ -450,17 +459,15 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 subFilter = subFilter.and(AV.toDate.loe(adToTimestamp));
             }
 
-            jpasqlQuery.innerJoin(AV).on(W.wholeSalerID.eq(AV.wholeSalerID)).where(subFilter)
-                    .groupBy(W.contractExpireDate,W.wholeSalerID,W.companyName,W.companyTypeID,W.firstName,W.lastName,W.email,W.userId,W.active,W.shopActive,W.orderActive,
-                            W.startingDate,W.lastModifiedDateTime,V.nameHistory,W.businessCategory,W.billCountryID,W.billState,VC.contractTypeID,VC.photoPlanID,VC.useModel,
-                            VC.commissionRate,W.fashionGoExclusive,W.sourceType);
+            queryAV.select(AV.wholeSalerID,AV.actualPrice.sum().divide(AV.adID.count()).as("totaladamount")).from(AV).where(subFilter).groupBy(AV.wholeSalerID);
+            jpasqlQuery.innerJoin(queryAV,pathAV).on(W.wholeSalerID.eq(AV.wholeSalerID));
 
             if (adSpentAmountFrom != null) {
-                jpasqlQuery.having(AV.actualPrice.sum().divide(AV.adID.count()).goe(adSpentAmountFrom));
+                filter = filter.and(pathAV_totalAdAmount.goe(adSpentAmountFrom));
             }
 
             if (adSpentAmountTo != null) {
-                jpasqlQuery.having(AV.actualPrice.sum().divide(AV.adID.count()).loe(adSpentAmountTo));
+                filter = filter.and(pathAV_totalAdAmount.loe(adSpentAmountTo));
             }
         }
 
