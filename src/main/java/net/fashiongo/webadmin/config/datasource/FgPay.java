@@ -39,7 +39,7 @@ public class FgPay {
     }
 
     @Bean(name = "fgpayDataSource")
-	@ConfigurationProperties(prefix="spring.datasource2.hikari")
+	@ConfigurationProperties(prefix="spring.datasource2.dbcp2")
 	public DataSource fgpayDataSource() {
 		return fgpayDataSourceProperties().initializeDataSourceBuilder().build();
 	}

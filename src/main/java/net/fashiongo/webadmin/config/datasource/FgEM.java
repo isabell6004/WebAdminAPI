@@ -39,7 +39,7 @@ public class FgEM {
     }
 
 	@Bean(name = "fgemDataSource")
-	@ConfigurationProperties(prefix="spring.datasource3.hikari")
+	@ConfigurationProperties(prefix="spring.datasource3.dbcp2")
 	public DataSource fgemDataSource() {
 		return fgemDataSourceProperties().initializeDataSourceBuilder().build();
 	}
@@ -47,8 +47,7 @@ public class FgEM {
 	@Bean(name="fgemEntityManager")
 	public LocalContainerEntityManagerFactoryBean fgemEntityManager(
 			EntityManagerFactoryBuilder builder, 
-			@Qualifier("fgemDataSource") DataSource dataSource) 
-	{
+			@Qualifier("fgemDataSource") DataSource dataSource) {
 		return builder
 				.dataSource(dataSource)
 				.packages("net.fashiongo.webadmin.model.fgem")

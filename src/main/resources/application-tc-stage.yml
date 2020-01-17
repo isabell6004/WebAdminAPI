@@ -5,24 +5,24 @@ spring:
     host: 10.210.16.201
   datasource:
     url: jdbc:sqlserver://10.210.16.33;databaseName=FG_V2
-    hikari:
-      maximumPoolSize: 20
+    dbcp2:
+      maxTotal: 20
   datasource2:
     url: jdbc:sqlserver://10.210.16.33;databaseName=FG_PAY
-    hikari:
-      maximumPoolSize: 20
+    dbcp2:
+      maxTotal: 20
   datasource3:
     url: jdbc:sqlserver://10.210.16.33;databaseName=FG_EM
-    hikari:
-      maximumPoolSize: 20
+    dbcp2:
+      maxTotal: 20
   datasource4:
     url: jdbc:sqlserver://10.210.16.33;databaseName=FG_PhotoStudio
-    hikari:
-      maximumPoolSize: 20
+    dbcp2:
+      maxTotal: 20
   datasource5:
     url: jdbc:sqlserver://10.210.16.33;databaseName=FG_Billing
-    hikari:
-      maximumPoolSize: 10
+    dbcp2:
+      maxTotal: 20
 
   jpa:
     show-sql: false

@@ -42,7 +42,7 @@ public class PrimaryDS {
 
 	@Primary
 	@Bean(name = "primaryDataSource")
-	@ConfigurationProperties(prefix="spring.datasource.hikari")
+	@ConfigurationProperties(prefix="spring.datasource.dbcp2")
 	public DataSource primaryDataSource() {
 		return firstDataSourceProperties().initializeDataSourceBuilder().build();
 	}

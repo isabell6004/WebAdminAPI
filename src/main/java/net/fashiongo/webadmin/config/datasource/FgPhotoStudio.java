@@ -36,7 +36,7 @@ public class FgPhotoStudio {
     }
 
     @Bean(name = "photostudioDataSource")
-	@ConfigurationProperties(prefix = "spring.datasource4.hikari")
+	@ConfigurationProperties(prefix = "spring.datasource4.dbcp2")
 	public DataSource photostudioDataSource() {
 		return photostudioDataSourceProperties().initializeDataSourceBuilder().build();
 	}

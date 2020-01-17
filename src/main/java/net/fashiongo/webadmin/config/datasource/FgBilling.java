@@ -32,7 +32,7 @@ public class FgBilling {
     }
 
     @Bean(name = "billingDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource5.hikari")
+    @ConfigurationProperties(prefix = "spring.datasource5.dbcp2")
     public DataSource billingDataSource() {
         return billingDataSourceProperties().initializeDataSourceBuilder().build();
     }
