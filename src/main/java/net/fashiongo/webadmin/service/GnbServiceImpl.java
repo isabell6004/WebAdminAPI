@@ -2,16 +2,20 @@ package net.fashiongo.webadmin.service;
 
 import net.fashiongo.webadmin.dao.primary.GnbVendorGroupMapRepository;
 import net.fashiongo.webadmin.dao.primary.GnbVendorGroupRepository;
+import net.fashiongo.webadmin.dao.primary.GnbMenuCollectionRepository;
 import net.fashiongo.webadmin.dao.primary.SiteSettingRepository;
 import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupEntity;
 import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupMapEntity;
 import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupMapId;
 import net.fashiongo.webadmin.data.entity.primary.SiteSettingEntity;
+import net.fashiongo.webadmin.data.entity.primary.GnbMenuCollectionEntity;
 import net.fashiongo.webadmin.exception.NotFoundGnbVendorGroup;
 import net.fashiongo.webadmin.exception.NotFoundSiteSetting;
 import net.fashiongo.webadmin.model.pojo.request.GnbVendorGroupSaveRequest;
+import net.fashiongo.webadmin.model.pojo.request.GnbCollectionSaveRequest;
 import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupInfoResponse;
+import net.fashiongo.webadmin.model.pojo.response.GnbCollectionInfoResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +42,8 @@ public class GnbServiceImpl implements GnbService {
 	private final GnbVendorGroupRepository gnbVendorGroupRepository;
 
 	private final GnbVendorGroupMapRepository gnbVendorGroupMapRepository;
+	
+	private final GnbMenuCollectionRepository gnbMenuCollectionRepository;
 
 	private final SiteSettingRepository siteSettingRepository;
 
@@ -51,11 +58,13 @@ public class GnbServiceImpl implements GnbService {
 	@Autowired
 	public GnbServiceImpl(GnbVendorGroupRepository gnbVendorGroupRepository,
 						  GnbVendorGroupMapRepository gnbVendorGroupMapRepository,
+						  GnbMenuCollectionRepository gnbMenuCollectionRepository,
 						  SiteSettingRepository siteSettingRepository,
 						  CacheService cacheService,
 						  @Qualifier("primaryTransactionManager") PlatformTransactionManager transactionManager) {
 		this.gnbVendorGroupRepository = gnbVendorGroupRepository;
 		this.gnbVendorGroupMapRepository = gnbVendorGroupMapRepository;
+		this.gnbMenuCollectionRepository = gnbMenuCollectionRepository;
 		this.siteSettingRepository = siteSettingRepository;
 		this.cacheService = cacheService;
 		this.transactionManager = transactionManager;
@@ -272,4 +281,80 @@ public class GnbServiceImpl implements GnbService {
 	private void clearCache(String cacheName) {
 		cacheService.GetRedisCacheEvict(cacheName, null);
 	}
+	
+	@Override
+	public List<GnbCollectionInfoResponse> getGnbCollectionList() {	
+	
+		return gnbMenuCollectionRepository.findAll()
+				.stream()
+				.map(GnbCollectionInfoResponse::of)
+				.collect(Collectors.toList());
+				
+	}
+	
+	@Override
+	public GnbCollectionInfoResponse createGnbCollection(GnbCollectionSaveRequest request) {
+		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
+
+		GnbMenuCollectionEntity gnbMenuCollectionEntity = new GnbMenuCollectionEntity();
+		gnbMenuCollectionEntity.setMenuCollectionName(request.getName());
+		gnbMenuCollectionEntity.setTargetUrl(request.getTargetUrl());
+		gnbMenuCollectionEntity.setSortNo(request.getSortNo());
+		gnbMenuCollectionEntity.setActive(request.isActive());
+		gnbMenuCollectionEntity.setCreatedBy(username);
+		gnbMenuCollectionEntity.setCreatedOn(now);		
+		gnbMenuCollectionEntity.setModifiedBy(username);
+		gnbMenuCollectionEntity.setModifiedOn(now);
+		return  GnbCollectionInfoResponse.of(gnbMenuCollectionRepository.save(gnbMenuCollectionEntity));	
+	}	
+	
+	@Override
+	public GnbCollectionInfoResponse getGnbCollection(int gnbMenuCollectionId) {
+		return  GnbCollectionInfoResponse.of(gnbMenuCollectionRepository.getOne(gnbMenuCollectionId));			
+	}
+	
+	@Override
+	public GnbCollectionInfoResponse editGnbCollection(int gnbMenuCollectionId, GnbCollectionSaveRequest request) {
+		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
+
+					
+		GnbMenuCollectionEntity gnbMenuCollectionEntity = gnbMenuCollectionRepository.getOne(gnbMenuCollectionId);
+		
+		gnbMenuCollectionEntity.setMenuCollectionName(request.getName());
+		gnbMenuCollectionEntity.setTargetUrl(request.getTargetUrl());
+		gnbMenuCollectionEntity.setSortNo(request.getSortNo());
+		gnbMenuCollectionEntity.setActive(request.isActive());
+		gnbMenuCollectionEntity.setModifiedBy(username);
+		gnbMenuCollectionEntity.setModifiedOn(now);
+
+		return GnbCollectionInfoResponse.of(gnbMenuCollectionRepository.save(gnbMenuCollectionEntity));	
+	} 
+		
+	
+	@Override
+	public void deleteGnbCollection(int gnbMenuCollectionId) {
+		GnbMenuCollectionEntity gnbMenuCollectionEntity = gnbMenuCollectionRepository.getOne(gnbMenuCollectionId);
+		gnbMenuCollectionRepository.delete(gnbMenuCollectionEntity);
+	}
+		
+	
+	@Override
+	public void activateGnbCollection(int gnbMenuCollectionId) {
+		
+		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
+		
+		GnbMenuCollectionEntity gnbMenuCollectionEntity = gnbMenuCollectionRepository.getOne(gnbMenuCollectionId);
+		boolean active = !gnbMenuCollectionEntity.isActive();
+		 
+		gnbMenuCollectionEntity.setActive(active);
+		gnbMenuCollectionEntity.setModifiedBy(username);
+		gnbMenuCollectionEntity.setModifiedOn(now);
+		gnbMenuCollectionRepository.save(gnbMenuCollectionEntity);
+		
+	}
+	
+	
 }
