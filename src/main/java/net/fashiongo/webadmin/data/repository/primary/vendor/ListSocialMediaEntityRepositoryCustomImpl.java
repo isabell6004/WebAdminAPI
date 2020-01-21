@@ -1,11 +1,13 @@
 package net.fashiongo.webadmin.data.repository.primary.vendor;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.QCustomerSocialMediaEntity;
 import net.fashiongo.webadmin.data.entity.primary.QListSocialMediaEntity;
 import net.fashiongo.webadmin.data.model.vendor.ListSocialMedia;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -37,5 +39,16 @@ public class ListSocialMediaEntityRepositoryCustomImpl implements ListSocialMedi
                 .leftJoin(CS).on(LS.socialMediaID.eq(CS.socialMediaID).and(CS.userTypeID.eq(2).and(CS.referenceID.eq(wholeSalerID))));
 
         return query.fetch();
+    }
+
+    @Override
+    @Transactional(transactionManager = "primaryTransactionManager")
+    public long deleteByIds(List<Integer> ids) {
+        QListSocialMediaEntity LS = QListSocialMediaEntity.listSocialMediaEntity;
+        JPADeleteClause jpaDeleteClause = new JPADeleteClause(entityManager,LS);
+
+        return jpaDeleteClause
+                .where(LS.socialMediaID.in(ids))
+                .execute();
     }
 }

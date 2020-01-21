@@ -25,6 +25,7 @@ import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.SocialMediaService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtService;
+import net.fashiongo.webadmin.service.renewal.RenewalSocialMediaService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,10 @@ public class SitemgmtController {
 
 	@Autowired
 	private RenewalSitemgmtService renewalSitemgmtService;
+
+	@Autowired
+	private RenewalSocialMediaService renewalSocialMediaService;
+
 
 	// ----------------------------------------------------
 	// collection category setting
@@ -300,7 +305,7 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "delsocialmedia", method = RequestMethod.POST)
 	public JsonResponse<String> deleteSocialMedias(@RequestBody DelSocialMediaParameter delSocialMediaParameter) {
-		boolean result = socialMediaService.deleteSocialMedias(delSocialMediaParameter.getSocialMediaIds());
+		boolean result = renewalSocialMediaService.deleteSocialMedias(delSocialMediaParameter.getSocialMediaIds());
 		return new JsonResponse<>(result, null, "");
 	}
 	
