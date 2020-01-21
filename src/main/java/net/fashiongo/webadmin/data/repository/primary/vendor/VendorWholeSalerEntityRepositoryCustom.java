@@ -8,6 +8,7 @@ import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingSelete;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnSelete;
 import net.fashiongo.webadmin.data.model.vendor.VendorList;
+import net.fashiongo.webadmin.data.model.vendor.VendorListCSV;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
@@ -29,4 +30,6 @@ public interface VendorWholeSalerEntityRepositoryCustom {
     List<VendorsCompanyName> findVendors();
 
     Page<VendorList> getVendorListWithCount(GetVendorListParameter param);
+
+    List<VendorListCSV> getVendorListCSVWithCount(GetVendorListParameter param);
 }

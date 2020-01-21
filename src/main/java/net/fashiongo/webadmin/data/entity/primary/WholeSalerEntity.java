@@ -227,7 +227,7 @@ public class WholeSalerEntity {
     private String honote4;
 
     @Column(name = "ActualOpenDate")
-    private LocalDateTime actualOpenDate;
+    private Timestamp actualOpenDate;
 
     @Column(name = "BillingNote2")
     private String billingNote2;

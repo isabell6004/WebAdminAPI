@@ -19,6 +19,7 @@ import net.fashiongo.webadmin.data.entity.primary.QAspnetMembershipEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCategoryEntity;
 import net.fashiongo.webadmin.data.entity.primary.QCountEntity;
 import net.fashiongo.webadmin.data.entity.primary.QLogVendorHoldEntity;
+import net.fashiongo.webadmin.data.entity.primary.QMapWaUserVendorEntity;
 import net.fashiongo.webadmin.data.entity.primary.QMapWholeSalerGroupEntity;
 import net.fashiongo.webadmin.data.entity.primary.QOrdersEntity;
 import net.fashiongo.webadmin.data.entity.primary.QVendorAdminAccountEntity;
@@ -36,6 +37,7 @@ import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingSelete;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnSelete;
 import net.fashiongo.webadmin.data.model.vendor.VendorList;
+import net.fashiongo.webadmin.data.model.vendor.VendorListCSV;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.apache.commons.lang3.StringUtils;
@@ -299,13 +301,13 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 		String actualOpenFrom = StringUtils.isEmpty(param.getActualopenfrom()) ? null : param.getActualopenfrom();
 		String actualOpenTo = StringUtils.isEmpty(param.getActualopento()) ? null : param.getActualopento();
 
-        LocalDateTime actualOpenFromLocalDateTime = null;
+        Timestamp actualOpenFromTimestamp = null;
         if (StringUtils.isNotEmpty(actualOpenFrom)) {
-            actualOpenFromLocalDateTime = LocalDateTime.parse(actualOpenFrom, formatter);
+            actualOpenFromTimestamp = Timestamp.valueOf(LocalDateTime.parse(actualOpenFrom, formatter));
         }
-        LocalDateTime actualOpenToLocalDateTime = null;
+        Timestamp actualOpenToTimestamp = null;
         if (StringUtils.isNotEmpty(actualOpenTo)) {
-            actualOpenToLocalDateTime = LocalDateTime.parse(actualOpenTo, formatter);
+            actualOpenToTimestamp = Timestamp.valueOf(LocalDateTime.parse(actualOpenTo, formatter));
         }
 
 		BigDecimal avgOrderAmountFrom = param.getAvgorderamountfrom();
@@ -515,8 +517,8 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         if (oldCompanyName != null) { filter = filter.and(V.nameHistory.contains(oldCompanyName)); }
         if (wholeSalerID != null) { filter = filter.and(W.wholeSalerID.eq(wholeSalerID)); }
         if (StringUtils.isNotEmpty(companyType)) { filter = filter.and(W.companyTypeID.in(companyTypeArray)); }
-        if (actualOpenFrom != null) { filter = filter.and(W.actualOpenDate.goe(actualOpenFromLocalDateTime)); }
-        if (actualOpenTo != null) { filter = filter.and(W.actualOpenDate.loe(actualOpenToLocalDateTime)); }
+        if (actualOpenFrom != null) { filter = filter.and(W.actualOpenDate.goe(actualOpenFromTimestamp)); }
+        if (actualOpenTo != null) { filter = filter.and(W.actualOpenDate.loe(actualOpenToTimestamp)); }
 
         if (categoryModel != 0) {
             filter = filter.and(W.wholeSalerID.in(SQLExpressions.select(C.entityID).from(C).where(C.countTypeID.eq(2).and(C.referenceID.eq(categoryModel)))));
@@ -603,6 +605,354 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 		List<VendorList> results = vendorListQueryResults.getResults();
 		PageRequest pageRequest = PageRequest.of( pageNum - 1, pageSize);
 		return PageableExecutionUtils.getPage(results, pageRequest, () -> total);
+    }
+
+    @Override
+    public List<VendorListCSV> getVendorListCSVWithCount(GetVendorListParameter param) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+
+        Integer pageNum = param.getPageNum() == null ? 0 : param.getPageNum();
+        Integer pageSize = param.getPageSize() == null ? 0 : param.getPageSize();
+        String userID = StringUtils.isEmpty(param.getUserID()) ? null : param.getUserID();
+        Boolean userIDPartialMatch = param.getUserIdPartialMatch();
+        String companyName = StringUtils.isEmpty(param.getCompanyName()) ? null : param.getCompanyName();
+        Boolean companyNamePartialMatch = true;
+        Boolean companyNameStartsWith = null;
+        String firstName = null;
+        Boolean firstNamePartialMatch = null;
+        String lastName = null;
+        Boolean lastNamePartialMatch = null;
+        LocalDateTime createdOnFrom = null;
+        LocalDateTime createOnTo = null;
+        Boolean active = null;
+        Boolean shopActive = null;
+        Boolean orderActive = null;
+        String orderBy = StringUtils.isEmpty(param.getOrderBy()) ? null : param.getOrderBy();
+        String oldCompanyName = StringUtils.isEmpty(param.getOldCompanyName()) ? null : param.getOldCompanyName();
+        Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+        String companyType = StringUtils.isEmpty(param.getCompanyType()) ? "" : param.getCompanyType();
+
+        List<Integer> companyTypeArray = new ArrayList<>();
+        if (StringUtils.isNotEmpty(companyType)) {
+            for (String type : companyType.split(",")) {
+                if (StringUtils.isNotEmpty(type))
+                    companyTypeArray.add(Integer.valueOf(type));
+            }
+        }
+
+        String location = StringUtils.isEmpty(param.getLocation()) ? null : param.getLocation();
+        String state = StringUtils.isEmpty(param.getState()) ? null : param.getState();
+        String country = StringUtils.isEmpty(param.getCountry()) ? null : param.getCountry();
+        String typeOfContract = StringUtils.isEmpty(param.getTypeOfContract()) ? null : param.getTypeOfContract();
+        String photoplan = StringUtils.isEmpty(param.getPhotoPlan()) ? null : param.getPhotoPlan();
+        String chooseType = StringUtils.isEmpty(param.getChooseType()) ? null : param.getChooseType();
+        String commission = StringUtils.isEmpty(param.getCommission()) ? null : param.getCommission();
+
+
+        String actualOpenFrom = StringUtils.isEmpty(param.getActualopenfrom()) ? null : param.getActualopenfrom();
+        String actualOpenTo = StringUtils.isEmpty(param.getActualopento()) ? null : param.getActualopento();
+
+        Timestamp actualOpenFromTimestamp = null;
+        if (StringUtils.isNotEmpty(actualOpenFrom)) {
+            actualOpenFromTimestamp = Timestamp.valueOf(LocalDateTime.parse(actualOpenFrom, formatter));
+        }
+        Timestamp actualOpenToTimestamp = null;
+        if (StringUtils.isNotEmpty(actualOpenTo)) {
+            actualOpenToTimestamp = Timestamp.valueOf(LocalDateTime.parse(actualOpenTo, formatter));
+        }
+
+        BigDecimal avgOrderAmountFrom = param.getAvgorderamountfrom();
+        BigDecimal avgOrderAmountTo = param.getAvgorderamountto();
+
+
+        String checkoutFrom = StringUtils.isEmpty(param.getCheckoutfrom()) ? null : param.getCheckoutfrom();
+        String checkoutTo = StringUtils.isEmpty(param.getCheckoutto()) ? null : param.getCheckoutto();
+
+        Timestamp checkoutFromTimestamp = null;
+        if (StringUtils.isNotEmpty(checkoutFrom)) {
+            checkoutFromTimestamp = Timestamp.valueOf(LocalDateTime.parse(checkoutFrom, formatter));
+        }
+        Timestamp checkoutToTimestamp = null;
+        if (StringUtils.isNotEmpty(checkoutTo)) {
+            checkoutToTimestamp = Timestamp.valueOf(LocalDateTime.parse(checkoutTo, formatter));
+        }
+
+        BigDecimal adSpentAmountFrom = param.getAdspentamountfrom();
+        BigDecimal adSpentAmountTo = param.getAdspentamountto();
+
+
+        String adFrom = StringUtils.isEmpty(param.getAdfrom()) ? null : param.getAdfrom();
+        String adTo = StringUtils.isEmpty(param.getAdto()) ? null : param.getAdto();
+
+        Timestamp adFromTimestamp = null;
+        if (StringUtils.isNotEmpty(adFrom)) {
+            adFromTimestamp = Timestamp.valueOf(LocalDateTime.parse(adFrom, formatter));
+        }
+        Timestamp adToTimestamp = null;
+        if (StringUtils.isNotEmpty(adTo)) {
+            adToTimestamp = Timestamp.valueOf(LocalDateTime.parse(adTo, formatter));
+        }
+
+        Integer recurringFrom = param.getRecurringfrom();
+        Integer recurringTo = param.getRecurringto();
+        Integer categoryModel = param.getCategoryModel() == null ? 0 : param.getCategoryModel();
+        Integer status = param.getStatus() == null ? 0 : param.getStatus();
+        Integer assignedUser = param.getAssignedUser() == null ? 0 : param.getAssignedUser();
+        Integer fgExclusiveType = param.getFgExclusiveType();
+
+        if (wholeSalerID == 0) wholeSalerID = null;
+
+        Expression<Integer> constant = Expressions.constant(1);
+        BooleanExpression filter = Expressions.asNumber(1).eq(constant);
+
+        MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
+        JPASQLQuery<VendorListCSV> jpasqlQuery = new JPASQLQuery<VendorListCSV>(entityManager, mssqlServer2012Templates);
+
+        Timestamp nowTimestamp = Timestamp.valueOf(LocalDateTime.now());
+
+        QWholeSalerEntity T = QWholeSalerEntity.wholeSalerEntity;
+        QVendorBlockedEntity VB = QVendorBlockedEntity.vendorBlockedEntity;
+        QLogVendorHoldEntity LVH = QLogVendorHoldEntity.logVendorHoldEntity;
+        QMapWholeSalerGroupEntity MWG = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
+        QVendorNameHistoryEntity V = QVendorNameHistoryEntity.vendorNameHistoryEntity;
+        QVendorContractEntity VC = QVendorContractEntity.vendorContractEntity;
+
+
+        jpasqlQuery.select(Projections.constructor(VendorListCSV.class,
+                T.wholeSalerID,
+                Expressions.cases().when(T.companyTypeID.eq(1)).then("M").when(T.companyTypeID.eq(2)).then("W").when(T.companyTypeID.eq(3)).then("D").otherwise("").as("Type"),
+                T.companyName.as("Comapny Name"),
+                queryDSLSQLFunctions.isnull(String.class, V.nameHistory, "").as("Old Company Name"),
+                queryDSLSQLFunctions.isnull(String.class, T.businessCategory, "").as("Vendor Category"),
+                T.userId,
+                T.firstName,
+                T.lastName,
+                T.email,
+                T.billPhone.as("Show room Phone"),
+                T.billStreetNo.concat(" ").concat(T.billStreetNo2).as("Show room Street"),
+                T.billCity.as("Show room City"),
+                T.billState.as("ShoowroomSTATE"),
+                T.billZipcode.as("Show room Zipcode"),
+                T.billCountry.as("ShowroomCountry"),
+                T.phone.as("Factory Phone"),
+                T.streetNo.concat(" ").concat(T.streetNo2).as("Factory Street"),
+                T.city.as("Factory City"),
+                T.state.as("FactorySTATE"),
+                T.country.as("FactoryCountry"),
+                T.zipcode.as("Factory Zipcode"),
+                Expressions.cases().when(T.active.eq(true)).then("Y").otherwise("N").as("Active"),
+                Expressions.cases().when(T.orderActive.eq(true)).then("Order Active").otherwise(
+                        Expressions.cases().when(T.shopActive.eq(true)).then("Shop Active").otherwise(
+                                Expressions.cases().when(T.active.eq(true)).then("Active").otherwise("Inactive")
+                        )
+                ).as("Current Status"),
+                T.actualOpenDate.as("Order Active on"),
+                T.billCountryID,
+                VC.contractTypeID,
+                VC.photoPlanID,
+                VC.useModel,
+                VC.commissionRate,
+                T.fashionGoExclusive,
+                SQLExpressions.select(VB.wholeSalerId.count()).from(VB).where(VB.wholeSalerId.eq(T.wholeSalerID)).as("BlockedCheck"),
+                SQLExpressions.select(LVH.logID.count()).from(LVH).where(LVH.active.eq(true).and(LVH.holdFrom.loe(nowTimestamp).and(LVH.holdTo.goe(nowTimestamp)).and(LVH.wholeSalerID.eq(T.wholeSalerID)))).as("HoldCheck")
+                ))
+                .from(T)
+                .leftJoin(V).on(T.wholeSalerID.eq(V.wholeSalerID))
+                .leftJoin(VC).on(T.wholeSalerID.eq(VC.wholeSalerID).and(VC.vendorContractID.in(SQLExpressions.select(VC.vendorContractID.max()).from(VC).groupBy(VC.wholeSalerID))));
+
+        if (assignedUser > 0) {
+            QMapWaUserVendorEntity MWUV = QMapWaUserVendorEntity.mapWaUserVendorEntity;
+
+            jpasqlQuery.innerJoin(MWUV).on(T.wholeSalerID.eq(MWUV.vendorID).and(MWUV.userID.eq(assignedUser)));
+        }
+
+        if (avgOrderAmountFrom != null || avgOrderAmountTo != null || checkoutFrom != null || checkoutTo != null) {
+            SimplePath<Object> pathO = Expressions.path(Object.class, "O");
+            QOrdersEntity O = new QOrdersEntity("O");
+            NumberPath<Double> pathO_totalOrderAmount = Expressions.numberPath(Double.class, pathO, "totalorderamount");
+
+            BooleanExpression subFilter = O.orderStatusID.notIn(0);
+            JPASQLQuery queryOrder = new JPASQLQuery(entityManager,mssqlServer2012Templates);
+
+            if (wholeSalerID != null) {
+                subFilter = subFilter.and(O.wholeSalerID.eq(wholeSalerID));
+            }
+
+            if (checkoutFrom != null) {
+                subFilter = subFilter.and(O.checkOutDate.goe(checkoutFromTimestamp));
+            }
+
+            if (checkoutTo != null) {
+                subFilter = subFilter.and(O.checkOutDate.loe(checkoutToTimestamp));
+            }
+
+            queryOrder.select(O.wholeSalerID, O.totalAmountWSC.sum().divide(O.orderID.count()).as("totalorderamount")).from(O).where(subFilter).groupBy(O.wholeSalerID);
+            jpasqlQuery.innerJoin(queryOrder, pathO).on(T.wholeSalerID.eq(O.wholeSalerID));
+
+            if (avgOrderAmountFrom != null) {
+                filter = filter.and(pathO_totalOrderAmount.goe(avgOrderAmountFrom));
+            }
+
+            if (avgOrderAmountTo != null) {
+                filter = filter.and(pathO_totalOrderAmount.loe(avgOrderAmountTo));
+            }
+        }
+
+        if (adSpentAmountFrom != null || adSpentAmountTo != null || adFrom != null || adTo != null) {
+            SimplePath<Object> pathAD = Expressions.path(Object.class, "AD");
+            QAdVendorEntity AD = new QAdVendorEntity("AD");
+            NumberPath<Double> pathAD_totaladamount = Expressions.numberPath(Double.class, pathAD, "totaladamount");
+
+            BooleanExpression subFilter = Expressions.asNumber(1).eq(constant).and(AD.howtoSell.eq(2)).and(AD.active.eq(true));
+            JPASQLQuery queryAD = new JPASQLQuery(entityManager, mssqlServer2012Templates);
+
+            if (wholeSalerID != null) {
+                subFilter = subFilter.and(AD.wholeSalerID.eq(wholeSalerID));
+            }
+
+            if (adFrom != null) {
+                subFilter = subFilter.and(AD.fromDate.goe(adFromTimestamp));
+            }
+
+            if (adTo != null) {
+                subFilter = subFilter.and(AD.toDate.loe(adToTimestamp));
+            }
+
+            queryAD.select(AD.wholeSaler, AD.actualPrice.sum().divide(AD.adID.count()).as("totaladamount")).from(AD).where(subFilter).groupBy(AD.wholeSalerID);
+            jpasqlQuery.innerJoin(queryAD, pathAD).on(T.wholeSalerID.eq(AD.wholeSalerID));
+
+            if (adSpentAmountFrom != null) {
+                filter = filter.and(pathAD_totaladamount.goe(adSpentAmountFrom));
+            }
+
+            if (adSpentAmountTo != null) {
+                filter = filter.and(pathAD_totaladamount.loe(adSpentAmountTo));
+            }
+        }
+
+        if (userID != null) {
+            if (userIDPartialMatch) {
+                filter = filter.and(T.userId.contains(userID));
+            } else {
+                filter = filter.and(T.userId.eq(userID));
+            }
+        }
+
+        if (companyName != null) {
+            if (companyNamePartialMatch) {
+                filter = filter.and(T.companyName.contains(companyName));
+            } else {
+                filter = filter.and(T.companyName.eq(companyName));
+            }
+        }
+
+        if (firstName != null) {
+            if (firstNamePartialMatch) {
+                filter = filter.and(T.firstName.contains(firstName));
+            } else {
+                filter = filter.and(T.firstName.eq(firstName));
+            }
+        }
+
+        if (lastName != null) {
+            if (lastNamePartialMatch) {
+                filter = filter.and(T.lastName.contains(lastName));
+            } else {
+                filter = filter.and(T.lastName.eq(lastName));
+            }
+        }
+
+        if (createdOnFrom != null) { filter = filter.and(T.startingDate.goe(Timestamp.valueOf(createdOnFrom))); }
+        if (createOnTo != null) { filter = filter.and(T.startingDate.loe(Timestamp.valueOf(createOnTo))); }
+        if (active != null) { filter = filter.and(T.active.eq(active)); }
+        if (shopActive != null) { filter = filter.and(T.shopActive.eq(shopActive)); }
+        if (orderActive != null) { filter = filter.and(T.orderActive.eq(orderActive)); }
+        if (oldCompanyName != null) { filter = filter.and(V.nameHistory.contains(oldCompanyName)); }
+        if (wholeSalerID != null) { filter = filter.and(T.wholeSalerID.eq(wholeSalerID)); }
+        if (!companyType.equals("")) { filter = filter.and(T.companyTypeID.in(companyTypeArray)); }
+        if (actualOpenFrom != null) { filter = filter.and(T.actualOpenDate.goe(actualOpenFromTimestamp)); }
+        if (actualOpenTo != null) { filter = filter.and(T.actualOpenDate.loe(actualOpenToTimestamp)); }
+
+        if (categoryModel != 0) {
+            QCountEntity COUNT = QCountEntity.countEntity;
+
+            filter = filter.and(T.wholeSalerID.in(SQLExpressions.select(COUNT.entityID).from(COUNT).where(COUNT.countTypeID.eq(2).and(COUNT.referenceID.eq(categoryModel)))));
+        }
+
+        if (location != null) {
+            if (location.equals("229") || location.equals("38")) {
+                filter = filter.and(T.billCountryID.eq(Integer.valueOf(location)));
+            } else {
+                filter = filter.and(queryDSLSQLFunctions.isnull(Integer.class, T.billCountryID, 0).ne(229).and(queryDSLSQLFunctions.isnull(Integer.class, T.billCountryID, 0).ne(38)));
+
+                if (!country.equals("ALL")) {
+                    filter = filter.and(queryDSLSQLFunctions.isnull(Integer.class, T.billCountryID, 0).eq(Integer.valueOf(country)));
+                }
+            }
+
+            if (!state.equals("ALL")) {
+                filter = filter.and(T.billState.eq(state));
+            }
+        }
+
+        if (!typeOfContract.equals("0")) {
+            filter = filter.and(VC.contractTypeID.eq(Integer.valueOf(typeOfContract)));
+        }
+
+        if (!photoplan.equals("0")) {
+            filter = filter.and(VC.photoPlanID.eq(Integer.valueOf(photoplan)));
+
+            if (photoplan.equals("1")) {
+                if (!chooseType.equals("0")) {
+                    boolean chooseTypeBoolean = chooseType.equalsIgnoreCase("1");
+
+                    filter = filter.and(VC.useModel.eq(chooseTypeBoolean));
+                }
+            }
+        }
+
+        if (!commission.equals("0")) {
+            if (commission.equals("1")) {
+                filter = filter.and(VC.commissionRate.gt(0));
+            } else {
+                filter = filter.and(VC.commissionRate.eq(BigDecimal.valueOf(0)));
+            }
+        }
+
+        switch (status) {
+            case 1:
+                filter = filter.and(T.orderActive.eq(true));
+                break;
+            case 2:
+                filter = filter.and(T.shopActive.eq(true).and(T.orderActive.eq(false)));
+                break;
+            case 3:
+                filter = filter.and(T.active.eq(true).and(T.shopActive.eq(false)).and(T.orderActive.eq(false)));
+                break;
+            case 4:
+                filter = filter.and(T.wholeSalerID.in(SQLExpressions.select(VB.wholeSalerId).from(VB)));
+                break;
+            case 5:
+                filter = filter.and(T.wholeSalerID.in(SQLExpressions.select(LVH.wholeSalerID).from(LVH).where(LVH.active.eq(true).and(LVH.holdFrom.loe(nowTimestamp).and(LVH.holdTo.goe(nowTimestamp))))));
+                break;
+            case 6:
+                filter = filter.and(T.contractExpireDate.isNotNull());
+                break;
+            case 7:
+                filter = filter.and(T.active.eq(false));
+                break;
+            case 8:
+                filter = filter.and(T.actualOpen.eq("Y"));
+                break;
+        }
+
+        if (fgExclusiveType != null) {
+            filter = filter.and(T.fashionGoExclusive.eq(true));
+        }
+
+        jpasqlQuery.where(filter).orderBy(T.wholeSalerID.desc(), T.startingDate.desc());
+
+        return jpasqlQuery.fetch();
     }
 
 
