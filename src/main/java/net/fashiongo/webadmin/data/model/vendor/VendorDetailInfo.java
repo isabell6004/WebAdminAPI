@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class VendorDetailInfo {
     @JsonProperty(value = "WholeSalerID")
     private Integer wholeSalerID;
