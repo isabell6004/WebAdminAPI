@@ -19,6 +19,7 @@ import net.fashiongo.webadmin.model.pojo.response.GnbCollectionInfoResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -284,14 +285,16 @@ public class GnbServiceImpl implements GnbService {
 	
 	@Override
 	public List<GnbCollectionInfoResponse> getGnbCollectionList() {	
-	
-		return gnbMenuCollectionRepository.findAll()
+		
+		Sort sort = Sort.by(Sort.Direction.ASC, "sortNo");
+		return gnbMenuCollectionRepository.findAll(sort)
 				.stream()
 				.map(GnbCollectionInfoResponse::of)
 				.collect(Collectors.toList());
 				
 	}
 	
+		
 	@Override
 	public GnbCollectionInfoResponse createGnbCollection(GnbCollectionSaveRequest request) {
 		LocalDateTime now = LocalDateTime.now();

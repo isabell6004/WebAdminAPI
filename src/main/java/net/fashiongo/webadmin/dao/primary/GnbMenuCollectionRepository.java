@@ -6,9 +6,12 @@ import net.fashiongo.webadmin.data.entity.primary.GnbMenuCollectionEntity;
 import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupMapEntity;
 import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupMapId;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface GnbMenuCollectionRepository extends JpaRepository<GnbMenuCollectionEntity, Integer>, GnbMenuCollectionRepositoryCustom {
 
+	//List<GnbMenuCollectionEntity> findOrderBySortNoAsc();
 }

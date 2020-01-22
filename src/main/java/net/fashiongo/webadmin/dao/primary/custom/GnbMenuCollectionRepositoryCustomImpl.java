@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.dao.primary.custom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.GnbMenuCollectionEntity;
-import net.fashiongo.webadmin.data.entity.primary.QGnbMenuCollectionEntity;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -16,7 +15,7 @@ public class GnbMenuCollectionRepositoryCustomImpl implements GnbMenuCollectionR
 //	private EntityManager entityManager;
 //
 //	private QGnbMenuCollectionEntity menuCollection = QGnbMenuCollectionEntity.gnbMenuCollectionEntity;
-	
+//	
 //	@Override
 //	public List<GnbMenuCollectionEntity> findAll() {
 //		return new JPAQuery<>(entityManager)
