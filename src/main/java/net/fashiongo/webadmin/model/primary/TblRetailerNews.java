@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.model.primary;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
+import net.fashiongo.webadmin.converter.HtmlEscapeConverter;
 
 /**
  * 
@@ -31,6 +33,7 @@ public class TblRetailerNews {
 	@JsonProperty("RetailerID")
 	private Integer retailerID;
 	
+	@Convert(converter = HtmlEscapeConverter.class)
 	@Column(name = "NewsTitle")
 	@JsonProperty("NewsTitle")
 	private String newsTitle;
