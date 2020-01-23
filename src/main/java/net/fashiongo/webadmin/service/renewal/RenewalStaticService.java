@@ -7,6 +7,7 @@ import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeyword
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
 import net.fashiongo.webadmin.data.repository.primary.ProductsEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.StatisticsWaBestItemPerDayEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemImageServersEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemVendorAdminWebServerEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class RenewalStaticService {
 
 	@Autowired
 	private ProductsEntityRepository productsEntityRepository;
+
+	@Autowired
+	private StatisticsWaBestItemPerDayEntityRepository statisticsWaBestItemPerDayEntityRepository;
 
 	public RenewalStaticService(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -175,22 +179,7 @@ public class RenewalStaticService {
 
 	public GetBestItemsResponse getBestItems(Integer pageNo, Integer pageSize, LocalDateTime fromDate, LocalDateTime toDate,
 											 Integer statisticsType, Integer lastCategoryID, Integer wholeSalerId, String orderBy) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		List<Object> param = new ArrayList<>();
-		param.add(pageNo);
-		param.add(pageSize);
-		param.add(Optional.ofNullable(fromDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
-		param.add(Optional.ofNullable(toDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
-		param.add(statisticsType);
-		param.add(lastCategoryID);
-		param.add(wholeSalerId);
-		param.add(orderBy);
-
-		List<Object> outputParam = new ArrayList<>();
-		param.add(0);
-
-		List<Object> up_wa_GetStatisticsBestItem = jdbcHelper.executeSP("up_wa_GetStatisticsBestItem", param, outputParam, BestItems.class);
-		List<BestItems> bestItems = (List<BestItems>) up_wa_GetStatisticsBestItem.get(0);
+		List<BestItems> bestItems = statisticsWaBestItemPerDayEntityRepository.getBestItems(pageNo, pageSize, fromDate, toDate, statisticsType, lastCategoryID, wholeSalerId, orderBy);
 
 		return GetBestItemsResponse.builder().bestItems(bestItems).build();
 	}
