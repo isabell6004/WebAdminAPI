@@ -34,9 +34,10 @@ public class AdApiController {
     private static final String CHANNEL_VENDOR_API = "admin-api";
 
     private static final String HEADER_NAME_CHANNEL = "FG-Channel";
-    private static final String HEADER_NAME_USER_ID = "FX-User-Id";
+    private static final String HEADER_NAME_USER_ID = "FG-User-Id";
     private static final String HEADER_NAME_USER_NAME = "FG-User-Name";
     private static final String HEADER_NAME_REQUEST_ID = "X-Request-ID";
+    private static final String HEADER_NAME_VENDOR_ID = "FG-Vendor-Id";
 
     @Autowired
     @Qualifier("adApiRestTemplate")
@@ -45,20 +46,40 @@ public class AdApiController {
     @Value("${webAdminapi.adapi.endpoint}")
     private String adApiEndpoint;
 
-    @RequestMapping(value = "**")
-    public ResponseEntity proxyAdApi(@RequestBody(required = false) Object body, HttpServletRequest request) {
-
-        String apiUrl = convertToAdApi(request);
-        HttpMethod method = HttpMethod.valueOf(request.getMethod());
-
-        String userId = Utility.getUserInfo().getUserId().toString();
-        String userName = Utility.getUsername();
+    @RequestMapping(
+            value = {
+                    "spots/**/slots/**/items/**"
+            })
+    public ResponseEntity proxyWithVendorId(@RequestParam(value = "vendorId") Long vendorId,
+                                            @RequestBody Object body,
+                                            HttpServletRequest request) {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HEADER_NAME_CHANNEL, CHANNEL_VENDOR_API);
-        httpHeaders.add(HEADER_NAME_USER_ID, userId);
-        httpHeaders.add(HEADER_NAME_USER_NAME, userName);
+        httpHeaders.add(HEADER_NAME_USER_ID, Utility.getUserInfo().getUserId().toString());
+        httpHeaders.add(HEADER_NAME_USER_NAME, Utility.getUsername());
         httpHeaders.add(HEADER_NAME_REQUEST_ID, request.getHeader(HEADER_NAME_REQUEST_ID));
+        httpHeaders.add(HEADER_NAME_VENDOR_ID, vendorId.toString());
+
+        return proxyAdApi(body, request, httpHeaders);
+    }
+
+    @RequestMapping(value = "*")
+    public ResponseEntity proxy(@RequestBody(required = false) Object body, HttpServletRequest request) {
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HEADER_NAME_CHANNEL, CHANNEL_VENDOR_API);
+        httpHeaders.add(HEADER_NAME_USER_ID, Utility.getUserInfo().getUserId().toString());
+        httpHeaders.add(HEADER_NAME_USER_NAME, Utility.getUsername());
+        httpHeaders.add(HEADER_NAME_REQUEST_ID, request.getHeader(HEADER_NAME_REQUEST_ID));
+
+        return proxyAdApi(body, request, httpHeaders);
+    }
+
+    private ResponseEntity proxyAdApi(Object body, HttpServletRequest request, HttpHeaders httpHeaders) {
+
+        String apiUrl = convertToAdApi(request);
+        HttpMethod method = HttpMethod.valueOf(request.getMethod());
 
         HttpEntity httpEntity = new HttpEntity<>(body, httpHeaders);
 
