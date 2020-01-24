@@ -23,6 +23,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,32 +47,19 @@ public class AdApiController {
     @Value("${webAdminapi.adapi.endpoint}")
     private String adApiEndpoint;
 
-    @RequestMapping(
-            value = {
-                    "spots/**/slots/**/items/**"
-            })
-    public ResponseEntity proxyWithVendorId(@RequestParam(value = "vendorId") Long vendorId,
-                                            @RequestBody Object body,
-                                            HttpServletRequest request) {
+    @RequestMapping(value = "**")
+    public ResponseEntity proxy(@RequestBody(required = false) Object body,
+                                @RequestParam(value = "vendorId", required = false) Long vendorId,
+                                HttpServletRequest request) {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HEADER_NAME_CHANNEL, CHANNEL_VENDOR_API);
         httpHeaders.add(HEADER_NAME_USER_ID, Utility.getUserInfo().getUserId().toString());
         httpHeaders.add(HEADER_NAME_USER_NAME, Utility.getUsername());
         httpHeaders.add(HEADER_NAME_REQUEST_ID, request.getHeader(HEADER_NAME_REQUEST_ID));
-        httpHeaders.add(HEADER_NAME_VENDOR_ID, vendorId.toString());
 
-        return proxyAdApi(body, request, httpHeaders);
-    }
-
-    @RequestMapping(value = "*")
-    public ResponseEntity proxy(@RequestBody(required = false) Object body, HttpServletRequest request) {
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HEADER_NAME_CHANNEL, CHANNEL_VENDOR_API);
-        httpHeaders.add(HEADER_NAME_USER_ID, Utility.getUserInfo().getUserId().toString());
-        httpHeaders.add(HEADER_NAME_USER_NAME, Utility.getUsername());
-        httpHeaders.add(HEADER_NAME_REQUEST_ID, request.getHeader(HEADER_NAME_REQUEST_ID));
+        if (Objects.nonNull(vendorId))
+            httpHeaders.add(HEADER_NAME_VENDOR_ID, vendorId.toString());
 
         return proxyAdApi(body, request, httpHeaders);
     }
