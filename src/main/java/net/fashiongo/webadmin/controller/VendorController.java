@@ -923,7 +923,8 @@ public class VendorController {
 
 	@PostMapping(value = "setholdvendorupdate")
 	public Integer setholdvendorupdate(@RequestBody SetHoldVendorUpdateParameter param) {
-    	Integer logID = param.getLogID() == null ? 0 : param.getLogID();
+		Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
+		Integer logID = param.getLogID() == null ? 0 : param.getLogID();
     	Boolean active = param.getActive() == null ? false : param.getActive();
 		Date holdFromDate;
 		Date holdToDate;
@@ -939,7 +940,7 @@ public class VendorController {
 			log.warn(e.getMessage(), e);
 		}
 
-		Integer result = renewalVendorService.setHoldVendorUpdate(logID, active,holdFrom, holdTo);
+		Integer result = renewalVendorService.setHoldVendorUpdate(wholeSalerID, logID, active,holdFrom, holdTo);
 
 		cacheService.cacheEvictVendor(null);
 

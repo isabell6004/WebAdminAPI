@@ -36,9 +36,12 @@ public class GetVendorSettingResponse {
     @JsonProperty(value = "VendorSister")
     List<VendorSister> vendorSister;
 
+    //@JsonProperty(value = "HoldVendor")
+    //List<LogVendorHoldEntity> holdVendor;
     @JsonProperty(value = "HoldVendor")
-    List<LogVendorHoldEntity> holdVendor;
+    LogVendorHoldEntity holdVendor;
 
+    
     @JsonProperty(value = "VendorHistory")
     List<VendorHistory> vendorHistory;
 }

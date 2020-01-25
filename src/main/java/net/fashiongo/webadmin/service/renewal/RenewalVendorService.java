@@ -895,7 +895,8 @@ public class RenewalVendorService extends ApiService {
 				.vendorBlockReason(listVendorBlockReasonEntityRepository.findVendorBlockReason())
 				.vendor(vendorWholeSalerEntityRepository.findAllActive())
 				.vendorSister(mapWholeSalerSisterEntityRepository.findVendorSister(wid))
-				.holdVendor(logVendorHoldEntityRepository.findByWholeSalerIDAndActiveAndHoldTo(wid))
+				//.holdVendor(logVendorHoldEntityRepository.findByWholeSalerIDAndActiveAndHoldTo(wid))
+				.holdVendor(logVendorHoldEntityRepository.findByWholeSalerIDAndActive(wid))
 				.vendorHistory(entityActionLogEntityRepository.findByEntityIDAndEntityTypeID(wid))
 			.build();
 
@@ -1058,6 +1059,7 @@ public class RenewalVendorService extends ApiService {
 				trm.setWholeSalerID(wholeSalerID);
 				trm.setHoldFrom(holdFrom);
 				trm.setHoldTo(holdTo);
+				trm.setActive(active);
 				trm.setCreatedBy(Utility.getUsername());
 				trm.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
@@ -1115,16 +1117,52 @@ public class RenewalVendorService extends ApiService {
 		return result;
 	}
 
-	public Integer setHoldVendorUpdate(Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
+	public Integer setHoldVendorUpdate(Integer wholeSalerID,Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
 		Integer result = 0;
 
 		try {
 			LogVendorHoldEntity lvh = logVendorHoldEntityRepository.findById(logID).get();
-			lvh.setHoldFrom(holdFrom);
-			lvh.setHoldTo(holdTo);
-			lvh.setActive(active);
+		
+			if(active) {
+				lvh.setHoldFrom(holdFrom);
+				lvh.setHoldTo(holdTo);				
+			}
+		
+			lvh.setActive(active);	
 			logVendorHoldEntityRepository.save(lvh);
+			
+			if(!active) {
+				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+				trm.setLastModifiedDateTime(LocalDateTime.now());
+				trm.setLastUser(Utility.getUsername());
+				trm.setOrderActive(true);
 
+				vendorWholeSalerEntityRepository.save(trm);			
+			}
+			else {
+				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+				
+				int result1 = holdFrom.compareTo(timestamp);
+				
+				if (result1 == -1 || result1 == 0) {
+					WholeSalerEntity trm1 = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+					trm1.setLastModifiedDateTime(LocalDateTime.now());
+					trm1.setOrderActive(false);
+					trm1.setShopActive(true);
+					trm1.setActive(true);		
+					trm1.setLastUser(Utility.getUsername());
+				
+					vendorWholeSalerEntityRepository.save(trm1);
+				}
+				else {
+					WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+					trm.setLastModifiedDateTime(LocalDateTime.now());
+					trm.setLastUser(Utility.getUsername());
+					trm.setOrderActive(true);
+	
+					vendorWholeSalerEntityRepository.save(trm);					
+				}
+			}
 			result = 1;
 		} catch (Exception ex) {
 			log.warn(ex.getMessage(), ex);

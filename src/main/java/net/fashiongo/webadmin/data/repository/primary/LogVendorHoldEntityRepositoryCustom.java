@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface LogVendorHoldEntityRepositoryCustom {
     List<LogVendorHoldEntity> findByWholeSalerIDAndActiveAndHoldTo(Integer wid);
+    LogVendorHoldEntity findByWholeSalerIDAndActive(Integer wid);    
 }

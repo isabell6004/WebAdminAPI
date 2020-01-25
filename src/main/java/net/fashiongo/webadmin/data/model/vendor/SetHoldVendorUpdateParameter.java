@@ -5,7 +5,10 @@ import lombok.Getter;
 
 @Getter
 public class SetHoldVendorUpdateParameter {
-    @JsonProperty(value = "LogID")
+    @JsonProperty(value = "WholeSalerID")
+    private Integer wholeSalerID;
+    
+	@JsonProperty(value = "LogID")
     private Integer logID;
 
     @JsonProperty(value = "Active")

@@ -25,4 +25,14 @@ public class LogVendorHoldEntityRepositoryCustomImpl implements LogVendorHoldEnt
 
         return query.fetch();
     }
+    
+    @Override
+    public LogVendorHoldEntity findByWholeSalerIDAndActive(Integer wid) {
+        QLogVendorHoldEntity X = QLogVendorHoldEntity.logVendorHoldEntity;
+        JPAQuery<LogVendorHoldEntity> query = new JPAQuery<>(entityManager);
+
+        query.select(X).from(X).where(X.wholeSalerID.eq(wid).and(X.active.eq(true)));
+
+        return query.fetchFirst();
+    }    
 }
