@@ -26,35 +26,35 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
         this.httpCaller = httpCaller;
     }
 
-    private void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId) {
+    private void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + wholeSalerId;
 
         VendorBlockStatusCommand newRequest = new VendorBlockStatusCommand(isBlock, blockReasonId);
         Map<String, Object> wrappedRequest = new HashMap<>();
         wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
 
-        httpCaller.put(endpoint, wrappedRequest, FashionGoApiHeader.getHeader());
+        httpCaller.put(endpoint, wrappedRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Override
-    public void blockVendor(SetVendorBlockParameter request) {
-        modifyBlockStatus(request.getWholeSalerID(), true, Long.valueOf(request.getBlockReasonID()));
+    public void blockVendor(SetVendorBlockParameter request, Integer requestedUserId, String requestUserName) {
+        modifyBlockStatus(request.getWholeSalerID(), true, Long.valueOf(request.getBlockReasonID()), requestedUserId, requestUserName);
     }
 
     @Override
-    public void unblockVendor(DelVendorBlockParameter request) {
-        modifyBlockStatus(request.getWholeSalerID(), false, null);
+    public void unblockVendor(DelVendorBlockParameter request, Integer requestedUserId, String requestUserName) {
+        modifyBlockStatus(request.getWholeSalerID(), false, null, requestedUserId, requestUserName);
     }
 
     @Override
-    public void modifyBlockReason(SetVendorBlockUpdate request) {
+    public void modifyBlockReason(SetVendorBlockUpdate request, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID();
 
         VendorBlockStatusCommand newRequest = new VendorBlockStatusCommand(request.getIsBlock(), Long.valueOf(request.getBlockReasonID()));
         Map<String, Object> wrappedRequest = new HashMap<>();
         wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
 
-        httpCaller.post(endpoint, wrappedRequest, FashionGoApiHeader.getHeader());
+        httpCaller.post(endpoint, wrappedRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Getter

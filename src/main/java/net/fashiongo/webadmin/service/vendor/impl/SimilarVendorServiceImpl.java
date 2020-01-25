@@ -6,8 +6,10 @@ import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnselect;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
 import net.fashiongo.webadmin.data.repository.primary.MapWholeSalerGroupEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.vendor.SimilarVendorNewService;
 import net.fashiongo.webadmin.service.vendor.SimilarVendorService;
+import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +94,8 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
             mapWholeSalerGroupEntityRepository.deleteAll(deleteEntities);
 
             // TODO: call fashiongo API - done
-            similarVendorNewService.deleteSimilarVendor(vendorId, widList);
+            WebAdminLoginUser userInfo = Utility.getUserInfo();
+            similarVendorNewService.deleteSimilarVendor(vendorId, widList, userInfo.getUserId(), userInfo.getUsername());
 
             result = 1;
         }
@@ -115,7 +118,8 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
             mapWholeSalerGroupEntityRepository.saveAll(insertEntities);
 
             // TODO: call fashiongo API - done
-            similarVendorNewService.addSimilarVendor(vendorId, intIdList);
+            WebAdminLoginUser userInfo = Utility.getUserInfo();
+            similarVendorNewService.addSimilarVendor(vendorId, intIdList, userInfo.getUserId(), userInfo.getUsername());
 
             result = 1;
         }

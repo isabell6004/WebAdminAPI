@@ -6,9 +6,11 @@ import net.fashiongo.webadmin.data.model.vendor.DelVendorImageParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorImage;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorImageRequestEntityRepository;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorImageNewService;
 import net.fashiongo.webadmin.service.vendor.VendorImageService;
+import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -43,14 +45,17 @@ public class VendorImageServiceImpl implements VendorImageService {
     @Override
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public Integer create(SetVendorImageParameter request) {
-        Integer result = setVendorImage(request);
+        VendorImageRequestEntity result = setVendorImage(request);
         cacheService.GetRedisCacheEvict("VendorPictureLogo", String.valueOf(request.getWid()));
         cacheService.cacheEvictVendor(request.getWid());
 
-        if(result == 1)
-            vendorImageNewService.insert(request);
-
-        return result;
+        if(result != null) {
+            WebAdminLoginUser userInfo = Utility.getUserInfo();
+            vendorImageNewService.insert(result.getImageRequestId(), request, userInfo.getUserId(), userInfo.getUsername());
+        } else {
+            return -99;
+        }
+        return 1;
     }
 
     @Override
@@ -70,14 +75,14 @@ public class VendorImageServiceImpl implements VendorImageService {
         return vendorImageRequestEntityRepository.findByWholeSalerID(wid);
     }
 
-    private Integer setVendorImage(SetVendorImageParameter request) {
+    private VendorImageRequestEntity setVendorImage(SetVendorImageParameter request) {
         Integer wid = request.getWid();
         Integer type = request.getType();
         String fileName = request.getFilename();
         String userID = StringUtils.isEmpty(request.getUserid()) ? "admin" : request.getUserid();
 
+        VendorImageRequestEntity vendorImage = null;
         try {
-            VendorImageRequestEntity vendorImage;
             if (type == 5) {
                 vendorImage = vendorImageRequestEntityRepository.findOneByWholeSalerIDAndVendorImageTypeID(wid, type);
             } else {
@@ -104,11 +109,10 @@ public class VendorImageServiceImpl implements VendorImageService {
                 vendorImage.setDecidedBy(userID);
                 vendorImageRequestEntityRepository.save(vendorImage);
             }
-            return 1;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
-            return -99;
         }
+        return vendorImage;
     }
 
     private Integer delVendorImage(Integer wid, Integer type) {
@@ -116,7 +120,8 @@ public class VendorImageServiceImpl implements VendorImageService {
             VendorImageRequestEntity vendorImage = vendorImageRequestEntityRepository.findOneByWholeSalerIDAndVendorImageTypeID(wid, type);
             vendorImageRequestEntityRepository.delete(vendorImage);
 
-            vendorImageNewService.delete(wid, vendorImage.getImageRequestId());
+            WebAdminLoginUser userInfo = Utility.getUserInfo();
+            vendorImageNewService.delete(wid, vendorImage.getImageRequestId(), userInfo.getUserId(), userInfo.getUsername());
 
             return 1;
         } catch (Exception ex) {

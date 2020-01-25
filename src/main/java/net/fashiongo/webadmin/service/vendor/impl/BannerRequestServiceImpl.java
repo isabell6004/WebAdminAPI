@@ -10,6 +10,7 @@ import net.fashiongo.webadmin.data.repository.primary.vendor.VendorImageRequestA
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorImageRequestEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorImageRequestOrderingType;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorImageRequestSelectParameter;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
@@ -96,7 +97,8 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.save(vendorImageRequest);
 
         // TODO: call vendor API - done
-        bannerRequestNewService.rejectBanner(vendorImageRequest.getWholeSalerID(), request);
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        bannerRequestNewService.rejectBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
     }
 
     /**
@@ -113,7 +115,8 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.save(vendorImageRequest);
 
         // TODO: call vendor API - done
-        bannerRequestNewService.approveBanner(vendorImageRequest.getWholeSalerID(), request);
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        bannerRequestNewService.approveBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
     }
 
     /**
@@ -144,7 +147,8 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.delete(vendorImageRequest);
 
         // TODO: call vendor API - done
-        bannerRequestNewService.deleteBanner(vendorImageRequest.getWholeSalerID(), request);
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        bannerRequestNewService.deleteBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
     }
 
     private VendorImageRequest getVendorImageRequest(Integer id) {

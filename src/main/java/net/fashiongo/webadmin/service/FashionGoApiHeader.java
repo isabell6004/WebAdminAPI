@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.utility.Utility;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ public class FashionGoApiHeader {
 
     private final static String ApplicationType = "WebAdmin";
 
-    public static Map<String, String> getHeader() {
+    public static Map<String, String> getHeader(Integer userId, String userName) {
 
         Map<String, String> header = new HashMap<>();
         header.put("Connection", "close");
@@ -27,14 +26,14 @@ public class FashionGoApiHeader {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            Map<String, String> userInfo = new HashMap<>();
-            userInfo.put("userId", String.valueOf(Utility.getUserInfo().getUserId()));
-            userInfo.put("username", Utility.getUserInfo().getUsername());
+            Map<String, Object> userInfo = new HashMap<>();
+            userInfo.put("userId", userId);
+            userInfo.put("username", userName);
             String jsonUserInfo = mapper.writeValueAsString(userInfo);
 
             header.put("User-Info", jsonUserInfo);
         } catch (JsonProcessingException e) {
-            log.warn("fail to generate the user info. {}, {}", Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
+            log.warn("fail to generate the user info. {}, {}", userId, userName);
         }
         return header;
     }

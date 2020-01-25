@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value="/vendor", produces = "application/json")
 public class SimilarVendorController {
 
     private final SimilarVendorService similarVendorService;
@@ -22,7 +21,7 @@ public class SimilarVendorController {
         this.cacheService = cacheService;
     }
 
-    @GetMapping(value = "getvendorgrouping")
+    @GetMapping(value = "vendor/getvendorgrouping", produces = "application/json")
     public JsonResponse<GetVendorGroupingResponse> getVendorGroupings(
             @RequestParam(value = "wholesalerid") Integer vendorId,
             @RequestParam(value = "CompanyType") String companyType,
@@ -44,7 +43,7 @@ public class SimilarVendorController {
         return response;
     }
 
-    @PostMapping(value = "setvendorgrouping")
+    @PostMapping(value = "vendor/setvendorgrouping", produces = "application/json")
     public JsonResponse<Integer> setVendorGrouping(@RequestBody SetVendorGroupingParameter param) {
         JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
 

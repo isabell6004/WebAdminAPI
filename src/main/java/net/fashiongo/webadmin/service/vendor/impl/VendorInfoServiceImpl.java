@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
@@ -489,7 +490,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
 
         cacheService.cacheEvictVendor(wid);
-        vendorInfoNewService.updateDetailInfo(request, vendorDetailInfo);
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        vendorInfoNewService.updateDetailInfo(request, vendorDetailInfo, userInfo.getUserId(), userInfo.getUsername());
 
         return result;
     }

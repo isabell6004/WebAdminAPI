@@ -67,12 +67,12 @@ public class HttpClientWrapper {
         return execute(endpoint, payload, headerMap, HttpMethod.PUT);
     }
 
-    public ResponseEntity<JsonResponse> put(String endpoint, String payload) {
-        return execute(endpoint, payload, null, HttpMethod.PUT);
+    public ResponseEntity<JsonResponse> put(String endpoint, Map<String, String> headerMap) {
+        return execute(endpoint, null, headerMap, HttpMethod.PUT);
     }
 
-    public ResponseEntity<JsonResponse> put(String endpoint, Object request) {
-        return put(endpoint, request, null);
+    public ResponseEntity<JsonResponse> put(String endpoint, String payload) {
+        return execute(endpoint, payload, null, HttpMethod.PUT);
     }
 
     public ResponseEntity<JsonResponse> put(String endpoint, Object request, Map<String, String> headerMap) {

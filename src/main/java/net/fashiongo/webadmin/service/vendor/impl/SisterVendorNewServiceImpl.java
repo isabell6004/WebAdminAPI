@@ -17,23 +17,27 @@ public class SisterVendorNewServiceImpl implements SisterVendorNewService {
     }
 
     @Override
-    public void createSisterVendor(Integer vendorId, Integer sisterVendorId) {
+    public void createSisterVendor(Integer vendorId, Integer originalId, Integer sisterVendorId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister";
-        CreateSisterVendorCommand newRequest = new CreateSisterVendorCommand(sisterVendorId.longValue());
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
+        CreateSisterVendorCommand newRequest = new CreateSisterVendorCommand(originalId.longValue(), sisterVendorId.longValue());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Override
-    public void deleteSisterVendor(Integer vendorId, Integer mapId) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/v1.0/sister/" + mapId;
-        httpCaller.delete(endpoint, FashionGoApiHeader.getHeader());
+    public void deleteSisterVendor(Integer vendorId, Integer mapId, Integer requestedUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister/" + mapId;
+        httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Getter
     private class CreateSisterVendorCommand {
+
+        private Long id;
+
         private Long sisterVendorId;
 
-        private CreateSisterVendorCommand(Long sisterVendorId) {
+        private CreateSisterVendorCommand(Long id, Long sisterVendorId) {
+            this.id = id;
             this.sisterVendorId = sisterVendorId;
         }
     }

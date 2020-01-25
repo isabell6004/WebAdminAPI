@@ -25,32 +25,59 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public void createVendorContractDocument(SetVendorContractDocumentParameter request) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/contract/document";
+    public void createVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/contract/document";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Override
-    public void modifyVendorContractDocument(SetVendorContractDocumentParameter request) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/contract/document";
+    public void modifyVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/contract/document";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
-        httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader());
+        httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Override
-    public void deleteVendorContractDocument(List<Long> documentIds) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/contract/document/delete";
+    public void deleteVendorContractDocument(Integer vendorId, List<Long> documentIds, Integer requestedUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/contract/document/delete";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(documentIds);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Override
-    public void createAndModifyVendorContractHistory(SetVendorContractParameter request) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/contract";
+    public void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/contract/revise";
         log.debug("call the vendor api:{}", endpoint);
-        ContractHistoryCommand newRequest = new ContractHistoryCommand(request);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
+        ReviseContractHistoryCommand newRequest = new ReviseContractHistoryCommand(request, originalVendorContractHistoryId, revisedVendorContractHistoryId);
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+    }
+
+    @Override
+    public void createContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/contract";
+        log.debug("call the vendor api:{}", endpoint);
+        ContractHistoryCommand newRequest = new ContractHistoryCommand(request, originalVendorContractHistoryId);
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+    }
+
+    @Override
+    public void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/contract";
+        log.debug("call the vendor api:{}", endpoint);
+        ContractHistoryCommand newRequest = new ContractHistoryCommand(request, originalVendorContractHistoryId);
+        httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+    }
+
+    @Getter
+    private class ReviseContractHistoryCommand extends ContractHistoryCommand {
+
+        private Long revisedVendorContractHistoryId;
+
+        private ReviseContractHistoryCommand(SetVendorContractParameter request, Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId) {
+            super(request, originalVendorContractHistoryId);
+            this.revisedVendorContractHistoryId = revisedVendorContractHistoryId;
+        }
     }
 
     @Getter
@@ -59,7 +86,6 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         private Long contractHistoryId;
 
         private Integer vendorId;
-        //    private Integer typeCode;
         private Long planId;
 
         private BigDecimal setupFee;
@@ -71,18 +97,16 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         private Integer monthlyItemCap;
 
         private Integer accountExecutiveId;
-        private String accountExecutiveBy;
 
         private BigDecimal commissionRate;
         private String dateFrom;
-//    private LocalDateTime dateTo;
 
         private String memo;
         private Boolean isContractRevised;
 
-        private ContractHistoryCommand(SetVendorContractParameter request) {
+        private ContractHistoryCommand(SetVendorContractParameter request, Long originalVendorContractHistoryId) {
             this.vendorId = request.getWholeSalerID();
-            this.contractHistoryId = Long.valueOf(request.getVendorContractID());
+            this.contractHistoryId = originalVendorContractHistoryId;
             this.planId = Long.valueOf(request.getVendorContractPlanID());
             this.setupFee = request.getSetupFee();
             this.isSetupFeeWaived = Optional.ofNullable(request.getIsSetupFeeWaived()).orElse("").equalsIgnoreCase("1");
@@ -93,7 +117,6 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
             this.accountExecutiveId = request.getRepID();
             this.commissionRate = request.getCommissionRate();
             this.dateFrom = SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()).toLocalDateTime().toString();
-//            this.dateTo = Timestamp.valueOf(SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()).toLocalDateTime().minusDays(1)).toLocalDateTime();
             this.memo = request.getMemo();
             this.isContractRevised = request.getVendorContractRowAdd();
         }
@@ -101,12 +124,12 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
     @Getter
     private class ContractDocumentCommand {
+
         private Integer typeCode;
         private String fileName1;
         private String fileName2;
         private String fileName3;
         private String note;
-        private Integer receivedId;
         private String receivedBy;
         private Long documentId;
         private Long contractHistoryId;
@@ -114,6 +137,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         private List<Long> documentIds;
 
         private ContractDocumentCommand(SetVendorContractDocumentParameter request) {
+            this.contractHistoryId = Long.valueOf(request.getVendorContractID());
             this.typeCode = request.getDocumentTypeID();
             this.fileName1 = request.getFileName();
             this.fileName2 = request.getFileName2();

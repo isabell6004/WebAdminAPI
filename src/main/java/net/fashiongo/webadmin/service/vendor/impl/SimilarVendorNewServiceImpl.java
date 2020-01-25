@@ -19,17 +19,17 @@ public class SimilarVendorNewServiceImpl implements SimilarVendorNewService {
     }
 
     @Override
-    public void addSimilarVendor(Integer vendorId, List<Integer> similarVendorIdList) {
+    public void addSimilarVendor(Integer vendorId, List<Integer> similarVendorIdList, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/similar";
         CreateSimilarVendorCommand newRequest = new CreateSimilarVendorCommand(similarVendorIdList);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Override
-    public void deleteSimilarVendor(Integer vendorId, List<Integer> mapIdList) {
+    public void deleteSimilarVendor(Integer vendorId, List<Integer> mapIdList, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/similar/delete";
         DeleteSimilarVendorCommand newRequest = new DeleteSimilarVendorCommand(mapIdList);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader());
+        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Getter

@@ -25,49 +25,53 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
     }
 
     @Override
-    public void insert(SetVendorImageParameter request) {
-        Integer bannerId = insert(request.getWid(), request.getType(), request.getFilename());
-        approve(request.getWid(), bannerId);
-        activate(request.getWid(), bannerId);
+    public void insert(Integer imageOriginalId, SetVendorImageParameter request, Integer requestedUserId, String requestUserName) {
+        Integer bannerId = insert(imageOriginalId, request.getWid(), request.getType(), request.getFilename(), requestedUserId, requestUserName);
+        approve(request.getWid(), imageOriginalId, requestedUserId, requestUserName);
+        activate(request.getWid(), imageOriginalId, requestedUserId, requestUserName);
     }
 
     @Override
-    public void delete(Integer vendorId, Integer bannerId) {
+    public void delete(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId;
-        httpCaller.delete(endpoint);
+        httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
-    private Integer insert(Integer vendorId, Integer bannerTypeId, String fileName) {
+    private Integer insert(Integer imageOriginalId, Integer vendorId, Integer bannerTypeId, String fileName, Integer requestedUserId, String requestUserName) {
+
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner";
-        VendorBannerImageCommand vendorBannerImageCommand = new VendorBannerImageCommand(bannerTypeId, fileName);
-        ResponseEntity<JsonResponse> response = httpCaller.post(endpoint, vendorBannerImageCommand, FashionGoApiHeader.getHeader());
+        VendorBannerImageCommand vendorBannerImageCommand = new VendorBannerImageCommand(imageOriginalId, bannerTypeId, fileName);
+        ResponseEntity<JsonResponse> response = httpCaller.post(endpoint, vendorBannerImageCommand, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
 
         if(Optional.ofNullable(response.getBody()).orElseThrow(RuntimeException::new).isSuccess()) {
             Map<String, Integer> result = (Map<String, Integer>) response.getBody().getData();
             return Optional.ofNullable(result.get("content")).orElse(0);
         } else {
-            throw new RuntimeException();
+            throw new RuntimeException("fail to inert a new image in new fashiongo api");
         }
     }
 
-    private ResponseEntity<JsonResponse> approve(Integer vendorId, Integer bannerId) {
+    private ResponseEntity<JsonResponse> approve(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/approve";
-        return httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
+        return httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
-    private ResponseEntity<JsonResponse> activate(Integer vendorId, Integer bannerId) {
+    private ResponseEntity<JsonResponse> activate(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
-        return httpCaller.put(endpoint, FashionGoApiHeader.getHeader());
+        return httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Getter
     private class VendorBannerImageCommand {
 
+        private Integer id;
+
         private Integer bannerTypeId;
 
         private String fileName;
 
-        private VendorBannerImageCommand(Integer bannerTypeId, String fileName) {
+        private VendorBannerImageCommand(Integer id, Integer bannerTypeId, String fileName) {
+            this.id = id;
             this.bannerTypeId = bannerTypeId;
             this.fileName = fileName;
         }

@@ -12,14 +12,20 @@ import java.util.List;
 public interface VendorContractNewService {
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void modifyVendorContractDocument(SetVendorContractDocumentParameter request);
+    void modifyVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void createVendorContractDocument(SetVendorContractDocumentParameter request);
+    void createVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void deleteVendorContractDocument(List<Long> documentIds);
+    void deleteVendorContractDocument(Integer vendorId, List<Long> documentIds, Integer requestedUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void createAndModifyVendorContractHistory(SetVendorContractParameter request);
+    void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request, Integer userId, String username);
+
+    @Async("fashionGoApiThreadPoolTaskExecutor")
+    void createContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer userId, String username);
+
+    @Async("fashionGoApiThreadPoolTaskExecutor")
+    void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer userId, String username);
 }

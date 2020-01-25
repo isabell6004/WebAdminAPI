@@ -15,19 +15,15 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value="/vendor", produces = "application/json")
 public class SisterVendorController {
 
     private final SisterVendorService sisterVendorService;
-    private final CacheService cacheService;
 
-    public SisterVendorController(SisterVendorService sisterVendorService,
-                                  CacheService cacheService) {
+    public SisterVendorController(SisterVendorService sisterVendorService) {
         this.sisterVendorService = sisterVendorService;
-        this.cacheService = cacheService;
     }
 
-    @PostMapping("getvendorsister")
+    @PostMapping(value = "vendor/getvendorsister", produces = "application/json")
     public JsonResponse<List<VendorSister>> getSisterVendors(@RequestBody GetVendorSisterParameter param) {
         JsonResponse<List<VendorSister>> response = new JsonResponse<>(false, null, null);
 
@@ -44,7 +40,7 @@ public class SisterVendorController {
         return response;
     }
 
-    @PostMapping("getvendorsisterchk")
+    @PostMapping(value = "vendor/getvendorsisterchk", produces = "application/json")
     public JsonResponse<List<Integer>> getSisterVendorChecks(@RequestBody GetVendorSisterChkParameter param) {
         JsonResponse<List<Integer>> response = new JsonResponse<>(false, null, null);
 
@@ -61,17 +57,21 @@ public class SisterVendorController {
         return response;
     }
 
-    @PostMapping("setvendorsister")
-    public ResultCode setSisterVendor(@RequestBody SetVendorSisterParamer param) {
-        ResultCode result = sisterVendorService.setSisterVendor(param.getWid(), param.getSisterid());
-
-        cacheService.cacheEvictVendor(param.getWid());
-
-        return result;
+    @PostMapping(value = "vendor/setvendorsister", produces = "application/json")
+    public ResultCode setVendorSister(@RequestBody SetVendorSisterParamer param) {
+        if (sisterVendorService.setSisterVendor(param.getWid(), param.getSisterid())) {
+            return new ResultCode(true, 1, "success");
+        } else {
+            return new ResultCode(false, -1, "savefailure");
+        }
     }
 
-    @PostMapping(value = "delvendorsister")
+    @PostMapping(value = "vendor/delvendorsister", produces = "application/json")
     public ResultCode deleteSisterVendor(@RequestBody DelVendorSisterParameter param) {
-        return sisterVendorService.deleteSisterVendor(param.getMapID());
+        if (sisterVendorService.deleteSisterVendor(param.getMapID())) {
+            return new ResultCode(true, 1, "success");
+        } else {
+            return new ResultCode(false, -1, "deletefailure");
+        }
     }
 }

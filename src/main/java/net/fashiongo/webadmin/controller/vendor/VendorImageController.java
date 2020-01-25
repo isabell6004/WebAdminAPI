@@ -26,7 +26,7 @@ public class VendorImageController {
         this.vendorImageService = vendorImageService;
     }
 
-    @PostMapping(value = "vendor/getvendorimage")
+    @PostMapping(value = "vendor/getvendorimage", produces = "application/json")
     public JsonResponse<List<VendorImage>> getvendorimage(@RequestBody GetVendorImageParameter param) {
         JsonResponse<List<VendorImage>> response = new JsonResponse<>(false, null, null);
         Integer wid = param.getWid();

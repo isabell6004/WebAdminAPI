@@ -36,4 +36,17 @@ public enum StatusType {
         return Optional.ofNullable(vendorStatusMap.get(value))
                 .orElseThrow(() -> new IllegalArgumentException("cannot find a value, " + value));
     }
+
+    public static StatusType getStatusType(Boolean active, Boolean shopActive, Boolean orderActive) {
+        StatusType vendorStatusType = StatusType.INACTIVE;
+        if(orderActive) {
+            vendorStatusType = StatusType.ORDER_ACTIVE;
+        } else if (shopActive) {
+            vendorStatusType = StatusType.SHOP_ACTIVE;
+        } else if (active) {
+            vendorStatusType = StatusType.ACTIVE;
+        }
+        return vendorStatusType;
+    }
+
 }

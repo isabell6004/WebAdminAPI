@@ -18,7 +18,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value="/vendor", produces = "application/json")
 public class BannerRequestController {
 
     private final BannerRequestService bannerRequestService;
@@ -37,7 +36,7 @@ public class BannerRequestController {
      * @author Reo
      * @return
      */
-    @PostMapping("getvendorimagetype")
+    @PostMapping(value = "vendor/getvendorimagetype", produces = "application/json")
     public JsonResponse<List<ListVendorImageType>> getVendorImageType() {
         JsonResponse<List<ListVendorImageType>> response = new JsonResponse<>(false, null, 0, null);
 
@@ -60,7 +59,7 @@ public class BannerRequestController {
      * @param parameters
      * @return
      */
-    @PostMapping("getbannerrequest")
+    @PostMapping(value = "vendor/getbannerrequest", produces = "application/json")
     public JsonResponse<BannerRequestResponse> getBannerRequest(@RequestBody GetBannerRequestParameter parameters) {
         JsonResponse<BannerRequestResponse> response = new JsonResponse<>(false, null, null);
 
@@ -83,7 +82,7 @@ public class BannerRequestController {
      * @param parameters
      * @return
      */
-    @PostMapping("setdenybanner")
+    @PostMapping(value = "vendor/setdenybanner", produces = "application/json")
     public JsonResponse<ResultCode> denyBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);
 
@@ -111,7 +110,7 @@ public class BannerRequestController {
      * @param parameters
      * @return
      */
-    @PostMapping("setapprovebanner")
+    @PostMapping(value = "vendor/setapprovebanner", produces = "application/json")
     public JsonResponse<ResultCode> approveBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);
 
@@ -139,7 +138,7 @@ public class BannerRequestController {
      * @param parameters
      * @return
      */
-    @PostMapping("setrestorebanner")
+    @PostMapping(value = "vendor/setrestorebanner", produces = "application/json")
     public JsonResponse<ResultCode> restoreBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);
 
@@ -167,7 +166,7 @@ public class BannerRequestController {
      * @param parameters
      * @return
      */
-    @PostMapping("delbannerbanner")
+    @PostMapping(value = "delbannerbanner", produces = "application/json")
     public JsonResponse<ResultCode> deleteBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);
 

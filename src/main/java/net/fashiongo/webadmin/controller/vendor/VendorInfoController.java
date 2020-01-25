@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller.vendor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListCSVResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
@@ -26,19 +27,15 @@ public class VendorInfoController {
 
     private RenewalVendorService renewalVendorService;
 
-    private CacheService cacheService;
-
     private VendorInfoService vendorInfoService;
 
     public VendorInfoController(RenewalVendorService renewalVendorService,
-                                CacheService cacheService,
                                 VendorInfoService vendorInfoService) {
         this.renewalVendorService = renewalVendorService;
-        this.cacheService = cacheService;
         this.vendorInfoService = vendorInfoService;
     }
 
-    @PostMapping(value = "vendor/getvendorsetting")
+    @PostMapping(value = "vendor/getvendorsetting", produces = "application/json")
     public JsonResponse<GetVendorSettingResponse> getvendorsetting(@RequestBody GetVendorSettingParameter param) {
         JsonResponse<GetVendorSettingResponse> response = new JsonResponse<>(false, null, null);
 
@@ -74,7 +71,7 @@ public class VendorInfoController {
         return result;
     }
 
-    @PostMapping(value = "vendor/getvendorlist")
+    @PostMapping(value = "vendor/getvendorlist", produces = "application/json")
     public JsonResponse getvendorlist(@RequestBody GetVendorListParameter param) {
         JsonResponse response = new JsonResponse(false, null, null);
 
@@ -91,7 +88,7 @@ public class VendorInfoController {
         return response;
     }
 
-    @PostMapping(value = "vendor/getvendorlistcsv")
+    @PostMapping(value = "vendor/getvendorlistcsv", produces = "application/json")
     public JsonResponse getvendorlistcsv(@RequestBody GetVendorListParameter param) {
         JsonResponse response = new JsonResponse(false, null, null);
 
@@ -105,6 +102,22 @@ public class VendorInfoController {
             log.warn(e.getMessage(), e);
             response.setMessage("fail");
         }
+        return response;
+    }
+
+    @PostMapping(value = "vendor/getvendorbasicinfo", produces = "application/json")
+    public JsonResponse<GetVendorBasicInfoResponse> getvendorbasicinfo(@RequestBody GetVendorBasicInfoParameter param) {
+        JsonResponse<GetVendorBasicInfoResponse> response = new JsonResponse<>(false, null, null);
+        Integer wid = param.getWid();
+
+        try {
+            response.setData(renewalVendorService.getVendorDetailInfo(wid));
+            response.setSuccess(true);
+        } catch (Exception ex) {
+            log.error("Exception Error: {}", ex);
+            response.setMessage(ex.getMessage());
+        }
+
         return response;
     }
 

@@ -71,13 +71,13 @@ public class VendorContractServiceTest {
         VendorContractDocumentEntity entity2 = VendorContractDocumentEntity.builder().vendorContractDocumentID(2).build();
         List<VendorContractDocumentEntity> documents = Arrays.asList(entity1, entity2);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyList());
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
         given(vendorContractDocumentEntityRepository.findAllById(anyList())).willReturn(documents);
         willDoNothing().given(vendorContractDocumentEntityRepository).deleteAll(documents);
 
         Boolean result = vendorContractService.delVendorContractDocument(request);
 
-        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyList());
+        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).findAllById(anyList());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).deleteAll(anyList());
 
@@ -105,13 +105,13 @@ public class VendorContractServiceTest {
         DelVendorContractDocumentParameter request = new DelVendorContractDocumentParameter();
         request.setDocumentHistoryIDs(documentIds);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyList());
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
         given(vendorContractDocumentEntityRepository.findAllById(anyList())).willReturn(null);
 
         Boolean result = vendorContractService.delVendorContractDocument(request);
 
         log.debug("result : {}", result);
-        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyList());
+        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
         Assert.assertTrue(result);
     }
 
@@ -123,13 +123,13 @@ public class VendorContractServiceTest {
         DelVendorContractDocumentParameter request = new DelVendorContractDocumentParameter();
         request.setDocumentHistoryIDs(documentIds);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyList());
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
 
         // do test
         Boolean result = vendorContractService.delVendorContractDocument(request);
 
         log.debug("result : {}", result);
-        verify(vendorContractNewService, never()).deleteVendorContractDocument(anyList());
+        verify(vendorContractNewService, never()).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
         Assert.assertFalse(result);
     }
 
@@ -147,12 +147,12 @@ public class VendorContractServiceTest {
 
         VendorContractDocumentEntity returnEntity = VendorContractDocumentEntity.create(request, "testDeveloper");
 
-        willDoNothing().given(vendorContractNewService).createVendorContractDocument(request);
+        willDoNothing().given(vendorContractNewService).createVendorContractDocument(anyInt(), request, anyInt(), anyString());
         given(vendorContractDocumentEntityRepository.save(any())).willReturn(returnEntity);
 
         Boolean result = vendorContractService.setVendorContractDocument(request);
 
-        verify(vendorContractNewService, atLeastOnce()).createVendorContractDocument(request);
+        verify(vendorContractNewService, atLeastOnce()).createVendorContractDocument(anyInt(), request, anyInt(), anyString());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).save(any());
 
         Assert.assertTrue(result);
@@ -170,12 +170,12 @@ public class VendorContractServiceTest {
         request.setNote("test");
         request.setReceivedBy("developer");
 
-        willDoNothing().given(vendorContractNewService).createVendorContractDocument(request);
+        willDoNothing().given(vendorContractNewService).createVendorContractDocument(anyInt(), request, anyInt(), anyString());
         given(vendorContractDocumentEntityRepository.save(any())).willThrow(new RuntimeException("test"));
 
         Boolean result = vendorContractService.setVendorContractDocument(request);
 
-        verify(vendorContractNewService, never()).createVendorContractDocument(request);
+        verify(vendorContractNewService, never()).createVendorContractDocument(anyInt(), request, anyInt(), anyString());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).save(any());
 
         Assert.assertFalse(result);
@@ -196,13 +196,13 @@ public class VendorContractServiceTest {
 
         VendorContractDocumentEntity returnEntity = VendorContractDocumentEntity.create(request, "testDeveloper");
 
-        willDoNothing().given(vendorContractNewService).modifyVendorContractDocument(request);
+        willDoNothing().given(vendorContractNewService).modifyVendorContractDocument(anyInt(), request, anyInt(), anyString());
         given(vendorContractDocumentEntityRepository.findOneByVendorContractDocumentID(request.getVendorContractDocumentID())).willReturn(returnEntity);
         given(vendorContractDocumentEntityRepository.save(any())).willReturn(returnEntity);
 
         Boolean result = vendorContractService.setVendorContractDocument(request);
 
-        verify(vendorContractNewService, atLeastOnce()).modifyVendorContractDocument(request);
+        verify(vendorContractNewService, atLeastOnce()).modifyVendorContractDocument(anyInt(), request, anyInt(), anyString());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).findOneByVendorContractDocumentID(any());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).save(any());
 
@@ -224,13 +224,13 @@ public class VendorContractServiceTest {
 
         VendorContractDocumentEntity returnEntity = VendorContractDocumentEntity.create(request, "testDeveloper");
 
-        willDoNothing().given(vendorContractNewService).modifyVendorContractDocument(request);
+        willDoNothing().given(vendorContractNewService).modifyVendorContractDocument(anyInt(), request, anyInt(), anyString());
         given(vendorContractDocumentEntityRepository.findOneByVendorContractDocumentID(request.getVendorContractDocumentID())).willReturn(returnEntity);
         given(vendorContractDocumentEntityRepository.save(any())).willThrow(new RuntimeException("test"));
 
         Boolean result = vendorContractService.setVendorContractDocument(request);
 
-        verify(vendorContractNewService, never()).modifyVendorContractDocument(request);
+        verify(vendorContractNewService, never()).modifyVendorContractDocument(anyInt(), request, anyInt(), anyString());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).findOneByVendorContractDocumentID(any());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).save(any());
 

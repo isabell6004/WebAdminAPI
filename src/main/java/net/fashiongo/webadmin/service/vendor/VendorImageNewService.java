@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.Async;
 public interface VendorImageNewService {
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void delete(Integer vendorID, Integer bannerId);
+    void delete(Integer vendorID, Integer bannerId, Integer requestUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void insert(SetVendorImageParameter request);
+    void insert(Integer imageOriginalId, SetVendorImageParameter request, Integer requestUserId, String requestUserName);
 }

@@ -18,22 +18,22 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
     }
 
     @Override
-    public void approveBanner(Integer vendorId, SetDenyBannerParameter request) {
+    public void approveBanner(Integer vendorId, SetDenyBannerParameter request, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/vendor/" + vendorId + "/banner/" + request.getImageRequestId() + "/approve";
-        httpCaller.put(endpoint, null, FashionGoApiHeader.getHeader());
+        httpCaller.put(endpoint, null, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Override
-    public void rejectBanner(Integer vendorId, SetDenyBannerParameter request) {
+    public void rejectBanner(Integer vendorId, SetDenyBannerParameter request, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/vendor/" + vendorId + "/banner/" + request.getImageRequestId() + "/reject";
         BannerRequestCommand newRequest = new BannerRequestCommand(request);
-        httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader());
+        httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Override
-    public void deleteBanner(Integer vendorId, SetDenyBannerParameter request) {
+    public void deleteBanner(Integer vendorId, SetDenyBannerParameter request, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/vendor/" + vendorId + "/banner/" + request.getImageRequestId();
-        httpCaller.delete(endpoint, FashionGoApiHeader.getHeader());
+        httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Getter

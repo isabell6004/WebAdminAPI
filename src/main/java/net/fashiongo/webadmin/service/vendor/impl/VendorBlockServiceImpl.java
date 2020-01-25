@@ -11,10 +11,12 @@ import net.fashiongo.webadmin.data.repository.primary.AspnetMembershipEntityRepo
 import net.fashiongo.webadmin.data.repository.primary.EntityActionLogEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.VendorAdminAccountEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.VendorBlockedEntityRepository;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import net.fashiongo.webadmin.service.vendor.VendorBlockService;
+import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,7 +86,8 @@ public class VendorBlockServiceImpl implements VendorBlockService {
             vendorBlockedEntityRepository.save(retailer);
 
             // new DB 스키마를 위한 API call
-            vendorBlockNewService.modifyBlockReason(request);
+            WebAdminLoginUser userInfo = Utility.getUserInfo();
+            vendorBlockNewService.modifyBlockReason(request, userInfo.getUserId(), userInfo.getUsername());
 
             return 1;
         } catch (Exception ex) {
@@ -113,7 +116,8 @@ public class VendorBlockServiceImpl implements VendorBlockService {
             aspnetMembershipEntityRepository.saveAll(aspnetMembershipEntityList);
 
             // new DB 스키마를 위한 API call
-            vendorBlockNewService.unblockVendor(request);
+            WebAdminLoginUser userInfo = Utility.getUserInfo();
+            vendorBlockNewService.unblockVendor(request, userInfo.getUserId(), userInfo.getUsername());
 
             return Boolean.TRUE;
         } catch (Exception ex) {
@@ -143,7 +147,8 @@ public class VendorBlockServiceImpl implements VendorBlockService {
             aspnetMembershipEntityRepository.saveAll(aspnetMembershipEntityList);
 
             // new DB 스키마를 위한 API call
-            vendorBlockNewService.blockVendor(request);
+            WebAdminLoginUser userInfo = Utility.getUserInfo();
+            vendorBlockNewService.blockVendor(request, userInfo.getUserId(), userInfo.getUsername());
 
             return Boolean.TRUE;
 

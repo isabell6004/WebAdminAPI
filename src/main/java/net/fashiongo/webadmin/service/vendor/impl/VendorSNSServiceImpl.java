@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CustomerSocialMediaEntity;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSNSListParameter;
 import net.fashiongo.webadmin.data.repository.primary.CustomerSocialMediaEntityRepository;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorSNSNewService;
 import net.fashiongo.webadmin.service.vendor.VendorSNSService;
+import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -50,6 +52,7 @@ public class VendorSNSServiceImpl implements VendorSNSService {
         Integer socialMediaID = request.getSocialMediaID() == null ? 0 : request.getSocialMediaID();
         String url = StringUtils.isEmpty(request.getSocialMediaUsername()) ? "" : request.getSocialMediaUsername();
 
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
             if (mapID == 0) {
                 CustomerSocialMediaEntity customerSocialMedia = new CustomerSocialMediaEntity();
@@ -58,17 +61,17 @@ public class VendorSNSServiceImpl implements VendorSNSService {
                 customerSocialMedia.setSocialMediaID(socialMediaID);
                 customerSocialMedia.setSocialMediaUsername(url);
                 customerSocialMediaEntityRepository.save(customerSocialMedia);
-                vendorSNSNewService.create(request);
+                vendorSNSNewService.create(request, userInfo.getUserId(), userInfo.getUsername());
             } else {
                 if(StringUtils.isEmpty(url)) {
                     CustomerSocialMediaEntity customerSocialMedia = customerSocialMediaEntityRepository.findOneByMapID(mapID);
                     customerSocialMediaEntityRepository.delete(customerSocialMedia);
-                    vendorSNSNewService.delete(request);
+                    vendorSNSNewService.delete(request, userInfo.getUserId(), userInfo.getUsername());
                 } else {
                     CustomerSocialMediaEntity customerSocialMedia = customerSocialMediaEntityRepository.findOneByMapID(mapID);
                     customerSocialMedia.setSocialMediaUsername(url);
                     customerSocialMediaEntityRepository.save(customerSocialMedia);
-                    vendorSNSNewService.modify(request);
+                    vendorSNSNewService.modify(request, userInfo.getUserId(), userInfo.getUsername());
                 }
             }
             return true;

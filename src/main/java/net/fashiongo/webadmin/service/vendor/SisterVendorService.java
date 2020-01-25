@@ -11,7 +11,7 @@ public interface SisterVendorService {
 
     List<Integer> getSisterVendorChecks(Integer vendorId, Integer sisterVendorId);
 
-    ResultCode setSisterVendor(Integer vendorId, Integer sisterVendorId);
+    Boolean setSisterVendor(Integer vendorId, Integer sisterVendorId);
 
-    ResultCode deleteSisterVendor(Integer mapId);
+    Boolean deleteSisterVendor(Integer mapId);
 }

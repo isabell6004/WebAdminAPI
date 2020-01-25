@@ -57,7 +57,8 @@ public class VendorContractDocumentEntity {
 
     public static VendorContractDocumentEntity create(SetVendorContractDocumentParameter request, String username) {
         return builder()
-                .documentTypeID(request.getVendorContractID() == null ? 0 : request.getVendorContractID())
+                .vendorContractID(request.getVendorContractID() == null ? 0 : request.getVendorContractID())
+                .documentTypeID(request.getDocumentTypeID())
                 .fileName(StringUtils.isEmpty(request.getFileName()) ? "" : request.getFileName())
                 .fileName2(StringUtils.isEmpty(request.getFileName2()) ? "" : request.getFileName2())
                 .fileName3(StringUtils.isEmpty(request.getFileName3()) ? "" : request.getFileName3())
@@ -69,7 +70,8 @@ public class VendorContractDocumentEntity {
     }
 
     public void modifyEntity(SetVendorContractDocumentParameter request) {
-        this.setDocumentTypeID(request.getVendorContractID() == null ? 0 : request.getVendorContractID());
+        this.setDocumentTypeID(request.getDocumentTypeID());
+        this.setVendorContractID(request.getVendorContractID() == null ? 0 : request.getVendorContractID());
         this.setFileName(StringUtils.isEmpty(request.getFileName()) ? "" : request.getFileName());
         this.setFileName2(StringUtils.isEmpty(request.getFileName2()) ? "" : request.getFileName2());
         this.setFileName3(StringUtils.isEmpty(request.getFileName3()) ? "" : request.getFileName3());
