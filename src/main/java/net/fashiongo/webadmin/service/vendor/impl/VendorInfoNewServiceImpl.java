@@ -46,9 +46,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
     @Override
     public void update(VendorDetailInfo request, Integer requestUserId, String requestUserName) {
-        // account
         updateAccount(request.getWholeSalerID(), request.getUserId(), request.getFirstName(), request.getLastName(), requestUserId, requestUserName);
-        // vendor basic info
         updateVendorBasicInfo(request, requestUserId, requestUserName);
     }
 

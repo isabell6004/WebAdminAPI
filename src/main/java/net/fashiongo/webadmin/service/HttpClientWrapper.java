@@ -49,14 +49,21 @@ public class HttpClientWrapper {
             headerMap.keySet().forEach(x -> headers.add(x, headerMap.get(x)));
         }
 
-        log.debug("endpoint: {}, payload : {}", endpoint, payload);
-        HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
-        ResponseEntity<JsonResponse> response = restTemplateWrapper.exchange(endpoint, method, requestEntity, JsonResponse.class);
-        log.debug("status code:{}, body:{}", response.getStatusCode(), response.toString());
-        if( response.getStatusCode() != HttpStatus.OK ) {
-            log.warn("fail to call the api: {}, {}", endpoint, payload);
+        try {
+            log.debug("endpoint: {}, payload : {}", endpoint, payload);
+            HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
+            ResponseEntity<JsonResponse> response = restTemplateWrapper.exchange(endpoint, method, requestEntity, JsonResponse.class);
+            log.debug("status code:{}, body:{}", response.getStatusCode(), response.toString());
+            if( response.getStatusCode() != HttpStatus.OK ) {
+                log.warn("fail to call the api: {}, {}", endpoint, payload);
+            } else {
+                log.debug("response : {}", response);
+            }
+            return response;
+        } catch (Throwable t) {
+            log.error("fail to call the api : {}", t.getMessage(), t);
         }
-        return response;
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public ResponseEntity<JsonResponse> post(String endpoint, String payload) {

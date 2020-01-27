@@ -12,6 +12,7 @@ import net.fashiongo.webadmin.service.vendor.SimilarVendorService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
     }
 
     @Override
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED, readOnly = true)
     public GetVendorGroupingResponse getVendorGroupings(Integer vendorId,
                                                        String companyType,
                                                        String vendorType,
@@ -75,7 +76,7 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
     }
 
     @Override
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer setVendorGrouping(Integer vendorId, String saveIds, String deleteIds) {
         Integer result = null;
 
@@ -93,7 +94,6 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
 
             mapWholeSalerGroupEntityRepository.deleteAll(deleteEntities);
 
-            // TODO: call fashiongo API - done
             WebAdminLoginUser userInfo = Utility.getUserInfo();
             similarVendorNewService.deleteSimilarVendor(vendorId, widList, userInfo.getUserId(), userInfo.getUsername());
 
@@ -117,7 +117,6 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
 
             mapWholeSalerGroupEntityRepository.saveAll(insertEntities);
 
-            // TODO: call fashiongo API - done
             WebAdminLoginUser userInfo = Utility.getUserInfo();
             similarVendorNewService.addSimilarVendor(vendorId, intIdList, userInfo.getUserId(), userInfo.getUsername());
 

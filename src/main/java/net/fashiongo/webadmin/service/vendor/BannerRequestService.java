@@ -17,6 +17,7 @@ public interface BannerRequestService {
 
     void setApproveBanner(SetDenyBannerParameter parameters);
 
+    @Deprecated
     void setRestoreBanner(SetDenyBannerParameter parameters);
 
     void delBannerRequest(SetDenyBannerParameter parameters);

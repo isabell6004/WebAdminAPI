@@ -138,6 +138,7 @@ public class BannerRequestController {
      * @param parameters
      * @return
      */
+    @Deprecated
     @PostMapping(value = "vendor/setrestorebanner", produces = "application/json")
     public JsonResponse<ResultCode> restoreBannerRequest(@RequestBody SetDenyBannerParameter parameters) {
         JsonResponse<ResultCode> response = new JsonResponse<>(false, null, 0, null);

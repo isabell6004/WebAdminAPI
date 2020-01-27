@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.service.vendor.VendorHoldService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
@@ -37,7 +38,7 @@ public class VendorHoldServiceImpl implements VendorHoldService {
         this.vendorInfoNewService = vendorInfoNewService;
     }
 
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Boolean setHoldVendor(Integer wholeSalerID, Integer holdType, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
         try {
             if (holdType == HoldType.HOLD.gatValue()) {
@@ -76,11 +77,11 @@ public class VendorHoldServiceImpl implements VendorHoldService {
 
                 vendorWholeSalerEntityRepository.save(trm);
 
-                WebAdminLoginUser userInfo = Utility.getUserInfo();
                 LocalDateTime closeDate = null;
                 if(trm.getContractExpireDate() != null)
                     closeDate = trm.getContractExpireDate().toLocalDateTime();
 
+                WebAdminLoginUser userInfo = Utility.getUserInfo();
                 vendorInfoNewService.updateStatusAndCloseDate(wholeSalerID, newStatusType.getValue(), closeDate, userInfo.getUserId(), userInfo.getUsername());
 
             } else if (holdType == 3) {
@@ -106,8 +107,8 @@ public class VendorHoldServiceImpl implements VendorHoldService {
     }
 
     public Integer setHoldVendorUpdate(Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
-        Integer result = 0;
 
+        Integer result = 0;
         try {
             LogVendorHoldEntity lvh = logVendorHoldEntityRepository.findById(logID).get();
             lvh.setHoldFrom(holdFrom);

@@ -26,6 +26,7 @@ public class VendorImageNewServiceImpl implements VendorImageNewService {
 
     @Override
     public void insert(Integer imageOriginalId, SetVendorImageParameter request, Integer requestedUserId, String requestUserName) {
+        // bannerId == imageOriginId,
         Integer bannerId = insert(imageOriginalId, request.getWid(), request.getType(), request.getFilename(), requestedUserId, requestUserName);
         approve(request.getWid(), imageOriginalId, requestedUserId, requestUserName);
         activate(request.getWid(), imageOriginalId, requestedUserId, requestUserName);

@@ -20,6 +20,7 @@ import net.fashiongo.webadmin.service.vendor.BannerRequestService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -53,13 +54,13 @@ public class BannerRequestServiceImpl implements BannerRequestService {
      * @author Reo
      */
     @Override
-    @Transactional(value = "primaryTransactionManager", readOnly = true)
+    @Transactional(value = "primaryTransactionManager", readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public List<ListVendorImageType> getVendorImageType() {
         return listVendorImageTypeRepository.findAllByOrderByVendorImageTypeID();
     }
 
     @Override
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public BannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters) {
         VendorImageRequestSelectParameter parameter = VendorImageRequestSelectParameter.builder()
                 .pageNumber(parameters.getPageNum())
@@ -90,13 +91,12 @@ public class BannerRequestServiceImpl implements BannerRequestService {
      * @author Reo
      */
     @Override
-    @Transactional(value = "primaryTransactionManager")
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public void setDenyBanner(SetDenyBannerParameter request) {
         VendorImageRequest vendorImageRequest = getVendorImageRequest(request.getImageRequestId());
         vendorImageRequest.denyBanner(request.getDenialReason(), Utility.getUsername());
         vendorImageRequestRepository.save(vendorImageRequest);
 
-        // TODO: call vendor API - done
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         bannerRequestNewService.rejectBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
     }
@@ -108,29 +108,26 @@ public class BannerRequestServiceImpl implements BannerRequestService {
      * @author Reo
      */
     @Override
-    @Transactional(value = "primaryTransactionManager")
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public void setApproveBanner(SetDenyBannerParameter request) {
         VendorImageRequest vendorImageRequest = getVendorImageRequest(request.getImageRequestId());
         vendorImageRequest.approveBanner(Utility.getUsername());
         vendorImageRequestRepository.save(vendorImageRequest);
 
-        // TODO: call vendor API - done
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         bannerRequestNewService.approveBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
     }
 
     /**
-     *
-     * Description Example
-     * @since 2018. 11. 13.
-     * @author Reo
+     * unused method
      */
     @Override
     @Deprecated
-    @Transactional(value = "primaryTransactionManager")
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public void setRestoreBanner(SetDenyBannerParameter request) {
         VendorImageRequest vendorImageRequest = getVendorImageRequest(request.getImageRequestId());
         vendorImageRequest.restoreBanner();
+
         vendorImageRequestRepository.save(vendorImageRequest);
     }
 
@@ -141,12 +138,11 @@ public class BannerRequestServiceImpl implements BannerRequestService {
      * @author Reo
      */
     @Override
-    @Transactional(value = "primaryTransactionManager")
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public void delBannerRequest(SetDenyBannerParameter request) {
         VendorImageRequest vendorImageRequest = getVendorImageRequest(request.getImageRequestId());
         vendorImageRequestRepository.delete(vendorImageRequest);
 
-        // TODO: call vendor API - done
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         bannerRequestNewService.deleteBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
     }

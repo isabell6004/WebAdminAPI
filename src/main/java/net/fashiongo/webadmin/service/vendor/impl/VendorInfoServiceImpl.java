@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -40,14 +41,8 @@ import java.util.Optional;
 @Slf4j
 public class VendorInfoServiceImpl implements VendorInfoService {
 
-    @Autowired
     private ConfigurableEnvironment env;
 
-    private List<String> getActiveProfiles() {
-        return Arrays.asList(env.getActiveProfiles());
-    }
-
-    @Autowired
     private JdbcHelper jdbcHelperFgBilling;
 
     private VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
@@ -88,7 +83,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository,
                                  VendorInfoNewService vendorInfoNewService,
                                  VendorCapEntityRepository vendorCapEntityRepository,
-                                 CacheService cacheService) {
+                                 CacheService cacheService,
+                                 JdbcHelper jdbcHelperFgBilling,
+                                 ConfigurableEnvironment env) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
@@ -102,10 +99,12 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.vendorInfoNewService = vendorInfoNewService;
         this.vendorCapEntityRepository = vendorCapEntityRepository;
         this.cacheService = cacheService;
+        this.jdbcHelperFgBilling = jdbcHelperFgBilling;
+        this.env = env;
     }
 
     @Override
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer update(SetVendorBasicInfoParameter request) {
 
         VendorDetailInfo vendorDetailInfo;
@@ -113,7 +112,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             ObjectMapper mapper = new ObjectMapper();
             vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
         } catch (IOException e) {
-            log.debug("object mapper parse error");
+            log.error("object mapper parse error", e);
             return null;
         }
 
@@ -123,8 +122,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             cacheService.cacheEvictVendor(request.getWid());
         }
 
-        // new vendor db
-        vendorInfoNewService.update(vendorDetailInfo);
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        vendorInfoNewService.update(vendorDetailInfo, userInfo.getUserId(), userInfo.getUsername());
 
         return result;
     }
@@ -182,7 +181,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                 if (!wholeSaler.getDirName().equals(requestVendorDetailInfo.getDirName())) {
                     JsonResponse retVal = cacheService.GetRedisCacheEvict_ChangeDirName(wholeSaler.getDirName(), requestVendorDetailInfo.getDirName());
 
-                    if (!retVal.isSuccess() && this.getActiveProfiles().contains("toast")) {
+                    if (!retVal.isSuccess() && Arrays.asList(env.getActiveProfiles()).contains("toast")) {
                         return -1;
                     }
                     setDirCompanyNameChangeHistory(wholeSaler.getDirName(), requestVendorDetailInfo.getDirName(), requestVendorDetailInfo.getCompanyName(), requestVendorDetailInfo.getCompanyName());
@@ -260,12 +259,13 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setDirName(requestVendorDetailInfo.getDirName());
             wholeSaler.setAdminWebServerID(requestVendorDetailInfo.getAdminWebServerID());
             wholeSaler.setCodeName(requestVendorDetailInfo.getCodeName());
-            wholeSaler.setLastModifiedDateTime(LocalDateTime.now());
+            wholeSaler.setLastModifiedDateTime(new Timestamp(System.currentTimeMillis()));
             wholeSaler.setLastUser(sessionUsrId);
             wholeSaler.setMemo(requestVendorDetailInfo.getMemo());
             wholeSaler.setInHouseMemo(requestVendorDetailInfo.getInHouseMemo());
             wholeSaler.setOrderNotice(requestVendorDetailInfo.getOrderNotice());
             wholeSaler.setNoticeToAll(requestVendorDetailInfo.getNoticeToAll());
+            wholeSaler.setSourceType(requestVendorDetailInfo.getSourceType());
 
             if (saveType == 2) {
                 wholeSaler.setNewCustYN(requestVendorDetailInfo.getNewCustYN());
@@ -274,17 +274,17 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                 if (requestVendorDetailInfo.getOrderActive()) {
                     setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUsrId);
                     if (wholeSaler.getActualOpenDate() == null) {
-                        wholeSaler.setActualOpenDate(LocalDateTime.now());
+                        wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
                         setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                         wholeSaler.setContractExpireDate(null);
                     } else {
-                        String actualOpenDateTest = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")) : "0";
+                        String actualOpenDateTest = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")) : "0";
                         String dateTimeNowTest = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
                         int actualOpenDateTestInt = Integer.parseInt(actualOpenDateTest);
                         int dateTimeNowTestInt = Integer.parseInt(dateTimeNowTest);
 
                         if (actualOpenDateTestInt > dateTimeNowTestInt) {
-                            wholeSaler.setActualOpenDate(LocalDateTime.now());
+                            wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
                             setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                             wholeSaler.setContractExpireDate(null);
 
@@ -298,7 +298,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                         if (actualOpenDateTest.equals(dateTimeNowTest)) {
                             setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUsrId);
 
-                            wholeSaler.setActualOpenDate(LocalDateTime.now());
+                            wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
                             wholeSaler.setOrderActive(true);
                             wholeSaler.setShopActive(true);
                             wholeSaler.setActive(true);
@@ -306,12 +306,12 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                             setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                             wholeSaler.setContractExpireDate(null);
                         } else {
-                            wholeSaler.setActualOpenDate(requestVendorDetailInfo.getActualOpenDate());
+                            wholeSaler.setActualOpenDate(Timestamp.valueOf(requestVendorDetailInfo.getActualOpenDate()));
                         }
                     }
                 } else if (!requestVendorDetailInfo.getOrderActive() && wholeSaler.getActualOpenDate() != null) {
                     String actualOpenDateTest2 = requestVendorDetailInfo.getActualOpenDate() != null ? requestVendorDetailInfo.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
-                    String actualOpenDateTest3 = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
+                    String actualOpenDateTest3 = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
 
                     if (requestVendorDetailInfo.getActualOpenDate() != null && !actualOpenDateTest2.equals(actualOpenDateTest3)) {
                         String actualOpenDateTest = requestVendorDetailInfo.getActualOpenDate() != null ? requestVendorDetailInfo.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
@@ -320,7 +320,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                         if (actualOpenDateTest.equals(dateTimeNowTest)) {
                             setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUsrId);
 
-                            wholeSaler.setActualOpenDate(LocalDateTime.now());
+                            wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
                             wholeSaler.setOrderActive(true);
                             wholeSaler.setShopActive(true);
                             wholeSaler.setActive(true);
@@ -328,7 +328,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                             setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                             wholeSaler.setContractExpireDate(null);
                         } else {
-                            wholeSaler.setActualOpenDate(requestVendorDetailInfo.getActualOpenDate());
+                            wholeSaler.setActualOpenDate(Timestamp.valueOf(requestVendorDetailInfo.getActualOpenDate()));
                         }
                     }
                 }
@@ -441,6 +441,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
     }
 
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public int setEntityActionLog(Integer entityTypeID, Integer wholeSalerID, Integer actionID) {
         try {
             EntityActionLogEntity actionLog = EntityActionLogEntity.create(entityTypeID, wholeSalerID, actionID);
@@ -453,6 +454,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     }
 
     @Override
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer setVendorSettingInfo(SetVendorSettingParameter request) {
 
         Integer wid = request.getWid();

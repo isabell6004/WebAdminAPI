@@ -43,7 +43,7 @@ public class VendorImageServiceImpl implements VendorImageService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer create(SetVendorImageParameter request) {
         VendorImageRequestEntity result = setVendorImage(request);
         cacheService.GetRedisCacheEvict("VendorPictureLogo", String.valueOf(request.getWid()));
@@ -59,7 +59,7 @@ public class VendorImageServiceImpl implements VendorImageService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer delete(DelVendorImageParameter request) {
         Integer wid = request.getWid();
         Integer type = request.getType();
@@ -70,7 +70,7 @@ public class VendorImageServiceImpl implements VendorImageService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED, readOnly = true)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED, readOnly = true)
     public List<VendorImage> getVendorImage(Integer wid) {
         return vendorImageRequestEntityRepository.findByWholeSalerID(wid);
     }

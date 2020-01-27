@@ -18,6 +18,7 @@ import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import net.fashiongo.webadmin.service.vendor.VendorContractService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -55,10 +56,9 @@ public class VendorContractServiceImpl implements VendorContractService {
         this.cacheService = cacheService;
     }
 
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Boolean setVendorContractDocument(SetVendorContractDocumentParameter request) {
 
-        WebAdminLoginUser userInfo = Utility.getUserInfo();
         VendorContractEntity vendorContractEntity = vendorContractEntityRepository.findById(request.getVendorContractID())
                 .orElseThrow(() -> new NotFoundVendorContractException("not found vendor contract. " + request.getVendorContractID()));
 
@@ -67,11 +67,15 @@ public class VendorContractServiceImpl implements VendorContractService {
                 VendorContractDocumentEntity documentEntity = VendorContractDocumentEntity.create(request, Utility.getUsername());
                 vendorContractDocumentEntityRepository.save(documentEntity);
                 request.setVendorContractDocumentID(documentEntity.getVendorContractDocumentID());
+
+                WebAdminLoginUser userInfo = Utility.getUserInfo();
                 vendorContractNewService.createVendorContractDocument(vendorContractEntity.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
             } else {
                 VendorContractDocumentEntity documentEntity = vendorContractDocumentEntityRepository.findOneByVendorContractDocumentID(request.getVendorContractDocumentID());
                 documentEntity.modifyEntity(request);
                 vendorContractDocumentEntityRepository.save(documentEntity);
+
+                WebAdminLoginUser userInfo = Utility.getUserInfo();
                 vendorContractNewService.modifyVendorContractDocument(vendorContractEntity.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
             }
             return true;
@@ -81,7 +85,7 @@ public class VendorContractServiceImpl implements VendorContractService {
         }
     }
 
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Boolean delVendorContractDocument(DelVendorContractDocumentParameter request) {
 
         try {
@@ -122,12 +126,11 @@ public class VendorContractServiceImpl implements VendorContractService {
         return vendorInfo;
     }
 
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Boolean setVendorContract(SetVendorContractParameter request) {
 
         WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
 
-        Long originalVendorContractHistoryId = 0L, revisedVendorContractHistoryId = 0L;
         try {
             if (request.isNewVendorContract()) {
                 VendorContractEntity originContractInfo = vendorContractEntityRepository.findOneByWholeSalerID(request.getWholeSalerID());

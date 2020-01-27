@@ -18,6 +18,7 @@ import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import net.fashiongo.webadmin.service.vendor.VendorBlockService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class VendorBlockServiceImpl implements VendorBlockService {
 
 
     @Override
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Boolean block(SetVendorBlockParameter param) {
         Boolean result = registVendorBlock(param);
         if (result) {
@@ -68,7 +69,7 @@ public class VendorBlockServiceImpl implements VendorBlockService {
     }
 
     @Override
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Boolean unblock(DelVendorBlockParameter param) {
         Boolean result = deleteVendorBlock(param);
         if (result) {
@@ -78,14 +79,13 @@ public class VendorBlockServiceImpl implements VendorBlockService {
     }
 
     @Override
-    @Transactional
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer modifyBlockReason(SetVendorBlockUpdate request) {
         try {
             VendorBlockedEntity retailer = vendorBlockedEntityRepository.findOneByWholeSalerID(request.getWholeSalerID());
             retailer.setBlockReasonId(request.getBlockReasonID());
             vendorBlockedEntityRepository.save(retailer);
 
-            // new DB 스키마를 위한 API call
             WebAdminLoginUser userInfo = Utility.getUserInfo();
             vendorBlockNewService.modifyBlockReason(request, userInfo.getUserId(), userInfo.getUsername());
 
@@ -146,7 +146,6 @@ public class VendorBlockServiceImpl implements VendorBlockService {
             }
             aspnetMembershipEntityRepository.saveAll(aspnetMembershipEntityList);
 
-            // new DB 스키마를 위한 API call
             WebAdminLoginUser userInfo = Utility.getUserInfo();
             vendorBlockNewService.blockVendor(request, userInfo.getUserId(), userInfo.getUsername());
 

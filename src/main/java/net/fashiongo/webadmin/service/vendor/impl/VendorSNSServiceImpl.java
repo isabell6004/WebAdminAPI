@@ -38,7 +38,7 @@ public class VendorSNSServiceImpl implements VendorSNSService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public boolean modifyVendorSNSInfo(SetVendorSNSListParameter request) {
         Boolean result = setVendorSNSList(request);
         cacheService.cacheEvictVendor(request.getWholeSalerID());
