@@ -7,6 +7,7 @@ import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeyword
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
 import net.fashiongo.webadmin.data.repository.primary.ProductsEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.QuerySearchRepository;
 import net.fashiongo.webadmin.data.repository.primary.StatisticsWaBestItemPerDayEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemImageServersEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemVendorAdminWebServerEntityRepository;
@@ -41,22 +42,15 @@ public class RenewalStaticService {
 	@Autowired
 	private StatisticsWaBestItemPerDayEntityRepository statisticsWaBestItemPerDayEntityRepository;
 
+	@Autowired
+	private QuerySearchRepository querySearchRepository;
+
 	public RenewalStaticService(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	public GetHotSearchResponse getHotSearch(Integer top, LocalDateTime fromDate, LocalDateTime toDate, String orderBy, String searchfield, String searchkeyword) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		List<Object> param = new ArrayList<>();
-		param.add(top);
-		param.add(Optional.ofNullable(fromDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
-		param.add(Optional.ofNullable(toDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
-		param.add(orderBy);
-		param.add(searchfield);
-		param.add(searchkeyword);
-
-		List<Object> up_wa_getSearchQuery = jdbcHelper.executeSP("up_wa_GetSearchQuery", param, HotSearch.class);
-		List<HotSearch> hotSearches = (List<HotSearch>) up_wa_getSearchQuery.get(0);
+		List<HotSearch> hotSearches = querySearchRepository.getHotSearch(top, fromDate, toDate, orderBy, searchfield, searchkeyword);
 
 		return GetHotSearchResponse.builder()
 				.hotSearchList(hotSearches)
