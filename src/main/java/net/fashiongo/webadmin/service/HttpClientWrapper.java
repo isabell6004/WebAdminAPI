@@ -55,7 +55,7 @@ public class HttpClientWrapper {
             ResponseEntity<JsonResponse> response = restTemplateWrapper.exchange(endpoint, method, requestEntity, JsonResponse.class);
             log.debug("status code:{}, body:{}", response.getStatusCode(), response.toString());
             if( response.getStatusCode() != HttpStatus.OK ) {
-                log.warn("fail to call the api: {}, {}", endpoint, payload);
+                log.warn("fail to call the api: {}, {}, {}", endpoint, payload, headers);
             } else {
                 log.debug("response : {}", response);
             }

@@ -28,19 +28,6 @@
         </encoder>
     </appender>
 
-    <appender name="PERFORMANCE_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}WebAdminAPI_PERFORMANCE_${SERVER_PORT}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}WebAdminAPI_PERFORMANCE_${SERVER_PORT}.%d{yyyy-MM-dd}..%i.log.gz</fileNamePattern>
-            <maxFileSize>300MB</maxFileSize>
-            <maxHistory>30</maxHistory>
-            <totalSizeCap>20GB</totalSizeCap>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-        </encoder>
-    </appender>
-
     <appender name="ERROR_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}WebAdminAPI_ERROR_${SERVER_PORT}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">

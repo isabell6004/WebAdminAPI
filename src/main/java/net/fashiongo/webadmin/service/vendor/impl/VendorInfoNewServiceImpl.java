@@ -46,8 +46,10 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
     @Override
     public void update(VendorDetailInfo request, Integer requestUserId, String requestUserName) {
-        updateAccount(request.getWholeSalerID(), request.getUserId(), request.getFirstName(), request.getLastName(), requestUserId, requestUserName);
-        updateVendorBasicInfo(request, requestUserId, requestUserName);
+
+        throw new RuntimeException();
+//        updateAccount(request.getWholeSalerID(), request.getUserId(), request.getFirstName(), request.getLastName(), requestUserId, requestUserName);
+//        updateVendorBasicInfo(request, requestUserId, requestUserName);
     }
 
     @Override

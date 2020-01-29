@@ -29,33 +29,12 @@ public class SetterMonitor implements ThrowsAdvice {
 	 * @since 2018. 9. 13.
 	 * @author Incheol Jung
 	 * @param joinPoint
-	 * @throws Throwable 
-	 * Desc : performance log
-	 */
-	@Around("execution(* net.fashiongo.webadmin.service..*(..))")
-	public Object callMethodAround(ProceedingJoinPoint joinPoint) throws Throwable {
-		long start = System.currentTimeMillis();
-		Object retVal = joinPoint.proceed();
-		long elapsed = System.currentTimeMillis() - start;
-
-		Signature sig = joinPoint.getSignature();
-
-		logger.info("info : "+sig.getDeclaringTypeName() + "#" + sig.getName() + "\t" + elapsed + " ms");
-		
-		return retVal;
-	}
-
-	// todo need to remove...
-	/**
-	 * 
-	 * @since 2018. 9. 13.
-	 * @author Incheol Jung
-	 * @param joinPoint
 	 * @param e
 	 * @throws Throwable 
 	 * Desc : error log
 	 */
 	@AfterThrowing(pointcut = "execution(* net.fashiongo.webadmin.service..*(..)) " +
+            "&& !execution(* net.fashiongo.webadmin.service.vendor.impl..*(..)) " +
 			"&& !execution(* net.fashiongo.webadmin.service.BidService.*(..)) " +
 			"&& !execution(* net.fashiongo.webadmin.service.WAPaymentService.*(..)) " +
 			"&& !execution(* net.fashiongo.webadmin.service.GnbService.*(..))", throwing="e")
@@ -86,7 +65,19 @@ public class SetterMonitor implements ThrowsAdvice {
 			}
 	    }
 	    
-	    logger.error(stuff + "\n method with arguments " + keyBuilder + " exception is: " + e.getMessage());
+	    logger.warn(stuff + "\n method with arguments " + keyBuilder + " exception is: " + e.getMessage());
 	    Utility.HttpResponse(exceptionMsg);
 	}
+
+    @AfterThrowing(pointcut = "execution(* net.fashiongo.webadmin.service.vendor.impl..*(..)) ", throwing="e")
+    public void fashionGoNewApiExceptionLogging(JoinPoint joinPoint, Throwable e) {
+        Signature signature = joinPoint.getSignature();
+        StringBuilder keyBuilder = new StringBuilder();
+        keyBuilder.append(joinPoint.getTarget().getClass().getCanonicalName()).append(".");
+        keyBuilder.append(signature.getName()).append(":");
+        for (Object obj : joinPoint.getArgs())
+            keyBuilder.append(obj).append(", ");
+
+        logger.error(keyBuilder.toString() + ", {}", e.getMessage(), e);
+    }
 }
