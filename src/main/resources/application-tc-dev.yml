@@ -41,7 +41,7 @@ server:
   port: 29901
 
 logging:
-  config: classpath:log4j2-tc-dev.xml
+  config: classpath:logback-spring.xml
   path: /home1/irteam/logs/
 
 bid-redis:

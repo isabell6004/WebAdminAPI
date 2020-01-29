@@ -30,7 +30,7 @@ server:
   port: 19901
 
 logging:
-  config: classpath:log4j2-toast.xml
+  config: classpath:logback-spring.xml
   path: /home1/irteam/logs/
 
 photostudio:
