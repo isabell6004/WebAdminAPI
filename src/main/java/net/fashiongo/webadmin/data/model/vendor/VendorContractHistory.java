@@ -3,12 +3,13 @@ package net.fashiongo.webadmin.data.model.vendor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
 public class VendorContractHistory {
     @JsonProperty(value = "ContractTypeID")
     private Integer contractTypeID;
@@ -44,11 +45,31 @@ public class VendorContractHistory {
     private boolean perorder;
 
     @JsonProperty(value = "FromContractDate")
-    private Timestamp fromContractDate;
+    private LocalDateTime fromContractDate;
 
     @JsonProperty(value = "ToContractDate")
-    private Timestamp toContractDate;
+    private LocalDateTime toContractDate;
 
     @JsonProperty(value = "CreatedBy")
     private String createdBy;
+
+    public VendorContractHistory() {
+    }
+
+    public VendorContractHistory(Integer contractTypeID, Integer vendorContractID, BigDecimal setupFee, Boolean isSetupFeeWaived, BigDecimal lastMonthServiceFee, Boolean isLastMonthServiceFeeWaived, BigDecimal monthlyFee, Integer photoPlanID, String useModelStyle, BigDecimal commissionRate, boolean perorder, Timestamp fromContractDate, Timestamp toContractDate, String createdBy) {
+        this.contractTypeID = contractTypeID;
+        this.vendorContractID = vendorContractID;
+        this.setupFee = setupFee;
+        this.isSetupFeeWaived = isSetupFeeWaived;
+        this.lastMonthServiceFee = lastMonthServiceFee;
+        this.isLastMonthServiceFeeWaived = isLastMonthServiceFeeWaived;
+        this.monthlyFee = monthlyFee;
+        this.photoPlanID = photoPlanID;
+        this.useModelStyle = useModelStyle;
+        this.commissionRate = commissionRate;
+        this.perorder = perorder;
+        this.fromContractDate = fromContractDate == null ? null : fromContractDate.toLocalDateTime();
+        this.toContractDate = toContractDate == null ? null : toContractDate.toLocalDateTime();
+        this.createdBy = createdBy;
+    }
 }
