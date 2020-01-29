@@ -91,7 +91,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
      * @author Reo
      */
     @Override
-    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public void setDenyBanner(SetDenyBannerParameter request) {
         VendorImageRequest vendorImageRequest = getVendorImageRequest(request.getImageRequestId());
         vendorImageRequest.denyBanner(request.getDenialReason(), Utility.getUsername());
@@ -108,7 +108,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
      * @author Reo
      */
     @Override
-    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public void setApproveBanner(SetDenyBannerParameter request) {
         VendorImageRequest vendorImageRequest = getVendorImageRequest(request.getImageRequestId());
         vendorImageRequest.approveBanner(Utility.getUsername());
@@ -123,7 +123,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
      */
     @Override
     @Deprecated
-    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public void setRestoreBanner(SetDenyBannerParameter request) {
         VendorImageRequest vendorImageRequest = getVendorImageRequest(request.getImageRequestId());
         vendorImageRequest.restoreBanner();
@@ -138,7 +138,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
      * @author Reo
      */
     @Override
-    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public void delBannerRequest(SetDenyBannerParameter request) {
         VendorImageRequest vendorImageRequest = getVendorImageRequest(request.getImageRequestId());
         vendorImageRequestRepository.delete(vendorImageRequest);

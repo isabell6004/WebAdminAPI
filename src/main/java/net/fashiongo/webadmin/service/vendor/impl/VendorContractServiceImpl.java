@@ -56,7 +56,7 @@ public class VendorContractServiceImpl implements VendorContractService {
         this.cacheService = cacheService;
     }
 
-    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public Boolean setVendorContractDocument(SetVendorContractDocumentParameter request) {
 
         VendorContractEntity vendorContractEntity = vendorContractEntityRepository.findById(request.getVendorContractID())
@@ -85,7 +85,7 @@ public class VendorContractServiceImpl implements VendorContractService {
         }
     }
 
-    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public Boolean delVendorContractDocument(DelVendorContractDocumentParameter request) {
 
         try {
@@ -126,7 +126,7 @@ public class VendorContractServiceImpl implements VendorContractService {
         return vendorInfo;
     }
 
-    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public Boolean setVendorContract(SetVendorContractParameter request) {
 
         WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
