@@ -167,7 +167,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: l7check
       base-path: /monitor
 ---
 # Local
