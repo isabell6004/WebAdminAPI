@@ -43,7 +43,7 @@ public class FgStats {
         return builder.dataSource(dataSource).packages("net.fashiongo.webadmin.data.entity.stats").build();
     }
 
-    @Bean
+    @Bean(name = "statTransactionManager")
     public PlatformTransactionManager statTransactionManager(
             @Qualifier("statEntityManager") EntityManagerFactory statEntityManager) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();

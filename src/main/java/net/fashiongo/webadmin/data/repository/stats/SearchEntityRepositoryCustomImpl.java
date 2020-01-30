@@ -10,6 +10,8 @@ import net.fashiongo.webadmin.data.entity.stats.QSearchEntity;
 import net.fashiongo.webadmin.data.model.statistics.HotSearchKeyword;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,6 +24,7 @@ public class SearchEntityRepositoryCustomImpl implements SearchEntityRepositoryC
     private EntityManager entityManager;
 
     @Override
+    @Transactional(value = "statTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public List<HotSearchKeyword> getHotSearchKeyword(Integer periodType, LocalDateTime fromDate, LocalDateTime toDate, String keyword) {
         QSearchEntity search = new QSearchEntity("Search");
         JPASQLQuery<HotSearchKeyword> query = new JPASQLQuery<>(entityManager, new MSSQLServer2012Templates());
