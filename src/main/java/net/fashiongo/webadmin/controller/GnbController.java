@@ -6,6 +6,8 @@ import net.fashiongo.webadmin.exception.NotFoundSiteSetting;
 import net.fashiongo.webadmin.model.pojo.request.GnbVendorGroupSaveRequest;
 import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupDetailResponse;
 import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupInfoResponse;
+import net.fashiongo.webadmin.model.pojo.request.GnbCollectionSaveRequest;
+import net.fashiongo.webadmin.model.pojo.response.GnbCollectionInfoResponse;
 import net.fashiongo.webadmin.service.GnbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.ObjectError;
@@ -127,6 +129,69 @@ public class GnbController {
 		response.setMessage(e.getBindingResult().getAllErrors().stream()
 				.map(ObjectError::getDefaultMessage)
 				.collect(Collectors.joining(" ")));
+
+		return response;
+	}
+	
+	@GetMapping("/collection")
+	public JsonResponse<List<GnbCollectionInfoResponse>> getCollectionList() {
+		JsonResponse<List<GnbCollectionInfoResponse>> response = new JsonResponse<>();
+		response.setSuccess(true);
+		response.setMessage(null);
+		response.setData(gnbService.getGnbCollectionList());
+
+		return response;
+	}
+	
+	@PostMapping("/collection")
+	public JsonResponse<GnbCollectionInfoResponse> creatCollecion(@RequestBody @Valid GnbCollectionSaveRequest request) {
+		JsonResponse<GnbCollectionInfoResponse> response = new JsonResponse<>();
+		response.setSuccess(true);
+		response.setMessage(null);
+		response.setData(gnbService.createGnbCollection(request));
+
+		return response;
+	}	
+
+	@GetMapping("/collection/{gnbMenuCollectionId}")
+	public JsonResponse<GnbCollectionInfoResponse> getCollection(@PathVariable("gnbMenuCollectionId") int gnbMenuCollectionId) {
+		JsonResponse<GnbCollectionInfoResponse> response = new JsonResponse<>();
+		response.setSuccess(true);
+		response.setMessage(null);
+		response.setData(gnbService.getGnbCollection(gnbMenuCollectionId));
+
+		return response;
+	}
+
+	@PostMapping("/collection/{gnbMenuCollectionId}")
+	public JsonResponse<GnbCollectionInfoResponse> editCollection(@PathVariable("gnbMenuCollectionId") int gnbMenuCollectionId,
+																	@RequestBody @Valid GnbCollectionSaveRequest request) {
+		JsonResponse<GnbCollectionInfoResponse> response = new JsonResponse<>();
+		response.setSuccess(true);
+		response.setMessage(null);
+		response.setData(gnbService.editGnbCollection(gnbMenuCollectionId, request));
+
+		return response;
+	}
+
+	@DeleteMapping("/collection/{gnbMenuCollectionId}")
+	public JsonResponse<Void> deleteCollection(@PathVariable("gnbMenuCollectionId") int gnbMenuCollectionId) {
+		JsonResponse<Void> response = new JsonResponse<>();
+		response.setSuccess(true);
+		response.setMessage(null);
+
+		gnbService.deleteGnbCollection(gnbMenuCollectionId);
+
+		return response;
+	}
+	
+	@PostMapping("/collection/{gnbMenuCollectionId}/activate")
+	public JsonResponse<Void> activeCollection(@PathVariable("gnbMenuCollectionId") int gnbMenuCollectionId) {
+		JsonResponse<Void> response = new JsonResponse<>();
+		response.setSuccess(true);
+		response.setMessage(null);
+
+		gnbService.activateGnbCollection(gnbMenuCollectionId);
 
 		return response;
 	}
