@@ -32,7 +32,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         this.httpCaller = httpCaller;
     }
 
-    private void updateAccount(Integer vendorId, String userId, String firstName, String lastName, String originalUserId, Integer requestUserId, String requestUserName) {
+    private void updateAccount(Integer vendorId, String originalUserId, String userId, String firstName, String lastName, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/account/" + originalUserId;
         VendorAccountCommand vendorAccountCommand = new VendorAccountCommand(firstName, lastName, userId);
         httpCaller.put(endpoint, vendorAccountCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
@@ -46,7 +46,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
     @Override
     public void update(VendorDetailInfo request, String originalUserId, Integer requestUserId, String requestUserName) {
-        updateAccount(request.getWholeSalerID(), request.getUserId(), request.getFirstName(), request.getLastName(), originalUserId, requestUserId, requestUserName);
+        updateAccount(request.getWholeSalerID(), originalUserId, request.getUserId(), request.getFirstName(), request.getLastName(), requestUserId, requestUserName);
         updateVendorBasicInfo(request, requestUserId, requestUserName);
     }
 

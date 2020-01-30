@@ -117,6 +117,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
 
         WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(vendorDetailInfo.getWholeSalerID());
+        String originalUserId = wholeSaler.getUserId();
         Integer result = setVendorBasicInfo(wholeSaler, vendorDetailInfo, 1, null, null, null, 0);
         if (result == 1) {
             setDirCompanyNameChangeHistory(vendorDetailInfo, request.getCompanyNameTemp());
@@ -124,7 +125,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
-        vendorInfoNewService.update(vendorDetailInfo, wholeSaler.getUserId(), userInfo.getUserId(), userInfo.getUsername());
+        vendorInfoNewService.update(vendorDetailInfo, originalUserId, userInfo.getUserId(), userInfo.getUsername());
 
         return result;
     }
