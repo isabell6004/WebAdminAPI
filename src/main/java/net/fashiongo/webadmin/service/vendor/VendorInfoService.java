@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service.vendor;
 
+import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBasicInfoParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
@@ -9,8 +10,6 @@ import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
  */
 public interface VendorInfoService {
     Integer update(SetVendorBasicInfoParameter request);
-
-    Integer setVendorBasicInfo(VendorDetailInfo requestVendorDetailInfo, Integer saveType, Integer payoutSchedule, Integer payoutScheduleWM, Integer maxPayoutPerDay, Integer payoutCount);
 
     int setEntityActionLog(Integer entityTypeID, Integer wholeSalerID, Integer actionID);
 

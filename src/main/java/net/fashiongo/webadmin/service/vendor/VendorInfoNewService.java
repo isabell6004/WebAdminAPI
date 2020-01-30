@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public interface VendorInfoNewService {
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void update(VendorDetailInfo request, Integer requestUserId, String requestUserName);
+    void update(VendorDetailInfo request, String originalUserId, Integer requestUserId, String requestUserName);
 
     void updateDetailInfo(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo, Integer requestUserId, String requestUserName);
 

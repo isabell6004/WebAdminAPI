@@ -116,14 +116,15 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             return null;
         }
 
-        Integer result = setVendorBasicInfo(vendorDetailInfo, 1, null, null, null, 0);
+        WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(vendorDetailInfo.getWholeSalerID());
+        Integer result = setVendorBasicInfo(wholeSaler, vendorDetailInfo, 1, null, null, null, 0);
         if (result == 1) {
             setDirCompanyNameChangeHistory(vendorDetailInfo, request.getCompanyNameTemp());
             cacheService.cacheEvictVendor(request.getWid());
         }
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
-        vendorInfoNewService.update(vendorDetailInfo, userInfo.getUserId(), userInfo.getUsername());
+        vendorInfoNewService.update(vendorDetailInfo, wholeSaler.getUserId(), userInfo.getUserId(), userInfo.getUsername());
 
         return result;
     }
@@ -153,12 +154,11 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
     }
 
-    public Integer setVendorBasicInfo(VendorDetailInfo requestVendorDetailInfo, Integer saveType, Integer payoutSchedule, Integer payoutScheduleWM, Integer maxPayoutPerDay, Integer payoutCount) {
+    private Integer setVendorBasicInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo, Integer saveType, Integer payoutSchedule, Integer payoutScheduleWM, Integer maxPayoutPerDay, Integer payoutCount) {
         Integer result;
         String sessionUsrId = Utility.getUsername();
 
         try {
-            WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(requestVendorDetailInfo.getWholeSalerID());
             if (saveType == 1) {
                 try {
                     if (!wholeSaler.getUserId().equals(requestVendorDetailInfo.getUserId())) {
@@ -486,7 +486,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             return null;
         }
 
-        Integer result = setVendorBasicInfo(vendorDetailInfo, 2, payoutSchedule, payoutScheduleWM, maxPayoutPerDay, payoutCount);
+        WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(vendorDetailInfo.getWholeSalerID());
+        Integer result = setVendorBasicInfo(wholeSaler, vendorDetailInfo, 2, payoutSchedule, payoutScheduleWM, maxPayoutPerDay, payoutCount);
         if (result == -1) {
             return result;
         }
