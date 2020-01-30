@@ -98,7 +98,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.save(vendorImageRequest);
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
-        bannerRequestNewService.rejectBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
+        bannerRequestNewService.reject(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
     }
 
     /**
@@ -115,7 +115,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.save(vendorImageRequest);
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
-        bannerRequestNewService.approveBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
+        bannerRequestNewService.approve(vendorImageRequest.getWholeSalerID(), request.getImageRequestId(), userInfo.getUserId(), userInfo.getUsername());
     }
 
     /**
@@ -144,7 +144,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         vendorImageRequestRepository.delete(vendorImageRequest);
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
-        bannerRequestNewService.deleteBanner(vendorImageRequest.getWholeSalerID(), request, userInfo.getUserId(), userInfo.getUsername());
+        bannerRequestNewService.delete(vendorImageRequest.getWholeSalerID(), request.getImageRequestId(), userInfo.getUserId(), userInfo.getUsername());
     }
 
     private VendorImageRequest getVendorImageRequest(Integer id) {
