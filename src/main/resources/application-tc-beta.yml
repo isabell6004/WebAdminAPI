@@ -23,7 +23,10 @@ spring:
     url: jdbc:sqlserver://10.210.24.29;databaseName=FG_Billing
     dbcp2:
       maxTotal: 20
-
+  datasource6:
+    url: jdbc:sqlserver://10.210.24.29;databaseName=FG_Stats
+    dbcp2:
+      maxTotal: 20
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false

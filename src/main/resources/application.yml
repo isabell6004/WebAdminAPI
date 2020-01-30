@@ -112,6 +112,27 @@ spring:
       min-evictable-idle-time-millis: 600000 # ten minutes
       pool-prepared-statements: true
       default-query-timeout: 15 # 15 seconds
+  # FG Stats DB
+  datasource6:
+    username: FGWebAdminAPIUser
+    password: APIUser6301
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    # Connection pool for FG Stats DB
+    type: org.apache.commons.dbcp2.BasicDataSource #datasource connection pool 세부 설정 추가 필요함
+    dbcp2:
+      max-wait-millis: 3000
+      max-total: 30
+      initial-size: 10
+      test-on-borrow: true
+      test-on-return: true
+      test-while-idle: true
+      validation-query: select 1
+      validation-query-timeout: 1 # one second
+      time-between-eviction-runs-millis: 60000 # one minute
+      num-tests-per-eviction-run: 3
+      min-evictable-idle-time-millis: 600000 # ten minutes
+      pool-prepared-statements: true
+      default-query-timeout: 15 # 15 seconds
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
@@ -199,6 +220,10 @@ spring:
       maxTotal: 10
   datasource5:
     url: jdbc:sqlserver://10.210.16.31;databaseName=FG_Billing
+    dbcp2:
+      maxTotal: 10
+  datasource6:
+    url: jdbc:sqlserver://10.210.16.31;databaseName=FG_Stats
     dbcp2:
       maxTotal: 10
 

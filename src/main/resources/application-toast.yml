@@ -13,6 +13,8 @@ spring:
     url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PhotoStudio
   datasource5:
     url: jdbc:sqlserver://10.210.24.204;databaseName=FG_Billing
+  datasource6:
+    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_Stats
 
   jpa:
     show-sql: false
