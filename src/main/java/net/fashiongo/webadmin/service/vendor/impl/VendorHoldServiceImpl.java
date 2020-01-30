@@ -97,6 +97,8 @@ public class VendorHoldServiceImpl implements VendorHoldService {
             } else if (holdType == HoldType.HOLD_RELEASE.gatValue()) {
                 WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
                 trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
+                trm.setActive(true);
+                trm.setShopActive(true);
                 trm.setOrderActive(true);
                 vendorWholeSalerEntityRepository.save(trm);
                 updateNewStatus(wholeSalerID, trm);
@@ -132,6 +134,8 @@ public class VendorHoldServiceImpl implements VendorHoldService {
                 WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
                 trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
                 trm.setLastUser(Utility.getUsername());
+                trm.setActive(true);
+                trm.setShopActive(true);
                 trm.setOrderActive(true);
                 vendorWholeSalerEntityRepository.save(trm);
 
@@ -144,6 +148,8 @@ public class VendorHoldServiceImpl implements VendorHoldService {
                     trm.setShopActive(true);
                     trm.setActive(true);
                 } else {
+                    trm.setActive(true);
+                    trm.setShopActive(true);
                     trm.setOrderActive(true);
                 }
                 trm.setLastUser(Utility.getUsername());
