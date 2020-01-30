@@ -64,6 +64,13 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
+    @Override
+    public void updateStatus(Integer wholeSalerID, Integer newStatusTypeValue, Integer requestUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + wholeSalerID;
+        VendorInfoCommand<VendorStatusInfoCommand> vendorInfoCommand = new VendorInfoCommand<>(new VendorStatusInfoCommand(newStatusTypeValue));
+        httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
+    }
+
     @Getter
     private class VendorAccountCommand {
         private String firstName;
@@ -140,6 +147,16 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         private VendorCloseStatusInfoCommand(Integer newStatusTypeValue, LocalDateTime closedDate) {
             this.statusCode = newStatusTypeValue;
             this.closedDate = (closedDate != null) ? closedDate.toString() : null;
+        }
+    }
+
+    @Getter
+    private class VendorStatusInfoCommand {
+
+        private Integer statusCode;
+
+        private VendorStatusInfoCommand(Integer newStatusTypeValue) {
+            this.statusCode = newStatusTypeValue;
         }
     }
 

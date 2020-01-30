@@ -9,5 +9,5 @@ public interface VendorHoldService {
 
     Boolean setHoldVendor(Integer wholeSalerID, Integer holdType, Boolean active, Timestamp holdFrom, Timestamp holdTo);
 
-    Integer setHoldVendorUpdate(Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo);
+    Integer setHoldVendorUpdate(Integer wholeSalerID, Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo);
 }

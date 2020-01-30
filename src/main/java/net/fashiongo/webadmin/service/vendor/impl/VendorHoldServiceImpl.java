@@ -7,6 +7,7 @@ import net.fashiongo.webadmin.data.repository.primary.LogVendorHoldEntityReposit
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.vendor.StatusType;
+import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorHoldService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.utility.Utility;
@@ -30,12 +31,16 @@ public class VendorHoldServiceImpl implements VendorHoldService {
 
     private VendorInfoNewService vendorInfoNewService;
 
+    private CacheService cacheService;
+
     public VendorHoldServiceImpl(LogVendorHoldEntityRepository logVendorHoldEntityRepository,
                                  VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
-                                 VendorInfoNewService vendorInfoNewService) {
+                                 VendorInfoNewService vendorInfoNewService,
+                                 CacheService cacheService) {
         this.logVendorHoldEntityRepository = logVendorHoldEntityRepository;
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.vendorInfoNewService = vendorInfoNewService;
+        this.cacheService = cacheService;
     }
 
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
@@ -46,33 +51,29 @@ public class VendorHoldServiceImpl implements VendorHoldService {
                 trm.setWholeSalerID(wholeSalerID);
                 trm.setHoldFrom(holdFrom);
                 trm.setHoldTo(holdTo);
+                trm.setActive(active);
                 trm.setCreatedBy(Utility.getUsername());
                 trm.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
                 logVendorHoldEntityRepository.save(trm);
             } else if (holdType == HoldType.CLOSE.gatValue()) {
                 WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-
-                StatusType newStatusType = null;
                 if (active) {
                     if (holdFrom.toLocalDateTime().plusDays(1).minusSeconds(1).isAfter(LocalDateTime.now())) {
                         trm.setContractExpireDate(Timestamp.valueOf(holdFrom.toLocalDateTime().plusDays(1).minusSeconds(1)));
                         trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
-                        newStatusType = StatusType.getStatusType(trm.getActive(), trm.getShopActive(), trm.getOrderActive());
                     } else {
                         trm.setContractExpireDate(Timestamp.valueOf(LocalDateTime.now()));
                         trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
                         trm.setOrderActive(false);
                         trm.setShopActive(false);
                         trm.setActive(false);
-                        newStatusType = StatusType.INACTIVE;
                     }
                 } else {
                     trm.setContractExpireDate(null);
                     trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
                     trm.setShopActive(true);
                     trm.setActive(true);
-                    newStatusType = StatusType.SHOP_ACTIVE;
                 }
 
                 vendorWholeSalerEntityRepository.save(trm);
@@ -82,53 +83,90 @@ public class VendorHoldServiceImpl implements VendorHoldService {
                     closeDate = trm.getContractExpireDate().toLocalDateTime();
 
                 WebAdminLoginUser userInfo = Utility.getUserInfo();
+                StatusType newStatusType = StatusType.getStatusType(trm.getActive(), trm.getShopActive(), trm.getOrderActive());
                 vendorInfoNewService.updateStatusAndCloseDate(wholeSalerID, newStatusType.getValue(), closeDate, userInfo.getUserId(), userInfo.getUsername());
 
-            } else if (holdType == 3) {
+            } else if (holdType == HoldType.HOLD_NOW.gatValue()) {
                 WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
                 trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
                 trm.setOrderActive(false);
                 trm.setShopActive(true);
                 trm.setActive(true);
-
                 vendorWholeSalerEntityRepository.save(trm);
-            } else if (holdType == 4) {
+                updateNewStatus(wholeSalerID, trm);
+            } else if (holdType == HoldType.HOLD_RELEASE.gatValue()) {
                 WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
                 trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
                 trm.setOrderActive(true);
-
                 vendorWholeSalerEntityRepository.save(trm);
+                updateNewStatus(wholeSalerID, trm);
             }
+
             return true;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
             return false;
+        } finally {
+            cacheService.cacheEvictVendor(wholeSalerID);
         }
     }
 
-    public Integer setHoldVendorUpdate(Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
+    private void updateNewStatus(Integer wholeSalerID, WholeSalerEntity trm) {
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        StatusType newStatusType = StatusType.getStatusType(trm.getActive(), trm.getShopActive(), trm.getOrderActive());
+        vendorInfoNewService.updateStatus(wholeSalerID, newStatusType.getValue(), userInfo.getUserId(), userInfo.getUsername());
+    }
 
-        Integer result = 0;
+    public Integer setHoldVendorUpdate(Integer wholeSalerID, Integer logID, Boolean active, Timestamp holdFrom, Timestamp holdTo) {
+
         try {
             LogVendorHoldEntity lvh = logVendorHoldEntityRepository.findById(logID).get();
-            lvh.setHoldFrom(holdFrom);
-            lvh.setHoldTo(holdTo);
+            if(active) {
+                lvh.setHoldFrom(holdFrom);
+                lvh.setHoldTo(holdTo);
+            }
             lvh.setActive(active);
             logVendorHoldEntityRepository.save(lvh);
 
-            result = 1;
+            if(!active) {
+                WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+                trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
+                trm.setLastUser(Utility.getUsername());
+                trm.setOrderActive(true);
+                vendorWholeSalerEntityRepository.save(trm);
+
+                updateNewStatus(wholeSalerID, trm);
+            } else {
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
+                if (holdFrom.compareTo(timestamp) <= 0) {
+                    trm.setOrderActive(false);
+                    trm.setShopActive(true);
+                    trm.setActive(true);
+                } else {
+                    trm.setOrderActive(true);
+                }
+                trm.setLastUser(Utility.getUsername());
+                trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
+
+                vendorWholeSalerEntityRepository.save(trm);
+                updateNewStatus(wholeSalerID, trm);
+            }
+            return 1;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
-            result = -99;
+            return -99;
+        } finally {
+            cacheService.cacheEvictVendor(null);
         }
-
-        return result;
     }
 
     private enum HoldType {
 
         HOLD(1),
         CLOSE(2),
+        HOLD_NOW(3),
+        HOLD_RELEASE(4),
         ;
 
         HoldType(int value) {
