@@ -8,7 +8,7 @@ import net.fashiongo.webadmin.data.model.vendor.VendorImage;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorImageRequestEntityRepository;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.CacheService;
-import net.fashiongo.webadmin.service.vendor.VendorImageNewService;
+import net.fashiongo.webadmin.service.vendor.BannerRequestNewService;
 import net.fashiongo.webadmin.service.vendor.VendorImageService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
@@ -30,15 +30,15 @@ public class VendorImageServiceImpl implements VendorImageService {
 
     private VendorImageRequestEntityRepository vendorImageRequestEntityRepository;
 
-    private VendorImageNewService vendorImageNewService;
+    private BannerRequestNewService bannerRequestNewService;
 
     public VendorImageServiceImpl(
             VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
-            VendorImageNewService vendorImageNewService,
+            BannerRequestNewService bannerRequestNewService,
             CacheService cacheService
     ) {
         this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
-        this.vendorImageNewService = vendorImageNewService;
+        this.bannerRequestNewService = bannerRequestNewService;
         this.cacheService = cacheService;
     }
 
@@ -51,7 +51,7 @@ public class VendorImageServiceImpl implements VendorImageService {
 
         if(result != null) {
             WebAdminLoginUser userInfo = Utility.getUserInfo();
-            vendorImageNewService.insert(result.getImageRequestId(), request, userInfo.getUserId(), userInfo.getUsername());
+            bannerRequestNewService.insert(result.getImageRequestId(), request, userInfo.getUserId(), userInfo.getUsername());
         } else {
             return -99;
         }
@@ -121,7 +121,7 @@ public class VendorImageServiceImpl implements VendorImageService {
             vendorImageRequestEntityRepository.delete(vendorImage);
 
             WebAdminLoginUser userInfo = Utility.getUserInfo();
-            vendorImageNewService.delete(wid, vendorImage.getImageRequestId(), userInfo.getUserId(), userInfo.getUsername());
+            bannerRequestNewService.delete(wid, vendorImage.getImageRequestId(), userInfo.getUserId(), userInfo.getUsername());
 
             return 1;
         } catch (Exception ex) {
