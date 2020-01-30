@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.service;
+package net.fashiongo.webadmin.service.externalutil;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

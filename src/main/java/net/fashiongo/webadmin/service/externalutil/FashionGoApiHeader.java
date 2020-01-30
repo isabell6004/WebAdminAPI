@@ -1,4 +1,4 @@
-package net.fashiongo.webadmin.service;
+package net.fashiongo.webadmin.service.externalutil;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +15,10 @@ import java.util.UUID;
 public class FashionGoApiHeader {
 
     private final static String ApplicationType = "WebAdmin";
+
+//    public static Map<String, String> getHeader() {
+//        return getHeader(0, "");
+//    }
 
     public static Map<String, String> getHeader(Integer userId, String userName) {
 

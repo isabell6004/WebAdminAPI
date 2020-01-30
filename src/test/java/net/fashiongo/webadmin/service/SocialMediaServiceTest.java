@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import net.fashiongo.webadmin.data.model.sitemgmt.SocialMediaParameter;
 import net.fashiongo.webadmin.service.sitemgmt.SocialMediaService;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.fashiongo.webadmin.data.entity.primary.sitemgmt.SocialMedia;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author roy
@@ -42,7 +44,23 @@ public class SocialMediaServiceTest {
 		assertTrue("SocialMediaID should be not largger than 0.", socialMedia.getSocialMediaId() > 0);
 		assertFalse("SocialMedia should be not empty.", StringUtils.isEmpty(socialMedia.getSocialMedia()));
 	}
-	
+
+	@Ignore
+    @Test
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void integrated_save_code_social_media() {
+
+        SocialMediaParameter parameter = new SocialMediaParameter();
+        parameter.setSocialMediaId(0);
+        parameter.setSocialMedia("test");
+        parameter.setIcon("test.png");
+
+        socialMediaService.saveSocialMedia(parameter);
+
+        throw new RuntimeException();
+    }
+
+
 	@Ignore
 	@Test
 	public void testSaveAndDeleteSocialMedia() {

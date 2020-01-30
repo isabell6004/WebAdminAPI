@@ -60,7 +60,6 @@ public class SocialMedia implements Serializable {
     public static SocialMedia create(SocialMediaParameter request) {
 
         return builder()
-                .socialMediaId(request.getSocialMediaId())
                 .socialMedia(request.getSocialMedia())
                 .icon(request.getIcon())
                 .build();

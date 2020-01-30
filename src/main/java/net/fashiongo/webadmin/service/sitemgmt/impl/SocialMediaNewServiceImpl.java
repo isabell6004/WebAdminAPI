@@ -1,15 +1,26 @@
 package net.fashiongo.webadmin.service.sitemgmt.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.sitemgmt.SocialMedia;
-import net.fashiongo.webadmin.service.FashionGoApiConfig;
-import net.fashiongo.webadmin.service.FashionGoApiHeader;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse;
 import net.fashiongo.webadmin.service.sitemgmt.SocialMediaNewService;
+import net.fashiongo.webadmin.service.vendor.response.CreateBannerResponse;
+import net.fashiongo.webadmin.utility.JsonResponse;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Created by jinwoo on 2020-01-14.
@@ -24,32 +35,49 @@ public class SocialMediaNewServiceImpl implements SocialMediaNewService {
         this.httpCaller = httpCaller;
     }
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Override
-    public void delete(List<Long> delIds) {
+    public Boolean delete(List<Integer> delIds, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/common/socialmedia/delete";
         DelSocialMediaCommand command = DelSocialMediaCommand.create(delIds);
-        httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader());
+        String responseBody = httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
+        return checkAndReturnOfResponseBody(responseBody);
+    }
+
+    private Boolean checkAndReturnOfResponseBody(String responseBody) {
+        if (StringUtils.isEmpty(responseBody))
+            return Boolean.FALSE;
+
+        try {
+            FashionGoApiResponse response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse>() {});
+            return response.getHeader().isSuccessful();
+        } catch (IOException e) {
+            throw new RuntimeException("fail to operate a social media code.", e);
+        }
     }
 
     @Override
-    public void regist(SocialMedia socialMedia) {
+    public Boolean regist(SocialMedia socialMedia, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/common/socialmedia";
         RegistSocialMediaCommand command = RegistSocialMediaCommand.create(socialMedia);
-        httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader());
+        String responseBody = httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
+        return checkAndReturnOfResponseBody(responseBody);
     }
 
     @Override
-    public void update(SocialMedia socialMedia) {
+    public Boolean update(SocialMedia socialMedia, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/common/socialmedia";
         ModifySocialMediaCommand command = ModifySocialMediaCommand.create(socialMedia);
-        httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader());
+        String responseBody = httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
+        return checkAndReturnOfResponseBody(responseBody);
     }
 
     @Getter
     private static class DelSocialMediaCommand {
-        private List<Long> delIds;
+        private List<Integer> delIds;
 
-        private static DelSocialMediaCommand create(List<Long> delIds) {
+        private static DelSocialMediaCommand create(List<Integer> delIds) {
             DelSocialMediaCommand command = new DelSocialMediaCommand();
             command.delIds = delIds;
             return command;

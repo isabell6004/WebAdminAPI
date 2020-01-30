@@ -1,10 +1,10 @@
-package net.fashiongo.webadmin.service;
+package net.fashiongo.webadmin.service.externalutil;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,24 +26,24 @@ public class HttpClientWrapper {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public ResponseEntity<JsonResponse> post(String endpoint, Object request, Map<String, String> headerMap) {
+    public String post(String endpoint, Object request, Map<String, String> headerMap) {
         try {
             return post(endpoint, mapper.writeValueAsString(request), headerMap);
         } catch (JsonProcessingException e) {
             log.warn("fail to generate from object to json.");
+            return StringUtils.EMPTY;
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<JsonResponse> post(String endpoint, Object request) {
+    public String post(String endpoint, Object request) {
         return post(endpoint, request, null);
     }
 
-    public ResponseEntity<JsonResponse> post(String endpoint, String payload, Map<String, String> headerMap) {
+    public String post(String endpoint, String payload, Map<String, String> headerMap) {
         return execute(endpoint, payload, headerMap, HttpMethod.POST);
     }
 
-    private ResponseEntity<JsonResponse> execute(String endpoint, String payload, Map<String, String> headerMap, HttpMethod method) {
+    private String execute(String endpoint, String payload, Map<String, String> headerMap, HttpMethod method) {
         HttpHeaders headers = new HttpHeaders();
         if(MapUtils.isNotEmpty(headerMap)) {
             headerMap.keySet().forEach(x -> headers.add(x, headerMap.get(x)));
@@ -52,50 +52,51 @@ public class HttpClientWrapper {
         try {
             log.debug("endpoint: {}, payload : {}", endpoint, payload);
             HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
-            ResponseEntity<JsonResponse> response = restTemplateWrapper.exchange(endpoint, method, requestEntity, JsonResponse.class);
+            ResponseEntity<String> response = restTemplateWrapper.exchange(endpoint, method, requestEntity, String.class);
             log.debug("status code:{}, body:{}", response.getStatusCode(), response.toString());
             if( response.getStatusCode() != HttpStatus.OK ) {
                 log.warn("fail to call the api: {}, {}, {}", endpoint, payload, headers);
+                return StringUtils.EMPTY;
             } else {
-                log.debug("response : {}", response);
+                log.debug("response : {}, {}", response, response.getBody());
+                return response.getBody();
             }
-            return response;
         } catch (Throwable t) {
             log.error("fail to call the api : {}", t.getMessage(), t);
         }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return StringUtils.EMPTY;
     }
 
-    public ResponseEntity<JsonResponse> post(String endpoint, String payload) {
+    public String post(String endpoint, String payload) {
         return post(endpoint, payload, null);
     }
 
-    public ResponseEntity<JsonResponse> put(String endpoint, String payload, Map<String, String> headerMap) {
+    public String put(String endpoint, String payload, Map<String, String> headerMap) {
         return execute(endpoint, payload, headerMap, HttpMethod.PUT);
     }
 
-    public ResponseEntity<JsonResponse> put(String endpoint, Map<String, String> headerMap) {
+    public String put(String endpoint, Map<String, String> headerMap) {
         return execute(endpoint, null, headerMap, HttpMethod.PUT);
     }
 
-    public ResponseEntity<JsonResponse> put(String endpoint, String payload) {
+    public String put(String endpoint, String payload) {
         return execute(endpoint, payload, null, HttpMethod.PUT);
     }
 
-    public ResponseEntity<JsonResponse> put(String endpoint, Object request, Map<String, String> headerMap) {
+    public String put(String endpoint, Object request, Map<String, String> headerMap) {
         try {
             return put(endpoint, mapper.writeValueAsString(request), headerMap);
         } catch (JsonProcessingException e) {
             log.warn("fail to generate from object to json.");
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return StringUtils.EMPTY;
     }
 
-    public ResponseEntity<JsonResponse> delete(String endpoint) {
+    public String delete(String endpoint) {
         return delete(endpoint, null);
     }
 
-    public ResponseEntity<JsonResponse> delete(String endpoint, Map<String, String> headerMap) {
+    public String delete(String endpoint, Map<String, String> headerMap) {
         return execute(endpoint, null, headerMap, HttpMethod.DELETE);
     }
 }

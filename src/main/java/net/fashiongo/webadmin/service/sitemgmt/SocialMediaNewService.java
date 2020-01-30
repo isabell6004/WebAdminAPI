@@ -1,27 +1,16 @@
-/**
- * 
- */
 package net.fashiongo.webadmin.service.sitemgmt;
 
 import net.fashiongo.webadmin.data.entity.primary.sitemgmt.SocialMedia;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author roy
- *
- */
 @Service
 public interface SocialMediaNewService {
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void delete(List<Long> delIds);
+    Boolean delete(List<Integer> delIds, Integer requestUserId, String requestUserName);
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void regist(SocialMedia socialMedia);
+    Boolean regist(SocialMedia socialMedia, Integer requestUserId, String requestUserName);
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void update(SocialMedia socialMedia);
+    Boolean update(SocialMedia socialMedia, Integer requestUserId, String requestUserName);
 }
