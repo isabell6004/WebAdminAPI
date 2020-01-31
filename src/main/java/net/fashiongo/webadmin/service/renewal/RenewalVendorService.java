@@ -1133,7 +1133,7 @@ public class RenewalVendorService extends ApiService {
 			
 			if(!active) {
 				WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-				trm.setLastModifiedDateTime(LocalDateTime.now());
+				trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
 				trm.setLastUser(Utility.getUsername());
 				trm.setOrderActive(true);
 
@@ -1146,7 +1146,7 @@ public class RenewalVendorService extends ApiService {
 				
 				if (result1 == -1 || result1 == 0) {
 					WholeSalerEntity trm1 = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-					trm1.setLastModifiedDateTime(LocalDateTime.now());
+					trm1.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
 					trm1.setOrderActive(false);
 					trm1.setShopActive(true);
 					trm1.setActive(true);		
@@ -1156,7 +1156,7 @@ public class RenewalVendorService extends ApiService {
 				}
 				else {
 					WholeSalerEntity trm = vendorWholeSalerEntityRepository.findOneByID(wholeSalerID);
-					trm.setLastModifiedDateTime(LocalDateTime.now());
+					trm.setLastModifiedDateTime(Timestamp.valueOf(LocalDateTime.now()));
 					trm.setLastUser(Utility.getUsername());
 					trm.setOrderActive(true);
 	
