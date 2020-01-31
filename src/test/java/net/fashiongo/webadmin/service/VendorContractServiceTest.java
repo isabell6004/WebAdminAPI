@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.data.repository.primary.VendorContractEntityReposi
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorContractDocumentEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
+import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.impl.VendorContractServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,15 +35,8 @@ import static org.mockito.BDDMockito.*;
 @Slf4j
 public class VendorContractServiceTest {
 
-    @Before
-    public void init() {
-        vendorContractService = new VendorContractServiceImpl(
-                vendorContractDocumentEntityRepository,
-                vendorContractNewService,
-                vendorWholeSalerEntityRepository,
-                vendorContractEntityRepository,
-                cacheService) ;
-    }
+    @Mock
+    private VendorInfoNewService vendorInfoNewService;
 
     @Mock
     private VendorContractNewService vendorContractNewService;
@@ -60,6 +54,17 @@ public class VendorContractServiceTest {
     private CacheService cacheService;
 
     private VendorContractServiceImpl vendorContractService;
+
+    @Before
+    public void init() {
+        vendorContractService = new VendorContractServiceImpl(
+                vendorContractDocumentEntityRepository,
+                vendorContractNewService,
+                vendorInfoNewService,
+                vendorWholeSalerEntityRepository,
+                vendorContractEntityRepository,
+                cacheService);
+    }
 
     @Test
     public void delVendorContractDocument_when_normal_case() {

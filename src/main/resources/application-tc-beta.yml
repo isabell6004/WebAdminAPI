@@ -37,6 +37,10 @@ webAdminapi:
   fgVendorAPI_EndPoint: http://127.0.0.1:28501
   statsAPI_EndPoint: http://127.0.0.1:27601
   fgPaymentAPI_EndPoint: http://127.0.0.1:29201
+  adapi:
+    endpoint: http://10.210.16.203:18000
+  productApi:
+    endpoint: http://10.210.16.203:17301
   fashionGoApi:
     endpoint: http://10.210.16.203:17301
 server:
