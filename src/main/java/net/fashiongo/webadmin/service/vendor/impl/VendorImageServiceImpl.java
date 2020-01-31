@@ -23,7 +23,7 @@ import java.util.List;
  * Created by jinwoo on 2020-01-08.
  */
 @Slf4j
-@Service
+@Service("vendorBannerImageService")
 public class VendorImageServiceImpl implements VendorImageService {
 
     private CacheService cacheService;

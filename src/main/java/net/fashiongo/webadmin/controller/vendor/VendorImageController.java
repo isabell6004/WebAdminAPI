@@ -8,6 +8,7 @@ import net.fashiongo.webadmin.data.model.vendor.VendorImage;
 import net.fashiongo.webadmin.service.vendor.VendorImageService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ import java.util.List;
 public class VendorImageController {
 
     private VendorImageService vendorImageService;
-    public VendorImageController(VendorImageService vendorImageService) {
+    public VendorImageController(@Qualifier("vendorBannerImageService") VendorImageService vendorImageService) {
         this.vendorImageService = vendorImageService;
     }
 
