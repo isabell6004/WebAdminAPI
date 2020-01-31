@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author roy
  */
-@RestController
+@RestController("vendorBannerImageController")
 @Slf4j
 public class VendorImageController {
 
