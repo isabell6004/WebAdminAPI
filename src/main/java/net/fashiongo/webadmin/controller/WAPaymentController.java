@@ -46,7 +46,7 @@ public class WAPaymentController {
     @PostMapping(value = "getPaymentStatusList")
     public JsonResponse<GetPaymentStatusListResponse> getPaymentStatusList(
             @Valid @RequestBody GetPaymentStatusListParameter parameters) {
-        GetPaymentStatusListResponse result = waPaymentService.getPaymentStatusList(parameters);
+        GetPaymentStatusListResponse result = renewalWAPaymentService.getPaymentStatusList(parameters);
         return new JsonResponse<>(true, null, 0, result);
     }
 

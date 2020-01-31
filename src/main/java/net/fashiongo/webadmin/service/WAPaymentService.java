@@ -46,6 +46,7 @@ public class WAPaymentService extends ApiService {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public GetPaymentStatusListResponse getPaymentStatusList(GetPaymentStatusListParameter param) {
         GetPaymentStatusListResponse result = new GetPaymentStatusListResponse();
         String spName = "up_wa_pay_GetPaymentStatusList_v1";
@@ -62,9 +63,9 @@ public class WAPaymentService extends ApiService {
         params.add(param.getTransactionType());
         params.add(param.getSearchSuccess());
         params.add(param.getOrderBy());
-        List<Object> results = jdbcHelper.executeSP(spName, params, PaymentStatusList.class, Total.class);
+        List<Object> results = jdbcHelper.executeSP(spName, params, PaymentStatusList.class, net.fashiongo.webadmin.data.model.Total.class);
         result.setPaymentStatusList((List<PaymentStatusList>) results.get(0));
-        result.setTotal((List<Total>) results.get(1));
+        result.setTotal((List<net.fashiongo.webadmin.data.model.Total>) results.get(1));
         return result;
     }
 

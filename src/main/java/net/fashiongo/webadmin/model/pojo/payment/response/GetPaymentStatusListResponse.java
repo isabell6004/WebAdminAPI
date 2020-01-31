@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
-import net.fashiongo.webadmin.model.pojo.message.Total;
+import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
 
 /**
