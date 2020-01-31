@@ -1,7 +1,6 @@
 package net.fashiongo.webadmin.model.pojo.payment.parameter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Setter;
 import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
@@ -25,12 +24,14 @@ public class GetAllSavedCreditCardInfoParameter {
 
     @ApiModelProperty(hidden = true)
     @JsonProperty("cardid")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String cardID;
 
     @ApiModelProperty(hidden = true)
     @JsonProperty("isdefaultcard")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String defaultCard;
 
     @ApiModelProperty(hidden = true)
@@ -43,33 +44,38 @@ public class GetAllSavedCreditCardInfoParameter {
 
     @ApiModelProperty(hidden = true)
     @JsonProperty("billingid")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String billingID;
 
     @ApiModelProperty(required = false, example = "ALL")
     @JsonProperty("creditcountry")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String creditCountry;
 
     @ApiModelProperty(required = false, example = "ALL")
     @JsonProperty("creditstate")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String creditState;
 
     @ApiModelProperty(hidden = true)
     @JsonProperty("buyer")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String buyer;
 
     @ApiModelProperty(hidden = true)
     @JsonProperty("referenceid")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String referenceID;
 
     @ApiModelProperty(required = false, example = "CreatedOn")
     @JsonProperty("orderby")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String orderBy;
 
     @ApiModelProperty(required = false, example = "Desc")

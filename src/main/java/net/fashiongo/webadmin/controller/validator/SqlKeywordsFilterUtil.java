@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class SqlKeywordsFilterUtil {
 
     private static final String SQL_KEYWORDS
-        = "^(?!.*(\\'|--|\\#|\\=|\\(|\\)|\\*\\/|\\/\\*|\\+|\\<|\\>|&&|%|\\|\\||union|select|insert|from|where|update|drop|if|join|declare|and|or|column_name|table_name|openrowset|substr|substring|xp_|sysobjects|syscolumns)).*$";
+            = "^(?!.*(\\'|--|\\#|\\=|\\(|\\)|\\*\\/|\\/\\*|\\+|\\<|\\>|&&|%|\\|\\||\\bunion\\b|\\bselect\\b|\\binsert\\b|\\bfrom\\b|\\bwhere\\b|\\bupdate\\b|\\bdrop\\b|\\bif\\b|\\bjoin\\b|\\bdeclare\\b|\\band\\b|\\bor\\b|\\bcolumn_name\\b|\\btable_name\\b|\\bopenrowset\\b|\\bsubstr\\b|\\bsubstring\\b|\\bxp_\\b|\\bsysobjects\\b|\\bsyscolumns\\b)).*$";
     private static final Pattern validationPattern;
 
     private SqlKeywordsFilterUtil() {

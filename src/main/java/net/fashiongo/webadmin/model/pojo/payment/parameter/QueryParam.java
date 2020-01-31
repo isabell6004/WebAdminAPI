@@ -4,16 +4,22 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.validation.constraints.Pattern;
 
 public class QueryParam implements Serializable{
 private static final long serialVersionUID = 1L;
 
 	private static final Integer DEFAULT_PAGE_NUM = 1;
 	private static final Integer DEFAULT_PAGE_SIZE = 10;
+
+	private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s !&,-.?_\']+$";
+	private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
 
 	/* WholeSalerID */
 	private Integer wid;
@@ -79,7 +85,8 @@ private static final long serialVersionUID = 1L;
 	}
 
 	/* Company Name */
-	private String cn;
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)	private String cn;
 	public String getCn() {
 		return cn;
 	}
@@ -546,6 +553,8 @@ private static final long serialVersionUID = 1L;
 		this.bidIds = bidIds;
 	}
 
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String reason;
 	public String getReason() {
 		return reason;
@@ -554,8 +563,8 @@ private static final long serialVersionUID = 1L;
 		this.reason = reason;
 	}
 
-	/* Status - 'A':All, 'B':BuyItNow, 'P':PlaceBid, 'W':BidWinnerOnly */
-	private String status;
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)	private String status;
 	public String getStatus() {
 		return status;
 	}
@@ -574,7 +583,6 @@ private static final long serialVersionUID = 1L;
 
 	private String companyName;
 	public String getCompanyName() {
-		// TODO Auto-generated method stub
 		return companyName;
 	}
 	public void setCompanyName(String companyName) {
@@ -672,70 +680,6 @@ private static final long serialVersionUID = 1L;
 		if(ps == null || ps <= 0) ps = DEFAULT_PAGE_SIZE;
 
 		return true;
-		/*
-		if(!StringUtils.isEmpty(this.wid)) {
-			try {
-				this.intWid = Integer.parseInt(this.wid);
-			}
-			catch(Exception e) {
-				return false;
-			}
-		} else {
-			return false;
-		}
-		if(!StringUtils.isEmpty(this.osid)) {
-			try {
-				this.intOsid = Integer.parseInt(this.osid);
-			}
-			catch(Exception e) {
-				return false;
-			}
-		}
-
-		if(!StringUtils.isEmpty(this.pn)) {
-			try {
-				this.intPn = Integer.parseInt(this.pn);
-			}
-			catch(Exception e) {
-				return false;
-			}
-		} else {
-			this.pn = DEFAULT_PAGE_NUM.toString();
-			this.intPn = DEFAULT_PAGE_NUM;
-		}
-
-		if(!StringUtils.isEmpty(this.ps)) {
-			try {
-				this.intPs = Integer.parseInt(this.ps);
-			}
-			catch(Exception e) {
-				return false;
-			}
-		} else {
-			this.ps = DEFAULT_PAGE_SIZE.toString();
-			this.intPs = DEFAULT_PAGE_SIZE;
-		}
-
-		if(!StringUtils.isEmpty(this.df)) {
-			try {
-				this.dateDf = Date.valueOf(this.df);
-			}
-			catch(Exception e) {
-				return false;
-			}
-		}
-
-		if(!StringUtils.isEmpty(this.dt)) {
-			try {
-				this.dateDt = Date.valueOf(this.dt);
-			}
-			catch(Exception e) {
-				return false;
-			}
-		}
-
-		return true;
-		*/
 	}
 
 	//[Angel] 5/4/2017
@@ -878,7 +822,6 @@ private static final long serialVersionUID = 1L;
 	@Override
 	public String toString() {
 		try {
-			//return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
 			return new ObjectMapper().writeValueAsString(this);
 		} catch (JsonProcessingException e) {
 			return ReflectionToStringBuilder.toString(this);

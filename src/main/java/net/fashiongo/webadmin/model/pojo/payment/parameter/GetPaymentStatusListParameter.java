@@ -1,14 +1,11 @@
 package net.fashiongo.webadmin.model.pojo.payment.parameter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
@@ -39,17 +36,17 @@ public class GetPaymentStatusListParameter {
 
     @ApiModelProperty(required = false, example = "2017-01-01 00:00:00.000")
     @JsonProperty("FromDate")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     private String fromDate;
 
     @ApiModelProperty(required = false, example = "2017-12-31 00:00:00.000")
     @JsonProperty("ToDate")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     private String toDate;
 
     @ApiModelProperty(required = false, example = "test")
     @JsonProperty("PONumber")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String poNumber;
 
@@ -59,7 +56,7 @@ public class GetPaymentStatusListParameter {
 
     @ApiModelProperty(required = false, example = "test")
     @JsonProperty("BuyerName")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String buyerName;
 
@@ -73,7 +70,7 @@ public class GetPaymentStatusListParameter {
 
     @ApiModelProperty(required = false, example = "1")
     @JsonProperty("OrderBy")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String orderBy;
 

@@ -1,9 +1,9 @@
 package net.fashiongo.webadmin.model.pojo.payment.parameter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
 import lombok.Getter;
 import lombok.Setter;
+import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
@@ -32,25 +32,25 @@ public class GetPayoutHistoryParameter {
     private Integer wholesalerId;
 
     @JsonProperty("fromdate")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     private String fromDate;
 
     @JsonProperty("todate")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     private String toDate;
 
     @JsonProperty("payoutstatus")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String payoutStatus;
 
     @JsonProperty("payoutschedule")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String payoutSchedule;
 
     @JsonProperty("orderby")
-    @SQLInjectionSafe
+    @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String orderBy;
 

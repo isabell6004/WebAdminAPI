@@ -31,6 +31,8 @@ import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 import net.fashiongo.webadmin.model.primary.DisputeDocument;
 import net.fashiongo.webadmin.service.PaymentService;
 
+import javax.validation.Valid;
+
 /**
  * @author Brian
  *
@@ -47,7 +49,8 @@ public class PaymentController {
 	private PaymentService paymentService;
 	
 	@GetMapping("/disputes")
-	public JsonResponse<PagedResult<Dispute>> getDisputes(@ModelAttribute QueryParam queryParam) {
+	public JsonResponse<PagedResult<Dispute>> getDisputes(
+			@Valid @ModelAttribute QueryParam queryParam) {
 		JsonResponse<PagedResult<Dispute>> response = new JsonResponse<>(false, null, null);
 		
 		try {
