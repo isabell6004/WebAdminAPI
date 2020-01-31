@@ -3,9 +3,9 @@ package net.fashiongo.webadmin.service.vendor.impl;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSNSListParameter;
-import net.fashiongo.webadmin.service.FashionGoApiConfig;
-import net.fashiongo.webadmin.service.FashionGoApiHeader;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.VendorSNSNewService;
 import org.springframework.stereotype.Service;
 

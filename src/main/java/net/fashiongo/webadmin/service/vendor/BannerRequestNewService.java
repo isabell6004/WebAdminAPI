@@ -17,5 +17,5 @@ public interface BannerRequestNewService {
     void insert(Integer imageOriginalId, SetVendorImageParameter request, Integer requestedUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    ResponseEntity<JsonResponse> approve(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName);
+    void approve(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName);
 }

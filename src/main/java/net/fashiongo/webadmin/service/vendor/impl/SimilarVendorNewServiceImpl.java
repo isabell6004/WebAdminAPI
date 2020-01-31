@@ -1,9 +1,10 @@
 package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
-import net.fashiongo.webadmin.service.FashionGoApiConfig;
-import net.fashiongo.webadmin.service.FashionGoApiHeader;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.data.model.vendor.VendorSimilarDto;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.SimilarVendorNewService;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,9 @@ public class SimilarVendorNewServiceImpl implements SimilarVendorNewService {
     }
 
     @Override
-    public void addSimilarVendor(Integer vendorId, List<Integer> similarVendorIdList, Integer requestedUserId, String requestUserName) {
+    public void addSimilarVendor(Integer vendorId, List<VendorSimilarDto> similarVendorList, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/similar";
-        CreateSimilarVendorCommand newRequest = new CreateSimilarVendorCommand(similarVendorIdList);
+        CreateSimilarVendorCommand newRequest = new CreateSimilarVendorCommand(similarVendorList);
         httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
@@ -34,10 +35,10 @@ public class SimilarVendorNewServiceImpl implements SimilarVendorNewService {
 
     @Getter
     private class CreateSimilarVendorCommand {
-        private List<Integer> similarVendorIds;
+        private List<VendorSimilarDto> similarVendors;
 
-        private CreateSimilarVendorCommand(List<Integer> similarVendorIdList) {
-            this.similarVendorIds = similarVendorIdList;
+        private CreateSimilarVendorCommand(List<VendorSimilarDto> similarVendorList) {
+            this.similarVendors = similarVendorList;
         }
     }
 

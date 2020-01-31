@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockUpdate;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
-import net.fashiongo.webadmin.service.FashionGoApiConfig;
-import net.fashiongo.webadmin.service.FashionGoApiHeader;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import org.springframework.stereotype.Service;
 

@@ -1,9 +1,9 @@
 package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
-import net.fashiongo.webadmin.service.FashionGoApiConfig;
-import net.fashiongo.webadmin.service.FashionGoApiHeader;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.service.vendor.SisterVendorNewService;
 import org.springframework.stereotype.Service;
 

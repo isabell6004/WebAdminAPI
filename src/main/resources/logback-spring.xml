@@ -107,7 +107,7 @@
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
         </logger>
-        <logger name="net.fashiongo.webadmin.service.HttpClientWrapper" level="INFO" additivity="false">
+        <logger name="net.fashiongo.webadmin.service.externalutil.HttpClientWrapper" level="DEBUG" additivity="false">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="externalApiFailLogger" />
@@ -129,7 +129,7 @@
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
         </logger>
-        <logger name="net.fashiongo.webadmin.service.HttpClientWrapper" level="WARN" additivity="false">
+        <logger name="net.fashiongo.webadmin.service.externalutil.HttpClientWrapper" level="WARN" additivity="false">
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="externalApiFailLogger" />
         </logger>
@@ -185,7 +185,7 @@
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="logNCrashLogger" />
         </logger>
-        <logger name="net.fashiongo.webadmin.service.HttpClientWrapper" level="WARN" additivity="false">
+        <logger name="net.fashiongo.webadmin.service.externalutil.HttpClientWrapper" level="WARN" additivity="false">
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="externalApiFailLogger" />
         </logger>

@@ -1,17 +1,19 @@
 package net.fashiongo.webadmin.service.vendor.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
-import net.fashiongo.webadmin.service.FashionGoApiConfig;
-import net.fashiongo.webadmin.service.FashionGoApiHeader;
-import net.fashiongo.webadmin.service.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse;
 import net.fashiongo.webadmin.service.vendor.BannerRequestNewService;
-import net.fashiongo.webadmin.utility.JsonResponse;
-import org.springframework.http.ResponseEntity;
+import net.fashiongo.webadmin.service.vendor.response.CreateBannerResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -22,6 +24,8 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
     public BannerRequestNewServiceImpl(HttpClientWrapper httpCaller) {
         this.httpCaller = httpCaller;
     }
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void reject(Integer vendorId, SetDenyBannerParameter request, Integer requestUserId, String requestUserName) {
@@ -48,25 +52,29 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner";
         BannerImageCommand vendorBannerImageCommand = new BannerImageCommand(imageOriginalId, bannerTypeId, fileName);
-        ResponseEntity<JsonResponse> response = httpCaller.post(endpoint, vendorBannerImageCommand, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
-
-        if(Optional.ofNullable(response.getBody()).orElseThrow(RuntimeException::new).isSuccess()) {
-            Map<String, Integer> result = (Map<String, Integer>) response.getBody().getData();
-            return Optional.ofNullable(result.get("content")).orElse(0);
-        } else {
+        String responseBody = httpCaller.post(endpoint, vendorBannerImageCommand, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+        try {
+            FashionGoApiResponse<CreateBannerResponse> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<CreateBannerResponse>>(){});
+            if(response.getHeader().isSuccessful()) {
+                CreateBannerResponse bannerResponse = response.getData();
+                return Optional.ofNullable(bannerResponse.getContent()).orElse(0);
+            } else {
+                throw new RuntimeException("fail to inert a new image in new fashiongo api");
+            }
+        } catch (IOException e) {
             throw new RuntimeException("fail to inert a new image in new fashiongo api");
         }
     }
 
     @Override
-    public ResponseEntity<JsonResponse> approve(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
+    public void approve(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/approve";
-        return httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+        httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
-    private ResponseEntity<JsonResponse> activate(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
+    private void activate(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
-        return httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+        httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Getter
