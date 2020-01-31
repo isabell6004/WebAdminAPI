@@ -3,13 +3,13 @@
  */
 package net.fashiongo.webadmin.dao.primary;
 
-import java.util.List;
-
+import net.fashiongo.webadmin.model.primary.MapCollectionCategory;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import net.fashiongo.webadmin.model.primary.MapCollectionCategory;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Sanghyup
@@ -39,4 +39,5 @@ public interface MapCollectionCategoryRepository extends CrudRepository<MapColle
 	// deleteByCategoryID
 	void deleteByCategoryID(Integer categoryID);
 
+	List<MapCollectionCategory> findByCollectionCategoryIDIn(Collection<Integer> collectionCategoryIds);
 }
