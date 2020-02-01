@@ -25,18 +25,15 @@ public class VendorContractController {
 	private VendorService vendorService;
 	private RenewalVendorService renewalVendorService;
 	private VendorContractService vendorContractService;
-    private CacheService cacheService;
 
 	public VendorContractController(
             VendorService vendorService,
             RenewalVendorService renewalVendorService,
-            VendorContractService vendorContractService,
-            CacheService cacheService
+            VendorContractService vendorContractService
     ) {
 	    this.vendorService = vendorService;
 	    this.renewalVendorService = renewalVendorService;
 	    this.vendorContractService = vendorContractService;
-	    this.cacheService = cacheService;
     }
 
 	@RequestMapping(value="vendor/getvendorcontract", method=RequestMethod.GET, produces = "application/json")

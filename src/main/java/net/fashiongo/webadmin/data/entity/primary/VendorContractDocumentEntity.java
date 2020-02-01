@@ -2,8 +2,9 @@ package net.fashiongo.webadmin.data.entity.primary;
 
 import lombok.*;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
-import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -53,6 +54,7 @@ public class VendorContractDocumentEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "VendorContractID", referencedColumnName = "VendorContractID", insertable = false, updatable = false)
+    @NotFound(action = NotFoundAction.IGNORE)
     private VendorContractEntity vendorContract;
 
     public static VendorContractDocumentEntity create(SetVendorContractDocumentParameter request, String username) {

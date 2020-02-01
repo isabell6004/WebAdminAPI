@@ -23,7 +23,6 @@ import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtService;
-import net.fashiongo.webadmin.service.renewal.RenewalSocialMediaService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +56,6 @@ public class SitemgmtController {
 
 	@Autowired
 	private RenewalSitemgmtService renewalSitemgmtService;
-
-	@Autowired
-	private RenewalSocialMediaService renewalSocialMediaService;
-
 
 	// ----------------------------------------------------
 	// collection category setting

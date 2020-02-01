@@ -3,12 +3,10 @@ package net.fashiongo.webadmin.controller.vendor;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.SisterVendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;

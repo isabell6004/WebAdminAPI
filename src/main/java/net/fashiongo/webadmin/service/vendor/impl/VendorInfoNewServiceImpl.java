@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.vendor.AccountType;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.model.vendor.AddressType;
@@ -82,6 +83,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             this.firstName = firstName;
             this.lastName = lastName;
             this.userId = userId;
+            this.typeCode = AccountType.MASTER.getValue();
         }
     }
 
@@ -235,10 +237,12 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         private String codename;
         private String dirname;
         private String description;
-        private Integer typeCode;
-        private String businessCategoryInfo;
         private String website;
+        private String businessCategoryInfo;
+
+        private Integer typeCode;
         private Integer establishedYear;
+        private Integer sourceCode;
 
         private VendorAccountCommand account;
         private List<VendorEmailCommand> emails;
@@ -252,12 +256,14 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             this.codename = request.getCodeName();
             this.dirname = request.getDirName();
             this.description = request.getDescription();
-            this.typeCode = request.getCompanyTypeID();
-            this.businessCategoryInfo = request.getBusinessCategory();
             this.website = request.getWebSite();
+            this.businessCategoryInfo = request.getBusinessCategory();
+            this.typeCode = request.getCompanyTypeID();
             this.establishedYear = request.getEstablishedYear();
+            this.sourceCode = request.getSourceType();
+
             this.account = new VendorAccountCommand(request.getFirstName(), request.getLastName(), request.getUserId());
-            this.setting = setting;
+
             this.emails = Arrays.asList(
                     new VendorEmailCommand(EmailType.ORDER.getValue(), request.getEmail())
                     , new VendorEmailCommand(EmailType.BILLING1.getValue(), request.getBillingEmail1())
@@ -302,6 +308,8 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
                         request.getFax(),
                         false)
             );
+
+            this.setting = setting;
 
             List<Integer> industries = new ArrayList<>();
             if(StringUtils.isNotEmpty(request.getIndustryType())) {

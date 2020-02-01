@@ -3,10 +3,12 @@ package net.fashiongo.webadmin.service.vendor.impl;
 import net.fashiongo.webadmin.data.entity.primary.MapWholeSalerGroupEntity;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingSelected;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnselect;
+import net.fashiongo.webadmin.data.model.vendor.VendorSimilarDto;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorGroupingResponse;
 import net.fashiongo.webadmin.data.repository.primary.MapWholeSalerGroupEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
+import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.SimilarVendorNewService;
 import net.fashiongo.webadmin.service.vendor.SimilarVendorService;
 import net.fashiongo.webadmin.utility.Utility;
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class SimilarVendorServiceImpl implements SimilarVendorService {
@@ -27,13 +28,16 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
     private final VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
     private final MapWholeSalerGroupEntityRepository mapWholeSalerGroupEntityRepository;
     private final SimilarVendorNewService similarVendorNewService;
+    private final CacheService cacheService;
 
     public SimilarVendorServiceImpl(VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
                                     MapWholeSalerGroupEntityRepository mapWholeSalerGroupEntityRepository,
-                                    SimilarVendorNewService similarVendorNewService) {
+                                    SimilarVendorNewService similarVendorNewService,
+                                    CacheService cacheService) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.mapWholeSalerGroupEntityRepository = mapWholeSalerGroupEntityRepository;
         this.similarVendorNewService = similarVendorNewService;
+        this.cacheService = cacheService;
     }
 
     @Override
@@ -102,7 +106,6 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
 
         if (StringUtils.isNotEmpty(saveIds)) {
             String[] saveIDList = saveIds.split(",");
-            List<Integer> intIdList = Arrays.stream(saveIDList).map(Integer::valueOf).collect(Collectors.toList());
 
             List<MapWholeSalerGroupEntity> insertEntities = new ArrayList<>();
             for (String id : saveIDList) {
@@ -118,10 +121,12 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
             mapWholeSalerGroupEntityRepository.saveAll(insertEntities);
 
             WebAdminLoginUser userInfo = Utility.getUserInfo();
-            similarVendorNewService.addSimilarVendor(vendorId, intIdList, userInfo.getUserId(), userInfo.getUsername());
+            similarVendorNewService.addSimilarVendor(vendorId, VendorSimilarDto.create(insertEntities), userInfo.getUserId(), userInfo.getUsername());
 
             result = 1;
         }
+
+        cacheService.cacheEvictVendor(vendorId);
 
         return result;
     }

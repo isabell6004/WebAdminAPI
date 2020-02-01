@@ -18,7 +18,6 @@ import net.fashiongo.webadmin.service.vendor.VendorInfoService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;

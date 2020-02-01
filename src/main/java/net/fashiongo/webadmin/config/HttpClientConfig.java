@@ -75,6 +75,4 @@ public class HttpClientConfig {
 		return factory;
 	}
 
-
-
 }

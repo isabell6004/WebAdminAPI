@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.MapWholeSalerSisterEntity;
 import net.fashiongo.webadmin.data.model.vendor.VendorSister;
 import net.fashiongo.webadmin.data.repository.primary.MapWholeSalerSisterEntityRepository;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.SisterVendorNewService;

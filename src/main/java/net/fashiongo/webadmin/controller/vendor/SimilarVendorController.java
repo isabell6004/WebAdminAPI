@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class SimilarVendorController {
 
     private final SimilarVendorService similarVendorService;
-    private final CacheService cacheService;
 
-    public SimilarVendorController(SimilarVendorService similarVendorService, CacheService cacheService) {
+    public SimilarVendorController(SimilarVendorService similarVendorService) {
         this.similarVendorService = similarVendorService;
-        this.cacheService = cacheService;
     }
 
     @GetMapping(value = "vendor/getvendorgrouping", produces = "application/json")
@@ -59,8 +57,6 @@ public class SimilarVendorController {
             log.warn(e.getMessage(), e);
             response.setMessage("fail");
         }
-
-        cacheService.cacheEvictVendor(wid);
 
         return response;
     }

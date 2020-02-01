@@ -3,22 +3,15 @@
  */
 package net.fashiongo.webadmin.data.entity.primary.sitemgmt;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import net.fashiongo.webadmin.data.model.sitemgmt.SocialMediaParameter;
+import net.fashiongo.webadmin.data.model.sitemgmt.SocialMediaType;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author roy
@@ -57,17 +50,36 @@ public class SocialMedia implements Serializable {
     @ApiModelProperty(example = "fb.png")
     private String icon;
 
-    public static SocialMedia create(SocialMediaParameter request) {
+    @Column(name = "URL")
+    private String url;
 
+    @Column(name = "Active")
+    private Boolean active;
+
+    private static String getUrl(String socialMedia) {
+        String url = null;
+        try {
+            SocialMediaType type = SocialMediaType.valueOf(socialMedia);
+            url = type.getUrl();
+        } catch (IllegalArgumentException e) {
+        }
+        return url;
+    }
+
+    public static SocialMedia create(SocialMediaParameter request) {
         return builder()
                 .socialMedia(request.getSocialMedia())
                 .icon(request.getIcon())
+                .active(true)
+                .url(getUrl(request.getSocialMedia()))
                 .build();
     }
 
     public void update(SocialMediaParameter request) {
         this.socialMediaId = request.getSocialMediaId();
         this.socialMedia = request.getSocialMedia();
+        this.active = true;
+        this.url = getUrl(request.getSocialMedia());
         this.icon = request.getIcon();
     }
 }

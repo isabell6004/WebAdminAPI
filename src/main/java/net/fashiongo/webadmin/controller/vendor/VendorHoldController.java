@@ -58,7 +58,6 @@ public class VendorHoldController {
 		}
 
     	Boolean result = vendorHoldService.setHoldVendor(wholeSalerID, holdType, active, holdFrom, holdTo);
-        cacheService.cacheEvictVendor(wholeSalerID);
 
         if(result) {
             return new ResultCode(true, 1, "success");
@@ -69,6 +68,8 @@ public class VendorHoldController {
 
 	@PostMapping(value = "vendor/setholdvendorupdate", produces = "application/json")
 	public Integer setholdvendorupdate(@RequestBody SetHoldVendorUpdateParameter param) {
+
+        Integer wholeSalerID = param.getWholeSalerID() == null ? 0 : param.getWholeSalerID();
     	Integer logID = param.getLogID() == null ? 0 : param.getLogID();
     	Boolean active = param.getActive() == null ? false : param.getActive();
 		Date holdFromDate;
@@ -85,7 +86,7 @@ public class VendorHoldController {
 			log.warn(e.getMessage(), e);
 		}
 
-		Integer result = vendorHoldService.setHoldVendorUpdate(logID, active,holdFrom, holdTo);
+		Integer result = vendorHoldService.setHoldVendorUpdate(wholeSalerID, logID, active,holdFrom, holdTo);
 
 		cacheService.cacheEvictVendor(null);
 
