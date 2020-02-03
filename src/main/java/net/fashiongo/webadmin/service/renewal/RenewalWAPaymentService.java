@@ -2,12 +2,14 @@ package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
 import net.fashiongo.webadmin.data.model.Total;
+import net.fashiongo.webadmin.data.model.payment.CodeCreditCardType;
 import net.fashiongo.webadmin.data.model.payment.OrderPayment;
 import net.fashiongo.webadmin.data.model.payment.PaymentCreditCardInfo;
 import net.fashiongo.webadmin.data.model.payment.PaymentStatus;
 import net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.data.model.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
+import net.fashiongo.webadmin.data.repository.primary.CodeCreditCardTypeEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.ListPaymentStatusEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.OrderPaymentStatusEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.PaymentCreditCardEntityRepository;
@@ -44,6 +46,9 @@ public class RenewalWAPaymentService {
 
 	@Autowired
 	private OrderPaymentStatusEntityRepository orderPaymentStatusEntityRepository;
+
+	@Autowired
+	private CodeCreditCardTypeEntityRepository codeCreditCardTypeEntityRepository;
 
 	@Transactional(transactionManager = "primaryTransactionManager")
 	public GetPaymentStatusSearchOptionResponse getPaymentStatusSearchOption() {
@@ -95,5 +100,9 @@ public class RenewalWAPaymentService {
 		return GetPendingPaymentTransactionResponse.builder()
 				.creditCardStatusList(paymentCreditCardInfo)
 				.orderPaymentStatusList(orderPaymentList).build();
+	}
+
+	public List<CodeCreditCardType> getCreditCardType() {
+		return codeCreditCardTypeEntityRepository.findAllCodeCreditCardType();
 	}
 }

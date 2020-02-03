@@ -83,6 +83,7 @@ public class WAPaymentService extends ApiService {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public List<CodeCreditCardType> getCreditCardType() {
         String spName = "up_wa_Pay_GetCreditCardType";
         List<Object> params = new ArrayList<>();
