@@ -2,17 +2,24 @@ package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
 import net.fashiongo.webadmin.data.model.Total;
+import net.fashiongo.webadmin.data.model.payment.OrderPayment;
+import net.fashiongo.webadmin.data.model.payment.PaymentCreditCardInfo;
 import net.fashiongo.webadmin.data.model.payment.PaymentStatus;
 import net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse;
+import net.fashiongo.webadmin.data.model.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
 import net.fashiongo.webadmin.data.repository.primary.ListPaymentStatusEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.OrderPaymentStatusEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.PaymentCreditCardEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.WholeSalerEntityRepository;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -31,6 +38,12 @@ public class RenewalWAPaymentService {
 
 	@Autowired
 	private PaymentTransactionEntityRepository paymentTransactionEntityRepository;
+
+	@Autowired
+	private PaymentCreditCardEntityRepository paymentCreditCardEntityRepository;
+
+	@Autowired
+	private OrderPaymentStatusEntityRepository orderPaymentStatusEntityRepository;
 
 	@Transactional(transactionManager = "primaryTransactionManager")
 	public GetPaymentStatusSearchOptionResponse getPaymentStatusSearchOption() {
@@ -63,12 +76,24 @@ public class RenewalWAPaymentService {
 		String orderBy = param.getOrderBy();
 
 		Page<PaymentStatusList> paymentStatusList = paymentTransactionEntityRepository.getPaymentStatusList(
-				pageNum,pageSize,wholeSalerID,paymentStatusID,fromDate,toDate,
-				poNumber,consolidationID,buyerName,transactionType,searchSuccess,orderBy
+				pageNum, pageSize, wholeSalerID, paymentStatusID, fromDate, toDate,
+				poNumber, consolidationID, buyerName, transactionType, searchSuccess, orderBy
 		);
 
 		result.setPaymentStatusList(paymentStatusList.getContent());
 		result.setTotal(Arrays.asList(Total.builder().recCnt((int) paymentStatusList.getTotalElements()).build()));
 		return result;
+	}
+
+	@Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
+	public GetPendingPaymentTransactionResponse getPendingPaymentTransaction(GetPendingPaymentTransactionParameter param) {
+		Integer creditCardId = param.getCreditCardId();
+
+		List<PaymentCreditCardInfo> paymentCreditCardInfo = paymentCreditCardEntityRepository.getPaymentCreditCardInfo(creditCardId);
+		List<OrderPayment> orderPaymentList = orderPaymentStatusEntityRepository.getOrderPayment(creditCardId);
+
+		return GetPendingPaymentTransactionResponse.builder()
+				.creditCardStatusList(paymentCreditCardInfo)
+				.orderPaymentStatusList(orderPaymentList).build();
 	}
 }

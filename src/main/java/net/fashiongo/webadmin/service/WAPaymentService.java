@@ -70,6 +70,7 @@ public class WAPaymentService extends ApiService {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public GetPendingPaymentTransactionResponse getPendingPaymentTransaction(GetPendingPaymentTransactionParameter param) {
         GetPendingPaymentTransactionResponse result = new GetPendingPaymentTransactionResponse();
         String spName = "up_wa_pay_GetPendingPaymentTransaction";

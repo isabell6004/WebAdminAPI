@@ -1,12 +1,12 @@
 package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.*;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPayoutHistoryResponse;
-import net.fashiongo.webadmin.model.pojo.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.CodeCreditCardType;
 import net.fashiongo.webadmin.service.WAPaymentService;
@@ -53,7 +53,7 @@ public class WAPaymentController {
     @PostMapping(value = "getpendingpaymenttransaction")
     public JsonResponse<GetPendingPaymentTransactionResponse> getPendingPaymentTransaction(
             @Valid @RequestBody GetPendingPaymentTransactionParameter parameters) {
-        GetPendingPaymentTransactionResponse result = waPaymentService.getPendingPaymentTransaction(parameters);
+        GetPendingPaymentTransactionResponse result = renewalWAPaymentService.getPendingPaymentTransaction(parameters);
         return new JsonResponse<>(true, null, 0, result);
     }
 
