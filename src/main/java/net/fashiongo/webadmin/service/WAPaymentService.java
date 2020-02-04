@@ -96,6 +96,7 @@ public class WAPaymentService extends ApiService {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public GetAllSavedCreditCardInfoResponse getAllSavedCreditCardInfo(GetAllSavedCreditCardInfoParameter param) {
         GetAllSavedCreditCardInfoResponse result = new GetAllSavedCreditCardInfoResponse();
         String spName = "up_wa_Pay_GetCreditCardList";

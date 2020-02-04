@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -81,13 +82,13 @@ public class PaymentCreditCardEntity {
     private Boolean isDeleted;
 
     @Column(name = "CreatedOn")
-    private LocalDateTime createdOn;
+    private Timestamp createdOn;
 
     @Column(name = "CreatedBy")
     private String createdBy;
 
     @Column(name = "ModifiedOn")
-    private LocalDateTime modifiedOn;
+    private Timestamp modifiedOn;
 
     @Column(name = "ModifiedBy")
     private String modifiedBy;

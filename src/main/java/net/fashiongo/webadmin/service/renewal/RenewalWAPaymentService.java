@@ -2,10 +2,13 @@ package net.fashiongo.webadmin.service.renewal;
 
 import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
 import net.fashiongo.webadmin.data.model.Total;
+import net.fashiongo.webadmin.data.model.TotalCount;
 import net.fashiongo.webadmin.data.model.payment.CodeCreditCardType;
+import net.fashiongo.webadmin.data.model.payment.CreditCardInfo;
 import net.fashiongo.webadmin.data.model.payment.OrderPayment;
 import net.fashiongo.webadmin.data.model.payment.PaymentCreditCardInfo;
 import net.fashiongo.webadmin.data.model.payment.PaymentStatus;
+import net.fashiongo.webadmin.data.model.payment.response.GetAllSavedCreditCardInfoResponse;
 import net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.data.model.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
@@ -15,6 +18,7 @@ import net.fashiongo.webadmin.data.repository.primary.OrderPaymentStatusEntityRe
 import net.fashiongo.webadmin.data.repository.primary.PaymentCreditCardEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.WholeSalerEntityRepository;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
@@ -104,5 +108,29 @@ public class RenewalWAPaymentService {
 
 	public List<CodeCreditCardType> getCreditCardType() {
 		return codeCreditCardTypeEntityRepository.findAllCodeCreditCardType();
+	}
+
+	public GetAllSavedCreditCardInfoResponse getAllSavedCreditCardInfo(GetAllSavedCreditCardInfoParameter param) {
+		Integer pageNum = param.getPageNum();
+		Integer pageSize = param.getPageSize();
+		String cardID = param.getCardID();
+		Boolean isDefaultCard = param.getDefaultCard();
+		Integer cardTypeID = param.getCardTypeID();
+		Integer cardStatusID = param.getCardStatusID();
+		String billingID = param.getBillingID();
+		String country = param.getCreditCountry();
+		String state = param.getCreditState();
+		String buyer = param.getBuyer();
+		String referencedID = param.getReferenceID();
+		String orderBy = param.getOrderBy();
+		String orderGUBN = param.getOrderGubn();
+
+		Page<CreditCardInfo> creditCardInfo = paymentCreditCardEntityRepository.getCreditCardInfo(pageNum, pageSize, cardID, isDefaultCard, cardTypeID, cardStatusID,
+				billingID, country, state, buyer, referencedID, orderBy, orderGUBN);
+
+		return GetAllSavedCreditCardInfoResponse.builder()
+				.creditCardInfo(creditCardInfo.getContent())
+				.totalList(Arrays.asList(new TotalCount((int) creditCardInfo.getTotalElements())))
+				.build();
 	}
 }

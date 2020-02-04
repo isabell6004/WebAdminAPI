@@ -9,6 +9,10 @@ public class TotalCount {
 	public TotalCount() {
 	}
 
+	public TotalCount(Integer count) {
+		this.count = count;
+	}
+
 	@Column(name = "Count")
 	@JsonProperty("Count")
 	private Integer count;

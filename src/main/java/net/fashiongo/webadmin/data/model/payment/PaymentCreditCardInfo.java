@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -102,7 +103,7 @@ public class PaymentCreditCardInfo {
     public PaymentCreditCardInfo() {
     }
 
-    public PaymentCreditCardInfo(Integer creditCardID, Integer retailerID, String referenceID, Integer cardTypeID, String last4Digit, String cvv, Integer expirationMonth, Integer expirationYear, String nameOnCard, String fingerprint, String email, String street, String city, String state, String zipcode, String country, Integer countryID, Boolean isDefaultCard, Integer cardStatusID, Boolean isDeleted, LocalDateTime createdOn, String createdBy, LocalDateTime modifiedOn, String modifiedBy, String referenceID2, String source, LocalDateTime sourceDate, String cardFunding, String creditCardTypeName, String cardStatusName) {
+    public PaymentCreditCardInfo(Integer creditCardID, Integer retailerID, String referenceID, Integer cardTypeID, String last4Digit, String cvv, Integer expirationMonth, Integer expirationYear, String nameOnCard, String fingerprint, String email, String street, String city, String state, String zipcode, String country, Integer countryID, Boolean isDefaultCard, Integer cardStatusID, Boolean isDeleted, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String referenceID2, String source, LocalDateTime sourceDate, String cardFunding, String creditCardTypeName, String cardStatusName) {
         this.creditCardID = creditCardID;
         this.retailerID = retailerID;
         this.referenceID = referenceID;
@@ -123,9 +124,9 @@ public class PaymentCreditCardInfo {
         this.isDefaultCard = isDefaultCard;
         this.cardStatusID = cardStatusID;
         this.isDeleted = isDeleted;
-        this.createdOn = createdOn;
+        this.createdOn = createdOn == null ? null : createdOn.toLocalDateTime();
         this.createdBy = createdBy;
-        this.modifiedOn = modifiedOn;
+        this.modifiedOn = modifiedOn == null ? null : modifiedOn.toLocalDateTime();
         this.modifiedBy = modifiedBy;
         this.referenceID2 = referenceID2;
         this.source = source;
