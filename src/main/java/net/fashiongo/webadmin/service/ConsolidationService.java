@@ -62,6 +62,7 @@ import net.fashiongo.webadmin.utility.Utility;
 public class ConsolidationService extends ApiService {
 	@Autowired @Qualifier("serviceJsonClient") private HttpClient httpClient;
 	@Autowired private PaymentService paymentService;
+	@Autowired private RewardService rewardService;
 	@Autowired private ShipMethodRepository shipMethodRepository;
 	@Autowired private ConsolidationRepository consolidationRepository;
 	@Autowired private OrderRepository orderRepository;
@@ -315,15 +316,14 @@ public class ConsolidationService extends ApiService {
 		setOrderPaymentStatus(c, userName);
 	}
 
-	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
 	public void setFullyShipped(Integer consolidationId, String userName, String ipAddress) throws Exception {
-		// Get a consolidation
-		if (consolidationId == null) throw new Exception("No consolidation is selected");
-		ConsolidationEntity c = consolidationRepository.findOneById(consolidationId);
-		if (c == null) throw new Exception("No consolidation exists");
-
 		// Update orders
-		setOrderStatuses(c, userName, ipAddress);
+		List<Order> ordersToShippingConfirmReward = setOrderStatuses(consolidationId, userName, ipAddress);
+
+		if (CollectionUtils.isEmpty(ordersToShippingConfirmReward)) return;
+		for (Order o : ordersToShippingConfirmReward) {
+			rewardService.shippingConfirmReward(userName, o.getBuyerId(), o.getVendorId(), o.getId());
+		}
 	}
 
 	private void setConsolidationShipMethod(ConsolidationEntity c, Integer shipMethodId, Boolean isShipped, String shippedOn) {
@@ -409,7 +409,13 @@ public class ConsolidationService extends ApiService {
 		}
 	}
 
-	private void setOrderStatuses(ConsolidationEntity c, String userName, String ipAddress) throws Exception {
+	@Transactional(transactionManager = "primaryTransactionManager", isolation = Isolation.SERIALIZABLE)
+	private List<Order> setOrderStatuses(Integer consolidationId, String userName, String ipAddress) throws Exception {
+		// Get a consolidation
+		if (consolidationId == null) throw new Exception("No consolidation is selected");
+		ConsolidationEntity c = consolidationRepository.findOneById(consolidationId);
+		if (c == null) throw new Exception("No consolidation exists");
+
 		// Get isCardValid
 		PaymentStatusResponse payment = paymentService.getCreditCardStatus(c.getCreditCardId(), c.getId());
 		boolean isCardCompleted = payment != null && payment.getCardStatusId() == 1;
@@ -417,8 +423,9 @@ public class ConsolidationService extends ApiService {
 		// Update orders
 		List<Order> orders = orderRepository.findByConsolidationIdAndIsConsolidatedAndOrderStatusIdNotIn(
 				c.getId(), true, Arrays.asList(5/* Cancelled */, 7/* Backordered */));
-		if (CollectionUtils.isEmpty(orders)) return;
+		if (CollectionUtils.isEmpty(orders)) return null;
 
+		List<Order> ordersToShippingConfirmReward = new ArrayList<>();
 		for (Order o : orders) {
 			Integer orderStatusId = o.getOrderStatusId();
 
@@ -453,8 +460,12 @@ public class ConsolidationService extends ApiService {
 								.happenedAt(4)
 								.referenceTypeId(1)
 								.build());
+
+				// Shipping confirm reward
+				ordersToShippingConfirmReward.add(o);
 			}
 		}
+		return ordersToShippingConfirmReward;
 	}
 
 	private void setOrderPaymentStatus(ConsolidationEntity c, String userName) {
