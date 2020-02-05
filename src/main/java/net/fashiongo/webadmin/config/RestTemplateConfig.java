@@ -19,4 +19,13 @@ public class RestTemplateConfig {
 
         return new RestTemplate();
     }
+
+    @Bean("rewardApiRestTemplate")
+    public RestTemplate rewardApiRestTemplate() {
+        SimpleClientHttpRequestFactory httpRequestFactory = new SimpleClientHttpRequestFactory();
+        httpRequestFactory.setConnectTimeout(5000);
+        httpRequestFactory.setReadTimeout(5000);
+        httpRequestFactory.setBufferRequestBody(false);
+        return new RestTemplate();
+    }
 }
