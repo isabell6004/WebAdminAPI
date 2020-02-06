@@ -144,6 +144,13 @@ public class SetAdminRetailerDetailParameter {
 
 		@JsonProperty("MobilePhoneNo")
 		private String mobilePhoneNo;
+
+		@JsonProperty("BuyerClass")
+		private int buyerClass;		
+
+		@JsonProperty("AmUserID")
+		private int amUserID;				
+		
 	}
 
 	@Data

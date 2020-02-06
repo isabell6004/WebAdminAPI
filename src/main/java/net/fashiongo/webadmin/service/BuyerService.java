@@ -160,6 +160,14 @@ public class BuyerService extends ApiService {
 		tblRetailer.setEMail(retailerDetail.getUserId());
 		tblRetailer.setLastUser(retailerDetail.getLastUser());
 		tblRetailer.setLastModifiedDateTime(retailerDetail.getLastModifiedDateTime());
+		tblRetailer.setBuyerClass(retailerDetail.getBuyerClass());
+		if (retailerDetail.getAmUserID() == 0 ){
+			tblRetailer.setAmUserID(null);
+		}
+		else {
+			tblRetailer.setAmUserID(retailerDetail.getAmUserID());
+		}
+
 		retailerCompanyRepository.save(tblRetailer);
 
 		// save aspnet_membership
