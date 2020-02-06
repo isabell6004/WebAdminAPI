@@ -132,7 +132,7 @@ public class WAPaymentService extends ApiService {
 
                 EntityActionLog b = new EntityActionLog();
                 b.setEntityTypeID(1);
-                b.setEntityID(1);
+                b.setEntityID(a.getOrderPaymentStatusID());
                 b.setActionID(7002);
                 b.setActedOn(modifiedOn);
                 b.setActedBy(sessionUserID);
