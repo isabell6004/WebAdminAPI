@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.fashiongo.webadmin.dao.primary.MapUserGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessCodeRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityAccessIpsRepository;
+import net.fashiongo.webadmin.dao.primary.SecurityGroupRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityMenuRepository;
 import net.fashiongo.webadmin.dao.primary.SecurityResourceRepository;
 import net.fashiongo.webadmin.model.pojo.admin.Resource;
@@ -38,9 +40,11 @@ import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityResourcesResp
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.SecurityAccessCode;
 import net.fashiongo.webadmin.model.primary.SecurityAccessIp;
+import net.fashiongo.webadmin.model.primary.SecurityGroup;
 import net.fashiongo.webadmin.model.primary.SecurityMenu;
 import net.fashiongo.webadmin.model.primary.SecurityResource;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
 
 /**
  * 
@@ -60,7 +64,12 @@ public class AdminService extends ApiService {
 	
 	@Autowired
 	private SecurityResourceRepository securityResourceRepository;
-
+	
+	@Autowired
+	private SecurityGroupRepository securityGroupRepository;
+	
+	@Autowired
+	private MapUserGroupRepository mapUserGroupRepository;
 	/**
 	 * Get Security Access Code
 	 * 
@@ -451,5 +460,17 @@ public class AdminService extends ApiService {
 		ssm.setActive(parameters.getActive());
 		securityMenuRepository.save(ssm);
 		return result;
+	}
+	
+	public Boolean getSecurityFGPay() {
+		Integer userId = Utility.getUserInfo().getUserId();
+		String groupName = "Fraud Management";
+		
+		SecurityGroup securityGroup = securityGroupRepository.findByGroupName(groupName);
+		if(securityGroup == null) {
+			return false;
+		}
+		
+		return mapUserGroupRepository.findByUserIdAndGroupId(userId, securityGroup.getGroupID()) != null;
 	}
 }
