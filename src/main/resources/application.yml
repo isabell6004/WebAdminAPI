@@ -137,13 +137,15 @@ server:
     basedir: .
     max-threads: 250
     min-spare-threads: 10
+    remote-ip-header: "X-Forwarded-For"
     accesslog:
       enabled: true
       suffix: .log
       prefix: access_log
       file-date-format: .yyyy-MM-dd
       directory: /home1/irteam/logs/webadmin_api/accesslog
-      pattern: combined
+      pattern: "%{org.apache.catalina.AccessLog.RemoteAddr}r %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\""
+#      pattern: combined
 
 webAdminapi:
   fgServiceAPI_EndPoint: http://10.210.16.205:29001
