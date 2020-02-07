@@ -17,6 +17,8 @@ import net.fashiongo.webadmin.service.renewal.RenewalAdminService;
 import net.fashiongo.webadmin.service.renewal.RenewalSecurityGroupService;
 import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
+
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -657,5 +659,16 @@ public class AdminController {
 		results.setMessage("");
 		results.setData(result);
 		return results;
+	}
+	
+	@RequestMapping(value="getsecurityfgpay", method=RequestMethod.GET)
+	public JsonResponse<Boolean> getSecurityFGPay(){
+		JsonResponse<Boolean> response = new JsonResponse<>(false, "", null);
+		
+		Boolean hasPermission = adminService.getSecurityFGPay();
+		response.setSuccess(true);
+		response.setData(hasPermission);
+		
+		return response;
 	}
 }
