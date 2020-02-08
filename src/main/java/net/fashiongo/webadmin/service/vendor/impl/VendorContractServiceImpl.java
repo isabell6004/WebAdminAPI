@@ -106,7 +106,7 @@ public class VendorContractServiceImpl implements VendorContractService {
 
             // new DB 스키마를 위한 API call
             WebAdminLoginUser userInfo = Utility.getUserInfo();
-            vendorContractNewService.deleteVendorContractDocument(vendorContractEntity.getWholeSalerID(), Arrays.stream(documentIds).mapToLong(i -> i).boxed().collect(Collectors.toList()), userInfo.getUserId(), userInfo.getUsername());
+            vendorContractNewService.deleteVendorContractDocument(vendorContractEntity.getWholeSalerID(), vendorContractEntity.getVendorContractID().longValue(), Arrays.stream(documentIds).mapToLong(i -> i).boxed().collect(Collectors.toList()), userInfo.getUserId(), userInfo.getUsername());
 
             return true;
         } catch (Exception ex) {

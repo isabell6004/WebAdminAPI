@@ -27,7 +27,7 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     }
 
     private void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + wholeSalerId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerId;
 
         VendorBlockStatusCommand newRequest = new VendorBlockStatusCommand(isBlock, blockReasonId);
         Map<String, Object> wrappedRequest = new HashMap<>();
@@ -48,7 +48,7 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
 
     @Override
     public void modifyBlockReason(SetVendorBlockUpdate request, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID();
         VendorInfoCommand command = new VendorInfoCommand(new VendorBlockStatusCommand(request.getIsBlock(), Long.valueOf(request.getBlockReasonID())));
         httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }

@@ -34,13 +34,13 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     }
 
     private void updateAccount(Integer vendorId, String originalUserId, String userId, String firstName, String lastName, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/account/" + originalUserId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/account/" + originalUserId;
         VendorAccountCommand vendorAccountCommand = new VendorAccountCommand(firstName, lastName, userId);
         httpCaller.put(endpoint, vendorAccountCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     private void updateVendorBasicInfo(VendorDetailInfo request, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID();
         VendorInfoCommand<VendorBasicSettingInfoCommand> vendorInfoCommand = new VendorInfoCommand<>(request, new VendorBasicSettingInfoCommand(request));
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
@@ -53,21 +53,21 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
     @Override
     public void updateDetailInfo(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorDetailInfo.getWholeSalerID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorDetailInfo.getWholeSalerID();
         VendorInfoCommand<VendorDetailSettingInfoCommand> vendorInfoCommand = new VendorInfoCommand<>(vendorDetailInfo.getCodeName(), vendorDetailInfo.getDirName(), new VendorDetailSettingInfoCommand(request, vendorDetailInfo));
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Override
     public void updateStatusAndCloseDate(Integer wholeSalerID, Integer newStatusTypeValue, LocalDateTime contractExpireDate, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + wholeSalerID;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID;
         VendorInfoCommand<VendorCloseStatusInfoCommand> vendorInfoCommand = new VendorInfoCommand<>(new VendorCloseStatusInfoCommand(newStatusTypeValue, contractExpireDate));
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Override
     public void updateStatus(Integer wholeSalerID, Integer newStatusTypeValue, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + wholeSalerID;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID;
         VendorInfoCommand<VendorStatusInfoCommand> vendorInfoCommand = new VendorInfoCommand<>(new VendorStatusInfoCommand(newStatusTypeValue));
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }

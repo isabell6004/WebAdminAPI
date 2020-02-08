@@ -13,7 +13,7 @@ spring:
     url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PhotoStudio
   datasource5:
     url: jdbc:sqlserver://10.210.24.204;databaseName=FG_Billing
-  
+
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
@@ -26,6 +26,9 @@ webAdminapi:
   fgPaymentAPI_EndPoint: http://10.210.8.155
   rewardApi:
     endpoint: http://10.210.8.175/v1
+  fashionGoApi:
+    endpoint: http://api.fashiongo.net:17301
+
 server:
   port: 19901
 

@@ -18,7 +18,7 @@ public interface VendorContractNewService {
     void createVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void deleteVendorContractDocument(Integer vendorId, List<Long> documentIds, Integer requestedUserId, String requestUserName);
+    void deleteVendorContractDocument(Integer vendorId, Long contractId, List<Long> documentIds, Integer requestedUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
     void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request, Integer userId, String username);
