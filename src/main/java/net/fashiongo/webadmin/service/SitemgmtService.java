@@ -20,6 +20,7 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
 import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.utility.HtmlUtility;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
@@ -584,8 +585,8 @@ public class SitemgmtService extends ApiService {
 	}
 	
 	private Integer saveCategory(Category category, Category objCategory) {
-		category.setCategoryName(objCategory.getCategoryName());
-		category.setCategoryDescription(objCategory.getCategoryDescription());
+		category.setCategoryName(HtmlUtility.tagValidation(objCategory.getCategoryName(), false));
+		category.setCategoryDescription(HtmlUtility.tagValidation(objCategory.getCategoryDescription(), false));
 		category.setParentCategoryID(objCategory.getParentCategoryID());
 		category.setParentParentCategoryID(objCategory.getParentParentCategoryID());
 		category.setLvl(objCategory.getLvl());

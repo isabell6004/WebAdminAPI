@@ -5,6 +5,8 @@ import javax.persistence.Converter;
 
 import org.springframework.web.util.HtmlUtils;
 
+import net.fashiongo.webadmin.utility.HtmlUtility;
+
 @Converter
 public class HtmlEscapeConverter implements AttributeConverter<String, String>{
 
