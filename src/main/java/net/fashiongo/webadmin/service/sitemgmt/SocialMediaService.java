@@ -75,7 +75,7 @@ public class SocialMediaService {
             if(request.getSocialMediaId() == null || request.getSocialMediaId() == 0) {
 		        SocialMedia socialMedia = SocialMedia.create(request);
                 socialMediaRepository.save(socialMedia);
-                fashionGoApiResult = socialMediaNewService.regist(socialMedia, userInfo.getUserId(), userInfo.getUsername());
+                fashionGoApiResult = socialMediaNewService.register(socialMedia, userInfo.getUserId(), userInfo.getUsername());
             } else {
                 SocialMedia socialMedia = socialMediaRepository.findById(request.getSocialMediaId()).orElseThrow(NotFoundSitemgmtException::new);
                 socialMedia.update(request);

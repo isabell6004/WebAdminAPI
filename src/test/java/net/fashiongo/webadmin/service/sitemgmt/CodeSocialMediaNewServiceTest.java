@@ -42,7 +42,7 @@ public class CodeSocialMediaNewServiceTest {
 
             SocialMedia socialMedia = SocialMedia.create(parameter);
             log.debug("request : {}", socialMedia);
-            socialMediaNewService.regist(socialMedia, userId, userName);
+            socialMediaNewService.register(socialMedia, userId, userName);
         } catch (Exception e) {
             Assert.fail();
         }

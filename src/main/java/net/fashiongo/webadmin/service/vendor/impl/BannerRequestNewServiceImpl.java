@@ -29,7 +29,7 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
 
     @Override
     public void reject(Integer vendorId, SetDenyBannerParameter request, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + request.getImageRequestId() + "/reject";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/banners/" + request.getImageRequestId() + "/reject";
         BannerRequestCommand newRequest = new BannerRequestCommand(request);
         httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
@@ -44,13 +44,13 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
 
     @Override
     public void delete(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/banners/" + bannerId;
         httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     private Integer insert(Integer imageOriginalId, Integer vendorId, Integer bannerTypeId, String fileName, Integer requestedUserId, String requestUserName) {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/banners";
         BannerImageCommand vendorBannerImageCommand = new BannerImageCommand(imageOriginalId, bannerTypeId, fileName);
         String responseBody = httpCaller.post(endpoint, vendorBannerImageCommand, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
         try {
@@ -68,12 +68,12 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
 
     @Override
     public void approve(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/approve";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/banners/" + bannerId + "/approve";
         httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     private void activate(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/banner/" + bannerId + "/activate";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/banners/" + bannerId + "/activate";
         httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 

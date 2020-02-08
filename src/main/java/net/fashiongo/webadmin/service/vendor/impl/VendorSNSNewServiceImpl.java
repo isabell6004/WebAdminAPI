@@ -24,20 +24,20 @@ public class VendorSNSNewServiceImpl implements VendorSNSNewService {
 
     @Override
     public void create(SetVendorSNSListParameter request, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/social-media";
         VendorSocialMediaCommand command = new VendorSocialMediaCommand(request.getSocialMediaID(), request.getSocialMediaUsername());
         httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Override
     public void delete(SetVendorSNSListParameter request, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns/" + request.getSocialMediaID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/social-media/" + request.getSocialMediaID();
         httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Override
     public void modify(SetVendorSNSListParameter request, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + request.getWholeSalerID() + "/sns/" + request.getSocialMediaID();
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/social-media/" + request.getSocialMediaID();
         VendorSocialMediaCommand command = new VendorSocialMediaCommand(request.getSocialMediaUsername());
         httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }

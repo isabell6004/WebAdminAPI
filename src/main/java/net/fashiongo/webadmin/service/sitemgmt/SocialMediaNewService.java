@@ -10,7 +10,7 @@ public interface SocialMediaNewService {
 
     Boolean delete(List<Integer> delIds, Integer requestUserId, String requestUserName);
 
-    Boolean regist(SocialMedia socialMedia, Integer requestUserId, String requestUserName);
+    Boolean register(SocialMedia socialMedia, Integer requestUserId, String requestUserName);
 
     Boolean update(SocialMedia socialMedia, Integer requestUserId, String requestUserName);
 }

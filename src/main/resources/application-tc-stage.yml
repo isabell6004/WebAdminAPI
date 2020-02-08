@@ -37,7 +37,7 @@ webAdminapi:
   adapi:
     endpoint: http://10.210.16.204:18000
   fashionGoApi:
-    endpoint: http://10.210.16.204:27301
+    endpoint: http://10.210.16.204:17301
 server:
   port: 29901
 

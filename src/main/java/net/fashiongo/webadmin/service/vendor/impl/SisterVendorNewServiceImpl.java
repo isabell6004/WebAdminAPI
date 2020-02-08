@@ -18,14 +18,14 @@ public class SisterVendorNewServiceImpl implements SisterVendorNewService {
 
     @Override
     public void createSisterVendor(Integer vendorId, Integer originalId, Integer sisterVendorId, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/sister-vendors";
         CreateSisterVendorCommand newRequest = new CreateSisterVendorCommand(originalId.longValue(), sisterVendorId.longValue());
         httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Override
     public void deleteSisterVendor(Integer vendorId, Integer mapId, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendor/" + vendorId + "/sister/" + mapId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/sister-vendors/" + mapId;
         httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 

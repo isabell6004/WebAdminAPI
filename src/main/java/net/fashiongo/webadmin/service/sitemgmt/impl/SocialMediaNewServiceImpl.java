@@ -10,17 +10,11 @@ import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
 import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse;
 import net.fashiongo.webadmin.service.sitemgmt.SocialMediaNewService;
-import net.fashiongo.webadmin.service.vendor.response.CreateBannerResponse;
-import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Created by jinwoo on 2020-01-14.
@@ -39,9 +33,8 @@ public class SocialMediaNewServiceImpl implements SocialMediaNewService {
 
     @Override
     public Boolean delete(List<Integer> delIds, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/common/socialmedia/delete";
-        DelSocialMediaCommand command = DelSocialMediaCommand.create(delIds);
-        String responseBody = httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/misc/social-media/" + delIds;
+        String responseBody = httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
         return checkAndReturnOfResponseBody(responseBody);
     }
 
@@ -58,34 +51,23 @@ public class SocialMediaNewServiceImpl implements SocialMediaNewService {
     }
 
     @Override
-    public Boolean regist(SocialMedia socialMedia, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/common/socialmedia";
-        RegistSocialMediaCommand command = RegistSocialMediaCommand.create(socialMedia);
+    public Boolean register(SocialMedia socialMedia, Integer requestUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/misc/social-media";
+        RegisterSocialMediaCommand command = RegisterSocialMediaCommand.create(socialMedia);
         String responseBody = httpCaller.post(endpoint, command, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
         return checkAndReturnOfResponseBody(responseBody);
     }
 
     @Override
     public Boolean update(SocialMedia socialMedia, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/common/socialmedia";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/misc/social-media/" + socialMedia.getSocialMediaId();
         ModifySocialMediaCommand command = ModifySocialMediaCommand.create(socialMedia);
         String responseBody = httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
         return checkAndReturnOfResponseBody(responseBody);
     }
 
     @Getter
-    private static class DelSocialMediaCommand {
-        private List<Integer> delIds;
-
-        private static DelSocialMediaCommand create(List<Integer> delIds) {
-            DelSocialMediaCommand command = new DelSocialMediaCommand();
-            command.delIds = delIds;
-            return command;
-        }
-    }
-
-    @Getter
-    private static class RegistSocialMediaCommand {
+    private static class RegisterSocialMediaCommand {
 
         private Integer id;
 
@@ -95,9 +77,9 @@ public class SocialMediaNewServiceImpl implements SocialMediaNewService {
 
         private Boolean active;
 
-        private static RegistSocialMediaCommand create(SocialMedia request) {
+        private static RegisterSocialMediaCommand create(SocialMedia request) {
 
-            RegistSocialMediaCommand command = new RegistSocialMediaCommand();
+            RegisterSocialMediaCommand command = new RegisterSocialMediaCommand();
             command.id = request.getSocialMediaId();
             command.name = request.getSocialMedia();
             command.iconFileName = request.getIcon();
