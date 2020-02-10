@@ -90,27 +90,31 @@ public class HtmlUtility {
     public static String tagValidation(String data, Boolean whitelist) {
     	Pattern tagPattern = Pattern.compile("<(?!!)(?!/)\\s*([a-zA-Z0-9]+)(.*?)>");
     	Matcher matcher = tagPattern.matcher(data);
+    	
+    	String tagValidator = (whitelist) ? "/\\bjavascript|\\bobject|\\bbody|\\biframe|\\bscript|\\bembed|\\baudio|\\bstyle|\\binput|\\btextarea|\\btitle" : "/\\bjavascript|\\bobject|\\bbody|\\biframe|\\bscript|\\bimg|\\bdiv|\\bembed|\\baudio|\\bvideo|\\btable|\\bstyle|\\binput|\\btextarea|\\ba|\\btitle";
+    	Pattern invalidTagPattern = Pattern.compile(tagValidator, Pattern.CASE_INSENSITIVE);
+    	Pattern attributePattern = Pattern.compile("(\\S+)=['\"]{1}([^>]*?)['\"]{1}", Pattern.CASE_INSENSITIVE);
+    	String attributeValidator = (whitelist) ? "/\\blowsrc|\\bdynsrc|\\bdata|\\bvalue|\\bbackground|\\bon[a-zA-Z]*" : "/\\bstyle|\\blowsrc|\\bdynsrc|\\bdata|\\bvalue|\\bbackground|\\bhref|\\bsrc|\\bon[a-zA-Z]*";
+    	Pattern invalidAttributePattern = Pattern.compile(attributeValidator, Pattern.CASE_INSENSITIVE);
+    	
     	while (matcher.find()) {
     	    String tagName = matcher.group(1);
     	    String attributes = matcher.group(2);
-    	    
-    	    String tagValidator = (whitelist) ? "/\\bjavascript|\\bobject|\\bbody|\\biframe|\\bscript|\\bembed|\\baudio|\\bstyle" : "/\\bjavascript|\\bobject|\\bbody|\\biframe|\\bscript|\\bimg|\\bdiv|\\bembed|\\baudio|\\bvideo|\\btable|\\bstyle";
-    	    Pattern invalidTagPattern = Pattern.compile(tagValidator, Pattern.CASE_INSENSITIVE);
     	    Matcher tagMatcher = invalidTagPattern.matcher(tagName);
     	    if(tagMatcher.matches()) {
     	    	throw new HtmlException(tagName + " tag is not allowed.");
     	    }
     	    
-    	    Pattern attributePattern = Pattern.compile("(\\S+)=['\"]{1}([^>]*?)['\"]{1}", Pattern.CASE_INSENSITIVE);
     	    Matcher attributeMatcher = attributePattern.matcher(attributes);
     	    while(attributeMatcher.find()) {
     	        String attributeName = attributeMatcher.group(1);
     	        String attributeValue = attributeMatcher.group(2);
-    	        
-    	        Pattern invalidAttributePattern = Pattern.compile("/\\bstyle|\\blowsrc|\\bdynsrc|\\bdata|\\bvalue|\\bbackground|\\bonerror|\\bonload|\\bonclick|\\bon[a-zA-Z]*", Pattern.CASE_INSENSITIVE);
     	        Matcher attributeNameMatcher = invalidAttributePattern.matcher(attributeName);
     	        if(attributeNameMatcher.matches()) {
     	        	throw new HtmlException(attributeName + " attribute is not allowed.");
+    	        }
+    	        if(attributeValue.contains("javascript") || attributeValue.contains("alert") || attributeValue.contains("confirm") || attributeValue.contains("prompt")) {
+    	        	throw new HtmlException(attributeValue + " is not allowed");
     	        }
     	    }
     	}
