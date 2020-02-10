@@ -497,47 +497,7 @@ public class SitemgmtController {
 		
 		return results;
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 29.
-	 * @author Reo
-	 * @param parameter
-	 * @return
-	 */
-	@RequestMapping(value="setproductattributes", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setProductAttributes(@RequestBody SetProductAttributesParameter parameter) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
-		
-		ResultCode result = sitemgmtService.setProductAttributes(parameter);
-		cacheService.GetRedisCacheEvict("BodySizeVendors", null);
-		
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 29.
-	 * @author Reo
-	 * @param parameter
-	 * @return
-	 */
-	@RequestMapping(value="setproductattributesactive", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setProductAttributesActive(@RequestBody SetProductAttributesParameter parameter) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
-		
-		ResultCode result = sitemgmtService.setProductAttributesActive(parameter);
-		results.setData(result);
-		results.setSuccess(true);
-		
-        return results;
-	}
-	
+
 	/**
 	 * Set NewTodayDeal
 	 * 
@@ -822,27 +782,6 @@ public class SitemgmtController {
 		
 		return results;
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 31.
-	 * @author Reo
-	 * @param parameter
-	 * @return
-	 */
-	@RequestMapping(value = "setproductattributesmapping", method = RequestMethod.POST)
-	public JsonResponse<ResultCode> setProductAttributesMapping(@RequestBody SetProductAttributesMappingParameter parameter) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
-		
-		ResultCode result = sitemgmtService.setProductAttributesMapping(parameter);
-		cacheService.GetRedisCacheEvict("BodySizeVendors", null);
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
-	}
-	
 
 	/**
 	 *

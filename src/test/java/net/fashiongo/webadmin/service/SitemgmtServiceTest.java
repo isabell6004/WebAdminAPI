@@ -353,28 +353,6 @@ public class SitemgmtServiceTest {
 	}
 	
 	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 5.
-	 * @author Reo
-	 */
-	@Ignore
-	@Test
-	public void testSetProductAttributes() {
-		SetProductAttributesParameter parameters = new SetProductAttributesParameter();
-		parameters.setTabNo(1);
-		parameters.setbType("save");
-		parameters.setCodeID(1);
-		parameters.setAttrName("Beadedtest");
-		parameters.setActive(true);
-		
-		ResultCode result = sitemgmtService.setProductAttributes(parameters);
-		if (result != null) {
-			assertTrue(result.getSuccess());
-		}
-	}
-	
-	/**
 	 * Test GetVendorList
 	 * 
 	 * @since 2018. 11. 5.
@@ -385,61 +363,7 @@ public class SitemgmtServiceTest {
 		GetVendorListResponse result = sitemgmtService.getVendorList();
 		assertTrue(result.getVendorSummarylist().size() > 0);
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 5.
-	 * @author Reo
-	 */
-	@Ignore
-	@Test
-	public void testSetProductAttributesActive() {
-		SetProductAttributesParameter parameters = new SetProductAttributesParameter();
-		parameters.setTabNo(1);
-		parameters.setCodeID(1);
-		parameters.setActive(false);
-		
-		ResultCode result = sitemgmtService.setProductAttributesActive(parameters);
-		if(result != null) {
-			assertTrue(result.getSuccess());
-		}
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 5.
-	 * @author Reo
-	 */
-	@Ignore
-	@Test
-	public void testSetProductAttributesMapping() {
-		SetProductAttributesMappingParameter parameters = new SetProductAttributesMappingParameter();
-		parameters.setTabNo(1);
-		parameters.setCategoryID(8);
-		
-		List<ProductAttribute> productAttributeList = new ArrayList<ProductAttribute>();
-		//first row
-		ProductAttribute productAttribute = new ProductAttribute();
-		productAttribute.setCodeID(36);
-		productAttribute.setMapID(0);
-		productAttribute.setCategoryID(8);
-		productAttributeList.add(productAttribute);
-		
-		//second row
-		productAttribute = new ProductAttribute();
-		productAttribute.setCodeID(38);
-		productAttribute.setMapID(0);
-		productAttribute.setCategoryID(8);
-		productAttributeList.add(productAttribute);
-		
-		parameters.setProductAttributeList(productAttributeList);
-		ResultCode result = sitemgmtService.setProductAttributesMapping(parameters);
-		if(result != null) {
-			assertTrue(result.getSuccess());
-		}
-	}
+
 	/**
 	 * Test GetTodaydeal
 	 * 
