@@ -33,10 +33,12 @@ public class TblRetailerNews {
 	@JsonProperty("RetailerID")
 	private Integer retailerID;
 	
+	@Convert(converter = HtmlEscapeConverter.class)
 	@Column(name = "NewsTitle")
 	@JsonProperty("NewsTitle")
 	private String newsTitle;
 	
+	@Convert(converter = HtmlEscapeConverter.class)
 	@Column(name = "NewsContent")
 	@JsonProperty("NewsContent")
 	private String newsContent;

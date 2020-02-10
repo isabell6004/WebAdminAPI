@@ -36,10 +36,12 @@ public class VendorNewsDetail implements Serializable {
 	@JsonProperty("wholesalerid")
 	private Integer wholeSalerID;
 	
+	@Convert(converter = HtmlEscapeConverter.class)
 	@Column(name = "NewsTitle")
 	@JsonProperty("newstitle")
 	private String newsTitle;
 	
+	@Convert(converter = HtmlEscapeConverter.class)
 	@Column(name = "NewsContent")
 	@JsonProperty("newscontent")
 	private String newsContent;
