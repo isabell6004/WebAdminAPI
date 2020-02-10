@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jinwoo on 2020-01-14.
@@ -33,7 +34,7 @@ public class SocialMediaNewServiceImpl implements SocialMediaNewService {
 
     @Override
     public Boolean delete(List<Integer> delIds, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/misc/social-media/" + delIds;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/misc/social-media/" + delIds.stream().map(String::valueOf).collect(Collectors.joining(","));
         String responseBody = httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
         return checkAndReturnOfResponseBody(responseBody);
     }
