@@ -47,7 +47,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
     @Override
     public void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts/" + request.getVendorContractID() + "/revise";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts/" + originalVendorContractHistoryId + "/revise";
         log.debug("call the vendor api:{}", endpoint);
         ReviseContractHistoryCommand newRequest = new ReviseContractHistoryCommand(request, originalVendorContractHistoryId, revisedVendorContractHistoryId);
         httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
@@ -63,7 +63,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
     @Override
     public void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts/" + originalVendorContractHistoryId;
         log.debug("call the vendor api:{}", endpoint);
         ContractHistoryCommand newRequest = new ContractHistoryCommand(request, originalVendorContractHistoryId);
         httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
