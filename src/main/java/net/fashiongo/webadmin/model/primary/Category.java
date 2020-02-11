@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import net.fashiongo.common.conversion.LocalDateTimeConverter;
+import net.fashiongo.webadmin.converter.HtmlEscapeConverter;
 
 /**
  *
@@ -30,15 +34,18 @@ public class Category implements Serializable {
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	@JsonProperty("CategoryName")
 	@Column(name = "CategoryName")
 	private String categoryName;
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	@Transient
 	@JsonProperty("CategoryName2")
 	@Column(name = "CategoryName2")
 	private String categoryName2;
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	@JsonProperty("CategoryDescription")
 	@Column(name = "CategoryDescription")
 	private String categoryDescription;

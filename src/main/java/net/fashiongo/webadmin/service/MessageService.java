@@ -48,6 +48,7 @@ import net.fashiongo.webadmin.model.pojo.message.response.GetRetailerRatingRespo
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorNewsResponse;
 import net.fashiongo.webadmin.model.pojo.message.response.GetVendorRatingResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetContactUsResponse;
+import net.fashiongo.webadmin.utility.HtmlUtility;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
@@ -225,8 +226,8 @@ public class MessageService extends ApiService {
 		LocalDateTime fromdate = StringUtils.isEmpty(news.getFromDate()) ? null : LocalDateTime.parse(news.getFromDate()+" 00:00:00", formatter);
 		LocalDateTime todate = StringUtils.isEmpty(news.getToDate()) ? null : LocalDateTime.parse(news.getToDate()+" 23:59:59", formatter);
 	
-		vendorNews.setNewsTitle(news.getNewsTitle());
-		vendorNews.setNewsContent(news.getNewsContent());
+		vendorNews.setNewsTitle(HtmlUtility.tagValidation(news.getNewsTitle(), false));
+		vendorNews.setNewsContent(HtmlUtility.tagValidation(news.getNewsContent(), true));
 		vendorNews.setWholeSalerID(news.getWholeSalerID());
 		vendorNews.setNewsType(news.getNewsType());
 		vendorNews.setActive(news.getActive());
@@ -331,8 +332,8 @@ public class MessageService extends ApiService {
 //				parameters.setToDate(((LocalDateTime) parameters.getToDate()).plusDays(1).plusSeconds(-1));
 //			}
 			
-			retailerNews.setNewsTitle(parameters.getNewsTitle());
-			retailerNews.setNewsContent(parameters.getNewsContent());
+			retailerNews.setNewsTitle(HtmlUtility.tagValidation(parameters.getNewsTitle(), false));
+			retailerNews.setNewsContent(HtmlUtility.tagValidation(parameters.getNewsContent(), true));
 			retailerNews.setActive(Utility.isNullOrEmpty(parameters.getActive().toString()) ? "N" : parameters.getActive() == true ? "Y" : "N");
 			retailerNews.setFromDate(parameters.getFromDate());
 			retailerNews.setToDate(parameters.getToDate());
