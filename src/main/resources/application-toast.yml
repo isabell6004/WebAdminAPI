@@ -27,7 +27,7 @@ webAdminapi:
   rewardApi:
     endpoint: http://10.210.8.175/v1
   fashionGoApi:
-    endpoint: http://api.fashiongo.net:17301
+    endpoint: http://api.fashiongo.net
 
 server:
   port: 19901
