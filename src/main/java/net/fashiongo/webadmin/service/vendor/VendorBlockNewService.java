@@ -14,7 +14,7 @@ public interface VendorBlockNewService {
     void blockVendor(SetVendorBlockParameter request, Integer requestedUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
-    void modifyBlockReason(SetVendorBlockUpdate request, Integer requestedUserId, String requestUserName);
+    void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId, Integer requestedUserId, String requestUserName);
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
     void unblockVendor(DelVendorBlockParameter request, Integer requestedUserId, String requestUserName);

@@ -71,13 +71,13 @@ public class VendorContractServiceTest {
         VendorContractDocumentEntity entity2 = VendorContractDocumentEntity.builder().vendorContractDocumentID(2).build();
         List<VendorContractDocumentEntity> documents = Arrays.asList(entity1, entity2);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyLong(), anyList(), anyInt(), anyString());
         given(vendorContractDocumentEntityRepository.findAllById(anyList())).willReturn(documents);
         willDoNothing().given(vendorContractDocumentEntityRepository).deleteAll(documents);
 
         Boolean result = vendorContractService.delVendorContractDocument(request);
 
-        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
+        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyInt(), anyLong(), anyList(), anyInt(), anyString());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).findAllById(anyList());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).deleteAll(anyList());
 
@@ -105,13 +105,13 @@ public class VendorContractServiceTest {
         DelVendorContractDocumentParameter request = new DelVendorContractDocumentParameter();
         request.setDocumentHistoryIDs(documentIds);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyLong(), anyList(), anyInt(), anyString());
         given(vendorContractDocumentEntityRepository.findAllById(anyList())).willReturn(null);
 
         Boolean result = vendorContractService.delVendorContractDocument(request);
 
         log.debug("result : {}", result);
-        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
+        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyInt(), anyLong(), anyList(), anyInt(), anyString());
         Assert.assertTrue(result);
     }
 
@@ -123,13 +123,13 @@ public class VendorContractServiceTest {
         DelVendorContractDocumentParameter request = new DelVendorContractDocumentParameter();
         request.setDocumentHistoryIDs(documentIds);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyLong(), anyList(), anyInt(), anyString());
 
         // do test
         Boolean result = vendorContractService.delVendorContractDocument(request);
 
         log.debug("result : {}", result);
-        verify(vendorContractNewService, never()).deleteVendorContractDocument(anyInt(), anyList(), anyInt(), anyString());
+        verify(vendorContractNewService, never()).deleteVendorContractDocument(anyInt(), anyLong(), anyList(), anyInt(), anyString());
         Assert.assertFalse(result);
     }
 

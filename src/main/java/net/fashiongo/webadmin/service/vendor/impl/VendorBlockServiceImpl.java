@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by jinwoo on 2020-01-02.
@@ -87,7 +88,9 @@ public class VendorBlockServiceImpl implements VendorBlockService {
             vendorBlockedEntityRepository.save(retailer);
 
             WebAdminLoginUser userInfo = Utility.getUserInfo();
-            vendorBlockNewService.modifyBlockReason(request, userInfo.getUserId(), userInfo.getUsername());
+            vendorBlockNewService.modifyBlockStatus(request.getWholeSalerID(), request.getIsBlock(),
+                    (request.getBlockReasonID() != null) ? request.getBlockReasonID().longValue() : null,
+                    userInfo.getUserId(), userInfo.getUsername());
 
             return 1;
         } catch (Exception ex) {
