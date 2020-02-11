@@ -204,7 +204,7 @@ spring:
 
 logging:
   config: classpath:logback-spring.xml
-  path: logs/
+  path: logs/webadmin_api/
   level:
     sql: TRACE
     org:

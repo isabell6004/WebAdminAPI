@@ -34,7 +34,7 @@ server:
 
 logging:
   config: classpath:logback-spring.xml
-  path: /home1/irteam/logs/
+  path: /home1/irteam/logs/webadmin_api/
 
 photostudio:
   fullModelPackageIdMap:
