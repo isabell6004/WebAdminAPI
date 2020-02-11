@@ -29,10 +29,8 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     @Override
     public void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerId;
-        VendorBlockStatusCommand newRequest = new VendorBlockStatusCommand(isBlock, blockReasonId);
-        Map<String, Object> wrappedRequest = new HashMap<>();
-        wrappedRequest.put(Vendor_Request_Command_Key_Name, newRequest);
-        httpCaller.put(endpoint, wrappedRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+        VendorInfoCommand command = new VendorInfoCommand(new VendorBlockStatusCommand(isBlock, blockReasonId));
+        httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
 
     @Override
@@ -44,13 +42,6 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     public void unblockVendor(DelVendorBlockParameter request, Integer requestedUserId, String requestUserName) {
         modifyBlockStatus(request.getWholeSalerID(), false, null, requestedUserId, requestUserName);
     }
-
-//    @Override
-//    public void modifyBlockReason(SetVendorBlockUpdate request, Integer requestedUserId, String requestUserName) {
-//        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID();
-//        VendorInfoCommand command = new VendorInfoCommand(new VendorBlockStatusCommand(request.getIsBlock(), Long.valueOf(request.getBlockReasonID())));
-//        httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
-//    }
 
     @Getter
     private class VendorInfoCommand<T> {
