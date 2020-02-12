@@ -150,8 +150,8 @@ public class VendorContractServiceImpl implements VendorContractService {
                 } else {
                     reviseContract(originContractInfo, request);
                 }
-                updateVendorType(request, vendorInfo);
             }
+            updateVendorType(request, vendorInfo);
 
             cacheService.cacheEvictVendor(vendorInfo.getWholeSalerID());
             return true;
