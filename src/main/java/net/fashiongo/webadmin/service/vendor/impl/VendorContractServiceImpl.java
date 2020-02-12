@@ -50,11 +50,13 @@ public class VendorContractServiceImpl implements VendorContractService {
     public VendorContractServiceImpl(
             VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository,
             VendorContractNewService vendorContractNewService,
+            VendorInfoNewService vendorInfoNewService,
             VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
             VendorContractEntityRepository vendorContractEntityRepository,
             CacheService cacheService) {
         this.vendorContractDocumentEntityRepository = vendorContractDocumentEntityRepository;
         this.vendorContractNewService = vendorContractNewService;
+        this.vendorInfoNewService = vendorInfoNewService;
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.vendorContractEntityRepository = vendorContractEntityRepository;
         this.cacheService = cacheService;
