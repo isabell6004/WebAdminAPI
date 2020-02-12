@@ -75,7 +75,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     @Override
     public void updateClassCode(Integer wholeSalerID, Integer classCode, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID;
-        VendorInfoCommand<VendorClassCodeCommand> vendorInfoCommand = new VendorInfoCommand<>(new VendorClassCodeCommand(classCode));
+        VendorClassCodeCommand vendorInfoCommand = new VendorClassCodeCommand(classCode);
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
