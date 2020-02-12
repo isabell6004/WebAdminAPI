@@ -23,4 +23,7 @@ public interface VendorInfoNewService {
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
     void updateStatus(Integer wholeSalerID, Integer newStatusTypeValue, Integer requestUserId, String requestUserName);
+
+    @Async("fashionGoApiThreadPoolTaskExecutor")
+    void updateClassCode(Integer wholeSalerID, Integer classCode, Integer requestUserId, String requestUserName);
 }

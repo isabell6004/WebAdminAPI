@@ -13,9 +13,11 @@ import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEnt
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorContractException;
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorException;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.vendor.ClassType;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import net.fashiongo.webadmin.service.vendor.VendorContractService;
+import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -36,6 +38,8 @@ public class VendorContractServiceImpl implements VendorContractService {
     private VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository;
 
     private VendorContractNewService vendorContractNewService;
+
+    private VendorInfoNewService vendorInfoNewService;
 
     private VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
 
@@ -190,7 +194,13 @@ public class VendorContractServiceImpl implements VendorContractService {
     }
 
     private void updateVendorType(SetVendorContractParameter request, WholeSalerEntity wholeSaler) {
-        wholeSaler.setVendorType(request.getContractTypeID() != 5 ? 1 : 2); // contractTypeId == 5 ? premium vendor
+
+        // contractTypeId == 5 ? premium vendor
+        ClassType vendorClassType = (request.getContractTypeID() != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
+        wholeSaler.setVendorType(vendorClassType.getValue());
         vendorWholeSalerEntityRepository.save(wholeSaler);
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        vendorInfoNewService.updateClassCode(wholeSaler.getWholeSalerID(), vendorClassType.getValue(), userInfo.getUserId(), userInfo.getUsername());
     }
 }

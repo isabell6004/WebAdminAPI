@@ -72,6 +72,13 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
+    @Override
+    public void updateClassCode(Integer wholeSalerID, Integer classCode, Integer requestUserId, String requestUserName) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID;
+        VendorInfoCommand<VendorClassCodeCommand> vendorInfoCommand = new VendorInfoCommand<>(new VendorClassCodeCommand(classCode));
+        httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
+    }
+
     @Getter
     private class VendorAccountCommand {
         private String firstName;
@@ -161,6 +168,17 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             this.statusCode = newStatusTypeValue;
         }
     }
+
+    @Getter
+    private class VendorClassCodeCommand {
+
+        private Integer classCode;
+
+        private VendorClassCodeCommand(Integer classCode) {
+            this.classCode = classCode;
+        }
+    }
+
 
     @Getter
     private class VendorDetailSettingInfoCommand {
