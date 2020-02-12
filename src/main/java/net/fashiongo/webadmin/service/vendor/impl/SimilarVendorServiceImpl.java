@@ -18,8 +18,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,6 +80,7 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
                 .build();
     }
 
+    private static final Integer CHUNK_SIZE = 100;
     @Override
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer setVendorGrouping(Integer vendorId, String saveIds, String deleteIds) {
@@ -99,7 +101,11 @@ public class SimilarVendorServiceImpl implements SimilarVendorService {
             mapWholeSalerGroupEntityRepository.deleteAll(deleteEntities);
 
             WebAdminLoginUser userInfo = Utility.getUserInfo();
-            similarVendorNewService.deleteSimilarVendor(vendorId, widList, userInfo.getUserId(), userInfo.getUsername());
+            AtomicInteger counter = new AtomicInteger();
+            Collection<List<Integer>> parts = widList.stream().collect(Collectors.groupingBy(it -> counter.getAndIncrement() / CHUNK_SIZE)).values();
+            parts.stream().forEach(part -> {
+                similarVendorNewService.deleteSimilarVendor(vendorId, part, userInfo.getUserId(), userInfo.getUsername());
+            });
 
             result = 1;
         }
