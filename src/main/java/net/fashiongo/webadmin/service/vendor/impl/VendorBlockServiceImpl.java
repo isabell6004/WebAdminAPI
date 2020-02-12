@@ -135,7 +135,7 @@ public class VendorBlockServiceImpl implements VendorBlockService {
             VendorBlockedEntity vendorBlockedEntity = VendorBlockedEntity.create(request);
             vendorBlockedEntityRepository.save(vendorBlockedEntity);
 
-            EntityActionLogEntity entityActionLogEntity = EntityActionLogEntity.create(0, request.getWholeSalerID(), 9001, request.getReason());
+            EntityActionLogEntity entityActionLogEntity = EntityActionLogEntity.create(9, request.getWholeSalerID(), 9001, request.getReason());
             entityActionLogEntityRepository.save(entityActionLogEntity);
 
             List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(request.getWholeSalerID());
