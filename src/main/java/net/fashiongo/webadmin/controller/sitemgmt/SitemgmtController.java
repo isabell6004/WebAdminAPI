@@ -15,7 +15,6 @@ import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMedia;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPick;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
@@ -333,46 +332,7 @@ public class SitemgmtController {
 		
 		return results;
 	}
-	
-	
-	/**
-	 * 
-	 * Set Category
-	 * 
-	 * @since 2018. 10. 23.
-	 * @author Nayeon Kim
-	 * @param SetCategoryParameter
-	 * @return
-	 */
-	@RequestMapping(value = "setcategory", method = RequestMethod.POST)
-	public JsonResponse<Integer> setCategory(@RequestBody SetCategoryParameter parameters) {
-		ResultResponse<Integer> result = sitemgmtService.setCategory(parameters);
-		
-		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
-		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
-		
-		return new JsonResponse<Integer>(result.getSuccess(), result.getMessage(), result.getCode(), result.getPk(),result.getData());
-	}
 
-	/**
-	 * 
-	 * Set Category List Order
-	 * 
-	 * @since 2018. 10. 23.
-	 * @author Nayeon Kim
-	 * @param SetCategoryListOrderParameter
-	 * @return
-	 */
-	@RequestMapping(value = "setcategorylistorder", method = RequestMethod.POST)
-	public JsonResponse<List<CategoryListOrder>> setCategoryListOrder(@RequestBody SetCategoryListOrderParameter parameters) {
-		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
-		
-		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
-		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
-		
-		return new JsonResponse<List<CategoryListOrder>>(true, "Updated successfully!", null, result);
-	}
-	
     /**
     *
     * Get Category Vendor List

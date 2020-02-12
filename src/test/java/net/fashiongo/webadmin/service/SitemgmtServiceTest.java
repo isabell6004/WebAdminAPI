@@ -32,9 +32,7 @@ import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CodeData;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters;
@@ -51,15 +49,12 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodaydealParamete
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.PageSizeParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCommunicationReasonActiveParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetPaidCampaignParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetProductAttributesMappingParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetCategoryListResponse;
@@ -850,37 +845,6 @@ public class SitemgmtServiceTest {
 		trendReport.setMiniImage("KMM_MiniImage.png");
 		trendReport.setkMMImage1("KMM_homecoming.jpg");
 		trendReport.setkMMImage2("Unique vintage.png");
-		assertNotNull(result);
-	}
-
-	/**
-	 *
-	 * Test SetCategory
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testSetCategory() {
-
-	}
-
-	/**
-	 *
-	 * Test SetCategoryListOrder
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-    @Ignore
-	@Test
-	public void testSetCategoryListOrder() {
-		SetCategoryListOrderParameter parameters = new SetCategoryListOrderParameter();
-		parameters.setCategoryid(386);
-		parameters.setParentcategoryid(99);
-		parameters.setListorder(101);
-		parameters.setLvl(3);
-		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
 		assertNotNull(result);
 	}
 }

@@ -4,15 +4,15 @@ public enum AttributeRequestType {
 	DELETE_ALL,
 	DELETE,
 	ADD,
-	SAVE,
+	UPDATE,
 	MAPPING;
 
-	public static AttributeRequestType fromBType(String btype) {
-		if (btype == null || btype.isEmpty()) {
+	public static AttributeRequestType fromBType(String bType) {
+		if (bType == null || bType.isEmpty()) {
 			throw new IllegalArgumentException();
 		}
 
-		switch (btype) {
+		switch (bType) {
 			case "ADel":
 				return DELETE_ALL;
 			case "Del":
@@ -20,7 +20,7 @@ public enum AttributeRequestType {
 			case "Add":
 				return ADD;
 			case "save":
-				return SAVE;
+				return UPDATE;
 			default:
 				throw new IllegalArgumentException();
 		}

@@ -5,17 +5,17 @@ import java.io.Serializable;
 public class CategoryListOrder implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private Integer categoryID;
-	private Integer parentCategoryID;
+	private Integer categoryId;
+	private Integer parentCategoryId;
 	private String categoryName;
 	private Integer lvl;
 	private Integer listOrder;
 	private Boolean active;
 	
 	public CategoryListOrder() {}
-	public CategoryListOrder(Integer categoryID, Integer parentCategoryID, String categoryName, Integer lvl, Integer listOrder, Boolean active) {
-		this.categoryID = categoryID;
-		this.parentCategoryID = parentCategoryID;
+	public CategoryListOrder(Integer categoryId, Integer parentCategoryId, String categoryName, Integer lvl, Integer listOrder, Boolean active) {
+		this.categoryId = categoryId;
+		this.parentCategoryId = parentCategoryId;
 		this.categoryName = categoryName;
 		this.lvl = lvl;
 		this.listOrder = listOrder;
@@ -23,16 +23,16 @@ public class CategoryListOrder implements Serializable {
 	}
 	
 	public Integer getCategoryID() {
-		return categoryID;
+		return categoryId;
 	}
 	public void setCategoryID(Integer categoryID) {
-		this.categoryID = categoryID;
+		this.categoryId = categoryID;
 	}
 	public Integer getParentCategoryID() {
-		return parentCategoryID;
+		return parentCategoryId;
 	}
 	public void setParentCategoryID(Integer parentCategoryID) {
-		this.parentCategoryID = parentCategoryID;
+		this.parentCategoryId = parentCategoryID;
 	}
 	public String getCategoryName() {
 		return categoryName;
