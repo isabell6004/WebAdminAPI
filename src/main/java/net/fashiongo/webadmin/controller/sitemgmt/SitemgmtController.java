@@ -1008,7 +1008,7 @@ public class SitemgmtController {
 	 * @return GetSEOReportParameterResponse
 	 */
 	@RequestMapping(value = "getseo", method = RequestMethod.POST)
-	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetSEOResponse> getSEO(@RequestBody GetSEOParameter parameters) {
+	public JsonResponse<GetSEOResponse> getSEO(@RequestBody GetSEOParameter parameters) {
 		JsonResponse<GetSEOResponse> response = new JsonResponse<GetSEOResponse>(true, null, null);
 		GetSEOResponse result = renewalSitemgmtService.getSEO(parameters);
 		

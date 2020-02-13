@@ -542,7 +542,6 @@ public class RenewalSitemgmtService {
 	
 		Page<SEO> seo = seoEntiryRepository.findAllBySeo(pagenum, pagesize);
 
-		
 		GetSEOResponse respone = GetSEOResponse.builder()
 		.recCnt(Arrays.asList(Total.builder().recCnt((int) seo.getTotalElements()).build()))
 		.seo(seo.getContent())

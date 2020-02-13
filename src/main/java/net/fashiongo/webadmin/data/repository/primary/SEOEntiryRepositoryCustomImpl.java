@@ -41,18 +41,21 @@ public class SEOEntiryRepositoryCustomImpl implements SEOEntiryRepositoryCustom 
     	QSEOEntity siteseo = QSEOEntity.sEOEntity;
     	orderSpecifier = siteseo.siteSeoId.asc();
                
-    	jpasqlQuery.select(siteseo.siteSeoId
-    				  	  ,siteseo.pageName
-    				  	  ,siteseo.url
-    				  	  ,siteseo.title
-    				  	  ,siteseo.metaKeyword
-    				  	  ,siteseo.metaDescription
-    				  	  ,siteseo.isActive
-    				  	  ,siteseo.createdOn
-    				  	  ,siteseo.createdBy
-    				  	  ,siteseo.modifiedOn
-    				  	  ,siteseo.modifiedBy
-    				  	  ,SQLExpressions.rowNumber().over().orderBy(orderSpecifier).as("row"))
+    	jpasqlQuery.select(
+                Projections.constructor(SEO.class,
+                    siteseo.siteSeoId
+                              ,siteseo.pageName
+                              ,siteseo.url
+                              ,siteseo.title
+                              ,siteseo.metaKeyword
+                              ,siteseo.metaDescription
+                              ,siteseo.isActive
+                              ,siteseo.createdOn
+                              ,siteseo.createdBy
+                              ,siteseo.modifiedOn
+                              ,siteseo.modifiedBy
+                              ,SQLExpressions.rowNumber().over().orderBy(orderSpecifier).as("row"))
+            )
                 .from(siteseo)
                 .where(siteseo.isDeleted.eq(false))
                 .orderBy(orderSpecifier)

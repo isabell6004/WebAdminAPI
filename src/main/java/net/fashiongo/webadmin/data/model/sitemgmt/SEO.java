@@ -1,13 +1,12 @@
 package net.fashiongo.webadmin.data.model.sitemgmt;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @Getter
 @AllArgsConstructor 
@@ -20,7 +19,7 @@ public class SEO {
 	private String pageName;
 
 	@JsonProperty("url")
-	private String url;	
+	private String url;
 
 	@JsonProperty("Title")
 	private String title;
@@ -49,7 +48,8 @@ public class SEO {
 	@JsonProperty("row")
 	private Integer row;
 
-	public SEO(Integer siteSEOId, String pageName, String url, String title, String metaKeyword, String metaDescription, Boolean isActive, String createdBy, Timestamp createdOn, String modifiedBy,Timestamp modifiedOn, Long row) {
+
+	public SEO(Integer siteSEOId, String pageName, String url, String title, String metaKeyword, String metaDescription, Boolean isActive, Timestamp createdOn, String createdBy,Timestamp modifiedOn, String modifiedBy, Long row) {
 		this.siteSEOId = siteSEOId;
 		this.pageName = pageName;
 		this.url = url;
