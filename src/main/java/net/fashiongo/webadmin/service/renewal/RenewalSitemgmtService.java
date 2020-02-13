@@ -5,8 +5,11 @@ import net.fashiongo.webadmin.data.entity.primary.CodeFabricEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodeLengthEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodePatternEntity;
 import net.fashiongo.webadmin.data.entity.primary.CodeStyleEntity;
+import net.fashiongo.webadmin.data.entity.primary.SEOEntity;
+import net.fashiongo.webadmin.data.entity.primary.XShipAddressEntity;
 import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.TotalCount;
+import net.fashiongo.webadmin.data.model.buyer.ShippingInfo;
 import net.fashiongo.webadmin.data.model.kmm.GetKmmListParameter;
 import net.fashiongo.webadmin.data.model.kmm.GetKmmListResponse;
 import net.fashiongo.webadmin.data.model.kmm.KmmListDetail;
@@ -23,15 +26,20 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class RenewalSitemgmtService {
 
@@ -64,13 +72,15 @@ public class RenewalSitemgmtService {
 	private final TrendReportEntityRepository trendReportEntityRepository;
 
 	private final DMSendListMigrationProcedure dmSendListMigrationProcedure;
+	
+	private final SEOEntiryRepository seoEntiryRepository;
 
 	private final String MSG_UPDATE_SUCCESS = "Updated successfully!";
 
 	private final JdbcHelper jdbcHelper;
 
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure, JdbcHelper jdbcHelper) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure, JdbcHelper jdbcHelper,SEOEntiryRepository seoEntiryRepository) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -87,6 +97,7 @@ public class RenewalSitemgmtService {
 		this.trendReportEntityRepository = trendReportEntityRepository;
 		this.dmSendListMigrationProcedure = dmSendListMigrationProcedure;
 		this.jdbcHelper = jdbcHelper;
+		this.seoEntiryRepository = seoEntiryRepository;
 	}
 
 	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
@@ -522,4 +533,93 @@ public class RenewalSitemgmtService {
 				.kmmList(kmmList.getContent())
 				.build();
 	}
+	
+	public GetSEOResponse getSEO(GetSEOParameter parameters) {
+		Integer pagenum = Optional.ofNullable(parameters.getPagenum()).orElse(1);
+		Integer pagesize = Optional.ofNullable(parameters.getPagesize()).orElse(50);
+		//String orderby = Optional.ofNullable(parameter.getOrderby()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		//String orderbygubn = Optional.ofNullable(parameter.getOrderbygubn()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+	
+		Page<SEO> seo = seoEntiryRepository.findAllBySeo(pagenum, pagesize);
+
+		
+		GetSEOResponse respone = GetSEOResponse.builder()
+		.recCnt(Arrays.asList(Total.builder().recCnt((int) seo.getTotalElements()).build()))
+		.seo(seo.getContent())
+		.build();	
+		
+		return respone;		
+
+	}	
+	
+	@Transactional(transactionManager = "primaryTransactionManager")
+	public Integer setSEO( String pageName, String url, String title, String metaKeyword, String metaDescription, String username) {
+		try {
+
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+
+			SEOEntity sEOEntity = new SEOEntity();
+				
+			//sEOEntity.setSiteSeoId(seo.getSiteSEOId());
+			sEOEntity.setPageName(pageName);
+			sEOEntity.setUrl(url);
+			sEOEntity.setTitle(title);
+			sEOEntity.setMetaKeyword(metaKeyword);
+			sEOEntity.setMetaDescription(metaDescription);
+			sEOEntity.setActive(true);
+			//sEOEntity.setIsActive(true);
+			sEOEntity.setCreatedOn(NOW);
+			sEOEntity.setCreatedBy(username);
+			
+			seoEntiryRepository.save(sEOEntity);
+
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
+	}
+
+	public Integer setSEOupdate(Integer siteSEOId, String pageName, String url, String title, String metaKeyword, String metaDescription, String username) {
+		
+		Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+		
+		SEOEntity sEOEntity = seoEntiryRepository.findOneByID(siteSEOId);
+		
+		sEOEntity.setPageName(pageName);
+		sEOEntity.setUrl(url);
+		sEOEntity.setTitle(title);
+		sEOEntity.setMetaKeyword(metaKeyword);
+		sEOEntity.setMetaDescription(metaDescription);
+		sEOEntity.setModifiedOn(NOW);
+		sEOEntity.setModifiedBy(username);
+		
+		seoEntiryRepository.save(sEOEntity);
+		
+		return 1;
+	}
+
+	public Integer deleteSEO(List<Integer> siteseoids, String username) {
+
+		Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+	
+		List<SEOEntity> sEOEntity = seoEntiryRepository.findOneByIDAll(siteseoids);
+		
+		for (int i = 0; i < siteseoids.size(); i++) {
+			SEOEntity _sEOEntity = new SEOEntity();
+			
+			//_sEOEntity.setIsDeleted(true);
+			_sEOEntity.setDeleted(true);
+			_sEOEntity.setModifiedOn(NOW);
+			_sEOEntity.setModifiedBy(username);
+			sEOEntity.add(_sEOEntity);
+		}
+		
+		seoEntiryRepository.saveAll(sEOEntity);		
+		
+		return 1;
+	}
+	
 }
+
+

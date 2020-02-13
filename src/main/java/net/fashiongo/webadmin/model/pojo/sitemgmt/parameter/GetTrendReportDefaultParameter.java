@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
-* @author Nayeon Kim
+* @author Isabell
 */
 public class GetTrendReportDefaultParameter {
 	@ApiModelProperty(required = false, example = "1")

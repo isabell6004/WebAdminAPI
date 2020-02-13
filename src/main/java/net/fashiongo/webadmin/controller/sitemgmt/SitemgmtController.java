@@ -6,7 +6,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtGetItemsParameter;
+import net.fashiongo.webadmin.data.model.buyer.ShippingInfo;
 import net.fashiongo.webadmin.data.model.sitemgmt.GetTrendReportParameter;
+import net.fashiongo.webadmin.data.model.sitemgmt.SEO;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.GetSEOResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportResponse;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -24,6 +27,8 @@ import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtService;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
+
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -992,4 +997,96 @@ public class SitemgmtController {
 
 		return results;
 	}
+
+	/**
+	 *
+	 * Get SEO 
+	 *
+	 * @since 2020. 02. 11.
+	 * @author Isabell
+	 * @param GetSEOReportParameter
+	 * @return GetSEOReportParameterResponse
+	 */
+	@RequestMapping(value = "getseo", method = RequestMethod.POST)
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetSEOResponse> getSEO(@RequestBody GetSEOParameter parameters) {
+		JsonResponse<GetSEOResponse> response = new JsonResponse<GetSEOResponse>(true, null, null);
+		GetSEOResponse result = renewalSitemgmtService.getSEO(parameters);
+		
+		response.setSuccess(true);
+		response.setData(result);
+		return response;
+	}
+	/**
+	 *
+	 * Set SEO 
+	 *
+	 * @since 2020. 02. 11.
+	 * @author Isabell
+	 * @param SetSEOParameter
+	 * @return  
+	 */
+	@RequestMapping(value = "setseo", method = RequestMethod.POST)  
+	public JsonResponse<Integer> setSEO(@RequestBody SetSEOParameter parameters) {
+	
+		JsonResponse<Integer> response = new JsonResponse();   
+		String pageName = parameters.getPageName();
+		String url = parameters.getUrl();
+		String title = parameters.getTitle();
+		String metaKeyword = parameters.getMetaKeyword();
+		String metaDescription = parameters.getMetaDescription();
+		String username = Utility.getUsername();
+		Integer retValue = renewalSitemgmtService.setSEO(pageName,url,title,metaKeyword,metaDescription,username);
+		
+		response.setSuccess(true);
+		response.setData(retValue);
+		return response;
+	}	
+	/**
+	 *
+	 * Set SEO 
+	 *
+	 * @since 2020. 02. 11.
+	 * @author Isabell
+	 * @param SetSEOParameter
+	 * @return  
+	 */
+	@RequestMapping(value = "setseoupdate", method = RequestMethod.POST)  
+	public JsonResponse<Integer> setSEOupdate(@RequestBody SetSEOParameter parameters) {
+	
+		JsonResponse<Integer> response = new JsonResponse();  
+		Integer siteSEOId = parameters.getSiteSEOId();
+		String pageName = parameters.getPageName();
+		String url = parameters.getUrl();
+		String title = parameters.getTitle();
+		String metaKeyword = parameters.getMetaKeyword();
+		String metaDescription = parameters.getMetaDescription();
+		String username = Utility.getUsername();
+		Integer retValue = renewalSitemgmtService.setSEOupdate(siteSEOId,pageName,url,title,metaKeyword,metaDescription,username);
+		
+		response.setSuccess(true);
+		response.setData(retValue);
+		return response;
+	}	
+	
+	/**
+	 *
+	 * Set SEO 
+	 *
+	 * @since 2020. 02. 11.
+	 * @author Isabell
+	 * @param SetSEOParameter
+	 * @return  
+	 */
+	@RequestMapping(value = "delseo", method = RequestMethod.POST)  
+	public JsonResponse<Integer> deleteSEO(@RequestBody List<Integer> siteseoids ) {
+	
+		JsonResponse<Integer> response = new JsonResponse();  
+		
+		String username = Utility.getUsername();
+		Integer retValue = renewalSitemgmtService.deleteSEO(siteseoids,username);
+		
+		response.setSuccess(true);
+		response.setData(retValue);
+		return response;
+	}		
 }
