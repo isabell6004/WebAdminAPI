@@ -54,21 +54,21 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     @Override
     public void updateDetailInfo(SetVendorSettingParameter request, VendorDetailInfo vendorDetailInfo, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorDetailInfo.getWholeSalerID();
-        VendorInfoCommand<VendorDetailSettingInfoCommand> vendorInfoCommand = new VendorInfoCommand<>(vendorDetailInfo.getCodeName(), vendorDetailInfo.getDirName(), new VendorDetailSettingInfoCommand(request, vendorDetailInfo));
+        VendorInfoDetailCommand<VendorDetailSettingInfoCommand> vendorInfoCommand = new VendorInfoDetailCommand<>(vendorDetailInfo.getCodeName(), vendorDetailInfo.getDirName(), new VendorDetailSettingInfoCommand(request, vendorDetailInfo));
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Override
     public void updateStatusAndCloseDate(Integer wholeSalerID, Integer newStatusTypeValue, LocalDateTime contractExpireDate, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID;
-        VendorInfoCommand<VendorCloseStatusInfoCommand> vendorInfoCommand = new VendorInfoCommand<>(new VendorCloseStatusInfoCommand(newStatusTypeValue, contractExpireDate));
+        VendorInfoDetailCommand<VendorCloseStatusInfoCommand> vendorInfoCommand = new VendorInfoDetailCommand<>(new VendorCloseStatusInfoCommand(newStatusTypeValue, contractExpireDate));
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
     @Override
     public void updateStatus(Integer wholeSalerID, Integer newStatusTypeValue, Integer requestUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID;
-        VendorInfoCommand<VendorStatusInfoCommand> vendorInfoCommand = new VendorInfoCommand<>(new VendorStatusInfoCommand(newStatusTypeValue));
+        VendorInfoDetailCommand<VendorStatusInfoCommand> vendorInfoCommand = new VendorInfoDetailCommand<>(new VendorStatusInfoCommand(newStatusTypeValue));
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
@@ -340,15 +340,27 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             }
             this.industries = industries;
         }
+    }
 
-        private VendorInfoCommand(String codeName, String dirName, T setting) {
+    @Getter
+    private class VendorInfoDetailCommand<T> {
+
+        private String codename;
+        private String dirname;
+
+        private T setting;
+
+        private VendorInfoDetailCommand(String codeName, String dirName, T setting) {
             this.codename = codeName;
             this.dirname = dirName;
             this.setting = setting;
         }
 
-        private VendorInfoCommand(T setting) {
+        private VendorInfoDetailCommand(T setting) {
             this.setting = setting;
         }
     }
+
+
+
 }
