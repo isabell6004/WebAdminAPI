@@ -34,7 +34,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     }
 
     private void updateAccount(Integer vendorId, String originalUserId, String userId, String firstName, String lastName, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/account/" + originalUserId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/accounts/" + originalUserId;
         VendorAccountCommand vendorAccountCommand = new VendorAccountCommand(firstName, lastName, userId);
         httpCaller.put(endpoint, vendorAccountCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
