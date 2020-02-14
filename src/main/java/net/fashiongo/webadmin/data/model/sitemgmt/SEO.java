@@ -12,13 +12,13 @@ import java.util.Optional;
 @AllArgsConstructor 
 public class SEO {
 	
-	@JsonProperty("SiteSEOId")
-	private Integer siteSEOId;
+	@JsonProperty("SiteSeoId")
+	private Integer siteSeoId;
 
 	@JsonProperty("PageName")
 	private String pageName;
 
-	@JsonProperty("url")
+	@JsonProperty("Url")
 	private String url;
 
 	@JsonProperty("Title")
@@ -49,8 +49,8 @@ public class SEO {
 	private Integer row;
 
 
-	public SEO(Integer siteSEOId, String pageName, String url, String title, String metaKeyword, String metaDescription, Boolean isActive, Timestamp createdOn, String createdBy,Timestamp modifiedOn, String modifiedBy, Long row) {
-		this.siteSEOId = siteSEOId;
+	public SEO(Integer siteSeoId, String pageName, String url, String title, String metaKeyword, String metaDescription, Boolean isActive, Timestamp createdOn, String createdBy,Timestamp modifiedOn, String modifiedBy, Long row) {
+		this.siteSeoId = siteSeoId;
 		this.pageName = pageName;
 		this.url = url;
 		this.title = title;

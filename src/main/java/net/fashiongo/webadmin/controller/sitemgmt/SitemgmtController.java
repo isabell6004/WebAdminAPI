@@ -1028,41 +1028,22 @@ public class SitemgmtController {
 	@RequestMapping(value = "setseo", method = RequestMethod.POST)  
 	public JsonResponse<Integer> setSEO(@RequestBody SetSEOParameter parameters) {
 	
-		JsonResponse<Integer> response = new JsonResponse();   
+		JsonResponse<Integer> response = new JsonResponse();
+		Integer retValue;
+		
+		Integer siteSeoId = parameters.getSiteSeoId();
 		String pageName = parameters.getPageName();
 		String url = parameters.getUrl();
 		String title = parameters.getTitle();
 		String metaKeyword = parameters.getMetaKeyword();
 		String metaDescription = parameters.getMetaDescription();
 		String username = Utility.getUsername();
-		Integer retValue = renewalSitemgmtService.setSEO(pageName,url,title,metaKeyword,metaDescription,username);
-		
-		response.setSuccess(true);
-		response.setData(retValue);
-		return response;
-	}	
-	/**
-	 *
-	 * Set SEO 
-	 *
-	 * @since 2020. 02. 11.
-	 * @author Isabell
-	 * @param SetSEOParameter
-	 * @return  
-	 */
-	@RequestMapping(value = "setseoupdate", method = RequestMethod.POST)  
-	public JsonResponse<Integer> setSEOupdate(@RequestBody SetSEOParameter parameters) {
-	
-		JsonResponse<Integer> response = new JsonResponse();  
-		Integer siteSEOId = parameters.getSiteSEOId();
-		String pageName = parameters.getPageName();
-		String url = parameters.getUrl();
-		String title = parameters.getTitle();
-		String metaKeyword = parameters.getMetaKeyword();
-		String metaDescription = parameters.getMetaDescription();
-		String username = Utility.getUsername();
-		Integer retValue = renewalSitemgmtService.setSEOupdate(siteSEOId,pageName,url,title,metaKeyword,metaDescription,username);
-		
+		if (siteSeoId == 0) {
+			retValue = renewalSitemgmtService.setSEO(pageName,url,title,metaKeyword,metaDescription,username);
+		}
+		else {
+			retValue = renewalSitemgmtService.setSEOupdate(siteSeoId,pageName,url,title,metaKeyword,metaDescription,username);
+		}
 		response.setSuccess(true);
 		response.setData(retValue);
 		return response;
@@ -1078,9 +1059,12 @@ public class SitemgmtController {
 	 * @return  
 	 */
 	@RequestMapping(value = "delseo", method = RequestMethod.POST)  
-	public JsonResponse<Integer> deleteSEO(@RequestBody List<Integer> siteseoids ) {
+	public JsonResponse<Integer> deleteSEO(@RequestBody JSONObject jsonObject ) {
 	
 		JsonResponse<Integer> response = new JsonResponse();  
+		
+		@SuppressWarnings("unchecked")
+		List<Integer> siteseoids = (List<Integer>) jsonObject.get("SiteSeoIds");
 		
 		String username = Utility.getUsername();
 		Integer retValue = renewalSitemgmtService.deleteSEO(siteseoids,username);

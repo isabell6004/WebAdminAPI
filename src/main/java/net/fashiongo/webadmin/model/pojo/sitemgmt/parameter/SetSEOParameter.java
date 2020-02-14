@@ -6,16 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 
-import net.fashiongo.webadmin.data.model.sitemgmt.SEO;
 @Getter
 
 public class SetSEOParameter {
 
-	//@JsonProperty(value = "obj")
-	//private SEO seo;
-	
-	@JsonProperty("SiteSEOId")
-	private Integer siteSEOId;
+	@JsonProperty("SiteSeoId")
+	private Integer siteSeoId;
 	
 	@JsonProperty(value = "PageName")
 	private String pageName;	
@@ -32,5 +28,5 @@ public class SetSEOParameter {
 	@JsonProperty(value = "MetaDescription")
 	private String metaDescription;
 
-	
+
 }

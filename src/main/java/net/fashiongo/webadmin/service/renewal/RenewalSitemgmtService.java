@@ -579,46 +579,51 @@ public class RenewalSitemgmtService {
 		}
 	}
 
-	public Integer setSEOupdate(Integer siteSEOId, String pageName, String url, String title, String metaKeyword, String metaDescription, String username) {
+	public Integer setSEOupdate(Integer siteSeoId, String pageName, String url, String title, String metaKeyword, String metaDescription, String username) {
+		try {		
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
+			
+			SEOEntity sEOEntity = seoEntiryRepository.findOneByID(siteSeoId);
+			
+			sEOEntity.setPageName(pageName);
+			sEOEntity.setUrl(url);
+			sEOEntity.setTitle(title);
+			sEOEntity.setMetaKeyword(metaKeyword);
+			sEOEntity.setMetaDescription(metaDescription);
+			sEOEntity.setModifiedOn(NOW);
+			sEOEntity.setModifiedBy(username);
+			
+			seoEntiryRepository.save(sEOEntity);
 		
-		Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
-		
-		SEOEntity sEOEntity = seoEntiryRepository.findOneByID(siteSEOId);
-		
-		sEOEntity.setPageName(pageName);
-		sEOEntity.setUrl(url);
-		sEOEntity.setTitle(title);
-		sEOEntity.setMetaKeyword(metaKeyword);
-		sEOEntity.setMetaDescription(metaDescription);
-		sEOEntity.setModifiedOn(NOW);
-		sEOEntity.setModifiedBy(username);
-		
-		seoEntiryRepository.save(sEOEntity);
-		
-		return 1;
+			return 1;
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
+		}
 	}
 
 	public Integer deleteSEO(List<Integer> siteseoids, String username) {
-
-		Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
-	
-		List<SEOEntity> sEOEntity = seoEntiryRepository.findOneByIDAll(siteseoids);
+		try {	
+			Timestamp NOW = Timestamp.valueOf(LocalDateTime.now());
 		
-		for (int i = 0; i < siteseoids.size(); i++) {
-			SEOEntity _sEOEntity = new SEOEntity();
+			List<SEOEntity> sEOEntity = seoEntiryRepository.findOneByIDAll(siteseoids);
 			
-			//_sEOEntity.setIsDeleted(true);
-			_sEOEntity.setDeleted(true);
-			_sEOEntity.setModifiedOn(NOW);
-			_sEOEntity.setModifiedBy(username);
-			sEOEntity.add(_sEOEntity);
+			for (int i = 0; i < sEOEntity.size(); i++) {
+				SEOEntity _sEOEntity = seoEntiryRepository.findOneByID(sEOEntity.get(i).getSiteSeoId());
+				
+				_sEOEntity.setDeleted(true);
+				_sEOEntity.setModifiedOn(NOW);
+				_sEOEntity.setModifiedBy(username);
+				seoEntiryRepository.save(_sEOEntity);	
+			}
+					
+			return 1;
+			
+		} catch (Exception e) {
+			log.warn(e.getMessage(),e);
+			return -99;
 		}
-		
-		seoEntiryRepository.saveAll(sEOEntity);		
-		
-		return 1;
 	}
-	
 }
 
 
