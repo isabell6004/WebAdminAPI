@@ -1,7 +1,6 @@
 package net.fashiongo.webadmin.model.product.command;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import net.fashiongo.webadmin.model.product.command.attribute.AttributeDeleteRequest;
 import net.fashiongo.webadmin.model.product.command.attribute.AttributeMappingRequest;
 import net.fashiongo.webadmin.model.product.command.attribute.AttributeSaveRequest;
 import net.fashiongo.webadmin.model.product.command.category.CategoryListOrderRequest;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductRequestWrapper {
@@ -181,7 +181,7 @@ public class ProductRequestWrapper {
 
 		public class Delete extends AbstractProductRequest<Void> {
 
-			private final String path = "/{attributeType}/delete";
+			private final String path = "/{attributeType}/{ids}";
 
 			private String attributeType;
 
@@ -206,23 +206,26 @@ public class ProductRequestWrapper {
 			@Override
 			protected String buildEndpoint() {
 				Assert.notNull(this.attributeType, "attributeType must not be null");
+				Assert.notEmpty(this.targetIds, "targetIds must not be empty");
+
+				String targetIdString = targetIds.stream()
+						.map(Object::toString)
+						.collect(Collectors.joining(","));
 
 				return UriComponentsBuilder.fromHttpUrl(baseUrl)
 						.path(path)
-						.buildAndExpand(attributeType)
+						.buildAndExpand(attributeType, targetIdString)
 						.toUriString();
 			}
 
 			@Override
 			protected Object makePayload() {
-				Assert.notNull(this.targetIds, "targetIds must not be null");
-
-				return new AttributeDeleteRequest(this.targetIds);
+				return null;
 			}
 
 			@Override
 			protected HttpMethod getMethod() {
-				return HttpMethod.POST;
+				return HttpMethod.DELETE;
 			}
 		}
 
