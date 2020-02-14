@@ -329,8 +329,9 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
             this.setting = setting;
 
-            List<Integer> industries = new ArrayList<>();
+            List<Integer> industries = null;
             if(StringUtils.isNotEmpty(request.getIndustryType())) {
+                industries = new ArrayList<>();
                 String[] industryNames = request.getIndustryType().split(",");
                 for(String value : industryNames) {
                     IndustryType type = IndustryType.get(value);
