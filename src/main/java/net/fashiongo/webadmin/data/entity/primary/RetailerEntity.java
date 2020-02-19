@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -290,6 +292,12 @@ public class RetailerEntity {
 	@Column(name = "buyer_type")
 	private Integer buyerType = 1;
 
+	@Column(name = "buyer_class")
+	private Integer buyerClass;
+	
+	@Column(name = "am_user_id")
+	private Integer amUserId;		
+	
 	public LocalDateTime getStartingDate() {
 		return Optional.ofNullable(startingDate).map(Timestamp::toLocalDateTime).orElse(null);
 	}
@@ -317,4 +325,5 @@ public class RetailerEntity {
 	public LocalDateTime getConfirmedOn() {
 		return Optional.ofNullable(confirmedOn).map(Timestamp::toLocalDateTime).orElse(null);
 	}
+
 }

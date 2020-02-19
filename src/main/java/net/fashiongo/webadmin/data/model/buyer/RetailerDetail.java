@@ -117,4 +117,11 @@ public class RetailerDetail {
 
 	@JsonProperty("MobilePhoneNo")
 	private String mobilePhoneNo;
+
+	@JsonProperty("BuyerClass")
+	private Integer buyerClass;
+
+	@JsonProperty("AmUserID")
+	private Integer amUserId;	
+
 }

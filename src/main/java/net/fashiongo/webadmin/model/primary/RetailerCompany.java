@@ -100,5 +100,14 @@ public class RetailerCompany {
 	@JsonIgnore
 	@Column(name = "IsOperatorRead")
 	private Boolean operatorRead;
+	
+	@JsonIgnore
+	@Column(name = "buyer_class")
+	private Integer buyerClass;		
+
+	@JsonIgnore
+	@Column(name = "am_user_id")
+	private Integer amUserID;		
+
 
 }

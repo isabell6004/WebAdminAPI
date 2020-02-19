@@ -85,6 +85,9 @@ public class RenewalBuyerService {
 	private EntityActionLogEntityRepository entityActionLogEntityRepository;
 
 	@Autowired
+	private SecurityUserEntityRepository securityUserEntityRepository;
+	
+	@Autowired
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
 
@@ -169,6 +172,8 @@ public class RenewalBuyerService {
 					.userId(retailerEntity.getUserID())
 					.webSite(retailerEntity.getWebSite())
 					.webSiteYN(StringUtils.isEmpty(retailerEntity.getWebSite()) == false ? "Y" : "N")
+					.buyerClass(retailerEntity.getBuyerClass())
+					.amUserId(retailerEntity.getAmUserId())
 					.build();
 
 			AspnetMembershipEntity m = aspnetMembershipEntityRepository.findByUserName(retailerEntity.getUserID()).orElse(null);
@@ -1212,4 +1217,8 @@ public class RenewalBuyerService {
 				.modifiedByBuyerList(modifiedByBuyers)
 				.build();
 	}
+	
+	public List<SecurityUserEntity> getRetailerSecurityUsers() {
+		return securityUserEntityRepository.findAllActive();
+	}	
 }
