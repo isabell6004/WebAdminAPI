@@ -122,7 +122,11 @@ public class AdminRetailer {
 	@Column(name = "buyer_type")
 	@JsonProperty("buyer_type")
 	private Integer buyerType;
-
+	
+	@Column(name = "buyer_class")
+	@JsonProperty("buyer_class")
+	private Integer buyerClass;
+	
 	@Column(name = "rowno")
 	@JsonProperty("rowno")
 	private Integer rowno;

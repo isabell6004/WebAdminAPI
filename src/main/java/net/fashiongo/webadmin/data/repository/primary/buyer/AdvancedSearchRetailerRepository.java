@@ -73,7 +73,8 @@ public class AdvancedSearchRetailerRepository {
 	                                                        String checkoutToDateTime,
 	                                                        Integer wholeSalerID,
 	                                                        String orderBy,
-	                                                        Integer showID
+	                                                        Integer showID,
+	                                                        Integer buyerclass
 	) {
 
 		LocalDateTime registerFrom = Optional.ofNullable(registerFromDateTime).filter(dateTime -> StringUtils.hasLength(dateTime)).map(dateTime -> LocalDateTime.parse(dateTime)).orElse(null);
@@ -372,6 +373,10 @@ public class AdvancedSearchRetailerRepository {
 			filter = filter.and(R.startingDate.loe(Timestamp.valueOf(registerTo)));
 		}
 
+		if(buyerclass != null) {
+			filter = filter.and(R.buyerClass.eq(buyerclass));
+		}
+		
 		return jpasqlQuery.where(filter)
 				.orderBy(orderSpecifier)
 				.fetch();
