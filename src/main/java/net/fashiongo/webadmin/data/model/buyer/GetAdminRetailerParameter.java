@@ -130,4 +130,7 @@ public class GetAdminRetailerParameter {
 
 	@JsonProperty("orderamountto")
 	private String orderamountto;
+	
+	@JsonProperty("buyerclass")
+	private Integer buyerclass;	
 }

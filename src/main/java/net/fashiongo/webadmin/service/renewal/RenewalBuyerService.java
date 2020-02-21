@@ -1069,6 +1069,7 @@ public class RenewalBuyerService {
 		BigDecimal orderamountfrom = Optional.ofNullable(parameter.getOrderamountfrom()).filter(s -> StringUtils.hasLength(s)).map(s -> new BigDecimal(s)).orElse(null);
 		BigDecimal orderamountto = Optional.ofNullable(parameter.getOrderamountto()).filter(s -> StringUtils.hasLength(s)).map(s -> new BigDecimal(s)).orElse(null);
 		Integer wholesalerid = Optional.ofNullable(parameter.getWholesalerid()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
+		Integer buyerclass = parameter.getBuyerclass();
 		Boolean s = parameter.getS();
 
 		List<Object> param = new ArrayList<>();
@@ -1116,6 +1117,7 @@ public class RenewalBuyerService {
 		param.add(wholesalerid);
 		param.add(orderby);
 		param.add(showid);
+		param.add(buyerclass);
 
 		if(csv) {
 			JsonResponse<AdminRetailerCSVResponse> response = new JsonResponse();
@@ -1159,7 +1161,8 @@ public class RenewalBuyerService {
 					checkoutto,
 					wholesalerid,
 					orderby,
-					showid);
+					showid,
+					buyerclass);
 
 			AdminRetailerCSVResponse data = AdminRetailerCSVResponse.builder()
 					.table(adminRetailerList)
