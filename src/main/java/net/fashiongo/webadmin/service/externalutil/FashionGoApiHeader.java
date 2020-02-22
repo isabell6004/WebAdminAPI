@@ -16,15 +16,11 @@ public class FashionGoApiHeader {
 
     private final static String ApplicationType = "WebAdmin";
 
-//    public static Map<String, String> getHeader() {
-//        return getHeader(0, "");
-//    }
-
     public static Map<String, String> getHeader(Integer userId, String userName) {
 
         Map<String, String> header = new HashMap<>();
         header.put("Connection", "close");
-        header.put("Content-Type", "application/json");
+        header.put("Content-Type", "application/json; charset=utf-8");
         header.put("Referer-Application-Type", ApplicationType);
         header.put("Request-Id", UUID.randomUUID().toString());
 
