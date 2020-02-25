@@ -15,7 +15,7 @@ import java.util.Map;
 
 public abstract class AbstractProductRequest<T> {
 
-	protected final String baseUrl = FashionGoApiConfig.fashionGoApi + "/v1.0/product";
+	protected final String baseUrl = FashionGoApiConfig.fashionGoApi + "/v1.0/products";
 
 	private final HttpClientWrapper httpCaller;
 

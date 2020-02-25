@@ -1,21 +1,21 @@
 package net.fashiongo.webadmin.model.product.type.attribute;
 
 public enum AttributeType {
-	PATTERN,
-	LENGTH,
-	STYLE,
-	FABRIC;
+	PATTERNS,
+	LENGTHS,
+	STYLES,
+	FABRICS;
 
 	public static AttributeType fromTabNo(int tabNo) {
 		switch (tabNo) {
 			case 1:
-				return PATTERN;
+				return PATTERNS;
 			case 2:
-				return LENGTH;
+				return LENGTHS;
 			case 3:
-				return STYLE;
+				return STYLES;
 			case 4:
-				return FABRIC;
+				return FABRICS;
 			default:
 				throw new IllegalArgumentException();
 		}

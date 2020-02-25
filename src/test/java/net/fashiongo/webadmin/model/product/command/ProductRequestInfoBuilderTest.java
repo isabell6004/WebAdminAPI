@@ -30,7 +30,7 @@ public class ProductRequestInfoBuilderTest {
 	@Test
 	public void success_attribute_create() {
 		// given
-		AttributeType attributeType = AttributeType.LENGTH;
+		AttributeType attributeType = AttributeType.LENGTHS;
 		String attributeName = "test";
 		boolean attributeActive = true;
 
@@ -42,7 +42,7 @@ public class ProductRequestInfoBuilderTest {
 				.attributeActive(attributeActive);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/length", create.buildEndpoint());
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/lengths", create.buildEndpoint());
 		Assert.assertEquals(HttpMethod.POST, create.getMethod());
 		Assert.assertEquals(attributeName, ((AttributeSaveRequest) create.makePayload()).getName());
 		Assert.assertEquals(attributeActive, ((AttributeSaveRequest) create.makePayload()).getActive());
@@ -51,7 +51,7 @@ public class ProductRequestInfoBuilderTest {
 	@Test
 	public void fail_attribute__create_illegal_argument() {
 		// given
-		AttributeType attributeType = AttributeType.PATTERN;
+		AttributeType attributeType = AttributeType.PATTERNS;
 		String attributeName = "test";
 		boolean attributeActive = true;
 
@@ -111,7 +111,7 @@ public class ProductRequestInfoBuilderTest {
 	@Test
 	public void success_attribute_update() {
 		// given
-		AttributeType attributeType = AttributeType.FABRIC;
+		AttributeType attributeType = AttributeType.FABRICS;
 		int attributeId = 1;
 		String attributeName = "test";
 		Boolean attributeActive = null;
@@ -125,7 +125,7 @@ public class ProductRequestInfoBuilderTest {
 				.attributeActive(attributeActive);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/fabric/1", update.buildEndpoint());
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/fabrics/1", update.buildEndpoint());
 		Assert.assertEquals(HttpMethod.PUT, update.getMethod());
 		Assert.assertEquals(attributeName, ((AttributeSaveRequest) update.makePayload()).getName());
 		Assert.assertEquals(attributeActive, ((AttributeSaveRequest) update.makePayload()).getActive());
@@ -134,7 +134,7 @@ public class ProductRequestInfoBuilderTest {
 	@Test
 	public void fail_attribute_update_illegal_argument() {
 		// given
-		AttributeType attributeType = AttributeType.PATTERN;
+		AttributeType attributeType = AttributeType.PATTERNS;
 		String attributeName = "test";
 		boolean attributeActive = true;
 
@@ -177,7 +177,7 @@ public class ProductRequestInfoBuilderTest {
 	@Test
 	public void success_attribute_delete() {
 		// given
-		AttributeType attributeType = AttributeType.STYLE;
+		AttributeType attributeType = AttributeType.STYLES;
 		List<Integer> targetIds = Stream.of(1, 2, 3).collect(Collectors.toList());
 
 		// when
@@ -187,16 +187,14 @@ public class ProductRequestInfoBuilderTest {
 				.targetIds(targetIds);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/style/delete", delete.buildEndpoint());
-		Assert.assertEquals(HttpMethod.POST, delete.getMethod());
-		Assert.assertEquals(targetIds.size(), ((AttributeDeleteRequest) delete.makePayload()).getIds().size());
-		Assert.assertTrue(targetIds.containsAll(((AttributeDeleteRequest) delete.makePayload()).getIds()));
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/styles/1,2,3", delete.buildEndpoint());
+		Assert.assertEquals(HttpMethod.DELETE, delete.getMethod());
 	}
 
 	@Test
 	public void success_attribute_mapping() {
 		// given
-		AttributeType attributeType = AttributeType.LENGTH;
+		AttributeType attributeType = AttributeType.LENGTHS;
 		int categoryId = 1;
 		List<Integer> targetIds = Stream.of(1, 2, 3).collect(Collectors.toList());
 
@@ -208,7 +206,7 @@ public class ProductRequestInfoBuilderTest {
 				.targetIds(targetIds);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/length/mapping", mapping.buildEndpoint());
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/lengths/mapping", mapping.buildEndpoint());
 		Assert.assertEquals(HttpMethod.PUT, mapping.getMethod());
 		Assert.assertEquals(categoryId, ((AttributeMappingRequest) mapping.makePayload()).getCategoryId());
 		Assert.assertEquals(targetIds.size(), ((AttributeMappingRequest) mapping.makePayload()).getIds().size());
@@ -231,7 +229,7 @@ public class ProductRequestInfoBuilderTest {
 				.listOrder(listOrder);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/categories", create.buildEndpoint());
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/categories", create.buildEndpoint());
 		Assert.assertEquals(HttpMethod.POST, create.getMethod());
 	}
 
@@ -253,7 +251,7 @@ public class ProductRequestInfoBuilderTest {
 				.listOrder(listOrder);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/categories/1", update.buildEndpoint());
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/categories/1", update.buildEndpoint());
 		Assert.assertEquals(HttpMethod.PUT, update.getMethod());
 	}
 
@@ -268,7 +266,7 @@ public class ProductRequestInfoBuilderTest {
 				.categoryId(categoryId);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/categories/1", delete.buildEndpoint());
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/categories/1", delete.buildEndpoint());
 		Assert.assertEquals(HttpMethod.DELETE, delete.getMethod());
 		Assert.assertNull(delete.makePayload());
 	}
@@ -286,7 +284,7 @@ public class ProductRequestInfoBuilderTest {
 				.categoryActive(categoryActive);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/categories/1/activity", activate.buildEndpoint());
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/categories/1/activity", activate.buildEndpoint());
 		Assert.assertEquals(HttpMethod.PUT, activate.getMethod());
 		Assert.assertTrue((boolean) activate.makePayload());
 	}
@@ -306,7 +304,7 @@ public class ProductRequestInfoBuilderTest {
 				.listOrder(listOrder);
 
 		// then
-		Assert.assertEquals(fashionGoApiUrl + "/v1.0/product/categories/2/list-order", request.buildEndpoint());
+		Assert.assertEquals(fashionGoApiUrl + "/v1.0/products/categories/2/list-order", request.buildEndpoint());
 		Assert.assertEquals(HttpMethod.PUT, request.getMethod());
 		Assert.assertEquals(1, (((CategoryListOrderRequest) request.makePayload()).getParentId()));
 		Assert.assertEquals(2, (((CategoryListOrderRequest) request.makePayload()).getListOrder()));
