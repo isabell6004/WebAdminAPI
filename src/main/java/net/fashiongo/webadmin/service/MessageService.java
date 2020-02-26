@@ -104,6 +104,9 @@ public class MessageService extends ApiService {
         params.add(parameters.getRecipienttypeid());
         params.add(null);
         params.add(null);
+        if (StringUtils.isNotEmpty(parameters.getSender())) {
+        	parameters.setSender(parameters.getSender().replace("'", "''"));
+		}
         params.add(parameters.getSender());
         params.add(parameters.getTopic());
         params.add(parameters.getSubject());

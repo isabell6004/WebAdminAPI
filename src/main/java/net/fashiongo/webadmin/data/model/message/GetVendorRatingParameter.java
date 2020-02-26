@@ -1,117 +1,88 @@
 package net.fashiongo.webadmin.data.model.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
+import lombok.Getter;
+import lombok.Setter;
+import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.validation.constraints.Pattern;
+
+@Getter
+@Setter
 public class GetVendorRatingParameter {
 
-	@JsonProperty("wholesalerid")
-	private Integer wholeSalerID;
+    private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s =/:!&,-.?_\']+$";
+    private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
 
-	@JsonProperty("retailerid")
-	private Integer retailerID;
+    @JsonProperty("wholesalerid")
+    private Integer wholesalerId;
 
-	@JsonProperty("pagenum")
-	private Integer pageNum;
+    @JsonProperty("retailerid")
+    private Integer retailerId;
 
-	@JsonProperty("pagesize")
-	private Integer pageSize;
+    @JsonProperty("pagenum")
+    private Integer pageNum;
 
-	@JsonProperty("from")
-	private String fromDate;
+    @JsonProperty("pagesize")
+    private Integer pageSize;
 
-	@JsonProperty("to")
-	private String toDate;
+    @JsonProperty("from")
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String fromDate;
 
-	@JsonProperty("active")
-	private String active;
+    @JsonProperty("to")
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String toDate;
 
-	@JsonProperty("additional")
-	private String additional;
+    @JsonProperty("active")
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String active;
 
-	@JsonProperty("type")
-	private Boolean type;
+    @JsonProperty("type")
+    private Boolean type;
 
-	@JsonProperty("orderby")
-	private String orderby;
+    @JsonProperty("orderby")
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String orderby;
 
-	public Integer getWholeSalerID() {
-		return wholeSalerID;
-	}
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String retailerCompanyName;
 
-	public Integer getRetailerID() {
-		return retailerID;
-	}
+    @SQLInjectionSafe
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String wholesalerCompanyName;
 
-	public Integer getPageNum() {
-		return pageNum == null ? 0 : pageNum;
-	}
+    private Integer score;
 
-	public Integer getPageSize() {
-		return pageSize == null ? 0 : pageSize;
-	}
+    public Integer getPageNum() {
+        return pageNum == null ? 0 : pageNum;
+    }
 
-	public String getFromDate() {
-		return StringUtils.isEmpty(fromDate) ? null : fromDate;
-	}
+    public Integer getPageSize() {
+        return pageSize == null ? 0 : pageSize;
+    }
 
-	public String getToDate() {
-		return StringUtils.isEmpty(toDate) ? null : toDate;
-	}
+    public String getFromDate() {
+        return StringUtils.isEmpty(fromDate) ? null : fromDate;
+    }
 
-	public Boolean getActive() {
-		return StringUtils.isEmpty(active) ? null : active.equals("1");
-	}
+    public String getToDate() {
+        return StringUtils.isEmpty(toDate) ? null : toDate;
+    }
 
-	public String getAdditional() {
-		return StringUtils.isEmpty(additional) ? "1=1" : additional;
-	}
+    public Boolean getActive() {
+        return StringUtils.isEmpty(active) ? null : active.equals("1");
+    }
 
-	public Boolean getType() {
-		return type;
-	}
+    public String getOrderby() {
+        return StringUtils.isEmpty(orderby) ? null : orderby;
+    }
 
-	public String getOrderby() {
-		return StringUtils.isEmpty(orderby) ? null : orderby;
-	}
-
-	public void setWholeSalerID(Integer wholeSalerID) {
-		this.wholeSalerID = wholeSalerID;
-	}
-
-	public void setRetailerID(Integer retailerID) {
-		this.retailerID = retailerID;
-	}
-
-	public void setPageNum(Integer pageNum) {
-		this.pageNum = pageNum;
-	}
-
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
-
-	public void setFromDate(String fromDate) {
-		this.fromDate = fromDate;
-	}
-
-	public void setToDate(String toDate) {
-		this.toDate = toDate;
-	}
-
-	public void setActive(String active) {
-		this.active = active;
-	}
-
-	public void setAdditional(String additional) {
-		this.additional = additional;
-	}
-
-	public void setType(Boolean type) {
-		this.type = type;
-	}
-
-	public void setOrderby(String orderby) {
-		this.orderby = orderby;
-	}
 }
