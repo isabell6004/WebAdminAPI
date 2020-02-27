@@ -143,7 +143,7 @@ public class PaymentService extends ApiService {
 			throw new Exception("Refund amount must be less than the shipping amount");
 		}
 
-		return (JsonResponse<?>) httpClient.post("refund", new ObjectMapper().writeValueAsString(request));
+		return (JsonResponse<?>) httpClient.post("/refund", new ObjectMapper().writeValueAsString(request));
 	}
 
 	public PaymentStatusResponse getCreditCardStatus(Integer creditCardId, Integer consolidationId) throws Exception {
