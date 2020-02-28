@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.service;
 
 import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.BuyerEmailHistoryEntity;
+import net.fashiongo.webadmin.data.repository.primary.BuyerEmailHistoryEntityRepository;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerDetailParameter;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerInfoParameter;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAttachedFileParameter;
@@ -43,6 +45,9 @@ public class BuyerService extends ApiService {
 
 	@Autowired
 	private BuyerStatusChangeLogRepository buyerStatusChangeLogRepository;
+
+	@Autowired
+	private BuyerEmailHistoryEntityRepository buyerEmailHistoryEntityRepository;
 
 	/**
 	 * Description Example
@@ -140,6 +145,9 @@ public class BuyerService extends ApiService {
 					paymentCustomer.setModifiedOn(now);
 					paymentCustomerRepository.save(paymentCustomer);
 				});
+
+				// save buyer user ID change history
+				buyerEmailHistoryEntityRepository.save(BuyerEmailHistoryEntity.create(retailerDetail.getRetailerId(), retailerDetail.getUserId(), Utility.getUsername()));
 			});
 		}
 
