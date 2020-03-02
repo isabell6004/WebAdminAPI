@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "buyer_address_history")
 public class BuyerAddressHistoryEntity {
 
- @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "buyer_address_history_id")
     private Long id;
