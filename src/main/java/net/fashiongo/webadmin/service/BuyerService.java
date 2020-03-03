@@ -159,7 +159,8 @@ public class BuyerService extends ApiService {
 		tblRetailer.setWebSite(retailerDetail.getWebSite());
 		tblRetailer.setEMail(retailerDetail.getUserId());
 		tblRetailer.setLastUser(retailerDetail.getLastUser());
-		tblRetailer.setLastModifiedDateTime(retailerDetail.getLastModifiedDateTime());
+		//tblRetailer.setLastModifiedDateTime(retailerDetail.getLastModifiedDateTime());
+		tblRetailer.setLastModifiedDateTime(now);
 		tblRetailer.setBuyerClass(retailerDetail.getBuyerClass());
 		if (retailerDetail.getAmUserID() == 0 ){
 			tblRetailer.setAmUserID(null);
