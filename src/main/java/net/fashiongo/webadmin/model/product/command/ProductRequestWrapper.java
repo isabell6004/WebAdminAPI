@@ -356,7 +356,7 @@ public class ProductRequestWrapper {
 				return this;
 			}
 
-			public Create parentParentCategoryId(int parentParentCategoryId) {
+			public Create parentParentCategoryId(Integer parentParentCategoryId) {
 				this.parentParentCategoryId = parentParentCategoryId;
 
 				return this;
@@ -489,7 +489,7 @@ public class ProductRequestWrapper {
 				return this;
 			}
 
-			public Update parentParentCategoryId(int parentParentCategoryId) {
+			public Update parentParentCategoryId(Integer parentParentCategoryId) {
 				this.parentParentCategoryId = parentParentCategoryId;
 
 				return this;
