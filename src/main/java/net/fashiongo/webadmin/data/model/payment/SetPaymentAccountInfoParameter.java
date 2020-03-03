@@ -29,6 +29,9 @@ public class SetPaymentAccountInfoParameter {
 
     @JsonProperty(value = "country")
     private String country;
+    
+    @JsonProperty(value = "phoneNumber")
+    private String phoneNumber;
 
     @JsonProperty(value = "maxPayoutPerDay")
     private Integer maxPayoutPerDay;
