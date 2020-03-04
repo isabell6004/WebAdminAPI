@@ -110,6 +110,7 @@ public class BuyerService extends ApiService {
 	@Transactional
 	public int setAdminRetailerDetail(SetAdminRetailerDetailParameter setAdminRetailerDetailParam) {
 		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
 
 		SetAdminRetailerDetailParameter.RetailerDetail retailerDetail = setAdminRetailerDetailParam.getRetailerDetail();
 		RetailerCompany tblRetailer = retailerCompanyRepository.findById(retailerDetail.getRetailerId()).orElseThrow(() -> new RuntimeException("Retailer not exists."));
@@ -158,8 +159,10 @@ public class BuyerService extends ApiService {
 		tblRetailer.setTerminatedNote(retailerDetail.getTerminatedNote());
 		tblRetailer.setWebSite(retailerDetail.getWebSite());
 		tblRetailer.setEMail(retailerDetail.getUserId());
-		tblRetailer.setLastUser(retailerDetail.getLastUser());
-		tblRetailer.setLastModifiedDateTime(retailerDetail.getLastModifiedDateTime());
+		//tblRetailer.setLastUser(retailerDetail.getLastUser());
+		//tblRetailer.setLastModifiedDateTime(retailerDetail.getLastModifiedDateTime());
+		tblRetailer.setLastUser(username);
+		tblRetailer.setLastModifiedDateTime(now);
 		tblRetailer.setBuyerClass(retailerDetail.getBuyerClass());
 		if (retailerDetail.getAmUserID() == 0 ){
 			tblRetailer.setAmUserID(null);
