@@ -57,6 +57,8 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     public void createContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts";
         log.debug("call the vendor api:{}", endpoint);
+        // temp log
+        log.warn("contract request : {}, {}, {}", request.getWholeSalerID(), originalVendorContractHistoryId, request.getVendorContractPlanID());
         ContractHistoryCommand newRequest = new ContractHistoryCommand(request, originalVendorContractHistoryId);
         httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
     }
@@ -104,6 +106,8 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         private String memo;
         private Boolean isContractRevised;
 
+        private Integer commissionBaseDateCode;
+
         private ContractHistoryCommand(SetVendorContractParameter request, Long originalVendorContractHistoryId) {
             this.vendorId = request.getWholeSalerID();
             this.contractHistoryId = originalVendorContractHistoryId;
@@ -119,6 +123,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
             this.dateFrom = SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()).toLocalDateTime().toString();
             this.memo = request.getMemo();
             this.isContractRevised = request.getVendorContractRowAdd();
+            this.commissionBaseDateCode = request.getCommissionBaseDateCode();
         }
     }
 

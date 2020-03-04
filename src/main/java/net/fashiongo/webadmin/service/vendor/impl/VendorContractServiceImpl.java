@@ -141,6 +141,8 @@ public class VendorContractServiceImpl implements VendorContractService {
             if (request.isNewVendorContract()) {
                 VendorContractEntity originContractInfo = vendorContractEntityRepository.findOneByWholeSalerID(request.getWholeSalerID());
                 if (originContractInfo == null) {
+                    // temp log
+                    log.warn("original contract request: {}, {}, {}", request.getWholeSalerID(), request.getVendorContractID(), request.getVendorContractPlanID());
                     createContract(request);
                 }  else {
                     modifyContract(originContractInfo, request);
