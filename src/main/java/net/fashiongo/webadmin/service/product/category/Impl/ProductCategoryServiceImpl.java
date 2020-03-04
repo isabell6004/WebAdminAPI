@@ -122,7 +122,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 		return productRequestWrapper.category()
 				.listOrder()
 				.categoryId(parameter.getCategoryid())
-				.parentCategoryId(parameter.getParentcategoryid())
+				.parentCategoryId(Optional.ofNullable(parameter.getParentcategoryid()).orElse(0))
 				.listOrder(parameter.getListorder())
 				.execute();
 	}
