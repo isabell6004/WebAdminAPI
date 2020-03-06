@@ -41,6 +41,19 @@
         </encoder>
     </appender>
 
+    <appender name="FASHIONGO_API_PAYLOAD" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}WebAdminAPI_FashiongoAPIPayload.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}WebAdminAPI_FashiongoAPIPayload.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>300MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M:%line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <springProperty scope="context" name="ACTIVE_PROFILE" source="spring.profiles.active"/>
     <springProfile name="local,tc-dev,tc-stage,tc-beta">
         <property name="appKey" value="DX9IqlKAKNbOxYXR" />
@@ -112,6 +125,9 @@
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="externalApiFailLogger" />
         </logger>
+        <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="FASHIONGO_API_PAYLOAD" />
+        </logger>
     </springProfile>
 
     <springProfile name="tc-dev">
@@ -133,6 +149,9 @@
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="externalApiFailLogger" />
         </logger>
+        <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="FASHIONGO_API_PAYLOAD" />
+        </logger>
     </springProfile>
 
     <springProfile name="tc-stage">
@@ -150,6 +169,9 @@
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
         </logger>
+        <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="FASHIONGO_API_PAYLOAD" />
+        </logger>
     </springProfile>
 
     <springProfile name="tc-beta">
@@ -166,6 +188,9 @@
         <logger name="net.fashiongo.webadmin" level="INFO" additivity="false">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="FASHIONGO_API_PAYLOAD" />
         </logger>
     </springProfile>
 
@@ -189,5 +214,10 @@
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="externalApiFailLogger" />
         </logger>
+
+        <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="FASHIONGO_API_PAYLOAD" />
+        </logger>
+
     </springProfile>
 </configuration>

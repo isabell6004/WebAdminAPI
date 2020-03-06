@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +20,8 @@ import java.util.Map;
 @Slf4j
 public class HttpClientWrapper {
 
+    // debug logger
+    private final static Logger logger = LoggerFactory.getLogger("fashiongoApiPayloadLogger");
     private RestTemplate restTemplateWrapper;
 
     public HttpClientWrapper (RestTemplate restTemplateWrapper) {
@@ -50,6 +54,7 @@ public class HttpClientWrapper {
         }
 
         try {
+            logger.info("endpoint: {}, payload : {}", endpoint, payload); // temporary
             log.debug("endpoint: {}, payload : {}", endpoint, payload);
             HttpEntity<String> requestEntity = new HttpEntity<>(payload, headers);
             ResponseEntity<String> response = restTemplateWrapper.exchange(endpoint, method, requestEntity, String.class);
