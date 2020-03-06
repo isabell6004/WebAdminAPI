@@ -88,6 +88,9 @@ public class RenewalBuyerService {
 	private SecurityUserEntityRepository securityUserEntityRepository;
 	
 	@Autowired
+	private BuyerAddressHistoryEntityRepository buyerAddressHistoryEntityRepository;
+	
+	@Autowired
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
 
@@ -569,6 +572,9 @@ public class RenewalBuyerService {
 			retailerEntity.setLastModifiedDateTime(NOW);
 
 			retailerEntityRepository.saveAndFlush(retailerEntity);
+			
+			// save buyer billing address change history
+			buyerAddressHistoryEntityRepository.save(BuyerAddressHistoryEntity.createForBillingAddress(retailerEntity, sessionUserId));
 			return 1;
 		} catch (Exception e) {
 			log.warn(e.getMessage(),e);
@@ -604,6 +610,9 @@ public class RenewalBuyerService {
 			xShipAddressEntity.setShipFax(shippingInfo.getShipFax());
 			xShipAddressEntity.setLastUser(sessionUserId);
 			xShipAddressEntity.setLastModifiedDateTime(NOW);
+			
+			// save buyer shipping address change history
+			buyerAddressHistoryEntityRepository.save(BuyerAddressHistoryEntity.createForShippingAddress(xShipAddressEntity, sessionUserId));
 
 			if(xShipAddressEntity.isDefaultYN()) {
 				retailerEntityRepository.findById(xShipAddressEntity.getCustID2()).ifPresent(retailerEntity -> {
@@ -614,8 +623,13 @@ public class RenewalBuyerService {
 					retailerEntity.setCountry(shippingInfo.getShipCountry2());
 					retailerEntity.setPhone(shippingInfo.getShipPhone());
 					retailerEntity.setFax(shippingInfo.getShipFax());
+					retailerEntity.setLastUser(sessionUserId);
+                    retailerEntity.setLastModifiedDateTime(NOW);
 
 					retailerEntityRepository.save(retailerEntity);
+					
+					// save buyer company address change history
+					buyerAddressHistoryEntityRepository.save(BuyerAddressHistoryEntity.createForCompanyAddress(retailerEntity, sessionUserId));
 				});
 			}
 

@@ -15,7 +15,6 @@ import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMedia;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPick;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
@@ -333,46 +332,7 @@ public class SitemgmtController {
 		
 		return results;
 	}
-	
-	
-	/**
-	 * 
-	 * Set Category
-	 * 
-	 * @since 2018. 10. 23.
-	 * @author Nayeon Kim
-	 * @param SetCategoryParameter
-	 * @return
-	 */
-	@RequestMapping(value = "setcategory", method = RequestMethod.POST)
-	public JsonResponse<Integer> setCategory(@RequestBody SetCategoryParameter parameters) {
-		ResultResponse<Integer> result = sitemgmtService.setCategory(parameters);
-		
-		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
-		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
-		
-		return new JsonResponse<Integer>(result.getSuccess(), result.getMessage(), result.getCode(), result.getPk(),result.getData());
-	}
 
-	/**
-	 * 
-	 * Set Category List Order
-	 * 
-	 * @since 2018. 10. 23.
-	 * @author Nayeon Kim
-	 * @param SetCategoryListOrderParameter
-	 * @return
-	 */
-	@RequestMapping(value = "setcategorylistorder", method = RequestMethod.POST)
-	public JsonResponse<List<CategoryListOrder>> setCategoryListOrder(@RequestBody SetCategoryListOrderParameter parameters) {
-		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
-		
-		cacheService.GetRedisCacheEvict("CategoryVendors", null); // When a vendor is activated or deactivated
-		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
-		
-		return new JsonResponse<List<CategoryListOrder>>(true, "Updated successfully!", null, result);
-	}
-	
     /**
     *
     * Get Category Vendor List
@@ -497,47 +457,7 @@ public class SitemgmtController {
 		
 		return results;
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 29.
-	 * @author Reo
-	 * @param parameter
-	 * @return
-	 */
-	@RequestMapping(value="setproductattributes", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setProductAttributes(@RequestBody SetProductAttributesParameter parameter) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
-		
-		ResultCode result = sitemgmtService.setProductAttributes(parameter);
-		cacheService.GetRedisCacheEvict("BodySizeVendors", null);
-		
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 29.
-	 * @author Reo
-	 * @param parameter
-	 * @return
-	 */
-	@RequestMapping(value="setproductattributesactive", method=RequestMethod.POST)
-	public JsonResponse<ResultCode> setProductAttributesActive(@RequestBody SetProductAttributesParameter parameter) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
-		
-		ResultCode result = sitemgmtService.setProductAttributesActive(parameter);
-		results.setData(result);
-		results.setSuccess(true);
-		
-        return results;
-	}
-	
+
 	/**
 	 * Set NewTodayDeal
 	 * 
@@ -822,27 +742,6 @@ public class SitemgmtController {
 		
 		return results;
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 31.
-	 * @author Reo
-	 * @param parameter
-	 * @return
-	 */
-	@RequestMapping(value = "setproductattributesmapping", method = RequestMethod.POST)
-	public JsonResponse<ResultCode> setProductAttributesMapping(@RequestBody SetProductAttributesMappingParameter parameter) {
-		JsonResponse<ResultCode> results = new JsonResponse<ResultCode>(false, null, 0, null);
-		
-		ResultCode result = sitemgmtService.setProductAttributesMapping(parameter);
-		cacheService.GetRedisCacheEvict("BodySizeVendors", null);
-		results.setData(result);
-		results.setSuccess(true);
-		
-		return results;
-	}
-	
 
 	/**
 	 *
