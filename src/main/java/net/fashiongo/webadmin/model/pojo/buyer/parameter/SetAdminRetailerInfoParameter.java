@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.model.pojo.buyer.parameter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -20,5 +21,11 @@ public class SetAdminRetailerInfoParameter {
 
 		@JsonProperty("currentStatus")
 		private int currentStatus;
+
+		@JsonProperty("lastModifiedDateTime")
+		private LocalDateTime lastModifiedDateTime;
+		
+		@JsonProperty("lastUser")
+		private String lastUser;		
 	}
 }

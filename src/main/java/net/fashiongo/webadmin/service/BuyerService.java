@@ -88,16 +88,21 @@ public class BuyerService extends ApiService {
 	@Transactional
 	public void setAdminRetailerInfo(List<SetAdminRetailerInfoParameter.RetailerInfo> retailerCompanyList) {
 		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
 
 		for (SetAdminRetailerInfoParameter.RetailerInfo retailerInfo : retailerCompanyList) {
 			Optional<RetailerCompany> retailerCompanyOptional = retailerCompanyRepository.findById(retailerInfo.getRetailerId());
 			retailerCompanyOptional.ifPresent(tblRetailer -> {
 				String statusBefore = tblRetailer.getActive().toUpperCase() + tblRetailer.getCurrentStatus();
 				String statusAfter = retailerInfo.getActive().toUpperCase() + retailerInfo.getCurrentStatus();
+				//LocalDateTime lastModifiedDateTime = now;
 
 				// save tblRetailer
 				tblRetailer.setActive(retailerInfo.getActive());
 				tblRetailer.setCurrentStatus(retailerInfo.getCurrentStatus());
+				tblRetailer.setLastModifiedDateTime(now);
+				tblRetailer.setLastUser(username);
+				
 				retailerCompanyRepository.save(tblRetailer);
 
 				// save aspnet_membership
