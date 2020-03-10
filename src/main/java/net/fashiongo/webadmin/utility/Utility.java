@@ -5,12 +5,14 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -155,13 +157,13 @@ public class Utility {
 	
 	public static void HttpResponse(String exceptionMsg) throws Throwable {
 		HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getResponse();
-	    
+
 		JsonResponse<String> res = new JsonResponse<String>();
 		res.setSuccess(false);
 		res.setCode(-1);
 		res.setMessage(exceptionMsg);
 		res.setData(null);
-		
+
 	    ObjectMapper om = new ObjectMapper();
 		String returnStr = om.writeValueAsString(res);
 		OutputStream ostr = response.getOutputStream();
@@ -169,7 +171,24 @@ public class Utility {
 		ostr.flush();
 		ostr.close();
 	}
-	
+
+	//FMG/118
+	public static void sendUnAuthorized(String message) throws IOException {
+
+		JsonResponse<String> body = JsonResponse.fail(message);
+		String msg = new ObjectMapper().writeValueAsString(body);
+
+		HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getResponse();
+
+		if (response != null) {
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			ServletOutputStream os = response.getOutputStream();
+			os.write(msg.getBytes());
+			os.flush();
+			os.close();
+		}
+	}
+
 	/**
 	 * 
 	 * Description Example

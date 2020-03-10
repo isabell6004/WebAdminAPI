@@ -8,6 +8,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -16,8 +17,9 @@ import net.fashiongo.webadmin.config.security.TokenAuthenticationService;
 import net.fashiongo.webadmin.utility.Utility;
 
 
+@Slf4j
 public class JWTAuthenticationFilter extends GenericFilterBean {
-	
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 		Authentication authentication;
@@ -27,11 +29,11 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 			filterChain.doFilter(request,response);
 		} catch (Exception e) {
 			try {
-				Utility.HttpResponse(e.getMessage());
-			} catch (Throwable e1) {
-				e1.printStackTrace();
+				//FGM/118
+				Utility.sendUnAuthorized(e.getMessage());
+			} catch (Exception ex) {
+				log.error("Utility.sendUnAuthorized : {0}", ex);
 			}
 		}
 	}
-
 }
