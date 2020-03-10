@@ -33,12 +33,10 @@ public class TblRetailerNews {
 	@JsonProperty("RetailerID")
 	private Integer retailerID;
 	
-	@Convert(converter = HtmlEscapeConverter.class)
 	@Column(name = "NewsTitle")
 	@JsonProperty("NewsTitle")
 	private String newsTitle;
 	
-	@Convert(converter = HtmlEscapeConverter.class)
 	@Column(name = "NewsContent")
 	@JsonProperty("NewsContent")
 	private String newsContent;
@@ -91,6 +89,7 @@ public class TblRetailerNews {
 		return newsTitle;
 	}
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	public void setNewsTitle(String newsTitle) {
 		this.newsTitle = newsTitle;
 	}
@@ -99,6 +98,7 @@ public class TblRetailerNews {
 		return newsContent;
 	}
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	public void setNewsContent(String newsContent) {
 		this.newsContent = newsContent;
 	}

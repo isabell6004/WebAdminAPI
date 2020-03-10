@@ -34,18 +34,15 @@ public class Category implements Serializable {
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 
-	@Convert(converter = HtmlEscapeConverter.class)
 	@JsonProperty("CategoryName")
 	@Column(name = "CategoryName")
 	private String categoryName;
 
-	@Convert(converter = HtmlEscapeConverter.class)
 	@Transient
 	@JsonProperty("CategoryName2")
 	@Column(name = "CategoryName2")
 	private String categoryName2;
 
-	@Convert(converter = HtmlEscapeConverter.class)
 	@JsonProperty("CategoryDescription")
 	@Column(name = "CategoryDescription")
 	private String categoryDescription;
@@ -94,6 +91,7 @@ public class Category implements Serializable {
 		return categoryName;
 	}
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
@@ -102,6 +100,7 @@ public class Category implements Serializable {
 		return categoryName2;
 	}
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	public void setCategoryName2(String categoryName2) {
 		this.categoryName2 = categoryName2;
 	}
@@ -110,6 +109,7 @@ public class Category implements Serializable {
 		return categoryDescription;
 	}
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	public void setCategoryDescription(String categoryDescription) {
 		this.categoryDescription = categoryDescription;
 	}
