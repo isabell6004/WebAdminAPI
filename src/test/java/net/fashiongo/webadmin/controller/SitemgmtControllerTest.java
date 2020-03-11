@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.controller.sitemgmt.SitemgmtController;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetSEOResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetSEOParameter;
 import net.fashiongo.webadmin.utility.JsonResponse;
