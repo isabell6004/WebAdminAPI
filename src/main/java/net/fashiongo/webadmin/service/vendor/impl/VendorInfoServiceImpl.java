@@ -119,12 +119,12 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         String originalUserId = wholeSaler.getUserId();
         Integer result = setVendorBasicInfo(wholeSaler, vendorDetailInfo, 1, null, null, null, 0);
         if (result == 1) {
+            WebAdminLoginUser userInfo = Utility.getUserInfo();
+            vendorInfoNewService.update(vendorDetailInfo, originalUserId, userInfo.getUserId(), userInfo.getUsername());
+
             setDirCompanyNameChangeHistory(vendorDetailInfo, request.getCompanyNameTemp());
             cacheService.cacheEvictVendor(request.getWid());
         }
-
-        WebAdminLoginUser userInfo = Utility.getUserInfo();
-        vendorInfoNewService.update(vendorDetailInfo, originalUserId, userInfo.getUserId(), userInfo.getUsername());
 
         return result;
     }
