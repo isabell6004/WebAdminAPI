@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.service;
 
 import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.BuyerEmailHistoryEntity;
+import net.fashiongo.webadmin.data.repository.primary.BuyerEmailHistoryEntityRepository;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerDetailParameter;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAdminRetailerInfoParameter;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetAttachedFileParameter;
@@ -44,6 +46,9 @@ public class BuyerService extends ApiService {
 	@Autowired
 	private BuyerStatusChangeLogRepository buyerStatusChangeLogRepository;
 
+	@Autowired
+	private BuyerEmailHistoryEntityRepository buyerEmailHistoryEntityRepository;
+
 	/**
 	 * Description Example
 	 *
@@ -83,16 +88,21 @@ public class BuyerService extends ApiService {
 	@Transactional
 	public void setAdminRetailerInfo(List<SetAdminRetailerInfoParameter.RetailerInfo> retailerCompanyList) {
 		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
 
 		for (SetAdminRetailerInfoParameter.RetailerInfo retailerInfo : retailerCompanyList) {
 			Optional<RetailerCompany> retailerCompanyOptional = retailerCompanyRepository.findById(retailerInfo.getRetailerId());
 			retailerCompanyOptional.ifPresent(tblRetailer -> {
 				String statusBefore = tblRetailer.getActive().toUpperCase() + tblRetailer.getCurrentStatus();
 				String statusAfter = retailerInfo.getActive().toUpperCase() + retailerInfo.getCurrentStatus();
+				//LocalDateTime lastModifiedDateTime = now;
 
 				// save tblRetailer
 				tblRetailer.setActive(retailerInfo.getActive());
 				tblRetailer.setCurrentStatus(retailerInfo.getCurrentStatus());
+				tblRetailer.setLastModifiedDateTime(now);
+				tblRetailer.setLastUser(username);
+				
 				retailerCompanyRepository.save(tblRetailer);
 
 				// save aspnet_membership
@@ -110,6 +120,7 @@ public class BuyerService extends ApiService {
 	@Transactional
 	public int setAdminRetailerDetail(SetAdminRetailerDetailParameter setAdminRetailerDetailParam) {
 		LocalDateTime now = LocalDateTime.now();
+		String username = Utility.getUsername();
 
 		SetAdminRetailerDetailParameter.RetailerDetail retailerDetail = setAdminRetailerDetailParam.getRetailerDetail();
 		RetailerCompany tblRetailer = retailerCompanyRepository.findById(retailerDetail.getRetailerId()).orElseThrow(() -> new RuntimeException("Retailer not exists."));
@@ -139,6 +150,9 @@ public class BuyerService extends ApiService {
 					paymentCustomer.setModifiedOn(now);
 					paymentCustomerRepository.save(paymentCustomer);
 				});
+
+				// save buyer user ID change history
+				buyerEmailHistoryEntityRepository.save(BuyerEmailHistoryEntity.create(retailerDetail.getRetailerId(), retailerDetail.getUserId(), Utility.getUsername()));
 			});
 		}
 
@@ -158,8 +172,18 @@ public class BuyerService extends ApiService {
 		tblRetailer.setTerminatedNote(retailerDetail.getTerminatedNote());
 		tblRetailer.setWebSite(retailerDetail.getWebSite());
 		tblRetailer.setEMail(retailerDetail.getUserId());
-		tblRetailer.setLastUser(retailerDetail.getLastUser());
-		tblRetailer.setLastModifiedDateTime(retailerDetail.getLastModifiedDateTime());
+		//tblRetailer.setLastUser(retailerDetail.getLastUser());
+		//tblRetailer.setLastModifiedDateTime(retailerDetail.getLastModifiedDateTime());
+		tblRetailer.setLastUser(username);
+		tblRetailer.setLastModifiedDateTime(now);
+		tblRetailer.setBuyerClass(retailerDetail.getBuyerClass());
+		if (retailerDetail.getAmUserID() == 0 ){
+			tblRetailer.setAmUserID(null);
+		}
+		else {
+			tblRetailer.setAmUserID(retailerDetail.getAmUserID());
+		}
+
 		retailerCompanyRepository.save(tblRetailer);
 
 		// save aspnet_membership

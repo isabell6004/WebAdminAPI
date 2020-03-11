@@ -10,8 +10,10 @@ public class SetPaymentAccountBankParameter {
     @JsonProperty(value = "wholeSalerId")
     private Integer wholeSalerId;
 
+    /*
     @JsonProperty(value = "accountHolderName")
     private String accountHolderName;
+    */
 
     @JsonProperty(value = "accountNo")
     private String accountNo;

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class SetHoldVendorParameter {
     @JsonProperty(value = "WholeSalerID")
-    private Integer wholeSalerID;
+    private Integer wholeSalerID; 
 
     @JsonProperty(value = "HoldType")
     private Integer holdType;

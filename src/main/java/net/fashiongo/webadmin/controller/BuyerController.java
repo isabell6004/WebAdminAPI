@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
+import net.fashiongo.webadmin.data.entity.primary.SecurityUserEntity;
 import net.fashiongo.webadmin.data.model.buyer.*;
 import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.*;
@@ -485,5 +486,22 @@ public class BuyerController {
 		response.setSuccess(true);
 		response.setData(modifiedByBuyer);
 		return response;
+	}
+	
+	@GetMapping(value = "getretailersecurityusers")
+	public JsonResponse<List<SecurityUserEntity>> getretailersecurityusers() {
+    	JsonResponse<List<SecurityUserEntity>> response = new JsonResponse<>(false, null, null);
+
+    	try {
+			List<SecurityUserEntity> result = renewalBuyerService.getRetailerSecurityUsers();
+
+			response.setSuccess(true);
+			response.setData(result);
+			response.setMessage("success");
+		} catch (Exception ex) {
+    		response.setMessage("fail");
+		}
+
+    	return response;
 	}
 }

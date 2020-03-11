@@ -2,10 +2,17 @@ package net.fashiongo.webadmin.data.model.vendor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Getter
+@Setter
 public class SetVendorContractParameter {
 
     @JsonProperty(value = "VendorContractID")
@@ -67,4 +74,17 @@ public class SetVendorContractParameter {
 
     @JsonProperty(value = "CommissionBaseDateCode")
     private Integer commissionBaseDateCode;
+
+    public static Timestamp getVendorContractFrom(String vendorContractFromDateString) {
+        Date vendorContractFromDate = null;
+        try {
+            vendorContractFromDate = StringUtils.isEmpty(vendorContractFromDateString) ? new Date() : new SimpleDateFormat("MM/dd/yyyy").parse(vendorContractFromDateString);
+        } catch (ParseException e) {
+        }
+        return new Timestamp(vendorContractFromDate.getTime());
+    }
+
+    public boolean isNewVendorContract() {
+        return (this.getVendorContractID() == null || this.getVendorContractID() == 0);
+    }
 }

@@ -40,4 +40,10 @@ public class JustTest {
         log.debug("period : {}", period);
 
     }
+
+    @Test(expected = NullPointerException.class)
+    public void null_test_Long_valueof() {
+        Long test = null;
+        Long.valueOf(test);
+    }
 }

@@ -43,4 +43,9 @@ public class ConsolidationEntity {
     @Column(name = "waived_amount_by_fg") private BigDecimal waivedAmountByFg;
     @Column(name = "TrackingNumber") private String trackingNumber;
     @Column(name = "CreditCardID") private Integer creditCardId;
+    @Column(name = "BuyerCompanyName") private String buyerCompanyName;
+    @Column(name = "RetailerID") private Integer retailerID;
+    @Column(name = "NameOnCard") private String nameOnCard;
+    @Column(name = "Last4Digit") private String last4Digit;
+    @Column(name = "CardType") private String cardType;
 }

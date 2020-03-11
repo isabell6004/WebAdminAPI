@@ -46,6 +46,7 @@ public class WAPaymentService extends ApiService {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public GetPaymentStatusListResponse getPaymentStatusList(GetPaymentStatusListParameter param) {
         GetPaymentStatusListResponse result = new GetPaymentStatusListResponse();
         String spName = "up_wa_pay_GetPaymentStatusList_v1";
@@ -62,13 +63,14 @@ public class WAPaymentService extends ApiService {
         params.add(param.getTransactionType());
         params.add(param.getSearchSuccess());
         params.add(param.getOrderBy());
-        List<Object> results = jdbcHelper.executeSP(spName, params, PaymentStatusList.class, Total.class);
+        List<Object> results = jdbcHelper.executeSP(spName, params, PaymentStatusList.class, net.fashiongo.webadmin.data.model.Total.class);
         result.setPaymentStatusList((List<PaymentStatusList>) results.get(0));
-        result.setTotal((List<Total>) results.get(1));
+        result.setTotal((List<net.fashiongo.webadmin.data.model.Total>) results.get(1));
         return result;
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public GetPendingPaymentTransactionResponse getPendingPaymentTransaction(GetPendingPaymentTransactionParameter param) {
         GetPendingPaymentTransactionResponse result = new GetPendingPaymentTransactionResponse();
         String spName = "up_wa_pay_GetPendingPaymentTransaction";
@@ -81,6 +83,7 @@ public class WAPaymentService extends ApiService {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public List<CodeCreditCardType> getCreditCardType() {
         String spName = "up_wa_Pay_GetCreditCardType";
         List<Object> params = new ArrayList<>();
@@ -93,6 +96,7 @@ public class WAPaymentService extends ApiService {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public GetAllSavedCreditCardInfoResponse getAllSavedCreditCardInfo(GetAllSavedCreditCardInfoParameter param) {
         GetAllSavedCreditCardInfoResponse result = new GetAllSavedCreditCardInfoResponse();
         String spName = "up_wa_Pay_GetCreditCardList";
@@ -132,7 +136,7 @@ public class WAPaymentService extends ApiService {
 
                 EntityActionLog b = new EntityActionLog();
                 b.setEntityTypeID(1);
-                b.setEntityID(1);
+                b.setEntityID(a.getOrderPaymentStatusID());
                 b.setActionID(7002);
                 b.setActedOn(modifiedOn);
                 b.setActedBy(sessionUserID);

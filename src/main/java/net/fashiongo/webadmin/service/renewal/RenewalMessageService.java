@@ -48,17 +48,20 @@ public class RenewalMessageService {
 	}
 
 	public GetVendorRatingResponse getVendorRating(GetVendorRatingParameter param) {
-		Integer retailerID = param.getRetailerID();
-		Integer wholeSalerID = param.getWholeSalerID();
+		Integer retailerId = param.getRetailerId();
+		Integer wholesalerId = param.getWholesalerId();
 		Integer pageNum = param.getPageNum();
 		Integer pageSize = param.getPageSize();
 		Boolean active = param.getActive();
 		LocalDateTime fromDate = Optional.ofNullable(param.getFromDate()).map(s -> new Date(s)).map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
 		LocalDateTime toDate = Optional.ofNullable(param.getToDate()).map(s -> new Date(s)).map(date -> date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).orElse(null);
-		String additional = param.getAdditional();
 		String orderby = param.getOrderby();
+		Integer score = param.getScore();
+		String retailerCompanyName = param.getRetailerCompanyName();
+		String wholesalerCompanyName = param.getWholesalerCompanyName();
 
-		Page<VendorRating> vendorRatings = wholeSalerRatingEntityRepository.up_wa_GetVendorInfoRating(retailerID, wholeSalerID, pageNum, pageSize, active, additional, fromDate, toDate, orderby);
+		Page<VendorRating> vendorRatings
+				= wholeSalerRatingEntityRepository.up_wa_GetVendorInfoRating(retailerId, wholesalerId, pageNum, pageSize, active, fromDate, toDate, orderby, score, retailerCompanyName, wholesalerCompanyName);
 		return GetVendorRatingResponse.builder()
 				.recCnt(Arrays.asList(Total.builder().recCnt((int) vendorRatings.getTotalElements()).build()))
 				.vendorRatingList(vendorRatings.getContent())

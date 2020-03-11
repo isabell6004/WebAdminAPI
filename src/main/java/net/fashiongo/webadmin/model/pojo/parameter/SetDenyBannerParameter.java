@@ -1,7 +1,5 @@
 package net.fashiongo.webadmin.model.pojo.parameter;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -12,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SetDenyBannerParameter {
 	@JsonProperty("imagerequestid")
 	private Integer imageRequestId;
-	
+
 	@JsonProperty("denialreason")
 	private String denialReason;
 
@@ -31,5 +29,4 @@ public class SetDenyBannerParameter {
 	public void setDenialReason(String denialReason) {
 		this.denialReason = denialReason;
 	}
-
 }

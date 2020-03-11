@@ -3,23 +3,22 @@
  */
 package net.fashiongo.webadmin.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.parameter.*;
+import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
+import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import net.fashiongo.webadmin.service.vendor.BannerRequestService;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,21 +27,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
-import net.fashiongo.webadmin.model.pojo.common.PagedResult;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
-import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author roy
@@ -54,6 +44,9 @@ public class VendorServiceTest {
 	
 	@Autowired
 	VendorService vendorService;
+
+	@Autowired
+	BannerRequestService bannerRequestService;
 
 	@Autowired
 	private RenewalVendorService renewalVendorService;
@@ -168,7 +161,7 @@ public class VendorServiceTest {
 	 */
 	@Test
 	public void testGetVendorImageType() {
-		List<ListVendorImageType> result = vendorService.getVendorImageType();
+		List<ListVendorImageType> result = bannerRequestService.getVendorImageType();
 		if(!CollectionUtils.isEmpty(result)) {
 			assertNotNull(result.get(0));
 		}
@@ -190,7 +183,7 @@ public class VendorServiceTest {
 		parameters.setSearchStatus("Pending");
 		parameters.setSearchType(null);
 		parameters.setOrderby(null);
-		BannerRequestResponse response = renewalVendorService.getBannerRequest(parameters);
+		BannerRequestResponse response = bannerRequestService.getBannerRequest(parameters);
 		if(!CollectionUtils.isEmpty(response.getBannerImageList())) {
 			assertNotNull(response.getBannerImageList());
 			assertNotNull(response.getTotal());
@@ -209,8 +202,7 @@ public class VendorServiceTest {
 		SetDenyBannerParameter parameters = new SetDenyBannerParameter();
 		parameters.setImageRequestId(25565);
 		parameters.setDenialReason("test");
-		ResultCode result = vendorService.setDenyBanner(parameters);
-		assertTrue(result.getResultCode() > 0);
+		bannerRequestService.setDenyBanner(parameters);
 	}
 	
 	/**
@@ -224,8 +216,7 @@ public class VendorServiceTest {
 	public void testSetApproveBanner() {
 		SetDenyBannerParameter parameters = new SetDenyBannerParameter();
 		parameters.setImageRequestId(25565);
-		ResultCode result = vendorService.setApproveBanner(parameters);
-		assertTrue(result.getResultCode() > 0);
+		bannerRequestService.setApproveBanner(parameters);
 	}
 	
 	/**
@@ -239,8 +230,7 @@ public class VendorServiceTest {
 	public void testSetRestoreBanner() {
 		SetDenyBannerParameter parameters = new SetDenyBannerParameter();
 		parameters.setImageRequestId(25565);
-		ResultCode result = vendorService.setRestoreBanner(parameters);
-		assertTrue(result.getResultCode() > 0);
+		bannerRequestService.setRestoreBanner(parameters);
 	}
 	
 	/**
@@ -253,8 +243,7 @@ public class VendorServiceTest {
 	@Test
 	public void testDelBannerRequest() {
 		SetDenyBannerParameter parameters = new SetDenyBannerParameter();
-		ResultCode result = vendorService.delBannerRequest(parameters);
-		assertTrue(result.getResultCode() > 0);
+		bannerRequestService.delBannerRequest(parameters);
 	}
 	
 	/**

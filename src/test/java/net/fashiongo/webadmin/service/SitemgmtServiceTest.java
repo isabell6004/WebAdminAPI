@@ -32,9 +32,7 @@ import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters;
 import net.fashiongo.webadmin.model.pojo.parameter.SetCollectionCategoryParameters;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CodeData;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.ProductAttribute;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.DeleteCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters;
@@ -51,15 +49,12 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTodaydealParamete
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReport2Parameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetTrendReportItemParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.PageSizeParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCollectionCategoryListorderParameters;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCommunicationReasonActiveParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCommunicationReasonParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetFGCatalogParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetNewTodayDealParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetPaidCampaignParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetProductAttributesMappingParameter;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetProductAttributesParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetTodayDealCalendarParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.DeleteCommunicationReasonResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.GetCategoryListResponse;
@@ -353,28 +348,6 @@ public class SitemgmtServiceTest {
 	}
 	
 	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 5.
-	 * @author Reo
-	 */
-	@Ignore
-	@Test
-	public void testSetProductAttributes() {
-		SetProductAttributesParameter parameters = new SetProductAttributesParameter();
-		parameters.setTabNo(1);
-		parameters.setbType("save");
-		parameters.setCodeID(1);
-		parameters.setAttrName("Beadedtest");
-		parameters.setActive(true);
-		
-		ResultCode result = sitemgmtService.setProductAttributes(parameters);
-		if (result != null) {
-			assertTrue(result.getSuccess());
-		}
-	}
-	
-	/**
 	 * Test GetVendorList
 	 * 
 	 * @since 2018. 11. 5.
@@ -385,61 +358,7 @@ public class SitemgmtServiceTest {
 		GetVendorListResponse result = sitemgmtService.getVendorList();
 		assertTrue(result.getVendorSummarylist().size() > 0);
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 5.
-	 * @author Reo
-	 */
-	@Ignore
-	@Test
-	public void testSetProductAttributesActive() {
-		SetProductAttributesParameter parameters = new SetProductAttributesParameter();
-		parameters.setTabNo(1);
-		parameters.setCodeID(1);
-		parameters.setActive(false);
-		
-		ResultCode result = sitemgmtService.setProductAttributesActive(parameters);
-		if(result != null) {
-			assertTrue(result.getSuccess());
-		}
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 5.
-	 * @author Reo
-	 */
-	@Ignore
-	@Test
-	public void testSetProductAttributesMapping() {
-		SetProductAttributesMappingParameter parameters = new SetProductAttributesMappingParameter();
-		parameters.setTabNo(1);
-		parameters.setCategoryID(8);
-		
-		List<ProductAttribute> productAttributeList = new ArrayList<ProductAttribute>();
-		//first row
-		ProductAttribute productAttribute = new ProductAttribute();
-		productAttribute.setCodeID(36);
-		productAttribute.setMapID(0);
-		productAttribute.setCategoryID(8);
-		productAttributeList.add(productAttribute);
-		
-		//second row
-		productAttribute = new ProductAttribute();
-		productAttribute.setCodeID(38);
-		productAttribute.setMapID(0);
-		productAttribute.setCategoryID(8);
-		productAttributeList.add(productAttribute);
-		
-		parameters.setProductAttributeList(productAttributeList);
-		ResultCode result = sitemgmtService.setProductAttributesMapping(parameters);
-		if(result != null) {
-			assertTrue(result.getSuccess());
-		}
-	}
+
 	/**
 	 * Test GetTodaydeal
 	 * 
@@ -926,37 +845,6 @@ public class SitemgmtServiceTest {
 		trendReport.setMiniImage("KMM_MiniImage.png");
 		trendReport.setkMMImage1("KMM_homecoming.jpg");
 		trendReport.setkMMImage2("Unique vintage.png");
-		assertNotNull(result);
-	}
-
-	/**
-	 *
-	 * Test SetCategory
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testSetCategory() {
-
-	}
-
-	/**
-	 *
-	 * Test SetCategoryListOrder
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-    @Ignore
-	@Test
-	public void testSetCategoryListOrder() {
-		SetCategoryListOrderParameter parameters = new SetCategoryListOrderParameter();
-		parameters.setCategoryid(386);
-		parameters.setParentcategoryid(99);
-		parameters.setListorder(101);
-		parameters.setLvl(3);
-		List<CategoryListOrder> result = sitemgmtService.setCategoryListOrder(parameters);
 		assertNotNull(result);
 	}
 }

@@ -85,6 +85,12 @@ public class RenewalBuyerService {
 	private EntityActionLogEntityRepository entityActionLogEntityRepository;
 
 	@Autowired
+	private SecurityUserEntityRepository securityUserEntityRepository;
+	
+	@Autowired
+	private BuyerAddressHistoryEntityRepository buyerAddressHistoryEntityRepository;
+	
+	@Autowired
 	@Qualifier("serviceJsonClient")
 	private HttpClient httpClient;
 
@@ -169,6 +175,8 @@ public class RenewalBuyerService {
 					.userId(retailerEntity.getUserID())
 					.webSite(retailerEntity.getWebSite())
 					.webSiteYN(StringUtils.isEmpty(retailerEntity.getWebSite()) == false ? "Y" : "N")
+					.buyerClass(retailerEntity.getBuyerClass())
+					.amUserId(retailerEntity.getAmUserId())
 					.build();
 
 			AspnetMembershipEntity m = aspnetMembershipEntityRepository.findByUserName(retailerEntity.getUserID()).orElse(null);
@@ -564,6 +572,9 @@ public class RenewalBuyerService {
 			retailerEntity.setLastModifiedDateTime(NOW);
 
 			retailerEntityRepository.saveAndFlush(retailerEntity);
+			
+			// save buyer billing address change history
+			buyerAddressHistoryEntityRepository.save(BuyerAddressHistoryEntity.createForBillingAddress(retailerEntity, sessionUserId));
 			return 1;
 		} catch (Exception e) {
 			log.warn(e.getMessage(),e);
@@ -599,6 +610,9 @@ public class RenewalBuyerService {
 			xShipAddressEntity.setShipFax(shippingInfo.getShipFax());
 			xShipAddressEntity.setLastUser(sessionUserId);
 			xShipAddressEntity.setLastModifiedDateTime(NOW);
+			
+			// save buyer shipping address change history
+			buyerAddressHistoryEntityRepository.save(BuyerAddressHistoryEntity.createForShippingAddress(xShipAddressEntity, sessionUserId));
 
 			if(xShipAddressEntity.isDefaultYN()) {
 				retailerEntityRepository.findById(xShipAddressEntity.getCustID2()).ifPresent(retailerEntity -> {
@@ -609,8 +623,13 @@ public class RenewalBuyerService {
 					retailerEntity.setCountry(shippingInfo.getShipCountry2());
 					retailerEntity.setPhone(shippingInfo.getShipPhone());
 					retailerEntity.setFax(shippingInfo.getShipFax());
+					retailerEntity.setLastUser(sessionUserId);
+                    retailerEntity.setLastModifiedDateTime(NOW);
 
 					retailerEntityRepository.save(retailerEntity);
+					
+					// save buyer company address change history
+					buyerAddressHistoryEntityRepository.save(BuyerAddressHistoryEntity.createForCompanyAddress(retailerEntity, sessionUserId));
 				});
 			}
 
@@ -1064,6 +1083,7 @@ public class RenewalBuyerService {
 		BigDecimal orderamountfrom = Optional.ofNullable(parameter.getOrderamountfrom()).filter(s -> StringUtils.hasLength(s)).map(s -> new BigDecimal(s)).orElse(null);
 		BigDecimal orderamountto = Optional.ofNullable(parameter.getOrderamountto()).filter(s -> StringUtils.hasLength(s)).map(s -> new BigDecimal(s)).orElse(null);
 		Integer wholesalerid = Optional.ofNullable(parameter.getWholesalerid()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
+		Integer buyerclass = parameter.getBuyerclass();
 		Boolean s = parameter.getS();
 
 		List<Object> param = new ArrayList<>();
@@ -1111,6 +1131,7 @@ public class RenewalBuyerService {
 		param.add(wholesalerid);
 		param.add(orderby);
 		param.add(showid);
+		param.add(buyerclass);
 
 		if(csv) {
 			JsonResponse<AdminRetailerCSVResponse> response = new JsonResponse();
@@ -1154,7 +1175,8 @@ public class RenewalBuyerService {
 					checkoutto,
 					wholesalerid,
 					orderby,
-					showid);
+					showid,
+					buyerclass);
 
 			AdminRetailerCSVResponse data = AdminRetailerCSVResponse.builder()
 					.table(adminRetailerList)
@@ -1186,15 +1208,7 @@ public class RenewalBuyerService {
 		JsonResponse jsonResponse = new JsonResponse();
 
 		try {
-
-			EntityActionLogEntity actionLogEntity = new EntityActionLogEntity();
-
-			actionLogEntity.setEntityTypeID(2);
-			actionLogEntity.setActionID(4005);
-			actionLogEntity.setEntityID(parameter.getRid());
-			actionLogEntity.setActedOn(LocalDateTime.now());
-			actionLogEntity.setActedBy(sessionUserId);
-
+			EntityActionLogEntity actionLogEntity = EntityActionLogEntity.create(2, parameter.getRid(), 4005);
 			entityActionLogEntityRepository.save(actionLogEntity);
 
 			jsonResponse.setSuccess(true);
@@ -1220,4 +1234,8 @@ public class RenewalBuyerService {
 				.modifiedByBuyerList(modifiedByBuyers)
 				.build();
 	}
+	
+	public List<SecurityUserEntity> getRetailerSecurityUsers() {
+		return securityUserEntityRepository.findAllActive();
+	}	
 }

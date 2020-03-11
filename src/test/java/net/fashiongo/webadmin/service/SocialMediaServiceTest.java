@@ -7,6 +7,9 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import net.fashiongo.webadmin.data.model.sitemgmt.SocialMediaParameter;
+import net.fashiongo.webadmin.service.sitemgmt.SocialMediaService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.primary.SocialMedia;
+import net.fashiongo.webadmin.data.entity.primary.sitemgmt.SocialMedia;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author roy
@@ -27,7 +30,7 @@ import net.fashiongo.webadmin.model.primary.SocialMedia;
 public class SocialMediaServiceTest {
 	
 	@Autowired
-	SocialMediaService socialMediaService;
+    SocialMediaService socialMediaService;
 
 	@Test
 	public void testGetSocialMedias() {
@@ -41,28 +44,43 @@ public class SocialMediaServiceTest {
 		assertTrue("SocialMediaID should be not largger than 0.", socialMedia.getSocialMediaId() > 0);
 		assertFalse("SocialMedia should be not empty.", StringUtils.isEmpty(socialMedia.getSocialMedia()));
 	}
-	
+
+	@Ignore
+    @Test
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void integrated_save_code_social_media() {
+
+        SocialMediaParameter parameter = new SocialMediaParameter();
+        parameter.setSocialMediaId(0);
+        parameter.setSocialMedia("test");
+        parameter.setIcon("test.png");
+
+        socialMediaService.saveSocialMedia(parameter);
+
+        throw new RuntimeException();
+    }
+
+
 	@Ignore
 	@Test
 	public void testSaveAndDeleteSocialMedia() {
-		SocialMedia socialMedia = new SocialMedia();
-		socialMedia.setSocialMedia("TestSNS");
+
+        SocialMediaParameter parameter = new SocialMediaParameter();
+        parameter.setSocialMedia("TestSNS");
+
+		Boolean result = socialMediaService.saveSocialMedia(parameter);
 		
-		ResultCode resultCode = socialMediaService.saveSocialMedia(socialMedia);
+		assertTrue("success should be true.", result);
+
+        parameter.setSocialMedia(null);
 		
-		assertTrue("success should be true.", resultCode.getSuccess());
-		assertTrue("resultCode should be 1.", resultCode.getResultCode().equals(1));
+		result = socialMediaService.saveSocialMedia(parameter);
 		
-		socialMedia.setSocialMedia(null);
-		
-		resultCode = socialMediaService.saveSocialMedia(socialMedia);
-		
-		assertFalse("success should be false.", resultCode.getSuccess());
-		assertTrue("resultCode should be -1.", resultCode.getResultCode().equals(-1));
-		
+		assertFalse("success should be false.", result);
+
 		Integer socialMediaCount = socialMediaService.getSocialMedias().size();
 		
-		socialMediaService.deleteSocialMedias(socialMedia.getSocialMediaId().toString());
+		socialMediaService.deleteSocialMedias(parameter.getSocialMediaId().toString());
 		Integer socialMediaCountAfterDelete = socialMediaService.getSocialMedias().size();
 		
 		assertEquals("Number of social medias after deletion 1 row should be 1 less than before deletion.", socialMediaCount - socialMediaCountAfterDelete, 1);

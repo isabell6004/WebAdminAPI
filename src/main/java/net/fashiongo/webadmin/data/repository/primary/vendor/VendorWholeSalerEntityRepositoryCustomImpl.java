@@ -4,40 +4,16 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.SimplePath;
-import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
-import net.fashiongo.webadmin.data.entity.primary.QAdVendorEntity;
-import net.fashiongo.webadmin.data.entity.primary.QAspnetMembershipEntity;
-import net.fashiongo.webadmin.data.entity.primary.QCategoryEntity;
-import net.fashiongo.webadmin.data.entity.primary.QCountEntity;
-import net.fashiongo.webadmin.data.entity.primary.QLogVendorHoldEntity;
-import net.fashiongo.webadmin.data.entity.primary.QMapWaUserVendorEntity;
-import net.fashiongo.webadmin.data.entity.primary.QMapWholeSalerGroupEntity;
-import net.fashiongo.webadmin.data.entity.primary.QOrdersEntity;
-import net.fashiongo.webadmin.data.entity.primary.QVendorAdminAccountEntity;
-import net.fashiongo.webadmin.data.entity.primary.QVendorBlockedEntity;
-import net.fashiongo.webadmin.data.entity.primary.QVendorContractEntity;
-import net.fashiongo.webadmin.data.entity.primary.QVendorLambsKeyEntity;
-import net.fashiongo.webadmin.data.entity.primary.QVendorNameHistoryEntity;
-import net.fashiongo.webadmin.data.entity.primary.QWholeSalerEntity;
-import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.entity.primary.vendor.QWholesalerCompanyEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
 import net.fashiongo.webadmin.data.model.common.VendorsCompanyName;
-import net.fashiongo.webadmin.data.model.vendor.GetVendorListParameter;
-import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
-import net.fashiongo.webadmin.data.model.vendor.VendorGroupingSelete;
-import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnSelete;
-import net.fashiongo.webadmin.data.model.vendor.VendorList;
-import net.fashiongo.webadmin.data.model.vendor.VendorListCSV;
+import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.apache.commons.lang3.StringUtils;
@@ -147,7 +123,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
     }
 
     @Override
-    public List<VendorGroupingSelete> findListVendorGroupingSelect(Integer wholeSalerID, Integer[] companyType, String keyword, ArrayList<Integer> categorys, String alphabet, String vendorType) {
+    public List<VendorGroupingSelected> findListVendorGroupingSelect(Integer wholeSalerID, Integer[] companyType, String keyword, ArrayList<Integer> categorys, String alphabet, String vendorType) {
         QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
         QMapWholeSalerGroupEntity M = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
         QCountEntity count = QCountEntity.countEntity;
@@ -157,7 +133,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         StringPath pathVendorType = Expressions.stringPath(W, vendorType);
 
         MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
-        JPASQLQuery<VendorGroupingSelete> jpasqlQuery = new JPASQLQuery<VendorGroupingSelete>(entityManager, mssqlServer2012Templates);
+        JPASQLQuery<VendorGroupingSelected> jpasqlQuery = new JPASQLQuery<VendorGroupingSelected>(entityManager, mssqlServer2012Templates);
 
         Expression<Integer> constant = Expressions.constant(1);
         BooleanExpression expression = Expressions.asNumber(1).eq(constant);
@@ -177,7 +153,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
             expression = expression.and(pathVendorType.startsWith(keyword));
         }
 
-        jpasqlQuery.select(Projections.constructor(VendorGroupingSelete.class,
+        jpasqlQuery.select(Projections.constructor(VendorGroupingSelected.class,
                 M.mapID,
                 M.wholeSalerID2.as("WholeSalerID"),
                 W.companyName,
@@ -192,7 +168,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
     }
 
     @Override
-    public List<VendorGroupingUnSelete> findListVendorGroupingUnSelect(Integer wholeSalerID, Integer[] companyType, String keyword, ArrayList<Integer> categorys, String alphabet, String vendorType) {
+    public List<VendorGroupingUnselect> findListVendorGroupingUnSelect(Integer wholeSalerID, Integer[] companyType, String keyword, ArrayList<Integer> categorys, String alphabet, String vendorType) {
         QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
         QMapWholeSalerGroupEntity M = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
         QCountEntity count = QCountEntity.countEntity;
@@ -201,7 +177,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         StringPath pathVendorType = Expressions.stringPath(W, vendorType);
 
         MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
-        JPASQLQuery<VendorGroupingUnSelete> jpasqlQuery = new JPASQLQuery<VendorGroupingUnSelete>(entityManager, mssqlServer2012Templates);
+        JPASQLQuery<VendorGroupingUnselect> jpasqlQuery = new JPASQLQuery<VendorGroupingUnselect>(entityManager, mssqlServer2012Templates);
 
         Expression<Integer> constant = Expressions.constant(1);
         BooleanExpression expression = Expressions.asNumber(1).eq(constant);
@@ -227,7 +203,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         companyTypes.add(2);
         companyTypes.add(3);
 
-        jpasqlQuery.select(Projections.constructor(VendorGroupingUnSelete.class,
+        jpasqlQuery.select(Projections.constructor(VendorGroupingUnselect.class,
                 W.wholeSalerID.as("WholeSalerID"),
                 W.companyName,
                 W.companyTypeID,

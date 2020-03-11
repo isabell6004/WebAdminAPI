@@ -74,5 +74,5 @@ public class HttpClientConfig {
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		return factory;
 	}
-		
+
 }

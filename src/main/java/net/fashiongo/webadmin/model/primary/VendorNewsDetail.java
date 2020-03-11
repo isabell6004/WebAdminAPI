@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +15,8 @@ import javax.persistence.Table;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import net.fashiongo.webadmin.converter.HtmlEscapeConverter;
 /**
  * 
  * @author DAHYE
@@ -145,10 +148,12 @@ public class VendorNewsDetail implements Serializable {
 		this.wholeSalerID = wholeSalerID;
 	}
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	public void setNewsTitle(String newsTitle) {
 		this.newsTitle = newsTitle;
 	}
 
+	@Convert(converter = HtmlEscapeConverter.class)
 	public void setNewsContent(String newsContent) {
 		this.newsContent = newsContent;
 	}

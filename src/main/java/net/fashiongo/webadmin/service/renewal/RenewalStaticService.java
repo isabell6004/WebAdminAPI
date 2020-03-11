@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.data.repository.primary.QuerySearchRepository;
 import net.fashiongo.webadmin.data.repository.primary.StatisticsWaBestItemPerDayEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemImageServersEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemVendorAdminWebServerEntityRepository;
+import net.fashiongo.webadmin.data.repository.stats.SearchEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -45,6 +46,9 @@ public class RenewalStaticService {
 	@Autowired
 	private QuerySearchRepository querySearchRepository;
 
+	@Autowired
+	private SearchEntityRepository searchEntityRepository;
+
 	public RenewalStaticService(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
@@ -58,18 +62,21 @@ public class RenewalStaticService {
 	}
 
 	public GetHotSearchKeywordResponse getHotSearchKeyword(Integer periodType, LocalDateTime fromDate, LocalDateTime toDate, String keyword) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		List<Object> param = new ArrayList<>();
-		param.add(periodType);
-		param.add(Optional.ofNullable(fromDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
-		param.add(Optional.ofNullable(toDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
-		param.add(keyword);
+//		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//		List<Object> param = new ArrayList<>();
+//		param.add(periodType);
+//		param.add(Optional.ofNullable(fromDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
+//		param.add(Optional.ofNullable(toDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
+//		param.add(keyword);
+//
+//		List<Object> up_wa_getSearchQuery = jdbcHelper.executeSP("up_wa_GetHotSearchKeyword", param, HotSearchKeyword.class);
+//		List<HotSearchKeyword> hotSearchKeywords = (List<HotSearchKeyword>) up_wa_getSearchQuery.get(0);
 
-		List<Object> up_wa_getSearchQuery = jdbcHelper.executeSP("up_wa_GetHotSearchKeyword", param, HotSearchKeyword.class);
-		List<HotSearchKeyword> hotSearchKeywords = (List<HotSearchKeyword>) up_wa_getSearchQuery.get(0);
+
+		List<HotSearchKeyword> hotSearchKeywords1 = searchEntityRepository.getHotSearchKeyword(periodType, fromDate, toDate, keyword);
 
 		return GetHotSearchKeywordResponse.builder()
-				.hotSearchKeywordList(hotSearchKeywords)
+				.hotSearchKeywordList(hotSearchKeywords1)
 				.build();
 	}
 

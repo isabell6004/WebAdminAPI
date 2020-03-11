@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.data.model.payment;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +29,9 @@ public class SetPaymentAccountInfoParameter {
 
     @JsonProperty(value = "country")
     private String country;
+    
+    @JsonProperty(value = "phoneNumber")
+    private String phoneNumber;
 
     @JsonProperty(value = "maxPayoutPerDay")
     private Integer maxPayoutPerDay;
@@ -54,4 +59,13 @@ public class SetPaymentAccountInfoParameter {
     
     @JsonProperty(value = "isLocked")
     private Boolean isLocked;
+    
+    @JsonProperty(value="entityType")
+    private String entityType;
+    
+    @JsonProperty(value = "owners")
+    private List<VendorPayoutInfoOwner> owners;
+    
+    @JsonProperty(value="deleteOwnerIds")
+    private List<Integer> deleteOwnerIds;
 }

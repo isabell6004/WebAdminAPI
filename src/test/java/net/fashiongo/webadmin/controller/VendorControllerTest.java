@@ -1,6 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
-import org.junit.Assert;
+import net.fashiongo.webadmin.controller.vendor.VendorController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

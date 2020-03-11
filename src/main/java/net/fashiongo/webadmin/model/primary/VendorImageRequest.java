@@ -81,4 +81,26 @@ public class VendorImageRequest {
 	@JsonProperty("DeletedBy")
 	@Column(name = "DeletedBy")
 	private String deletedBy;
+
+	public void denyBanner(String denialReason, String username) {
+		LocalDateTime now = LocalDateTime.now();
+
+		this.rejectReason = denialReason;
+		this.decidedOn = now;
+		this.decidedBy = username;
+		this.isApproved = false;
+		this.active = false;
+	}
+
+	public void approveBanner(String username) {
+		this.decidedOn = LocalDateTime.now();
+		this.decidedBy = username;
+		this.isApproved = true;
+		this.active = false;
+	}
+
+	public void restoreBanner() {
+		this.decidedOn = null;
+		this.decidedBy = null;
+	}
 }

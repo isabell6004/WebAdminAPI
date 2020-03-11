@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.model.pojo.payment.parameter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Setter;
 import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
@@ -62,7 +64,7 @@ public class GetAllSavedCreditCardInfoParameter {
 
     @ApiModelProperty(hidden = true)
     @JsonProperty("buyer")
-    @SQLInjectionSafeWithKeywordsFilter
+    @SQLInjectionSafe
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String buyer;
 

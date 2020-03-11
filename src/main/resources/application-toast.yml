@@ -4,16 +4,18 @@ spring:
   redis:
     host: 10.210.24.30
   datasource:
-    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_V2
+    url: jdbc:sqlserver://10.210.24.216;databaseName=FG_V2
   datasource2:
-    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PAY
+    url: jdbc:sqlserver://10.210.24.216;databaseName=FG_PAY
   datasource3:
-    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_EM
+    url: jdbc:sqlserver://10.210.24.216;databaseName=FG_EM
   datasource4:
-    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_PhotoStudio
+    url: jdbc:sqlserver://10.210.24.216;databaseName=FG_PhotoStudio
   datasource5:
-    url: jdbc:sqlserver://10.210.24.204;databaseName=FG_Billing
-  
+    url: jdbc:sqlserver://10.210.24.216;databaseName=FG_Billing
+  datasource6:
+    url: jdbc:sqlserver://10.210.24.216;databaseName=FG_Stats
+
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
@@ -26,12 +28,15 @@ webAdminapi:
   fgPaymentAPI_EndPoint: http://10.210.8.155
   rewardApi:
     endpoint: http://10.210.8.175/v1
+  fashionGoApi:
+    endpoint: http://api.fashiongo.net
+
 server:
   port: 19901
 
 logging:
-  config: classpath:log4j2-toast.xml
-  path: /home1/irteam/logs/
+  config: classpath:logback-spring.xml
+  path: /home1/irteam/logs/webadmin_api/
 
 photostudio:
   fullModelPackageIdMap:

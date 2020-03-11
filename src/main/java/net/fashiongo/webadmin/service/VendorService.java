@@ -5,8 +5,10 @@ import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.message.Total;
-import net.fashiongo.webadmin.model.pojo.parameter.*;
-import net.fashiongo.webadmin.model.pojo.response.GetBannerRequestResponse;
+import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.*;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
@@ -21,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -60,12 +60,6 @@ public class VendorService extends ApiService {
 	private AspnetMembershipRepository aspnetMembershipRepository;
 	
 	@Autowired
-	private ListVendorImageTypeRepository listVendorImageTypeRepository;
-	
-	@Autowired
-	private VendorImageRequestRepository vendorImageRequestRepository;
-	
-	@Autowired
 	private FashiongoFormRepository fashiongoFormRepository;
 	
 	@Autowired
@@ -94,9 +88,6 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private ContractPlanRepository contractPlanRepository;
-
-    @PersistenceContext(unitName = "primaryEntityManager")
-    private EntityManager entityManager;
 	
 	/**
 	 * Get vendor list
@@ -271,96 +262,6 @@ public class VendorService extends ApiService {
 	}
 	
 	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @return
-	 */
-	public List<ListVendorImageType> getVendorImageType() {
-		List<ListVendorImageType> result =  listVendorImageTypeRepository.findAllByOrderByVendorImageTypeID();
-		
-		return result;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 * @deprecated remove SP
-	 */
-	@Deprecated
-	public GetBannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters) {
-		GetBannerRequestResponse result = new GetBannerRequestResponse();
-		String spName = "up_wa_GetBannerImage";
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getPageNum());
-		params.add(parameters.getPageSize());
-		params.add(null);
-		params.add(parameters.getSearchKeyword());
-		params.add(parameters.getSearchType());
-		params.add(parameters.getSearchStatus());
-		params.add(null);
-		params.add(parameters.getFromDate());
-		params.add(parameters.getToDate());
-		params.add(parameters.getOrderby());
-		params.add(null);
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorImageRequest.class, TotalCount.class);
-		result.setBannerImageList((List<VendorImageRequest>) _result.get(0));
-		result.setTotalCount((List<TotalCount>) _result.get(1));
-		return result;
-	}
-
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @return
-	 */
-	@Transactional(value = "primaryTransactionManager")
-	public ResultCode setDenyBanner(SetDenyBannerParameter parameters) {
-		ResultCode result = new ResultCode(false, 0, null);
-		VendorImageRequest vir = vendorImageRequestRepository.findOneByImageRequestID(parameters.getImageRequestId());
-		vir.setRejectReason(parameters.getDenialReason());
-		vir.setDecidedOn(LocalDateTime.now());
-		vir.setDecidedBy(Utility.getUsername());
-		vir.setActive(false);
-		vir.setIsApproved(false);
-		vendorImageRequestRepository.save(vir);
-		
-		result.setResultCode(1);
-		result.setSuccess(true);
-		return result;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @return
-	 */
-	@Transactional(value = "primaryTransactionManager")
-	public ResultCode setApproveBanner(SetDenyBannerParameter parameters) {
-		ResultCode result = new ResultCode(false, 0, null);
-		VendorImageRequest vir = vendorImageRequestRepository.findOneByImageRequestID(parameters.getImageRequestId());
-		vir.setDecidedOn(LocalDateTime.now());
-		vir.setDecidedBy(Utility.getUsername());
-		vir.setActive(false);
-		vir.setIsApproved(true);
-		vendorImageRequestRepository.save(vir);
-		
-		result.setResultCode(1);
-		result.setSuccess(true);
-		return result;
-	}
-	
-	/**
 	 * DelVendorCreditCard
 	 * 
 	 * @since 2018. 11. 19.
@@ -373,48 +274,6 @@ public class VendorService extends ApiService {
 		List<Object> params = new ArrayList<Object>();
 		params.add(parameters.getVendorCreditCardIDs());
 		jdbcHelper.executeSP(spName, params);
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@Transactional(value = "primaryTransactionManager")
-	public ResultCode setRestoreBanner(SetDenyBannerParameter parameters) {
-		ResultCode result = new ResultCode(false, 0, null);
-		VendorImageRequest vir = vendorImageRequestRepository.findOneByImageRequestID(parameters.getImageRequestId());
-		vir.setDecidedOn(null);
-		vir.setDecidedBy(null);
-        vendorImageRequestRepository.save(vir);
-		
-		result.setResultCode(1);
-		result.setSuccess(true);
-		return result;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 13.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@Transactional(value = "primaryTransactionManager")
-	public ResultCode delBannerRequest(SetDenyBannerParameter parameters) {
-		ResultCode result = new ResultCode(false, 0, null);
-		VendorImageRequest vir = new VendorImageRequest();
-		vir.setImageRequestID(parameters.getImageRequestId());
-		vendorImageRequestRepository.delete(vir);
-		
-		result.setResultCode(1);
-		result.setSuccess(true);
-		result.setResultMsg(MSG_DELETE_SUCCESS);
-		return result;
 	}
 	
 	/**

@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.model.pojo.payment;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.GeneratedValue;
@@ -89,5 +90,32 @@ public class PaymentStatusList {
 	
 	@JsonProperty("TransactionType") 
 	private Integer transactionType;
+
+	public PaymentStatusList(long rowno, Integer transactionID, Timestamp createdOn, String wholeCompanyName, Integer wholeSalerID, String poNumber, String orderSessionGUID, String retailerCompanyName, Integer retailerID, String firstName, String lastName, BigDecimal totalAmount, String cardNumber, String paymentMethod, String paymentStatus, Integer paymentStatusID, Integer orderID, Integer consolidationID, Integer mergeID, Boolean success, String detail, Integer creditCardID, String declineCode, Integer transactionType) {
+		this.rowno = rowno;
+		this.transactionID = transactionID;
+		this.createdOn = createdOn == null ? null : createdOn.toLocalDateTime();
+		this.wholeCompanyName = wholeCompanyName;
+		this.wholeSalerID = wholeSalerID;
+		this.poNumber = poNumber;
+		this.orderSessionGUID = orderSessionGUID;
+		this.retailerCompanyName = retailerCompanyName;
+		this.retailerID = retailerID;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.totalAmount = totalAmount;
+		this.cardNumber = cardNumber;
+		this.paymentMethod = paymentMethod;
+		this.paymentStatus = paymentStatus;
+		this.paymentStatusID = paymentStatusID;
+		this.orderID = orderID;
+		this.consolidationID = consolidationID;
+		this.mergeID = mergeID;
+		this.success = success;
+		this.detail = detail;
+		this.creditCardID = creditCardID;
+		this.declineCode = declineCode;
+		this.transactionType = transactionType;
+	}
 }
 

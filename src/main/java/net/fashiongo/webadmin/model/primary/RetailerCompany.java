@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -79,7 +80,7 @@ public class RetailerCompany {
 
 	@JsonIgnore
 	@Column(name = "LastModifiedDateTime")
-	private Date lastModifiedDateTime;
+	private LocalDateTime lastModifiedDateTime;
 
 	@JsonIgnore
 	@Column(name = "SellerPermitFileName")
@@ -100,5 +101,14 @@ public class RetailerCompany {
 	@JsonIgnore
 	@Column(name = "IsOperatorRead")
 	private Boolean operatorRead;
+	
+	@JsonIgnore
+	@Column(name = "buyer_class")
+	private Integer buyerClass;		
+
+	@JsonIgnore
+	@Column(name = "am_user_id")
+	private Integer amUserID;		
+
 
 }

@@ -7,13 +7,15 @@ import java.time.LocalDateTime;
 
 public interface WholeSalerRatingEntityRepositoryCustom {
 
-	Page<VendorRating> up_wa_GetVendorInfoRating(Integer retailerID
-			, Integer WholeSalerID
-			, int pageNum
-			, int pageSize
-			, Boolean active
-			, String additional
-			, LocalDateTime from
-			, LocalDateTime to
-			, String orderBy);
+    Page<VendorRating> up_wa_GetVendorInfoRating(Integer retailerId
+            , Integer wholesalerId
+            , int pageNum
+            , int pageSize
+            , Boolean active
+            , LocalDateTime from
+            , LocalDateTime to
+            , String orderBy
+            , Integer score
+            , String retailerCompanyName
+            , String wholesalerCompanyName);
 }

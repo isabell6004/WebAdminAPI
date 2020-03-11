@@ -23,7 +23,10 @@ spring:
     url: jdbc:sqlserver://10.210.24.29;databaseName=FG_Billing
     dbcp2:
       maxTotal: 20
-
+  datasource6:
+    url: jdbc:sqlserver://10.210.24.29;databaseName=FG_Stats
+    dbcp2:
+      maxTotal: 20
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
@@ -34,12 +37,14 @@ webAdminapi:
   fgVendorAPI_EndPoint: http://127.0.0.1:28501
   statsAPI_EndPoint: http://127.0.0.1:27601
   fgPaymentAPI_EndPoint: http://127.0.0.1:29201
+  fashionGoApi:
+    endpoint: http://10.210.16.203:17301
 server:
   port: 29901
 
 logging:
-  config: classpath:log4j2-tc-beta.xml
-  path: /home1/irteam/logs/
+  config: classpath:logback-spring.xml
+  path: /home1/irteam/logs/webadmin_api/
 
 bid-redis:
   database: 4
