@@ -191,6 +191,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
         private Boolean isAdBlock;
 
+        private Boolean isUsePgService;
         private BigDecimal transactionFeeRate1;
         private BigDecimal transactionFeeRate2;
         private BigDecimal transactionFeeRate1Intl;
@@ -214,6 +215,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
             this.isAdBlock = vendorDetailInfo.getIsADBlock();
 
+            this.isUsePgService = vendorDetailInfo.getUseCreditCardPaymentService();
             this.transactionFeeFixed = (vendorDetailInfo.getTransactionFeeFixed() != null) ? BigDecimal.valueOf(vendorDetailInfo.getTransactionFeeFixed()) : null;
             this.transactionFeeRate1 = (vendorDetailInfo.getTransactionFeeRate1() != null) ? BigDecimal.valueOf(vendorDetailInfo.getTransactionFeeRate1()) : null;
             this.transactionFeeRate1Intl = (vendorDetailInfo.getTransactionFeeRate1Intl() != null) ? BigDecimal.valueOf(vendorDetailInfo.getTransactionFeeRate1Intl()) : null;
@@ -232,7 +234,6 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
         private String orderNotice;
         private Boolean isConsolidation;
-        private Integer capAccount;
         private String inHouseMemo;
         private String buyerNotice;
         private String memo;
@@ -243,7 +244,6 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             this.buyerNotice = request.getNoticeToAll();
             this.memo = request.getMemo();
             this.isConsolidation = request.getConsolidationYN();
-            this.capAccount = request.getAdminAccountCap();
         }
     }
 
