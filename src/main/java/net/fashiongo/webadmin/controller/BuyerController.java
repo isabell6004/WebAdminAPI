@@ -470,6 +470,16 @@ public class BuyerController {
 
 		return response;
 	}
+	
+	@RequestMapping(value = "getbuyersearchwithhistory", method = RequestMethod.POST)
+	public JsonResponse<AdminRetailerResponse> getBuyerSearchwithOldEmail(@RequestBody GetBuyerSearchWithHistory parameter) {
+		
+		JsonResponse<AdminRetailerResponse> results = new JsonResponse<AdminRetailerResponse>(true, null, null);
+		AdminRetailerResponse response = renewalBuyerService.getBuyerSearchWithHistory(parameter);
+		results.setData(response);
+		
+		return results;
+	}
 
 	@RequestMapping(value = "getmodifiedbybuyerread", method = RequestMethod.POST)
 	public JsonResponse getModifiedByBuyerRead(@RequestBody GetModifiedByBuyerReadParameter parameter) {

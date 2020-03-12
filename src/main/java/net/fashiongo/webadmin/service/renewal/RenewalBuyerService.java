@@ -9,7 +9,7 @@ import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.buyer.*;
 import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
-import net.fashiongo.webadmin.data.repository.primary.buyer.AdvancedSearchRetailerRepository;
+import net.fashiongo.webadmin.data.repository.primary.buyer.*;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -96,6 +96,9 @@ public class RenewalBuyerService {
 
 	@Autowired
 	private AdvancedSearchRetailerRepository advancedSearchRetailerRepository;
+	
+	@Autowired
+	private BuyerSearchWithHistoryRepository buyerSearchWithHistoryRepository;
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -1042,6 +1045,47 @@ public class RenewalBuyerService {
 		}
 	}
 
+	public AdminRetailerResponse getBuyerSearchWithHistory(GetBuyerSearchWithHistory parameter) {	
+		Integer pageNum = parameter.getPagenum();
+		Integer pageSize = parameter.getPagesize();		
+		String orderBy = Optional.ofNullable(parameter.getOrderby()).filter(s -> StringUtils.hasLength(s)).orElse(null);		
+		String userID = Optional.ofNullable(parameter.getUserid()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean isUserIDPartialMatch = parameter.getUseridpartialmatch();
+		Integer retailerID = parameter.getRetailerid();
+		String companyName =Optional.ofNullable(parameter.getCompanyname()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean isCompanyNamePartialMatch = parameter.getCompanynamepartialmatch();
+		Boolean isCompanyNameStartsWith = parameter.getCompanynamestartswith();
+		String firstName = Optional.ofNullable(parameter.getFirstname()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean isFirstNamePartialMatch = parameter.getFirstnamepartialmatch();
+		String lastName = Optional.ofNullable(parameter.getLastname()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean isLastNamePartialMatch = parameter.getLastnamepartialmatch();
+		String oldEmail =Optional.ofNullable( parameter.getOldemail()).filter(s -> StringUtils.hasLength(s)).orElse(null);
+		Boolean isOldEmailPartialMatch = parameter.getOldemailpartialmatch();
+				
+		Page<AdminRetailer> adminRetailerList = buyerSearchWithHistoryRepository.buyerSearchWithHistory(
+				pageNum, 
+				pageSize, 
+				userID, 
+				isUserIDPartialMatch,
+				retailerID,
+				companyName,
+				isCompanyNamePartialMatch,
+				isCompanyNameStartsWith,
+				firstName,
+				isFirstNamePartialMatch,
+				lastName,
+				isLastNamePartialMatch,
+				oldEmail,
+				isOldEmailPartialMatch,
+				orderBy);
+		
+		return AdminRetailerResponse.builder()
+				.table(Arrays.asList(Total.builder().recCnt((int) adminRetailerList.getTotalElements()).build()))
+				.table1(adminRetailerList.getContent())
+				.build();		
+	}
+
+	
 	public JsonResponse getAdminretailer(GetAdminRetailerParameter parameter) {
 		Boolean csv = Optional.ofNullable(parameter.getCsv()).orElse(false);
 		Integer pagenum = parameter.getPagenum();
@@ -1203,6 +1247,7 @@ public class RenewalBuyerService {
 		}
 	}
 
+	
 	@Transactional(transactionManager = "primaryTransactionManager")
 	public JsonResponse getModifiedByBuyerRead(GetModifiedByBuyerReadParameter parameter, String sessionUserId) {
 		JsonResponse jsonResponse = new JsonResponse();
