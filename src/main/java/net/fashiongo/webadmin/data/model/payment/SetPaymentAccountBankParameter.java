@@ -23,4 +23,7 @@ public class SetPaymentAccountBankParameter {
 
     @JsonProperty(value = "modifiedBy")
     private String modifiedBy;
+    
+    @JsonProperty(value = "bankCountry")
+    private String bankCountry;
 }
