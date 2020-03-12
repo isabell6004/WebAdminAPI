@@ -155,8 +155,9 @@ public class VendorContractEntity {
         this.setRepID(request.getRepID());
         this.setPerorder(request.getPerorder() == null ? false : request.getPerorder());
         this.setMemo(StringUtils.isEmpty(request.getMemo()) ? "" : request.getMemo());
-        this.setCreatedBy(Utility.getUsername());
-        this.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
+        //modified for bug fix 
+        //this.setCreatedBy(Utility.getUsername());
+        //this.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()));
         this.setFromContractDate(SetVendorContractParameter.getVendorContractFrom(request.getVendorContractFrom()));
         this.setIsSetupFeeWaived(Optional.ofNullable(request.getIsSetupFeeWaived()).orElse("").equalsIgnoreCase("1"));
         this.setIsLastMonthServiceFeeWaived(Optional.ofNullable(request.getIsLastMonthServiceFeeWaived()).orElse("").equalsIgnoreCase("1"));
