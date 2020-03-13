@@ -50,7 +50,7 @@ public class BuyerSearchWithHistoryRepository {
 	private BuyerEmailHistoryEntityRepository buyerEmailHistoryEntityRepository;
 	
 	@Transactional(transactionManager = "primaryTransactionManager")
-	public Page<AdminRetailer> buyerSearchWithHistory(int pageNum, int pageSize,
+	public Page<BuyerSearch> buyerSearchWithHistory(int pageNum, int pageSize,
 														    String userID,
 	                                                        Boolean isUserIDPartialMatch,
 	                                                        Integer retailerID,
@@ -69,7 +69,7 @@ public class BuyerSearchWithHistoryRepository {
 		long limit = pageSize;
 		
 		MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
-		JPASQLQuery<AdminRetailer> jpasqlQuery = new JPASQLQuery<AdminRetailer>(entityManager,mssqlServer2012Templates);
+		JPASQLQuery<BuyerSearch> jpasqlQuery = new JPASQLQuery<BuyerSearch>(entityManager,mssqlServer2012Templates);
 		QRetailerEntity R = QRetailerEntity.retailerEntity;
 
 		SimplePath<Object> pathHistory = Expressions.path(Object.class, "History");
@@ -163,8 +163,8 @@ public class BuyerSearchWithHistoryRepository {
 
 		
 		
-		QueryResults<AdminRetailer> adminRetailerQueryResults = jpasqlQuery.fetchResults();
-		List<AdminRetailer> results = adminRetailerQueryResults.getResults();
+		QueryResults<BuyerSearch> adminRetailerQueryResults = jpasqlQuery.fetchResults();
+		List<BuyerSearch> results = adminRetailerQueryResults.getResults();
 		long resultsTotal = adminRetailerQueryResults.getTotal();
 
 		PageRequest pageRequest = PageRequest.of(pageNum-1, pageSize);

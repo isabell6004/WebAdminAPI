@@ -17,17 +17,6 @@ import java.util.Optional;
 @Getter
 @Setter
 public class AdminRetailer {
-	
-	public AdminRetailer(Integer retailerID, String companyName, String firstName, String lastName, String userID,String active, Integer currentStatus,Timestamp startingDate) {
-		this.retailerID = retailerID;
-		this.companyName = companyName;
-		this.firstName=firstName;
-		this.lastName =lastName;
-		this.userID = userID;
-		this.active= active;
-		this.currentStatus = currentStatus; 
-		this.startingDate = Optional.ofNullable(startingDate).map(Timestamp::toLocalDateTime).orElse(null);
-	}
 
 	@Column(name = "Active")
 	@JsonProperty("Active")

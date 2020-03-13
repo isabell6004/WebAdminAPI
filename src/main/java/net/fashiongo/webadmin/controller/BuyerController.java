@@ -472,10 +472,10 @@ public class BuyerController {
 	}
 	
 	@RequestMapping(value = "getbuyersearchwithhistory", method = RequestMethod.POST)
-	public JsonResponse<AdminRetailerResponse> getBuyerSearchwithOldEmail(@RequestBody GetBuyerSearchWithHistory parameter) {
+	public JsonResponse<BuyerSearchResponse> getBuyerSearchwithOldEmail(@RequestBody GetBuyerSearchWithHistory parameter) {
 		
-		JsonResponse<AdminRetailerResponse> results = new JsonResponse<AdminRetailerResponse>(true, null, null);
-		AdminRetailerResponse response = renewalBuyerService.getBuyerSearchWithHistory(parameter);
+		JsonResponse<BuyerSearchResponse> results = new JsonResponse<BuyerSearchResponse>(true, null, null);
+		BuyerSearchResponse response = renewalBuyerService.getBuyerSearchWithHistory(parameter);
 		results.setData(response);
 		
 		return results;
