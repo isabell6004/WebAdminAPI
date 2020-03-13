@@ -73,7 +73,7 @@ public class BuyerSearchWithHistoryRepository {
 		QRetailerEntity R = QRetailerEntity.retailerEntity;
 
 		SimplePath<Object> pathHistory = Expressions.path(Object.class, "History");
-		NumberPath<Integer> pathHistory_buyerId = Expressions.numberPath(Integer.class, pathHistory, "buyerId");
+		NumberPath<Integer> pathHistory_buyerId = Expressions.numberPath(Integer.class, pathHistory, "buyer_id");
 		BooleanExpression filter = Expressions.ONE.eq(Expressions.ONE);
 
 		OrderSpecifier orderSpecifier = R.startingDate.desc();
@@ -89,29 +89,31 @@ public class BuyerSearchWithHistoryRepository {
 								AdminRetailer.class,
 								R.retailerID,
 								R.companyName,
-								R.firstName,
-								R.lastName,
-								R.email,
-								R.phone,							
+								R.firstName, 
+								R.lastName, 
+								R.userID, 							
 								R.active,
-								R.currentStatus,
-								R.startingDate.as("[Created On]")
+								R.currentStatus, 
+								R.startingDate
 						)
 				)
 				.from(R);
 
-	
+	    log.error("buyerSearchWithHistory {} ", jpasqlQuery ); 
+		
 		if(oldEmail != null) {
 			JPASQLQuery emailHistory = emailHistory(oldEmail,isOldEmailPartialMatch, mssqlServer2012Templates);
 			jpasqlQuery.innerJoin(emailHistory,pathHistory).on(R.retailerID.eq(pathHistory_buyerId)); 
 		}	
 			
 		
+		filter = filter.and(R.currentStatus.notIn(98));
+		
 		if(userID != null) {
 			if(Objects.equals(true,isUserIDPartialMatch)) {
-				filter = filter.and(R.userID.contains(userID).or(R.email.contains(userID)));
+				filter = filter.and(R.userID.contains(userID));
 			} else {
-				filter = filter.and(R.userID.eq(userID).or(R.email.eq(userID)));
+				filter = filter.and(R.userID.eq(userID));
 			}
 		}
 
