@@ -11,6 +11,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import net.fashiongo.webadmin.data.model.buyer.BuyerSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,19 +52,19 @@ public class BuyerSearchWithHistoryRepository {
 	
 	@Transactional(transactionManager = "primaryTransactionManager")
 	public Page<BuyerSearch> buyerSearchWithHistory(int pageNum, int pageSize,
-														    String userID,
-	                                                        Boolean isUserIDPartialMatch,
-	                                                        Integer retailerID,
-	                                                        String companyName,
-	                                                        Boolean isCompanyNamePartialMatch,
-	                                                        Boolean isCompanyNameStartsWith,
-	                                                        String firstName,
-	                                                        Boolean isFirstNamePartialMatch,
-	                                                        String lastName,
-	                                                        Boolean isLastNamePartialMatch,
-	                                                        String oldEmail,
-	                                                        Boolean isOldEmailPartialMatch,
-	                                                        String orderBy
+													String userID,
+													Boolean isUserIDPartialMatch,
+													Integer retailerID,
+													String companyName,
+													Boolean isCompanyNamePartialMatch,
+													Boolean isCompanyNameStartsWith,
+													String firstName,
+													Boolean isFirstNamePartialMatch,
+													String lastName,
+													Boolean isLastNamePartialMatch,
+													String oldEmail,
+													Boolean isOldEmailPartialMatch,
+													String orderBy
 	) {
 		long offset = (pageNum - 1) * pageSize;
 		long limit = pageSize;

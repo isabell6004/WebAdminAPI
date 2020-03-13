@@ -52,8 +52,6 @@ public class BuyerSearch {
     @JsonProperty("UserID")
     private String userID;
 
-
-
     @Column(name = "Active")
     @JsonProperty("Active")
     private String active;
@@ -67,10 +65,6 @@ public class BuyerSearch {
     @Column(name = "StartingDate")
     @JsonProperty("StartingDate")
     private LocalDateTime startingDate;
-
-    @Column(name = "UserID")
-    @JsonProperty("UserID")
-    private String userID;
 
     @Column(name = "rowno")
     @JsonProperty("rowno")
