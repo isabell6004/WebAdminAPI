@@ -1,19 +1,12 @@
 package net.fashiongo.webadmin.data.model.buyer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-@AllArgsConstructor
 @Getter
 @Setter
 public class AdminRetailer {
