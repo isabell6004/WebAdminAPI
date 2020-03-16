@@ -1062,7 +1062,7 @@ public class RenewalBuyerService {
 		String oldEmail =Optional.ofNullable( parameter.getOldemail()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 		Boolean isOldEmailPartialMatch = parameter.getOldemailpartialmatch();
 				
-		Page<BuyerSearch> adminRetailerList = buyerSearchWithHistoryRepository.buyerSearchWithHistory(
+		Page<BuyerSearch> buyerSearches = buyerSearchWithHistoryRepository.buyerSearchWithHistory(
 				pageNum, 
 				pageSize, 
 				userID, 
@@ -1080,8 +1080,8 @@ public class RenewalBuyerService {
 				orderBy);
 		
 		return BuyerSearchResponse.builder()
-				.table(Arrays.asList(Total.builder().recCnt((int) adminRetailerList.getTotalElements()).build()))
-				.table1(adminRetailerList.getContent())
+				.table(Arrays.asList(Total.builder().recCnt((int) buyerSearches.getTotalElements()).build()))
+				.table1(buyerSearches.getContent())
 				.build();		
 	}
 

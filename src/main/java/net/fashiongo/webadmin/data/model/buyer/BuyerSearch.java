@@ -66,9 +66,4 @@ public class BuyerSearch {
     @JsonProperty("StartingDate")
     private LocalDateTime startingDate;
 
-    @Column(name = "rowno")
-    @JsonProperty("rowno")
-    private Integer rowno;
-
-
 }

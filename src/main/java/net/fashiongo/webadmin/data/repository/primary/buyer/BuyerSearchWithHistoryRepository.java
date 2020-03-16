@@ -26,7 +26,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.sql.JPASQLQuery;
 
-import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.BuyerEmailHistoryEntity;
 import net.fashiongo.webadmin.data.repository.primary.BuyerEmailHistoryEntityRepository;
 
@@ -34,10 +33,10 @@ import net.fashiongo.webadmin.data.entity.primary.QRetailerEntity;
 import net.fashiongo.webadmin.data.entity.primary.QBuyerEmailHistoryEntity;
 import net.fashiongo.webadmin.data.model.buyer.AdminRetailer;
 import net.fashiongo.webadmin.data.model.buyer.OrderHistory;
+import net.fashiongo.webadmin.data.model.buyer.BuyerSearch;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 
-@Slf4j
 @Repository
 public class BuyerSearchWithHistoryRepository {
 	
@@ -87,7 +86,7 @@ public class BuyerSearchWithHistoryRepository {
 		jpasqlQuery
 				.select(
 						Projections.constructor(
-								AdminRetailer.class,
+								BuyerSearch.class,
 								R.retailerID,
 								R.companyName,
 								R.firstName, 
@@ -100,8 +99,6 @@ public class BuyerSearchWithHistoryRepository {
 				)
 				.from(R);
 
-	    log.error("buyerSearchWithHistory {} ", jpasqlQuery ); 
-		
 		if(oldEmail != null) {
 			JPASQLQuery emailHistory = emailHistory(oldEmail,isOldEmailPartialMatch, mssqlServer2012Templates);
 			jpasqlQuery.innerJoin(emailHistory,pathHistory).on(R.retailerID.eq(pathHistory_buyerId)); 
@@ -160,13 +157,9 @@ public class BuyerSearchWithHistoryRepository {
 		.limit(limit)
 		.orderBy(orderSpecifier);
 		
-		log.info("buyerSearchWithHistory():{} ",jpasqlQuery);	
-
-		
-		
-		QueryResults<BuyerSearch> adminRetailerQueryResults = jpasqlQuery.fetchResults();
-		List<BuyerSearch> results = adminRetailerQueryResults.getResults();
-		long resultsTotal = adminRetailerQueryResults.getTotal();
+		QueryResults<BuyerSearch> buyerSearchQueryResults = jpasqlQuery.fetchResults();
+		List<BuyerSearch> results = buyerSearchQueryResults.getResults();
+		long resultsTotal = buyerSearchQueryResults.getTotal();
 
 		PageRequest pageRequest = PageRequest.of(pageNum-1, pageSize);
 		return PageableExecutionUtils.getPage(results,pageRequest,()-> resultsTotal);
@@ -193,6 +186,5 @@ public class BuyerSearchWithHistoryRepository {
 		
 		return jpasqlQuery;
 	}
-
 
 }
