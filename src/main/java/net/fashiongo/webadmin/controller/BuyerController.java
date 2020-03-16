@@ -470,6 +470,16 @@ public class BuyerController {
 
 		return response;
 	}
+	
+	@RequestMapping(value = "getbuyersearchwithhistory", method = RequestMethod.POST)
+	public JsonResponse<BuyerSearchResponse> getBuyerSearchWithHistory(@RequestBody GetBuyerSearchWithHistory parameter) {
+		
+		JsonResponse<BuyerSearchResponse> results = new JsonResponse<BuyerSearchResponse>(true, null, null);
+		BuyerSearchResponse response = renewalBuyerService.getBuyerSearchWithHistory(parameter);
+		results.setData(response);
+		
+		return results;
+	}
 
 	@RequestMapping(value = "getmodifiedbybuyerread", method = RequestMethod.POST)
 	public JsonResponse getModifiedByBuyerRead(@RequestBody GetModifiedByBuyerReadParameter parameter) {
