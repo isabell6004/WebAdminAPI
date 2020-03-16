@@ -175,6 +175,8 @@ webAdminapi:
   statsAPI_EndPoint: http://10.210.16.205:27601
   adapi:
     endpoint: http://10.210.16.205:18000
+  productApi:
+    endpoint: http://10.210.16.205:17301
   rewardApi:
     endpoint: http://localhost:17401/v1
   jwt:

@@ -3,13 +3,13 @@
  */
 package net.fashiongo.webadmin.dao.primary;
 
-import java.util.List;
-
+import net.fashiongo.webadmin.model.primary.CollectionCategory;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import net.fashiongo.webadmin.model.primary.CollectionCategory;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Sanghyup
@@ -49,4 +49,7 @@ public interface CollectionCategoryRepository extends CrudRepository<CollectionC
 	// deleteByActive
 	void deleteByActive(boolean active);
 
+	List<CollectionCategory> findByCollectionCategoryIDIn(Collection<Integer> collectionCategoryIds);
+
+	List<CollectionCategory> findAllBy();
 }
