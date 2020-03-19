@@ -200,17 +200,18 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setEstablishedYear(requestVendorDetailInfo.getEstablishedYear());
             wholeSaler.setWebSite(requestVendorDetailInfo.getWebSite());
             wholeSaler.setDescription(requestVendorDetailInfo.getDescription());
+
             wholeSaler.setBillStreetNo(requestVendorDetailInfo.getBillStreetNo());
             wholeSaler.setBillStreetNo2(requestVendorDetailInfo.getBillStreetNo2());
             wholeSaler.setBillCity(requestVendorDetailInfo.getBillCity());
             wholeSaler.setBillState(requestVendorDetailInfo.getBillState());
             wholeSaler.setBillZipcode(requestVendorDetailInfo.getBillZipcode());
-            wholeSaler.setCountry(requestVendorDetailInfo.getCountry());
+            wholeSaler.setBillCountry(requestVendorDetailInfo.getBillCountry());
             wholeSaler.setBillPhone(requestVendorDetailInfo.getBillPhone());
             wholeSaler.setBillFax(requestVendorDetailInfo.getBillFax());
+
             wholeSaler.setStreetNo(requestVendorDetailInfo.getStreetNo());
             wholeSaler.setStreetNo2(requestVendorDetailInfo.getStreetNo2());
-
             wholeSaler.setCity(requestVendorDetailInfo.getCity());
             wholeSaler.setState(requestVendorDetailInfo.getState());
             wholeSaler.setZipcode(requestVendorDetailInfo.getZipcode());
