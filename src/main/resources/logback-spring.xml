@@ -61,6 +61,12 @@
     <springProfile name="toast">
         <property name="appKey" value="3hTFATueom0f68dE" />
     </springProfile>
+    <springProfile name="local,tc-dev,tc-stage,tc-beta">
+        <property name="appKeyWebAdmin" value="DX9IqlKAKNbOxYXR" />
+    </springProfile>
+    <springProfile name="toast">
+        <property name="appKeyWebAdmin" value="eTTOwDfLxS2FyVON" />
+    </springProfile>
 
     <appender name="logNCrashLogger" class="ch.qos.logback.classic.AsyncAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -101,6 +107,26 @@
         </appender>
     </appender>
 
+    <appender name="webadminAccessPayloadLogAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="2048"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+
+        <appender name="logNCrashHttpAsync" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
+            <param name="appKey" value="${appKeyWebAdmin}"/>
+            <param name="logType" value="webadmin-api"/>
+            <param name="logSource" value="${ACTIVE_PROFILE}"/>
+            <param name="version" value="0.0.1-SNAPSHOT"/>
+            <param name="debug" value="true"/>
+            <param name="errorCodeType" value="action"/>
+        </appender>
+    </appender>
+
+
     <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
@@ -128,6 +154,10 @@
         <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
             <appender-ref ref="FASHIONGO_API_PAYLOAD" />
         </logger>
+        <logger name="webadminAccessPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="webadminAccessPayloadLogAppender" />
+        </logger>
+
     </springProfile>
 
     <springProfile name="tc-dev">
@@ -152,6 +182,9 @@
         <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
             <appender-ref ref="FASHIONGO_API_PAYLOAD" />
         </logger>
+        <logger name="webadminAccessPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="webadminAccessPayloadLogAppender" />
+        </logger>
     </springProfile>
 
     <springProfile name="tc-stage">
@@ -172,6 +205,9 @@
         <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
             <appender-ref ref="FASHIONGO_API_PAYLOAD" />
         </logger>
+        <logger name="webadminAccessPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="webadminAccessPayloadLogAppender" />
+        </logger>
     </springProfile>
 
     <springProfile name="tc-beta">
@@ -191,6 +227,9 @@
         </logger>
         <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
             <appender-ref ref="FASHIONGO_API_PAYLOAD" />
+        </logger>
+        <logger name="webadminAccessPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="webadminAccessPayloadLogAppender" />
         </logger>
     </springProfile>
 
@@ -214,10 +253,11 @@
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="externalApiFailLogger" />
         </logger>
-
         <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
             <appender-ref ref="FASHIONGO_API_PAYLOAD" />
         </logger>
-
+        <logger name="webadminAccessPayloadLogger" level="INFO" additivity="false">
+            <appender-ref ref="webadminAccessPayloadLogAppender" />
+        </logger>
     </springProfile>
 </configuration>
