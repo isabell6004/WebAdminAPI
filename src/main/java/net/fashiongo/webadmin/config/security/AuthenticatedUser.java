@@ -17,7 +17,7 @@ public class AuthenticatedUser implements Authentication {
     private boolean authenticated = true;
     private WebAdminLoginUser webAdminLoginUser;
 
-    AuthenticatedUser(String name, WebAdminLoginUser webAdminLoginUser){
+    public AuthenticatedUser(String name, WebAdminLoginUser webAdminLoginUser){
         this.name = name;
         this.webAdminLoginUser = webAdminLoginUser;
     }

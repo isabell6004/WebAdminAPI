@@ -7,11 +7,11 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.model.primary.ListVendorImageType;
 import net.fashiongo.webadmin.service.CacheService;
+import net.fashiongo.webadmin.service.vendor.BannerRequestNewService;
 import net.fashiongo.webadmin.service.vendor.BannerRequestService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,11 +22,14 @@ public class BannerRequestController {
 
     private final BannerRequestService bannerRequestService;
     private final CacheService cacheService;
+    private final BannerRequestNewService bannerRequestNewService;
 
     public BannerRequestController(BannerRequestService bannerRequestService,
-                                   CacheService cacheService) {
+                                   CacheService cacheService,
+                                   BannerRequestNewService bannerRequestNewService) {
         this.bannerRequestService = bannerRequestService;
         this.cacheService = cacheService;
+        this.bannerRequestNewService = bannerRequestNewService;
     }
 
     /**
@@ -65,7 +68,8 @@ public class BannerRequestController {
 
         try {
             response.setSuccess(true);
-            response.setData(bannerRequestService.getBannerRequest(parameters));
+//            response.setData(bannerRequestService.getBannerRequest(parameters));
+            response.setData(bannerRequestNewService.get(parameters));
         } catch (Exception e) {
             log.error("fail to get banner requests", e);
             response.setMessage("failure");

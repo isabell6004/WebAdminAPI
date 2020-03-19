@@ -47,6 +47,10 @@ public class HttpClientWrapper {
         return execute(endpoint, payload, headerMap, HttpMethod.POST);
     }
 
+    public String get(String endpoint, Map<String, String> headerMap) {
+        return execute(endpoint, null, headerMap, HttpMethod.GET);
+    }
+
     private String execute(String endpoint, String payload, Map<String, String> headerMap, HttpMethod method) {
         HttpHeaders headers = new HttpHeaders();
         if(MapUtils.isNotEmpty(headerMap)) {

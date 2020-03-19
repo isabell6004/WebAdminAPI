@@ -10,6 +10,7 @@ import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
@@ -19,11 +20,17 @@ import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoData
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.BannerRequestService;
+import net.fashiongo.webadmin.utility.Utility;
+import net.fashiongo.webadmin.utility.WithCustomMockUser;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
@@ -31,6 +38,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -174,6 +182,7 @@ public class VendorServiceTest {
 	 * @author Reo
 	 */
 	@Test
+	@WithCustomMockUser
 	public void testGetBannerRequest() {
 		GetBannerRequestParameter parameters = new GetBannerRequestParameter();
 		parameters.setPageNum(1);
@@ -186,7 +195,7 @@ public class VendorServiceTest {
 		BannerRequestResponse response = bannerRequestService.getBannerRequest(parameters);
 		if(!CollectionUtils.isEmpty(response.getBannerImageList())) {
 			assertNotNull(response.getBannerImageList());
-			assertNotNull(response.getTotal());
+			assertEquals(response.getTotal(), Long.valueOf(8));
 		}
 	}
 	

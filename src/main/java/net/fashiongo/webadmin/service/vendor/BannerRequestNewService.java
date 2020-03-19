@@ -1,9 +1,9 @@
 package net.fashiongo.webadmin.service.vendor;
 
+import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
+import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
-import net.fashiongo.webadmin.utility.JsonResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 
 public interface BannerRequestNewService {
@@ -18,4 +18,6 @@ public interface BannerRequestNewService {
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
     void approve(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName);
+
+    BannerRequestResponse get(GetBannerRequestParameter parameters);
 }

@@ -2,8 +2,13 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Getter;
+import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
@@ -11,7 +16,10 @@ import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse;
 import net.fashiongo.webadmin.service.vendor.BannerRequestNewService;
 import net.fashiongo.webadmin.service.vendor.response.CreateBannerResponse;
+import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -70,6 +78,40 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
     public void approve(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/banners/" + bannerId + "/approve";
         httpCaller.put(endpoint, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+    }
+
+    @Override
+    public BannerRequestResponse get(GetBannerRequestParameter parameters) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/banners";
+
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
+                .queryParam("pn", parameters.getPageNum())
+                .queryParam("ps", parameters.getPageSize())
+                .queryParam("keyword", parameters.getSearchKeyword())
+                .queryParam("fromDate", parameters.getFromDate())
+                .queryParam("toDate", parameters.getToDate())
+                .queryParam("status", parameters.getSearchStatus())
+                .queryParam("type", parameters.getSearchType())
+                .queryParam("orderby", parameters.getOrderby())
+                .build(false);
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+
+        String responseBody = httpCaller.get(builder.toUriString(), FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+
+        try {
+            mapper.registerModule(new JavaTimeModule())
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+            FashionGoApiResponse<BannerRequestResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<BannerRequestResponse>>() {});
+            if (fashionGoApiResponse.getHeader().isSuccessful()) {
+                return fashionGoApiResponse.getData();
+            } else {
+                throw new RuntimeException("fail to get banners in new fashiongo api");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("fail to get banners in new fashiongo api");
+        }
     }
 
     private void activate(Integer vendorId, Integer bannerId, Integer requestedUserId, String requestUserName) {
