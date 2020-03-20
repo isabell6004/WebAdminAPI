@@ -27,7 +27,7 @@ public class LoggingServiceImpl implements LoggingService {
     @Override
     public void logRequest(HttpServletRequest httpServletRequest, Object body) {
 
-        if (!httpServletRequest.getRequestURI().contains("getserverheartbeat")) {
+        if (!httpServletRequest.getRequestURI().contains("getserverheartbeat") && !httpServletRequest.getRequestURI().contains("monitor/l7check")) {
 
             StringBuilder stringBuilder = new StringBuilder();
             Map<String, String> parameters = buildParametersMap(httpServletRequest);
@@ -65,7 +65,7 @@ public class LoggingServiceImpl implements LoggingService {
     @Override
     public void logResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object body) {
 
-        if (!httpServletRequest.getRequestURI().contains("getserverheartbeat")) {
+        if (!httpServletRequest.getRequestURI().contains("getserverheartbeat") && !httpServletRequest.getRequestURI().contains("monitor/l7check")) {
             StringBuilder stringBuilder = new StringBuilder();
 
             stringBuilder.append("RESPONSE ");
