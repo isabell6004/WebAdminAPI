@@ -123,7 +123,7 @@ public class TokenAuthenticationService {
 				log.info("webAdminLoginUser.getIpaddr(): {}", webAdminLoginUser.getIpaddr());
 				log.info("Utility.getIpAddress(): {}", Utility.getIpAddress(request));
 				log.info("=================================================");
-				throw new Exception("Token is invalid! (Invaild IpAddress)");
+//				throw new Exception("Token is invalid! (Invaild IpAddress)");
 			}
 		}
 
@@ -132,7 +132,7 @@ public class TokenAuthenticationService {
 			throw new Exception("Token is invalid! (No UserAgent)");
 		} else {
 			if (!webAdminLoginUser.getUseragent().equals(Utility.getUserAgent(request))) {
-				throw new Exception("Token is invalid! (Invalid UserAgent)");
+//				throw new Exception("Token is invalid! (Invalid UserAgent)");
 			}
 		}
 	}

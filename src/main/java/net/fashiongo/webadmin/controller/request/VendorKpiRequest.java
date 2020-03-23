@@ -4,6 +4,7 @@ import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
 import lombok.Getter;
 import lombok.Setter;
 import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -69,53 +70,36 @@ public class VendorKpiRequest {
 
     public List<String> getParams() {
         List<String> params = new ArrayList<>();
-        if (pn != null && pn != 0) {
-            params.add("pn=" + pn);
-        }
-        if (ps != null && ps != 0) {
-            params.add("ps=" + ps);
-        }
-        if (unit != null && unit != 0) {
-            params.add("unit=" + unit);
-        }
-        if (df != null && !df.isEmpty()) {
-            params.add("df=" + df);
-        }
-        if (dt != null && !dt.isEmpty()) {
-            params.add("dt=" + dt);
-        }
-        if (so != null && !so.isEmpty()) {
-            params.add("so=" + so);
-        }
-        if (sq != null && !sq.isEmpty()) {
-            params.add("sq=" + sq);
-        }
-        if (vendorStatus != null && vendorStatus != 0) {
-            params.add("vendorStatus=" + vendorStatus);
-        }
-        if (vendorCategory != null && vendorCategory != 0) {
-            params.add("vendorCategory=" + vendorCategory);
-        }
-        if (vendorType != null && !vendorType.isEmpty()) {
-            params.add("vendorType=" + vendorType);
-        }
-        if (location != null && !location.isEmpty()) {
-            params.add("location=" + location);
-        }
-        if (state != null && !state.isEmpty()) {
-            params.add("state=" + state);
-        }
-        if (assignedUser != null && !assignedUser.isEmpty()) {
-            params.add("assignedUser=" + assignedUser);
-        }
-        if (contractTypeId != null && contractTypeId != 0) {
-            params.add("contractTypeId=" + contractTypeId);
-        }
-        if (orderBy != null && !orderBy.isEmpty()) {
-            params.add("orderBy=" + orderBy);
-        }
+
+        addIntegerParams(params, pn, "pn=");
+        addIntegerParams(params, ps, "ps=");
+        addIntegerParams(params, unit, "unit=");
+        addStringParams(params, df, "df=");
+        addStringParams(params, dt, "dt=");
+        addStringParams(params, so, "so=");
+        addStringParams(params, sq, "sq=");
+        addIntegerParams(params, vendorStatus, "vendorStatus=");
+        addIntegerParams(params, vendorCategory, "vendorCategory=");
+        addStringParams(params, vendorType, "vendorType=");
+        addStringParams(params, location, "location=");
+        addStringParams(params, state, "state=");
+        addStringParams(params, assignedUser, "assignedUser=");
+        addIntegerParams(params, contractTypeId, "contractTypeId=");
+        addStringParams(params, orderBy, "orderBy=");
 
         return params;
+    }
+
+    public void addIntegerParams(List<String> params, Integer integerParam, String name) {
+        if (integerParam != null && integerParam.intValue() != 0) {
+            params.add(name + integerParam);
+        }
+    }
+
+    public void addStringParams(List<String> params, String stringParam, String name) {
+        if (!StringUtils.isEmpty(stringParam)) {
+            params.add(name + stringParam.replace("'", "''"));
+        }
     }
 
 }
