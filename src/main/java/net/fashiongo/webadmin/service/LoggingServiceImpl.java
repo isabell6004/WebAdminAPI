@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import net.fashiongo.webadmin.utility.Utility;
@@ -66,19 +67,21 @@ public class LoggingServiceImpl implements LoggingService {
     public void logResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object body) {
 
         if (!httpServletRequest.getRequestURI().contains("getserverheartbeat") && !httpServletRequest.getRequestURI().contains("monitor/l7check")) {
-            StringBuilder stringBuilder = new StringBuilder();
+            if (httpServletRequest.getMethod().equals(HttpMethod.DELETE.name())) {
+                StringBuilder stringBuilder = new StringBuilder();
 
-            stringBuilder.append("RESPONSE ");
-            stringBuilder.append("username=[").append(Utility.getUsername()).append("] ");
-            stringBuilder.append("ipaddress=[").append(Utility.getIpAddress(httpServletRequest)).append("] ");
-            stringBuilder.append("method=[").append(httpServletRequest.getMethod()).append("] ");
-            stringBuilder.append("path=[").append(httpServletRequest.getRequestURI()).append("] ");
-            stringBuilder.append("useragent=[").append(httpServletRequest.getHeader("User-Agent")).append("] ");
-            //stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("] ");
-            //stringBuilder.append("responseBody=[").append(body).append("] ");
+                stringBuilder.append("RESPONSE ");
+                stringBuilder.append("username=[").append(Utility.getUsername()).append("] ");
+                stringBuilder.append("ipaddress=[").append(Utility.getIpAddress(httpServletRequest)).append("] ");
+                stringBuilder.append("method=[").append(httpServletRequest.getMethod()).append("] ");
+                stringBuilder.append("path=[").append(httpServletRequest.getRequestURI()).append("] ");
+                stringBuilder.append("useragent=[").append(httpServletRequest.getHeader("User-Agent")).append("] ");
+                //stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("] ");
+                //stringBuilder.append("responseBody=[").append(body).append("] ");
 
-            //log.info(stringBuilder.toString());
-            logger.info(stringBuilder.toString());
+                //log.info(stringBuilder.toString());
+                logger.info(stringBuilder.toString());
+            }
         }
     }
 
