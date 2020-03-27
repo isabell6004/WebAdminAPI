@@ -67,7 +67,7 @@ public class LoggingServiceImpl implements LoggingService {
     public void logResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object body) {
 
         if (!httpServletRequest.getRequestURI().contains("getserverheartbeat") && !httpServletRequest.getRequestURI().contains("monitor/l7check")) {
-            if (httpServletRequest.getMethod().equals(HttpMethod.DELETE.name())) {
+            //if (httpServletRequest.getMethod().equals(HttpMethod.DELETE.name())) {
                 StringBuilder stringBuilder = new StringBuilder();
 
                 stringBuilder.append("RESPONSE ");
@@ -81,7 +81,7 @@ public class LoggingServiceImpl implements LoggingService {
 
                 //log.info(stringBuilder.toString());
                 logger.info(stringBuilder.toString());
-            }
+          //  }
         }
     }
 
