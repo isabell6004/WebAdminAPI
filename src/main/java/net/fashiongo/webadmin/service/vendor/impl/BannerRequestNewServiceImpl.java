@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Getter;
 import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
+import net.fashiongo.webadmin.data.model.vendor.ImageResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
+import net.fashiongo.webadmin.data.model.vendor.VendorImage;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
@@ -22,6 +24,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -81,7 +84,7 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
     }
 
     @Override
-    public BannerRequestResponse get(GetBannerRequestParameter parameters) {
+    public BannerRequestResponse getBanners(GetBannerRequestParameter parameters) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/banners";
 
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
@@ -111,6 +114,29 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
             }
         } catch (IOException e) {
             throw new RuntimeException("fail to get banners in new fashiongo api");
+        }
+    }
+
+    @Override
+    public ImageResponse getImages(Long vendorId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/images";
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+
+        String responseBody = httpCaller.get(endpoint, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+
+        try {
+            mapper.registerModule(new JavaTimeModule())
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+            FashionGoApiResponse<ImageResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<ImageResponse>>() {});
+            if (fashionGoApiResponse.getHeader().isSuccessful()) {
+                return fashionGoApiResponse.getData();
+            } else {
+                throw new RuntimeException("fail to get images in new fashiongo api");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("fail to get images in new fashiongo api");
         }
     }
 

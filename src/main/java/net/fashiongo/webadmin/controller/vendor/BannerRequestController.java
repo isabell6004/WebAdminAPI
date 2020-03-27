@@ -69,7 +69,7 @@ public class BannerRequestController {
         try {
             response.setSuccess(true);
 //            response.setData(bannerRequestService.getBannerRequest(parameters));
-            response.setData(bannerRequestNewService.get(parameters));
+            response.setData(bannerRequestNewService.getBanners(parameters));
         } catch (Exception e) {
             log.error("fail to get banner requests", e);
             response.setMessage("failure");
