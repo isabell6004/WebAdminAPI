@@ -188,8 +188,13 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private Integer setVendorBasicInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
 
-        if (!wholeSaler.getUserId().equals(requestVendorDetailInfo.getUserId())) {
-            if (checkDupAndCreateUserInfo(wholeSaler, requestVendorDetailInfo)) return 97;
+        try {
+            if (!wholeSaler.getUserId().equals(requestVendorDetailInfo.getUserId())) {
+                if (checkDupAndCreateUserInfo(wholeSaler, requestVendorDetailInfo)) return 97;
+            }
+        } catch (Exception ex) {
+            log.warn(ex.getMessage(), ex);
+            return 98;
         }
 
         wholeSaler.setFirstName(requestVendorDetailInfo.getFirstName());
@@ -267,9 +272,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         if(!Objects.equals(wholeSaler.getTransactionFeeRate1(), requestVendorDetailInfo.getTransactionFeeRate1())
                 || !Objects.equals(wholeSaler.getTransactionFeeRate2(), requestVendorDetailInfo.getTransactionFeeRate2())
                 || !Objects.equals(wholeSaler.getTransactionFeeRate1Intl(), requestVendorDetailInfo.getTransactionFeeRate1Intl())
-                || !wholeSaler.getTransactionFeeRate2Intl().equals(requestVendorDetailInfo.getTransactionFeeRate2Intl())
-                || !wholeSaler.getTransactionFeeFixed().equals(requestVendorDetailInfo.getTransactionFeeFixed())
-                || !wholeSaler.getCommissionRate().equals(requestVendorDetailInfo.getCommissionRate())) {
+                || !Objects.equals(wholeSaler.getTransactionFeeRate2Intl(), requestVendorDetailInfo.getTransactionFeeRate2Intl())
+                || !Objects.equals(wholeSaler.getTransactionFeeFixed(), requestVendorDetailInfo.getTransactionFeeFixed())
+                || !Objects.equals(wholeSaler.getCommissionRate(), requestVendorDetailInfo.getCommissionRate())) {
 
             String logDetail = "TransactionFeeRate1 = " + requestVendorDetailInfo.getTransactionFeeRate1() + ",TransactionFeeRate2 = " + requestVendorDetailInfo.getTransactionFeeRate2() +
                     ",TransactionFeeRate1Intl = " + requestVendorDetailInfo.getTransactionFeeRate1Intl() + ",TransactionFeeRate2Intl = " + requestVendorDetailInfo.getTransactionFeeRate2Intl() +
@@ -279,9 +284,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     }
 
     private Integer setVendorSettingInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo, Integer payoutSchedule, Integer payoutScheduleWM, Integer maxPayoutPerDay, Integer payoutCount) {
-
-        String sessionUsrId = Utility.getUsername();
         try {
+            String sessionUsrId = Utility.getUsername();
             if (!checkAndRecordDirCompanyNameChangeHistory(wholeSaler, requestVendorDetailInfo)) return -1;
             checkAndRecordVendorStatusChangeHistory(wholeSaler, requestVendorDetailInfo);
             checkAndRecordCommissionInfoHistory(wholeSaler, requestVendorDetailInfo);
@@ -290,7 +294,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                 updateMembershipStatus(wholeSaler);
 
             if (wholeSaler.getActive() && !requestVendorDetailInfo.getActive())
-                updateTodayDealInfo(requestVendorDetailInfo, sessionUsrId);
+                inactiveTodayDealInfo(requestVendorDetailInfo, sessionUsrId);
 
             if (!requestVendorDetailInfo.getActive())
                 updateAdminAccountStatus(requestVendorDetailInfo);
@@ -421,7 +425,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
     }
 
-    private void updateTodayDealInfo(VendorDetailInfo requestVendorDetailInfo, String sessionUsrId) {
+    private void inactiveTodayDealInfo(VendorDetailInfo requestVendorDetailInfo, String sessionUsrId) {
         List<TodayDealEntity> todayDealList = todayDealEntityRepository.findAllByWholeSalerID(requestVendorDetailInfo.getWholeSalerID());
         List<TodayDealEntity> todayDealListUpdate = new ArrayList<>();
         for (TodayDealEntity todayDeal : todayDealList) {
