@@ -28,8 +28,7 @@ public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Objec
     public Object beforeBodyWrite(Object o, MethodParameter methodParameter, MediaType mediaType,
             Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         if (serverHttpRequest instanceof ServletServerHttpRequest && serverHttpResponse instanceof ServletServerHttpResponse) {
-            loggingService.logResponse(((ServletServerHttpRequest) serverHttpRequest).getServletRequest(),
-                    ((ServletServerHttpResponse) serverHttpResponse).getServletResponse(), o);
+            //loggingService.logResponse(((ServletServerHttpRequest) serverHttpRequest).getServletRequest(),((ServletServerHttpResponse) serverHttpResponse).getServletResponse(), o);
         }
         
         return o;

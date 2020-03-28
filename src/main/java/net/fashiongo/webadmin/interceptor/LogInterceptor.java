@@ -21,7 +21,7 @@ public class LogInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-        if (DispatcherType.REQUEST.name().equals(request.getDispatcherType().name()) && request.getMethod().equals(HttpMethod.GET.name())) {
+        if (DispatcherType.REQUEST.name().equals(request.getDispatcherType().name()) && (request.getMethod().equals(HttpMethod.GET.name()) || request.getMethod().equals(HttpMethod.DELETE.name()))) {
             loggingService.logRequest(request, null);
         }
 

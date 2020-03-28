@@ -58,7 +58,7 @@ public class LoggingServiceImpl implements LoggingService {
                 stringBuilder.append("body=" + body + "[").append(returnStr).append("]");
             }
 
-            //log.info(stringBuilder.toString());
+            log.info(stringBuilder.toString());
             logger.info(stringBuilder.toString());
         }
     }
@@ -79,7 +79,7 @@ public class LoggingServiceImpl implements LoggingService {
                 //stringBuilder.append("responseHeaders=[").append(buildHeadersMap(httpServletResponse)).append("] ");
                 //stringBuilder.append("responseBody=[").append(body).append("] ");
 
-                //log.info(stringBuilder.toString());
+                log.info(stringBuilder.toString());
                 logger.info(stringBuilder.toString());
           //  }
         }
