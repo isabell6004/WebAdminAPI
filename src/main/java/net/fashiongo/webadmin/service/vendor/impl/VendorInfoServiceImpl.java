@@ -115,6 +115,12 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             return null;
         }
 
+        //FGM/322
+        // inactive 상황에서는 CompanyTypeID가 필수가 아님.
+        if (!vendorDetailInfo.getActive() && vendorDetailInfo.getCompanyTypeID() == null) {
+            vendorDetailInfo.setCompanyTypeID(0);
+        }
+
         WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(vendorDetailInfo.getWholeSalerID());
         String originalUserId = wholeSaler.getUserId();
         Integer result = setVendorBasicInfo(wholeSaler, vendorDetailInfo, 1, null, null, null, 0);
