@@ -318,6 +318,19 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 
 		Integer recurringFrom = param.getRecurringfrom();
 		Integer recurringTo = param.getRecurringto();
+        //contractexpiredatefrom
+        String contractExpiredateFrom = StringUtils.isEmpty(param.getContractexpiredatefrom()) ? null : param.getContractexpiredatefrom();
+        String contractExpiredateTo = StringUtils.isEmpty(param.getContractexpiredateto()) ? null : param.getContractexpiredateto();
+
+        Timestamp contractExpiredateFromTimestamp = null;
+        if (StringUtils.isNotEmpty(contractExpiredateFrom)) {
+            contractExpiredateFromTimestamp = Timestamp.valueOf(LocalDateTime.parse(contractExpiredateFrom, formatter));
+        }
+        Timestamp contractExpiredateToTimestamp = null;
+        if (StringUtils.isNotEmpty(contractExpiredateTo)) {
+            contractExpiredateToTimestamp = Timestamp.valueOf(LocalDateTime.parse(contractExpiredateTo, formatter));
+        }
+
 		Integer categoryModel = param.getCategoryModel() == null ? 0 : param.getCategoryModel();
 		Integer status = param.getStatus() == null ? 0 : param.getStatus();
 		Integer assignedUser = param.getAssignedUser() == null ? 0 : param.getAssignedUser();
@@ -495,6 +508,8 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         if (StringUtils.isNotEmpty(companyType)) { filter = filter.and(W.companyTypeID.in(companyTypeArray)); }
         if (actualOpenFrom != null) { filter = filter.and(W.actualOpenDate.goe(actualOpenFromTimestamp)); }
         if (actualOpenTo != null) { filter = filter.and(W.actualOpenDate.loe(actualOpenToTimestamp)); }
+        if (contractExpiredateFrom != null) { filter = filter.and(W.contractExpireDate.goe(contractExpiredateFromTimestamp)); }
+        if (contractExpiredateTo != null) { filter = filter.and(W.contractExpireDate.loe(contractExpiredateToTimestamp)); }
 
         if (categoryModel != 0) {
             filter = filter.and(W.wholeSalerID.in(SQLExpressions.select(C.entityID).from(C).where(C.countTypeID.eq(2).and(C.referenceID.eq(categoryModel)))));

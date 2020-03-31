@@ -108,4 +108,10 @@ public class GetVendorListParameter {
 
     @JsonProperty(value = "recurringto")
     private Integer recurringto;
+
+    @JsonProperty(value = "contractexpiredatefrom")
+    private String contractexpiredatefrom;
+
+    @JsonProperty(value = "contractexpiredateto")
+    private String contractexpiredateto;
 }
