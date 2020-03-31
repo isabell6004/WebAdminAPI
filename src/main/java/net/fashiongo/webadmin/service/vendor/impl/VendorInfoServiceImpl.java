@@ -15,6 +15,7 @@ import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
+import net.fashiongo.webadmin.service.vendor.VendorPaymentInfoNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
@@ -65,6 +66,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private VendorCapEntityRepository vendorCapEntityRepository;
 
+    private VendorPaymentInfoNewService vendorPaymentInfoNewService;
+
     private CacheService cacheService;
 
     public VendorInfoServiceImpl(VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
@@ -79,6 +82,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorDirNameChangeLogEntityRepository vendorDirNameChangeLogEntityRepository,
                                  VendorInfoNewService vendorInfoNewService,
                                  VendorCapEntityRepository vendorCapEntityRepository,
+                                 VendorPaymentInfoNewService vendorPaymentInfoNewService,
                                  CacheService cacheService,
                                  JdbcHelper jdbcHelperFgBilling,
                                  ConfigurableEnvironment env) {
@@ -94,6 +98,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.vendorDirNameChangeLogEntityRepository = vendorDirNameChangeLogEntityRepository;
         this.vendorInfoNewService = vendorInfoNewService;
         this.vendorCapEntityRepository = vendorCapEntityRepository;
+        this.vendorPaymentInfoNewService = vendorPaymentInfoNewService;
         this.cacheService = cacheService;
         this.jdbcHelperFgBilling = jdbcHelperFgBilling;
         this.env = env;
@@ -104,19 +109,17 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     @Override
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer update(SetVendorBasicInfoParameter request) {
-
         try {
             VendorDetailInfo vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
-            WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(vendorDetailInfo.getWholeSalerID());
-
-            Integer result = setVendorBasicInfo(wholeSaler, vendorDetailInfo);
+            Integer result = updateVendorBasicInfo(vendorDetailInfo);
             if (result == 1) {
-                WebAdminLoginUser userInfo = Utility.getUserInfo();
-                vendorInfoNewService.update(vendorDetailInfo, wholeSaler.getUserId(), userInfo.getUserId(), userInfo.getUsername());
-                setDirCompanyNameChangeHistory(vendorDetailInfo, request.getCompanyNameTemp());
                 cacheService.cacheEvictVendor(request.getWid());
+                try {
+                    updateAccountOfBillingSystem(vendorDetailInfo);
+                } catch (Exception ex) {
+                    log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
+                }
             }
-
             return result;
         } catch (IOException e) {
             log.error("object mapper parse error", e);
@@ -127,51 +130,30 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     @Override
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
     public Integer setVendorSettingInfo(SetVendorSettingParameter request) {
-
-        Integer wid = request.getWid();
-        Integer adminAccount = request.getAdminAccount() == null ? 0 : request.getAdminAccount();
-        Integer vendorCategory = request.getVendorCategory() == null ? 0 : request.getVendorCategory();
-        Integer fraudReport = request.getFraudReport() == null ? 0 : request.getFraudReport();
-        Integer item = request.getItem() == null ? 0 : request.getItem();
-        Integer adminAccountID = request.getAdminAccountID() == null ? 0 : request.getAdminAccountID();
-        Integer vendorCategoryID = request.getVendorCategoryID() == null ? 0 : request.getVendorCategoryID();
-        Integer fraudReportID = request.getFraudReportID() == null ? 0 : request.getFraudReportID();
-        Integer itemID = request.getItemID() == null ? 0 : request.getItemID();
-
-        setVendorSetting(wid, adminAccountID, 1, adminAccount);
-        setVendorSetting(wid, vendorCategoryID, 2, vendorCategory);
-        setVendorSetting(wid, fraudReportID, 3, fraudReport);
-        setVendorSetting(wid, itemID, 4, item);
-
         try {
             VendorDetailInfo vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
-            WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(vendorDetailInfo.getWholeSalerID());
-
-            Integer result = setVendorSettingInfo(wholeSaler, vendorDetailInfo, request.getPayoutSchedule(), request.getPayoutScheduleWM(), request.getMaxPayoutPerDay(), request.getPayoutCount());
+            Integer result = updateVendorSettingInfo(request, vendorDetailInfo);
             if(result == 1) {
-                cacheService.cacheEvictVendor(wid);
-                WebAdminLoginUser userInfo = Utility.getUserInfo();
-                vendorInfoNewService.updateDetailInfo(request, vendorDetailInfo, userInfo.getUserId(), userInfo.getUsername());
+                cacheService.cacheEvictVendor(request.getWid());
             }
-
             return result;
         } catch (IOException e) {
-            log.debug("object mapper parse error");
+            log.error("object mapper parse error", e);
             return null;
         }
     }
 
-    private void setDirCompanyNameChangeHistory(VendorDetailInfo vendorDetailInfo, String oldCompanyName) {
+    private void setDirCompanyNameChangeHistory(VendorDetailInfo vendorDetailInfo, WholeSalerEntity wholeSalerEntity) {
 
-        String oldCompanyNameTemp = Optional.ofNullable(oldCompanyName).orElse("");
+        String oldCompanyName = Optional.ofNullable(wholeSalerEntity.getCompanyName()).orElse("");
         String newCompanyName = vendorDetailInfo.getCompanyName();
-        if(StringUtils.isEmpty(oldCompanyNameTemp) || StringUtils.isEmpty(newCompanyName) || StringUtils.equals(oldCompanyNameTemp, newCompanyName)) {
+        if(StringUtils.isEmpty(oldCompanyName) || StringUtils.isEmpty(newCompanyName) || StringUtils.equals(oldCompanyName, newCompanyName)) {
             return;
         }
 
         String dirName = Optional.ofNullable(vendorDetailInfo.getDirName()).orElse("");
         try {
-            setDirCompanyNameChangeHistory(dirName, dirName, oldCompanyNameTemp, newCompanyName);
+            setDirCompanyNameChangeHistory(dirName, dirName, oldCompanyName, newCompanyName);
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
         }
@@ -186,8 +168,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
     }
 
-    private Integer setVendorBasicInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
+    private Integer updateVendorBasicInfo(VendorDetailInfo requestVendorDetailInfo) {
 
+        WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(requestVendorDetailInfo.getWholeSalerID());
         try {
             if (!wholeSaler.getUserId().equals(requestVendorDetailInfo.getUserId())) {
                 if (checkDupAndCreateUserInfo(wholeSaler, requestVendorDetailInfo)) return 97;
@@ -196,6 +179,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             log.warn(ex.getMessage(), ex);
             return 98;
         }
+
+        setDirCompanyNameChangeHistory(requestVendorDetailInfo, wholeSaler);
 
         wholeSaler.setFirstName(requestVendorDetailInfo.getFirstName());
         wholeSaler.setLastName(requestVendorDetailInfo.getLastName());
@@ -238,11 +223,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
         vendorWholeSalerEntityRepository.save(wholeSaler);
 
-        try {
-            updateAccountOfBillingSystem(requestVendorDetailInfo);
-        } catch (Exception ex) {
-            log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
-        }
+        vendorInfoNewService.update(requestVendorDetailInfo, wholeSaler.getUserId(), Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
         return 1;
     }
@@ -283,10 +264,35 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
     }
 
-    private Integer setVendorSettingInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo, Integer payoutSchedule, Integer payoutScheduleWM, Integer maxPayoutPerDay, Integer payoutCount) {
+    private void setVendorCapInfo(SetVendorSettingParameter request) {
+        Integer wid = request.getWid();
+
+        Integer adminAccount = Optional.ofNullable(request.getAdminAccount()).orElse(0);
+        Integer vendorCategory = Optional.ofNullable(request.getVendorCategory()).orElse(0);
+        Integer fraudReport = Optional.ofNullable(request.getFraudReport()).orElse(0);
+        Integer item = Optional.ofNullable(request.getItem()).orElse(0);
+
+        Integer adminAccountID = Optional.ofNullable(request.getAdminAccountID()).orElse(0);
+        Integer vendorCategoryID = Optional.ofNullable(request.getVendorCategoryID()).orElse(0);
+        Integer fraudReportID = Optional.ofNullable(request.getFraudReportID()).orElse(0);
+        Integer itemID = Optional.ofNullable(request.getItemID()).orElse(0);
+
+        insertOrUpdateVendorCapInfo(wid, adminAccountID, 1, adminAccount);
+        insertOrUpdateVendorCapInfo(wid, vendorCategoryID, 2, vendorCategory);
+        insertOrUpdateVendorCapInfo(wid, fraudReportID, 3, fraudReport);
+        insertOrUpdateVendorCapInfo(wid, itemID, 4, item);
+    }
+
+    private Integer updateVendorSettingInfo(SetVendorSettingParameter request, VendorDetailInfo requestVendorDetailInfo) {
+
+        String sessionUserId = Utility.getUsername();
         try {
-            String sessionUsrId = Utility.getUsername();
+            setVendorCapInfo(request);
+
+            WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(requestVendorDetailInfo.getWholeSalerID());
+
             if (!checkAndRecordDirCompanyNameChangeHistory(wholeSaler, requestVendorDetailInfo)) return -1;
+
             checkAndRecordVendorStatusChangeHistory(wholeSaler, requestVendorDetailInfo);
             checkAndRecordCommissionInfoHistory(wholeSaler, requestVendorDetailInfo);
 
@@ -294,7 +300,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                 updateMembershipStatus(wholeSaler);
 
             if (wholeSaler.getActive() && !requestVendorDetailInfo.getActive())
-                inactiveTodayDealInfo(requestVendorDetailInfo, sessionUsrId);
+                inactiveTodayDealInfo(requestVendorDetailInfo, sessionUserId);
 
             if (!requestVendorDetailInfo.getActive())
                 updateAdminAccountStatus(requestVendorDetailInfo);
@@ -306,13 +312,13 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setDirName(requestVendorDetailInfo.getDirName());
             wholeSaler.setCodeName(requestVendorDetailInfo.getCodeName());
             wholeSaler.setLastModifiedDateTime(new Timestamp(System.currentTimeMillis()));
-            wholeSaler.setLastUser(sessionUsrId);
+            wholeSaler.setLastUser(sessionUserId);
 
             wholeSaler.setNewCustYN(requestVendorDetailInfo.getNewCustYN());
             wholeSaler.setIsADBlock(requestVendorDetailInfo.getIsADBlock());
 
             if (requestVendorDetailInfo.getOrderActive()) {
-                setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUsrId);
+                setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUserId);
                 if (wholeSaler.getActualOpenDate() == null) {
                     wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
                     setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
@@ -337,7 +343,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
                 if(!requestActualOpenDate.equals(vendorActualOpenDate)) {
                     if (requestActualOpenDate.equals(dateTimeNow)) {
-                        setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUsrId);
+                        setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUserId);
 
                         wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
                         wholeSaler.setOrderActive(true);
@@ -360,23 +366,29 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setCommissionRate(requestVendorDetailInfo.getCommissionRate());
 
             try {
+                int oldPaymentMethodId, newPaymentMethodId;
                 if (requestVendorDetailInfo.getUseCreditCardPaymentService()) {
-                    switchPaymentMethodId(requestVendorDetailInfo.getWholeSalerID(), 100, 6);
+                    oldPaymentMethodId = 100;
+                    newPaymentMethodId = 6;
                 } else {
-                    switchPaymentMethodId(requestVendorDetailInfo.getWholeSalerID(), 6, 100);
+                    oldPaymentMethodId = 6;
+                    newPaymentMethodId = 100;
                 }
-                wholeSaler.setUseCreditCardPaymentService(requestVendorDetailInfo.getUseCreditCardPaymentService());
+                switchPaymentMethodId(requestVendorDetailInfo.getWholeSalerID(), oldPaymentMethodId, newPaymentMethodId);
+                vendorPaymentInfoNewService.switchPaymentMethodId(requestVendorDetailInfo.getWholeSalerID(), oldPaymentMethodId, newPaymentMethodId, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
-                if (payoutCount > 0) {
-                    updateVendorPayoutInfo(requestVendorDetailInfo, payoutSchedule, payoutScheduleWM, maxPayoutPerDay, sessionUsrId);
+                wholeSaler.setUseCreditCardPaymentService(requestVendorDetailInfo.getUseCreditCardPaymentService());
+                if (request.getPayoutCount() > 0) {
+                    updateVendorPayoutInfo(requestVendorDetailInfo, request.getPayoutSchedule(), request.getPayoutScheduleWM(), request.getMaxPayoutPerDay(), sessionUserId);
                 }
             } catch (Exception ex) {
                 log.warn(ex.getMessage(), ex);
             }
-
             wholeSaler.setChargedByCreditCard(requestVendorDetailInfo.getChargedByCreditCard());
 
             vendorWholeSalerEntityRepository.save(wholeSaler);
+            vendorInfoNewService.updateDetailInfo(request, requestVendorDetailInfo, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
+
             return 1;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
@@ -493,7 +505,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
     }
 
-    private void setVendorSetting(Integer wid, Integer capID, Integer vendorCapTypeID, Integer cap) {
+    private void insertOrUpdateVendorCapInfo(Integer wid, Integer capID, Integer vendorCapTypeID, Integer cap) {
         VendorCapEntity trm = new VendorCapEntity();
         try {
             if (capID == 0) {
