@@ -11,7 +11,6 @@ import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
-import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
@@ -189,7 +188,13 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         wholeSaler.setConsolidationYN(requestVendorDetailInfo.getConsolidationYN());
         wholeSaler.setRegCompanyName(requestVendorDetailInfo.getRegCompanyName());
         wholeSaler.setEmail(requestVendorDetailInfo.getEmail());
-        wholeSaler.setCompanyTypeID(requestVendorDetailInfo.getCompanyTypeID());
+
+        if (!requestVendorDetailInfo.getActive() && requestVendorDetailInfo.getCompanyTypeID() == null) {
+            requestVendorDetailInfo.setCompanyTypeID(0); // if inactive, company type id is not required. (default 0)
+        } else {
+            wholeSaler.setCompanyTypeID(requestVendorDetailInfo.getCompanyTypeID());
+        }
+
         wholeSaler.setBusinessCategory(requestVendorDetailInfo.getBusinessCategory());
         wholeSaler.setEstablishedYear(requestVendorDetailInfo.getEstablishedYear());
         wholeSaler.setWebSite(requestVendorDetailInfo.getWebSite());
