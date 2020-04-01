@@ -380,7 +380,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                     newPaymentMethodId = 100;
                 }
                 switchPaymentMethodId(requestVendorDetailInfo.getWholeSalerID(), oldPaymentMethodId, newPaymentMethodId);
-                vendorPaymentInfoNewService.switchPaymentMethodId(requestVendorDetailInfo.getWholeSalerID(), oldPaymentMethodId, newPaymentMethodId, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
                 wholeSaler.setUseCreditCardPaymentService(requestVendorDetailInfo.getUseCreditCardPaymentService());
                 if (request.getPayoutCount() > 0) {
@@ -425,6 +424,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         if (mapWholeSalerPaymentMethod != null) {
             mapWholeSalerPaymentMethod.setPaymentMethodID(newPaymentMethodId);
             mapWholeSalerPaymentMethodEntityRepository.save(mapWholeSalerPaymentMethod);
+
+            vendorPaymentInfoNewService.switchPaymentMethodId(vendorId, oldPaymentMethodId, newPaymentMethodId, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
         }
     }
 
