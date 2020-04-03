@@ -322,10 +322,10 @@ public class AdController {
 	}
 
 	@PostMapping("getbanneradsListvendorcategory")
-	public JsonResponse<List<AdVendorCategoryResponse>> getBannerAdsListVendorCategory(@RequestBody AdVendorCategoryParameter parameter) {
+	public BannerAdsListVendorCategoryResponse getBannerAdsListVendorCategory(@RequestBody AdVendorCategoryParameter parameter) {
 
 		List<AdVendorCategoryResponse> responses = adService.getBannerAdsListVendorCategory(parameter.getWholesalerId());
 
-		return new JsonResponse<>(Boolean.TRUE, null, responses);
+		return BannerAdsListVendorCategoryResponse.of(responses);
 	}
 }

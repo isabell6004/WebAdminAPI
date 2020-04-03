@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.model.pojo.ad.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import net.fashiongo.webadmin.data.entity.primary.VendorCategoryEntity;
 
@@ -8,14 +9,19 @@ import java.util.Objects;
 @Getter
 public class AdVendorCategoryResponse {
 
+    @JsonProperty("WholeSalerID")
     private Integer wholesalerId;
 
+    @JsonProperty("VendorCategoryID")
     private Integer vendorCategoryId;
 
+    @JsonProperty("CategoryName")
     private String categoryName;
 
+    @JsonProperty("ProductCount")
     private Long productCount;
 
+    @JsonProperty("CategoryNameProductCount")
     private String categoryNameProductCount;
 
     private AdVendorCategoryResponse(Integer wholesalerId, Integer vendorCategoryId, String categoryName, Long productCount) {
