@@ -47,7 +47,7 @@ public class RewardService {
     }
 
     public RewardApiResponse<?> getApiResponse(String endpoint, HttpMethod method, String userName, String queries, Object body) throws Exception {
-        String uri = rewardApiEndpoint + endpoint + "?" + queries;
+        String uri = rewardApiEndpoint + endpoint.replaceAll("api/", "") + "?" + queries;
         String uuid = UUID.randomUUID().toString();
 
         HttpHeaders httpHeaders = new HttpHeaders();
