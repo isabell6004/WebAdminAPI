@@ -16,6 +16,9 @@ public class VerifyVendorImageResponse {
     @JsonProperty("isApproved")
     private boolean approved;
 
+    @JsonProperty("isActive")
+    private boolean active;
+
     private VerifyVendorImageResponse() {
     }
 
@@ -26,6 +29,7 @@ public class VerifyVendorImageResponse {
         response.vendorId = vendorId;
         response.vendorImageType = vendorImageType;
         response.approved = approved;
+        response.active = Boolean.TRUE;
 
         return response;
     }
@@ -37,6 +41,7 @@ public class VerifyVendorImageResponse {
         response.vendorId = vendorId;
         response.vendorImageType = vendorImageType;
         response.approved = Boolean.FALSE;
+        response.active = Boolean.FALSE;
 
         return response;
     }
