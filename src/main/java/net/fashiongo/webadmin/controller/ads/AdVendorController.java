@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,11 +28,14 @@ public class AdVendorController {
     }
 
     @GetMapping
-    public JsonResponse<List<AdVendorResponse>> getVendorNames(@RequestParam(value = "ids") Integer[] ids) {
+    public JsonResponse<List<AdVendorResponse>> getVendorNames(@RequestParam(value = "shopActive", required = false) Boolean shopActive,
+                                                               @RequestParam(value = "orderActive", required = false) Boolean orderActive,
+                                                               @RequestParam(value = "ids", required = false) Integer[] ids) {
 
-        List<Integer> vendorIds = Stream.of(ids).collect(Collectors.toList());
 
-        List<AdVendorResponse> responses = adVendorService.getVendorNames(vendorIds);
+        List<Integer> vendorIds = Objects.nonNull(ids) ? Stream.of(ids).collect(Collectors.toList()) : null;
+
+        List<AdVendorResponse> responses = adVendorService.getVendorNames(shopActive, orderActive, vendorIds);
 
         return new JsonResponse<>(Boolean.TRUE, SUCCESS_MESSAGE, responses);
     }
