@@ -1,66 +1,28 @@
 package net.fashiongo.webadmin.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.ProductsEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorCategoryEntity;
+import net.fashiongo.webadmin.data.repository.primary.ProductsEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.VendorCategoryEntityRepository;
+import net.fashiongo.webadmin.model.pojo.ad.CollectionCategory;
+import net.fashiongo.webadmin.model.pojo.ad.*;
+import net.fashiongo.webadmin.model.pojo.ad.parameter.*;
+import net.fashiongo.webadmin.model.pojo.ad.response.*;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
+import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
+import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.fashiongo.webadmin.dao.primary.AdPageRepository;
-import net.fashiongo.webadmin.dao.primary.AdPageSpotRepository;
-import net.fashiongo.webadmin.dao.primary.AdVendorRepository;
-import net.fashiongo.webadmin.dao.primary.CategoryRepository;
-import net.fashiongo.webadmin.dao.primary.CodeBodySizeRepository;
-import net.fashiongo.webadmin.dao.primary.CollectionCategoryItemRepository;
-import net.fashiongo.webadmin.dao.primary.MapAdVendorItemRepository;
-import net.fashiongo.webadmin.model.pojo.ad.AdSettingList;
-import net.fashiongo.webadmin.model.pojo.ad.AdSettingSubList;
-import net.fashiongo.webadmin.model.pojo.ad.BidList;
-import net.fashiongo.webadmin.model.pojo.ad.BiddingList;
-import net.fashiongo.webadmin.model.pojo.ad.BiddingList2;
-import net.fashiongo.webadmin.model.pojo.ad.CategoryAdCount;
-import net.fashiongo.webadmin.model.pojo.ad.CategoryList;
-import net.fashiongo.webadmin.model.pojo.ad.CollectionCategory;
-import net.fashiongo.webadmin.model.pojo.ad.CuratedBestList;
-import net.fashiongo.webadmin.model.pojo.ad.CuratedList;
-import net.fashiongo.webadmin.model.pojo.ad.FGListADCalendar;
-import net.fashiongo.webadmin.model.pojo.ad.FGListADList;
-import net.fashiongo.webadmin.model.pojo.ad.SelectData;
-import net.fashiongo.webadmin.model.pojo.ad.VendorCount;
-import net.fashiongo.webadmin.model.pojo.ad.VendorData1;
-import net.fashiongo.webadmin.model.pojo.ad.VendorData2;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdCalendarParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdDetailParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdItemSearchVendorParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetCategoryAdListParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryAdListParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.GetFGCategoryListAdCountParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SaveCategoryAdItemForBidVendorParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddPageParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SetAddSpotSettingParameter;
-import net.fashiongo.webadmin.model.pojo.ad.parameter.SetCategoryAdItemParameter;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetADSettingResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdCalendarResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdDetailResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdItemSearchVendorResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetCategoryAdListResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryAdListResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetFGCategoryListAdCountResponse;
-import net.fashiongo.webadmin.model.pojo.ad.response.GetSpotCheckResponse;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.parameter.GetCategoryAdItemForBidVendorParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetCategoryAdItemForBidVendorResponse;
-import net.fashiongo.webadmin.model.primary.AdPage;
-import net.fashiongo.webadmin.model.primary.AdPageSpot;
-import net.fashiongo.webadmin.model.primary.AdVendor;
-import net.fashiongo.webadmin.model.primary.CodeBodySize;
-import net.fashiongo.webadmin.model.primary.CollectionCategoryItem;
-import net.fashiongo.webadmin.model.primary.MapAdVendorItem;
-import net.fashiongo.webadmin.utility.Utility;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AdService extends ApiService {
@@ -81,14 +43,18 @@ public class AdService extends ApiService {
 	private CategoryRepository categoryRepository;
 	@Autowired
 	private CacheService cacheService;
+	@Autowired
+	private VendorCategoryEntityRepository vendorCategoryRepository;
+	@Autowired
+	private ProductsEntityRepository productsEntityRepository;
+
 
 	/**
-	 * 
 	 * Get AD Setting
-	 * 
-	 * @since 2018. 10. 02.
-	 * @author Nayeon Kim
+	 *
 	 * @return GetADSettingResponse
+	 * @author Nayeon Kim
+	 * @since 2018. 10. 02.
 	 */
 	@SuppressWarnings("unchecked")
 	public GetADSettingResponse getAdsetting(boolean showAll) {
@@ -574,12 +540,34 @@ public class AdService extends ApiService {
 		cci.setCreatedOn(createdOn);
 		cci.setCollectionCategoryType(1);
 		cci.setWholeSalerID(parameters.getWholesalerID());
-		
+
 		collectionCategoryItemRepository.save(cci);
-		
+
 		return new ResultCode(true, 1, MSG_SAVE_SUCCESS);
 	}
-	
-	
-	
+
+	/**
+	 * Get VendorCategory with Product Count
+	 *
+	 * @param wholesalerId
+	 * @return AdVendorCategoryResponse
+	 * @author Kevin Kwon
+	 */
+	@Transactional(value = "primaryTransactionManager")
+	public List<AdVendorCategoryResponse> getBannerAdsListVendorCategory(Integer wholesalerId) {
+
+		List<VendorCategoryEntity> vendorCategories = vendorCategoryRepository.findByWholeSalerIDAndActive(wholesalerId, Boolean.TRUE);
+		Map<Integer, Long> productCount = productsEntityRepository.findByVendorCategoryEntityInAndActive(vendorCategories, Boolean.TRUE)
+				.stream()
+				.collect(
+						Collectors.groupingBy(
+								ProductsEntity::getVendorCategoryID,
+								Collectors.counting()
+						)
+				);
+
+		return vendorCategories.stream()
+				.map(vendorCategory -> AdVendorCategoryResponse.of(vendorCategory, productCount.getOrDefault(vendorCategory.getVendorCategoryID(), 0L)))
+				.collect(Collectors.toList());
+	}
 }

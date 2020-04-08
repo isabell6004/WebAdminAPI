@@ -31,8 +31,8 @@ public class AdVendorImageServiceImpl implements AdVendorImageService {
             throw new IllegalArgumentException("Invalid Request.");
         }
 
-        Map<Integer, Map<Integer, Boolean>> vendorIdMap = vendorImageRequestEntityRepository.findByWholesalerIdInAndVendorImageTypeIdIn(
-                vendorIds, vendorImageTypes
+        Map<Integer, Map<Integer, Boolean>> vendorIdMap = vendorImageRequestEntityRepository.findByWholesalerIdInAndVendorImageTypeIdInAndActive(
+                vendorIds, vendorImageTypes, Boolean.TRUE
         ).stream()
                 .collect(
                         Collectors.groupingBy(
