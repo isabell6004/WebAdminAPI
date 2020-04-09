@@ -84,13 +84,13 @@ public class PaymentRecoveryList {
     	this.creditCardReferenceID = creditCardReferenceID;
     	this.netAmount = netAmount;
     	this.transferAmount = transferAmount;
-    	this.paymentDate = Optional.ofNullable(paymentDate).map(Timestamp::toLocalDateTime).orElse(null);;
-    	this.appliedDate = Optional.ofNullable(appliedDate).map(Timestamp::toLocalDateTime).orElse(null);;
-    	this.billingDate = Optional.ofNullable(billingDate).map(Timestamp::toLocalDateTime).orElse(null);;
+    	this.paymentDate = paymentDate == null ? null : paymentDate.toLocalDateTime();//Optional.ofNullable(paymentDate).map(Timestamp::toLocalDateTime).orElse(null);;
+    	this.appliedDate = appliedDate == null ? null : appliedDate.toLocalDateTime();//Optional.ofNullable(appliedDate).map(Timestamp::toLocalDateTime).orElse(null);;
+    	this.billingDate = billingDate == null ? null : billingDate.toLocalDateTime();//Optional.ofNullable(billingDate).map(Timestamp::toLocalDateTime).orElse(null);;
     	this.needtoBill = needtoBill;
-    	this.createdOn = Optional.ofNullable(createdOn).map(Timestamp::toLocalDateTime).orElse(null);
+    	this.createdOn = createdOn == null ? null : createdOn.toLocalDateTime();//Optional.ofNullable(createdOn).map(Timestamp::toLocalDateTime).orElse(null);
     	this.createdBy = createdBy;
-    	this.modifiedOn = Optional.ofNullable(modifiedOn).map(Timestamp::toLocalDateTime).orElse(null);
+    	this.modifiedOn = modifiedOn == null ? null : modifiedOn.toLocalDateTime();//Optional.ofNullable(modifiedOn).map(Timestamp::toLocalDateTime).orElse(null);
     	this.modifiedBy = modifiedBy;
     	this.rowno = Optional.ofNullable(rowno).map(Long::intValue).orElse(null);
     }

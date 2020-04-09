@@ -78,10 +78,12 @@
 	        	expression = expression.and(p.paymentDate.loe(paymentDateTo));
 	        }
 	        if (appliedDateFrom!= null) {
-	        	expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.appliedDate).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", appliedDateFrom)));
+	        	expression = expression.and(p.appliedDate.goe(appliedDateFrom));
+	        	//expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.appliedDate).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", appliedDateFrom)));
 	        }
 	        if (appliedDateTo != null) {
-	        	expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.appliedDate).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", appliedDateTo)));
+	        	expression = expression.and(p.appliedDate.loe(appliedDateTo));
+	        	//expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.appliedDate).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", appliedDateTo)));
 	        }
 	        if (netAmount != null) {
 	            expression = expression.and(p.netAmount.eq(netAmount));
