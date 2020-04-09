@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface AdVendorService {
 
-    List<AdVendorResponse> getVendorNames(Boolean shopActive, Boolean orderActive, List<Integer> vendorIds);
+    List<AdVendorResponse> getVendorNames(List<Integer> vendorIds);
 }
