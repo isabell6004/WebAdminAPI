@@ -107,6 +107,26 @@
         </appender>
     </appender>
 
+    <appender name="VENDOR_CONTRACT_CHECK" class="ch.qos.logback.classic.AsyncAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="2048"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+
+        <appender name="logNCrashHttpAsync" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
+            <param name="appKey" value="${appKey}"/>
+            <param name="logType" value="webadmin-api"/>
+            <param name="logSource" value="${ACTIVE_PROFILE}"/>
+            <param name="version" value="0.0.1-SNAPSHOT"/>
+            <param name="debug" value="true"/>
+            <param name="category" value="webadmin-api"/>
+            <param name="errorCodeType" value="action"/>
+        </appender>
+    </appender>
+
     <appender name="webadminAccessPayloadLogAppender" class="ch.qos.logback.classic.AsyncAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
@@ -141,6 +161,11 @@
         <logger name="net.fashiongo.webadmin" level="DEBUG" additivity="false">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="vendorContractCheckLogger" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
+            <appender-ref ref="VENDOR_CONTRACT_CHECK" />
         </logger>
         <logger name="net.fashiongo.common" level="DEBUG" additivity="false">
             <appender-ref ref="CONSOLE" />

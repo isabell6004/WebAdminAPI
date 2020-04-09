@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.data.repository.primary;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.QVendorContractEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorContractEntity;
@@ -9,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class VendorContractEntityRepositoryCustomImpl implements VendorContractEntityRepositoryCustom {
@@ -70,7 +73,26 @@ public class VendorContractEntityRepositoryCustomImpl implements VendorContractE
 		return query.fetchFirst();
 	}
 
-	@Override
+    @Override
+    public VendorContractEntity findVendorContractByVendorIdAndOpenDate(Integer veondorId, LocalDateTime openDate) {
+
+	    QVendorContractEntity vendorContractEntity = new QVendorContractEntity("vendorContractEntity");
+	    JPAQuery<VendorContractEntity> query = new JPAQuery<>(entityManager);
+
+        Timestamp openDateTime = Timestamp.valueOf(openDate);
+	    BooleanExpression contractDateToIsNull = vendorContractEntity.toContractDate.isNull();
+	    BooleanExpression between = vendorContractEntity.fromContractDate.loe(openDateTime).and(vendorContractEntity.toContractDate.goe(openDateTime));
+	    BooleanExpression contractDateFromCondition = vendorContractEntity.fromContractDate.goe(openDateTime);
+
+        query.select(vendorContractEntity)
+                .from(vendorContractEntity)
+                .where(vendorContractEntity.wholeSalerID.eq(veondorId).and(contractDateToIsNull.or(between).or(contractDateFromCondition)))
+        ;
+
+        return query.fetchFirst();
+    }
+
+    @Override
 	public VendorContractEntity findOneByVendorContractID(Integer vendorContractID) {
 		QVendorContractEntity VC = new QVendorContractEntity("VC");
 		JPAQuery<VendorContractEntity> query = new JPAQuery<>(entityManager);

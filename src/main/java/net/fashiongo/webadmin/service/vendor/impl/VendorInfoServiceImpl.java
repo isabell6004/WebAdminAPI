@@ -12,12 +12,15 @@ import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepo
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.service.CacheService;
+import net.fashiongo.webadmin.service.vendor.VendorContractService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
 import net.fashiongo.webadmin.service.vendor.VendorPaymentInfoNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -67,7 +70,11 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private VendorPaymentInfoNewService vendorPaymentInfoNewService;
 
+    private VendorContractService vendorContractService;
+
     private CacheService cacheService;
+
+    private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
 
     public VendorInfoServiceImpl(VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
                                  AspnetUsersEntityRepository aspnetUsersEntityRepository,
@@ -82,6 +89,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorInfoNewService vendorInfoNewService,
                                  VendorCapEntityRepository vendorCapEntityRepository,
                                  VendorPaymentInfoNewService vendorPaymentInfoNewService,
+                                 VendorContractService vendorContractService,
                                  CacheService cacheService,
                                  JdbcHelper jdbcHelperFgBilling,
                                  ConfigurableEnvironment env) {
@@ -98,6 +106,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.vendorInfoNewService = vendorInfoNewService;
         this.vendorCapEntityRepository = vendorCapEntityRepository;
         this.vendorPaymentInfoNewService = vendorPaymentInfoNewService;
+        this.vendorContractService = vendorContractService;
         this.cacheService = cacheService;
         this.jdbcHelperFgBilling = jdbcHelperFgBilling;
         this.env = env;
@@ -463,6 +472,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     }
 
     private void checkAndRecordVendorStatusChangeHistory(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
+
+
         if (requestVendorDetailInfo.getOrderActive() != wholeSaler.getOrderActive()
                 || requestVendorDetailInfo.getShopActive() != wholeSaler.getShopActive()
                 || requestVendorDetailInfo.getActive() != wholeSaler.getActive()) {
@@ -470,6 +481,43 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             String logDetail = "Active = " + requestVendorDetailInfo.getActive() + ",ShopActive = " + requestVendorDetailInfo.getShopActive() + ",OrderActive = " + requestVendorDetailInfo.getOrderActive();
             setEntityActionLogDetail(1, requestVendorDetailInfo.getWholeSalerID(), 3003, logDetail);
         }
+
+        try {
+            recordVendorStatusChangeLogWithContract(wholeSaler, requestVendorDetailInfo);
+        } catch (Throwable t) {
+            /* ignore exception */
+            log.warn("fail to record a log message.", t);
+        }
+
+    }
+
+    // temporary logic (when this issue FGM-567 is checked, can be removed)
+    private void recordVendorStatusChangeLogWithContract(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
+        String requestActualOpenDate = Optional.ofNullable(requestVendorDetailInfo.getActualOpenDate())
+                .map(o -> o.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).orElse(null);
+        String dateTimeNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        String openType = null;
+        String openDate = null;
+        if (!wholeSaler.getOrderActive() && requestVendorDetailInfo.getOrderActive()) {
+            openType = "now";
+            openDate = dateTimeNow;
+        } else if (!wholeSaler.getOrderActive() && !requestVendorDetailInfo.getOrderActive()) {
+            if (StringUtils.compare(requestActualOpenDate, dateTimeNow) > 0) {
+                openType = "schedule";
+                openDate = requestActualOpenDate;
+            } else if (StringUtils.compare(requestActualOpenDate, dateTimeNow) == 0) {
+                openType = "now";
+                openDate = dateTimeNow;
+            }
+        } else {
+            return;
+        }
+
+        VendorContractEntity vendorContract = vendorContractService.getVendorContractIncludedOpenDate(wholeSaler.getWholeSalerID(), requestVendorDetailInfo.getActualOpenDate());
+        String message = String.format("[change-to-orderactive] vendor-id:%s,open-type:%s,open-date:%s,valid-contract-id:%s)"
+                , wholeSaler.getWholeSalerID(), openType, openDate, Optional.ofNullable(vendorContract).map(VendorContractEntity::getVendorContractID).orElse(null));
+        logger.info(message);
     }
 
     private boolean checkAndRecordDirCompanyNameChangeHistory(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
