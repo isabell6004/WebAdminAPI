@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import net.fashiongo.webadmin.utility.LocalDateTimeDeserializer;
+import net.fashiongo.webadmin.utility.LocalDateTimeSerializer;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,17 +40,19 @@ public class PaymentRecovery {
 	
 	@JsonProperty("TransferAmount")
 	private BigDecimal transferAmount;
-	
+
+
 	@JsonProperty("PaymentDate")
-	private String paymentDate;
-	
-    public LocalDateTime getPaymentDate() {
-        if (StringUtils.isNotEmpty(paymentDate)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-            return LocalDateTime.parse(paymentDate, formatter);
-        }
-        return null;
-    }	
+    private LocalDateTime paymentDate;
+
+
+//    public LocalDateTime getPaymentDate() {
+//        if (StringUtils.isNotEmpty(paymentDate)) {
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+//            return LocalDateTime.parse(paymentDate, formatter);
+//        }
+//        return null;
+//    }
 
 	@JsonProperty("Username")
 	private String username;    

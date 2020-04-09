@@ -71,6 +71,7 @@ public class RenewalWAPaymentService {
 	@Autowired 
 	private PaymentRecoveryRepository paymentRecoveryRepository;	
 
+	@Autowired
 	private JdbcHelper jdbcHelper;
 	
 	@Transactional(transactionManager = "primaryTransactionManager")
@@ -177,9 +178,9 @@ public class RenewalWAPaymentService {
 			return result;
 		}	
 		
-		PaymentRecoveryResponse rs1 = (PaymentRecoveryResponse) _result.get(0);
+		List<PaymentRecoveryResponse> rs1 = (List<PaymentRecoveryResponse>) _result.get(0);
 		
-		return rs1;
+		return rs1.get(0);
 	
 	}
 	
