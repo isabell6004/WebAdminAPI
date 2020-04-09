@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller.vendor;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.CacheService;
@@ -46,8 +47,8 @@ public class VendorContractController {
 	}
 	
     @GetMapping(value = "vendor/contractplans", produces = "application/json")
-    public JsonResponse<List<ContractPlan>> getContractPlans() {
-    	JsonResponse<List<ContractPlan>> response = new JsonResponse<>(false, null, null);
+    public JsonResponse<List<ContractPlansResponse>> getContractPlans() {
+    	JsonResponse<List<ContractPlansResponse>> response = new JsonResponse<>(false, null, null);
     	try {
     		response.setData(vendorService.getContractPlans());
     		response.setSuccess(true);

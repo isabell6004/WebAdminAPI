@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.GetVendorContract;
 import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
@@ -528,7 +530,7 @@ public class VendorService extends ApiService {
 				throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("fail to get vendor contract list in new fashiongo api ioexcep");
+			throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
 		}
 	}
 	
@@ -636,7 +638,24 @@ public class VendorService extends ApiService {
 		return vendorRepository.getEditorPickVendors();
 	}
 
-	public List<ContractPlan> getContractPlans() {
-		return contractPlanRepository.findAll();
+	public List<ContractPlansResponse> getContractPlans() {
+		final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/contractplans";
+
+		WebAdminLoginUser userInfo = Utility.getUserInfo();
+		String responseBody = httpCaller.get(endpoint, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+
+		try {
+			mapper.registerModule(new JavaTimeModule())
+					.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+			FashionGoApiResponse<GetContractPlansResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<GetContractPlansResponse>>() {});
+			if (fashionGoApiResponse.getHeader().isSuccessful()) {
+				return fashionGoApiResponse.getData().getContractPlansResponseList();
+			} else {
+				throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
+		}
 	}
 }
