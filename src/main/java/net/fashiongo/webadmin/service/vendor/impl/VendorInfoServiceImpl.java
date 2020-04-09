@@ -515,7 +515,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         }
 
         VendorContractEntity vendorContract = vendorContractService.getVendorContractIncludedOpenDate(wholeSaler.getWholeSalerID(), requestVendorDetailInfo.getActualOpenDate());
-        String message = String.format("[change-to-orderactive] vendor-id:%s,open-type:%s,open-date:%s,valid-contract-id:%s)"
+        String message = String.format("[change-to-orderactive] vendor-id:%s,open-type:%s,open-date:%s,valid-contract-id:%s"
                 , wholeSaler.getWholeSalerID(), openType, openDate, Optional.ofNullable(vendorContract).map(VendorContractEntity::getVendorContractID).orElse(null));
         logger.info(message);
     }

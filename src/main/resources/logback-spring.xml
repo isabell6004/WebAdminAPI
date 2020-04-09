@@ -146,7 +146,6 @@
         </appender>
     </appender>
 
-
     <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="CONSOLE" />
@@ -200,6 +199,9 @@
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
         </logger>
+        <logger name="vendorContractCheckLogger" level="INFO" additivity="false">
+            <appender-ref ref="VENDOR_CONTRACT_CHECK" />
+        </logger>
         <logger name="net.fashiongo.webadmin.service.externalutil.HttpClientWrapper" level="WARN" additivity="false">
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="externalApiFailLogger" />
@@ -227,6 +229,9 @@
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
         </logger>
+        <logger name="vendorContractCheckLogger" level="INFO" additivity="false">
+            <appender-ref ref="VENDOR_CONTRACT_CHECK" />
+        </logger>
         <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
             <appender-ref ref="FASHIONGO_API_PAYLOAD" />
         </logger>
@@ -249,6 +254,9 @@
         <logger name="net.fashiongo.webadmin" level="INFO" additivity="false">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
+        </logger>
+        <logger name="vendorContractCheckLogger" level="INFO" additivity="false">
+            <appender-ref ref="VENDOR_CONTRACT_CHECK" />
         </logger>
         <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
             <appender-ref ref="FASHIONGO_API_PAYLOAD" />
@@ -273,6 +281,9 @@
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="logNCrashLogger" />
+        </logger>
+        <logger name="vendorContractCheckLogger" level="INFO" additivity="false">
+            <appender-ref ref="VENDOR_CONTRACT_CHECK" />
         </logger>
         <logger name="net.fashiongo.webadmin.service.externalutil.HttpClientWrapper" level="WARN" additivity="false">
             <appender-ref ref="LOG_ROLLING" />
