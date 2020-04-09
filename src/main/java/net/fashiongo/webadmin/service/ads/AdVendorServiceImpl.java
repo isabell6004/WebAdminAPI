@@ -17,9 +17,9 @@ public class AdVendorServiceImpl implements AdVendorService {
     }
 
     @Override
-    public List<AdVendorResponse> getVendorNames(Boolean shopActive, Boolean orderActive, List<Integer> vendorIds) {
+    public List<AdVendorResponse> getVendorNames(List<Integer> vendorIds) {
 
-        return wholeSalerEntityRepository.findAllActiveWholesalers(shopActive, orderActive, vendorIds).stream()
+        return wholeSalerEntityRepository.findByWholeSalerIdIn(vendorIds).stream()
                 .map(AdVendorResponse::from)
                 .collect(Collectors.toList());
     }

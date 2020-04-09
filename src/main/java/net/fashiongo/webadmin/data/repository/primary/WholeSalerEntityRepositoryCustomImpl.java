@@ -4,16 +4,19 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQuery;
-import net.fashiongo.webadmin.data.entity.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.QAspnetMembershipEntity;
+import net.fashiongo.webadmin.data.entity.primary.QAspnetRolesEntity;
+import net.fashiongo.webadmin.data.entity.primary.QAspnetUsersEntity;
+import net.fashiongo.webadmin.data.entity.primary.QAspnetUsersInRolesEntity;
+import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.QVendorAdminAccountEntity;
+import net.fashiongo.webadmin.data.entity.primary.QWholeSalerEntity;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
 import net.fashiongo.webadmin.data.model.vendor.VendorAdminAccount;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 public class WholeSalerEntityRepositoryCustomImpl implements WholeSalerEntityRepositoryCustom {
 
@@ -104,35 +107,14 @@ public class WholeSalerEntityRepositoryCustomImpl implements WholeSalerEntityRep
 			.innerJoin(W2).on(V.wholeSalerID.eq(W2.wholeSalerID))
 			.innerJoin(U).on(V.userName.eq(U.userName))
 			.innerJoin(UR).on(U.userId.eq(UR.userId))
-				.innerJoin(R).on(UR.roleId.eq(R.roleId))
-				.innerJoin(AM2).on(U.userId.eq(AM2.userId))
-				.where(W2.active.eq(true).and(W2.wholeSalerID.eq(wholeSalerID)))
-				.fetch();
+			.innerJoin(R).on(UR.roleId.eq(R.roleId))
+			.innerJoin(AM2).on(U.userId.eq(AM2.userId))
+			.where(W2.active.eq(true).and(W2.wholeSalerID.eq(wholeSalerID)))
+		.fetch();
 
 		queryResult1.addAll(queryResult2);
 
 
 		return queryResult1;
-	}
-
-	@Override
-	public List<SimpleWholeSalerEntity> findAllActiveWholesalers(Boolean shopActive, Boolean orderActive, Collection<Integer> wholesalerIds) {
-
-		QSimpleWholeSalerEntity qWholesaler = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
-
-		JPAQuery<SimpleWholeSalerEntity> jpaQuery = new JPAQuery<>(entityManager);
-		jpaQuery.from(qWholesaler)
-				.orderBy(qWholesaler.companyName.asc());
-
-		if (Objects.nonNull(shopActive))
-			jpaQuery.where(qWholesaler.shopActive.eq(shopActive));
-
-		if (Objects.nonNull(orderActive))
-			jpaQuery.where(qWholesaler.orderActive.eq(orderActive));
-
-		if (!CollectionUtils.isEmpty(wholesalerIds))
-			jpaQuery.where(qWholesaler.wholeSalerId.in(wholesalerIds));
-
-		return jpaQuery.fetch();
 	}
 }
