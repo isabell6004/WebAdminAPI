@@ -40,15 +40,15 @@ public class PaymentRecovery {
 	@JsonProperty("PaymentDate")
 	private String paymentDate;
 	
-    public LocalDateTime getPaymentDate() {
-        if (StringUtils.isNotEmpty(paymentDate)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-            return LocalDateTime.parse(paymentDate, formatter);
-        }
-        return null;
-    }	
+    //public LocalDateTime getPaymentDate() {
+    //    if (StringUtils.isNotEmpty(paymentDate)) {
+    //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+    //        return LocalDateTime.parse(paymentDate, formatter);
+    //    }
+    //    return null;
+   // }	
 
-	@JsonProperty("Username")
-	private String username;    
+	//@JsonProperty("Username")
+	//private String username;    
     
 }

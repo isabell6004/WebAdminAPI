@@ -17,10 +17,12 @@
 	
 	import com.querydsl.core.QueryResults;
 	import com.querydsl.core.types.Expression;
-	import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 	import com.querydsl.core.types.Projections;
 	import com.querydsl.core.types.dsl.BooleanExpression;
-	import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.ComparableExpression;
+import com.querydsl.core.types.dsl.Expressions;
 	import com.querydsl.jpa.sql.JPASQLQuery;
 	import com.querydsl.sql.SQLExpressions;
 	
@@ -37,8 +39,6 @@
 	    @Override
 	    public Page<PaymentRecoveryList> getPaymentRecoveryListWithCount(GetPaymentRecoveryListParameter param){
 	
-	        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-	
 	        Integer pageNum = param.getPageNum() == null ? 1 : param.getPageNum();
 			Integer pageSize = param.getPageSize() == null ? 30 : param.getPageSize();
 			Integer referenceID = param.getReferenceID() == null ? null : param.getReferenceID();
@@ -49,15 +49,24 @@
 			LocalDateTime appliedDateFrom = param.getAppliedDateFrom();
 			LocalDateTime appliedDateTo = param.getAppliedDateTo();
 			BigDecimal netAmount = param.getNetAmount();
-			//String orderBy = StringUtils.isEmpty(param.getOrderBy()) ? null : param.getOrderBy();
+			String orderBy = StringUtils.isEmpty(param.getOrderBy()) ? "transactionFailureID desc" : param.getOrderBy();
 	 
 	        long offset = (pageNum - 1) * pageSize;
 	        long limit = pageSize;		
-			OrderSpecifier orderSpecifier = null;
 	        
 	        JPASQLQuery<PaymentRecoveryList> jpasqlQuery = new JPASQLQuery(entityManager,new MSSQLServer2012Templates());
 	    	QPaymentRecoveryEntity p = QPaymentRecoveryEntity.paymentRecoveryEntity;
-	    	orderSpecifier = p.transactionFailureID.asc();
+	    	
+	    	OrderSpecifier orderSpecifier = null;
+	    	
+	    	if (orderBy != null) {
+	    		String[] orderByStrings = orderBy.split(" ");
+				ComparableExpression<String> orderByColumn = Expressions.comparablePath(String.class,p,orderByStrings[0]);
+				orderSpecifier = orderByStrings[1].equalsIgnoreCase("asc") ? orderByColumn.asc() : orderByColumn.desc();
+	        }	    	
+	    	else {
+	    		orderSpecifier = p.transactionFailureID.desc();
+	    	}
 	    	
 	    	Expression<Integer> constant = Expressions.constant(1);
 	        BooleanExpression expression = Expressions.asNumber(1).eq(constant);

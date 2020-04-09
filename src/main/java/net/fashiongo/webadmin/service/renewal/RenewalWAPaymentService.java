@@ -169,13 +169,13 @@ public class RenewalWAPaymentService {
 		params.add(paymentrecovery.getPaymentDate());
 		params.add(Utility.getUsername());
 		
-		//PaymentRecoveryResponse result = jdbcHelper.executeSP(spName, params, PaymentRecoveryResponse.class);
+		//PaymentRecoveryResponse  _result = jdbcHelper.executeSP(spName, params, PaymentRecoveryResponse.class);
 		List<Object> _result = jdbcHelper.executeSP(spName, params, PaymentRecoveryResponse.class);
 
-		if (CollectionUtils.isEmpty(_result)) {
+		//if (CollectionUtils.isEmpty(_result)) {
 			
-			return result;
-		}	
+		//	return result;
+		//}	
 		
 		PaymentRecoveryResponse rs1 = (PaymentRecoveryResponse) _result.get(0);
 		
