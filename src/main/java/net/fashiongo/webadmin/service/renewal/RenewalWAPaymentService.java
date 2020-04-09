@@ -159,8 +159,8 @@ public class RenewalWAPaymentService {
 		
 		String spName = "up_wa_stripe_payment_failure";
 		List<Object> params = new ArrayList<>();
-		params.add(paymentrecovery.getTransactionType());
 		params.add(paymentrecovery.getReferenceID());
+		params.add(paymentrecovery.getTransactionType());
 		params.add(paymentrecovery.getReferenceTypeID());
 		params.add(paymentrecovery.getCreditCardReferenceID());
 		params.add(paymentrecovery.getPGReferenceID());

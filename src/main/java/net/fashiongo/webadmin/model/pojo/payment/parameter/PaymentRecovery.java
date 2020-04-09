@@ -48,4 +48,7 @@ public class PaymentRecovery {
         return null;
     }	
 
+	@JsonProperty("Username")
+	private String username;    
+    
 }
