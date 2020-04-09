@@ -44,10 +44,10 @@
 			Integer referenceID = param.getReferenceID() == null ? null : param.getReferenceID();
 			Integer referencetype = param.getReferencetype() == null ? null : param.getReferencetype();
 			Boolean needtoBill = param.getNeedtoBill();
-			Timestamp paymentDateFrom = param.getPaymentDateFrom();
-			Timestamp paymentDateTo = param.getPaymentDateTo();
-			Timestamp appliedDateFrom = param.getAppliedDateFrom();
-			Timestamp appliedDateTo = param.getAppliedDateTo();
+			LocalDateTime paymentDateFrom = param.getPaymentDateFrom();
+			LocalDateTime paymentDateTo = param.getPaymentDateTo();
+			LocalDateTime appliedDateFrom = param.getAppliedDateFrom();
+			LocalDateTime appliedDateTo = param.getAppliedDateTo();
 			BigDecimal netAmount = param.getNetAmount();
 			//String orderBy = StringUtils.isEmpty(param.getOrderBy()) ? null : param.getOrderBy();
 	 
@@ -56,61 +56,63 @@
 			OrderSpecifier orderSpecifier = null;
 	        
 	        JPASQLQuery<PaymentRecoveryList> jpasqlQuery = new JPASQLQuery(entityManager,new MSSQLServer2012Templates());
-	    	QPaymentRecoveryEntity paymentrecovery = QPaymentRecoveryEntity.paymentRecoveryEntity;
-	    	orderSpecifier = paymentrecovery.transactionFailureID.asc();
+	    	QPaymentRecoveryEntity p = QPaymentRecoveryEntity.paymentRecoveryEntity;
+	    	orderSpecifier = p.transactionFailureID.asc();
 	    	
 	    	Expression<Integer> constant = Expressions.constant(1);
 	        BooleanExpression expression = Expressions.asNumber(1).eq(constant);
 	
 	        if (referenceID != null) {
-	            expression = expression.and(paymentrecovery.referenceID.eq(referenceID));
+	            expression = expression.and(p.referenceID.eq(referenceID));
 	        }  
 	        if (referencetype != null) {
-	            expression = expression.and(paymentrecovery.referenceTypeID.eq(referencetype));
+	            expression = expression.and(p.referenceTypeID.eq(referencetype));
 	        }  
+	        
 	        if (paymentDateFrom!= null) {
-	        	expression = expression.and(paymentrecovery.appliedDate.goe(paymentDateFrom));
+	        	//expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.paymentDate).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", paymentDateFrom)));
+	        	expression = expression.and(p.paymentDate.goe(paymentDateFrom));
 	        }
 	        if (paymentDateTo != null) {
-	        	expression = expression.and(paymentrecovery.appliedDate.loe(paymentDateTo));
+	        	//expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.paymentDate).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", paymentDateTo)));
+	        	expression = expression.and(p.paymentDate.loe(paymentDateTo));
 	        }
-	  	        
 	        if (appliedDateFrom!= null) {
-	        	expression = expression.and(paymentrecovery.appliedDate.goe(appliedDateFrom));
+	        	expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.appliedDate).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", appliedDateFrom)));
 	        }
 	        if (appliedDateTo != null) {
-	        	expression = expression.and(paymentrecovery.appliedDate.loe(appliedDateTo));
+	        	expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.appliedDate).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", appliedDateTo)));
 	        }
 	        if (netAmount != null) {
-	            expression = expression.and(paymentrecovery.netAmount.eq(netAmount));
+	            expression = expression.and(p.netAmount.eq(netAmount));
 	        }         
 	        if (needtoBill != null) {
-	            expression = expression.and(paymentrecovery.needtoBill.eq(needtoBill));
+	            expression = expression.and(p.needtoBill.eq(needtoBill));
 	        }    
 	        
 	    	jpasqlQuery.select(
 	                Projections.constructor(PaymentRecoveryList.class,
-	                		paymentrecovery.transactionFailureID
-	                              ,paymentrecovery.transactionType
-	                              ,paymentrecovery.referenceID
-	                              ,paymentrecovery.referenceTypeID
-	                              ,paymentrecovery.pGReferenceID
-	                              ,paymentrecovery.paymentPGReferenceID
-	                              ,paymentrecovery.creditCardID
-	                              ,paymentrecovery.creditCardReferenceID
-	                              ,paymentrecovery.netAmount
-	                              ,paymentrecovery.transferAmount
-	                              ,paymentrecovery.paymentDate
-	                              ,paymentrecovery.appliedDate
-	                              ,paymentrecovery.billingDate
-	                              ,paymentrecovery.needtoBill
-	                              ,paymentrecovery.createdOn
-	                              ,paymentrecovery.createdBy
-	                              ,paymentrecovery.modifiedOn
-	                              ,paymentrecovery.modifiedBy
+	                		p.transactionFailureID
+	                              ,p.transactionType
+	                              ,p.referenceID
+	                              ,p.referenceTypeID
+	                              ,p.pGReferenceID
+	                              ,p.paymentPGReferenceID
+	                              ,p.creditCardID
+	                              ,p.creditCardReferenceID
+	                              ,p.netAmount
+	                              ,p.transferAmount
+	                              ,p.paymentDate
+	                              ,p.appliedDate
+	                              ,p.billingDate
+	                              ,p.needtoBill
+	                              ,p.createdOn
+	                              ,p.createdBy
+	                              ,p.modifiedOn
+	                              ,p.modifiedBy
 	                              ,SQLExpressions.rowNumber().over().orderBy(orderSpecifier).as("rowno"))
 	            )
-	                .from(paymentrecovery)
+	                .from(p)
 	                .where(expression)
 	                .orderBy(orderSpecifier)
 	                .offset(offset)

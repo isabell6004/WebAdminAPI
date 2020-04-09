@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.entity.primary;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -55,25 +56,25 @@ public class PaymentRecoveryEntity implements Serializable{
     private BigDecimal transferAmount; 
 
     @Column(name = "PaymentDate")
-    private Timestamp paymentDate;
+    private LocalDateTime paymentDate;
    
     @Column(name = "AppliedDate")
-    private Timestamp appliedDate;
+    private LocalDateTime appliedDate;
     
     @Column(name = "BillingDate")
-    private Timestamp billingDate;
+    private LocalDateTime billingDate;
     
     @Column(name = "NeedtoBill")
     private Boolean needtoBill;
     
     @Column(name = "CreatedOn")
-    private Timestamp createdOn;
+    private LocalDateTime createdOn;
     
     @Column(name = "CreatedBy")
     private String createdBy;   
     
     @Column(name = "ModifiedOn")
-    private Timestamp modifiedOn;
+    private LocalDateTime modifiedOn;
     
     @Column(name = "ModifiedBy")
     private String modifiedBy;   

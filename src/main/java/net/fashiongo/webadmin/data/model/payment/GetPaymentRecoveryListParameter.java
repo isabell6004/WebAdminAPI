@@ -2,12 +2,19 @@ package net.fashiongo.webadmin.data.model.payment;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class GetPaymentRecoveryListParameter {
     @JsonProperty(value = "Pagenum")
     private Integer pageNum;
@@ -22,16 +29,16 @@ public class GetPaymentRecoveryListParameter {
     private Integer referencetype;
 
     @JsonProperty(value = "PaymentDateFrom")
-    private Timestamp paymentDateFrom;
+    private String paymentDateFrom;
 
     @JsonProperty(value = "PaymentDateTo")
-    private Timestamp paymentDateTo;
+    private String paymentDateTo;
     
     @JsonProperty(value = "AppliedDateFrom")
-    private Timestamp appliedDateFrom;
+    private String appliedDateFrom;
 
     @JsonProperty(value = "AppliedDateTo")
-    private Timestamp appliedDateTo;
+    private String appliedDateTo;
     
     @JsonProperty(value = "NetAmount")
     private BigDecimal netAmount;
@@ -42,4 +49,35 @@ public class GetPaymentRecoveryListParameter {
     @JsonProperty(value = "Orderby")
     private String orderBy;
  
+    public LocalDateTime getPaymentDateFrom() {
+        if (StringUtils.isNotEmpty(paymentDateFrom)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            return LocalDateTime.parse(paymentDateFrom, formatter);
+        }
+        return null;
+    }
+
+    public LocalDateTime getPaymentDateTo() {
+        if (StringUtils.isNotEmpty(paymentDateTo)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            return LocalDateTime.parse(paymentDateTo, formatter);
+        }
+        return null;
+    }    
+    
+    public LocalDateTime getAppliedDateFrom() {
+        if (StringUtils.isNotEmpty(appliedDateFrom)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            return LocalDateTime.parse(appliedDateFrom, formatter);
+        }
+        return null;
+    }
+
+    public LocalDateTime getAppliedDateTo() {
+        if (StringUtils.isNotEmpty(appliedDateTo)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            return LocalDateTime.parse(appliedDateTo, formatter);
+        }
+        return null;
+    }      
 }

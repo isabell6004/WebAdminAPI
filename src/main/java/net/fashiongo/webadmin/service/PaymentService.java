@@ -1,6 +1,8 @@
 package net.fashiongo.webadmin.service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,23 +18,14 @@ import net.fashiongo.webadmin.data.entity.primary.PaymentTransactionEntity;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import net.fashiongo.webadmin.data.model.Total;
-import net.fashiongo.webadmin.data.model.payment.GetPaymentRecoveryListParameter;
-import net.fashiongo.webadmin.data.model.payment.PaymentRecoveryList;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
-import net.fashiongo.webadmin.data.model.payment.response.GetPaymentRecoveryResponse;
-import net.fashiongo.webadmin.data.repository.primary.PaymentRecoveryRepository;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
-import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
 import net.fashiongo.webadmin.dao.primary.PaymentCreditCardRepository;
 import net.fashiongo.webadmin.dao.primary.PaymentStatusRepository;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRecovery;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
-import net.fashiongo.webadmin.model.pojo.payment.response.PaymentRecoveryResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
@@ -72,7 +65,6 @@ public class PaymentService extends ApiService {
 	@Autowired private PaymentStatusRepository paymentStatusRepository;
 	@Autowired private PaymentTransactionEntityRepository paymentTransactionEntityRepository;
 	@Autowired private WAPaymentService waPaymentService;
-	@Autowired private PaymentRecoveryRepository paymentRecoveryRepository;
 	
 	@Autowired
 	@Qualifier("paymentApiJsonClient")
@@ -258,56 +250,5 @@ public class PaymentService extends ApiService {
 		return (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
 	}
 	
-	//public PaymentRecoveryResponse setPaymentrecovery(PaymentRecovery paymentrecovery) throws Exception {
-	public 	PaymentRecoveryResponse	setPaymentrecovery(PaymentRecovery paymentrecovery) throws Exception {
-		
-		PaymentRecoveryResponse result = null;
-		
-		String spName = "up_wa_stripe_payment_failure";
-		List<Object> params = new ArrayList<>();
-		params.add(paymentrecovery.getTransactionType());
-		params.add(paymentrecovery.getReferenceID());
-		params.add(paymentrecovery.getReferenceTypeID());
-		params.add(paymentrecovery.getCreditCardReferenceID());
-		params.add(paymentrecovery.getPGReferenceID());
-		params.add(paymentrecovery.getNetAmount());
-		params.add(paymentrecovery.getTransferAmount());
-		params.add(paymentrecovery.getPaymentDate());
-		params.add(Utility.getUsername());
-		
-		//PaymentRecoveryResponse result = jdbcHelper.executeSP(spName, params, PaymentRecoveryResponse.class);
-		List<Object> _result = jdbcHelper.executeSP(spName, params, PaymentRecoveryResponse.class);
-
-		if (CollectionUtils.isEmpty(_result)) {
-			
-			return result;
-		}	
-		
-		List<PaymentRecoveryResponse> rs1 = (List<PaymentRecoveryResponse>) _result.get(0);
-		
-		if(!CollectionUtils.isEmpty(rs1)) {
-			result = rs1.get(0);
-			
-			//String requestedBy = invoiceDetail.getCreatedBy().toLowerCase();
-			//String currentUser = Utility.getWebAdminUserName().toLowerCase();
-			//Boolean isDeletableUser = false;
-			//isDeletableUser = requestedBy.equals(currentUser) ? true : false;
-			//invoiceDetail.setIsDeletableUser(isDeletableUser);
-		}		
-		
-		return result;
-	}
 	
-	@SuppressWarnings("unchecked")
-	public GetPaymentRecoveryResponse getPaymentRecoveryList(GetPaymentRecoveryListParameter q) {
-	
-		Page<PaymentRecoveryList> result = paymentRecoveryRepository.getPaymentRecoveryListWithCount(q);
-
-		GetPaymentRecoveryResponse respone = GetPaymentRecoveryResponse.builder()
-		.recCnt(Arrays.asList(Total.builder().recCnt((int) result.getTotalElements()).build()))
-		.paymentrecoverylist(result.getContent())
-		.build();	
-		
-		return respone;		
-	}	
 }

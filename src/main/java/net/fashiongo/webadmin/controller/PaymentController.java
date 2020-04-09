@@ -222,27 +222,5 @@ public class PaymentController {
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
-	
-	@PostMapping(value = "/paymentrecovery")
-	public JsonResponse<?> setPaymentrecovery(@RequestBody PaymentRecovery paymentrecovery) {	
-		try {
-			return new JsonResponse<>(true, null,
-					paymentService.setPaymentrecovery(paymentrecovery));
-		} catch (Exception e) {
-			logger.error("PaymentController.setPaymentrecovery()", e);
-			return new JsonResponse<>(false, e.getMessage(), null);
-		}
-	}	
-	
-	@PostMapping(value = "getpaymentrecovery")
-	public JsonResponse<GetPaymentRecoveryResponse> getPaymentRecovery(@RequestBody GetPaymentRecoveryListParameter param) {
-       
-		JsonResponse<GetPaymentRecoveryResponse> response = new JsonResponse<GetPaymentRecoveryResponse>(true, null, null);
-		GetPaymentRecoveryResponse result = paymentService.getPaymentRecoveryList(param);
-		
-		response.setSuccess(true);
-		response.setData(result);
-		return response;
 
-	}	
 }
