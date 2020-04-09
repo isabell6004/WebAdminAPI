@@ -2,6 +2,9 @@ package net.fashiongo.webadmin.model.pojo.payment.parameter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,9 +38,14 @@ public class PaymentRecovery {
 	private BigDecimal transferAmount;
 	
 	@JsonProperty("PaymentDate")
-	private LocalDateTime paymentDate;
+	private String paymentDate;
 	
-	@JsonProperty("Username")
-	private String username;
-	
+    public LocalDateTime getPaymentDate() {
+        if (StringUtils.isNotEmpty(paymentDate)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            return LocalDateTime.parse(paymentDate, formatter);
+        }
+        return null;
+    }	
+
 }

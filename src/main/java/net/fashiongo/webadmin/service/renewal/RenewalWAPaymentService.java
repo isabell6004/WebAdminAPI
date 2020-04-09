@@ -152,17 +152,10 @@ public class RenewalWAPaymentService {
 				.totalList(Arrays.asList(new TotalCount((int) creditCardInfo.getTotalElements())))
 				.build();
 	}
-	//public PaymentRecoveryResponse setPaymentrecovery(PaymentRecovery paymentrecovery) throws Exception {
-	public 	PaymentRecoveryResponse	setPaymentrecovery(PaymentRecovery paymentrecovery) throws Exception {
+
+	public 	PaymentRecoveryResponse	setPaymentrecovery(PaymentRecovery paymentrecovery) {
 		
 		PaymentRecoveryResponse result = null;
-		
-		//String PaymentDate;
-		//String isoDatePattern = "yyyy-MM-dd HH:mm:ss";
-		 
-		//SimpleDateFormat simpleDateFormat = new SimpleDateFormat(isoDatePattern);
-	 
-		//PaymentDate = simpleDateFormat.format(paymentrecovery.getPaymentDate());		
 		
 		String spName = "up_wa_stripe_payment_failure";
 		List<Object> params = new ArrayList<>();
@@ -173,7 +166,7 @@ public class RenewalWAPaymentService {
 		params.add(paymentrecovery.getPGReferenceID());
 		params.add(paymentrecovery.getNetAmount());
 		params.add(paymentrecovery.getTransferAmount());
-		//params.add(PaymentDate);
+		params.add(paymentrecovery.getPaymentDate());
 		params.add(Utility.getUsername());
 		
 		//PaymentRecoveryResponse result = jdbcHelper.executeSP(spName, params, PaymentRecoveryResponse.class);
@@ -184,19 +177,10 @@ public class RenewalWAPaymentService {
 			return result;
 		}	
 		
-		List<PaymentRecoveryResponse> rs1 = (List<PaymentRecoveryResponse>) _result.get(0);
+		PaymentRecoveryResponse rs1 = (PaymentRecoveryResponse) _result.get(0);
 		
-		if(!CollectionUtils.isEmpty(rs1)) {
-			result = rs1.get(0);
-			
-			//String requestedBy = invoiceDetail.getCreatedBy().toLowerCase();
-			//String currentUser = Utility.getWebAdminUserName().toLowerCase();
-			//Boolean isDeletableUser = false;
-			//isDeletableUser = requestedBy.equals(currentUser) ? true : false;
-			//invoiceDetail.setIsDeletableUser(isDeletableUser);
-		}		
-		
-		return result;
+		return rs1;
+	
 	}
 	
 	@SuppressWarnings("unchecked")
