@@ -12,9 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor 
 public class PaymentRecoveryList {
-    
+
     @JsonProperty("TransactionFailureID")
     private Integer transactionFailureID;
     

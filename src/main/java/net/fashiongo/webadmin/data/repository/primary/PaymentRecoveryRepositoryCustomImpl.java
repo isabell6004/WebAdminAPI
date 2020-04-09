@@ -71,18 +71,18 @@
 	        
 	        if (paymentDateFrom!= null) {
 	        	//expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.paymentDate).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", paymentDateFrom)));
-	        	expression = expression.and(p.paymentDate.goe(paymentDateFrom));
+	        	expression = expression.and(p.paymentDate.goe(Timestamp.valueOf(paymentDateFrom)));
 	        }
 	        if (paymentDateTo != null) {
 	        	//expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.paymentDate).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", paymentDateTo)));
-	        	expression = expression.and(p.paymentDate.loe(paymentDateTo));
+	        	expression = expression.and(p.paymentDate.loe(Timestamp.valueOf(paymentDateTo)));
 	        }
 	        if (appliedDateFrom!= null) {
-	        	expression = expression.and(p.appliedDate.goe(appliedDateFrom));
+	        	expression = expression.and(p.appliedDate.goe(Timestamp.valueOf(appliedDateFrom)));
 	        	//expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.appliedDate).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", appliedDateFrom)));
 	        }
 	        if (appliedDateTo != null) {
-	        	expression = expression.and(p.appliedDate.loe(appliedDateTo));
+	        	expression = expression.and(p.appliedDate.loe(Timestamp.valueOf(appliedDateTo)));
 	        	//expression = expression.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", p.appliedDate).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", appliedDateTo)));
 	        }
 	        if (netAmount != null) {
@@ -119,13 +119,13 @@
 	                .orderBy(orderSpecifier)
 	                .offset(offset)
 	                .limit(limit);
-	
+
 	        QueryResults<PaymentRecoveryList> QueryResult = jpasqlQuery.fetchResults();
 	        long total = QueryResult.getTotal();
 	        List<PaymentRecoveryList> results = QueryResult.getResults();
-	        
+
 	        PageRequest pageRequest = PageRequest.of(pageNum-1, pageSize);
-	        return PageableExecutionUtils.getPage(results,pageRequest,()-> total);   	
+	        return PageableExecutionUtils.getPage(results,pageRequest,()-> total);
 	    }
 	
 	}

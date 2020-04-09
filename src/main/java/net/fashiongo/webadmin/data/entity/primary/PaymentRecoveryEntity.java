@@ -56,25 +56,25 @@ public class PaymentRecoveryEntity implements Serializable{
     private BigDecimal transferAmount; 
 
     @Column(name = "PaymentDate")
-    private LocalDateTime paymentDate;
+    private Timestamp paymentDate;
    
     @Column(name = "AppliedDate")
-    private LocalDateTime appliedDate;
+    private Timestamp appliedDate;
     
     @Column(name = "BillingDate")
-    private LocalDateTime billingDate;
+    private Timestamp billingDate;
     
     @Column(name = "NeedtoBill")
     private Boolean needtoBill;
     
     @Column(name = "CreatedOn")
-    private LocalDateTime createdOn;
+    private Timestamp createdOn;
     
     @Column(name = "CreatedBy")
     private String createdBy;   
     
     @Column(name = "ModifiedOn")
-    private LocalDateTime modifiedOn;
+    private Timestamp modifiedOn;
     
     @Column(name = "ModifiedBy")
     private String modifiedBy;   
