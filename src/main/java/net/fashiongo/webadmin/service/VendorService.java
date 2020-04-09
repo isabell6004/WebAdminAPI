@@ -1,9 +1,17 @@
 package net.fashiongo.webadmin.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.model.vendor.GetVendorContract;
+import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
@@ -17,12 +25,17 @@ import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocume
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
+import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
+import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -78,9 +91,6 @@ public class VendorService extends ApiService {
 	private LogCommunicationRepository logCommunicationRepository;
 	
 	@Autowired
-	private VendorContractRepository vendorContractRepository;
-	
-	@Autowired
 	private VendorContentRepository vendorContentRepository;
 	
 	@Autowired
@@ -88,7 +98,11 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private ContractPlanRepository contractPlanRepository;
-	
+
+	@Autowired
+	private HttpClientWrapper httpCaller;
+
+	private final ObjectMapper mapper = new ObjectMapper();
 	/**
 	 * Get vendor list
 	 * @since 2018. 10. 15.
@@ -497,10 +511,25 @@ public class VendorService extends ApiService {
 	 * @param wholeSalerID
 	 * @return
 	 */
-	public List<VendorContract> getVendorContract(Integer wholeSalerID) {
-		List<VendorContract> result = vendorContractRepository.findByWholeSalerIDOrderByVendorContractIDDesc(wholeSalerID);
-		
-		return result;
+	public VendorContractResponse getVendorContract(Integer wholeSalerID) {
+		final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID + "/contracts/recently";
+
+		WebAdminLoginUser userInfo = Utility.getUserInfo();
+		String responseBody = httpCaller.get(endpoint, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+
+		try {
+			mapper.registerModule(new JavaTimeModule())
+					.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+			FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<GetVendorContractResponse>>() {});
+			if (fashionGoApiResponse.getHeader().isSuccessful()) {
+				GetVendorContract vendorContract = fashionGoApiResponse.getData().getVendorContract();
+				return VendorContractResponse.create(vendorContract);
+			} else {
+				throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("fail to get vendor contract list in new fashiongo api ioexcep");
+		}
 	}
 	
 	/**
