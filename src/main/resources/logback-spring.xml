@@ -55,16 +55,16 @@
     </appender>
 
     <springProperty scope="context" name="ACTIVE_PROFILE" source="spring.profiles.active"/>
-    <springProfile name="local,tc-dev,tc-stage,tc-beta">
+    <springProfile name="local | tc-dev | tc-stage">
         <property name="appKey" value="DX9IqlKAKNbOxYXR" />
+        <property name="appKeyWebAdmin" value="DX9IqlKAKNbOxYXR" />
     </springProfile>
-    <springProfile name="toast">
-        <property name="appKey" value="3hTFATueom0f68dE" />
-    </springProfile>
-    <springProfile name="local,tc-dev,tc-stage,tc-beta">
+    <springProfile name="tc-beta">
+        <property name="appKey" value="DX9IqlKAKNbOxYXR" />
         <property name="appKeyWebAdmin" value="DX9IqlKAKNbOxYXR" />
     </springProfile>
     <springProfile name="toast">
+        <property name="appKey" value="3hTFATueom0f68dE" />
         <property name="appKeyWebAdmin" value="eTTOwDfLxS2FyVON" />
     </springProfile>
 
