@@ -509,6 +509,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             } else if (StringUtils.compare(requestActualOpenDate, dateTimeNow) == 0) {
                 openType = "now";
                 openDate = dateTimeNow;
+            } else {
+                return;
             }
         } else {
             return;
