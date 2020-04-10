@@ -122,7 +122,6 @@
             <param name="logSource" value="${ACTIVE_PROFILE}"/>
             <param name="version" value="0.0.1-SNAPSHOT"/>
             <param name="debug" value="true"/>
-            <param name="category" value="webadmin-api"/>
             <param name="errorCodeType" value="action"/>
         </appender>
     </appender>
@@ -256,6 +255,8 @@
             <appender-ref ref="LOG_ROLLING" />
         </logger>
         <logger name="vendorContractCheckLogger" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOG_ROLLING" />
             <appender-ref ref="VENDOR_CONTRACT_CHECK" />
         </logger>
         <logger name="fashiongoApiPayloadLogger" level="INFO" additivity="false">
