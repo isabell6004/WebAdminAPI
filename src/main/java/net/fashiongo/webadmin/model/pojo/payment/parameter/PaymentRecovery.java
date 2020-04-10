@@ -41,20 +41,17 @@ public class PaymentRecovery {
 	@JsonProperty("TransferAmount")
 	private BigDecimal transferAmount;
 
-
 	@JsonProperty("PaymentDate")
-    private LocalDateTime paymentDate;
+    //private LocalDateTime paymentDate;
+	private String paymentDate;
 
-
-//    public LocalDateTime getPaymentDate() {
-//        if (StringUtils.isNotEmpty(paymentDate)) {
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-//            return LocalDateTime.parse(paymentDate, formatter);
-//        }
-//        return null;
-//    }
-
-	@JsonProperty("Username")
-	private String username;    
+    //public LocalDateTime getPaymentDate() {
+    //    if (StringUtils.isNotEmpty(paymentDate)) {
+    //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+    //        return LocalDateTime.parse(paymentDate, formatter);
+     //   }
+     //   return null;
+   // }
+ 
     
 }

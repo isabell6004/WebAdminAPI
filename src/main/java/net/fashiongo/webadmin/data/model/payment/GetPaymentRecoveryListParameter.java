@@ -51,7 +51,7 @@ public class GetPaymentRecoveryListParameter {
  
     public LocalDateTime getPaymentDateFrom() {
         if (StringUtils.isNotEmpty(paymentDateFrom)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
             return LocalDateTime.parse(paymentDateFrom, formatter);
         }
         return null;
@@ -59,7 +59,7 @@ public class GetPaymentRecoveryListParameter {
 
     public LocalDateTime getPaymentDateTo() {
         if (StringUtils.isNotEmpty(paymentDateTo)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
             return LocalDateTime.parse(paymentDateTo, formatter);
         }
         return null;
@@ -67,7 +67,7 @@ public class GetPaymentRecoveryListParameter {
     
     public LocalDateTime getAppliedDateFrom() {
         if (StringUtils.isNotEmpty(appliedDateFrom)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
             return LocalDateTime.parse(appliedDateFrom, formatter);
         }
         return null;
@@ -75,7 +75,7 @@ public class GetPaymentRecoveryListParameter {
 
     public LocalDateTime getAppliedDateTo() {
         if (StringUtils.isNotEmpty(appliedDateTo)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
             return LocalDateTime.parse(appliedDateTo, formatter);
         }
         return null;

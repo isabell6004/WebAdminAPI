@@ -11,7 +11,7 @@ import lombok.Setter;
 public class PaymentRecoveryResponse {
 	
 	@Column(name = "Code")
-	private Boolean code;
+	private int code;
 	
 	@Column(name = "Message")
 	private String message;
