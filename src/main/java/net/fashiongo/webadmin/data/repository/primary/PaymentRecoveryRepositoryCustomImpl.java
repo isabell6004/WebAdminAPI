@@ -43,7 +43,7 @@ import com.querydsl.core.types.dsl.Expressions;
 			Integer pageSize = param.getPageSize() == null ? 30 : param.getPageSize();
 			Integer referenceID = param.getReferenceID() == null ? null : param.getReferenceID();
 			Integer referencetype = param.getReferencetype() == null ? null : param.getReferencetype();
-			Boolean needtoBill = param.getNeedtoBill();
+			Integer needtoBill = param.getNeedtoBill();
 			LocalDateTime paymentDateFrom = param.getPaymentDateFrom();
 			LocalDateTime paymentDateTo = param.getPaymentDateTo();
 			LocalDateTime appliedDateFrom = param.getAppliedDateFrom();
@@ -98,7 +98,14 @@ import com.querydsl.core.types.dsl.Expressions;
 	            expression = expression.and(p.netAmount.eq(netAmount));
 	        }         
 	        if (needtoBill != null) {
-	            expression = expression.and(p.needtoBill.eq(needtoBill));
+	        	boolean needtoBillBoolean;
+	            if (needtoBill == 1) {
+	            	needtoBillBoolean = true;
+	            } else {
+	            	needtoBillBoolean = false;
+	            }
+            
+	            expression = expression.and(p.needtoBill.eq(needtoBillBoolean));
 	        }    
 	        
 	    	jpasqlQuery.select(
