@@ -1,14 +1,18 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
 import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.TotalCount;
 import net.fashiongo.webadmin.data.model.payment.CodeCreditCardType;
 import net.fashiongo.webadmin.data.model.payment.CreditCardInfo;
+import net.fashiongo.webadmin.data.model.payment.GetPaymentRecoveryListParameter;
 import net.fashiongo.webadmin.data.model.payment.OrderPayment;
 import net.fashiongo.webadmin.data.model.payment.PaymentCreditCardInfo;
+import net.fashiongo.webadmin.data.model.payment.PaymentRecoveryList;
 import net.fashiongo.webadmin.data.model.payment.PaymentStatus;
 import net.fashiongo.webadmin.data.model.payment.response.GetAllSavedCreditCardInfoResponse;
+import net.fashiongo.webadmin.data.model.payment.response.GetPaymentRecoveryResponse;
 import net.fashiongo.webadmin.data.model.payment.response.GetPaymentStatusSearchOptionResponse;
 import net.fashiongo.webadmin.data.model.payment.response.GetPendingPaymentTransactionResponse;
 import net.fashiongo.webadmin.data.model.vendor.Vendor;
@@ -16,23 +20,34 @@ import net.fashiongo.webadmin.data.repository.primary.CodeCreditCardTypeEntityRe
 import net.fashiongo.webadmin.data.repository.primary.ListPaymentStatusEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.OrderPaymentStatusEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.PaymentCreditCardEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.PaymentRecoveryRepository;
 import net.fashiongo.webadmin.data.repository.primary.WholeSalerEntityRepository;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentRecoveryResponse;
+import net.fashiongo.webadmin.utility.Utility;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRecovery;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class RenewalWAPaymentService {
 
@@ -53,7 +68,13 @@ public class RenewalWAPaymentService {
 
 	@Autowired
 	private CodeCreditCardTypeEntityRepository codeCreditCardTypeEntityRepository;
+	
+	@Autowired 
+	private PaymentRecoveryRepository paymentRecoveryRepository;	
 
+	@Autowired
+	private JdbcHelper jdbcHelper;
+	
 	@Transactional(transactionManager = "primaryTransactionManager")
 	public GetPaymentStatusSearchOptionResponse getPaymentStatusSearchOption() {
 
@@ -132,5 +153,48 @@ public class RenewalWAPaymentService {
 				.creditCardInfo(creditCardInfo.getContent())
 				.totalList(Arrays.asList(new TotalCount((int) creditCardInfo.getTotalElements())))
 				.build();
+	}
+
+	public 	PaymentRecoveryResponse	setPaymentrecovery(PaymentRecovery paymentrecovery) {
+		
+		PaymentRecoveryResponse result = null;
+		
+		String spName = "up_wa_stripe_payment_failure";
+		List<Object> params = new ArrayList<>();
+		params.add(paymentrecovery.getReferenceID());
+		params.add(paymentrecovery.getTransactionType());
+		params.add(paymentrecovery.getReferenceTypeID());
+		params.add(paymentrecovery.getCreditCardReferenceID());
+		params.add(paymentrecovery.getPGReferenceID());
+		params.add(paymentrecovery.getNetAmount());
+		params.add(paymentrecovery.getTransferAmount());
+		params.add(paymentrecovery.getPaymentDate());
+		params.add(Utility.getUsername());
+		
+		//PaymentRecoveryResponse  _result = jdbcHelper.executeSP(spName, params, PaymentRecoveryResponse.class);
+		List<Object> _result = jdbcHelper.executeSP(spName, params, PaymentRecoveryResponse.class);
+
+		if (CollectionUtils.isEmpty(_result)) {
+			
+			return result;
+		}	
+		
+		List<PaymentRecoveryResponse> rs1 = (List<PaymentRecoveryResponse>) _result.get(0);
+		
+		return rs1.get(0);
+	
+	}
+	
+	@SuppressWarnings("unchecked")
+	public GetPaymentRecoveryResponse getPaymentRecoveryList(GetPaymentRecoveryListParameter q) {
+	
+		Page<PaymentRecoveryList> result = paymentRecoveryRepository.getPaymentRecoveryListWithCount(q);
+
+		GetPaymentRecoveryResponse respone = GetPaymentRecoveryResponse.builder()
+													.recCnt(Arrays.asList(Total.builder().recCnt((int) result.getTotalElements()).build()))
+													.paymentrecoverylist(result.getContent())
+													.build();
+		
+		return respone;		
 	}
 }
