@@ -88,6 +88,7 @@ public class WAPaymentController {
         return new JsonResponse<>(true, null, 0, result);
     }
     
+    // stripe payment failure
 	@PostMapping(value = "/paymentrecovery")
 	public JsonResponse<?> setPaymentrecovery(@RequestBody PaymentRecovery paymentrecovery) {	
 		try {
@@ -108,6 +109,5 @@ public class WAPaymentController {
 		response.setSuccess(true);
 		response.setData(result);
 		return response;
-
 	}
 }

@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.data.model.payment.response;
 
 import java.util.List;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;

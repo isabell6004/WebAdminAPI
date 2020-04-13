@@ -222,5 +222,4 @@ public class PaymentController {
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
-
 }

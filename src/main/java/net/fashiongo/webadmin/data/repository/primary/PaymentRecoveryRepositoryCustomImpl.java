@@ -3,7 +3,6 @@
 	import java.math.BigDecimal;
 	import java.sql.Timestamp;
 	import java.time.LocalDateTime;
-	import java.time.format.DateTimeFormatter;
 	import java.util.List;
 	
 	import javax.persistence.EntityManager;
@@ -13,16 +12,15 @@
 	import org.springframework.data.domain.Page;
 	import org.springframework.data.domain.PageRequest;
 	import org.springframework.data.repository.support.PageableExecutionUtils;
-	import org.springframework.transaction.annotation.Transactional;
-	
+
 	import com.querydsl.core.QueryResults;
 	import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
+    import com.querydsl.core.types.Order;
+    import com.querydsl.core.types.OrderSpecifier;
 	import com.querydsl.core.types.Projections;
 	import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.ComparableExpression;
-import com.querydsl.core.types.dsl.Expressions;
+    import com.querydsl.core.types.dsl.ComparableExpression;
+    import com.querydsl.core.types.dsl.Expressions;
 	import com.querydsl.jpa.sql.JPASQLQuery;
 	import com.querydsl.sql.SQLExpressions;
 	
