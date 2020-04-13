@@ -525,10 +525,10 @@ public class VendorService extends ApiService {
 			if (fashionGoApiResponse.getHeader().isSuccessful()) {
 				return fashionGoApiResponse.getData().getVendorContract();
 			} else {
-				throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
+				throw new RuntimeException("fail to get recently vendor contract in new fashiongo api");
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
+			throw new RuntimeException("fail to get recently vendor contract in new fashiongo api");
 		}
 	}
 	
@@ -650,10 +650,10 @@ public class VendorService extends ApiService {
 			if (fashionGoApiResponse.getHeader().isSuccessful()) {
 				return fashionGoApiResponse.getData().getContractPlansResponseList();
 			} else {
-				throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
+				throw new RuntimeException("fail to get contract plan list in new fashiongo api");
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
+			throw new RuntimeException("fail to get contract plan list in new fashiongo api");
 		}
 	}
 }
