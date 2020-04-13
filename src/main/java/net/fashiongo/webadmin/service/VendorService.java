@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.fashiongo.webadmin.dao.primary.*;
 import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
-import net.fashiongo.webadmin.data.model.vendor.GetVendorContract;
 import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
@@ -524,8 +523,7 @@ public class VendorService extends ApiService {
 					.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 			FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<GetVendorContractResponse>>() {});
 			if (fashionGoApiResponse.getHeader().isSuccessful()) {
-				GetVendorContract vendorContract = fashionGoApiResponse.getData().getVendorContract();
-				return VendorContractResponse.create(vendorContract);
+				return fashionGoApiResponse.getData().getVendorContract();
 			} else {
 				throw new RuntimeException("fail to get vendor contract list in new fashiongo api");
 			}

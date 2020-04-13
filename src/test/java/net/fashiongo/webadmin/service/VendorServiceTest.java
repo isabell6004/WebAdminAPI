@@ -4,13 +4,10 @@
 package net.fashiongo.webadmin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
-import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
-import net.fashiongo.webadmin.data.model.vendor.VendorFormListResponse;
-import net.fashiongo.webadmin.data.model.vendor.VendorProductListResponse;
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
@@ -18,19 +15,15 @@ import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParamete
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.*;
+import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.BannerRequestService;
-import net.fashiongo.webadmin.utility.Utility;
-import net.fashiongo.webadmin.utility.WithCustomMockUser;
-import org.junit.Before;
+//import net.fashiongo.webadmin.utility.WithCustomMockUser;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
@@ -38,9 +31,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author roy
@@ -48,6 +39,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class VendorServiceTest {
 	
 	@Autowired
@@ -182,7 +174,7 @@ public class VendorServiceTest {
 	 * @author Reo
 	 */
 	@Test
-	@WithCustomMockUser
+	//@WithCustomMockUser
 	public void testGetBannerRequest() {
 		GetBannerRequestParameter parameters = new GetBannerRequestParameter();
 		parameters.setPageNum(1);
@@ -325,10 +317,10 @@ public class VendorServiceTest {
 	 */
 	@Test
 	public void testGetVendorContract() {
-		Integer wholeSalerID = 3389;
-		List<VendorContract> result = vendorService.getVendorContract(wholeSalerID);
-		if(!CollectionUtils.isEmpty(result)) {
-			assertNotNull(result.get(0));
+		Integer wholeSalerID = 2858;
+		VendorContractResponse result = vendorService.getVendorContract(wholeSalerID);
+		if(result != null) {
+			assertNotNull(result);
 		}
 	}
 	
@@ -400,4 +392,5 @@ public class VendorServiceTest {
 //
 //		assertNotNull(v);
 	}
+
 }

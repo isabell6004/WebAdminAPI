@@ -9,83 +9,40 @@ import java.time.LocalDateTime;
 
 @Getter
 public class VendorContractResponse {
-    @JsonProperty("VendorContractId")
-    private Long vendorContractId;
-
-    @JsonProperty("wholeSalerID")
-    private Long wholeSalerID;
-
-    @JsonProperty("contractTypeID")
-    private Integer contractTypeID;
-
-    @JsonProperty("vendorContractPlanId")
-    private Long vendorContractPlanId;
-
-    @JsonProperty("setupFee")
+    @JsonProperty("VendorContractID")
+    private Long vendorContractID;
+    private Long vendorId;
+    private Integer typeCode;
+    private Long planId;
     private BigDecimal setupFee;
-
-    @JsonProperty("lastMonthServiceFee")
     private BigDecimal lastMonthServiceFee;
-
-    @JsonProperty("monthlyFee")
     private BigDecimal monthlyFee;
-
-    @JsonProperty("isSetupFeeWaived")
     private Boolean isSetupFeeWaived;
-
-    @JsonProperty("isLastMonthServiceFeeWaived")
     private Boolean isLastMonthServiceFeeWaived;
-
-    @JsonProperty("commissionRate")
     private BigDecimal commissionRate;
-
-    @JsonProperty("commissionBaseDateCode")
     private Integer commissionBaseDateCode;
-
-    @JsonProperty("monthlyItems")
-    private Integer monthlyItems;
-
-    @JsonProperty("memo")
+    private Integer monthlyItemCap;
     private String memo;
-
-    @JsonProperty("fromContractDate")
-//    @Convert(converter = LocalDateTimeConverter.class)
-    private LocalDateTime fromContractDate;
-
-    @JsonProperty("toContractDate")
-//    @Convert(converter = LocalDateTimeConverter.class)
-    private LocalDateTime toContractDate;
-
-    @JsonProperty("createdOn")
+    private LocalDateTime dateFrom;
+    private LocalDateTime dateTo;
     private LocalDateTime createdOn;
-
-    @JsonProperty("createdBy")
     private String createdBy;
-
-    @JsonProperty("modifiedOn")
     private LocalDateTime modifiedOn;
-
-    @JsonProperty("modifiedBy")
     private String modifiedBy;
-
-    @JsonProperty("repID")
-    private Integer repID;
-
-    @JsonProperty("repBy")
-    private String repBy;
+    private Integer accountExecutiveId;
+    private String accountExecutiveBy;
 
     public VendorContractResponse() {}
 
     @Builder
-    public VendorContractResponse(Long vendorContractId, Long wholeSalerID, Integer contractTypeID, Long vendorContractPlanId,
-                                  BigDecimal setupFee, BigDecimal lastMonthServiceFee, BigDecimal monthlyFee, Boolean isSetupFeeWaived,
-                                  Boolean isLastMonthServiceFeeWaived, BigDecimal commissionRate, Integer commissionBaseDateCode,
-                                  Integer monthlyItems, String memo, LocalDateTime fromContractDate,LocalDateTime toContractDate,
-                                  LocalDateTime createdOn, String createdBy, LocalDateTime modifiedOn, String modifiedBy, Integer repID, String repBy) {
-        this.vendorContractId = vendorContractId;
-        this.wholeSalerID = wholeSalerID;
-        this.contractTypeID = contractTypeID;
-        this.vendorContractPlanId = vendorContractPlanId;
+    public VendorContractResponse(Long vendorContractID, Long vendorId, Integer typeCode, Long planId, BigDecimal setupFee, BigDecimal lastMonthServiceFee,
+                                  BigDecimal monthlyFee, Boolean isSetupFeeWaived, Boolean isLastMonthServiceFeeWaived, BigDecimal commissionRate,
+                                  Integer commissionBaseDateCode, Integer monthlyItemCap, String memo, LocalDateTime dateFrom, LocalDateTime dateTo,
+                                  LocalDateTime createdOn, String createdBy, LocalDateTime modifiedOn, String modifiedBy, Integer accountExecutiveId, String accountExecutiveBy) {
+        this.vendorContractID = vendorContractID;
+        this.vendorId = vendorId;
+        this.typeCode = typeCode;
+        this.planId = planId;
         this.setupFee = setupFee;
         this.lastMonthServiceFee = lastMonthServiceFee;
         this.monthlyFee = monthlyFee;
@@ -93,41 +50,15 @@ public class VendorContractResponse {
         this.isLastMonthServiceFeeWaived = isLastMonthServiceFeeWaived;
         this.commissionRate = commissionRate;
         this.commissionBaseDateCode = commissionBaseDateCode;
-        this.monthlyItems = monthlyItems;
+        this.monthlyItemCap = monthlyItemCap;
         this.memo = memo;
-        this.fromContractDate = fromContractDate;
-        this.toContractDate = toContractDate;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
         this.createdOn = createdOn;
         this.createdBy = createdBy;
         this.modifiedOn = modifiedOn;
         this.modifiedBy = modifiedBy;
-        this.repID = repID;
-        this.repBy = repBy;
-    }
-
-    public static VendorContractResponse create(GetVendorContract vendorContract) {
-        return VendorContractResponse.builder()
-                .vendorContractId(vendorContract.getId())
-                .wholeSalerID(vendorContract.getVendorId())
-                .contractTypeID(vendorContract.getTypeCode())
-                .vendorContractPlanId(vendorContract.getPlanId())
-                .setupFee(vendorContract.getSetupFee())
-                .lastMonthServiceFee(vendorContract.getLastMonthServiceFee())
-                .monthlyFee(vendorContract.getMonthlyFee())
-                .isSetupFeeWaived(vendorContract.getIsSetupFeeWaived())
-                .isLastMonthServiceFeeWaived(vendorContract.getIsLastMonthServiceFeeWaived())
-                .commissionRate(vendorContract.getCommissionRate())
-                .commissionBaseDateCode(vendorContract.getCommissionBaseDateCode())
-                .monthlyItems(vendorContract.getMonthlyItemCap())
-                .memo(vendorContract.getMemo())
-                .fromContractDate(vendorContract.getDateFrom())
-                .toContractDate(vendorContract.getDateTo())
-                .createdOn(vendorContract.getCreatedOn())
-                .createdBy(vendorContract.getCreatedBy())
-                .modifiedOn(vendorContract.getModifiedOn())
-                .modifiedBy(vendorContract.getModifiedBy())
-                .repID(vendorContract.getAccountExecutiveId())
-                .repBy(vendorContract.getAccountExecutiveBy())
-                .build();
+        this.accountExecutiveId = accountExecutiveId;
+        this.accountExecutiveBy = accountExecutiveBy;
     }
 }
