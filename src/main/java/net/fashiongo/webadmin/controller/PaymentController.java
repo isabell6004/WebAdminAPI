@@ -4,13 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import net.fashiongo.webadmin.data.model.payment.GetPaymentAccountInfoParameter;
-import net.fashiongo.webadmin.data.model.payment.GetPaymentRecoveryListParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
-import net.fashiongo.webadmin.data.model.payment.response.GetPaymentRecoveryResponse;
-import net.fashiongo.webadmin.data.model.sitemgmt.response.GetSEOResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRecovery;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
@@ -217,10 +212,8 @@ public class PaymentController {
 		try {
 			return paymentService.setRefund(paymentRequest);
 		} catch (Exception e) {
-			
 			logger.error("PaymentController.setSale()", e);
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
-
 }
