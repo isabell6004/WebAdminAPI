@@ -7,12 +7,19 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-@Builder
 public class BannerRequestResponse {
+	@JsonProperty("contents")
+	private List<VendorBannerResponse> bannerImageList;
 
-	@JsonProperty("Table")
-	private List<VendorImageRequestResponse> bannerImageList;
+	@JsonProperty("totalCount")
+	private Long total;
 
-	@JsonProperty("Table1")
-	private List<BannerRequestCount> total;
+	public BannerRequestResponse() {
+	}
+
+	@Builder
+	public BannerRequestResponse(List<VendorBannerResponse> bannerImageList, Long total) {
+		this.bannerImageList = bannerImageList;
+		this.total = total;
+	}
 }

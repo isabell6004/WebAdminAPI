@@ -67,12 +67,12 @@ public class RenewalWAPaymentService {
 
 	@Autowired
 	private CodeCreditCardTypeEntityRepository codeCreditCardTypeEntityRepository;
-	
-	@Autowired 
-	private PaymentRecoveryRepository paymentRecoveryRepository;	
 
+	@Autowired 
+	private PaymentRecoveryRepository paymentRecoveryRepository;		
+	
 	@Autowired
-	private JdbcHelper jdbcHelper;
+	private JdbcHelper jdbcHelper;	
 	
 	@Transactional(transactionManager = "primaryTransactionManager")
 	public GetPaymentStatusSearchOptionResponse getPaymentStatusSearchOption() {
@@ -153,7 +153,7 @@ public class RenewalWAPaymentService {
 				.totalList(Arrays.asList(new TotalCount((int) creditCardInfo.getTotalElements())))
 				.build();
 	}
-
+	
 	public 	PaymentRecoveryResponse	setPaymentrecovery(PaymentRecovery paymentrecovery) {
 		
 		PaymentRecoveryResponse result = null;
@@ -195,5 +195,5 @@ public class RenewalWAPaymentService {
 													.build();
 		
 		return respone;		
-	}
+	}	
 }

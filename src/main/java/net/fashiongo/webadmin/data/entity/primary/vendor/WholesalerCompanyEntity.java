@@ -21,4 +21,7 @@ public class WholesalerCompanyEntity {
 
 	@Column(name = "Active")
 	private Boolean active;
+
+	@Column(name = "DirName")
+	private String dirName;
 }

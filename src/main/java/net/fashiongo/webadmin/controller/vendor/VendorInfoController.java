@@ -1,22 +1,17 @@
 package net.fashiongo.webadmin.controller.vendor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorBasicInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListCSVResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSettingResponse;
-import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
 import net.fashiongo.webadmin.utility.JsonResponse;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author roy
@@ -64,11 +59,11 @@ public class VendorInfoController {
     @PostMapping(value = "vendor/setvendorbasicinfo", produces = "application/json")
     public Integer setvendorbasicinfo(@RequestBody SetVendorBasicInfoParameter request) {
 
-        if (request.getWid() == null || request.getWid() == 0)
+        if (request.getWid() == null || request.getWid() == 0) {
             return null;
+        }
 
-        Integer result = vendorInfoService.update(request);
-        return result;
+        return vendorInfoService.update(request);
     }
 
     @PostMapping(value = "vendor/getvendorlist", produces = "application/json")

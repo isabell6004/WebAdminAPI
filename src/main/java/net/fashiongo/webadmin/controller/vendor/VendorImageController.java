@@ -3,8 +3,10 @@ package net.fashiongo.webadmin.controller.vendor;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.DelVendorImageParameter;
 import net.fashiongo.webadmin.data.model.vendor.GetVendorImageParameter;
+import net.fashiongo.webadmin.data.model.vendor.ImageResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorImage;
+import net.fashiongo.webadmin.service.vendor.BannerRequestNewService;
 import net.fashiongo.webadmin.service.vendor.VendorImageService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -22,18 +24,22 @@ import java.util.List;
 @Slf4j
 public class VendorImageController {
 
+    private final BannerRequestNewService bannerRequestNewService;
+
     private VendorImageService vendorImageService;
-    public VendorImageController(@Qualifier("vendorBannerImageService") VendorImageService vendorImageService) {
+    public VendorImageController(BannerRequestNewService bannerRequestNewService, @Qualifier("vendorBannerImageService") VendorImageService vendorImageService) {
+        this.bannerRequestNewService = bannerRequestNewService;
         this.vendorImageService = vendorImageService;
     }
 
     @PostMapping(value = "vendor/getvendorimage", produces = "application/json")
-    public JsonResponse<List<VendorImage>> getvendorimage(@RequestBody GetVendorImageParameter param) {
-        JsonResponse<List<VendorImage>> response = new JsonResponse<>(false, null, null);
+    public JsonResponse<ImageResponse> getvendorimage(@RequestBody GetVendorImageParameter param) {
+        JsonResponse<ImageResponse> response = new JsonResponse<>(false, null, null);
         Integer wid = param.getWid();
 
         try {
-            response.setData(vendorImageService.getVendorImage(wid));
+//            response.setData(vendorImageService.getVendorImage(wid));
+            response.setData(bannerRequestNewService.getImages(Long.valueOf(wid)));
             response.setSuccess(true);
         } catch (Exception ex) {
             log.error("Exception Error: {}", ex);

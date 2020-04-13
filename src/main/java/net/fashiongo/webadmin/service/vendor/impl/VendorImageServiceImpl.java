@@ -69,6 +69,7 @@ public class VendorImageServiceImpl implements VendorImageService {
         return result;
     }
 
+    @Deprecated
     @Override
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED, readOnly = true)
     public List<VendorImage> getVendorImage(Integer wid) {

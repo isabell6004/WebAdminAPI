@@ -10,13 +10,11 @@ import net.fashiongo.webadmin.model.primary.CodeBodySize;
 import net.fashiongo.webadmin.service.AdService;
 import net.fashiongo.webadmin.service.renewal.RenewalAdService;
 import net.fashiongo.webadmin.utility.JsonResponse;
-import java.util.List;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value="/ad", produces = "application/json")
@@ -319,7 +317,15 @@ public class AdController {
 		results.setSuccess(result.getSuccess());
 		results.setCode(result.getResultCode());
 		results.setMessage(result.getResultMsg());
-		
+
 		return results;
+	}
+
+	@PostMapping("getbanneradsListvendorcategory")
+	public BannerAdsListVendorCategoryResponse getBannerAdsListVendorCategory(@RequestBody AdVendorCategoryParameter parameter) {
+
+		List<AdVendorCategoryResponse> responses = adService.getBannerAdsListVendorCategory(parameter.getWholesalerId());
+
+		return BannerAdsListVendorCategoryResponse.of(responses);
 	}
 }

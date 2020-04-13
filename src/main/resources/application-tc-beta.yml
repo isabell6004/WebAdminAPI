@@ -94,7 +94,7 @@ coupon:
       root-email-name: coupon-email-list
       root-image-name: coupon-banner-images
       root-name-prefix: beta-
-    image-root: https://rlyfpniry.cdn.toastcloud.com/
+    image-root: https://rlyfpniry.toastcdn.net/
 
 gnb:
   banner:

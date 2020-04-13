@@ -9,23 +9,23 @@ import java.util.Objects;
 @Getter
 public enum VendorImageRequestOrderingType {
 	APPROVED_ON("ApprovedOn"),
-	REQUESTED_ON("RequestedOn"),
-	COMPANY_NAME("CompanyName"),
+	REQUESTED_ON("requestDate"),
+	COMPANY_NAME("companyName"),
 
-	COMPANY_NAME_ASC("CompanyName asc"),
-	COMPANY_NAME_DESC("CompanyName desc"),
+	COMPANY_NAME_ASC("companyName asc"),
+	COMPANY_NAME_DESC("companyName desc"),
 
-	VENDOR_IMAGE_TYPE_ID_ASC("VendorImageTypeID asc"),
-	VENDOR_IMAGE_TYPE_ID_DESC("VendorImageTypeID desc"),
+	VENDOR_IMAGE_TYPE_ID_ASC("bannerTypeId asc"),
+	VENDOR_IMAGE_TYPE_ID_DESC("bannerTypeId desc"),
 
-	REQUESTED_ON_ASC("RequestedOn asc"),
-	REQUESTED_ON_DESC("RequestedOn desc"),
+	REQUESTED_ON_ASC("requestDate asc"),
+	REQUESTED_ON_DESC("requestDate desc"),
 
-	DECIDED_ON_ASC("DecidedOn asc"),
-	DECIDED_ON_DESC("DecidedOn desc"),
+	DECIDED_ON_ASC("decidedDate asc"),
+	DECIDED_ON_DESC("decidedDate desc"),
 
-	REJECT_REASON_ASC("RejectReason asc"),
-	REJECT_REASON_DESC("RejectReason desc");
+	REJECT_REASON_ASC("rejectReason asc"),
+	REJECT_REASON_DESC("rejectReason desc");
 
 	private String stringValue;
 

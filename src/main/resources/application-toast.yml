@@ -83,7 +83,7 @@ coupon:
       root-email-name: coupon-email-list
       root-image-name: coupon-banner-images
       root-name-prefix: ""
-    image-root: https://rlzwrhbmy.cdn.toastcloud.com/
+    image-root: https://rlzwrhbmy.toastcdn.net/
 
 gnb:
   banner:
