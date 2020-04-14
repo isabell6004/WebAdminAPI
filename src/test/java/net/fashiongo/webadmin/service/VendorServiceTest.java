@@ -308,22 +308,7 @@ public class VendorServiceTest {
 			assertNotNull(result.get(0));
 		}
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 12. 17.
-	 * @author Reo
-	 */
-	@Test
-	public void testGetVendorContract() {
-		Integer wholeSalerID = 2858;
-		VendorContractResponse result = vendorService.getVendorContract(wholeSalerID);
-		if(result != null) {
-			assertNotNull(result);
-		}
-	}
-	
+
 	/**
 	 * 
 	 * Description Example

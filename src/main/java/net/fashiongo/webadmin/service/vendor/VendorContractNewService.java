@@ -1,7 +1,9 @@
 package net.fashiongo.webadmin.service.vendor;
 
+import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
+import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
@@ -28,4 +30,8 @@ public interface VendorContractNewService {
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
     void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer userId, String username);
+
+    VendorContractResponse inquiryVendorContract(Integer vendorId);
+
+    List<ContractPlansResponse> inquiryContractPlans();
 }

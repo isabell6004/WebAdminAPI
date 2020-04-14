@@ -5,6 +5,7 @@ import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.service.VendorService;
+import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import net.fashiongo.webadmin.service.vendor.VendorContractService;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -20,16 +21,16 @@ import java.util.List;
 @Slf4j
 public class VendorContractController {
 	
-	private VendorService vendorService;
+	private VendorContractNewService vendorContractNewService;
 	private RenewalVendorService renewalVendorService;
 	private VendorContractService vendorContractService;
 
 	public VendorContractController(
-            VendorService vendorService,
+			VendorContractNewService vendorContractNewService,
             RenewalVendorService renewalVendorService,
             VendorContractService vendorContractService
     ) {
-	    this.vendorService = vendorService;
+	    this.vendorContractNewService = vendorContractNewService;
 	    this.renewalVendorService = renewalVendorService;
 	    this.vendorContractService = vendorContractService;
     }
@@ -37,7 +38,7 @@ public class VendorContractController {
 	@RequestMapping(value="vendor/getvendorcontract", method=RequestMethod.GET, produces = "application/json")
 	public JsonResponse<VendorContractResponse> getVendorContract(@RequestParam(value="wid") Integer wholeSalerID) {
 		JsonResponse<VendorContractResponse> results = new JsonResponse<VendorContractResponse>(false, null, 0, null);
-		VendorContractResponse result = vendorService.getVendorContract(wholeSalerID);
+		VendorContractResponse result = vendorContractNewService.inquiryVendorContract(wholeSalerID);
 		results.setData(result);
 		results.setSuccess(true);
 		return results;
@@ -47,7 +48,7 @@ public class VendorContractController {
     public JsonResponse<List<ContractPlansResponse>> getContractPlans() {
     	JsonResponse<List<ContractPlansResponse>> response = new JsonResponse<>(false, null, null);
     	try {
-    		response.setData(vendorService.getContractPlans());
+    		response.setData(vendorContractNewService.inquiryContractPlans());
     		response.setSuccess(true);
     	} catch (Exception ex) {
     		log.error("Exception Error: {}", ex);
