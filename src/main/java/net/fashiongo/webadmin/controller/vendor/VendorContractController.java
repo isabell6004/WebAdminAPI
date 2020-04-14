@@ -3,8 +3,8 @@ package net.fashiongo.webadmin.controller.vendor;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorDocumentTypeEntity;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import net.fashiongo.webadmin.service.vendor.VendorContractService;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
@@ -58,11 +58,13 @@ public class VendorContractController {
     }
 
     @RequestMapping(value="vendor/getvendorcontractdocumenthistory", method=RequestMethod.GET, produces = "application/json")
-    public JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse> getVendorContractDocumentHistory(@RequestParam(value="VendorContractID") Integer vendorContractID) {
-        JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse>(true, null, null);
+    public JsonResponse<GetVendorContractDocumentHistoryResponse> getVendorContractDocumentHistory(@RequestParam(value="VendorContractID") Long vendorContractID) {
+        JsonResponse<GetVendorContractDocumentHistoryResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse>(true, null, null);
 
-        net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractDocumentHistoryResponse vendorContractDocumentHistory = renewalVendorService.getVendorContractDocumentHistory(vendorContractID);
-        results.setData(vendorContractDocumentHistory);
+		GetVendorContractDocumentHistoryResponse vendorContractDocumentHistory = GetVendorContractDocumentHistoryResponse.builder()
+				.vendorContractDocumentHistoryList(vendorContractNewService.getContractDocumentHistory(vendorContractID).getContractDocumentHistories())
+				.build();
+		results.setData(vendorContractDocumentHistory);
 
         return results;
     }
@@ -83,11 +85,11 @@ public class VendorContractController {
 	}
 
 	@GetMapping(value = "vendor/getvendorcontracthistorylist", produces = "application/json")
-	public JsonResponse<List<VendorContractHistory>> getvendorcontracthistorylist(@RequestParam(value="wid") Integer wholeSalerID) {
-    	JsonResponse<List<VendorContractHistory>> response = new JsonResponse<>(false, null, null);
+	public JsonResponse<List<VendorContractHistoryList>> getvendorcontracthistorylist(@RequestParam(value="wid") Long wholeSalerID) {
+    	JsonResponse<List<VendorContractHistoryList>> response = new JsonResponse<>(false, null, null);
 
     	try {
-    		List<VendorContractHistory> result = renewalVendorService.getVendorContractHistoryList(wholeSalerID);
+            List<VendorContractHistoryList> result = vendorContractNewService.getContractHistoryList(wholeSalerID).getContractHistories();
 
     		response.setSuccess(true);
     		response.setData(result);

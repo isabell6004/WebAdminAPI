@@ -5,7 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.QVendorContractEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorContractEntity;
-import net.fashiongo.webadmin.data.model.vendor.VendorContractHistory;
+import net.fashiongo.webadmin.data.model.vendor.VendorContractHistoryList;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -35,11 +35,11 @@ public class VendorContractEntityRepositoryCustomImpl implements VendorContractE
 	}
 
 	@Override
-	public List<VendorContractHistory> findContractHistoryListByWholeSalerID(Integer wholeSalerID) {
-		JPAQuery<VendorContractHistory> query = new JPAQuery<>(entityManager);
+	public List<VendorContractHistoryList> findContractHistoryListByWholeSalerID(Integer wholeSalerID) {
+		JPAQuery<VendorContractHistoryList> query = new JPAQuery<>(entityManager);
 		QVendorContractEntity VC = new QVendorContractEntity("VC");
 
-		query.select(Projections.constructor(VendorContractHistory.class,
+		query.select(Projections.constructor(VendorContractHistoryList.class,
 				VC.contractTypeID,
 				VC.vendorContractID,
 				VC.setupFee,

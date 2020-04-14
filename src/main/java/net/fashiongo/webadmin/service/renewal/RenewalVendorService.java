@@ -154,32 +154,6 @@ public class RenewalVendorService extends ApiService {
                 .build();
     }
 
-    public GetVendorContractDocumentHistoryResponse getVendorContractDocumentHistory(Integer vendorContractID) {
-
-        List<VendorContractDocumentEntity> vendorContractDocumentEntities = vendorContractDocumentEntityRepository.findAllByVendorContractID(vendorContractID);
-
-        return GetVendorContractDocumentHistoryResponse.builder()
-                .vendorContractDocumentHistoryList(
-                        vendorContractDocumentEntities.stream()
-                                .map(vendorContractDocumentEntity ->
-                                        VendorContractDocumentHistory.builder()
-                                                .vendorContractID(vendorContractDocumentEntity.getVendorContractID())
-                                                .vendorContractDocumentID(vendorContractDocumentEntity.getVendorContractDocumentID())
-                                                .documentTypeID(vendorContractDocumentEntity.getDocumentTypeID())
-                                                .createdBy(vendorContractDocumentEntity.getCreatedBy())
-                                                .createdOn(vendorContractDocumentEntity.getCreatedOn().toLocalDateTime())
-                                                .note(vendorContractDocumentEntity.getNote())
-                                                .receivedBy(vendorContractDocumentEntity.getReceivedBy())
-                                                .fileName(vendorContractDocumentEntity.getFileName())
-                                                .fileName2(vendorContractDocumentEntity.getFileName2())
-                                                .fileName3(vendorContractDocumentEntity.getFileName3())
-                                                .checkBox(false)
-                                                .build()
-                                ).collect(Collectors.toList())
-                )
-                .build();
-    }
-
     public GetVendorDetailInfoDataResponse getVendorDetailInfoData(Integer wholeSalerID) {
 
         VendorDetailDate vendorDetailDate = wholeSalerEntityRepository.findById(wholeSalerID)
@@ -433,7 +407,7 @@ public class RenewalVendorService extends ApiService {
         return securityUserEntityRepository.findAllActive();
     }
 
-    public List<VendorContractHistory> getVendorContractHistoryList(Integer wholeSalerID) {
+    public List<VendorContractHistoryList> getVendorContractHistoryList(Integer wholeSalerID) {
         return vendorContractEntityRepository.findContractHistoryListByWholeSalerID(wholeSalerID);
     }
 

@@ -6,12 +6,15 @@ import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBasicInfoParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
+import net.fashiongo.webadmin.data.model.vendor.VendorContractHistory;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.service.CacheService;
+import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import net.fashiongo.webadmin.service.vendor.VendorContractService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
@@ -72,6 +75,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private VendorContractService vendorContractService;
 
+    private VendorContractNewService vendorContractNewService;
+
     private CacheService cacheService;
 
     private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
@@ -92,7 +97,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorContractService vendorContractService,
                                  CacheService cacheService,
                                  JdbcHelper jdbcHelperFgBilling,
-                                 ConfigurableEnvironment env) {
+                                 ConfigurableEnvironment env, VendorContractNewService vendorContractNewService) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
@@ -110,6 +115,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.cacheService = cacheService;
         this.jdbcHelperFgBilling = jdbcHelperFgBilling;
         this.env = env;
+        this.vendorContractNewService = vendorContractNewService;
     }
 
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -519,9 +525,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             return;
         }
 
-        VendorContractEntity vendorContract = vendorContractService.getVendorContractIncludedOpenDate(wholeSaler.getWholeSalerID(), actualOpenDate);
+        VendorContractHistoryResponse vendorContract = vendorContractNewService.getVendorContractIncludedOpenDate(wholeSaler.getWholeSalerID(), requestVendorDetailInfo.getActualOpenDate());
         String message = String.format("[change-to-orderactive] vendor-id:%s,open-type:%s,open-date:%s,valid-contract-id:%s"
-                , wholeSaler.getWholeSalerID(), openType, openDate, Optional.ofNullable(vendorContract).map(VendorContractEntity::getVendorContractID).orElse(null));
+                , wholeSaler.getWholeSalerID(), openType, openDate, Optional.ofNullable(vendorContract.getContractHistories()).map(VendorContractHistory::getId).orElse(null));
         logger.info(message);
     }
 

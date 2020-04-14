@@ -13,7 +13,6 @@ import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.*;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.*;
@@ -487,25 +486,6 @@ public class VendorService extends ApiService {
 	public List<LogCommunication> getVendorCommunicationList(Integer wholeSalerID) {
 		List<LogCommunication> result =  logCommunicationRepository.findByRetailerIDAndIsForVendorOrderByCommunicationIDDesc(wholeSalerID, true);
 		
-		return result;
-	}
-
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 12. 14.
-	 * @author Reo
-	 * @param vendorContractID
-	 * @return
-	 */
-	public GetVendorContractDocumentHistoryResponse getVendorContractDocumentHistory(Integer vendorContractID) {
-		GetVendorContractDocumentHistoryResponse result = new GetVendorContractDocumentHistoryResponse();
-		String spName = "up_wa_GetVendorContractDocumentHistory";
-		List<Object> params = new ArrayList<Object>();
-		params.add(vendorContractID);
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, VendorContractDocumentHistory.class);
-		result.setVendorContractDocumentHistoryList((List<VendorContractDocumentHistory>) _result.get(0));
 		return result;
 	}
 	

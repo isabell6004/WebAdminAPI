@@ -12,13 +12,11 @@ import net.fashiongo.webadmin.model.pojo.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.BannerRequestService;
-//import net.fashiongo.webadmin.utility.WithCustomMockUser;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -307,19 +305,6 @@ public class VendorServiceTest {
 		if(!CollectionUtils.isEmpty(result)) {
 			assertNotNull(result.get(0));
 		}
-	}
-
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 12. 17.
-	 * @author Reo
-	 */
-	@Test
-	public void testGetVendorContractDocumentHistory() {
-		Integer vendorContractID = 10;
-		GetVendorContractDocumentHistoryResponse result = vendorService.getVendorContractDocumentHistory(vendorContractID);
-		assertTrue(result.getVendorContractDocumentHistoryList().size() > 0);
 	}
 	
 	/**

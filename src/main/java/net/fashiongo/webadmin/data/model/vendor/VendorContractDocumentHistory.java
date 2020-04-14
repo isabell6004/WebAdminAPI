@@ -1,45 +1,38 @@
 package net.fashiongo.webadmin.data.model.vendor;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
 public class VendorContractDocumentHistory {
 
-	@JsonProperty("VendorContractDocumentID")
-	private Integer vendorContractDocumentID;
-
-	@JsonProperty("VendorContractID")
-	private Integer vendorContractID;
-
-	@JsonProperty("DocumentTypeID")
-	private Integer documentTypeID;
-
-	@JsonProperty("FileName")
-	private String fileName;
-
-	@JsonProperty("FileName2")
+	private Long id;
+	private Long vendorContractHistoryId;
+	private Integer typeCode;
+	private String fileName1;
 	private String fileName2;
-
-	@JsonProperty("FileName3")
 	private String fileName3;
-
-	@JsonProperty("Note")
 	private String note;
-
-	@JsonProperty("ReceivedBy")
+	private LocalDateTime createdOn;
+	private Integer receivedId;
 	private String receivedBy;
 
-	@JsonProperty("CreatedBy")
-	private String createdBy;
+	public VendorContractDocumentHistory() {
+	}
 
-	@JsonProperty("CreatedOn")
-	private LocalDateTime createdOn;
-
-	@JsonProperty("CheckBox")
-	private Boolean checkBox;
+	@Builder
+	public VendorContractDocumentHistory(Long id, Long vendorContractHistoryId, Integer typeCode, String fileName1, String fileName2, String fileName3, String note, LocalDateTime createdOn, Integer receivedId, String receivedBy) {
+		this.id = id;
+		this.vendorContractHistoryId = vendorContractHistoryId;
+		this.typeCode = typeCode;
+		this.fileName1 = fileName1;
+		this.fileName2 = fileName2;
+		this.fileName3 = fileName3;
+		this.note = note;
+		this.createdOn = createdOn;
+		this.receivedId = receivedId;
+		this.receivedBy = receivedBy;
+	}
 }

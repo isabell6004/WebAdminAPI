@@ -12,6 +12,9 @@ import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorContractDocumentHistoryResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
@@ -20,9 +23,12 @@ import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,6 +133,88 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
             throw new RuntimeException("fail to get contract plan list in new fashiongo api");
         }
     }
+
+    @Override
+    public VendorContractDocumentHistoryResponse getContractDocumentHistory(Long contractHistoryId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/contracts/" + contractHistoryId + "/document/history";
+        log.debug("call the vendor api:{}", endpoint);
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+
+        String responseBody = httpCaller.get(endpoint, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+
+        try {
+            mapper.registerModule(new JavaTimeModule())
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+            FashionGoApiResponse<VendorContractDocumentHistoryResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<VendorContractDocumentHistoryResponse>>() {});
+            if (fashionGoApiResponse.getHeader().isSuccessful()) {
+                return fashionGoApiResponse.getData();
+            } else {
+                throw new RuntimeException("fail to get document history in new fashiongo api");
+            }
+        } catch (IOException e) {
+            log.debug(e.getMessage(), e);
+            throw new RuntimeException("fail to get document history in new fashiongo api");
+        }
+    }
+
+    @Override
+    public VendorContractHistoryListResponse getContractHistoryList(Long vendorId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/history";
+        log.debug("call the vendor api:{}", endpoint);
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+
+        String responseBody = httpCaller.get(endpoint, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+
+        try {
+            mapper.registerModule(new JavaTimeModule())
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+            FashionGoApiResponse<VendorContractHistoryListResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<VendorContractHistoryListResponse>>() {});
+            if (fashionGoApiResponse.getHeader().isSuccessful()) {
+                return fashionGoApiResponse.getData();
+            } else {
+                throw new RuntimeException("fail to get contract history in new fashiongo api");
+            }
+        } catch (IOException e) {
+            log.debug(e.getMessage(), e);
+            throw new RuntimeException("fail to get contract history in new fashiongo api");
+        }
+    }
+
+    @Override
+    public VendorContractHistoryResponse getVendorContractIncludedOpenDate(Integer vendorId, LocalDateTime actualOpenDate) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts";
+
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
+                .queryParam("openDate", actualOpenDate)
+                .build(false);
+
+        log.debug("call the vendor api:{}", builder.toUriString());
+
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+
+        String responseBody = httpCaller.get(builder.toUriString(), FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+
+        try {
+            mapper.registerModule(new JavaTimeModule())
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+            FashionGoApiResponse<VendorContractHistoryResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<VendorContractHistoryResponse>>() {});
+            if (fashionGoApiResponse.getHeader().isSuccessful()) {
+                return fashionGoApiResponse.getData();
+            } else {
+                throw new RuntimeException("fail to get contract in new fashiongo api");
+            }
+        } catch (IOException e) {
+            log.debug(e.getMessage(), e);
+            throw new RuntimeException("fail to get contract in new fashiongo api");
+        }
+    }
+
 
     @Getter
     private class ReviseContractHistoryCommand extends ContractHistoryCommand {

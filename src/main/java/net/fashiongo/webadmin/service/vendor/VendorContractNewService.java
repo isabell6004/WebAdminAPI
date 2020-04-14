@@ -4,8 +4,12 @@ import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorContractDocumentHistoryResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryResponse;
 import org.springframework.scheduling.annotation.Async;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -34,4 +38,10 @@ public interface VendorContractNewService {
     VendorContractResponse inquiryVendorContract(Integer vendorId);
 
     List<ContractPlansResponse> inquiryContractPlans();
+
+    VendorContractDocumentHistoryResponse getContractDocumentHistory(Long contractHistoryId);
+
+    VendorContractHistoryListResponse getContractHistoryList(Long vendorId);
+
+    VendorContractHistoryResponse getVendorContractIncludedOpenDate(Integer vendorId, LocalDateTime actualOpenDate);
 }
