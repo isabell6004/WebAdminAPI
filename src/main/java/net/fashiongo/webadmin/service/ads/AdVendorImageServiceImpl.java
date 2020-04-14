@@ -10,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,18 +31,15 @@ public class AdVendorImageServiceImpl implements AdVendorImageService {
             throw new IllegalArgumentException("Invalid Request.");
         }
 
-        Map<Integer, Map<Integer, Boolean>> vendorIdMap = vendorImageRequestEntityRepository.findByWholesalerIdInAndVendorImageTypeIdInAndActive(
-                vendorIds, vendorImageTypes, Boolean.TRUE
-        ).stream()
+        Map<Integer, Map<Integer, List<VendorImageRequestEntity>>> vendorIdMap = vendorImageRequestEntityRepository
+                .findByWholesalerIdInAndVendorImageTypeIdIn(vendorIds, vendorImageTypes)
+                .stream()
                 .collect(
                         Collectors.groupingBy(
                                 VendorImageRequestEntity::getWholesalerId,
                                 Collectors.groupingBy(
                                         VendorImageRequestEntity::getVendorImageTypeId,
-                                        Collectors.reducing(
-                                                Boolean.FALSE,
-                                                vendorImageRequest -> Optional.ofNullable(vendorImageRequest.getIsApproved()).orElse(Boolean.FALSE),
-                                                Boolean::logicalOr)
+                                        Collectors.mapping(Function.identity(), Collectors.toList())
                                 )
                         )
                 );
@@ -50,19 +47,15 @@ public class AdVendorImageServiceImpl implements AdVendorImageService {
         List<VerifyVendorImageResponse> responses = new ArrayList<>();
 
         vendorIds.forEach(vendorId -> {
-            boolean hasVendorId = vendorIdMap.containsKey(vendorId);
 
             vendorImageTypes.forEach(vendorImageType -> {
-                if (hasVendorId)
-                    responses.add(VerifyVendorImageResponse.of(
-                            vendorId,
-                            vendorImageType,
-                            Optional.ofNullable(vendorIdMap.get(vendorId)
-                                    .get(vendorImageType))
-                                    .orElse(Boolean.FALSE)
-                    ));
+
+                if (!vendorIdMap.containsKey(vendorId))
+                    responses.add(VerifyVendorImageResponse.of(vendorId, vendorImageType, Boolean.FALSE, Boolean.FALSE));
+                else if (!vendorIdMap.get(vendorId).containsKey(vendorImageType))
+                    responses.add(VerifyVendorImageResponse.of(vendorId, vendorImageType, Boolean.FALSE, Boolean.FALSE));
                 else
-                    responses.add(VerifyVendorImageResponse.unapproved(vendorId, vendorImageType));
+                    responses.add(VerifyVendorImageResponse.from(vendorIdMap.get(vendorId).get(vendorImageType)));
             });
         });
 
