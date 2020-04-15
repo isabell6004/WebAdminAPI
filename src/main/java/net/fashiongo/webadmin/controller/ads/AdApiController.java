@@ -73,7 +73,7 @@ public class AdApiController {
 
         ResponseEntity<Map> response = null;
         try {
-            return this.restTemplate.exchange(URI.create(apiUrl), method, httpEntity, Map.class);
+            return this.restTemplate.exchange(URI.create(apiUrl), method, httpEntity, String.class);
         } catch (HttpClientErrorException ex) {
             response = new ResponseEntity<>(ex.getStatusCode());
         } catch (Exception e) {

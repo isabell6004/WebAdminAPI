@@ -59,6 +59,7 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         return listVendorImageTypeRepository.findAllByOrderByVendorImageTypeID();
     }
 
+    @Deprecated
     @Override
     @Transactional(value = "primaryTransactionManager", readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
     public BannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters) {
@@ -78,10 +79,12 @@ public class BannerRequestServiceImpl implements BannerRequestService {
 
         Page<VendorImageRequestEntity> result = vendorImageRequestEntityRepository.getVendorImageRequests(parameter);
 
-        return BannerRequestResponse.builder()
-                .bannerImageList(result.getContent().stream().map(VendorImageRequestResponse::convert).collect(Collectors.toList()))
-                .total(Collections.singletonList(BannerRequestCount.builder().count(result.getTotalElements()).build()))
-                .build();
+//        return BannerRequestResponse.builder()
+//                .bannerImageList(result.getContent().stream().map(VendorImageRequestResponse::convert).collect(Collectors.toList()))
+//                .total(Collections.singletonList(BannerRequestCount.builder().count(result.getTotalElements()).build()))
+//                .build();
+
+        return null;
     }
 
     /**

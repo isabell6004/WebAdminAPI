@@ -39,6 +39,8 @@ webAdminapi:
   fgPaymentAPI_EndPoint: http://127.0.0.1:29201
   adapi:
     endpoint: http://10.210.16.204:18000
+  productApi:
+    endpoint: http://10.210.16.204:17301
   fashionGoApi:
     endpoint: http://10.210.16.204:17301
 server:
@@ -92,7 +94,7 @@ coupon:
       root-email-name: coupon-email-list
       root-image-name: coupon-banner-images
       root-name-prefix: stage-
-    image-root: https://rlyfpniry.cdn.toastcloud.com/
+    image-root: https://rlyfpniry.toastcdn.net/
 
 gnb:
   banner:

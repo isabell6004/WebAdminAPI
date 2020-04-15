@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.config.security;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.exception.TokenInvalidException;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -36,7 +36,7 @@ public class TokenAuthenticationService {
 	static final long EXPIRATIONTIME = 86400000; // default, 24 hours
 	
 	public static void addAuthentication(HttpServletRequest request, HttpServletResponse response,
-			WebAdminUserAuthenticationToken authInfo) throws JsonGenerationException, JsonMappingException, IOException {
+			WebAdminUserAuthenticationToken authInfo) throws IOException {
 		WebAdminLoginUser webAdminLoginUser = authInfo.getUserInfo();
 		AuthuserResponse result = new AuthuserResponse();
 		
@@ -78,8 +78,14 @@ public class TokenAuthenticationService {
 		}
 	}
 
+	/**
+	 * Token 을 검사하고 인증 정보를 반환한다.
+	 * @param request the request
+	 * @return 인증정보. Token 정보가 없을 경우 null return.
+	 * @throws TokenInvalidException Token 검증 실패 시 발생.
+	 */
 	@SuppressWarnings("unchecked")
-	public static Authentication getAuthentication(HttpServletRequest request) throws Exception {
+	public static Authentication getAuthentication(HttpServletRequest request) throws TokenInvalidException {
 		String token = request.getHeader(HEADER_STRING);
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -100,39 +106,39 @@ public class TokenAuthenticationService {
 //				obj.put("exp", claims.get("exp").asDouble());
 
 				WebAdminLoginUser webAdminLoginUser = mapper.convertValue(obj, WebAdminLoginUser.class);
-				vailidateClientUser(webAdminLoginUser, request);
+				validateClientUser(webAdminLoginUser, request);
 
 				return obj.size() != 0 ? new AuthenticatedUser(webAdminLoginUser.getUsername(), webAdminLoginUser)
 						: null;
 
 			} catch (Exception ex) {
-				throw ex;
+				throw new TokenInvalidException(ex.getMessage(), ex);
 			}
 		}
 		return null;
 	}
 
-	private static void vailidateClientUser(WebAdminLoginUser webAdminLoginUser, HttpServletRequest request)
-			throws Exception {
+	private static void validateClientUser(WebAdminLoginUser webAdminLoginUser, HttpServletRequest request)
+			throws TokenInvalidException {
 		// check client ip address
 		if (StringUtils.isEmpty(webAdminLoginUser.getIpaddr())) {
-			throw new Exception("Token is invalid! (No IPAddress)");
+			throw new TokenInvalidException("Token is invalid! (No IPAddress)");
 		} else {
 			if (!webAdminLoginUser.getIpaddr().equals(Utility.getIpAddress(request))) {
-				log.info("===== Token is invalid! (Invaild IpAddress) =====");
+				log.info("===== Token is invalid! (Invalid IpAddress) =====");
 				log.info("webAdminLoginUser.getIpaddr(): {}", webAdminLoginUser.getIpaddr());
 				log.info("Utility.getIpAddress(): {}", Utility.getIpAddress(request));
 				log.info("=================================================");
-//				throw new Exception("Token is invalid! (Invaild IpAddress)");
+				throw new TokenInvalidException("Token is invalid! (Invalid IpAddress)");
 			}
 		}
 
 		// check client user agent
 		if (StringUtils.isEmpty(webAdminLoginUser.getUseragent())) {
-			throw new Exception("Token is invalid! (No UserAgent)");
+			throw new TokenInvalidException("Token is invalid! (No UserAgent)");
 		} else {
 			if (!webAdminLoginUser.getUseragent().equals(Utility.getUserAgent(request))) {
-//				throw new Exception("Token is invalid! (Invalid UserAgent)");
+				throw new TokenInvalidException("Token is invalid! (Invalid UserAgent)");
 			}
 		}
 	}

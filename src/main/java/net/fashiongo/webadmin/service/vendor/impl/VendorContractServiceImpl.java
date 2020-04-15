@@ -13,6 +13,7 @@ import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEnt
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorContractException;
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorException;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
+import net.fashiongo.webadmin.model.primary.VendorContract;
 import net.fashiongo.webadmin.model.vendor.ClassType;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -164,6 +166,12 @@ public class VendorContractServiceImpl implements VendorContractService {
             log.warn(ex.getMessage(), ex);
             return false;
         }
+    }
+
+    @Override
+    public VendorContractEntity getVendorContractIncludedOpenDate(Integer vendorId, LocalDateTime actualOpenDate) {
+        if(actualOpenDate == null) return null;
+        return vendorContractEntityRepository.findVendorContractByVendorIdAndOpenDate(vendorId, actualOpenDate);
     }
 
     private void reviseContract(VendorContractEntity originContractInfo, SetVendorContractParameter request) {

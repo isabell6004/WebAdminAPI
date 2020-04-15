@@ -368,9 +368,9 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		categoryID = categoryID == null ? 0 : categoryID;
 		BooleanExpression categoryIDZero = Expressions.asNumber(categoryID).eq(constantZERO);
 
-		JPAQuery<CategoryList> query = new JPAQuery<>(entityManager);
+		JPASQLQuery<CategoryList> jpasqlQuery = new JPASQLQuery<CategoryList>(entityManager, new MSSQLServer2012Templates());
 
-		query.select(Projections.constructor(CategoryList.class,
+		jpasqlQuery.select(Projections.constructor(CategoryList.class,
 				C.categoryId,
 				C.parentParentCategoryId,
 				C.parentCategoryId,
@@ -383,14 +383,13 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				C.listOrder,
 				C.active,
 				expended,
-				JPAExpressions.select(SUB_C.categoryId.count().as("NodeCnt")).from(SUB_C).where(SUB_C.parentCategoryId.eq(C.categoryId)),
-				MCC.collectionCategoryID))
+				SQLExpressions.select(SUB_C.categoryId.count().as("NodeCnt")).from(SUB_C).where(SUB_C.parentCategoryId.eq(C.categoryId)),
+				SQLExpressions.select(MCC.collectionCategoryID.as("CollectionCategoryID")).from(MCC).where(MCC.categoryID.eq(C.categoryId)).offset(0).limit(1)))
 				.from(C)
-				.leftJoin(C.mapCollectionCategory, MCC)
 				.where(C.categoryId.eq(categoryID).or(categoryIDZero))
 				.orderBy(C.listOrder.asc(), C.categoryName.asc());
 
-		return query.fetch().stream().distinct().collect(Collectors.toList());
+		return jpasqlQuery.fetch().stream().distinct().collect(Collectors.toList());
 	}
 
 	@Override
