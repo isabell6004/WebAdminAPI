@@ -10,7 +10,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,15 +30,15 @@ public class AdVendorImageServiceImpl implements AdVendorImageService {
             throw new IllegalArgumentException("Invalid Request.");
         }
 
-        Map<Integer, Map<Integer, List<VendorImageRequestEntity>>> vendorIdMap = vendorImageRequestEntityRepository
-                .findByWholesalerIdInAndVendorImageTypeIdIn(vendorIds, vendorImageTypes)
+        Map<Integer, Map<Integer, Boolean>> vendorIdMap = vendorImageRequestEntityRepository
+                .findByWholesalerIdInAndVendorImageTypeIdInAndIsApproved(vendorIds, vendorImageTypes, Boolean.TRUE)
                 .stream()
                 .collect(
                         Collectors.groupingBy(
                                 VendorImageRequestEntity::getWholesalerId,
                                 Collectors.groupingBy(
                                         VendorImageRequestEntity::getVendorImageTypeId,
-                                        Collectors.mapping(Function.identity(), Collectors.toList())
+                                        Collectors.reducing(Boolean.FALSE, VendorImageRequestEntity::isActive, Boolean::logicalOr)
                                 )
                         )
                 );
@@ -55,7 +54,7 @@ public class AdVendorImageServiceImpl implements AdVendorImageService {
                 else if (!vendorIdMap.get(vendorId).containsKey(vendorImageType))
                     responses.add(VerifyVendorImageResponse.of(vendorId, vendorImageType, Boolean.FALSE, Boolean.FALSE));
                 else
-                    responses.add(VerifyVendorImageResponse.from(vendorIdMap.get(vendorId).get(vendorImageType)));
+                    responses.add(VerifyVendorImageResponse.of(vendorId, vendorImageType, Boolean.TRUE, vendorIdMap.get(vendorId).get(vendorImageType)));
             });
         });
 

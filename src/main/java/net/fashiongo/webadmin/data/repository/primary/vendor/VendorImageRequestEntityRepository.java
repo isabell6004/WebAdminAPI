@@ -8,7 +8,5 @@ import java.util.List;
 
 public interface VendorImageRequestEntityRepository extends CrudRepository<VendorImageRequestEntity, Integer>, VendorImageRequestEntityRepositoryCustom {
 
-    List<VendorImageRequestEntity> findByWholesalerIdInAndVendorImageTypeIdInAndActive(List<Integer> wholesalerIds, List<Integer> vendorImageTypes, Boolean active);
-
-    List<VendorImageRequestEntity> findByWholesalerIdInAndVendorImageTypeIdIn(Collection<Integer> wholesalerIds, Collection<Integer> vendorImageTypes);
+    List<VendorImageRequestEntity> findByWholesalerIdInAndVendorImageTypeIdInAndIsApproved(Collection<Integer> wholesalerIds, Collection<Integer> vendorImageTypes, Boolean isApproved);
 }
