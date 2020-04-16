@@ -14,7 +14,6 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansRespons
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryResponse;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
@@ -185,7 +184,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public VendorContractHistoryResponse getVendorContractIncludedOpenDate(Integer vendorId, LocalDateTime actualOpenDate) {
+    public GetVendorContractResponse getVendorContractIncludedOpenDate(Integer vendorId, LocalDateTime actualOpenDate) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts";
 
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
@@ -203,7 +202,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
             mapper.registerModule(new JavaTimeModule())
                     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-            FashionGoApiResponse<VendorContractHistoryResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<VendorContractHistoryResponse>>() {});
+            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<GetVendorContractResponse>>() {});
             if (fashionGoApiResponse.getHeader().isSuccessful()) {
                 return fashionGoApiResponse.getData();
             } else {

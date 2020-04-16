@@ -6,9 +6,9 @@ import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBasicInfoParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
-import net.fashiongo.webadmin.data.model.vendor.VendorContractHistory;
+import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
-import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
@@ -525,9 +525,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             return;
         }
 
-        VendorContractHistoryResponse vendorContract = vendorContractNewService.getVendorContractIncludedOpenDate(wholeSaler.getWholeSalerID(), requestVendorDetailInfo.getActualOpenDate());
+        GetVendorContractResponse vendorContract = vendorContractNewService.getVendorContractIncludedOpenDate(wholeSaler.getWholeSalerID(), requestVendorDetailInfo.getActualOpenDate());
         String message = String.format("[change-to-orderactive] vendor-id:%s,open-type:%s,open-date:%s,valid-contract-id:%s"
-                , wholeSaler.getWholeSalerID(), openType, openDate, Optional.ofNullable(vendorContract.getContractHistories()).map(VendorContractHistory::getId).orElse(null));
+                , wholeSaler.getWholeSalerID(), openType, openDate, Optional.ofNullable(vendorContract.getVendorContract()).map(VendorContractResponse::getVendorContractID).orElse(null));
         logger.info(message);
     }
 
