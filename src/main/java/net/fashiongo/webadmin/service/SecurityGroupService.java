@@ -10,6 +10,7 @@ import net.fashiongo.webadmin.model.pojo.admin.*;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.*;
 import net.fashiongo.webadmin.model.pojo.admin.response.*;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.response.SetAspnetMembershipResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.utility.HttpClient;
@@ -528,6 +529,7 @@ public class SecurityGroupService extends ApiService {
 		Boolean userByNameSuccess = true;
 		SecurityUser su = null;
 		AspnetMembershipGetUserByName userByNameRes = new AspnetMembershipGetUserByName();
+		WebAdminLoginUser loginUser = Utility.getUserInfo();
 		
 		if (userData.getUserName() == "" || userData.getFullName() == "" || userData.getRole() == "") {
 			result.setSuccess(false);
@@ -618,7 +620,11 @@ public class SecurityGroupService extends ApiService {
 				List<Object> _resultMembership = jdbcHelper.executeSP(membershipUpdateSpname, membershipParams);
 				
 				su.setFullName(userData.getFullName());
-				su.setRole(userData.getRole());
+				// general role user can create general role only
+				if (loginUser.getRoleid().equalsIgnoreCase("G"))
+					su.setRole("G");
+				else su.setRole(userData.getRole());
+
 				su.setIpTimeExempt(userData.getExempt());
 				su.setActive(userData.getActive());
 				securityUserRepository.save(su);
