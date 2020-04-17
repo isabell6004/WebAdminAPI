@@ -172,7 +172,7 @@ webAdminapi:
   fgServiceAPI_EndPoint: http://10.210.16.205:29001
   fgVendorAPI_EndPoint: http://10.210.16.205:28501
   fgWebAdminAPI_EndPoint: http://webadmin-api-staging.fashiongo.net/api/
-  statsAPI_EndPoint: http://10.210.16.205:27601
+  statsAPI_EndPoint: http://10.210.16.203:27601
   adapi:
     endpoint: http://10.210.16.205:18000
   productApi:

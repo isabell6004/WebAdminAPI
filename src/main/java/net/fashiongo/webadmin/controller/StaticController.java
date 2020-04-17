@@ -69,6 +69,7 @@ public class StaticController {
 
         //1. Process params
         List<String> params = request.getParams();
+        log.debug("String.join(\"&\", params): {}", String.join("&", params));
 
         //2. Call StatsAPI
         return statsJsonClient.get("/kpi/vendor?" + String.join("&", params));
