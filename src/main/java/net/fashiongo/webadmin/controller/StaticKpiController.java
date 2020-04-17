@@ -75,7 +75,7 @@ public class StaticKpiController {
     }
 
     @PostMapping(value = "getvendorsgeneralinfo")
-    public JsonResponse getVendorsGeneralInfo(@RequestBody GetVendorsGeneralInfoParameter parameter) {
+    public JsonResponse getVendorsGeneralInfo(@Valid @RequestBody GetVendorsGeneralInfoParameter parameter) {
         UriComponentsBuilder componentsBuilder = UriComponentsBuilder.fromPath("/vendor/info");
 
         Integer pn = Optional.ofNullable(parameter.getPn()).orElse(0);
@@ -96,13 +96,10 @@ public class StaticKpiController {
         String state = Optional.ofNullable(parameter.getState()).orElse(null);
 
         int location = 0;
-        if (!StringUtils.isEmpty(parameter.getLocation())) {
-            location = Integer.parseInt(parameter.getLocation());
-        }
+        location = parameter.getLocation() != null ? parameter.getLocation().intValue() : 0;
+
         int assignedUser = 0;
-        if (!StringUtils.isEmpty(parameter.getAssignedUser())) {
-            assignedUser = Integer.parseInt(parameter.getAssignedUser());
-        }
+        assignedUser = parameter.getAssignedUser() != null ? parameter.getAssignedUser().intValue() : 0;
 
         if (pn > 0) {
             componentsBuilder.queryParam("pn", pn);

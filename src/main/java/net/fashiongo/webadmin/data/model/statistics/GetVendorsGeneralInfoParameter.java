@@ -43,20 +43,16 @@ public class GetVendorsGeneralInfoParameter {
     @JsonProperty(value = "vendorType")
     private String vendorType;
 
-    @SQLInjectionSafeWithKeywordsFilter
-    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     @JsonProperty(value = "location")
-    private String location;
+    private Integer location;
 
     @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     @JsonProperty(value = "state")
     private String state;
 
-    @SQLInjectionSafeWithKeywordsFilter
-    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     @JsonProperty(value = "assignedUser")
-    private String assignedUser;
+    private Integer assignedUser;
 
     @SQLInjectionSafeWithKeywordsFilter
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
