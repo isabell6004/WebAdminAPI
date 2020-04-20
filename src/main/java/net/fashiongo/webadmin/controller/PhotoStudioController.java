@@ -630,6 +630,10 @@ public class PhotoStudioController {
         logger.debug("PhotoStudioController.saveCredit() called!!!");
         JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
 
+        if(photoCredit.getPhotoCreditAmount().compareTo(BigDecimal.ZERO) == -1) {
+            return response;
+        }
+
         try {
             Integer result = photoStudioService.saveCredit(photoCredit);
             response.setSuccess(true);
