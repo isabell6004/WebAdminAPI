@@ -12,6 +12,7 @@ import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.message.RetailerRating;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +33,11 @@ public class RetailerRatingEntityRepositoryCustomImpl implements RetailerRatingE
 	private QueryDSLSQLFunctions queryDSLSQLFunctions;
 
 	@Override
-	public Page<RetailerRating> up_wa_GetRetailerRating(Integer retailerID, Integer WholeSalerID, int pageNum, int pageSize, Boolean active, String additional, LocalDateTime from, LocalDateTime to, String orderBy) {
+	//public Page<RetailerRating> up_wa_GetRetailerRating(Integer retailerID, Integer WholeSalerID, int pageNum, int pageSize, Boolean active, String additional, LocalDateTime from, LocalDateTime to, String orderBy) {
+	public Page<RetailerRating> up_wa_GetRetailerRating(
+			Integer retailerID, Integer WholeSalerID, int pageNum, int pageSize,
+			Boolean active, LocalDateTime from, LocalDateTime to, String orderBy,
+			Integer score, String retailerCompanyName, String wholesalerCompanyName) {
 		long offset = (pageNum - 1) * pageSize;
 		long limit = pageSize;
 		MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
@@ -75,9 +80,16 @@ public class RetailerRatingEntityRepositoryCustomImpl implements RetailerRatingE
 			expression = expression.and(path_active.eq(active));
 		}
 
-		if(additional != null) {
-			BooleanTemplate booleanTemplate = Expressions.booleanTemplate(additional);
-			expression = expression.and(booleanTemplate);
+		if (score != null) {
+			expression = expression.and(path_score.eq(score));
+		}
+
+		if (StringUtils.isNotEmpty(retailerCompanyName)) {
+			expression = expression.and(path_retailerCompanyName.likeIgnoreCase('%' + retailerCompanyName + '%'));
+		}
+
+		if (StringUtils.isNotEmpty(wholesalerCompanyName)) {
+			expression = expression.and(path_wholeSalerCompanyName.likeIgnoreCase('%' + wholesalerCompanyName + '%'));
 		}
 
 		if(from != null) {

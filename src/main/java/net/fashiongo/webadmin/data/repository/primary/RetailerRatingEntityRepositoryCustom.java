@@ -12,8 +12,8 @@ public interface RetailerRatingEntityRepositoryCustom {
 			,int pageNum
 			,int pageSize
 			,Boolean active
-			,String additional
 			,LocalDateTime from
 			,LocalDateTime to
-			,String orderBy);
+			,String orderBy
+			,Integer score, String retailerCompanyName, String wholesalerCompanyName);
 }

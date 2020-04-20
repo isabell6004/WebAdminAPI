@@ -148,7 +148,6 @@ public class MessageController {
     public JsonResponse<GetRetailerRatingResponse> getRetailerRating(
             @Valid @RequestBody GetRetailerRatingParameter param) {
         GetRetailerRatingResponse retailerRating = renewalMessageService.getRetailerRating(param);
-
         return JsonResponse.success(retailerRating);
     }
 
