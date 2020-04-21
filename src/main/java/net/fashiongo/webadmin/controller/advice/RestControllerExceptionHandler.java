@@ -1,10 +1,8 @@
 package net.fashiongo.webadmin.controller.advice;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.controller.MessageController;
-import net.fashiongo.webadmin.controller.StaticController;
-import net.fashiongo.webadmin.controller.StaticKpiController;
-import net.fashiongo.webadmin.controller.WAPaymentController;
+import net.fashiongo.webadmin.controller.*;
+import net.fashiongo.webadmin.controller.vendor.VendorCreditCardController;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.stream.Collectors;
 
 @Slf4j
-@RestControllerAdvice(assignableTypes = {WAPaymentController.class, MessageController.class, StaticController.class, StaticKpiController.class})
+@RestControllerAdvice(assignableTypes = {WAPaymentController.class, MessageController.class,
+        StaticController.class, StaticKpiController.class, BuyerController.class, VendorCreditCardController.class})
 public class RestControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
