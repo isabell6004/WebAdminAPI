@@ -16,5 +16,4 @@ import net.fashiongo.webadmin.model.primary.Vendor;
 @Repository
 public interface VendorRepository extends VendorRepositoryCustom, JpaRepository<Vendor, Integer>, JpaSpecificationExecutor<Vendor>, QuerydslPredicateExecutor<Vendor> {
 	List<Vendor> findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
-	Vendor findCompanyNameByWholeSalerId(Integer wholeSalerId);
 }

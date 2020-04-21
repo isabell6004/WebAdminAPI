@@ -7,6 +7,7 @@ import net.fashiongo.webadmin.dao.primary.VendorRepository;
 import net.fashiongo.webadmin.exception.NotEnoughPhotostudioAvailableUnit;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioDiscount;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioPhotoModel;
+import net.fashiongo.webadmin.exception.vendor.NotFoundVendorException;
 import net.fashiongo.webadmin.model.photostudio.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
@@ -1445,7 +1446,10 @@ public class PhotoStudioService extends ApiService {
     }
 
     public Integer saveCredit(PhotoCreditRequest request) {
-        String wholeSalerCompanyName = vendorRepository.findCompanyNameByWholeSalerId(request.getWholeSalerID()).getCompanyName();
+        String wholeSalerCompanyName = vendorRepository.getCompanyNameByWholeSalerId(request.getWholeSalerID());
+        if(wholeSalerCompanyName == null) {
+            throw new NotFoundVendorException("can not find companyName. The id is " + request.getWholeSalerID());
+        }
         LocalDateTime date = LocalDateTime.now();
         String username = Utility.getUsername();
 
@@ -1462,8 +1466,8 @@ public class PhotoStudioService extends ApiService {
                                     .active(true)
                                     .createdOnDate(date)
                                     .createdBy(username)
-                                    .modifiedOnDate(null)
-                                    .modifiedBY(null)
+                                    .modifiedOnDate(date)
+                                    .modifiedBY(username)
                                     .build();
 
         photoCreditRepository.save(photoCredit);

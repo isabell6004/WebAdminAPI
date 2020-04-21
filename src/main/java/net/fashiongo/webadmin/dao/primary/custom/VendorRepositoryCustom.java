@@ -13,4 +13,5 @@ import net.fashiongo.webadmin.model.primary.Vendor;
 @NoRepositoryBean
 public interface VendorRepositoryCustom {
 	List<Vendor> getEditorPickVendors();
+	String getCompanyNameByWholeSalerId(Integer wholeSalerId);
 }

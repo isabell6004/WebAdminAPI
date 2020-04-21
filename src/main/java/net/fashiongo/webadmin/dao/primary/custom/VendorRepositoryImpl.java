@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,4 +57,17 @@ public class VendorRepositoryImpl extends QuerydslRepositorySupport implements V
 								.fetch())))
 				.fetch();
     }
+
+	@Override
+	@Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
+	public String getCompanyNameByWholeSalerId(Integer wholeSalerId) {
+		List<String> result = new JPAQuery<>(getEntityManager()).select(vendor.companyName)
+				.from(vendor).where(vendor.wholeSalerId.eq(wholeSalerId)).fetch();
+
+		if(result.isEmpty()) {
+			return null;
+		}
+
+		return result.get(0);
+	}
 }
