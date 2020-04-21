@@ -105,10 +105,8 @@ public class VendorContractController {
 	@PostMapping(value = "vendor/setvendorcontract", produces = "application/json")
 	public ResultCode setvendorcontract(@RequestBody SetVendorContractParameter param) {
 	    try {
-	        if(vendorContractService.setVendorContract(param))
-                return new ResultCode(true, 1, "success");
-            else
-                return new ResultCode(false, -1, "failure");
+	        vendorContractService.setVendorContract(param);
+            return new ResultCode(true, 1, "success");
         } catch (Exception e) {
 	        log.error("fail to update the vendor contract info.", e);
             return new ResultCode(false, -1, "failure");
@@ -117,10 +115,13 @@ public class VendorContractController {
 
 	@PostMapping(value = "vendor/setvendorcontractdocument", produces = "application/json")
 	public ResultCode setVendorContractDocument(@RequestBody SetVendorContractDocumentParameter request) {
-	    if(vendorContractService.setVendorContractDocument(request))
+	    try {
+            vendorContractService.setVendorContractDocument(request);
             return new ResultCode(true, 1, "success");
-         else
+        } catch (Exception e) {
+	        log.error("fail to set vendor contract document", e);
             return new ResultCode(false, -1, "failure");
+        }
 	}
 
 	@PostMapping(value = "vendor/delvendorcontractdocument", produces = "application/json")
@@ -129,10 +130,13 @@ public class VendorContractController {
     	if(StringUtils.isEmpty(request.getDocumentHistoryIDs()))
             return new ResultCode(false, -1, "failure");
 
-        if(vendorContractService.delVendorContractDocument(request))
+    	try {
+            vendorContractService.delVendorContractDocument(request);
             return new ResultCode(true, 1, "success");
-        else
+        } catch (Exception e) {
+            log.error("fail to delete vendor contract document", e);
             return new ResultCode(false, -1, "failure");
+        }
 	}
 }
 	

@@ -13,9 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-/**
- * Created by jinwoo on 2019-12-12.
- */
 @Service
 @Slf4j
 public class HttpClientWrapper {

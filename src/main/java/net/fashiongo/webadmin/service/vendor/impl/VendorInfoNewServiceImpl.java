@@ -72,13 +72,6 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
     }
 
-    @Override
-    public void updateClassCode(Integer wholeSalerID, Integer classCode, Integer requestUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID;
-        VendorClassCodeCommand vendorInfoCommand = new VendorClassCodeCommand(classCode);
-        httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
-    }
-
     @Getter
     private class VendorAccountCommand {
         private String firstName;
@@ -210,8 +203,8 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
             this.isNew = StringUtils.equals("Y", Optional.ofNullable(vendorDetailInfo.getNewCustYN()).orElse("N").toUpperCase());
 
-            this.openDate = (vendorDetailInfo.getActualOpenDate() !=null ) ? vendorDetailInfo.getActualOpenDate().toString() : null;
-            this.closedDate = (vendorDetailInfo.getContractExpireDate() !=null ) ? vendorDetailInfo.getContractExpireDate().toString() : null;
+            this.openDate = (vendorDetailInfo.getActualOpenDate() != null) ? vendorDetailInfo.getActualOpenDate().toString() : null;
+            this.closedDate = (vendorDetailInfo.getContractExpireDate() != null) ? vendorDetailInfo.getContractExpireDate().toString() : null;
 
             this.isAdBlock = vendorDetailInfo.getIsADBlock();
 
@@ -289,51 +282,51 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
                     , new VendorEmailCommand(EmailType.BILLING3.getValue(), request.getBillingEmail3())
             );
             this.addresses = Arrays.asList(
-                new VendorAddressCommand(
-                        AddressType.SHOWROOM.getValue(),
-                        AddressType.SHOWROOM.name(),
-                        request.getBillStreetNo(),
-                        request.getBillStreetNo2(),
-                        request.getBillCity(),
-                        request.getBillState(),
-                        request.getBillZipcode(),
-                        request.getBillCountry(),
-                        request.getBillPhone(),
-                        request.getBillFax(),
-                        true)
-                , new VendorAddressCommand(
-                        AddressType.BILLING.getValue(),
-                        AddressType.BILLING.name(),
-                        request.getShowRoomStreetNo(),
-                        null,
-                        request.getShowRoomCity(),
-                        request.getShowRoomState(),
-                        request.getShowRoomZipcode(),
-                        request.getShowRoomCountry(),
-                        request.getShowRoomPhone(),
-                        request.getShowRoomFax(),
-                        false)
-                , new VendorAddressCommand(
-                        AddressType.WAREHOUSE.getValue(),
-                        AddressType.WAREHOUSE.name(),
-                        request.getStreetNo(),
-                        request.getStreetNo2(),
-                        request.getCity(),
-                        request.getState(),
-                        request.getZipcode(),
-                        request.getCountry(),
-                        request.getPhone(),
-                        request.getFax(),
-                        false)
+                    new VendorAddressCommand(
+                            AddressType.SHOWROOM.getValue(),
+                            AddressType.SHOWROOM.name(),
+                            request.getBillStreetNo(),
+                            request.getBillStreetNo2(),
+                            request.getBillCity(),
+                            request.getBillState(),
+                            request.getBillZipcode(),
+                            request.getBillCountry(),
+                            request.getBillPhone(),
+                            request.getBillFax(),
+                            true)
+                    , new VendorAddressCommand(
+                            AddressType.BILLING.getValue(),
+                            AddressType.BILLING.name(),
+                            request.getShowRoomStreetNo(),
+                            null,
+                            request.getShowRoomCity(),
+                            request.getShowRoomState(),
+                            request.getShowRoomZipcode(),
+                            request.getShowRoomCountry(),
+                            request.getShowRoomPhone(),
+                            request.getShowRoomFax(),
+                            false)
+                    , new VendorAddressCommand(
+                            AddressType.WAREHOUSE.getValue(),
+                            AddressType.WAREHOUSE.name(),
+                            request.getStreetNo(),
+                            request.getStreetNo2(),
+                            request.getCity(),
+                            request.getState(),
+                            request.getZipcode(),
+                            request.getCountry(),
+                            request.getPhone(),
+                            request.getFax(),
+                            false)
             );
 
             this.setting = setting;
 
             List<Integer> industries = null;
-            if(StringUtils.isNotEmpty(request.getIndustryType())) {
+            if (StringUtils.isNotEmpty(request.getIndustryType())) {
                 industries = new ArrayList<>();
                 String[] industryNames = request.getIndustryType().split(",");
-                for(String value : industryNames) {
+                for (String value : industryNames) {
                     IndustryType type = IndustryType.get(value);
                     industries.add(type.getValue());
                 }
@@ -360,7 +353,6 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             this.setting = setting;
         }
     }
-
 
 
 }

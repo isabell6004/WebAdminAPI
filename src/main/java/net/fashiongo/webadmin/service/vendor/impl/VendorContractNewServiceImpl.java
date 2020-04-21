@@ -14,6 +14,7 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansRespons
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryListResponse;
+import net.fashiongo.webadmin.exception.vendor.VendorContractOperationException;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
@@ -44,50 +45,127 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public void createVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName) {
+    public void createVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request) {
+
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/" + request.getVendorContractID() + "/documents";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        try {
+            String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            if (!fashionGoApiResponse.getHeader().isSuccessful()) {
+                log.error("fail to create vendor contract document. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
+                throw new VendorContractOperationException("fail to create vendor contract document. vendorId: " + vendorId);
+            }
+        } catch (IOException e) {
+            log.error("fail to create vendor contract document.", e);
+            throw new VendorContractOperationException("fail to create vendor contract document. " + e.getMessage());
+        }
     }
 
     @Override
-    public void modifyVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName) {
+    public void modifyVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request) {
+
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/" + request.getVendorContractID() + "/documents";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
-        httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        try {
+            String responseBody = httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            if (!fashionGoApiResponse.getHeader().isSuccessful()) {
+                log.error("fail to modify vendor contract document. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
+                throw new VendorContractOperationException("fail to modify vendor contract document. vendorId: " + vendorId);
+            }
+        } catch (IOException e) {
+            log.error("fail to modify vendor contract document.", e);
+            throw new VendorContractOperationException("fail to modify vendor contract document. " + e.getMessage());
+        }
     }
 
     @Override
-    public void deleteVendorContractDocument(Integer vendorId, Long contractId, List<Long> documentIds, Integer requestedUserId, String requestUserName) {
+    public void deleteVendorContractDocument(Integer vendorId, Long contractId, List<Long> documentIds) {
+
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/" + contractId + "/documents/delete";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(documentIds);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        try {
+            String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            if (!fashionGoApiResponse.getHeader().isSuccessful()) {
+                log.error("fail to delete vendor contract document. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
+                throw new VendorContractOperationException("fail to delete vendor contract document. vendorId: " + vendorId);
+            }
+        } catch (IOException e) {
+            log.error("fail to delete vendor contract document.", e);
+            throw new VendorContractOperationException("fail to delete vendor contract document. " + e.getMessage());
+        }
     }
 
     @Override
-    public void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
+    public void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request) {
+
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts/" + originalVendorContractHistoryId + "/revise";
         log.debug("call the vendor api:{}", endpoint);
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
         ReviseContractHistoryCommand newRequest = new ReviseContractHistoryCommand(request, originalVendorContractHistoryId, revisedVendorContractHistoryId);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+        try {
+            String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            if (!fashionGoApiResponse.getHeader().isSuccessful()) {
+                log.error("fail to revise vendor contract. vendorId: {}, code : {}, message : {}", request.getWholeSalerID(), fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
+                throw new VendorContractOperationException("fail to revise vendor contract. vendorId: " + request.getWholeSalerID());
+            }
+        } catch (IOException e) {
+            log.error("fail to delete vendor contract document.", e);
+            throw new VendorContractOperationException("fail to delete vendor contract. " + e.getMessage());
+        }
     }
 
     @Override
-    public void createContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
+    public void createContract(Long originalVendorContractHistoryId, SetVendorContractParameter request) {
+
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts";
         log.debug("call the vendor api:{}", endpoint);
         // temp log
         log.warn("contract request : {}, {}, {}", request.getWholeSalerID(), originalVendorContractHistoryId, request.getVendorContractPlanID());
         ContractHistoryCommand newRequest = new ContractHistoryCommand(request, originalVendorContractHistoryId);
-        httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        try {
+            String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            if (!fashionGoApiResponse.getHeader().isSuccessful()) {
+                log.error("fail to create vendor contract. vendorId: {}, code : {}, message : {}", request.getWholeSalerID(), fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
+                throw new VendorContractOperationException("fail to create vendor contract. vendorId: " + request.getWholeSalerID());
+            }
+        } catch (IOException e) {
+            log.error("fail to create vendor contract.", e);
+            throw new VendorContractOperationException("fail to create vendor contract. " + e.getMessage());
+        }
     }
 
     @Override
-    public void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer requestedUserId, String requestUserName) {
+    public void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request) {
+
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts/" + originalVendorContractHistoryId;
         log.debug("call the vendor api:{}", endpoint);
         ContractHistoryCommand newRequest = new ContractHistoryCommand(request, originalVendorContractHistoryId);
-        httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
+
+        WebAdminLoginUser userInfo = Utility.getUserInfo();
+        try {
+            String responseBody = httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            if (!fashionGoApiResponse.getHeader().isSuccessful()) {
+                log.error("fail to modify vendor contract. vendorId: {}, code : {}, message : {}", request.getWholeSalerID(), fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
+                throw new VendorContractOperationException("fail to modify vendor contract. vendorId: " + request.getWholeSalerID());
+            }
+        } catch (IOException e) {
+            log.error("fail to create vendor contract.", e);
+            throw new VendorContractOperationException("fail to modify vendor contract. " + e.getMessage());
+        }
     }
 
     @Override

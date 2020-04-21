@@ -7,33 +7,23 @@ import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorContractDocumentHistoryResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorContractHistoryListResponse;
-import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Created by jinwoo on 2019-12-12.
- */
 public interface VendorContractNewService {
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void modifyVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName);
+    void modifyVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request);
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void createVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request, Integer requestedUserId, String requestUserName);
+    void createVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request);
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void deleteVendorContractDocument(Integer vendorId, Long contractId, List<Long> documentIds, Integer requestedUserId, String requestUserName);
+    void deleteVendorContractDocument(Integer vendorId, Long contractId, List<Long> documentIds);
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request, Integer userId, String username);
+    void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request);
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void createContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer userId, String username);
+    void createContract(Long originalVendorContractHistoryId, SetVendorContractParameter request);
 
-    @Async("fashionGoApiThreadPoolTaskExecutor")
-    void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request, Integer userId, String username);
+    void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request);
 
     VendorContractResponse inquiryVendorContract(Integer vendorId);
 
