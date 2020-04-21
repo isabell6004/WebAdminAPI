@@ -61,13 +61,7 @@ public class VendorRepositoryImpl extends QuerydslRepositorySupport implements V
 	@Override
 	@Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
 	public String getCompanyNameByWholeSalerId(Integer wholeSalerId) {
-		List<String> result = new JPAQuery<>(getEntityManager()).select(vendor.companyName)
-				.from(vendor).where(vendor.wholeSalerId.eq(wholeSalerId)).fetch();
-
-		if(result.isEmpty()) {
-			return null;
-		}
-
-		return result.get(0);
+		return new JPAQuery<>(getEntityManager()).select(vendor.companyName)
+				.from(vendor).where(vendor.wholeSalerId.eq(wholeSalerId)).fetchOne();
 	}
 }
