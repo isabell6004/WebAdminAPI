@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.service;
 import com.querydsl.core.QueryResults;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.photostudio.*;
+import net.fashiongo.webadmin.dao.primary.VendorRepository;
 import net.fashiongo.webadmin.exception.NotEnoughPhotostudioAvailableUnit;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioDiscount;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioPhotoModel;
@@ -106,6 +107,9 @@ public class PhotoStudioService extends ApiService {
 
     @Autowired
     private PhotoDropperRepository photoDropperRepository;
+
+    @Autowired
+    private VendorRepository vendorRepository;
 
     @Autowired
     @Qualifier("photostudioTransactionManager")
@@ -1440,12 +1444,28 @@ public class PhotoStudioService extends ApiService {
         return reportCsvMonthlyDatas;
     }
 
-    public Integer saveCredit(PhotoCredit photoCredit) {
+    public Integer saveCredit(PhotoCreditRequest request) {
+        String wholeSalerCompanyName = vendorRepository.findCompanyNameByWholeSalerId(request.getWholeSalerID()).getCompanyName();
         LocalDateTime date = LocalDateTime.now();
         String username = Utility.getUsername();
 
-        photoCredit.setCreatedBy(username);
-        photoCredit.setCreatedOnDate(date);
+        PhotoCredit photoCredit = PhotoCredit.builder()
+                                    .photoCreditReason(request.getPhotoCreditReason())
+                                    .wholeSalerID(request.getWholeSalerID())
+                                    .wholeSalerCompanyName(wholeSalerCompanyName)
+                                    .photoCreditAmount(request.getPhotoCreditAmount())
+                                    .photoCreditBalance(request.getPhotoCreditAmount())
+                                    .isUsed(false)
+                                    .isCreditBack(false)
+                                    ._fromDate(request.getFromDate())
+                                    ._toDate(request.getToDate())
+                                    .active(true)
+                                    .createdOnDate(date)
+                                    .createdBy(username)
+                                    .modifiedOnDate(null)
+                                    .modifiedBY(null)
+                                    .build();
+
         photoCreditRepository.save(photoCredit);
 
         return photoCredit.getPhotoCreditID();

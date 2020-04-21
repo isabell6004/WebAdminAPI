@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
 
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
@@ -251,6 +252,31 @@ public class PhotoCredit implements IPersistent, Serializable {
 	}
 
 	public void setIsAdd(Boolean isAdd) {
+		this.isAdd = isAdd;
+	}
+
+	public PhotoCredit() {}
+
+	@Builder
+	public PhotoCredit(String photoCreditReason, Integer wholeSalerID, String wholeSalerCompanyName, BigDecimal photoCreditAmount,
+					   BigDecimal photoCreditBalance, Boolean isUsed, Boolean isCreditBack, LocalDateTime _fromDate,
+					   LocalDateTime _toDate, Boolean active, LocalDateTime createdOnDate, String createdBy, LocalDateTime modifiedOnDate,
+					   String modifiedBY, LocalDateTime _theDate, Boolean isAdd) {
+		this.photoCreditReason = photoCreditReason;
+		this.wholeSalerID = wholeSalerID;
+		this.wholeSalerCompanyName = wholeSalerCompanyName;
+		this.photoCreditAmount = photoCreditAmount;
+		this.photoCreditBalance = photoCreditBalance;
+		this.isUsed = isUsed;
+		this.isCreditBack = isCreditBack;
+		this._fromDate = _fromDate;
+		this._toDate = _toDate;
+		this.active = active;
+		this.createdOnDate = createdOnDate;
+		this.createdBy = createdBy;
+		this.modifiedOnDate = modifiedOnDate;
+		this.modifiedBY = modifiedBY;
+		this._theDate = _theDate;
 		this.isAdd = isAdd;
 	}
 }

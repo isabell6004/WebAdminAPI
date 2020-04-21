@@ -626,16 +626,16 @@ public class PhotoStudioController {
     }
 
     @PostMapping(value = "/credit/save")
-    public JsonResponse<?> saveCredit(@RequestBody PhotoCredit photoCredit) {
+    public JsonResponse<?> saveCredit(@RequestBody PhotoCreditRequest photoCreditRequest) {
         logger.debug("PhotoStudioController.saveCredit() called!!!");
         JsonResponse<Integer> response = new JsonResponse<>(false, null, null);
 
-        if(photoCredit.getPhotoCreditAmount().compareTo(BigDecimal.ZERO) == -1) {
+        if(photoCreditRequest.getPhotoCreditAmount().compareTo(BigDecimal.ZERO) == -1) {
             return response;
         }
 
         try {
-            Integer result = photoStudioService.saveCredit(photoCredit);
+            Integer result = photoStudioService.saveCredit(photoCreditRequest);
             response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {
