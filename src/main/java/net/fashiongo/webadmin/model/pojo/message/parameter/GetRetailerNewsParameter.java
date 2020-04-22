@@ -5,9 +5,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
+import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.Pattern;
 
 /**
  * 
@@ -15,6 +19,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 public class GetRetailerNewsParameter implements Serializable {
+
+	private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s /:!&,-.?_\']+$";
+	private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
+
 	@JsonProperty("pagenum")
 	private Integer pageNum;
 	
@@ -22,12 +30,18 @@ public class GetRetailerNewsParameter implements Serializable {
 	private Integer pageSize;
 	
 	@JsonProperty("newstitle")
+	@SQLInjectionSafe
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String newsTitle;
 	
 	@JsonProperty("active")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String active;
 	
 	@JsonProperty("period")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String period;
 	
 	@JsonProperty("fromdate")
@@ -37,6 +51,8 @@ public class GetRetailerNewsParameter implements Serializable {
 	private Date toDate;
 	
 	@JsonProperty("orderby")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String orderBy;
 
 	public Integer getPageNum() {

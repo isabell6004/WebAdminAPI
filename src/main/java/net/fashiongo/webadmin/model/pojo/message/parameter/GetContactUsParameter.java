@@ -3,9 +3,13 @@ package net.fashiongo.webadmin.model.pojo.message.parameter;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
+import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.Pattern;
 
 /**
  * 
@@ -13,6 +17,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 public class GetContactUsParameter {
+
+	private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s /:!&,-.?_\']+$";
+	private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
+
 	@JsonProperty("pagesize")
 	private Integer pageSize;
 	
@@ -20,21 +28,32 @@ public class GetContactUsParameter {
 	private Integer pageNum;
 	
 	@JsonProperty("sender")
+	@SQLInjectionSafe
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String sender;
 	
 	@JsonProperty("email")
-	private String email;
+	@SQLInjectionSafeWithKeywordsFilter
+ 	private String email;
 	
 	@JsonProperty("topic")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String topic;
 	
 	@JsonProperty("period")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String period;
 	
 	@JsonProperty("fromdate")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String fromDate;
 	
 	@JsonProperty("todate")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String toDate;
 
 	public Integer getPageSize() {
