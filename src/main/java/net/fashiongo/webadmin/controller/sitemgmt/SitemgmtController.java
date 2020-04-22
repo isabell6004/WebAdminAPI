@@ -32,6 +32,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 import java.text.ParseException;
@@ -603,9 +604,10 @@ public class SitemgmtController {
 	 * @return GetTrendReport2Response
 	 */
 	@RequestMapping(value = "gettrendreport2", method = RequestMethod.POST)
-	public JsonResponse<GetTrendReport2Response> getTrendReport2(@RequestBody GetTrendReport2Parameter parameters) {
+	public JsonResponse<GetTrendReport2Response> getTrendReport2(
+			@Valid @RequestBody GetTrendReport2Parameter parameters) {
 		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
-		return new JsonResponse<GetTrendReport2Response>(true, null, result);
+		return new JsonResponse<>(true, null, result);
 	}
 	
 	/**
