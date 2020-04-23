@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -430,7 +431,8 @@ public class BuyerController {
 	}
 
 	@RequestMapping(value = "getsavedlist", method = RequestMethod.POST)
-	public JsonResponse<SavedListResponse> getSavedList(@RequestBody GetSavedListParameter parameter) {
+	public JsonResponse<SavedListResponse> getSavedList(
+			@Valid @RequestBody GetSavedListParameter parameter) {
 		JsonResponse<SavedListResponse> response = new JsonResponse<>();
 
 		SavedListResponse result = renewalBuyerService.getSavedList(parameter);
@@ -464,16 +466,16 @@ public class BuyerController {
 		return response;
 	}
 
-	@RequestMapping(value = "getadminretailer", method = RequestMethod.POST)
-	public JsonResponse getAdminretailer(@RequestBody GetAdminRetailerParameter parameter) {
+	@PostMapping("getadminretailer")
+	public JsonResponse getAdminretailer(
+			@Valid @RequestBody GetAdminRetailerParameter parameter) {
 		JsonResponse response = renewalBuyerService.getAdminretailer(parameter);
-
 		return response;
 	}
 	
 	@RequestMapping(value = "getbuyersearchwithhistory", method = RequestMethod.POST)
-	public JsonResponse<BuyerSearchResponse> getBuyerSearchWithHistory(@RequestBody GetBuyerSearchWithHistory parameter) {
-		
+	public JsonResponse<BuyerSearchResponse> getBuyerSearchWithHistory(
+			@Valid @RequestBody GetBuyerSearchWithHistory parameter) {
 		JsonResponse<BuyerSearchResponse> results = new JsonResponse<BuyerSearchResponse>(true, null, null);
 		BuyerSearchResponse response = renewalBuyerService.getBuyerSearchWithHistory(parameter);
 		results.setData(response);
@@ -490,7 +492,8 @@ public class BuyerController {
 	}
 
 	@RequestMapping(value = "getmodifiedbybuyer", method = RequestMethod.POST)
-	public JsonResponse<GetModifiedByBuyerResponse> getModifiedByBuyer(@RequestBody GetModifiedByBuyerParameter parameter) {
+	public JsonResponse<GetModifiedByBuyerResponse> getModifiedByBuyer(
+			@Valid @RequestBody GetModifiedByBuyerParameter parameter) {
 		JsonResponse<GetModifiedByBuyerResponse> response = new JsonResponse<>();
 		GetModifiedByBuyerResponse modifiedByBuyer = renewalBuyerService.getModifiedByBuyer(parameter);
 		response.setSuccess(true);
