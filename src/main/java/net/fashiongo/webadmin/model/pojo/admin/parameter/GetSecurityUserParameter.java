@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 
 public class GetSecurityUserParameter {
 
-    private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s /:!&,-.?_\']+$";
+    private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s /:!@&,-.?_\']+$";
     private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
 
     @JsonProperty("userid")
