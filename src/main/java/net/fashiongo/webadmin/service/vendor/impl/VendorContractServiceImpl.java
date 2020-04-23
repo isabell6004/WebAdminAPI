@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -146,6 +147,7 @@ public class VendorContractServiceImpl implements VendorContractService {
 
         updateVendorType(request, wholeSalerEntity);
 
+        request.setCommissionRate(BigDecimal.valueOf(request.getCommissionRate().doubleValue() / 100.0));
         vendorContractNewService.reviseContract(originalVendorContractHistoryId, revisedVendorContractHistoryId, request);
     }
 
@@ -155,6 +157,7 @@ public class VendorContractServiceImpl implements VendorContractService {
         Long originalVendorContractHistoryId = Long.valueOf(originContractInfo.getVendorContractID());
         updateVendorType(request, wholeSalerEntity);
 
+        request.setCommissionRate(BigDecimal.valueOf(request.getCommissionRate().doubleValue() / 100.0));
         vendorContractNewService.createContract(originalVendorContractHistoryId, request);
     }
 
@@ -164,6 +167,7 @@ public class VendorContractServiceImpl implements VendorContractService {
         Long originalVendorContractHistoryId = Long.valueOf(originContractInfo.getVendorContractID());
         updateVendorType(request, wholeSalerEntity);
 
+        request.setCommissionRate(BigDecimal.valueOf(request.getCommissionRate().doubleValue() / 100.0));
         vendorContractNewService.modifyContract(originalVendorContractHistoryId, request);
     }
 
