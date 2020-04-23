@@ -22,10 +22,7 @@ import net.fashiongo.webadmin.utility.Utility;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import net.fashiongo.webadmin.model.pojo.admin.parameter.DelSecurityUserParameter;
 import net.fashiongo.webadmin.model.pojo.admin.parameter.GetSecurityAccessCodesParameters;
@@ -61,6 +58,8 @@ import net.fashiongo.webadmin.model.pojo.admin.response.GetSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.GetUserMappingVendorResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.SetCreateSecurityUserResponse;
 import net.fashiongo.webadmin.model.pojo.admin.response.SetUserMappingVendorResponse;
+
+import javax.validation.Valid;
 
 /**
  * 
@@ -280,8 +279,9 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="getsecurityusers", method=RequestMethod.POST)
-	public JsonResponse<GetSecurityUserResponse> getSecurityUsers(@RequestBody GetSecurityUserParameter parameters) {
-		JsonResponse<GetSecurityUserResponse> results = new JsonResponse<GetSecurityUserResponse>(false, null, 0, null);
+	public JsonResponse<GetSecurityUserResponse> getSecurityUsers(
+			@Valid @RequestBody GetSecurityUserParameter parameters) {
+		JsonResponse<GetSecurityUserResponse> results = new JsonResponse<>(false, null, 0, null);
 		GetSecurityUserResponse result = securityGroupService.getSecurityUsers(parameters);
 		results.setData(result);
 		results.setSuccess(true);
@@ -404,9 +404,10 @@ public class AdminController {
 	 * @param parameters
 	 * @return
 	 */
-	@RequestMapping(value = "getusermappingvendor", method=RequestMethod.POST)
-	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse> getUserMappingVendor(@RequestBody GetUserMappingVendorParameter parameters) {
-		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse>(false, null, 0, null);
+	@PostMapping("getusermappingvendor")
+	public JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse> getUserMappingVendor(
+			@Valid @RequestBody GetUserMappingVendorParameter parameters) {
+		JsonResponse<net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse> results = new JsonResponse<>(false, null, 0, null);
 		net.fashiongo.webadmin.data.model.admin.response.GetUserMappingVendorResponse userMappingVendor = renewalSecurityGroupService.getUserMappingVendor(parameters);
 
 		results.setData(userMappingVendor);

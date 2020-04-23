@@ -786,15 +786,15 @@ public class SitemgmtServiceTest {
 	@Test
 	public void testGetTrendReport2() {
 		GetTrendReport2Parameter parameters = new GetTrendReport2Parameter();
-		parameters.setPagenum("1");
-		parameters.setPagesize("10");
+		parameters.setPagenum(1);
+		parameters.setPagesize(10);
 		parameters.setSearchtxt("");
 		parameters.setFromdate("9/1/2018 00:00:00");
 		parameters.setTodate("9/30/2018 23:59:59");
 		parameters.setOrderby("DateFrom");
 		parameters.setOrderbygubn("Desc");
 		parameters.setActive("true");
-		parameters.setCuratedType("1");
+		parameters.setCuratedType(1);
 		GetTrendReport2Response result = sitemgmtService.getTrendReport2(parameters);
 		assertTrue(result.getTrendReportList().size() > 0);
 	}
