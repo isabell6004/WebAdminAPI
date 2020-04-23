@@ -11,11 +11,9 @@ import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
 import net.fashiongo.webadmin.utility.JsonResponse;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -39,8 +37,9 @@ public class VendorCreditCardController {
 	 * @param
 	 * @return
 	 */
-	@RequestMapping(value="vendor/getvendorcreditcardList", method=RequestMethod.POST, produces = "application/json")
-	public JsonResponse<GetVendorCreditCardListResponse> getVendorCreditCardList(@RequestBody GetVendorCreditCardListParameter parameters) {
+	@PostMapping("vendor/getvendorcreditcardList")
+	public JsonResponse<GetVendorCreditCardListResponse> getVendorCreditCardList(
+			@Valid @RequestBody GetVendorCreditCardListParameter parameters) {
 		GetVendorCreditCardListResponse result = vendorService.getVendorCreditCardList(parameters.getOrderBy());
 		return new JsonResponse<GetVendorCreditCardListResponse>(true, null, 0, result);
 	}

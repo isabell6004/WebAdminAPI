@@ -102,7 +102,8 @@ public class MessageController {
     }
 
     @PostMapping("getcontactus")
-    public JsonResponse<GetContactUsResponse> getContactUs(@RequestBody GetContactUsParameter parameters) {
+    public JsonResponse<GetContactUsResponse> getContactUs(
+            @Valid @RequestBody GetContactUsParameter parameters) {
         GetContactUsResponse result = messageService.getContactUs(parameters);
         return JsonResponse.success(result);
     }
