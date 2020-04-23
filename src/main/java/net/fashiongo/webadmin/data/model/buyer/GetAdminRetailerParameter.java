@@ -29,7 +29,6 @@ public class GetAdminRetailerParameter {
 
 	@JsonProperty("userid")
 	@SQLInjectionSafeWithKeywordsFilter
-	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String userid;
 
 	@JsonProperty("useridpartialmatch")
