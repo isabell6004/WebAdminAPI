@@ -39,6 +39,7 @@ public class SetterMonitor implements ThrowsAdvice {
 			"&& !execution(* net.fashiongo.webadmin.service.WAPaymentService.*(..)) " +
 			"&& !execution(* net.fashiongo.webadmin.service.MessageService.*(..)) " +
 			"&& !execution(* net.fashiongo.webadmin.service.VendorService.*(..)) " +
+			"&& !execution(* net.fashiongo.webadmin.service.renewal.RenewalBuyerService.*(..)) " +
 			"&& !execution(* net.fashiongo.webadmin.service.GnbService.*(..))", throwing="e")
 	public void callMethodException(JoinPoint joinPoint, Throwable e) throws Throwable {
 

@@ -499,9 +499,11 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
         String openType = null;
         String openDate = null;
+        LocalDateTime actualOpenDate = null;
         if (!wholeSaler.getOrderActive() && requestVendorDetailInfo.getOrderActive()) {
             openType = "now";
             openDate = dateTimeNow;
+            actualOpenDate = LocalDateTime.now();
         } else if (!wholeSaler.getOrderActive() && !requestVendorDetailInfo.getOrderActive()) {
             if (StringUtils.compare(requestActualOpenDate, dateTimeNow) > 0) {
                 openType = "schedule";
@@ -512,11 +514,12 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             } else {
                 return;
             }
+            actualOpenDate =  requestVendorDetailInfo.getActualOpenDate();
         } else {
             return;
         }
 
-        VendorContractEntity vendorContract = vendorContractService.getVendorContractIncludedOpenDate(wholeSaler.getWholeSalerID(), requestVendorDetailInfo.getActualOpenDate());
+        VendorContractEntity vendorContract = vendorContractService.getVendorContractIncludedOpenDate(wholeSaler.getWholeSalerID(), actualOpenDate);
         String message = String.format("[change-to-orderactive] vendor-id:%s,open-type:%s,open-date:%s,valid-contract-id:%s"
                 , wholeSaler.getWholeSalerID(), openType, openDate, Optional.ofNullable(vendorContract).map(VendorContractEntity::getVendorContractID).orElse(null));
         logger.info(message);
