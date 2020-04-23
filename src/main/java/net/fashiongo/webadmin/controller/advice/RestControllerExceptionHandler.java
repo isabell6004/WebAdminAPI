@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice(assignableTypes = {WAPaymentController.class, MessageController.class,
-        StaticController.class, StaticKpiController.class, BuyerController.class, VendorCreditCardController.class})
+        StaticController.class, StaticKpiController.class, BuyerController.class, VendorCreditCardController.class,
+        AdminController.class})
 public class RestControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
