@@ -33,8 +33,8 @@ public class GetContactUsParameter {
 	private String sender;
 	
 	@JsonProperty("email")
-	@SQLInjectionSafe
-	private String email;
+	@SQLInjectionSafeWithKeywordsFilter
+ 	private String email;
 	
 	@JsonProperty("topic")
 	@SQLInjectionSafeWithKeywordsFilter

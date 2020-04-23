@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
+import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Pattern;
 
 /**
  * 
@@ -17,6 +21,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 @SuppressWarnings("serial")
 public class GetVendorNewsParameter implements Serializable {
+
+	private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s /:!&,-.?_\']+$";
+	private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
+
 	@ApiModelProperty(required = false, example = "1")
 	@JsonProperty("pagenum")
 	private Integer pageNum;
@@ -27,18 +35,26 @@ public class GetVendorNewsParameter implements Serializable {
 	
 	@ApiModelProperty(required = false, example = "FashionGo")
 	@JsonProperty("vendor")
+	@SQLInjectionSafe
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String vendor;
 	
 	@ApiModelProperty(required = false, example = "")
 	@JsonProperty("newstitle")
+	@SQLInjectionSafe
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String newsTitle;
 	
 	@ApiModelProperty(required = false, example = "1")
 	@JsonProperty("active")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String active;
 
 	@ApiModelProperty(required = false, example = "")
 	@JsonProperty("orderby")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String orderBy;
 	
 	@ApiModelProperty(required = false, example = "false")
@@ -47,14 +63,20 @@ public class GetVendorNewsParameter implements Serializable {
 	
 	@ApiModelProperty(required = false, example = "")
 	@JsonProperty("period")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String period;
 	
 	@ApiModelProperty(required = false, example = "10/1/2018 00:00:00")
 	@JsonProperty("fromdate")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String fromDate;
 	
 	@ApiModelProperty(required = false, example = "10/28/2018 23:59:59")
 	@JsonProperty("todate")
+	@SQLInjectionSafeWithKeywordsFilter
+	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String toDate;
 
 	public Integer getPageNum() {
