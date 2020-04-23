@@ -16,6 +16,7 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -46,8 +47,8 @@ public class ConsolidationController {
 	 * @return Consolidation Orders List
 	 */
 	@RequestMapping(value="getorderconsolidation", method=RequestMethod.POST)
-	public JsonResponse<GetConsolidationResponse> getConsolidationList(@RequestBody GetConsolidationParameter parameters) {
-		
+	public JsonResponse<GetConsolidationResponse> getConsolidationList(
+			@Valid @RequestBody GetConsolidationParameter parameters) {
 		GetConsolidationResponse result = consolidationService.getConsolidationList(parameters);
 		return new JsonResponse<>(true, null, 0, result);
 	}
