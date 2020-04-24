@@ -63,5 +63,4 @@ public class RestControllerExceptionHandler {
         log.error("Exception: ", ex);
         return new ResponseEntity<>(JsonResponse.fail("Unknown Error"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 }
