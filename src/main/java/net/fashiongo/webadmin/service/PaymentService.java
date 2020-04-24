@@ -25,6 +25,7 @@ import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
 import net.fashiongo.webadmin.dao.primary.PaymentCreditCardRepository;
 import net.fashiongo.webadmin.dao.primary.PaymentStatusRepository;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentScheduleInfo;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import net.fashiongo.webadmin.model.primary.CardStatus;
 import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
@@ -244,6 +245,13 @@ public class PaymentService extends ApiService {
 	public JsonResponse<?> setPaymentAccountBank(SetPaymentAccountBankParameter p) throws JsonProcessingException {
 		String url = "/account/bank/" + p.getWholeSalerId() + "/add";
 		p.setWholeSalerId(p.getWholeSalerId() == null ? 0 : p.getWholeSalerId());
+
+		return (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
+	}
+	
+	public JsonResponse<?> setPaymentAccountIsLocked(PaymentScheduleInfo p) throws JsonProcessingException {
+		String url = "/account//locked/" + p.getWholesalerId();
+		p.setWholesalerId(p.getWholesalerId() == null ? 0 : p.getWholesalerId());
 
 		return (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
 	}

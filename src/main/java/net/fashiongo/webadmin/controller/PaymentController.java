@@ -7,6 +7,7 @@ import net.fashiongo.webadmin.data.model.payment.GetPaymentAccountInfoParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentScheduleInfo;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
 import org.json.simple.JSONObject;
@@ -213,6 +214,16 @@ public class PaymentController {
 			return paymentService.setRefund(paymentRequest);
 		} catch (Exception e) {
 			logger.error("PaymentController.setSale()", e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+	
+	@PostMapping(value = "/setislocked")
+	public JsonResponse<?> setPaymentAccountIsLocked(@RequestBody PaymentScheduleInfo param) {
+		try {
+			return paymentService.setPaymentAccountIsLocked(param);
+		} catch (Exception e) {
+			logger.error("PaymentController.setPaymentAccountInfo()", e);
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
