@@ -576,6 +576,8 @@ public class SecurityGroupService extends ApiService {
 						su = new SecurityUser();
 						su.setUserName(userData.getUserName());
 						su.setUserGUID(guid);
+						//all user can't add super user bc role column is disabled
+						su.setRole("G");
 						su.setCreatedBy(userData.getCreatedBy());
 						su.setCreatedOn(now);
 						su.setModifiedBy(userData.getModifiedBy());
@@ -620,16 +622,8 @@ public class SecurityGroupService extends ApiService {
 				List<Object> _resultMembership = jdbcHelper.executeSP(membershipUpdateSpname, membershipParams);
 				
 				su.setFullName(userData.getFullName());
-
-				// general role user can create general role only
-				//if (loginUser.getRoleid().equalsIgnoreCase("G"))
-				//	su.setRole("G");
-				//else su.setRole(userData.getRole());
-
-                //all user can't add super user bc role column is disabled
-				//hard-coding bc security/124 issue
-				su.setRole("G");
-
+				//all user can't change role
+				//su.setRole(userData.getRole());
 				su.setIpTimeExempt(userData.getExempt());
 				su.setActive(userData.getActive());
 				securityUserRepository.save(su);
