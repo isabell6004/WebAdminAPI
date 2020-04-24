@@ -620,10 +620,15 @@ public class SecurityGroupService extends ApiService {
 				List<Object> _resultMembership = jdbcHelper.executeSP(membershipUpdateSpname, membershipParams);
 				
 				su.setFullName(userData.getFullName());
+
 				// general role user can create general role only
-				if (loginUser.getRoleid().equalsIgnoreCase("G"))
-					su.setRole("G");
-				else su.setRole(userData.getRole());
+				//if (loginUser.getRoleid().equalsIgnoreCase("G"))
+				//	su.setRole("G");
+				//else su.setRole(userData.getRole());
+
+                //all user can't add super user bc role column is disabled
+				//hard-coding bc security/124 issue
+				su.setRole("G");
 
 				su.setIpTimeExempt(userData.getExempt());
 				su.setActive(userData.getActive());
