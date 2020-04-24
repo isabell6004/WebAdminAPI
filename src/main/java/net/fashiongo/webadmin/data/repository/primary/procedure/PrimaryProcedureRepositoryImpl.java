@@ -768,7 +768,9 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 	private List<ActiveTodayDealDetail> getActiveTodayDealDetail(Date sDate, Integer wholeSalerID) {
 		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
+		QProductsEntity PR = QProductsEntity.productsEntity;
 		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
 
 		JPASQLQuery<ActiveTodayDealDetail> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
 
@@ -815,9 +817,20 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				T.fromDate.month().as("sMonth")))
 				.from(T)
 				.leftJoin(vwProductDetail, P).on(T.productId.eq(pathProductID))
+				.leftJoin(PR).on(PR.productID.eq(T.productId))
+				.leftJoin(W).on(PR.wholeSalerID.eq(W.wholeSalerId))
 				.leftJoin(PRDI).on(pathProductID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
 				.where(wholeSalerIDZero.and(T.fromDate.eq(sDateTimestamp).and(T.active.eq(true)))
-					.or(wholeSalerIDZero.not().and(pathWholeSalerID.eq(wholeSalerID).and(T.fromDate.eq(sDateTimestamp).and(T.active.eq(true))))))
+					.or(
+						wholeSalerIDZero.not()
+						.and(
+							pathWholeSalerID.eq(wholeSalerID)
+							.and(T.fromDate.eq(sDateTimestamp))
+							.and(T.active.isTrue())	
+						)
+						.and(W.orderActive.isTrue())
+					)
+				)
 				.orderBy(T.todayDealId.asc(), T.fromDate.desc());
 
 		return jpasqlQuery.fetch();
@@ -825,7 +838,9 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 	private List<InactiveTodayDealDetail> getInactiveTodayDealDetail(Date sDate) {
 		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
+		QProductsEntity PR = QProductsEntity.productsEntity;
 		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
 
 		JPASQLQuery<InactiveTodayDealDetail> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
 
@@ -863,8 +878,10 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				T.notes))
 				.from(T)
 				.leftJoin(vwProductDetail, P).on(T.productId.eq(pathProductID))
+				.leftJoin(PR).on(PR.productID.eq(T.productId))
+				.leftJoin(W).on(PR.wholeSalerID.eq(W.wholeSalerId))
 				.leftJoin(PRDI).on(pathProductID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
-				.where(T.fromDate.eq(sDateTimestamp).and(T.active.eq(false)))
+				.where(T.fromDate.eq(sDateTimestamp).and((T.active.isFalse()).or(W.orderActive.isFalse())))
 				.orderBy(T.revokedOn.asc(), T.todayDealId.desc());
 
 		return jpasqlQuery.fetch();
