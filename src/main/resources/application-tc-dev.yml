@@ -36,7 +36,7 @@ webAdminapi:
   fgServiceAPI_EndPoint: http://127.0.0.1:29001
   fgVendorAPI_EndPoint: http://127.0.0.1:28501
   statsAPI_EndPoint: http://127.0.0.1:27601
-  fgPaymentAPI_EndPoint: http://127.0.0.1:29202
+  fgPaymentAPI_EndPoint: http://127.0.0.1:29201
   adApi:
     endpoint: http://10.210.16.205:18000
   productApi:
