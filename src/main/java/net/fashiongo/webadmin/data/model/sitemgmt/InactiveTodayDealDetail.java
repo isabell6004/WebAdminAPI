@@ -70,4 +70,7 @@ public class InactiveTodayDealDetail {
 
     @JsonProperty("Notes")
     private String notes;
+    
+    @JsonProperty("OrderActive")
+    private Boolean orderActive;
 }

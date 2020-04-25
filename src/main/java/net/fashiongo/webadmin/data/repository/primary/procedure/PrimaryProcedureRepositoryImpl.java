@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.data.repository.primary.procedure;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.JoinFlag;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
@@ -18,6 +19,7 @@ import net.fashiongo.webadmin.data.model.buyer.OrderHistoryStatistics;
 import net.fashiongo.webadmin.data.model.sitemgmt.*;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -713,8 +715,8 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 	@Override
 	@Transactional(value = "primaryTransactionManager")
 	public ResultGetAdminTodayDealCalendarList up_wa_GetAdminTodayDealCalendarList(Date sDate, Integer wholeSalerID) {
-		List<ActiveTodayDealDetail> activeTodayDealDetails = this.getActiveTodayDealDetail(sDate, wholeSalerID);
-		List<InactiveTodayDealDetail> inactiveTodayDealDetails = this.getInactiveTodayDealDetail(sDate);
+		List<ActiveTodayDealDetail> activeTodayDealDetails = (List<ActiveTodayDealDetail>) this.getTodayDealDetail(sDate, wholeSalerID, true);
+		List<InactiveTodayDealDetail> inactiveTodayDealDetails = (List<InactiveTodayDealDetail>) this.getTodayDealDetail(sDate, wholeSalerID, false);
 
 		return ResultGetAdminTodayDealCalendarList.builder()
 				.activeTodayDealDetails(activeTodayDealDetails)
@@ -756,6 +758,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				, P.active
 				, W.active.as("WholeSalerActive")
 				, W.shopActive.as("WholeSalerShopActive")
+				, W.orderActive.as("WholeSalerOrderActive")
 				, P.activatedOn
 				, P.packQtyTotal
 				, W.orderNotice
@@ -765,15 +768,14 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
 				.innerJoin(I).on(W.imageServerID.eq(I.imageServerID));
 	}
-
-	private List<ActiveTodayDealDetail> getActiveTodayDealDetail(Date sDate, Integer wholeSalerID) {
+	
+	private List<?> getTodayDealDetail(Date sDate, Integer wholeSalerID, Boolean active) {
 		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
 		QProductsEntity PR = QProductsEntity.productsEntity;
 		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
 		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
 
-		JPASQLQuery<ActiveTodayDealDetail> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
-
+		JPASQLQuery<?> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
 		JPQLQuery vwProductDetail = this.vwProductDetail();
 		Path<Object> P = ExpressionUtils.path(Object.class, "P");
 		NumberPath<Integer> pathProductID = Expressions.numberPath(Integer.class,P, "ProductID");
@@ -783,6 +785,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		StringPath pathCompanyName = Expressions.stringPath(P, "CompanyName");
 		NumberPath<BigDecimal> pathUnitPrice = Expressions.numberPath(BigDecimal.class,P, "Price");
 		NumberPath<Integer> pathWholeSalerID = Expressions.numberPath(Integer.class, P, "WholeSalerID");
+		BooleanPath pathOrderActive = Expressions.booleanPath(P, "WholeSalerOrderActive");
 
 		Expression<Integer> constantZERO = Expressions.constant(0);
 
@@ -791,6 +794,35 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		BooleanExpression temp = Expressions.asBoolean(pathWholeSalerID.eq(wholeSalerID));
 
 		Timestamp sDateTimestamp = new Timestamp(sDate.getTime());
+		
+		BooleanBuilder w = new BooleanBuilder();
+		if (active) {
+			w.and(wholeSalerIDZero
+				.and(T.fromDate.eq(sDateTimestamp)
+					.and(T.active.isTrue())
+					.and(pathOrderActive.isTrue())
+					)
+			.or(wholeSalerIDZero.not()
+				.and(
+					pathWholeSalerID.eq(wholeSalerID)
+					.and(T.fromDate.eq(sDateTimestamp))
+					.and(T.active.isTrue())	
+					.and(pathOrderActive.isTrue())
+				)
+			));
+		} else {
+			w.and(wholeSalerIDZero
+				.and(T.fromDate.eq(sDateTimestamp)
+					.and(T.active.isFalse().or(pathOrderActive.isFalse()))
+					)
+			.or(wholeSalerIDZero.not()
+				.and(
+					pathWholeSalerID.eq(wholeSalerID)
+					.and(T.fromDate.eq(sDateTimestamp))
+					.and(T.active.isFalse().or(pathOrderActive.isFalse()))	
+				)
+			));
+		}
 
 		jpasqlQuery.select(Projections.constructor(ActiveTodayDealDetail.class,
 				T.todayDealId,
@@ -814,76 +846,15 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				pathWholeSalerID,
 				pathUnitPrice.as("UnitPrice"),
 				T.fromDate.year().as("sYear"),
-				T.fromDate.month().as("sMonth")))
+				T.fromDate.month().as("sMonth"),
+				pathOrderActive
+				))
 				.from(T)
 				.leftJoin(vwProductDetail, P).on(T.productId.eq(pathProductID))
-				.leftJoin(PR).on(PR.productID.eq(T.productId))
-				.leftJoin(W).on(PR.wholeSalerID.eq(W.wholeSalerId))
-				.leftJoin(PRDI).on(pathProductID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
-				.where(wholeSalerIDZero.and(T.fromDate.eq(sDateTimestamp).and(T.active.eq(true)))
-					.or(
-						wholeSalerIDZero.not()
-						.and(
-							pathWholeSalerID.eq(wholeSalerID)
-							.and(T.fromDate.eq(sDateTimestamp))
-							.and(T.active.isTrue())	
-						)
-						.and(W.orderActive.isTrue())
-					)
-				)
+				.leftJoin(PRDI).on(pathProductID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))			
+				.where(w)
 				.orderBy(T.todayDealId.asc(), T.fromDate.desc());
-
-		return jpasqlQuery.fetch();
-	}
-
-	private List<InactiveTodayDealDetail> getInactiveTodayDealDetail(Date sDate) {
-		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
-		QProductsEntity PR = QProductsEntity.productsEntity;
-		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
-
-		JPASQLQuery<InactiveTodayDealDetail> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
-
-		JPQLQuery vwProductDetail = this.vwProductDetail();
-		Path<Object> P = ExpressionUtils.path(Object.class, "P");
-		NumberPath<Integer> pathProductID = Expressions.numberPath(Integer.class,P, "ProductID");
-		StringPath pathProductName = Expressions.stringPath(P, "ProductName");
-		StringPath pathImageUrlRoot = Expressions.stringPath(P, "ImageUrlRoot");
-		StringPath pathDirName = Expressions.stringPath(P, "DirName");
-		StringPath pathCompanyName = Expressions.stringPath(P, "CompanyName");
-		NumberPath<BigDecimal> pathUnitPrice = Expressions.numberPath(BigDecimal.class,P, "Price");
-		NumberPath<Integer> pathWholeSalerID = Expressions.numberPath(Integer.class, P, "WholeSalerID");
-
-		Timestamp sDateTimestamp = new Timestamp(sDate.getTime());
-
-		jpasqlQuery.select(Projections.constructor(InactiveTodayDealDetail.class,
-				T.todayDealId,
-				T.title,
-				T.description,
-				T.fromDate,
-				T.toDate,
-				T.todayDealPrice,
-				T.modifiedBy,
-				T.modifiedOn,
-				pathProductID,
-				pathProductName,
-				pathImageUrlRoot,
-				pathDirName,
-				PRDI.imageName.as("PictureGeneral"),
-				pathCompanyName,
-				pathWholeSalerID,
-				pathUnitPrice.as("UnitPrice"),
-				T.revokedOn,
-				T.revokedBy,
-				T.notes))
-				.from(T)
-				.leftJoin(vwProductDetail, P).on(T.productId.eq(pathProductID))
-				.leftJoin(PR).on(PR.productID.eq(T.productId))
-				.leftJoin(W).on(PR.wholeSalerID.eq(W.wholeSalerId))
-				.leftJoin(PRDI).on(pathProductID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
-				.where(T.fromDate.eq(sDateTimestamp).and((T.active.isFalse()).or(W.orderActive.isFalse())))
-				.orderBy(T.revokedOn.asc(), T.todayDealId.desc());
-
+		
 		return jpasqlQuery.fetch();
 	}
 
