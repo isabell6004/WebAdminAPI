@@ -53,7 +53,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
             String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
-            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to create vendor contract document. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
                 throw new VendorContractOperationException("fail to create vendor contract document. vendorId: " + vendorId);
@@ -73,7 +73,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
             String responseBody = httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
-            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to modify vendor contract document. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
                 throw new VendorContractOperationException("fail to modify vendor contract document. vendorId: " + vendorId);
@@ -93,7 +93,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
             String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
-            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to delete vendor contract document. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
                 throw new VendorContractOperationException("fail to delete vendor contract document. vendorId: " + vendorId);
@@ -114,7 +114,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         ReviseContractHistoryCommand newRequest = new ReviseContractHistoryCommand(request, originalVendorContractHistoryId, revisedVendorContractHistoryId);
         try {
             String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
-            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to revise vendor contract. vendorId: {}, code : {}, message : {}", request.getWholeSalerID(), fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
                 throw new VendorContractOperationException("fail to revise vendor contract. vendorId: " + request.getWholeSalerID());
@@ -136,7 +136,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
             String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
-            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to create vendor contract. vendorId: {}, code : {}, message : {}", request.getWholeSalerID(), fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
                 throw new VendorContractOperationException("fail to create vendor contract. vendorId: " + request.getWholeSalerID());
@@ -157,7 +157,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
             String responseBody = httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
-            FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
+            FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to modify vendor contract. vendorId: {}, code : {}, message : {}", request.getWholeSalerID(), fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
                 throw new VendorContractOperationException("fail to modify vendor contract. vendorId: " + request.getWholeSalerID());
