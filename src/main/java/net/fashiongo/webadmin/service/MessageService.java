@@ -2,10 +2,9 @@ package net.fashiongo.webadmin.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.fashiongo.webadmin.dao.primary.*;
 import net.fashiongo.webadmin.model.primary.*;
@@ -470,7 +469,11 @@ public class MessageService extends ApiService {
 		ResultMessage result = new ResultMessage();
 		String[] idList = parameters.getRecipientidlist().split(",");
 		String msgGuid = UUID.randomUUID().toString();
-		
+
+		String attachedFileName = validateFileName(parameters.getFilename());
+		String attachedFileName2 = validateFileName(parameters.getFilename2());
+		String attachedFileName3 = validateFileName(parameters.getFilename3());
+
 		for (String id : idList)
         {
             if (Integer.parseInt(id) > 0)
@@ -484,9 +487,9 @@ public class MessageService extends ApiService {
         		msg.setBody(parameters.getContent());
         		msg.setActive(true);
         		msg.setMessageGUID(msgGuid);
-        		msg.setAttachedFileName(parameters.getFilename());
-        		msg.setAttachedFileName2(parameters.getFilename2());
-        		msg.setAttachedFileName3(parameters.getFilename3());
+				msg.setAttachedFileName(attachedFileName);
+				msg.setAttachedFileName2(attachedFileName2);
+				msg.setAttachedFileName3(attachedFileName3);
         		msg.setReferenceID(parameters.getReferenceid());
         		msg.setUpdatedOn(LocalDateTime.now());
         		msg.setCreatedOn(LocalDateTime.now());
@@ -515,6 +518,9 @@ public class MessageService extends ApiService {
 		
 		result.setResult(1);
 		result.setGuid(msgGuid);
+		result.setAttachedFileName(attachedFileName);
+		result.setAttachedFileName2(attachedFileName2);
+		result.setAttachedFileName3(attachedFileName3);
 		return result;
 	}
 	
@@ -633,5 +639,27 @@ public class MessageService extends ApiService {
 		result.setRecCnt((List<Total>) _result.get(0));
 		result.setRetailerRatingList((List<RetailerRating>) _result.get(1));
 		return result;
+	}
+
+	private String validateFileName(String fileName) {
+		if(fileName == null) {
+			return null;
+		}
+		Set<String> extensionSet = Stream.of(".jpg", ".gif", ".png", ".pdf", ".xls", ".xlsx", ".doc", ".docx")
+				.collect(Collectors.toCollection(HashSet::new));
+
+		String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+		if(!extensionSet.contains(fileExtension)) {
+			return null;
+		}
+
+		String[] fileNameBlackList = {"/", "\\", "%0", ";"};
+		for(String wrongName : fileNameBlackList) {
+			if(fileName.indexOf(wrongName) != -1) {
+				return null;
+			}
+		}
+
+		return fileName;
 	}
 }
