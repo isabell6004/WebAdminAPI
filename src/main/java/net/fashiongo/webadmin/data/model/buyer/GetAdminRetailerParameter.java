@@ -1,6 +1,7 @@
 package net.fashiongo.webadmin.data.model.buyer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.rkpunjal.sqlsafe.SQLInjectionSafe;
 import lombok.Getter;
 import net.fashiongo.webadmin.controller.validator.SQLInjectionSafeWithKeywordsFilter;
 
@@ -149,7 +150,7 @@ public class GetAdminRetailerParameter {
 	private Boolean csv;
 
 	@JsonProperty("companyname")
-	@SQLInjectionSafeWithKeywordsFilter
+	@SQLInjectionSafe
 	@Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
 	private String companyname;
 
