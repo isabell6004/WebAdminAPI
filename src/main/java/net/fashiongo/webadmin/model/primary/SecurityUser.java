@@ -65,7 +65,15 @@ public class SecurityUser {
 	@JsonProperty("ModifiedBy")
 	@Column(name = "ModifiedBy")
 	private String modifiedBy;
-	
+
+	@JsonProperty("Email")
+	@Column(name = "Email")
+	private String email;
+
+	@JsonProperty("DataAccessLevel")
+	@Column(name = "DataAccessLevel")
+	private Integer dataAccessLevel;
+
 	@Transient
 	@JsonProperty("DispName")
 	@Column(name = "DispName")
@@ -157,6 +165,22 @@ public class SecurityUser {
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Integer getDataAccessLevel() {
+		return dataAccessLevel;
+	}
+
+	public void setDataAccessLevel(Integer dataAccessLevel) {
+		this.dataAccessLevel = dataAccessLevel;
 	}
 
 	public String getDispName() {

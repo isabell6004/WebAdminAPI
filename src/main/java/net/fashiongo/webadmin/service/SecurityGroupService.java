@@ -128,13 +128,13 @@ public class SecurityGroupService extends ApiService {
 	@SuppressWarnings("unchecked")
 	public GetSecurityUserResponse getSecurityUsers(GetSecurityUserParameter parameters) {
 		GetSecurityUserResponse result = new GetSecurityUserResponse();
-		String spName = "up_wa_GetSecurityUserList_Migration";
+		String spName = "up_wa_GetSecurityUserList_Migration_v1";
         List<Object> params = new ArrayList<Object>();
         
         params.add(parameters.getUserName());
         params.add(parameters.getGroup());
         params.add(parameters.getRole());
-        params.add(parameters.getVendorID());
+        params.add(parameters.getDataAccessLevel());
         List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityUsers.class);
         
         result.setSecurityUserList((List<SecurityUsers>) _result.get(0));
@@ -626,8 +626,10 @@ public class SecurityGroupService extends ApiService {
 				//su.setRole(userData.getRole());
 				su.setIpTimeExempt(userData.getExempt());
 				su.setActive(userData.getActive());
+				su.setEmail(userData.getEmail());
+				su.setDataAccessLevel(userData.getDataAccessLevel());
 				securityUserRepository.save(su);
-				
+
 				result.setUserID(su.getUserID());
 				result.setSuccess(true);
 				result.setResultCode(1);

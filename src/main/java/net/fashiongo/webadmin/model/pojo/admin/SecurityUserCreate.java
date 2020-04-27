@@ -35,6 +35,10 @@ public class SecurityUserCreate  implements Serializable {
 	private LocalDateTime modifiedOn;
 	@JsonProperty("modifiedBy")
 	private String modifiedBy;
+	@JsonProperty("email")
+	private String email;
+	@JsonProperty("dataAccessLevel")
+	private Integer dataAccessLevel;
 	@JsonProperty("access")
 	private String access;
 	@JsonProperty("active")
@@ -106,6 +110,18 @@ public class SecurityUserCreate  implements Serializable {
 	}
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Integer getDataAccessLevel() {
+		return dataAccessLevel;
+	}
+	public void setDataAccessLevel(Integer dataAccessLevel) {
+		this.dataAccessLevel = dataAccessLevel;
 	}
 	public String getAccess() {
 		return access;
