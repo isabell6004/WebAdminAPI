@@ -43,6 +43,8 @@ webAdminapi:
     endpoint: http://10.210.16.204:17301
   fashionGoApi:
     endpoint: http://10.210.16.204:17301
+  crypto:
+    endpoint: http://10.210.16.205:17301
 server:
   port: 29901
 

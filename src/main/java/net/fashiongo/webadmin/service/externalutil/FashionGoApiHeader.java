@@ -37,4 +37,15 @@ public class FashionGoApiHeader {
         }
         return header;
     }
+
+    public static Map<String, String> getDefaultHeader() {
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Connection", "close");
+        header.put("Content-Type", "application/json; charset=utf-8");
+        header.put("Referer-Application-Type", ApplicationType);
+        header.put("Request-Id", UUID.randomUUID().toString());
+
+        return header;
+    }
 }

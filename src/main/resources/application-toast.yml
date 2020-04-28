@@ -34,6 +34,8 @@ webAdminapi:
     endpoint: http://10.210.8.175/v1
   fashionGoApi:
     endpoint: http://api.fashiongo.net
+  crypto:
+    endpoint: http://api.fashiongo.net
 
 server:
   port: 19901

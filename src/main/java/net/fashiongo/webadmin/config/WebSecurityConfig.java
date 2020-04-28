@@ -53,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, "/expired").permitAll()
 			.antMatchers(HttpMethod.POST, "/payment/**").permitAll()
 			.antMatchers(HttpMethod.GET, "/payment/**").permitAll()
+			.antMatchers(HttpMethod.GET, "/crypto/key").permitAll()
 			.antMatchers(HttpMethod.POST, "/common/getcountries").permitAll()
 			.antMatchers(HttpMethod.POST, "/common/getorderstatus").permitAll()
 			.antMatchers(HttpMethod.POST, "/common/getconsolidationorderstatus").permitAll()
