@@ -648,7 +648,7 @@ public class MessageService extends ApiService {
 		Set<String> extensionSet = Stream.of(".jpg", ".gif", ".png", ".pdf", ".xls", ".xlsx", ".doc", ".docx")
 				.collect(Collectors.toCollection(HashSet::new));
 
-		String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+		String fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
 		if(!extensionSet.contains(fileExtension)) {
 			return null;
 		}
