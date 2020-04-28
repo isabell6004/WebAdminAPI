@@ -169,8 +169,8 @@
 
 		<dependency>
 			<groupId>net.fashiongo.common</groupId>
-			<artifactId>fashiongo-common-library-crypto</artifactId>
-			<version>0.0.1.SNAPSHOT</version>
+			<artifactId>fashiongo-common-crypto</artifactId>
+			<version>0.0.1.RELEASE</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
