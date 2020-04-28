@@ -73,7 +73,7 @@ public class VendorContractDocumentEntity {
 
     public void modifyEntity(SetVendorContractDocumentParameter request) {
         this.setDocumentTypeID(request.getDocumentTypeID());
-        this.setVendorContractID(request.getVendorContractID() == null ? 0 : request.getVendorContractID());
+        //this.setVendorContractID(request.getVendorContractID() == null ? 0 : request.getVendorContractID());
         this.setFileName(StringUtils.isEmpty(request.getFileName()) ? "" : request.getFileName());
         this.setFileName2(StringUtils.isEmpty(request.getFileName2()) ? "" : request.getFileName2());
         this.setFileName3(StringUtils.isEmpty(request.getFileName3()) ? "" : request.getFileName3());
