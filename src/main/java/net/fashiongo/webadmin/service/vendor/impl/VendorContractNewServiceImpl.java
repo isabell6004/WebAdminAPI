@@ -180,7 +180,11 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
                     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             FashionGoApiResponse<GetVendorContractResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<GetVendorContractResponse>>() {});
             if (fashionGoApiResponse.getHeader().isSuccessful()) {
-                return fashionGoApiResponse.getData().getVendorContract();
+                if (fashionGoApiResponse.getData().getVendorContract().getVendorContractID() != null) {
+                    return fashionGoApiResponse.getData().getVendorContract();
+                } else {
+                    return null;
+                }
             } else {
                 throw new RuntimeException("fail to get recently vendor contract in new fashiongo api");
             }
