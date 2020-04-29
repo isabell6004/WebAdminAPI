@@ -28,6 +28,10 @@ public class SecurityUsers {
 	private LocalDateTime modifiedOn;
 	@JsonProperty("ModifiedBy")
 	private String modifiedBy;
+	@JsonProperty("Email")
+	private String email;
+	@JsonProperty("DataAccessLevel")
+	private Integer dataAccessLevel;
 	@JsonProperty("AccessTime")
 	private String accessTime;
 	@JsonProperty("IPTimeExempt")
@@ -91,6 +95,16 @@ public class SecurityUsers {
 	}
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Integer getDataAccessLevel () { return dataAccessLevel; }
+	public void setDataAccessLevel(Integer dataAccessLevel) {
+		this.dataAccessLevel = dataAccessLevel;
 	}
 	public String getAccessTime() {
 		return accessTime;

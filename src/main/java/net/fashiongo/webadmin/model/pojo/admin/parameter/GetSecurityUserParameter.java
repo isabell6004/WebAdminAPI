@@ -36,6 +36,10 @@ public class GetSecurityUserParameter {
     @JsonProperty("assignedvendor")
     private Integer vendorID;
 
+    @ApiModelProperty(required = false, example = "2")
+    @JsonProperty("dataAccessLevel")
+    private Integer dataAccessLevel;
+
     @JsonProperty("active")
     private Boolean active;
 
@@ -77,6 +81,14 @@ public class GetSecurityUserParameter {
 
     public void setVendorID(Integer vendorID) {
         this.vendorID = vendorID;
+    }
+
+    public Integer getDataAccessLevel() {
+        return dataAccessLevel;
+    }
+
+    public void setDataAccessLevel(Integer dataAccessLevel) {
+        this.dataAccessLevel = dataAccessLevel;
     }
 
     public Boolean getActive() {
