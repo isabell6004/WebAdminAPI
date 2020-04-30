@@ -77,32 +77,38 @@ public class PaymentTransactionEntityRepositoryCustomImpl implements PaymentTran
         }
 
         if (fromDate != null) {
-            filter = filter.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", pt.createdOn).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", fromDate)));
-            filter2 = filter2.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", pt.createdOn).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", fromDate)));
-            filter3 = filter3.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", pt.createdOn).goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", fromDate)));
+        	filter = filter.and(pt.createdOn.goe(Timestamp.valueOf(fromDate)));
+        	filter2 = filter2.and(pt.createdOn.goe(Timestamp.valueOf(fromDate)));
+        	filter3 = filter3.and(pt.createdOn.goe(Timestamp.valueOf(fromDate)));
+            //filter = filter.and(pt.createdOn.goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", fromDate)));
+            //filter2 = filter2.and(pt.createdOn.goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", fromDate)));
+            //filter3 = filter3.and(pt.createdOn.goe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", fromDate)));
         }
 
         if (toDate != null) {
-            filter = filter.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", pt.createdOn).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", toDate)));
-            filter2 = filter2.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", pt.createdOn).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", toDate)));
-            filter3 = filter3.and(Expressions.stringTemplate("convert(nvarchar(50),{0},101", pt.createdOn).loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", toDate)));
+        	filter = filter.and(pt.createdOn.loe(Timestamp.valueOf(toDate)));
+        	filter2 = filter2.and(pt.createdOn.loe(Timestamp.valueOf(toDate)));
+        	filter3 = filter3.and(pt.createdOn.loe(Timestamp.valueOf(toDate)));        	
+            //filter = filter.and(pt.createdOn.loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", toDate)));
+            //filter2 = filter2.and(pt.createdOn.loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", toDate)));
+            //filter3 = filter3.and(pt.createdOn.loe(Expressions.stringTemplate("convert(nvarchar(50),{0},101", toDate)));
         }
 
         if (poNumber != null) {
-            filter = filter.and(tos.poNumber.contains(poNumber));
+            filter = filter.and(tos.poNumber.like(poNumber+ "%"));
             filter2 = filter2.and(Expressions.asNumber(0).eq(constant));
-            filter3 = filter3.and(mo.mergePONumber.contains(poNumber));
+            filter3 = filter3.and(mo.mergePONumber.like(poNumber+ "%"));
         }
 
         if (consolidationID != null) {
             filter = filter.and(Expressions.asNumber(0).eq(constant));
-            filter2 = filter2.and(pt.referenceID.like("%" + consolidationID + "%"));
+            filter2 = filter2.and(pt.referenceID.like(consolidationID + "%"));
         }
 
         if (buyerName != null) {
-            filter = filter.and(tos.retailerCompanyName.contains(buyerName));
-            filter2 = filter2.and(con.buyerCompanyName.contains(buyerName));
-            filter3 = filter3.and(mo.retailerCompanyName.contains(buyerName));
+            filter = filter.and(tos.retailerCompanyName.like(buyerName+ "%"));
+            filter2 = filter2.and(con.buyerCompanyName.like(buyerName+ "%"));
+            filter3 = filter3.and(mo.retailerCompanyName.like(buyerName+ "%"));            
         }
 
         if (transactionType != null) { // 1: order, 2: consolidation, 3: merged order
