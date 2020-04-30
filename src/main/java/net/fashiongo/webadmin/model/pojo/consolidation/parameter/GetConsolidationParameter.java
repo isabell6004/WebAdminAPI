@@ -57,12 +57,14 @@ public class GetConsolidationParameter {
     private String rn;
 
     @JsonProperty("pn")
-    @SQLInjectionSafe
-    private String pn;
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String pn;  // po number
 
     @JsonProperty("cn")
-    @SQLInjectionSafe
-    private String cn;
+    @SQLInjectionSafeWithKeywordsFilter
+    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
+    private String cn;  // consolidation id
 
     @JsonProperty("tn")
     @SQLInjectionSafe
