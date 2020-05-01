@@ -40,9 +40,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-/**
- * Created by jinwoo on 2020-01-03.
- */
 @Service
 @Slf4j
 public class VendorInfoServiceImpl implements VendorInfoService {
@@ -77,14 +74,12 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private VendorPaymentInfoNewService vendorPaymentInfoNewService;
 
-    private VendorContractService vendorContractService;
-
     private VendorContractNewService vendorContractNewService;
 
     private CacheService cacheService;
-    
+
     private VendorSeoEntityRepository vendorSeoEntityRepository;
-    
+
     private VendorSeoNewService vendorSeoNewService;
 
     private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
@@ -102,7 +97,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorInfoNewService vendorInfoNewService,
                                  VendorCapEntityRepository vendorCapEntityRepository,
                                  VendorPaymentInfoNewService vendorPaymentInfoNewService,
-                                 VendorContractService vendorContractService,
                                  CacheService cacheService,
                                  JdbcHelper jdbcHelperFgBilling,
                                  ConfigurableEnvironment env, VendorContractNewService vendorContractNewService,
@@ -121,7 +115,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.vendorInfoNewService = vendorInfoNewService;
         this.vendorCapEntityRepository = vendorCapEntityRepository;
         this.vendorPaymentInfoNewService = vendorPaymentInfoNewService;
-        this.vendorContractService = vendorContractService;
         this.cacheService = cacheService;
         this.jdbcHelperFgBilling = jdbcHelperFgBilling;
         this.env = env;
@@ -259,26 +252,26 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         vendorInfoNewService.update(requestVendorDetailInfo, wholeSaler.getUserId(), Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
         // insert or update of vendor_seo table
-        if (requestVendorDetailInfo.getMetaKeyword() != null || requestVendorDetailInfo.getMetaDescription() != null) {  
+        if (requestVendorDetailInfo.getMetaKeyword() != null || requestVendorDetailInfo.getMetaDescription() != null) {
 	        SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
-	        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());	
+	        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());
 	        setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
-	        
+
 	        if (requestVendorDetailInfo.getVendorseoId() != null) {
-	        	setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());	
+	        	setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());
 	        }
-	        
+
 	        if (setVendorSeoParameter.isNewVendorSeo()) {
-	            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);        	
+	            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
 	        }
 	        else {
-	        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter); 
+	        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
 	        }
         }
         return 1;
     }
-  
-    
+
+
     private boolean checkDupAndCreateUserInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
         AspnetUsersEntity aspUserDuplicateCheck = aspnetUsersEntityRepository.findOneByUserNameAndWholeSalerGUID(requestVendorDetailInfo.getUserId(), wholeSaler.getWholeSalerGUID());
         if (aspUserDuplicateCheck != null) {
@@ -439,7 +432,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
             vendorWholeSalerEntityRepository.save(wholeSaler);
             vendorInfoNewService.updateDetailInfo(request, requestVendorDetailInfo, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
-            
+
             return 1;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
