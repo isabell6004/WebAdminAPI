@@ -12,6 +12,7 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractRespon
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.vendor.VendorSeoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
@@ -78,6 +79,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     private VendorContractNewService vendorContractNewService;
 
     private CacheService cacheService;
+    
+    private VendorSeoEntityRepository vendorSeoEntityRepository;
 
     private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
 
@@ -97,7 +100,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorContractService vendorContractService,
                                  CacheService cacheService,
                                  JdbcHelper jdbcHelperFgBilling,
-                                 ConfigurableEnvironment env, VendorContractNewService vendorContractNewService) {
+                                 ConfigurableEnvironment env, VendorContractNewService vendorContractNewService,
+                                 VendorSeoEntityRepository vendorSeoEntityRepository) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
@@ -116,6 +120,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.jdbcHelperFgBilling = jdbcHelperFgBilling;
         this.env = env;
         this.vendorContractNewService = vendorContractNewService;
+        this.vendorSeoEntityRepository = vendorSeoEntityRepository;
     }
 
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -245,9 +250,30 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
         vendorInfoNewService.update(requestVendorDetailInfo, wholeSaler.getUserId(), Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
+        setVendorSeo(requestVendorDetailInfo);
+        
         return 1;
     }
 
+    private void setVendorSeo(VendorDetailInfo requestVendorDetailInfo) {
+
+        VendorSeoEntity vendorSeo = vendorSeoEntityRepository.findOneByWholesalerID(requestVendorDetailInfo.getWholeSalerID());
+
+        vendorSeo.setVendorId(requestVendorDetailInfo.getWholeSalerID());
+        vendorSeo.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());
+        vendorSeo.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
+        if (vendorSeo.getVendorSeoId().equals(0)) {
+        	vendorSeo.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+        	vendorSeo.setCreatedBy(Utility.getUsername());
+        }
+    
+        vendorSeo.setModifiedOn(new Timestamp(System.currentTimeMillis()));
+        vendorSeo.setModifiedBy(Utility.getUsername());
+
+        vendorSeoEntityRepository.save(vendorSeo);
+
+    }    
+    
     private boolean checkDupAndCreateUserInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
         AspnetUsersEntity aspUserDuplicateCheck = aspnetUsersEntityRepository.findOneByUserNameAndWholeSalerGUID(requestVendorDetailInfo.getUserId(), wholeSaler.getWholeSalerGUID());
         if (aspUserDuplicateCheck != null) {
