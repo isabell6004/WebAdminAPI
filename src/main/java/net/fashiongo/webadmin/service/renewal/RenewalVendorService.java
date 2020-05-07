@@ -166,7 +166,9 @@ public class RenewalVendorService extends ApiService {
                         .build())
                 .orElse(null);
 
-        String securityUserName = vendorContractEntityRepository.findAllByWholeSalerId(wholeSalerID)
+        String securityUserName = null;
+        //old table
+        /*String securityUserName = vendorContractEntityRepository.findAllByWholeSalerId(wholeSalerID)
                 .stream()
                 .findFirst()
                 .map(vendorContractEntity -> {
@@ -174,7 +176,7 @@ public class RenewalVendorService extends ApiService {
                                     .map(SecurityUserEntity::getUserName)
                                     .orElse(null) : null;
                         }
-                ).orElse(null);
+                ).orElse(null);*/
 
         List<VendorCompanyType> vendorCompanyTypeList = codeWholeSalerCompanyTypeEntityRepository.findAllByActive(true)
                 .stream()
