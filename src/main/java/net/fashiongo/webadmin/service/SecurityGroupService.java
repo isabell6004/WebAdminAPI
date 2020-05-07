@@ -508,12 +508,15 @@ public class SecurityGroupService extends ApiService {
 			List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
 			List<Object> _resultParams = (List<Object>) _result.get(0);
 			result.setResultCode((Integer) _resultParams.get(0));
-			if (result.getResultCode() == 2) {
-				result.setSuccess(false);
-				result.setResultMsg("AE can't delete");
-			} else {
-				result.setResultMsg(MSG_DELETE_SUCCESS);
+			if (result.getResultCode() == 1) {
 				result.setSuccess(true);
+				result.setResultMsg(MSG_DELETE_SUCCESS);
+			} else {
+				result.setSuccess(false);
+				if (result.getResultCode() == 2)
+					result.setResultMsg("AE can't delete");
+				else
+					result.setResultMsg("Failed to delete");
 			}
 		}
 		
