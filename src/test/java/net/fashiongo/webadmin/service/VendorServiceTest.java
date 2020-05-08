@@ -352,7 +352,6 @@ public class VendorServiceTest {
 
 		assertNotNull(r);
 
-		System.out.println(r.getStartingDate());
 		System.out.println(r.getActualOpenDate());
 
 //		String test2 = "{\"WholeSalerID\":2858, \"CompanyName\":null}";

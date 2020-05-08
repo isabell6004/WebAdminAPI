@@ -363,9 +363,11 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setIsADBlock(requestVendorDetailInfo.getIsADBlock());
 
             if (requestVendorDetailInfo.getOrderActive()) {
+                Timestamp now = Timestamp.valueOf(LocalDateTime.now());
                 setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUserId);
                 if (wholeSaler.getActualOpenDate() == null) {
-                    wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
+                    wholeSaler.setActualOpenDate(now);
+                    requestVendorDetailInfo.setActualOpenDate(now.toLocalDateTime());
                     setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                     wholeSaler.setContractExpireDate(null);
                 } else {
@@ -375,7 +377,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                     int dateTimeNowTestInt = Integer.parseInt(dateTimeNowTest);
 
                     if (actualOpenDateTestInt > dateTimeNowTestInt) {
-                        wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
+                        wholeSaler.setActualOpenDate(now);
+                        requestVendorDetailInfo.setActualOpenDate(now.toLocalDateTime());
                         setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                         wholeSaler.setContractExpireDate(null);
                     }

@@ -64,14 +64,14 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         //String metaDescription;
         
         query.select(Projections.constructor(VendorDetailInfo.class,
-                T.wholeSalerID, T.sortNo, T.startingDate, T.companyName, T.regCompanyName, T.dirName, T.codeName, T.firstName, T.lastName, T.description,
+                T.wholeSalerID, T.sortNo, T.companyName, T.regCompanyName, T.dirName, T.codeName, T.firstName, T.lastName, T.description,
                 T.billStreetNo, T.billCity, T.billState, T.billZipcode, T.billCountry, T.billPhone, T.billFax, T.streetNo, T.city, T.state, T.zipcode, T.country, T.phone, T.email, T.fax, T.memo,
                 T.webSite, T.userId, T.pwd, T.webSiteActive, T.slActive, T.reportActive, T.catalogActive, T.lambsActive, T.group1, T.group2, T.dm, T.posUse, T.mainPage, T.titlePageMemo, T.wsaPolicy,
                 T.wholeSalerTitlePage, T.onSale, T.newCustYN, T.goodUpYN, T.minTQYN, T.minTQ, T.minDollarYN, T.minDollar, T.minECQYN, T.minECQ, T.qtySeqYN, T.minPolicyUseYN, T.orderNotice,
                 T.compCharge, T.ratio, T.autoRActive, T.minCharge, T.minAmount, T.isMonthly, T.isYearly, T.yearlyAmount, T.noticeToAll, T.asKnownAs, T.honote1, T.honote2, T.honote3, T.honote4,
-                T.actualOpenDate, T.billingNote2, T.specialNote1, T.specialNote2, T.adv1, T.adv2, T.advertiseYN, T.actualOpen, T.ownerCountry, T.contractExpireDate, T.billReviewHoLee, T.openDate,
-                T.compsolutionNo, T.retailerYes, T.retailerBlockList, T.retailerOpenList, T.dateTimeModified, T.prePackYN, T.salesItem, T.hotItems, T.promotionalItems, T.billStreetNo2, T.streetNo2,
-                T.itemLocation, T.lastUser, T.lastModifiedDateTime, T.minTQYNStyle, T.minTQStyle, T.billingNote1, T.billingYN, T.inHouseMemo, T.sizeID, T.packID, T.districtID, T.fgPlan,
+                T.actualOpenDate, T.billingNote2, T.specialNote1, T.specialNote2, T.adv1, T.adv2, T.advertiseYN, T.actualOpen, T.ownerCountry, T.contractExpireDate, T.billReviewHoLee,
+                T.compsolutionNo, T.retailerYes, T.retailerBlockList, T.retailerOpenList, T.prePackYN, T.salesItem, T.hotItems, T.promotionalItems, T.billStreetNo2, T.streetNo2,
+                T.itemLocation, T.lastUser, T.minTQYNStyle, T.minTQStyle, T.billingNote1, T.billingYN, T.inHouseMemo, T.sizeID, T.packID, T.districtID, T.fgPlan,
                 T.webSiteLinkCount, T.howKnownType, T.howKnownOther, T.discountYN, T.insertedWhichApp, T.allowImage2Anony, T.maxPictureQty, T.allowImmediateShopping, T.businessCategory,
                 T.imageServerID, T.contactPerson, T.companyTypeID, T.establishedYear, T.pictureMain, T.pictureLogo, T.sizeChart, T.madeIn, T.productSortByLastUpdate, T.active, T.shopActive,
                 T.orderActive, T.billCountryID, T.countryID, T.billPhone2, T.phone2, T.creditCardAccessPassword, T.adminAccountCap, T.defaultSizeID, T.defaultPackID, T.defaultFabricDescriptionID,

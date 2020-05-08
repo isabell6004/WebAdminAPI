@@ -13,10 +13,6 @@ public class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 
     @Override
     public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        if(jsonParser.getText().length() == 19) {
-            return LocalDateTime.parse(jsonParser.getText(), DATE_FORMAT);
-        } else {
-            return LocalDateTime.parse(jsonParser.getText().substring(0, 19), DATE_FORMAT);
-        }
+        return LocalDateTime.parse(jsonParser.getText(), DATE_FORMAT);
     }
 }
