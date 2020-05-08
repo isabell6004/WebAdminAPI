@@ -54,7 +54,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QCountEntity COUNT = QCountEntity.countEntity;
         QVendorAdminAccountEntity VAA = QVendorAdminAccountEntity.vendorAdminAccountEntity;
         QVendorLambsKeyEntity VLK = QVendorLambsKeyEntity.vendorLambsKeyEntity;
-        QVendorSeoEntity VS = QVendorSeoEntity.vendorSeoEntity;
+        //QVendorSeoEntity VS = QVendorSeoEntity.vendorSeoEntity;
 
         Integer referenceID = subsubQuery.select(COUNT.referenceID).from(COUNT).where(COUNT.countTypeID.eq(2).and(COUNT.entityID.eq(wholeSalerID))).orderBy(COUNT.count.desc()).fetchFirst();
         String categoryName = subQuery.select(C.categoryName).from(C).where(eqReferenceID(referenceID, C)).fetchFirst();
@@ -85,9 +85,9 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 T.showRoomZipcode, T.showRoomPhone, T.showRoomFax,
                 ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser"),
                 T.isADBlock.as("IsADBlock"),
-                T.sourceType,
-                ExpressionUtils.as(JPAExpressions.select(VS.metaKeyword).from(VS).where(VS.vendorId.eq(T.wholeSalerID)),"MetaKeyword"),
-                ExpressionUtils.as(JPAExpressions.select(VS.metaDescription).from(VS).where(VS.vendorId.eq(T.wholeSalerID)),"MetaDescription")
+                T.sourceType
+                //ExpressionUtils.as(JPAExpressions.select(VS.metaKeyword).from(VS).where(VS.vendorId.eq(T.wholeSalerID)),"MetaKeyword"),
+                //ExpressionUtils.as(JPAExpressions.select(VS.metaDescription).from(VS).where(VS.vendorId.eq(T.wholeSalerID)),"MetaDescription")
                 )).from(T)
                 .where(T.wholeSalerID.eq(wholeSalerID));
 

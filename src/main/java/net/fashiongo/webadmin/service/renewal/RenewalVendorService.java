@@ -15,6 +15,7 @@ import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.service.ApiService;
+import net.fashiongo.webadmin.service.vendor.VendorSeoNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,8 @@ import java.util.stream.Collectors;
 @Service
 public class RenewalVendorService extends ApiService {
 
-    private final VendorProductRepository vendorProductRepository;
+    private final VendorSeoNewService vendorSeoNewService;
+	private final VendorProductRepository vendorProductRepository;
     private final VendorImageRequestEntityRepository vendorImageRequestEntityRepository;
     private final FashionGoFormEntityRepository fashionGoFormEntityRepository;
     private final VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository;
@@ -65,7 +67,8 @@ public class RenewalVendorService extends ApiService {
     private final RetailerRatingEntityRepository retailerRatingEntityRepository;
 
     @Autowired
-    public RenewalVendorService(VendorProductRepository vendorProductRepository,
+    public RenewalVendorService(VendorSeoNewService vendorSeoNewService,
+    		                    VendorProductRepository vendorProductRepository,
                                 VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
                                 FashionGoFormEntityRepository fashionGoFormEntityRepository,
                                 VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository,
@@ -95,7 +98,8 @@ public class RenewalVendorService extends ApiService {
                                 LogVendorHoldEntityRepository logVendorHoldEntityRepository,
                                 VendorAdminLoginLogEntityRepository vendorAdminLoginLogEntityRepository,
                                 RetailerRatingEntityRepository retailerRatingEntityRepository) {
-        this.vendorProductRepository = vendorProductRepository;
+        this.vendorSeoNewService = vendorSeoNewService;
+		this.vendorProductRepository = vendorProductRepository;
         this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
         this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
         this.vendorContractDocumentEntityRepository = vendorContractDocumentEntityRepository;
@@ -257,9 +261,9 @@ public class RenewalVendorService extends ApiService {
                 .vendorNameHistoryLogList(vendorNameHistoryLogEntityRepository.findAllByIDOrderByCreatedOn(wholesalerID))
                 .listSocialMediaList(listSocialMediaEntityRepository.findSocialMediaByWholeSalerID(wholesalerID))
                 .vendorPayoutInfoList(vendorPayoutInfoEntityRepository.findAllByWholeSalerID(wholesalerID))
+                .vendorSeoInfoResponse(vendorSeoNewService.inquiryVendorSeo((long)wholesalerID))
                 .build();
     }
-
     @Transactional
     public Integer setAccountLockOut(boolean active, int wholeSalerID) {
         Integer result = 0;
