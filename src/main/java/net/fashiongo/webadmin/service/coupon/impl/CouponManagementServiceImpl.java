@@ -310,6 +310,7 @@ public class CouponManagementServiceImpl implements CouponManagementService {
         checkCouponDeletionStatus(coupon.getIsDeleted(), couponId);
         checkCouponPreviousActivationStatus(coupon.getActivatedOn(), couponId);
         checkCouponActionDueDate(coupon.getIssueStartDate(), "activate", couponId);
+        checkCouponActionDueDate(coupon.getStartDate(), "activate", couponId);
 
         createCouponHistory(coupon);
 
