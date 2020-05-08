@@ -495,20 +495,29 @@ public class SecurityGroupService extends ApiService {
 		ResultCode result = new ResultCode(false, 0, null);
 		List<Integer> delSecurityUserList = parameters.getUserList();
 		for(Integer delUserID: delSecurityUserList) {
-			String spName = "up_wa_DeleteSecurityUser";
+			String spName = "up_wa_DeleteSecurityUser_v1";
 			
 			List<Object> params = new ArrayList<Object>();
 			params.add("Fashiongo");
 			params.add(delUserID);
-			
+
 			List<Object> outputParams = new ArrayList<Object>();
 			outputParams.add(0);
 			
 			@SuppressWarnings("unused")
 			List<Object> _result = jdbcHelper.executeSP(spName, params, outputParams);
-			result.setResultCode((Integer) outputParams.get(0));
-			result.setResultMsg(MSG_DELETE_SUCCESS);
-			result.setSuccess(true);
+			List<Object> _resultParams = (List<Object>) _result.get(0);
+			result.setResultCode((Integer) _resultParams.get(0));
+			if (result.getResultCode() == 1) {
+				result.setSuccess(true);
+				result.setResultMsg(MSG_DELETE_SUCCESS);
+			} else {
+				result.setSuccess(false);
+				if (result.getResultCode() == 2)
+					result.setResultMsg("AE can't delete");
+				else
+					result.setResultMsg("Failed to delete");
+			}
 		}
 		
 		return result;

@@ -49,4 +49,10 @@ public class SecurityUserEntity implements Serializable {
 
     @Column(name = "ModifiedBy")
     private String modifiedBy;
+
+    @Column(name = "Email")
+    private String email;
+
+    @Column(name = "DataAccessLevel")
+    private Integer dataAccessLevel;
 }
