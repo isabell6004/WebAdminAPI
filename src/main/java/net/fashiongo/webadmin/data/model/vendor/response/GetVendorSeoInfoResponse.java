@@ -10,7 +10,7 @@ import net.fashiongo.webadmin.data.model.vendor.VendorSeoInfoResponse;
 
 public class GetVendorSeoInfoResponse {
 	
-    @JsonProperty("seo")
+    @JsonProperty("content")
     private VendorSeoInfoResponse vendorSeoInfo;
 
     public GetVendorSeoInfoResponse() {

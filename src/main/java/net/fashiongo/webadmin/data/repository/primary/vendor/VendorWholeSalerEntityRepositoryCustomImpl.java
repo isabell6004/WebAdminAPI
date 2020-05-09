@@ -59,6 +59,9 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         Integer referenceID = subsubQuery.select(COUNT.referenceID).from(COUNT).where(COUNT.countTypeID.eq(2).and(COUNT.entityID.eq(wholeSalerID))).orderBy(COUNT.count.desc()).fetchFirst();
         String categoryName = subQuery.select(C.categoryName).from(C).where(eqReferenceID(referenceID, C)).fetchFirst();
         StringExpression cateName = Expressions.asString(categoryName);
+        //Integer vendorseoId;
+        //String metaKeyword;
+        //String metaDescription;
         
         query.select(Projections.constructor(VendorDetailInfo.class,
                 T.wholeSalerID, T.sortNo, T.startingDate, T.companyName, T.regCompanyName, T.dirName, T.codeName, T.firstName, T.lastName, T.description,
@@ -85,9 +88,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 T.showRoomZipcode, T.showRoomPhone, T.showRoomFax,
                 ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser"),
                 T.isADBlock.as("IsADBlock"),
-                T.sourceType
-                //ExpressionUtils.as(JPAExpressions.select(VS.metaKeyword).from(VS).where(VS.vendorId.eq(T.wholeSalerID)),"MetaKeyword"),
-                //ExpressionUtils.as(JPAExpressions.select(VS.metaDescription).from(VS).where(VS.vendorId.eq(T.wholeSalerID)),"MetaDescription")
+                T.sourceType//,vendorseoId,metaKeyword,metaDescription
                 )).from(T)
                 .where(T.wholeSalerID.eq(wholeSalerID));
 

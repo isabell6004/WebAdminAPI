@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorSeoParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorSeoInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorSeoInfoResponse;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
@@ -45,7 +46,7 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
                     .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             FashionGoApiResponse<GetVendorSeoInfoResponse> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<GetVendorSeoInfoResponse>>() {});
             if (fashionGoApiResponse.getHeader().isSuccessful()) {
-                if (fashionGoApiResponse.getData().getVendorSeoInfo().getVendorSeoId() != null) {
+                if (fashionGoApiResponse.getData().getVendorSeoInfo() != null) {
                     return fashionGoApiResponse.getData().getVendorSeoInfo();
                 } else {
                     return null;
@@ -54,12 +55,12 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
                 throw new RuntimeException("fail to get vendor seo in new fashiongo api");
             }
         } catch (IOException e) {
-            throw new RuntimeException("fail to get vendor seo in new fashiongo api");
+            throw new RuntimeException("fail to get vendor seo in new fashiongo api 1");
         }
     }    
     
     @Override
-	public void createVendorSeo(Long vendorId, VendorSeoInfoResponse request) {
+	public void createVendorSeo(Long vendorId, SetVendorSeoParameter request) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/createvendorseo";
         VendorSeoInfoResponse newRequest = new VendorSeoInfoResponse();
 
@@ -78,7 +79,7 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
     }
 
     @Override
-	public void modifyVendorSeo(Long vendorId, VendorSeoInfoResponse request) {
+	public void modifyVendorSeo(Long vendorId, SetVendorSeoParameter request) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/updatevendorseo";
         VendorSeoInfoResponse newRequest = new VendorSeoInfoResponse();
 

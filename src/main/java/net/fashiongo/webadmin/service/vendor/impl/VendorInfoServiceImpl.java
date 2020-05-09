@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBasicInfoParameter;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorSeoParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
@@ -136,6 +137,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     public Integer update(SetVendorBasicInfoParameter request) {
         try {
             VendorDetailInfo vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
+            //VendorSeoInfoResponse vendorSeoInfoResponse = mapper.readValue(request.getVendorSeoInfoResponse(), VendorSeoInfoResponse.class);
             Integer result = updateVendorBasicInfo(vendorDetailInfo);
             if (result == 1) {
                 cacheService.cacheEvictVendor(request.getWid());
@@ -256,6 +258,19 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
         vendorInfoNewService.update(requestVendorDetailInfo, wholeSaler.getUserId(), Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
+        // insert or update of vendor_seo table
+        SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
+        //setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());		
+        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());	
+        setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
+        
+        if (setVendorSeoParameter.isNewVendorSeo()) {
+            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);        	
+        }
+        else {
+        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter); 
+        }
+        
         return 1;
     }
   
@@ -419,8 +434,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
             vendorWholeSalerEntityRepository.save(wholeSaler);
             vendorInfoNewService.updateDetailInfo(request, requestVendorDetailInfo, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
-            //vendor seo insert or update
-            //vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), request.vendorSeoInfoResponse());
             
             return 1;
         } catch (Exception ex) {

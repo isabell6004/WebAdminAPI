@@ -2,6 +2,8 @@ package net.fashiongo.webadmin.data.model.vendor;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -25,6 +27,9 @@ public class VendorSeoInfoResponse {
     @JsonProperty(value = "Meta_Description")
     private String metaDescription ;  	
 
+    @JsonProperty(value = "Is_deleted")
+    private Boolean isDeleted;;    
+    
     @JsonProperty(value = "CreatedOn")
     private LocalDateTime createdOn;
     
@@ -37,11 +42,12 @@ public class VendorSeoInfoResponse {
     @JsonProperty(value = "ModifiedBy")
     private String modifiedBy;    
 
-    public VendorSeoInfoResponse (Integer vendorSeoId,Integer vendorId, String metaKeyword, String metaDescription, LocalDateTime createdOn, String createdBy, LocalDateTime modifiedOn, String modifiedBy) {
+    public VendorSeoInfoResponse (Integer vendorSeoId,Integer vendorId, String metaKeyword, String metaDescription,Boolean isDeleted, LocalDateTime createdOn, String createdBy, LocalDateTime modifiedOn, String modifiedBy) {
         this.vendorSeoId = vendorSeoId;
         this.vendorId = vendorId;
     	this.metaKeyword = metaKeyword;
         this.metaDescription = metaDescription;
+        this.isDeleted = isDeleted;
         this.createdOn = createdOn;
         this.createdBy = createdBy;
         this.modifiedOn = modifiedOn;
