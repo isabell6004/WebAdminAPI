@@ -68,13 +68,13 @@ public class VendorController {
      */
     @GetMapping(value = "/getvendorcompanyname/{wid}")
     public JsonResponse<String> getVendorName(@PathVariable("wid") int wid) {
-        JsonResponse<String> response = new JsonResponse<>(false, null, null);
+
         Optional<net.fashiongo.webadmin.model.primary.Vendor> vendor = vendorService.getVendorByWholeSalerIdAndActive(wid);
-        response.setSuccess(true);
-        response.setData(vendor.map(net.fashiongo.webadmin.model.primary.Vendor::getCompanyName)
-                .orElse(null));
+        JsonResponse<String> response = vendor.map(v -> new JsonResponse<>(true, null, v.getCompanyName()))
+                .orElseGet(() -> new JsonResponse<>(false, "cannot find companyname", null));
         return response;
     }
+
     /**
      * Get vendor list
      *
