@@ -260,7 +260,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
         // insert or update of vendor_seo table
         SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
-        //setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());		
+        setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());		
         setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());	
         setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
         

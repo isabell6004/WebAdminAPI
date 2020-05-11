@@ -15,31 +15,31 @@ import lombok.Setter;
 @NoArgsConstructor
 public class VendorSeoInfoResponse {
 
-	@JsonProperty(value = "Vendor_Seo_Id")
+	//@JsonProperty(value = "Vendor_Seo_Id")
 	private Integer vendorSeoId;
 	
-	@JsonProperty(value = "Vendor_Id")
+	//@JsonProperty(value = "Vendor_Id")
 	private Integer vendorId;
 	
-	@JsonProperty(value = "Meta_Keyword")
+	//@JsonProperty(value = "Meta_Keyword")
     private String metaKeyword ;
 	
-    @JsonProperty(value = "Meta_Description")
+    //@JsonProperty(value = "Meta_Description")
     private String metaDescription ;  	
 
-    @JsonProperty(value = "Is_deleted")
+    //@JsonProperty(value = "Is_deleted")
     private Boolean isDeleted;;    
     
-    @JsonProperty(value = "CreatedOn")
+    //@JsonProperty(value = "CreatedOn")
     private LocalDateTime createdOn;
     
-    @JsonProperty(value = "CreatedBy")
+    //@JsonProperty(value = "CreatedBy")
     private String createdBy;
     
-    @JsonProperty(value = "ModifiedOn")
+    //@JsonProperty(value = "ModifiedOn")
     private LocalDateTime modifiedOn;
     
-    @JsonProperty(value = "ModifiedBy")
+    //@JsonProperty(value = "ModifiedBy")
     private String modifiedBy;    
 
     public VendorSeoInfoResponse (Integer vendorSeoId,Integer vendorId, String metaKeyword, String metaDescription,Boolean isDeleted, LocalDateTime createdOn, String createdBy, LocalDateTime modifiedOn, String modifiedBy) {

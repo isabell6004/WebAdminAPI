@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSeoParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorSeoInfoResponse;
@@ -62,7 +63,8 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
     @Override
 	public void createVendorSeo(Long vendorId, SetVendorSeoParameter request) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/createvendorseo";
-        VendorSeoInfoResponse newRequest = new VendorSeoInfoResponse();
+        
+        VendorSeo newRequest = new VendorSeo(request);
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
@@ -73,7 +75,7 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
                 //throw new VendorContractOperationException("fail to create vendor seo. vendorId: " + vendorId);
             }
         } catch (IOException e) {
-            log.error("fail to create vendor contract document.", e);
+            log.error("fail to create vendor seo.", e);
             //throw new VendorContractOperationException("fail to create vendor seo. " + e.getMessage());
         }  	
     }
@@ -81,20 +83,36 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
     @Override
 	public void modifyVendorSeo(Long vendorId, SetVendorSeoParameter request) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/updatevendorseo";
-        VendorSeoInfoResponse newRequest = new VendorSeoInfoResponse();
 
+        VendorSeo newRequest = new VendorSeo(request);
+        		
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
             String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
             FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
-                log.error("fail to create vendor seo. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
+                log.error("fail to update vendor seo. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
                 //throw new VendorContractOperationException("fail to create vendor seo. vendorId: " + vendorId);
             }
         } catch (IOException e) {
-            log.error("fail to create vendor contract document.", e);
+            log.error("fail to update vendor seo.", e);
             //throw new VendorContractOperationException("fail to create vendor seo. " + e.getMessage());
         }   	
     }
 	
+    @Getter
+    private class VendorSeo {
+
+        private Long vendorseoId;
+        private String metaKeyword;
+        private String metaDescription;
+
+        private VendorSeo(SetVendorSeoParameter request) {
+            this.vendorseoId = Long.valueOf(request.getVendorseoId());
+            this.metaKeyword = request.getMetaKeyword();
+            this.metaDescription = request.getMetaDescription();
+        }
+
+    }    
+    
 }
