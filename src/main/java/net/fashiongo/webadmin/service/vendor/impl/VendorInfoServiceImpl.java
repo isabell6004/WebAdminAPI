@@ -362,7 +362,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setNewCustYN(requestVendorDetailInfo.getNewCustYN());
             wholeSaler.setIsADBlock(requestVendorDetailInfo.getIsADBlock());
 
-            if (requestVendorDetailInfo.getOrderActive()) {
+            if (requestVendorDetailInfo.getOrderActive()) { // open now
                 Timestamp now = Timestamp.valueOf(LocalDateTime.now());
                 setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUserId);
                 if (wholeSaler.getActualOpenDate() == null) {
@@ -383,7 +383,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                         wholeSaler.setContractExpireDate(null);
                     }
                 }
-            } else if (!requestVendorDetailInfo.getOrderActive() && requestVendorDetailInfo.getActualOpenDate() != null) {
+            } else if (!requestVendorDetailInfo.getOrderActive() && requestVendorDetailInfo.getActualOpenDate() != null) { // scheduling
 
                 String requestActualOpenDate = requestVendorDetailInfo.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String vendorActualOpenDate = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
@@ -397,6 +397,11 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                         wholeSaler.setOrderActive(true);
                         wholeSaler.setShopActive(true);
                         wholeSaler.setActive(true);
+
+                        // for the new db
+                        requestVendorDetailInfo.setOrderActive(true);
+                        requestVendorDetailInfo.setShopActive(true);
+                        requestVendorDetailInfo.setActive(true);
 
                         setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                         wholeSaler.setContractExpireDate(null);
