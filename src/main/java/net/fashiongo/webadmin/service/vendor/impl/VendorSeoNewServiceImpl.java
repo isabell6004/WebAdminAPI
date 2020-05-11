@@ -103,12 +103,12 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
     @Getter
     private class VendorSeo {
 
-        private Long vendorseoId;
+        //private Long vendorseoId;
         private String metaKeyword;
         private String metaDescription;
 
         private VendorSeo(SetVendorSeoParameter request) {
-            this.vendorseoId = Long.valueOf(request.getVendorseoId());
+            //this.vendorseoId = Long.valueOf(request.getVendorseoId());
             this.metaKeyword = request.getMetaKeyword();
             this.metaDescription = request.getMetaDescription();
         }
