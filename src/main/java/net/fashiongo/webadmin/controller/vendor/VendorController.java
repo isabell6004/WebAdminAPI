@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author roy
@@ -61,6 +62,19 @@ public class VendorController {
         this.vendorInfoService = vendorInfoService;
     }
 
+
+    /**
+     * 05/11/2020 by LeeDongSeung
+     */
+    @GetMapping(value = "/getvendorcompanyname/{wid}")
+    public JsonResponse<String> getVendorName(@PathVariable("wid") int wid) {
+        JsonResponse<String> response = new JsonResponse<>(false, null, null);
+        Optional<net.fashiongo.webadmin.model.primary.Vendor> vendor = vendorService.getVendorByWholeSalerIdAndActive(wid);
+        response.setSuccess(true);
+        response.setData(vendor.map(net.fashiongo.webadmin.model.primary.Vendor::getCompanyName)
+                .orElse(null));
+        return response;
+    }
     /**
      * Get vendor list
      *
