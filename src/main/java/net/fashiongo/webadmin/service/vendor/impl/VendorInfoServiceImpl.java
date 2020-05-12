@@ -405,6 +405,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
                         setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                         wholeSaler.setContractExpireDate(null);
+                    } else if (StringUtils.compare(requestActualOpenDate, dateTimeNow) < 0) {
+                        throw new RuntimeException("the scheduled time is not valid. " + requestActualOpenDate);
                     } else {
                         wholeSaler.setActualOpenDate(Timestamp.valueOf(requestVendorDetailInfo.getActualOpenDate()));
                     }
