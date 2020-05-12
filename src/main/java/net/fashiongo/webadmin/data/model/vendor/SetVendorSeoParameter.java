@@ -8,13 +8,13 @@ import lombok.Setter;
 @Setter
 public class SetVendorSeoParameter {
 	
-    //@JsonProperty(value = "Vendor_seo_Id")
+    @JsonProperty(value = "Vendor_seo_Id")
     private Long vendorseoId;
     
-    //@JsonProperty(value = "Meta_Keyword")
+    @JsonProperty(value = "Meta_Keyword")
     private String metaKeyword;
 
-    //@JsonProperty(value = "Meta_Description")
+    @JsonProperty(value = "Meta_Description")
     private String metaDescription;   
     
     public boolean isNewVendorSeo() {

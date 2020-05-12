@@ -259,18 +259,22 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         vendorInfoNewService.update(requestVendorDetailInfo, wholeSaler.getUserId(), Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
         // insert or update of vendor_seo table
-        SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
-        setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());		
-        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());	
-        setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
-        
-        if (setVendorSeoParameter.isNewVendorSeo()) {
-            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);        	
+        if (requestVendorDetailInfo.getMetaKeyword() != null || requestVendorDetailInfo.getMetaDescription() != null) {  
+	        SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
+	        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());	
+	        setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
+	        
+	        if (requestVendorDetailInfo.getVendorseoId() != null) {
+	        	setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());	
+	        }
+	        
+	        if (setVendorSeoParameter.isNewVendorSeo()) {
+	            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);        	
+	        }
+	        else {
+	        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter); 
+	        }
         }
-        else {
-        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter); 
-        }
-        
         return 1;
     }
   
