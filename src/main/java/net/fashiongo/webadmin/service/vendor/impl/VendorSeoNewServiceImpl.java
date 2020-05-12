@@ -93,11 +93,11 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
             FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to update vendor seo. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
-                //throw new VendorContractOperationException("fail to create vendor seo. vendorId: " + vendorId);
+                throw new VendorSeoOperationException("fail to create vendor seo. vendorId: " + vendorId);
             }
         } catch (IOException e) {
             log.error("fail to update vendor seo.", e);
-            //throw new VendorContractOperationException("fail to create vendor seo. " + e.getMessage());
+            throw new VendorSeoOperationException("fail to create vendor seo. " + e.getMessage());
         }   	
     }
 	
