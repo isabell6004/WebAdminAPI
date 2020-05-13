@@ -250,7 +250,7 @@ public class PaymentService extends ApiService {
 	}
 	
 	public JsonResponse<?> setPaymentAccountIsLocked(PaymentScheduleInfo p) throws JsonProcessingException {
-		String url = "/account//locked/" + p.getWholesalerId();
+		String url = "/account/locked/" + p.getWholesalerId();
 		p.setWholesalerId(p.getWholesalerId() == null ? 0 : p.getWholesalerId());
 
 		return (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
