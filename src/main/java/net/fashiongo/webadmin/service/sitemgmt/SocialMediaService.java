@@ -78,23 +78,28 @@ public class SocialMediaService {
             
             String fileName = validateFileName(request.getIcon());
             
-            if(request.getSocialMediaId() == null || request.getSocialMediaId() == 0) {
-		        SocialMedia socialMedia = SocialMedia.create(request);
-		        socialMedia.setIcon(fileName);
-                socialMediaRepository.save(socialMedia);
-                fashionGoApiResult = socialMediaNewService.register(socialMedia, userInfo.getUserId(), userInfo.getUsername());
-            } else {
-                SocialMedia socialMedia = socialMediaRepository.findById(request.getSocialMediaId()).orElseThrow(NotFoundSitemgmtException::new);
-                socialMedia.update(request);
-                socialMedia.setIcon(fileName);
-                socialMediaRepository.save(socialMedia);
-                fashionGoApiResult = socialMediaNewService.update(socialMedia, userInfo.getUserId(), userInfo.getUsername());
+            if (fileName == null) {
+            	return false;
             }
-            if(!fashionGoApiResult) {
-                log.error("fail to save the social media code. : {}", request.toString());
-                throw new NotFoundSitemgmtException("fail to save the social media code. : " + request.toString());
+            else {
+	            if(request.getSocialMediaId() == null || request.getSocialMediaId() == 0) {
+			        SocialMedia socialMedia = SocialMedia.create(request);
+			        socialMedia.setIcon(fileName);
+	                socialMediaRepository.save(socialMedia);
+	                fashionGoApiResult = socialMediaNewService.register(socialMedia, userInfo.getUserId(), userInfo.getUsername());
+	            } else {
+	                SocialMedia socialMedia = socialMediaRepository.findById(request.getSocialMediaId()).orElseThrow(NotFoundSitemgmtException::new);
+	                socialMedia.update(request);
+	                socialMedia.setIcon(fileName);
+	                socialMediaRepository.save(socialMedia);
+	                fashionGoApiResult = socialMediaNewService.update(socialMedia, userInfo.getUserId(), userInfo.getUsername());
+	            }
+	            if(!fashionGoApiResult) {
+	                log.error("fail to save the social media code. : {}", request.toString());
+	                throw new NotFoundSitemgmtException("fail to save the social media code. : " + request.toString());
+	            }
+	            return true;
             }
-            return true;
 		} catch (Exception e) {
 			return false;
 		}
