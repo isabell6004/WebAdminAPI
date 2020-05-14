@@ -13,4 +13,6 @@ public class PaymentScheduleInfo {
 	public Boolean isLocked;
 	@JsonProperty(value = "payoutScheduleId")
 	public Integer payoutScheduleId;
+	public Integer weekday;
+	public Integer dayOfMonth;
 }
