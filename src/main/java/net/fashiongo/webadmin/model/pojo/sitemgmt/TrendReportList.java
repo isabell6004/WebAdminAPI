@@ -62,6 +62,9 @@ public class TrendReportList {
 
 	private Integer showScheduleId;
 
+	@JsonProperty("ExternalURL")
+	private String externalURL;	
+	
 	public Long getRow() {
 		return row;
 	}
@@ -189,7 +192,16 @@ public class TrendReportList {
 	public void setkMMImage2(String kMMImage2) {
 		this.kMMImage2 = kMMImage2;
 	}
+	
+	public String getExternalURL() {
+		return externalURL;
+	}
 
+	public void setExternalURL(String externalURL) {
+		this.externalURL = externalURL;
+	}
+
+	
 	public Boolean getSticky() {
 		return sticky;
 	}

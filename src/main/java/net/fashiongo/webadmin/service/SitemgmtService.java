@@ -784,6 +784,7 @@ public class SitemgmtService extends ApiService {
 			tr.settRDescription(param.gettRDescription());
 			tr.setShowId(param.getShowId());
 			tr.setShowScheduleId(param.getShowScheduleId());
+			tr.setExternalURL(param.getExternalURL());
 			trendReportRepository.save(tr);
 
 			result.setSuccess(true);
