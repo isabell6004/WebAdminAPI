@@ -36,6 +36,12 @@ public class SetRetailerNewsParameter {
 	@JsonProperty("sortno")
 	private Integer sortNo;
 
+	@JsonProperty("externalLink")
+	private Boolean externalLink;
+
+	@JsonProperty("externalUrl")
+	private String externalUrl;
+
 	public Integer getNewsID() {
 		return newsID;
 	}
@@ -90,6 +96,22 @@ public class SetRetailerNewsParameter {
 
 	public void setSortNo(Integer sortNo) {
 		this.sortNo = sortNo;
+	}
+
+	public Boolean getExternalLink() {
+		return externalLink;
+	}
+
+	public void setExternalLink(Boolean externalLink) {
+		this.externalLink = externalLink;
+	}
+
+	public String getExternalUrl() {
+		return externalUrl;
+	}
+
+	public void setExternalUrl(String externalUrl) {
+		this.externalUrl = externalUrl;
 	}
 
 }

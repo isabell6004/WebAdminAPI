@@ -69,6 +69,14 @@ public class TblRetailerNews {
 	@JsonProperty("SortNo")
 	private Integer sortNo;
 
+	@Column(name = "ExternalLink")
+	@JsonProperty("ExternalLink")
+	private Boolean externalLink;
+
+	@Column(name = "ExternalURL")
+	@JsonProperty("ExternalUrl")
+	private String externalUrl;
+
 	public Integer getNewsID() {
 		return newsID;
 	}
@@ -157,6 +165,22 @@ public class TblRetailerNews {
 
 	public void setSortNo(Integer sortNo) {
 		this.sortNo = sortNo;
+	}
+
+	public Boolean getExternalLink() {
+		return externalLink;
+	}
+
+	public void setExternalLink(Boolean externalLink) {
+		this.externalLink = externalLink;
+	}
+
+	public String getExternalUrl() {
+		return externalUrl;
+	}
+
+	public void setExternalUrl(String externalUrl) {
+		this.externalUrl = externalUrl;
 	}
 	
 	
