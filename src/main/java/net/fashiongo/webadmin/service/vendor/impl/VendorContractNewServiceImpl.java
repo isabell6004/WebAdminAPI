@@ -45,7 +45,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public void createVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request) {
+    public void createVendorContractDocument(Long vendorId, SetVendorContractDocumentParameter request) {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/" + request.getVendorContractID() + "/documents";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
@@ -65,7 +65,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public void modifyVendorContractDocument(Integer vendorId, SetVendorContractDocumentParameter request) {
+    public void modifyVendorContractDocument(Long vendorId, SetVendorContractDocumentParameter request) {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/" + request.getVendorContractID() + "/documents";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(request);
@@ -85,7 +85,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public void deleteVendorContractDocument(Integer vendorId, Long contractId, List<Long> documentIds) {
+    public void deleteVendorContractDocument(Long vendorId, Long contractId, List<Long> documentIds) {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/" + contractId + "/documents/delete";
         ContractDocumentCommand newRequest = new ContractDocumentCommand(documentIds);
@@ -105,13 +105,13 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public void reviseContract(Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId, SetVendorContractParameter request) {
+    public void reviseContract(Long originalVendorContractHistoryId, SetVendorContractParameter request) {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts/" + originalVendorContractHistoryId + "/revise";
         log.debug("call the vendor api:{}", endpoint);
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
-        ReviseContractHistoryCommand newRequest = new ReviseContractHistoryCommand(request, originalVendorContractHistoryId, revisedVendorContractHistoryId);
+        ContractHistoryCommand newRequest = new ModifyContractHistoryCommand(request, originalVendorContractHistoryId);
         try {
             String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
             FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
@@ -126,13 +126,13 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     }
 
     @Override
-    public void createContract(Long originalVendorContractHistoryId, SetVendorContractParameter request) {
+    public void createContract(SetVendorContractParameter request) {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts";
         log.debug("call the vendor api:{}", endpoint);
         // temp log
-        log.warn("contract request : {}, {}, {}", request.getWholeSalerID(), originalVendorContractHistoryId, request.getVendorContractPlanID());
-        ContractHistoryCommand newRequest = new ContractHistoryCommand(request, originalVendorContractHistoryId);
+        log.warn("contract request : {}, {}", request.getWholeSalerID(), request.getVendorContractPlanID());
+        ContractHistoryCommand newRequest = new ContractHistoryCommand(request);
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
             String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
@@ -152,7 +152,7 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + request.getWholeSalerID() + "/contracts/" + originalVendorContractHistoryId;
         log.debug("call the vendor api:{}", endpoint);
-        ContractHistoryCommand newRequest = new ContractHistoryCommand(request, originalVendorContractHistoryId);
+        ContractHistoryCommand newRequest = new ModifyContractHistoryCommand(request, originalVendorContractHistoryId);
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
@@ -298,20 +298,19 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
 
     @Getter
-    private class ReviseContractHistoryCommand extends ContractHistoryCommand {
+    private class ModifyContractHistoryCommand extends ContractHistoryCommand {
 
-        private Long revisedVendorContractHistoryId;
+        private Long contractHistoryId;
 
-        private ReviseContractHistoryCommand(SetVendorContractParameter request, Long originalVendorContractHistoryId, Long revisedVendorContractHistoryId) {
-            super(request, originalVendorContractHistoryId);
-            this.revisedVendorContractHistoryId = revisedVendorContractHistoryId;
+        private ModifyContractHistoryCommand(SetVendorContractParameter request, Long contractHistoryId) {
+            super(request);
+            this.contractHistoryId = contractHistoryId;
         }
     }
 
     @Getter
     private class ContractHistoryCommand {
 
-        private Long contractHistoryId;
 
         private Integer vendorId;
         private Long planId;
@@ -334,9 +333,8 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
 
         private Integer commissionBaseDateCode;
 
-        private ContractHistoryCommand(SetVendorContractParameter request, Long originalVendorContractHistoryId) {
+        private ContractHistoryCommand(SetVendorContractParameter request) {
             this.vendorId = request.getWholeSalerID();
-            this.contractHistoryId = originalVendorContractHistoryId;
             this.planId = Long.valueOf(request.getVendorContractPlanID());
             this.setupFee = request.getSetupFee();
             this.isSetupFeeWaived = Optional.ofNullable(request.getIsSetupFeeWaived()).orElse("").equalsIgnoreCase("1");

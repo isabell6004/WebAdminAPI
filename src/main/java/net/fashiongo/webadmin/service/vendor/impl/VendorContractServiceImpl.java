@@ -1,14 +1,14 @@
 package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.data.entity.primary.VendorContractDocumentEntity;
-import net.fashiongo.webadmin.data.entity.primary.VendorContractEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorContractHistoryDocumentEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorContractHistoryEntity;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.model.vendor.DelVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
-import net.fashiongo.webadmin.data.repository.primary.VendorContractEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.vendor.VendorContractDocumentEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.VendorContractHistoryDocumentEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.VendorContractHistoryEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorContractException;
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorException;
@@ -16,63 +16,51 @@ import net.fashiongo.webadmin.model.vendor.ClassType;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
 import net.fashiongo.webadmin.service.vendor.VendorContractService;
-import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class VendorContractServiceImpl implements VendorContractService {
 
-    private VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository;
-
     private VendorContractNewService vendorContractNewService;
 
     private VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
 
-    private VendorContractEntityRepository vendorContractEntityRepository;
+    private VendorContractHistoryEntityRepository vendorContractHistoryEntityRepository;
+
+    private VendorContractHistoryDocumentEntityRepository vendorContractHistoryDocumentEntityRepository;
 
     private CacheService cacheService;
 
     public VendorContractServiceImpl(
-            VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository,
             VendorContractNewService vendorContractNewService,
             VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
-            VendorContractEntityRepository vendorContractEntityRepository,
+            VendorContractHistoryEntityRepository vendorContractHistoryEntityRepository,
+            VendorContractHistoryDocumentEntityRepository vendorContractHistoryDocumentEntityRepository,
             CacheService cacheService) {
-        this.vendorContractDocumentEntityRepository = vendorContractDocumentEntityRepository;
         this.vendorContractNewService = vendorContractNewService;
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
-        this.vendorContractEntityRepository = vendorContractEntityRepository;
+        this.vendorContractHistoryEntityRepository = vendorContractHistoryEntityRepository;
+        this.vendorContractHistoryDocumentEntityRepository = vendorContractHistoryDocumentEntityRepository;
         this.cacheService = cacheService;
     }
 
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public void setVendorContractDocument(SetVendorContractDocumentParameter request) {
-
-        VendorContractEntity vendorContractEntity = vendorContractEntityRepository.findById(request.getVendorContractID())
+        VendorContractHistoryEntity vendorContractHistoryEntity = vendorContractHistoryEntityRepository.findById(Long.valueOf(request.getVendorContractID()))
                 .orElseThrow(() -> new NotFoundVendorContractException("not found vendor contract. " + request.getVendorContractID()));
 
         if (request.getVendorContractDocumentID() == null || request.getVendorContractDocumentID() == 0) {
-            VendorContractDocumentEntity documentEntity = VendorContractDocumentEntity.create(request, Utility.getUsername());
-            vendorContractDocumentEntityRepository.save(documentEntity);
-            request.setVendorContractDocumentID(documentEntity.getVendorContractDocumentID());
-            vendorContractNewService.createVendorContractDocument(vendorContractEntity.getWholeSalerID(), request);
+            vendorContractNewService.createVendorContractDocument(vendorContractHistoryEntity.getVendorId(), request);
         } else {
-            VendorContractDocumentEntity documentEntity = vendorContractDocumentEntityRepository.findOneByVendorContractDocumentID(request.getVendorContractDocumentID());
-            documentEntity.modifyEntity(request);
-            vendorContractDocumentEntityRepository.save(documentEntity);
-
-            vendorContractNewService.modifyVendorContractDocument(vendorContractEntity.getWholeSalerID(), request);
+            vendorContractNewService.modifyVendorContractDocument(vendorContractHistoryEntity.getVendorId(), request);
         }
     }
 
@@ -84,15 +72,12 @@ public class VendorContractServiceImpl implements VendorContractService {
             return;
         }
 
-        VendorContractDocumentEntity vendorContractDocumentEntity = vendorContractDocumentEntityRepository.findById(documentIds[0])
+        VendorContractHistoryDocumentEntity vendorContractHistoryDocumentEntity = vendorContractHistoryDocumentEntityRepository.findById(Long.valueOf(documentIds[0]))
                 .orElseThrow(() -> new NotFoundVendorContractException("not found vendor document. " + documentIds[0]));
-        VendorContractEntity vendorContractEntity = vendorContractEntityRepository.findById(vendorContractDocumentEntity.getVendorContractID())
+        VendorContractHistoryEntity vendorContractHistoryEntity = vendorContractHistoryEntityRepository.findById(vendorContractHistoryDocumentEntity.getVendorContractHistoryId())
                 .orElseThrow(() -> new NotFoundVendorContractException("not found vendor contract. " + documentIds[0]));
-        List<VendorContractDocumentEntity> contractDocumentList = vendorContractDocumentEntityRepository.findAllById(Arrays.asList(documentIds));
-        if(!CollectionUtils.isEmpty(contractDocumentList))
-            vendorContractDocumentEntityRepository.deleteAll(contractDocumentList);
 
-        vendorContractNewService.deleteVendorContractDocument(vendorContractEntity.getWholeSalerID(), vendorContractEntity.getVendorContractID().longValue(), Arrays.stream(documentIds).mapToLong(i -> i).boxed().collect(Collectors.toList()));
+        vendorContractNewService.deleteVendorContractDocument(vendorContractHistoryEntity.getVendorId(), vendorContractHistoryEntity.getId(), Arrays.stream(documentIds).mapToLong(i -> i).boxed().collect(Collectors.toList()));
     }
 
     private WholeSalerEntity checkAndGetVendor(Integer vendorId) {
@@ -110,8 +95,9 @@ public class VendorContractServiceImpl implements VendorContractService {
     public void setVendorContract(SetVendorContractParameter request) {
 
         WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
+        VendorContractHistoryEntity originContractInfo = vendorContractHistoryEntityRepository.findFirstByVendorIdOrderByIdDesc(Long.valueOf(request.getWholeSalerID()));
+
         if (request.isNewVendorContract()) {
-            VendorContractEntity originContractInfo = vendorContractEntityRepository.findOneByWholeSalerID(request.getWholeSalerID());
             if (originContractInfo == null) {
                 // temp log
                 log.warn("original contract request: {}, {}, {}", request.getWholeSalerID(), request.getVendorContractID(), request.getVendorContractPlanID());
@@ -120,7 +106,7 @@ public class VendorContractServiceImpl implements VendorContractService {
                 modifyContract(vendorInfo, originContractInfo, request);
             }
         } else {
-            VendorContractEntity originContractInfo = vendorContractEntityRepository.findOneByVendorContractID(request.getVendorContractID());
+
             if (request.getVendorContractRowAdd() == null || !request.getVendorContractRowAdd()) {
                 modifyContract(vendorInfo, originContractInfo, request);
             } else {
@@ -130,41 +116,24 @@ public class VendorContractServiceImpl implements VendorContractService {
         cacheService.cacheEvictVendor(vendorInfo.getWholeSalerID());
      }
 
-    @Override
-    public VendorContractEntity getVendorContractIncludedOpenDate(Integer vendorId, LocalDateTime actualOpenDate) {
-        if(actualOpenDate == null) return null;
-        return vendorContractEntityRepository.findVendorContractByVendorIdAndOpenDate(vendorId, actualOpenDate);
-    }
-
-    private void reviseContract(WholeSalerEntity wholeSalerEntity, VendorContractEntity originContractInfo, SetVendorContractParameter request) {
-        originContractInfo.terminate(request.getVendorContractFrom());
-        vendorContractEntityRepository.save(originContractInfo);
-        Long originalVendorContractHistoryId = Long.valueOf(originContractInfo.getVendorContractID());
-
-        VendorContractEntity newContractInfo = VendorContractEntity.create(request);
-        vendorContractEntityRepository.save(newContractInfo);
-        Long revisedVendorContractHistoryId = Long.valueOf(newContractInfo.getVendorContractID());
+    private void reviseContract(WholeSalerEntity wholeSalerEntity, VendorContractHistoryEntity originContractInfo, SetVendorContractParameter request) {
+        Long originalVendorContractHistoryId = originContractInfo.getId();
 
         updateVendorType(request, wholeSalerEntity);
 
         request.setCommissionRate(BigDecimal.valueOf(request.getCommissionRate().doubleValue() / 100.0));
-        vendorContractNewService.reviseContract(originalVendorContractHistoryId, revisedVendorContractHistoryId, request);
+        vendorContractNewService.reviseContract(originalVendorContractHistoryId, request);
     }
 
     private void createContract(WholeSalerEntity wholeSalerEntity, SetVendorContractParameter request) {
-        VendorContractEntity originContractInfo = VendorContractEntity.create(request);
-        vendorContractEntityRepository.save(originContractInfo);
-        Long originalVendorContractHistoryId = Long.valueOf(originContractInfo.getVendorContractID());
         updateVendorType(request, wholeSalerEntity);
 
         request.setCommissionRate(BigDecimal.valueOf(request.getCommissionRate().doubleValue() / 100.0));
-        vendorContractNewService.createContract(originalVendorContractHistoryId, request);
+        vendorContractNewService.createContract(request);
     }
 
-    private void modifyContract(WholeSalerEntity wholeSalerEntity, VendorContractEntity originContractInfo, SetVendorContractParameter request) {
-        originContractInfo.updateEntity(request);
-        vendorContractEntityRepository.save(originContractInfo);
-        Long originalVendorContractHistoryId = Long.valueOf(originContractInfo.getVendorContractID());
+    private void modifyContract(WholeSalerEntity wholeSalerEntity, VendorContractHistoryEntity originContractInfo, SetVendorContractParameter request) {
+        Long originalVendorContractHistoryId = originContractInfo.getId();
         updateVendorType(request, wholeSalerEntity);
 
         request.setCommissionRate(BigDecimal.valueOf(request.getCommissionRate().doubleValue() / 100.0));

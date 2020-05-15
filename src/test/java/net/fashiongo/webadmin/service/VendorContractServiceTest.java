@@ -3,11 +3,14 @@ package net.fashiongo.webadmin.service;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.VendorContractDocumentEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorContractEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorContractHistoryDocumentEntity;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.model.vendor.DelVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.data.repository.primary.VendorContractEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.VendorContractHistoryDocumentEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.VendorContractHistoryEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorContractDocumentEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
@@ -48,6 +51,12 @@ public class VendorContractServiceTest {
     private VendorContractEntityRepository vendorContractEntityRepository;
 
     @Mock
+    private VendorContractHistoryEntityRepository vendorContractHistoryEntityRepository;
+
+    @Mock
+    private VendorContractHistoryDocumentEntityRepository vendorContractHistoryDocumentEntityRepository;
+
+    @Mock
     private CacheService cacheService;
 
     private VendorContractServiceImpl vendorContractService;
@@ -55,10 +64,10 @@ public class VendorContractServiceTest {
     @Before
     public void init() {
         vendorContractService = new VendorContractServiceImpl(
-                vendorContractDocumentEntityRepository,
                 vendorContractNewService,
                 vendorWholeSalerEntityRepository,
-                vendorContractEntityRepository,
+                vendorContractHistoryEntityRepository,
+                vendorContractHistoryDocumentEntityRepository,
                 cacheService);
     }
 
@@ -68,24 +77,25 @@ public class VendorContractServiceTest {
         DelVendorContractDocumentParameter request = new DelVendorContractDocumentParameter();
         request.setDocumentHistoryIDs(documentIds);
 
-        VendorContractDocumentEntity entity1 = VendorContractDocumentEntity.builder().vendorContractDocumentID(1).build();
-        VendorContractDocumentEntity entity2 = VendorContractDocumentEntity.builder().vendorContractDocumentID(2).build();
-        List<VendorContractDocumentEntity> documents = Arrays.asList(entity1, entity2);
+        VendorContractHistoryDocumentEntity entity1 = new VendorContractHistoryDocumentEntity();
+        VendorContractHistoryDocumentEntity entity2 = new VendorContractHistoryDocumentEntity();
+        List<VendorContractHistoryDocumentEntity> documents = Arrays.asList(entity1, entity2);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyLong(), anyList());
-        given(vendorContractDocumentEntityRepository.findAllById(anyList())).willReturn(documents);
-        willDoNothing().given(vendorContractDocumentEntityRepository).deleteAll(documents);
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyLong(), anyLong(), anyList());
+        given(vendorContractHistoryDocumentEntityRepository.findAllById(anyList())).willReturn(documents);
+        willDoNothing().given(vendorContractHistoryDocumentEntityRepository).deleteAll(documents);
 
         try {
             vendorContractService.delVendorContractDocument(request);
         } catch (Throwable t) {
+            log.debug(t.getMessage(), t);
             Assert.fail();
         }
 
 
-        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyInt(), anyLong(), anyList());
-        verify(vendorContractDocumentEntityRepository, atLeast(1)).findAllById(anyList());
-        verify(vendorContractDocumentEntityRepository, atLeast(1)).deleteAll(anyList());
+        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyLong(), anyLong(), anyList());
+        verify(vendorContractHistoryDocumentEntityRepository, atLeast(1)).findAllById(anyList());
+        verify(vendorContractHistoryDocumentEntityRepository, atLeast(1)).deleteAll(anyList());
     }
 
     @Test
@@ -112,7 +122,7 @@ public class VendorContractServiceTest {
         DelVendorContractDocumentParameter request = new DelVendorContractDocumentParameter();
         request.setDocumentHistoryIDs(documentIds);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyLong(), anyList());
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyLong(), anyLong(), anyList());
         given(vendorContractDocumentEntityRepository.findAllById(anyList())).willReturn(null);
 
         try {
@@ -121,7 +131,7 @@ public class VendorContractServiceTest {
             Assert.fail();
         }
 
-        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyInt(), anyLong(), anyList());
+        verify(vendorContractNewService, atLeastOnce()).deleteVendorContractDocument(anyLong(), anyLong(), anyList());
     }
 
     @Test
@@ -132,7 +142,7 @@ public class VendorContractServiceTest {
         DelVendorContractDocumentParameter request = new DelVendorContractDocumentParameter();
         request.setDocumentHistoryIDs(documentIds);
 
-        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyInt(), anyLong(), anyList());
+        willDoNothing().given(vendorContractNewService).deleteVendorContractDocument(anyLong(), anyLong(), anyList());
 
         // do test
         try {
@@ -140,7 +150,7 @@ public class VendorContractServiceTest {
         } catch (Throwable t) {
             Assert.fail();
         }
-        verify(vendorContractNewService, never()).deleteVendorContractDocument(anyInt(), anyLong(), anyList());
+        verify(vendorContractNewService, never()).deleteVendorContractDocument(anyLong(), anyLong(), anyList());
     }
 
     @Test
@@ -157,7 +167,7 @@ public class VendorContractServiceTest {
 
         VendorContractDocumentEntity returnEntity = VendorContractDocumentEntity.create(request, "testDeveloper");
 
-        willDoNothing().given(vendorContractNewService).createVendorContractDocument(anyInt(), request);
+        willDoNothing().given(vendorContractNewService).createVendorContractDocument(anyLong(), request);
         given(vendorContractDocumentEntityRepository.save(any())).willReturn(returnEntity);
 
         try {
@@ -166,7 +176,7 @@ public class VendorContractServiceTest {
             Assert.fail();
         }
 
-        verify(vendorContractNewService, atLeastOnce()).createVendorContractDocument(anyInt(), request);
+        verify(vendorContractNewService, atLeastOnce()).createVendorContractDocument(anyLong(), request);
         verify(vendorContractDocumentEntityRepository, atLeast(1)).save(any());
     }
 
@@ -182,7 +192,7 @@ public class VendorContractServiceTest {
         request.setNote("test");
         request.setReceivedBy("developer");
 
-        willDoNothing().given(vendorContractNewService).createVendorContractDocument(anyInt(), request);
+        willDoNothing().given(vendorContractNewService).createVendorContractDocument(anyLong(), request);
         given(vendorContractDocumentEntityRepository.save(any())).willThrow(new RuntimeException("test"));
 
         try {
@@ -191,7 +201,7 @@ public class VendorContractServiceTest {
             Assert.fail();
         }
 
-        verify(vendorContractNewService, never()).createVendorContractDocument(anyInt(), request);
+        verify(vendorContractNewService, never()).createVendorContractDocument(anyLong(), request);
         verify(vendorContractDocumentEntityRepository, atLeast(1)).save(any());
     }
 
@@ -210,7 +220,7 @@ public class VendorContractServiceTest {
 
         VendorContractDocumentEntity returnEntity = VendorContractDocumentEntity.create(request, "testDeveloper");
 
-        willDoNothing().given(vendorContractNewService).modifyVendorContractDocument(anyInt(), request);
+        willDoNothing().given(vendorContractNewService).modifyVendorContractDocument(anyLong(), request);
         given(vendorContractDocumentEntityRepository.findOneByVendorContractDocumentID(request.getVendorContractDocumentID())).willReturn(returnEntity);
         given(vendorContractDocumentEntityRepository.save(any())).willReturn(returnEntity);
 
@@ -220,7 +230,7 @@ public class VendorContractServiceTest {
             Assert.fail();
         }
 
-        verify(vendorContractNewService, atLeastOnce()).modifyVendorContractDocument(anyInt(), request);
+        verify(vendorContractNewService, atLeastOnce()).modifyVendorContractDocument(anyLong(), request);
         verify(vendorContractDocumentEntityRepository, atLeast(1)).findOneByVendorContractDocumentID(any());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).save(any());
     }
@@ -240,7 +250,7 @@ public class VendorContractServiceTest {
 
         VendorContractDocumentEntity returnEntity = VendorContractDocumentEntity.create(request, "testDeveloper");
 
-        willDoNothing().given(vendorContractNewService).modifyVendorContractDocument(anyInt(), request);
+        willDoNothing().given(vendorContractNewService).modifyVendorContractDocument(anyLong(), request);
         given(vendorContractDocumentEntityRepository.findOneByVendorContractDocumentID(request.getVendorContractDocumentID())).willReturn(returnEntity);
         given(vendorContractDocumentEntityRepository.save(any())).willThrow(new RuntimeException("test"));
 
@@ -250,7 +260,7 @@ public class VendorContractServiceTest {
             Assert.fail();
         }
 
-        verify(vendorContractNewService, never()).modifyVendorContractDocument(anyInt(), request);
+        verify(vendorContractNewService, never()).modifyVendorContractDocument(anyLong(), request);
         verify(vendorContractDocumentEntityRepository, atLeast(1)).findOneByVendorContractDocumentID(any());
         verify(vendorContractDocumentEntityRepository, atLeast(1)).save(any());
     }
