@@ -96,8 +96,8 @@ public class BannerRequestController {
             response.setSuccess(true);
             response.setData(new ResultCode(true, 1, null));
 
-            cacheService.GetRedisCacheEvict("vendorActivated", null);
-            cacheService.GetRedisCacheEvict("vendorDeactivated", null);
+           /* cacheService.GetRedisCacheEvict("vendorActivated", null);
+            cacheService.GetRedisCacheEvict("vendorDeactivated", null);*/
         } catch (Exception e) {
             log.error("fail to deny banner request", e);
             response.setMessage("failure");
@@ -124,8 +124,8 @@ public class BannerRequestController {
             response.setSuccess(true);
             response.setData(new ResultCode(true, 1, null));
 
-            cacheService.GetRedisCacheEvict("vendorActivated", null);
-            cacheService.GetRedisCacheEvict("vendorDeactivated", null);
+           /* cacheService.GetRedisCacheEvict("vendorActivated", null);
+            cacheService.GetRedisCacheEvict("vendorDeactivated", null);*/
         } catch (Exception e) {
             log.error("fail to approve banner request", e);
             response.setMessage("failure");
@@ -153,8 +153,8 @@ public class BannerRequestController {
             response.setSuccess(true);
             response.setData(new ResultCode(true, 1, null));
 
-            cacheService.GetRedisCacheEvict("vendorActivated", null);
-            cacheService.GetRedisCacheEvict("vendorDeactivated", null);
+            /*cacheService.GetRedisCacheEvict("vendorActivated", null);
+            cacheService.GetRedisCacheEvict("vendorDeactivated", null);*/
         } catch (Exception e) {
             log.error("fail to restore banner request", e);
             response.setMessage("failure");
