@@ -27,8 +27,12 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author roy
@@ -318,41 +322,73 @@ public class VendorService extends ApiService {
      * @author Reo
      * @since 2018. 11. 13.
      */
-    @Transactional(value = "primaryTransactionManager")
-    public ResultCode SetVendorForms(SetVendorFormsParameter parameters) {
-        ResultCode result = new ResultCode(false, 0, null);
-        FashiongoForm fgForm = new FashiongoForm();
-        switch (parameters.getType()) {
-            case "Add":
-                fgForm.setFormName(parameters.getFormName());
-                fgForm.setMemo(parameters.getMemo());
-                fgForm.setAttachment(parameters.getAttachment());
-                fgForm.setCreatedBy(Utility.getUsername());
-                fgForm.setCreatedOn(LocalDateTime.now());
-                fgForm.setModifiedBy(Utility.getUsername());
-                fgForm.setModifiedOn(LocalDateTime.now());
-                fashiongoFormRepository.save(fgForm);
+	@Transactional(value = "primaryTransactionManager")
+	public ResultCode SetVendorForms(SetVendorFormsParameter parameters) {
+		ResultCode result = new ResultCode(false, 0, null);
+		FashiongoForm fgForm = new FashiongoForm();
+		
+		String fileName = validateFileName(parameters.getAttachment());
+		
+		if (fileName == null) {
+			result.setResultCode(0);
+			result.setSuccess(false);
+			result.setResultMsg("filename error");
+		}
+		else {
+			switch(parameters.getType()) {
+				case "Add":
+					fgForm.setFormName(parameters.getFormName());
+					fgForm.setMemo(parameters.getMemo());
+					fgForm.setAttachment(fileName);
+					fgForm.setCreatedBy(Utility.getUsername());
+					fgForm.setCreatedOn(LocalDateTime.now());
+					fgForm.setModifiedBy(Utility.getUsername());
+					fgForm.setModifiedOn(LocalDateTime.now());
+					fashiongoFormRepository.save(fgForm);
+					
+					result.setResultCode(1);
+					result.setSuccess(true);
+					result.setResultMsg(MSG_INSERT_SUCCESS);
+					break;
+				default:
+					fgForm = fashiongoFormRepository.findOneByFashionGoFormID(parameters.getFashionGoFormID());
+					fgForm.setFormName(parameters.getFormName());
+					fgForm.setMemo(parameters.getMemo());
+					fgForm.setAttachment(fileName);
+					fgForm.setModifiedBy(Utility.getUsername());
+					fgForm.setModifiedOn(LocalDateTime.now());
+					fashiongoFormRepository.save(fgForm);
+					
+					result.setResultCode(1);
+					result.setSuccess(true);
+					result.setResultMsg(MSG_UPDATE_SUCCESS);
+					break;
+			}
+		}
+		return result;
+	}
+	
+	private String validateFileName(String fileName) {
+		if(fileName == null) {
+			return null;
+		}
+		Set<String> extensionSet = Stream.of(".jpg", ".gif", ".png", ".pdf", ".xls", ".xlsx", ".doc", ".docx")
+				.collect(Collectors.toCollection(HashSet::new));
 
-                result.setResultCode(1);
-                result.setSuccess(true);
-                result.setResultMsg(MSG_INSERT_SUCCESS);
-                break;
-            default:
-                fgForm = fashiongoFormRepository.findOneByFashionGoFormID(parameters.getFashionGoFormID());
-                fgForm.setFormName(parameters.getFormName());
-                fgForm.setMemo(parameters.getMemo());
-                fgForm.setAttachment(parameters.getAttachment());
-                fgForm.setModifiedBy(Utility.getUsername());
-                fgForm.setModifiedOn(LocalDateTime.now());
-                fashiongoFormRepository.save(fgForm);
+		String fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+		if(!extensionSet.contains(fileExtension)) {
+			return null;
+		}
 
-                result.setResultCode(1);
-                result.setSuccess(true);
-                result.setResultMsg(MSG_UPDATE_SUCCESS);
-                break;
-        }
-        return result;
-    }
+		String[] fileNameBlackList = {"/", "\\", "%0", ";"};
+		for(String wrongName : fileNameBlackList) {
+			if(fileName.indexOf(wrongName) != -1) {
+				return null;
+			}
+		}
+
+		return fileName;
+	} 	
 
     /**
      * SetBuyerRatingActive
