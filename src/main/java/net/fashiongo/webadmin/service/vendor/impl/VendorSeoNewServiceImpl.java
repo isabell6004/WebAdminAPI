@@ -38,7 +38,7 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
 	
     @Override
     public VendorSeoInfoResponse inquiryVendorSeo(Long vendorId) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/vendorseo";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/seo";
 
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         String responseBody = httpCaller.get(endpoint, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
@@ -63,7 +63,7 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
     
     @Override
 	public void createVendorSeo(Long vendorId, SetVendorSeoParameter request) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/createvendorseo";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/createseo";
         
         VendorSeo newRequest = new VendorSeo(request);
 
@@ -83,13 +83,13 @@ public class VendorSeoNewServiceImpl implements VendorSeoNewService {
 
     @Override
 	public void modifyVendorSeo(Long vendorId, SetVendorSeoParameter request) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/updatevendorseo";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/updateseo";
 
         VendorSeo newRequest = new VendorSeo(request);
         		
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
-            String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+            String responseBody = httpCaller.put(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
             FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to update vendor seo. vendorId: {}, code : {}, message : {}", vendorId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
