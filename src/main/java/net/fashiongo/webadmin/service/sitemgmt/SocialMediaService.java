@@ -15,9 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -72,24 +75,56 @@ public class SocialMediaService {
         WebAdminLoginUser userInfo = Utility.getUserInfo();
 		try {
             Boolean fashionGoApiResult;
-            if(request.getSocialMediaId() == null || request.getSocialMediaId() == 0) {
-		        SocialMedia socialMedia = SocialMedia.create(request);
-                socialMediaRepository.save(socialMedia);
-                fashionGoApiResult = socialMediaNewService.register(socialMedia, userInfo.getUserId(), userInfo.getUsername());
-            } else {
-                SocialMedia socialMedia = socialMediaRepository.findById(request.getSocialMediaId()).orElseThrow(NotFoundSitemgmtException::new);
-                socialMedia.update(request);
-                socialMediaRepository.save(socialMedia);
-                fashionGoApiResult = socialMediaNewService.update(socialMedia, userInfo.getUserId(), userInfo.getUsername());
+            
+            String fileName = validateFileName(request.getIcon());
+            
+            if (fileName == null) {
+            	return false;
             }
-            if(!fashionGoApiResult) {
-                log.error("fail to save the social media code. : {}", request.toString());
-                throw new NotFoundSitemgmtException("fail to save the social media code. : " + request.toString());
+            else {
+	            if(request.getSocialMediaId() == null || request.getSocialMediaId() == 0) {
+			        SocialMedia socialMedia = SocialMedia.create(request);
+			        socialMedia.setIcon(fileName);
+	                socialMediaRepository.save(socialMedia);
+	                fashionGoApiResult = socialMediaNewService.register(socialMedia, userInfo.getUserId(), userInfo.getUsername());
+	            } else {
+	                SocialMedia socialMedia = socialMediaRepository.findById(request.getSocialMediaId()).orElseThrow(NotFoundSitemgmtException::new);
+	                socialMedia.update(request);
+	                socialMedia.setIcon(fileName);
+	                socialMediaRepository.save(socialMedia);
+	                fashionGoApiResult = socialMediaNewService.update(socialMedia, userInfo.getUserId(), userInfo.getUsername());
+	            }
+	            if(!fashionGoApiResult) {
+	                log.error("fail to save the social media code. : {}", request.toString());
+	                throw new NotFoundSitemgmtException("fail to save the social media code. : " + request.toString());
+	            }
+	            return true;
             }
-            return true;
 		} catch (Exception e) {
 			return false;
 		}
 	}
+    
+	private String validateFileName(String fileName) {
+		if(fileName == null) {
+			return null;
+		}
+		Set<String> extensionSet = Stream.of(".jpg", ".gif", ".png", ".pdf", ".xls", ".xlsx", ".doc", ".docx")
+				.collect(Collectors.toCollection(HashSet::new));
+
+		String fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+		if(!extensionSet.contains(fileExtension)) {
+			return null;
+		}
+
+		String[] fileNameBlackList = {"/", "\\", "%0", ";"};
+		for(String wrongName : fileNameBlackList) {
+			if(fileName.indexOf(wrongName) != -1) {
+				return null;
+			}
+		}
+
+		return fileName;
+	}    
 	
 }
