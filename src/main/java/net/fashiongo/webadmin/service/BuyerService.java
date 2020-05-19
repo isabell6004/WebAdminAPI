@@ -14,8 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 
@@ -237,37 +241,42 @@ public class BuyerService extends ApiService {
     public int setAttachedFile(SetAttachedFileParameter setAttachedFileParameter) {
         LocalDateTime now = LocalDateTime.now();
 
-        RetailerCompany tblRetailer = retailerCompanyRepository.findById(setAttachedFileParameter.getRetailerId()).orElseThrow(() -> new RuntimeException("Retailer not exists."));
-
-        boolean sellerPermitUploaded = false;
-        switch (setAttachedFileParameter.getFileType().toLowerCase()) {
-            case "s":
-                tblRetailer.setSellerPermitFileName(setAttachedFileParameter.getFileName());
-				sellerPermitUploaded = true;
-                break;
-            case "in1":
-                tblRetailer.setInvoiceFileName1(setAttachedFileParameter.getFileName());
-                break;
-            case "in2":
-                tblRetailer.setInvoiceFileName2(setAttachedFileParameter.getFileName());
-                break;
-            case "o":
-                tblRetailer.setAdditionalDocumentFileName(setAttachedFileParameter.getFileName());
-                break;
+        String fileName = validateFileName(setAttachedFileParameter.getFileName());
+        
+        if (fileName != null) {
+	        RetailerCompany tblRetailer = retailerCompanyRepository.findById(setAttachedFileParameter.getRetailerId()).orElseThrow(() -> new RuntimeException("Retailer not exists."));
+	
+	        boolean sellerPermitUploaded = false;
+	        switch (setAttachedFileParameter.getFileType().toLowerCase()) {
+	            case "s":
+	                tblRetailer.setSellerPermitFileName(fileName);
+					sellerPermitUploaded = true;
+	                break;
+	            case "in1":
+	                tblRetailer.setInvoiceFileName1(fileName);
+	                break;
+	            case "in2":
+	                tblRetailer.setInvoiceFileName2(fileName);
+	                break;
+	            case "o":
+	                tblRetailer.setAdditionalDocumentFileName(fileName);
+	                break;
+	        }
+	
+	        // save tblRetailer
+	        retailerCompanyRepository.save(tblRetailer);
+	
+	        // entity_actionLog
+	        logEntityAction(tblRetailer.getRetailerID(), now);
+	
+	        // buyer status change log
+			if (sellerPermitUploaded) {
+				logBuyerStatusChange(tblRetailer.getRetailerID(), "DocumentUploaded", now);
+			}
         }
 
-        // save tblRetailer
-        retailerCompanyRepository.save(tblRetailer);
+        return 1;
 
-        // entity_actionLog
-        logEntityAction(tblRetailer.getRetailerID(), now);
-
-        // buyer status change log
-		if (sellerPermitUploaded) {
-			logBuyerStatusChange(tblRetailer.getRetailerID(), "DocumentUploaded", now);
-		}
-
-	    return 1;
     }
 
 	private void setMembershipStatus(String guid, String active, LocalDateTime now) {
@@ -317,5 +326,27 @@ public class BuyerService extends ApiService {
 
 		logBuyerStatusChange(retailerId, changeType, now);
 	}
+
+	private String validateFileName(String fileName) {
+		if(fileName == null) {
+			return null;
+		}
+		Set<String> extensionSet = Stream.of(".jpg", ".gif", ".png", ".pdf", ".xls", ".xlsx", ".doc", ".docx")
+				.collect(Collectors.toCollection(HashSet::new));
+
+		String fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+		if(!extensionSet.contains(fileExtension)) {
+			return null;
+		}
+
+		String[] fileNameBlackList = {"/", "\\", "%0", ";"};
+		for(String wrongName : fileNameBlackList) {
+			if(fileName.indexOf(wrongName) != -1) {
+				return null;
+			}
+		}
+
+		return fileName;
+	}  
 }
 
