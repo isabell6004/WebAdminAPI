@@ -164,7 +164,7 @@ server:
       suffix:
       prefix: access_log
       rename-on-rotate: true
-      file-date-format: -yyyyMMdd
+      file-date-format: -yyyyMMdd_HH
       directory: /home1/irteam/logs/webadmin_api/accesslog
       pattern: "%{org.apache.catalina.AccessLog.RemoteAddr}r %l %u %t \"%r\" %s %b %D \"%{Referer}i\" \"%{User-Agent}i\" %{X-Request-Id}i %I"
 #      pattern: combined
