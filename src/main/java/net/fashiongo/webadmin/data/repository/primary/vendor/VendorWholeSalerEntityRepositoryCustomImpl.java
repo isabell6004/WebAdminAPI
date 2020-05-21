@@ -54,11 +54,15 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QCountEntity COUNT = QCountEntity.countEntity;
         QVendorAdminAccountEntity VAA = QVendorAdminAccountEntity.vendorAdminAccountEntity;
         QVendorLambsKeyEntity VLK = QVendorLambsKeyEntity.vendorLambsKeyEntity;
+        //QVendorSeoEntity VS = QVendorSeoEntity.vendorSeoEntity;
 
         Integer referenceID = subsubQuery.select(COUNT.referenceID).from(COUNT).where(COUNT.countTypeID.eq(2).and(COUNT.entityID.eq(wholeSalerID))).orderBy(COUNT.count.desc()).fetchFirst();
         String categoryName = subQuery.select(C.categoryName).from(C).where(eqReferenceID(referenceID, C)).fetchFirst();
         StringExpression cateName = Expressions.asString(categoryName);
-
+        //Integer vendorseoId;
+        //String metaKeyword;
+        //String metaDescription;
+        
         query.select(Projections.constructor(VendorDetailInfo.class,
                 T.wholeSalerID, T.sortNo, T.startingDate, T.companyName, T.regCompanyName, T.dirName, T.codeName, T.firstName, T.lastName, T.description,
                 T.billStreetNo, T.billCity, T.billState, T.billZipcode, T.billCountry, T.billPhone, T.billFax, T.streetNo, T.city, T.state, T.zipcode, T.country, T.phone, T.email, T.fax, T.memo,
@@ -84,7 +88,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 T.showRoomZipcode, T.showRoomPhone, T.showRoomFax,
                 ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser"),
                 T.isADBlock.as("IsADBlock"),
-                T.sourceType
+                T.sourceType//,vendorseoId,metaKeyword,metaDescription
                 )).from(T)
                 .where(T.wholeSalerID.eq(wholeSalerID));
 

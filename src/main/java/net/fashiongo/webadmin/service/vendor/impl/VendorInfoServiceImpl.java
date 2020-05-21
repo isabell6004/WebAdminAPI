@@ -5,13 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBasicInfoParameter;
+import net.fashiongo.webadmin.data.model.vendor.SetVendorSeoParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
+import net.fashiongo.webadmin.data.model.vendor.VendorSeoInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
+import net.fashiongo.webadmin.data.repository.primary.vendor.VendorSeoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
@@ -19,6 +22,7 @@ import net.fashiongo.webadmin.service.vendor.VendorContractService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
 import net.fashiongo.webadmin.service.vendor.VendorPaymentInfoNewService;
+import net.fashiongo.webadmin.service.vendor.VendorSeoNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
@@ -78,6 +82,10 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     private VendorContractNewService vendorContractNewService;
 
     private CacheService cacheService;
+    
+    private VendorSeoEntityRepository vendorSeoEntityRepository;
+    
+    private VendorSeoNewService vendorSeoNewService;
 
     private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
 
@@ -97,7 +105,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorContractService vendorContractService,
                                  CacheService cacheService,
                                  JdbcHelper jdbcHelperFgBilling,
-                                 ConfigurableEnvironment env, VendorContractNewService vendorContractNewService) {
+                                 ConfigurableEnvironment env, VendorContractNewService vendorContractNewService,
+                                 VendorSeoEntityRepository vendorSeoEntityRepository,
+                                 VendorSeoNewService vendorSeoNewService) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
@@ -116,6 +126,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.jdbcHelperFgBilling = jdbcHelperFgBilling;
         this.env = env;
         this.vendorContractNewService = vendorContractNewService;
+        this.vendorSeoEntityRepository = vendorSeoEntityRepository;
+        this.vendorSeoNewService = vendorSeoNewService;
     }
 
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -125,6 +137,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     public Integer update(SetVendorBasicInfoParameter request) {
         try {
             VendorDetailInfo vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
+            //VendorSeoInfoResponse vendorSeoInfoResponse = mapper.readValue(request.getVendorSeoInfoResponse(), VendorSeoInfoResponse.class);
             Integer result = updateVendorBasicInfo(vendorDetailInfo);
             if (result == 1) {
                 cacheService.cacheEvictVendor(request.getWid());
@@ -245,9 +258,27 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
         vendorInfoNewService.update(requestVendorDetailInfo, wholeSaler.getUserId(), Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
+        // insert or update of vendor_seo table
+        if (requestVendorDetailInfo.getMetaKeyword() != null || requestVendorDetailInfo.getMetaDescription() != null) {  
+	        SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
+	        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());	
+	        setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
+	        
+	        if (requestVendorDetailInfo.getVendorseoId() != null) {
+	        	setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());	
+	        }
+	        
+	        if (setVendorSeoParameter.isNewVendorSeo()) {
+	            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);        	
+	        }
+	        else {
+	        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter); 
+	        }
+        }
         return 1;
     }
-
+  
+    
     private boolean checkDupAndCreateUserInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
         AspnetUsersEntity aspUserDuplicateCheck = aspnetUsersEntityRepository.findOneByUserNameAndWholeSalerGUID(requestVendorDetailInfo.getUserId(), wholeSaler.getWholeSalerGUID());
         if (aspUserDuplicateCheck != null) {
@@ -407,7 +438,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
             vendorWholeSalerEntityRepository.save(wholeSaler);
             vendorInfoNewService.updateDetailInfo(request, requestVendorDetailInfo, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
-
+            
             return 1;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);

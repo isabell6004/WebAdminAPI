@@ -11,6 +11,9 @@ public class SetVendorBasicInfoParameter {
     @JsonProperty(value = "vendorBasicInfo")
     private String vendorBasicInfo;
 
+    //@JsonProperty(value = "vendorSeoInfoResponse")
+    //private String vendorSeoInfoResponse;
+    
     @JsonProperty(value = "CompanyNameTemp")
     private String companyNameTemp;
 }

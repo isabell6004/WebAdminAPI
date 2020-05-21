@@ -7,6 +7,7 @@ import net.fashiongo.webadmin.data.model.vendor.ListSocialMedia;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.data.model.vendor.VendorNameHistoryLog;
 import net.fashiongo.webadmin.data.model.vendor.VendorPayoutInfo;
+import net.fashiongo.webadmin.data.model.vendor.VendorSeoInfoResponse;
 
 import java.util.List;
 
@@ -24,4 +25,7 @@ public class GetVendorBasicInfoResponse {
 
     @JsonProperty("Table3")
     private List<VendorPayoutInfo> vendorPayoutInfoList;
+    
+    @JsonProperty("Table4")
+    private VendorSeoInfoResponse vendorSeoInfoResponse;    
 }
