@@ -342,6 +342,8 @@ public class MessageService extends ApiService {
 			retailerNews.setLastUser(Utility.getUserInfo().getUsername());
 			retailerNews.setLastModifiedDateTime(now);
 			retailerNews.setSortNo(parameters.getSortNo());
+			retailerNews.setExternalLink(parameters.getExternalLink());
+			retailerNews.setExternalUrl(parameters.getExternalUrl());
 			tblRetailerNewsRepository.save(retailerNews);
 			
 			result.setResultCode(1);
