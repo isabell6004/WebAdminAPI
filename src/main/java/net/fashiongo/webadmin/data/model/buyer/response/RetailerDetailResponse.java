@@ -21,5 +21,8 @@ public class RetailerDetailResponse {
 
 	@JsonProperty("retailer")
 	private Retailer retailer;
+	
+	@JsonProperty("buyermodified") 
+	private Boolean buyermodified;
 
 }

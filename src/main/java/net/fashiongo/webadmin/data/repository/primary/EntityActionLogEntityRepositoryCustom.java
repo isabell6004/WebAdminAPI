@@ -10,4 +10,6 @@ public interface EntityActionLogEntityRepositoryCustom {
     List<VendorHistory> findByEntityIDAndEntityTypeID(Integer wid);
 
     List<ModifiedByBuyer> up_wa_GetModifiedByBuyer(LocalDateTime fromDateTime,LocalDateTime toDateTime);
+    
+    Boolean findBuyerModified(Integer retailerId);
 }

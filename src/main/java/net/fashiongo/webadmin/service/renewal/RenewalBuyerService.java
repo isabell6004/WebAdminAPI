@@ -105,6 +105,8 @@ public class RenewalBuyerService {
 
 	public RetailerDetailResponse getAdminRetailerDetail(Integer retailerId) {
 
+		Boolean buyermodifiedflag = false;
+		
 		Retailer adminRetailerInfo = getAdminRetailerInfo(retailerId);
 		List<ListAccountDeactivationReason> listAccountDeactivationReasons = listAccountDeactivationReasonEntityRepository.findAll().stream()
 				.map(listAccountDeactivationReasonEntity -> ListAccountDeactivationReason.builder()
@@ -114,11 +116,14 @@ public class RenewalBuyerService {
 				.collect(Collectors.toList());
 
 		List<LogSentEmail> adminLogEmailSent = getAdminLogEmailSent(retailerId);
+		
+		buyermodifiedflag = getBuyerModified(retailerId);
 
 		return RetailerDetailResponse.builder()
 				.retailer(adminRetailerInfo)
 				.deactivationReason(listAccountDeactivationReasons)
 				.logEmailSent(adminLogEmailSent)
+				.buyermodified(buyermodifiedflag)
 				.build();
 	}
 
@@ -214,6 +219,12 @@ public class RenewalBuyerService {
 		}).orElse(null);
 	}
 
+	public Boolean getBuyerModified(Integer retailerId) {
+		
+		return entityActionLogEntityRepository.findBuyerModified(retailerId);
+	
+	}
+	
 	public List<ShippingAddressResponse> getShippingAddress(GetShippingAddressParameter parameter) {
 		List<XShipAddressEntity> xShipAddressEntityList = xShipAddressEntityRepository.findAllByCustID2(parameter.getRetailerId());
 
