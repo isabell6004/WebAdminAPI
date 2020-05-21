@@ -107,6 +107,10 @@ public class TrendReport implements Serializable {
 	@Column(name = "showScheduleId")
 	private Integer showScheduleId;
 
+	@JsonProperty("ExternalURL")
+	@Column(name = "ExternalURL")
+	private String externalURL;	
+		
 	public Integer getTrendReportID() {
 		return trendReportID;
 	}
@@ -266,4 +270,12 @@ public class TrendReport implements Serializable {
 	public Integer getShowScheduleId() { return showScheduleId; }
 
 	public void setShowScheduleId(Integer showScheduleId) { this.showScheduleId = showScheduleId; }
+	
+	public String getExternalURL() {
+		return externalURL;
+	}
+
+	public void setExternalURL(String externalURL) {
+		this.externalURL = externalURL;
+	}	
 }
