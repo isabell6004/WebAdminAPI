@@ -124,4 +124,68 @@ public class EntityActionLogEntityRepositoryCustomImpl implements EntityActionLo
 
         return jpasqlQuery.fetch();
     }
+    
+    @Override
+    public Boolean findBuyerModified(Integer retailerId) {
+        MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
+        JPASQLQuery<ModifiedByBuyer> jpasqlQuery = new JPASQLQuery<ModifiedByBuyer>(entityManager,mssqlServer2012Templates);
+        QRetailerEntity R = QRetailerEntity.retailerEntity;
+
+        JPASQLQuery aQuery = new JPASQLQuery(entityManager,mssqlServer2012Templates);
+        QEntityActionLogEntity A_LOG = new QEntityActionLogEntity("A_LOG");
+        SimplePath<Object> PATH_A = Expressions.path(Object.class, "A");
+        NumberPath<Integer> PATH_A_EntityID = Expressions.numberPath(Integer.class, PATH_A, "EntityID");
+        DateTimePath<Timestamp> PATH_A_ActedOn = Expressions.dateTimePath(Timestamp.class, PATH_A, "ActedOn");
+
+        ModifiedByBuyer modifiedByBuyer = null;
+        
+        aQuery.select(A_LOG.entityID, A_LOG.actedOn.max().as("ActedOn"))
+                .from(A_LOG)
+                .where(A_LOG.actionID.eq(4003)
+                	.and(A_LOG.entityID.eq(retailerId)))
+                .groupBy(A_LOG.entityID);
+
+        JPASQLQuery bQuery = new JPASQLQuery(entityManager,mssqlServer2012Templates);
+        QEntityActionLogEntity B_LOG = new QEntityActionLogEntity("A_LOG");
+        SimplePath<Object> PATH_B = Expressions.path(Object.class, "B");
+        NumberPath<Integer> PATH_B_EntityID = Expressions.numberPath(Integer.class, PATH_B, "EntityID");
+        DateTimePath<LocalDateTime> PATH_B_ActedOn = Expressions.dateTimePath(LocalDateTime.class, PATH_B, "ActedOn");
+        bQuery.select(B_LOG.entityID, B_LOG.actedOn.max().as("ActedOn"))
+                .from(B_LOG)
+                .where(B_LOG.actionID.eq(4005)
+                	.and(A_LOG.entityID.eq(retailerId)))
+                .groupBy(B_LOG.entityID);
+
+
+        jpasqlQuery
+		        .select(
+		                Projections.constructor(
+		                        ModifiedByBuyer.class
+		                        ,PATH_A_EntityID
+		                        ,PATH_A_ActedOn
+		                        ,R.companyName
+		                        ,R.firstName.concat(" ").concat(R.lastName)
+		                )
+		        )
+                .from(aQuery,PATH_A)
+                .leftJoin(bQuery,PATH_B).on(PATH_A_EntityID.eq(PATH_B_EntityID))
+                .innerJoin(R).on(
+                        PATH_A_EntityID.eq(R.retailerID).and(R.currentStatus.eq(3)).and(
+                                        R.sellerPermitFileName.isNotNull().or(R.invoiceFileName1.isNotNull()).or(R.invoiceFileName2.isNotNull())
+                        )
+                ).where(
+                    PATH_A_ActedOn.goe(
+                            queryDSLSQLFunctions.isnull(Timestamp.class,PATH_B_ActedOn,PATH_A_ActedOn)
+                    )
+        );
+        
+        modifiedByBuyer = jpasqlQuery.fetchOne();
+        
+        if (modifiedByBuyer == null) {
+        	return false;
+        }
+        else {
+        	return true;
+        }
+    }
 }
