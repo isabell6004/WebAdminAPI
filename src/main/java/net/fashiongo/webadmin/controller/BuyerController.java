@@ -487,6 +487,8 @@ public class BuyerController {
 	public JsonResponse getModifiedByBuyerRead(@RequestBody GetModifiedByBuyerReadParameter parameter) {
 		String username = Utility.getUsername();
 		JsonResponse response = renewalBuyerService.getModifiedByBuyerRead(parameter,username);
+		
+		renewalBuyerService.setModifiedBuyer(parameter.getRid());
 
 		return response;
 	}

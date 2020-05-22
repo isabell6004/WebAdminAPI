@@ -13,6 +13,8 @@ import net.fashiongo.webadmin.data.repository.primary.buyer.*;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
+import net.fashiongo.webadmin.utility.Utility;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -1277,6 +1279,18 @@ public class RenewalBuyerService {
 		return jsonResponse;
 	}
 
+	public void setModifiedBuyer(Integer retailerid) {
+		
+		String username = Utility.getUsername();
+		
+		RetailerEntity retailerEntity = retailerEntityRepository.findByretailerID(retailerid);
+		  
+		retailerEntity.update(username);
+		  
+		retailerEntityRepository.save(retailerEntity); 
+
+	}	
+	
 	public GetModifiedByBuyerResponse getModifiedByBuyer(GetModifiedByBuyerParameter parameter) {
 		LocalDateTime fromdate = Optional.ofNullable(parameter.getFromdate())
 				.filter(s -> StringUtils.hasLength(s))

@@ -4,4 +4,6 @@ import net.fashiongo.webadmin.data.entity.primary.RetailerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RetailerEntityRepository extends JpaRepository<RetailerEntity,Integer> {
+	
+	RetailerEntity findByretailerID(Integer retailerID);
 }

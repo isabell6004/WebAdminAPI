@@ -3,6 +3,8 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.fashiongo.webadmin.utility.Utility;
+
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -325,5 +327,11 @@ public class RetailerEntity {
 	public LocalDateTime getConfirmedOn() {
 		return Optional.ofNullable(confirmedOn).map(Timestamp::toLocalDateTime).orElse(null);
 	}
+	
+    public void update(String username) { 
 
+    	this.lastModifiedDateTime = Timestamp.valueOf(LocalDateTime.now()); 
+    	this.lastUser = username; 
+	 
+    }
 }
