@@ -460,6 +460,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             todayDeal.setActive(false);
             todayDeal.setRevokedOn(Timestamp.valueOf(LocalDateTime.now()));
             todayDeal.setRevokedBy(sessionUsrId);
+            todayDeal.setNotes("Vendor status has been changed");
             todayDeal.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
             todayDeal.setModifiedBy(sessionUsrId);
 

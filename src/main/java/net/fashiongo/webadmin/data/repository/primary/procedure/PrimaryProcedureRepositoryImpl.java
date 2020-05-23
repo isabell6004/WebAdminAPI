@@ -824,19 +824,15 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 			));
 		}
 
-		jpasqlQuery.select(Projections.constructor(ActiveTodayDealDetail.class,
+		jpasqlQuery.select(Projections.constructor(TodayDealDetailDto.class,
 				T.todayDealId,
 				T.title,
 				T.description,
 				T.fromDate,
 				T.toDate,
 				T.todayDealPrice,
-				T.appliedOn,
-				T.approvedOn,
-				T.active,
 				T.modifiedBy,
 				T.modifiedOn,
-				T.createdByVendor,
 				pathProductID,
 				pathProductName,
 				pathImageUrlRoot,
@@ -845,9 +841,16 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				pathCompanyName,
 				pathWholeSalerID,
 				pathUnitPrice.as("UnitPrice"),
+				T.revokedOn,
+				T.revokedBy,
+				T.notes,
+				pathOrderActive,
+				T.active,			
+				T.approvedOn,	
+				T.appliedOn,
+				T.createdByVendor,
 				T.fromDate.year().as("sYear"),
-				T.fromDate.month().as("sMonth"),
-				pathOrderActive
+				T.fromDate.month().as("sMonth")
 				))
 				.from(T)
 				.leftJoin(vwProductDetail, P).on(T.productId.eq(pathProductID))
