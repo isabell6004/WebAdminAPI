@@ -77,5 +77,8 @@ public class ActiveTodayDealDetail {
     private Integer sYear;
 
     private Integer sMonth;
+    
+    @JsonProperty("OrderActive")
+    private Boolean orderActive; 
 
 }

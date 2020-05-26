@@ -350,7 +350,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             if (requestVendorDetailInfo.getShopActive() && !wholeSaler.getShopActive())
                 updateMembershipStatus(wholeSaler);
 
-            if (wholeSaler.getActive() && !requestVendorDetailInfo.getActive())
+            if (wholeSaler.getActive() && !requestVendorDetailInfo.getActive()
+            		|| (wholeSaler.getOrderActive() && !requestVendorDetailInfo.getOrderActive()))
                 inactiveTodayDealInfo(requestVendorDetailInfo, sessionUserId);
 
             if (!requestVendorDetailInfo.getActive())
@@ -494,6 +495,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         List<TodayDealEntity> todayDealListUpdate = new ArrayList<>();
         for (TodayDealEntity todayDeal : todayDealList) {
             todayDeal.setActive(false);
+            todayDeal.setRevokedOn(Timestamp.valueOf(LocalDateTime.now()));
+            todayDeal.setRevokedBy(sessionUsrId);
+            todayDeal.setNotes("Vendor status has been changed");
             todayDeal.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
             todayDeal.setModifiedBy(sessionUsrId);
 
