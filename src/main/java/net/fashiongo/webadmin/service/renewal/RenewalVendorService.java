@@ -38,9 +38,7 @@ public class RenewalVendorService extends ApiService {
 	private final VendorProductRepository vendorProductRepository;
     private final VendorImageRequestEntityRepository vendorImageRequestEntityRepository;
     private final FashionGoFormEntityRepository fashionGoFormEntityRepository;
-    private final VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository;
     private final WholeSalerEntityRepository wholeSalerEntityRepository;
-    private final VendorContractEntityRepository vendorContractEntityRepository;
     private final SecurityUserEntityRepository securityUserEntityRepository;
     private final CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository;
     private final CodeCountryEntityRepository codeCountryEntityRepository;
@@ -71,9 +69,7 @@ public class RenewalVendorService extends ApiService {
     		                    VendorProductRepository vendorProductRepository,
                                 VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
                                 FashionGoFormEntityRepository fashionGoFormEntityRepository,
-                                VendorContractDocumentEntityRepository vendorContractDocumentEntityRepository,
                                 WholeSalerEntityRepository wholeSalerEntityRepository,
-                                VendorContractEntityRepository vendorContractEntityRepository,
                                 SecurityUserEntityRepository securityUserEntityRepository,
                                 CodeWholeSalerCompanyTypeEntityRepository codeWholeSalerCompanyTypeEntityRepository,
                                 CodeCountryEntityRepository codeCountryEntityRepository,
@@ -102,9 +98,7 @@ public class RenewalVendorService extends ApiService {
 		this.vendorProductRepository = vendorProductRepository;
         this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
         this.fashionGoFormEntityRepository = fashionGoFormEntityRepository;
-        this.vendorContractDocumentEntityRepository = vendorContractDocumentEntityRepository;
         this.wholeSalerEntityRepository = wholeSalerEntityRepository;
-        this.vendorContractEntityRepository = vendorContractEntityRepository;
         this.securityUserEntityRepository = securityUserEntityRepository;
         this.codeWholeSalerCompanyTypeEntityRepository = codeWholeSalerCompanyTypeEntityRepository;
         this.codeCountryEntityRepository = codeCountryEntityRepository;
@@ -411,10 +405,6 @@ public class RenewalVendorService extends ApiService {
 
     public List<SecurityUserEntity> getVendorSecurityUsers() {
         return securityUserEntityRepository.findAllActive();
-    }
-
-    public List<VendorContractHistoryList> getVendorContractHistoryList(Integer wholeSalerID) {
-        return vendorContractEntityRepository.findContractHistoryListByWholeSalerID(wholeSalerID);
     }
 
     public ResultCode setVendorSettingAccount(Integer wid) {
