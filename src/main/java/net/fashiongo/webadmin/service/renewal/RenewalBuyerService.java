@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.service.renewal;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.common.dal.JdbcHelper;
+import net.fashiongo.webadmin.dao.primary.EntityActionLogRepository;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.ListAccountDeactivationReason;
 import net.fashiongo.webadmin.data.model.LogSentEmail;
@@ -11,6 +12,7 @@ import net.fashiongo.webadmin.data.model.buyer.response.*;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.buyer.*;
 import net.fashiongo.webadmin.data.repository.primary.procedure.PrimaryProcedureRepository;
+import net.fashiongo.webadmin.model.primary.EntityActionLog;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
@@ -101,6 +103,9 @@ public class RenewalBuyerService {
 	
 	@Autowired
 	private BuyerSearchWithHistoryRepository buyerSearchWithHistoryRepository;
+	
+	@Autowired
+	private EntityActionLogRepository entityActionLogRepository;	
 
 	private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 	private static final DateTimeFormatter ZONED_DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssx");
@@ -1282,13 +1287,27 @@ public class RenewalBuyerService {
 	public void setModifiedBuyer(Integer retailerid) {
 		
 		String username = Utility.getUsername();
+		LocalDateTime now = LocalDateTime.now();
 		
 		RetailerEntity retailerEntity = retailerEntityRepository.findByretailerID(retailerid);
 		  
 		retailerEntity.update(username);
 		  
 		retailerEntityRepository.save(retailerEntity); 
+		
+        // entity_actionLog
+        logEntityAction(retailerid, now);
 
+	}	
+
+	private void logEntityAction(int retailerId, LocalDateTime now) {
+		EntityActionLog entityActionLog = new EntityActionLog();
+		entityActionLog.setEntityTypeID(2);
+		entityActionLog.setActionID(4002);
+		entityActionLog.setEntityID(retailerId);
+		entityActionLog.setActedOn(now);
+		entityActionLog.setActedBy(Utility.getUsername());
+		entityActionLogRepository.save(entityActionLog);
 	}	
 	
 	public GetModifiedByBuyerResponse getModifiedByBuyer(GetModifiedByBuyerParameter parameter) {
