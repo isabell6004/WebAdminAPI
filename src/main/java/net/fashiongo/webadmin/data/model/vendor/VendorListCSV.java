@@ -88,12 +88,6 @@ public class VendorListCSV {
     @JsonProperty(value = "ContractTypeID")
     private Integer contractTypeID;
 
-    @JsonProperty(value = "PhotoPlanID")
-    private Integer photoPlanID;
-
-    @JsonProperty(value = "UseModel")
-    private Boolean useModel;
-
     @JsonProperty(value = "CommissionRate")
     private Double commissionRate;
 
@@ -106,7 +100,7 @@ public class VendorListCSV {
     @JsonProperty(value = "HoldCheck")
     private Long holdCheck;
 
-    public VendorListCSV(Integer id, String type, String companyName, String oldCompanyName, String vendorCategory, String userID, String firstName, String lastName, String email, String showRoomPhone, String showRoomStreet, String showRoomCity, String showRoomState, String showRoomZipcode, String showRoomCountry, String factoryPhone, String factoryStreet, String factoryCity, String factoryState, String factoryCountry, String factoryZipcode, String active, String currentStatus, Timestamp orderActiveOn, Integer billCountryID, Integer contractTypeID, Integer photoPlanID, Boolean useModel, BigDecimal commissionRate, Boolean fashionGoExclusive, Long blockedCheck, Long holdCheck) {
+    public VendorListCSV(Integer id, String type, String companyName, String oldCompanyName, String vendorCategory, String userID, String firstName, String lastName, String email, String showRoomPhone, String showRoomStreet, String showRoomCity, String showRoomState, String showRoomZipcode, String showRoomCountry, String factoryPhone, String factoryStreet, String factoryCity, String factoryState, String factoryCountry, String factoryZipcode, String active, String currentStatus, Timestamp orderActiveOn, Integer billCountryID, Integer contractTypeID, BigDecimal commissionRate, Boolean fashionGoExclusive, Long blockedCheck, Long holdCheck) {
         this.id = id;
         this.type = type;
         this.companyName = companyName;
@@ -133,8 +127,6 @@ public class VendorListCSV {
         this.orderActiveOn = orderActiveOn == null ? null : orderActiveOn.toLocalDateTime();
         this.billCountryID = billCountryID;
         this.contractTypeID = contractTypeID;
-        this.photoPlanID = photoPlanID;
-        this.useModel = useModel;
         this.commissionRate = commissionRate == null ? null : commissionRate.doubleValue();
         this.fashionGoExclusive = fashionGoExclusive;
         this.blockedCheck = blockedCheck;

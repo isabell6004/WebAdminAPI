@@ -353,7 +353,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QLogVendorHoldEntity LVH = QLogVendorHoldEntity.logVendorHoldEntity;
         QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
         QMapWholeSalerGroupEntity MWG = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
-        QVendorContractEntity VC = QVendorContractEntity.vendorContractEntity;
+        QVendorContractHistoryEntity VC = QVendorContractHistoryEntity.vendorContractHistoryEntity;
         QCountEntity C = QCountEntity.countEntity;
         QVendorNameHistoryEntity V = QVendorNameHistoryEntity.vendorNameHistoryEntity;
 
@@ -389,16 +389,14 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                                 .and(LVH.wholeSalerID.eq(W.wholeSalerID))), "HoldCheck"),
                 W.billCountryID,
                 W.billState,
-                VC.contractTypeID,
-                VC.photoPlanID,
-                VC.useModel,
+                VC.typeCode,
                 VC.commissionRate,
                 W.fashionGoExclusive,
                 W.sourceType
                 ))
                 .from(W)
                 .leftJoin(V).on(W.wholeSalerID.eq(V.wholeSalerID))
-                .leftJoin(VC).on(W.wholeSalerID.eq(VC.wholeSalerID).and(VC.vendorContractID.in(SQLExpressions.select(VC.vendorContractID.max()).from(VC).groupBy(VC.wholeSalerID))));
+                .leftJoin(VC).on(W.wholeSalerID.longValue().eq(VC.vendorId).and(VC.id.in(SQLExpressions.select(VC.id.max()).from(VC).groupBy(VC.vendorId))));
 
         if (avgOrderAmountFrom != null || avgOrderAmountTo != null || checkoutFrom != null || checkoutTo != null) {
             SimplePath<Object> pathO = Expressions.path(Object.class, "O");
@@ -499,7 +497,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         }
 
         if (assignedUser > 0) {
-            filter = filter.and(VC.repID.eq(assignedUser));
+            filter = filter.and(VC.accountExecutiveId.eq(assignedUser));
         }
 
         if (createdOnFrom != null) { filter = filter.and(W.startingDate.goe(Timestamp.valueOf(createdOnFrom))); }
@@ -535,20 +533,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
             }
         }
 
-        if (!typeOfContract.equals("0")) { filter = filter.and(VC.contractTypeID.eq(Integer.valueOf(typeOfContract))); }
-
-        if (!photoplan.equals("0")) {
-            filter = filter.and(VC.photoPlanID.eq(Integer.valueOf(photoplan)));
-            if (photoplan.equals("1")){
-                if (!chooseType.equals("0")) {
-                    // mannequin : 1 -> true
-                    // model : 2 -> false
-                    boolean chooseTypeBoolean = chooseType.equalsIgnoreCase("1");
-
-                    filter = filter.and(VC.useModel.eq(chooseTypeBoolean));
-                }
-            }
-        }
+        if (!typeOfContract.equals("0")) { filter = filter.and(VC.typeCode.eq(Integer.valueOf(typeOfContract))); }
 
         if (!commission.equals("0")) {
             if (commission.equals("1")) {
@@ -710,7 +695,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QLogVendorHoldEntity LVH = QLogVendorHoldEntity.logVendorHoldEntity;
         QMapWholeSalerGroupEntity MWG = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
         QVendorNameHistoryEntity V = QVendorNameHistoryEntity.vendorNameHistoryEntity;
-        QVendorContractEntity VC = QVendorContractEntity.vendorContractEntity;
+        QVendorContractHistoryEntity VC = QVendorContractHistoryEntity.vendorContractHistoryEntity;
 
 
         jpasqlQuery.select(Projections.constructor(VendorListCSV.class,
@@ -743,9 +728,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 ).as("Current Status"),
                 T.actualOpenDate.as("Order Active on"),
                 T.billCountryID,
-                VC.contractTypeID,
-                VC.photoPlanID,
-                VC.useModel,
+                VC.typeCode,
                 VC.commissionRate,
                 T.fashionGoExclusive,
                 SQLExpressions.select(VB.wholeSalerId.count()).from(VB).where(VB.wholeSalerId.eq(T.wholeSalerID)).as("BlockedCheck"),
@@ -753,7 +736,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 ))
                 .from(T)
                 .leftJoin(V).on(T.wholeSalerID.eq(V.wholeSalerID))
-                .leftJoin(VC).on(T.wholeSalerID.eq(VC.wholeSalerID).and(VC.vendorContractID.in(SQLExpressions.select(VC.vendorContractID.max()).from(VC).groupBy(VC.wholeSalerID))));
+                .leftJoin(VC).on(T.wholeSalerID.longValue().eq(VC.vendorId).and(VC.id.in(SQLExpressions.select(VC.id.max()).from(VC).groupBy(VC.vendorId))));
 
         if (assignedUser > 0) {
             QMapWaUserVendorEntity MWUV = QMapWaUserVendorEntity.mapWaUserVendorEntity;
@@ -891,19 +874,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         }
 
         if (!typeOfContract.equals("0")) {
-            filter = filter.and(VC.contractTypeID.eq(Integer.valueOf(typeOfContract)));
-        }
-
-        if (!photoplan.equals("0")) {
-            filter = filter.and(VC.photoPlanID.eq(Integer.valueOf(photoplan)));
-
-            if (photoplan.equals("1")) {
-                if (!chooseType.equals("0")) {
-                    boolean chooseTypeBoolean = chooseType.equalsIgnoreCase("1");
-
-                    filter = filter.and(VC.useModel.eq(chooseTypeBoolean));
-                }
-            }
+            filter = filter.and(VC.typeCode.eq(Integer.valueOf(typeOfContract)));
         }
 
         if (!commission.equals("0")) {

@@ -82,12 +82,6 @@ public class VendorList {
     @JsonProperty(value = "ContractTypeID")
     private Integer contractTypeID;
 
-    @JsonProperty(value = "PhotoPlanID")
-    private Integer photoPlanID;
-
-    @JsonProperty(value = "UseModel")
-    private Boolean useModel;
-
     @JsonProperty(value = "CommissionRate")
     private Double commissionRate;
 
@@ -97,7 +91,7 @@ public class VendorList {
     @JsonProperty(value = "Source_Type")
     private Integer sourceType;
 
-    public VendorList(Long rowno, Timestamp contractExpireDate, Integer wholeSalerID, String companyName, Integer companyTypeID, String firstName, String lastName, String email, String userID, Boolean active, Boolean shopActive, Boolean orderActive, Timestamp startingDate, Timestamp lastModifiedDateTime, String nameHistory, Long grouped, String businessCategory, Integer checkBox, String linkCheck, Long blockedCheck, Long holdCheck, Integer billCountryID, String billState, Integer contractTypeID, Integer photoPlanID, Boolean useModel, BigDecimal commissionRate, Boolean fashionGoExclusive, Integer sourceType) {
+    public VendorList(Long rowno, Timestamp contractExpireDate, Integer wholeSalerID, String companyName, Integer companyTypeID, String firstName, String lastName, String email, String userID, Boolean active, Boolean shopActive, Boolean orderActive, Timestamp startingDate, Timestamp lastModifiedDateTime, String nameHistory, Long grouped, String businessCategory, Integer checkBox, String linkCheck, Long blockedCheck, Long holdCheck, Integer billCountryID, String billState, Integer contractTypeID, BigDecimal commissionRate, Boolean fashionGoExclusive, Integer sourceType) {
         this.rowno = rowno;
         this.contractExpireDate = contractExpireDate == null ? null : contractExpireDate.toLocalDateTime();
         this.wholeSalerID = wholeSalerID;
@@ -122,8 +116,6 @@ public class VendorList {
         this.billCountryID = billCountryID;
         this.billState = billState;
         this.contractTypeID = contractTypeID;
-        this.photoPlanID = photoPlanID;
-        this.useModel = useModel;
         this.commissionRate = commissionRate == null ? null : commissionRate.doubleValue();
         this.fashionGoExclusive = fashionGoExclusive;
         this.sourceType = sourceType;
