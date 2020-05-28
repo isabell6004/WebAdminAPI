@@ -362,21 +362,21 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setNewCustYN(requestVendorDetailInfo.getNewCustYN());
             wholeSaler.setIsADBlock(requestVendorDetailInfo.getIsADBlock());
 
-            if (requestVendorDetailInfo.getOrderActive()) { // open now
+            if (requestVendorDetailInfo.getOrderActive()) {
                 Timestamp now = Timestamp.valueOf(LocalDateTime.now());
                 setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUserId);
-                if (wholeSaler.getActualOpenDate() == null) {
+                if (wholeSaler.getActualOpenDate() == null) {  // first open
                     wholeSaler.setActualOpenDate(now);
                     requestVendorDetailInfo.setActualOpenDate(now.toLocalDateTime());
                     setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                     wholeSaler.setContractExpireDate(null);
                 } else {
-                    String actualOpenDateTest = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")) : "0";
-                    String dateTimeNowTest = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-                    int actualOpenDateTestInt = Integer.parseInt(actualOpenDateTest);
-                    int dateTimeNowTestInt = Integer.parseInt(dateTimeNowTest);
+                    String actualOpenDate = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")) : "0";
+                    String dateTimeNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+                    int actualOpenDateInt = Integer.parseInt(actualOpenDate);
+                    int dateTimeNowInt = Integer.parseInt(dateTimeNow);
 
-                    if (actualOpenDateTestInt > dateTimeNowTestInt) {
+                    if (actualOpenDateInt > dateTimeNowInt) {
                         wholeSaler.setActualOpenDate(now);
                         requestVendorDetailInfo.setActualOpenDate(now.toLocalDateTime());
                         setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
@@ -384,7 +384,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                     }
                 }
             } else if (!requestVendorDetailInfo.getOrderActive() && requestVendorDetailInfo.getActualOpenDate() != null) { // scheduling
-
                 String requestActualOpenDate = requestVendorDetailInfo.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String vendorActualOpenDate = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
                 String dateTimeNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -411,6 +410,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                         wholeSaler.setActualOpenDate(Timestamp.valueOf(requestVendorDetailInfo.getActualOpenDate()));
                     }
                 }
+            } else if (!requestVendorDetailInfo.getOrderActive() && requestVendorDetailInfo.getActualOpenDate() == null) { // remove scheduling
+                wholeSaler.setActualOpenDate(null);
+                requestVendorDetailInfo.setActualOpenDate(null);
             }
 
             wholeSaler.setTransactionFeeRate1(requestVendorDetailInfo.getTransactionFeeRate1());
