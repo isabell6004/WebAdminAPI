@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.VendorContractHistoryDocumentEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorContractHistoryEntity;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
-import net.fashiongo.webadmin.data.model.vendor.DelVendorContractDocumentParameter;
-import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
-import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
+import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.repository.primary.VendorContractHistoryDocumentEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.VendorContractHistoryEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
@@ -95,34 +93,33 @@ public class VendorContractServiceImpl implements VendorContractService {
     public void setVendorContract(SetVendorContractParameter request) {
 
         WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
-        VendorContractHistoryEntity originContractInfo = vendorContractHistoryEntityRepository.findFirstByVendorIdOrderByIdDesc(Long.valueOf(request.getWholeSalerID()));
 
         if (request.isNewVendorContract()) {
-            if (originContractInfo == null) {
-                // temp log
-                log.warn("original contract request: {}, {}, {}", request.getWholeSalerID(), request.getVendorContractID(), request.getVendorContractPlanID());
-                createContract(vendorInfo, request);
-            }  else {
-                modifyContract(vendorInfo, originContractInfo, request);
-            }
+            createContract(vendorInfo, request);
         } else {
-
             if (request.getVendorContractRowAdd() == null || !request.getVendorContractRowAdd()) {
-                modifyContract(vendorInfo, originContractInfo, request);
+                modifyContract(vendorInfo, request);
             } else {
-                reviseContract(vendorInfo, originContractInfo, request);
+                reviseContract(vendorInfo, request);
             }
         }
         cacheService.cacheEvictVendor(vendorInfo.getWholeSalerID());
      }
 
-    private void reviseContract(WholeSalerEntity wholeSalerEntity, VendorContractHistoryEntity originContractInfo, SetVendorContractParameter request) {
-        Long originalVendorContractHistoryId = originContractInfo.getId();
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
+    public void delVendorContract(DelVendorContractParameter request) {
+
+        WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
+
+        vendorContractNewService.deleteContract(request.getWholeSalerID(), request.getVendorContractID().longValue());
+    }
+
+    private void reviseContract(WholeSalerEntity wholeSalerEntity, SetVendorContractParameter request) {
 
         updateVendorType(request, wholeSalerEntity);
 
         request.setCommissionRate(BigDecimal.valueOf(request.getCommissionRate().doubleValue() / 100.0));
-        vendorContractNewService.reviseContract(originalVendorContractHistoryId, request);
+        vendorContractNewService.reviseContract(request);
     }
 
     private void createContract(WholeSalerEntity wholeSalerEntity, SetVendorContractParameter request) {
@@ -132,12 +129,11 @@ public class VendorContractServiceImpl implements VendorContractService {
         vendorContractNewService.createContract(request);
     }
 
-    private void modifyContract(WholeSalerEntity wholeSalerEntity, VendorContractHistoryEntity originContractInfo, SetVendorContractParameter request) {
-        Long originalVendorContractHistoryId = originContractInfo.getId();
+    private void modifyContract(WholeSalerEntity wholeSalerEntity,  SetVendorContractParameter request) {
         updateVendorType(request, wholeSalerEntity);
 
         request.setCommissionRate(BigDecimal.valueOf(request.getCommissionRate().doubleValue() / 100.0));
-        vendorContractNewService.modifyContract(originalVendorContractHistoryId, request);
+        vendorContractNewService.modifyContract(request);
     }
 
     private void updateVendorType(SetVendorContractParameter request, WholeSalerEntity wholeSaler) {
