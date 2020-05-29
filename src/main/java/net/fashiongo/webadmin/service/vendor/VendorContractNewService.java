@@ -13,17 +13,11 @@ import java.util.List;
 
 public interface VendorContractNewService {
 
-    void modifyVendorContractDocument(Long vendorId, SetVendorContractDocumentParameter request);
+    void setVendorContractDocument(SetVendorContractDocumentParameter request);
 
-    void createVendorContractDocument(Long vendorId, SetVendorContractDocumentParameter request);
+    void deleteVendorContractDocument(List<Long> documentIds);
 
-    void deleteVendorContractDocument(Long vendorId, Long contractId, List<Long> documentIds);
-
-    void reviseContract(Long originalVendorContractHistoryId, SetVendorContractParameter request);
-
-    void createContract(SetVendorContractParameter request);
-
-    void modifyContract(Long originalVendorContractHistoryId, SetVendorContractParameter request);
+    void setVendorContract(SetVendorContractParameter request);
 
     VendorContractResponse inquiryVendorContract(Integer vendorId);
 
