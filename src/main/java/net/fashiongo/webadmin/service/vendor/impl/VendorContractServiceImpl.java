@@ -109,8 +109,6 @@ public class VendorContractServiceImpl implements VendorContractService {
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
     public void delVendorContract(DelVendorContractParameter request) {
 
-        WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
-
         vendorContractNewService.deleteContract(request.getWholeSalerID(), request.getVendorContractID().longValue());
     }
 
