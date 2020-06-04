@@ -802,10 +802,10 @@ public class VendorDetailInfo {
         this.isADBlock = isADBlock;
         this.sourceType = sourceType;
     }
+
     public VendorDetailInfo(Integer wholeSalerID, Integer sortNo, Timestamp startingDate, String companyName, String regCompanyName, String dirName, String codeName, String firstName, String lastName, String description, String billStreetNo, String billCity, String billState, String billZipcode, String billCountry, String billPhone, String billFax, String streetNo, String city, String state, String zipcode, String country, String phone, String email, String fax, String memo, String webSite, String userId, String pwd, String webSiteActive, String slActive, String reportActive, String catalogActive, String lambsActive, Integer group1, Integer group2, String dm, String posUse, String mainPage, String titlePageMemo, String wsaPolicy, String wholeSalerTitlePage, String onSale, String newCustYN, String goodUpYN, String minTQYN, Integer minTQ, String minDollarYN, Float minDollar, String minECQYN, Integer minECQ, String qtySeqYN, String minPolicyUseYN, String orderNotice, String compCharge, Float ratio, String autoRActive, String minCharge, Float minAmount, String isMonthly, String isYearly, BigDecimal yearlyAmount, String noticeToAll, String asKnownAs, String honote1, String honote2, String honote3, String honote4, Timestamp actualOpenDate, String billingNote2, String specialNote1, String specialNote2, String adv1, String adv2, String advertiseYN, String actualOpen, String ownerCountry, Timestamp contractExpireDate, String billReviewHoLee, LocalDateTime openDate, Integer compsolutionNo, Boolean retailerYes, String retailerBlockList, String retailerOpenList, LocalDateTime dateTimeModified, String prePackYN, Boolean salesItem, Boolean hotItems, Boolean promotionalItems, String billStreetNo2, String streetNo2, String itemLocation, String lastUser, Timestamp lastModifiedDateTime, String minTQYNStyle, Integer minTQStyle, String billingNote1, Boolean billingYN, String inHouseMemo, Integer sizeID, Integer packID, Integer districtID, Integer fgPlan, Integer webSiteLinkCount, Integer howKnownType, String howKnownOther, Boolean discountYN, Integer insertedWhichApp, Boolean allowImage2Anony, Integer maxPictureQty, Boolean allowImmediateShopping, String businessCategory, Integer imageServerID, String contactPerson, Integer companyTypeID, Integer establishedYear, String pictureMain, String pictureLogo, String sizeChart, String madeIn, Boolean productSortByLastUpdate, Boolean active, Boolean shopActive, Boolean orderActive, Integer billCountryID, Integer countryID, String billPhone2, String phone2, String creditCardAccessPassword, Integer adminAccountCap, Integer defaultSizeID, Integer defaultPackID, Integer defaultFabricDescriptionID, Boolean manageInventory, Boolean allowAccess2Y3, String sm_Facebook, String sm_Twitter, String sm_Youtube, String blog, BigDecimal minOrderByAmount, Integer minOrderByQty, BigDecimal extraCharge, BigDecimal extraChargeAmountFrom, BigDecimal extraChargeAmountTo, String industryType, Boolean orderActiveLock, String activeOld, String shopActiveOld, Float minOrderAmount, String minOrderAmountYN, String minTQAllYN, Integer minTQAll, Integer itemUploadCap, Integer defaultMadeInCountryID, Integer defaultLabelID, Integer defaultInventoryStatusID, String pictureMain2, Boolean showFeedback, Boolean consolidationYN, Integer defaultVendorID, Integer adminWebServerID, String wholeSalerGUID, Boolean fashionGoExclusive, String sizeChartImage, Boolean blockPolicy, String sm_Instagram, Boolean chargedByCreditCard, String category, Boolean isLockedOut, Timestamp lastLockoutDate, Long isLockedOut2, Boolean useCreditCardPaymentService, Double transactionFeeRate1, Double transactionFeeRate2, Double transactionFeeRate1Intl, Double transactionFeeRate2Intl, Double transactionFeeFixed, Double commissionRate, String billingEmail1, String billingEmail2, String billingEmail3, String showRoomStreetNo, String showRoomCity, String showRoomCountry, String showRoomState, String showRoomZipcode, String showRoomPhone, String showRoomFax, Long elambsuser, Boolean isADBlock, Integer sourceType ,Integer vendorseoId,String metaKeyword,String metaDescription) {
         this.wholeSalerID = wholeSalerID;
         this.sortNo = sortNo;
-        this.startingDate = startingDate == null ? null : startingDate.toLocalDateTime();
         this.companyName = companyName;
         this.regCompanyName = regCompanyName;
         this.dirName = dirName;
@@ -882,12 +882,10 @@ public class VendorDetailInfo {
         this.ownerCountry = ownerCountry;
         this.contractExpireDate = contractExpireDate == null ? null : contractExpireDate.toLocalDateTime();
         this.billReviewHoLee = billReviewHoLee;
-        this.openDate = openDate;
         this.compsolutionNo = compsolutionNo;
         this.retailerYes = retailerYes;
         this.retailerBlockList = retailerBlockList;
         this.retailerOpenList = retailerOpenList;
-        this.dateTimeModified = dateTimeModified;
         this.prePackYN = prePackYN;
         this.salesItem = salesItem;
         this.hotItems = hotItems;
@@ -896,7 +894,6 @@ public class VendorDetailInfo {
         this.streetNo2 = streetNo2;
         this.itemLocation = itemLocation;
         this.lastUser = lastUser;
-        this.lastModifiedDateTime = lastModifiedDateTime == null ? null : lastModifiedDateTime.toLocalDateTime();
         this.minTQYNStyle = minTQYNStyle;
         this.minTQStyle = minTQStyle;
         this.billingNote1 = billingNote1;
