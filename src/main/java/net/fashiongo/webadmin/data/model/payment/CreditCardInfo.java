@@ -18,7 +18,7 @@ public class CreditCardInfo {
     private String referenceID;
 
     @JsonProperty("Last4Digit")
-    private Integer last4Digit;
+    private String last4Digit;
 
     @JsonProperty("CVV")
     private String cvv;
@@ -108,7 +108,7 @@ public class CreditCardInfo {
         this.creditCardID = creditCardID;
         this.retailerID = retailerID;
         this.referenceID = referenceID;
-        this.last4Digit = last4Digit == null ? null : Integer.valueOf(last4Digit);
+        this.last4Digit = last4Digit;
         this.cvv = cvv;
         this.email = email;
         this.nameOnCard = nameOnCard;
