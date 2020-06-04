@@ -172,12 +172,10 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
     @Override
     public void deleteContract(Integer vendorId, Long contractId) {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/" + contractId + "/delete";
-        DeleteContractHistoryCommand newRequest = new DeleteContractHistoryCommand(vendorId,contractId);
-
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/contracts/" + contractId;
         WebAdminLoginUser userInfo = Utility.getUserInfo();
         try {
-            String responseBody = httpCaller.post(endpoint, newRequest, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+            String responseBody = httpCaller.delete(endpoint, FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
             FashionGoApiResponse<Object> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Object>>() {});
             if (!fashionGoApiResponse.getHeader().isSuccessful()) {
                 log.error("fail to delete vendor contract. contractId: {}, code : {}, message : {}", contractId, fashionGoApiResponse.getHeader().getResultCode(), fashionGoApiResponse.getHeader().getResultMessage());
@@ -187,6 +185,8 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
             log.error("fail to delete vendor contract.", e);
             throw new VendorContractOperationException("fail to delete vendor contract. " + e.getMessage());
         }
+
+
     }
 
     @Override
@@ -342,17 +342,6 @@ public class VendorContractNewServiceImpl implements VendorContractNewService {
         }
     }
 
-    @Getter
-    private class DeleteContractHistoryCommand {
-
-        private Integer vendorId;
-        private Long contractHistoryId;
-
-        private DeleteContractHistoryCommand(Integer vendorId, Long contractHistoryId) {
-            this.vendorId = vendorId;
-            this.contractHistoryId = contractHistoryId;
-        }
-    }
 
     @Getter
     private class ModifyContractHistoryCommand extends ContractHistoryCommand {
