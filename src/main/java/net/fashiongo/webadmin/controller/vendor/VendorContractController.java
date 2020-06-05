@@ -12,7 +12,10 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author roy
@@ -114,7 +117,8 @@ public class VendorContractController {
 	@PostMapping(value = "vendor/setvendorcontract", produces = "application/json")
 	public ResultCode setvendorcontract(@RequestBody SetVendorContractParameter param) {
 	    try {
-	        vendorContractService.setVendorContract(param);
+			param.setCommissionRate(BigDecimal.valueOf(param.getCommissionRate().doubleValue() / 100.0));
+			vendorContractService.setVendorContract(param);
             return new ResultCode(true, 1, "success");
         } catch (Exception e) {
 	        log.error("fail to update the vendor contract info.", e);
@@ -138,7 +142,7 @@ public class VendorContractController {
 	@PostMapping(value = "vendor/setvendorcontractdocument", produces = "application/json")
 	public ResultCode setVendorContractDocument(@RequestBody SetVendorContractDocumentParameter request) {
 	    try {
-            vendorContractService.setVendorContractDocument(request);
+	    	vendorContractNewService.setVendorContractDocument(request);
             return new ResultCode(true, 1, "success");
         } catch (Exception e) {
 	        log.error("fail to set vendor contract document", e);
@@ -153,7 +157,12 @@ public class VendorContractController {
             return new ResultCode(false, -1, "failure");
 
     	try {
-            vendorContractService.delVendorContractDocument(request);
+			Integer[] documentIds = Arrays.stream(request.getDocumentHistoryIDs().split(",")).mapToInt(Integer::parseInt).boxed().toArray(Integer[]::new);
+			if (documentIds.length == 0){
+				return new ResultCode(true, 1, "success");
+			}
+
+			vendorContractNewService.deleteVendorContractDocument(Arrays.stream(documentIds).mapToLong(i -> i).boxed().collect(Collectors.toList()));
             return new ResultCode(true, 1, "success");
         } catch (Exception e) {
             log.error("fail to delete vendor contract document", e);

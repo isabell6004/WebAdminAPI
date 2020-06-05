@@ -13,8 +13,8 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InactiveTodayDealDetail {
-    @JsonProperty("TodayDealID")
+public class TodayDealDetailDto {
+	@JsonProperty("TodayDealID")
     private Integer todayDealID;
 
     @JsonProperty("Title")
@@ -73,4 +73,21 @@ public class InactiveTodayDealDetail {
     
     @JsonProperty("OrderActive")
     private Boolean orderActive;
+    
+    @JsonProperty("Active")
+    private Boolean active;
+    
+    @JsonProperty("ApprovedOn")
+    private Timestamp approvedOn;
+    
+    @JsonProperty("AppliedOn")
+    private Timestamp appliedOn;
+
+    @JsonProperty("CreatedByVendor")
+    private Boolean createdByVendor;
+
+    private Integer sYear;
+
+    private Integer sMonth;
+
 }

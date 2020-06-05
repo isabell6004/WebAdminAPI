@@ -40,9 +40,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-/**
- * Created by jinwoo on 2020-01-03.
- */
 @Service
 @Slf4j
 public class VendorInfoServiceImpl implements VendorInfoService {
@@ -77,14 +74,12 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private VendorPaymentInfoNewService vendorPaymentInfoNewService;
 
-    private VendorContractService vendorContractService;
-
     private VendorContractNewService vendorContractNewService;
 
     private CacheService cacheService;
-    
+
     private VendorSeoEntityRepository vendorSeoEntityRepository;
-    
+
     private VendorSeoNewService vendorSeoNewService;
 
     private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
@@ -102,7 +97,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorInfoNewService vendorInfoNewService,
                                  VendorCapEntityRepository vendorCapEntityRepository,
                                  VendorPaymentInfoNewService vendorPaymentInfoNewService,
-                                 VendorContractService vendorContractService,
                                  CacheService cacheService,
                                  JdbcHelper jdbcHelperFgBilling,
                                  ConfigurableEnvironment env, VendorContractNewService vendorContractNewService,
@@ -121,7 +115,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.vendorInfoNewService = vendorInfoNewService;
         this.vendorCapEntityRepository = vendorCapEntityRepository;
         this.vendorPaymentInfoNewService = vendorPaymentInfoNewService;
-        this.vendorContractService = vendorContractService;
         this.cacheService = cacheService;
         this.jdbcHelperFgBilling = jdbcHelperFgBilling;
         this.env = env;
@@ -259,26 +252,26 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         vendorInfoNewService.update(requestVendorDetailInfo, wholeSaler.getUserId(), Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
 
         // insert or update of vendor_seo table
-        if (requestVendorDetailInfo.getMetaKeyword() != null || requestVendorDetailInfo.getMetaDescription() != null) {  
+        if (requestVendorDetailInfo.getMetaKeyword() != null || requestVendorDetailInfo.getMetaDescription() != null) {
 	        SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
-	        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());	
+	        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());
 	        setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
-	        
+
 	        if (requestVendorDetailInfo.getVendorseoId() != null) {
-	        	setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());	
+	        	setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());
 	        }
-	        
+
 	        if (setVendorSeoParameter.isNewVendorSeo()) {
-	            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);        	
+	            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
 	        }
 	        else {
-	        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter); 
+	        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
 	        }
         }
         return 1;
     }
-  
-    
+
+
     private boolean checkDupAndCreateUserInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
         AspnetUsersEntity aspUserDuplicateCheck = aspnetUsersEntityRepository.findOneByUserNameAndWholeSalerGUID(requestVendorDetailInfo.getUserId(), wholeSaler.getWholeSalerGUID());
         if (aspUserDuplicateCheck != null) {
@@ -350,7 +343,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             if (requestVendorDetailInfo.getShopActive() && !wholeSaler.getShopActive())
                 updateMembershipStatus(wholeSaler);
 
-            if (wholeSaler.getActive() && !requestVendorDetailInfo.getActive())
+            if (wholeSaler.getActive() && !requestVendorDetailInfo.getActive()
+            		|| (wholeSaler.getOrderActive() && !requestVendorDetailInfo.getOrderActive()))
                 inactiveTodayDealInfo(requestVendorDetailInfo, sessionUserId);
 
             if (!requestVendorDetailInfo.getActive())
@@ -369,25 +363,27 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setIsADBlock(requestVendorDetailInfo.getIsADBlock());
 
             if (requestVendorDetailInfo.getOrderActive()) {
+                Timestamp now = Timestamp.valueOf(LocalDateTime.now());
                 setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUserId);
-                if (wholeSaler.getActualOpenDate() == null) {
-                    wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
+                if (wholeSaler.getActualOpenDate() == null) {  // first open
+                    wholeSaler.setActualOpenDate(now);
+                    requestVendorDetailInfo.setActualOpenDate(now.toLocalDateTime());
                     setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                     wholeSaler.setContractExpireDate(null);
                 } else {
-                    String actualOpenDateTest = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")) : "0";
-                    String dateTimeNowTest = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-                    int actualOpenDateTestInt = Integer.parseInt(actualOpenDateTest);
-                    int dateTimeNowTestInt = Integer.parseInt(dateTimeNowTest);
+                    String actualOpenDate = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")) : "0";
+                    String dateTimeNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+                    int actualOpenDateInt = Integer.parseInt(actualOpenDate);
+                    int dateTimeNowInt = Integer.parseInt(dateTimeNow);
 
-                    if (actualOpenDateTestInt > dateTimeNowTestInt) {
-                        wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
+                    if (actualOpenDateInt > dateTimeNowInt) {
+                        wholeSaler.setActualOpenDate(now);
+                        requestVendorDetailInfo.setActualOpenDate(now.toLocalDateTime());
                         setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                         wholeSaler.setContractExpireDate(null);
                     }
                 }
-            } else if (!requestVendorDetailInfo.getOrderActive() && requestVendorDetailInfo.getActualOpenDate() != null) {
-
+            } else if (!requestVendorDetailInfo.getOrderActive() && requestVendorDetailInfo.getActualOpenDate() != null) { // scheduling
                 String requestActualOpenDate = requestVendorDetailInfo.getActualOpenDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String vendorActualOpenDate = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : "";
                 String dateTimeNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -401,12 +397,22 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                         wholeSaler.setShopActive(true);
                         wholeSaler.setActive(true);
 
+                        // for the new db
+                        requestVendorDetailInfo.setOrderActive(true);
+                        requestVendorDetailInfo.setShopActive(true);
+                        requestVendorDetailInfo.setActive(true);
+
                         setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
                         wholeSaler.setContractExpireDate(null);
+                    } else if (StringUtils.compare(requestActualOpenDate, dateTimeNow) < 0) {
+                        throw new RuntimeException("the scheduled time is not valid. " + requestActualOpenDate);
                     } else {
                         wholeSaler.setActualOpenDate(Timestamp.valueOf(requestVendorDetailInfo.getActualOpenDate()));
                     }
                 }
+            } else if (!requestVendorDetailInfo.getOrderActive() && requestVendorDetailInfo.getActualOpenDate() == null) { // remove scheduling
+                wholeSaler.setActualOpenDate(null);
+                requestVendorDetailInfo.setActualOpenDate(null);
             }
 
             wholeSaler.setTransactionFeeRate1(requestVendorDetailInfo.getTransactionFeeRate1());
@@ -438,7 +444,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
             vendorWholeSalerEntityRepository.save(wholeSaler);
             vendorInfoNewService.updateDetailInfo(request, requestVendorDetailInfo, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
-            
+
             return 1;
         } catch (Exception ex) {
             log.warn(ex.getMessage(), ex);
@@ -494,6 +500,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         List<TodayDealEntity> todayDealListUpdate = new ArrayList<>();
         for (TodayDealEntity todayDeal : todayDealList) {
             todayDeal.setActive(false);
+            todayDeal.setRevokedOn(Timestamp.valueOf(LocalDateTime.now()));
+            todayDeal.setRevokedBy(sessionUsrId);
+            todayDeal.setNotes("Vendor status has been changed");
             todayDeal.setModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
             todayDeal.setModifiedBy(sessionUsrId);
 
