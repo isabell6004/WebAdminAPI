@@ -227,6 +227,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         wholeSaler.setBillCity(requestVendorDetailInfo.getBillCity());
         wholeSaler.setBillState(requestVendorDetailInfo.getBillState());
         wholeSaler.setBillZipcode(requestVendorDetailInfo.getBillZipcode());
+        wholeSaler.setBillCountryID(requestVendorDetailInfo.getBillCountryID());
+
         wholeSaler.setBillCountry(requestVendorDetailInfo.getBillCountry());
         wholeSaler.setBillPhone(requestVendorDetailInfo.getBillPhone());
         wholeSaler.setBillFax(requestVendorDetailInfo.getBillFax());
@@ -236,6 +238,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         wholeSaler.setState(requestVendorDetailInfo.getState());
         wholeSaler.setZipcode(requestVendorDetailInfo.getZipcode());
         wholeSaler.setCountry(requestVendorDetailInfo.getCountry());
+        wholeSaler.setCountryID(requestVendorDetailInfo.getCountryID());
         wholeSaler.setPhone(requestVendorDetailInfo.getPhone());
         wholeSaler.setFax(requestVendorDetailInfo.getFax());
 

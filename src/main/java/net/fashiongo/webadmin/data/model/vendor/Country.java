@@ -10,4 +10,8 @@ public class Country {
 
 	@JsonProperty("CountryName")
 	private String countryName;
+
+	@JsonProperty("CountryID")
+	private Integer countryID;
+
 }

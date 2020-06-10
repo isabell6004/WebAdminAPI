@@ -189,8 +189,10 @@ public class RenewalVendorService extends ApiService {
                 .stream()
                 .map(entity -> Country.builder()
                         .countryName(entity.getCountryName())
-                        .build()
-                ).collect(Collectors.toList());
+                        .countryID(entity.getCountryID())
+                        .build())
+                .collect(Collectors.toList());
+
 
         return GetVendorDetailInfoDataResponse.builder()
                 .sessionUsrID(Utility.getUsername())
