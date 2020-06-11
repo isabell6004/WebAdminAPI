@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.service.vendor;
 import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractDocumentParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
+import net.fashiongo.webadmin.data.model.vendor.DelVendorContractParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorContractDocumentHistoryResponse;
@@ -18,8 +19,11 @@ public interface VendorContractNewService {
     void deleteVendorContractDocument(List<Long> documentIds);
 
     void setVendorContract(SetVendorContractParameter request);
+    void deleteContract(Integer vendorId, Long contractId);
 
     VendorContractResponse inquiryVendorContract(Integer vendorId);
+
+    VendorContractResponse inquiryVendorContractInitial(Integer vendorId);
 
     List<ContractPlansResponse> inquiryContractPlans();
 

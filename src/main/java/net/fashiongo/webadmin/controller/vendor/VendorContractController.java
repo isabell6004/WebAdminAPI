@@ -46,6 +46,15 @@ public class VendorContractController {
 		results.setSuccess(true);
 		return results;
 	}
+
+	@RequestMapping(value="vendor/getvendorcontractinitial", method=RequestMethod.GET, produces = "application/json")
+	public JsonResponse<VendorContractResponse> getVendorContractInitial(@RequestParam(value="wid") Integer wholeSalerID) {
+		JsonResponse<VendorContractResponse> results = new JsonResponse<VendorContractResponse>(false, null, 0, null);
+		VendorContractResponse result = vendorContractNewService.inquiryVendorContractInitial(wholeSalerID);
+		results.setData(result);
+		results.setSuccess(true);
+		return results;
+	}
 	
     @GetMapping(value = "vendor/contractplans", produces = "application/json")
     public JsonResponse<List<ContractPlansResponse>> getContractPlans() {
@@ -116,6 +125,19 @@ public class VendorContractController {
             return new ResultCode(false, -1, "failure");
         }
 	}
+
+	@PostMapping(value = "vendor/delvendorcontract", produces = "application/json")
+	public ResultCode deleteVendorContract(@RequestBody DelVendorContractParameter request) {
+		//
+		try {
+			vendorContractService.delVendorContract(request);
+			return new ResultCode(true, 1, "success");
+		} catch (Exception e) {
+			log.error("fail to delete vendor contract", e);
+			return new ResultCode(false, -1, "failure");
+		}
+	}
+
 
 	@PostMapping(value = "vendor/setvendorcontractdocument", produces = "application/json")
 	public ResultCode setVendorContractDocument(@RequestBody SetVendorContractDocumentParameter request) {

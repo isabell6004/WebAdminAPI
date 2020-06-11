@@ -179,7 +179,7 @@ webAdminapi:
   productApi:
     endpoint: http://10.210.16.205:17301
   rewardApi:
-    endpoint: http://localhost:17401/v1
+    endpoint: http://10.210.16.205:17401/v1
   jwt:
     develop:
       check-token: true

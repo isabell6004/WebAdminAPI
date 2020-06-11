@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
+import net.fashiongo.webadmin.data.model.vendor.DelVendorContractParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorException;
@@ -52,6 +53,12 @@ public class VendorContractServiceImpl implements VendorContractService {
             throw new NotFoundVendorException("can not find a vendor info. The id is " + vendorId);
         }
         return vendorInfo;
+    }
+
+    @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
+    public void delVendorContract(DelVendorContractParameter request) {
+
+        vendorContractNewService.deleteContract(request.getWholeSalerID(), request.getVendorContractID().longValue());
     }
 
     private void updateVendorType(SetVendorContractParameter request, WholeSalerEntity wholeSaler) {
