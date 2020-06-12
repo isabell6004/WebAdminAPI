@@ -99,6 +99,16 @@ public class RenewalOrderService {
 		return result;
 	}
 
+	public JsonResponse getWebRequest3(GetPrintPoUrlParameter2 parameters) throws JsonProcessingException {
+		int orderId = parameters.getOrderid();
+		String orderSessionGUID = ordersEntityRepository.findById(parameters.getOrderid()).map(ordersEntity -> ordersEntity.getOrderSessionGUID()).orElse("");
+
+		String url = "/v2/" + parameters.getResulttype() + "/po/" + orderSessionGUID + "/" + orderId + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForpdf() + "&withImage=" + parameters.getWithimage() + "&withVendorStyleNo=" + parameters.getWithvendorstyleno();
+		JsonResponse<?> result = httpClient.get(url);
+
+		return result;
+	}
+
 	public JsonResponse getPrintMergePOUrl(GetPrintPoUrlParameter2 parameters) {
 		int orderId = parameters.getOrderid();
 

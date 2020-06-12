@@ -61,6 +61,13 @@ public class OrderController {
 		return results;
 	}
 
+	@RequestMapping(value="getprintpourl3", method=RequestMethod.POST)
+	public JsonResponse getWebRequest3(@RequestBody GetPrintPoUrlParameter2 parameters) throws JsonProcessingException {
+		JsonResponse results = renewalOrderService.getWebRequest3(parameters);
+
+		return results;
+	}
+
 	@RequestMapping(value="getprintmergepourl", method=RequestMethod.POST)
 	public JsonResponse getPrintMergePOUrl(@RequestBody GetPrintPoUrlParameter2 parameters) throws JsonProcessingException {
 		JsonResponse results = renewalOrderService.getPrintMergePOUrl(parameters);
