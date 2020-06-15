@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface AspnetUsersRepository extends CrudRepository<AspnetUsers, String> {
     Optional<AspnetUsers> findByUserName(String UserName);
+    Optional<AspnetUsers> findByLoweredUserName(String loweredUserName);
 }

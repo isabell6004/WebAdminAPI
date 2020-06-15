@@ -194,7 +194,7 @@ public class RenewalBuyerService {
 					.amUserId(retailerEntity.getAmUserId())
 					.build();
 
-			AspnetMembershipEntity m = aspnetMembershipEntityRepository.findByUserName(retailerEntity.getUserID()).orElse(null);
+			AspnetMembershipEntity m = aspnetMembershipEntityRepository.findById(retailerEntity.getRetailerGUID()).orElse(null);
 
 			if (m != null) {
 
