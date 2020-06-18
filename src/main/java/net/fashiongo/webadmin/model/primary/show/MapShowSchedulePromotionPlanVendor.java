@@ -79,6 +79,7 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 	@JsonProperty("Fee")
 	private BigDecimal fee;
 
+
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "ItemCountMax")
@@ -125,6 +126,21 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 	@Column(name = "Active")
 	private Boolean active;
 
+	@Basic(optional = false)
+	@Column(name = "discount_amount")
+	@JsonProperty("DiscountAmount")
+	private BigDecimal discountAmount;
+
+	@Basic(optional = false)
+	@Column(name = "total_amount")
+	@JsonProperty("TotalAmount")
+	private BigDecimal totalAmount;
+
+	@Basic(optional = false)
+	@Column(name = "is_regular_commission")
+	@JsonProperty("IsRegularCommission")
+	private Boolean isRegularCommission;
+
 	public MapShowSchedulePromotionPlanVendor() {
 	}
 
@@ -133,7 +149,7 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 	}
 
 	public MapShowSchedulePromotionPlanVendor(Integer mapID, int planID, int wholeSalerID, double commissionRate,
-			int rackCount, BigDecimal fee, int itemCountMax) {
+			int rackCount, BigDecimal fee, int itemCountMax, BigDecimal discountAmount, BigDecimal totalAmount, Boolean isRegularCommission) {
 		this.mapID = mapID;
 		this.planID = planID;
 		this.wholeSalerID = wholeSalerID;
@@ -141,6 +157,9 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 		this.rackCount = rackCount;
 		this.fee = fee;
 		this.itemCountMax = itemCountMax;
+		this.discountAmount = discountAmount;
+		this.totalAmount = totalAmount;
+		this.isRegularCommission = isRegularCommission;
 	}
 
 	public Integer getMapID() {
@@ -273,6 +292,28 @@ public class MapShowSchedulePromotionPlanVendor implements Serializable {
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
+	public BigDecimal getTotalAmount() {	return totalAmount;	}
+
+	public void setTotalAmount(BigDecimal fee, int rackCount, BigDecimal discountAmount) {
+		this.totalAmount = fee.multiply(new BigDecimal(rackCount)).subtract(discountAmount);
+	}
+
+	public Boolean getIsRegularCommission() {
+		return isRegularCommission;
+	}
+
+	public void setIsRegularCommission(Boolean isRegularCommission) {
+		this.isRegularCommission = isRegularCommission;
 	}
 
 	@Override
