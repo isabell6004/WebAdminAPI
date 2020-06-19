@@ -39,6 +39,14 @@ public class SetShowParticipatingVendorParameters {
 	@JsonProperty("fee")
 	private BigDecimal fee;
 
+	@ApiModelProperty(required = true, example = "1.0")
+	@JsonProperty("discountAmount")
+	private BigDecimal discountAmount;
+
+	@ApiModelProperty(required = true, example = "1.0")
+	@JsonProperty("isRegularCommission")
+	private Boolean isRegularCommission;
+
 	public Integer getMapId() {
 		return mapId;
 	}
@@ -85,6 +93,22 @@ public class SetShowParticipatingVendorParameters {
 
 	public void setFee(BigDecimal fee) {
 		this.fee = fee;
+	}
+
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
+	public Boolean getIsRegularCommission() {
+		return isRegularCommission;
+	}
+
+	public void setIsRegularCommission(Boolean isRegularCommission) {
+		this.isRegularCommission = isRegularCommission;
 	}
 
 }

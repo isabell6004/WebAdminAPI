@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -791,6 +792,9 @@ public class SitemgmtShowService extends ApiService {
 		mapShowSchedulePromotionPlanVendor.setCommissionRate(parameters.getCommissionRate());
 		mapShowSchedulePromotionPlanVendor.setRackCount(parameters.getRackCount());
 		mapShowSchedulePromotionPlanVendor.setFee(parameters.getFee());
+		mapShowSchedulePromotionPlanVendor.setDiscountAmount(parameters.getDiscountAmount());
+		mapShowSchedulePromotionPlanVendor.setIsRegularCommission(parameters.getIsRegularCommission());
+		mapShowSchedulePromotionPlanVendor.setTotalAmount(parameters.getFee(), parameters.getRackCount(), parameters.getDiscountAmount());
 
 		// -----------------------------------------------------------
 		mapShowSchedulePromotionPlanVendor = mapShowSchedulePromotionPlanVendorRepository
