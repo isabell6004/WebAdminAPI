@@ -8,7 +8,6 @@ import lombok.Getter;
 import net.fashiongo.webadmin.data.model.vendor.BannerRequestResponse;
 import net.fashiongo.webadmin.data.model.vendor.ImageResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorImageParameter;
-import net.fashiongo.webadmin.data.model.vendor.VendorImage;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.pojo.parameter.GetBannerRequestParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetDenyBannerParameter;
@@ -24,7 +23,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Optional;
 
 @Service
@@ -87,10 +87,16 @@ public class BannerRequestNewServiceImpl implements BannerRequestNewService {
     public BannerRequestResponse getBanners(GetBannerRequestParameter parameters) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/banners";
 
+        String keyword = null;
+        try {
+            keyword = parameters.getSearchKeyword() == null ?
+                    null : URLEncoder.encode(parameters.getSearchKeyword(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {}
+
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .queryParam("pn", parameters.getPageNum())
                 .queryParam("ps", parameters.getPageSize())
-                .queryParam("keyword", parameters.getSearchKeyword())
+                .queryParam("keyword", keyword)
                 .queryParam("fromDate", parameters.getFromDate())
                 .queryParam("toDate", parameters.getToDate())
                 .queryParam("status", parameters.getSearchStatus())
