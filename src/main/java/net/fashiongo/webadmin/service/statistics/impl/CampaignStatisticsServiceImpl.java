@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
 import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse;
+import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
 import net.fashiongo.webadmin.service.statistics.CampaignStatisticsService;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class CampaignStatisticsServiceImpl implements CampaignStatisticsService 
     }
 
     @Override
-    public CollectionObject<GetAbandonedCartResponse> getCampaignStatistics(Long campaignId, Integer pageNumber, Integer pageSize, String fromDate, String toDate, String orderBy) {
+    public CollectionObject<GetAbandonedCartResponse> getCampaignStatistics(long campaignId, Integer pageNumber, Integer pageSize, String fromDate, String toDate, String orderBy) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/campaigns/" + campaignId + "/statistics";
 
         UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(endpoint)
@@ -42,8 +43,7 @@ public class CampaignStatisticsServiceImpl implements CampaignStatisticsService 
                 .queryParam("orderBy", orderBy)
                 .build(false);
 
-        WebAdminLoginUser userInfo = Utility.getUserInfo();
-        String responseBody = httpCaller.get(uriComponents.toUriString(), FashionGoApiHeader.getHeader(userInfo.getUserId(), userInfo.getUsername()));
+        String responseBody = httpCaller.get(uriComponents.toUriString(), FashionGoApiHeader.getDefaultHeader());
 
         try {
             mapper.registerModule(new JavaTimeModule())
@@ -57,6 +57,46 @@ public class CampaignStatisticsServiceImpl implements CampaignStatisticsService 
                 throw new RuntimeException("Fail to get campaign statistics from FashionGo API");
         } catch (IOException e) {
             throw new RuntimeException("Fail to get campaign statistics from FashionGo API");
+        }
+    }
+
+    @Override
+    public long getCampaignItemCount(long campaignId, boolean isUnique) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/campaigns/" + campaignId + "/items/count";
+
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(endpoint)
+                .queryParam("isUnique", isUnique)
+                .build(false);
+
+        String responseBody = httpCaller.get(uriComponents.toUriString(), FashionGoApiHeader.getDefaultHeader());
+
+        try {
+            FashionGoApiResponse<SingleObject<Long>> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<SingleObject<Long>>>() {});
+
+            if (fashionGoApiResponse.getHeader().isSuccessful())
+                return fashionGoApiResponse.getData().getContent();
+            else
+                throw new RuntimeException("Fail to get campaign item count from FashionGo API");
+        } catch (IOException e) {
+            throw new RuntimeException("Fail to get campaign item count from FashionGo API");
+        }
+    }
+
+    @Override
+    public long getCampaignUnsubscribeCount(long campaignId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/campaigns/" + campaignId + "/unsubscribes/count";
+
+        String responseBody = httpCaller.get(endpoint, FashionGoApiHeader.getDefaultHeader());
+
+        try {
+            FashionGoApiResponse<SingleObject<Long>> fashionGoApiResponse = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<SingleObject<Long>>>() {});
+
+            if (fashionGoApiResponse.getHeader().isSuccessful())
+                return fashionGoApiResponse.getData().getContent();
+            else
+                throw new RuntimeException("Fail to get campaign unsubscribe count from FashionGo API");
+        } catch (IOException e) {
+            throw new RuntimeException("Fail to get campaign unsubscribe count from FashionGo API");
         }
     }
 }
