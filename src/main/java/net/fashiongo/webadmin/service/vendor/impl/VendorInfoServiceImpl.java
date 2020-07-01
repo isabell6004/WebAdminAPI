@@ -2,27 +2,16 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.entity.primary.*;
-import net.fashiongo.webadmin.data.model.vendor.SetVendorBasicInfoParameter;
-import net.fashiongo.webadmin.data.model.vendor.SetVendorSeoParameter;
-import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
-import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
-import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
-import net.fashiongo.webadmin.data.model.vendor.VendorSeoInfoResponse;
+import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.vendor.VendorSeoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.service.CacheService;
-import net.fashiongo.webadmin.service.vendor.VendorContractNewService;
-import net.fashiongo.webadmin.service.vendor.VendorContractService;
-import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
-import net.fashiongo.webadmin.service.vendor.VendorInfoService;
-import net.fashiongo.webadmin.service.vendor.VendorPaymentInfoNewService;
-import net.fashiongo.webadmin.service.vendor.VendorSeoNewService;
+import net.fashiongo.webadmin.service.billing.BillingAccountService;
+import net.fashiongo.webadmin.service.vendor.*;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
@@ -45,8 +34,6 @@ import java.util.*;
 public class VendorInfoServiceImpl implements VendorInfoService {
 
     private ConfigurableEnvironment env;
-
-    private JdbcHelper jdbcHelperFgBilling;
 
     private VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
 
@@ -76,9 +63,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private VendorContractNewService vendorContractNewService;
 
-    private CacheService cacheService;
+    private BillingAccountService billingAccountService;
 
-    private VendorSeoEntityRepository vendorSeoEntityRepository;
+    private CacheService cacheService;
 
     private VendorSeoNewService vendorSeoNewService;
 
@@ -97,10 +84,9 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  VendorInfoNewService vendorInfoNewService,
                                  VendorCapEntityRepository vendorCapEntityRepository,
                                  VendorPaymentInfoNewService vendorPaymentInfoNewService,
+                                 BillingAccountService billingAccountService,
                                  CacheService cacheService,
-                                 JdbcHelper jdbcHelperFgBilling,
                                  ConfigurableEnvironment env, VendorContractNewService vendorContractNewService,
-                                 VendorSeoEntityRepository vendorSeoEntityRepository,
                                  VendorSeoNewService vendorSeoNewService) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
@@ -115,11 +101,10 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.vendorInfoNewService = vendorInfoNewService;
         this.vendorCapEntityRepository = vendorCapEntityRepository;
         this.vendorPaymentInfoNewService = vendorPaymentInfoNewService;
+        this.billingAccountService = billingAccountService;
         this.cacheService = cacheService;
-        this.jdbcHelperFgBilling = jdbcHelperFgBilling;
         this.env = env;
         this.vendorContractNewService = vendorContractNewService;
-        this.vendorSeoEntityRepository = vendorSeoEntityRepository;
         this.vendorSeoNewService = vendorSeoNewService;
     }
 
@@ -130,12 +115,11 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     public Integer update(SetVendorBasicInfoParameter request) {
         try {
             VendorDetailInfo vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
-            //VendorSeoInfoResponse vendorSeoInfoResponse = mapper.readValue(request.getVendorSeoInfoResponse(), VendorSeoInfoResponse.class);
             Integer result = updateVendorBasicInfo(vendorDetailInfo);
             if (result == 1) {
                 cacheService.cacheEvictVendor(request.getWid());
                 try {
-                    updateAccountOfBillingSystem(vendorDetailInfo);
+                    billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
                 } catch (Exception ex) {
                     log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
                 }
@@ -155,6 +139,11 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             Integer result = updateVendorSettingInfo(request, vendorDetailInfo);
             if(result == 1) {
                 cacheService.cacheEvictVendor(request.getWid());
+                try {
+                    billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
+                } catch (Exception ex) {
+                    log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
+                }
             }
             return result;
         } catch (IOException e) {
@@ -256,24 +245,23 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
         // insert or update of vendor_seo table
         if (requestVendorDetailInfo.getMetaKeyword() != null || requestVendorDetailInfo.getMetaDescription() != null) {
-	        SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
-	        setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());
-	        setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
+            SetVendorSeoParameter setVendorSeoParameter = new SetVendorSeoParameter();
+            setVendorSeoParameter.setMetaKeyword(requestVendorDetailInfo.getMetaKeyword());
+            setVendorSeoParameter.setMetaDescription(requestVendorDetailInfo.getMetaDescription());
 
-	        if (requestVendorDetailInfo.getVendorseoId() != null) {
-	        	setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());
-	        }
+            if (requestVendorDetailInfo.getVendorseoId() != null) {
+                setVendorSeoParameter.setVendorseoId((long)requestVendorDetailInfo.getVendorseoId());
+            }
 
-	        if (setVendorSeoParameter.isNewVendorSeo()) {
-	            vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
-	        }
-	        else {
-	        	vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
-	        }
+            if (setVendorSeoParameter.isNewVendorSeo()) {
+                vendorSeoNewService.createVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
+            }
+            else {
+                vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
+            }
         }
         return 1;
     }
-
 
     private boolean checkDupAndCreateUserInfo(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
         AspnetUsersEntity aspUserDuplicateCheck = aspnetUsersEntityRepository.findOneByUserNameAndWholeSalerGUID(requestVendorDetailInfo.getUserId(), wholeSaler.getWholeSalerGUID());
@@ -286,14 +274,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         aspUser.setLoweredUserName(requestVendorDetailInfo.getUserId().toLowerCase());
         aspnetUsersEntityRepository.save(aspUser);
         return false;
-    }
-
-    private void updateAccountOfBillingSystem(VendorDetailInfo requestVendorDetailInfo) {
-        final String spname = "up_Setting_Account";
-        List<Object> params = new ArrayList<>();
-        params.add(requestVendorDetailInfo.getWholeSalerID());
-        params.add(Utility.getUsername());
-        jdbcHelperFgBilling.executeSP(spname, params);
     }
 
     private void checkAndRecordCommissionInfoHistory(WholeSalerEntity wholeSaler, VendorDetailInfo requestVendorDetailInfo) {
@@ -347,7 +327,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                 updateMembershipStatus(wholeSaler);
 
             if (wholeSaler.getActive() && !requestVendorDetailInfo.getActive()
-            		|| (wholeSaler.getOrderActive() && !requestVendorDetailInfo.getOrderActive()))
+                    || (wholeSaler.getOrderActive() && !requestVendorDetailInfo.getOrderActive()))
                 inactiveTodayDealInfo(requestVendorDetailInfo, sessionUserId);
 
             if (!requestVendorDetailInfo.getActive())

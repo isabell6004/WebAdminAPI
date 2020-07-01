@@ -1,69 +1,73 @@
 package net.fashiongo.webadmin.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
+import net.fashiongo.webadmin.dao.primary.PaymentCreditCardRepository;
+import net.fashiongo.webadmin.dao.primary.PaymentStatusRepository;
+import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
+import net.fashiongo.webadmin.data.entity.primary.PaymentTransactionEntity;
+import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
+import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
+import net.fashiongo.webadmin.model.fgpay.*;
+import net.fashiongo.webadmin.model.pojo.common.PagedResult;
+import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentScheduleInfo;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
+import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
+import net.fashiongo.webadmin.model.primary.CardStatus;
+import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
+import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
+import net.fashiongo.webadmin.model.primary.PaymentStatus;
+import net.fashiongo.webadmin.service.billing.BillingAccountService;
+import net.fashiongo.webadmin.utility.HttpClient;
+import net.fashiongo.webadmin.utility.JsonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
 import java.math.BigDecimal;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
-import net.fashiongo.webadmin.data.entity.primary.PaymentTransactionEntity;
-import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
-import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
-import net.fashiongo.webadmin.utility.HttpClient;
-import net.fashiongo.webadmin.utility.JsonResponse;
-import net.fashiongo.webadmin.dao.primary.OrderPaymentStatusRepository;
-import net.fashiongo.webadmin.dao.primary.PaymentCreditCardRepository;
-import net.fashiongo.webadmin.dao.primary.PaymentStatusRepository;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentScheduleInfo;
-import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
-import net.fashiongo.webadmin.model.primary.CardStatus;
-import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
-import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
-import net.fashiongo.webadmin.model.primary.PaymentStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
-import net.fashiongo.webadmin.model.fgpay.Dispute;
-import net.fashiongo.webadmin.model.fgpay.DisputeDetail;
-import net.fashiongo.webadmin.model.fgpay.DisputeDetailInfo;
-import net.fashiongo.webadmin.model.fgpay.DisputeDocumentInfo;
-import net.fashiongo.webadmin.model.fgpay.DisputeHeaderInfo;
-import net.fashiongo.webadmin.model.fgpay.DisputeMergeOrderInfo;
-import net.fashiongo.webadmin.model.pojo.common.PagedResult;
-import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
 
 /**
  * @author Brian
  *
  */
+@Slf4j
 @Component("paymentService")
 public class PaymentService extends ApiService {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired private OrderPaymentStatusRepository orderPaymentStatusRepository;
-	@Autowired private PaymentCreditCardRepository paymentCreditCardRepository;
-	@Autowired private PaymentStatusRepository paymentStatusRepository;
-	@Autowired private PaymentTransactionEntityRepository paymentTransactionEntityRepository;
-	@Autowired private WAPaymentService waPaymentService;
+	@Autowired
+    private OrderPaymentStatusRepository orderPaymentStatusRepository;
+
+	@Autowired
+    private PaymentCreditCardRepository paymentCreditCardRepository;
+
+	@Autowired
+    private PaymentStatusRepository paymentStatusRepository;
+
+	@Autowired
+    private PaymentTransactionEntityRepository paymentTransactionEntityRepository;
+
+	@Autowired
+    private WAPaymentService waPaymentService;
+
+	@Autowired
+    private BillingAccountService billingAccountService;
 
 	@Autowired
 	@Qualifier("paymentApiJsonClient")
@@ -239,7 +243,13 @@ public class PaymentService extends ApiService {
 		p.setPayoutSchedule(p.getPayoutSchedule() == null ? 0 : p.getPayoutSchedule());
 		p.setWholeSalerId(p.getWholeSalerId() == null ? 0 : p.getWholeSalerId());
 
-		return (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
+        JsonResponse response = (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
+        try {
+            billingAccountService.updateAccount(p.getWholeSalerId());
+        } catch (Exception ex) {
+            log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
+        }
+		return response;
 	}
 
 	public JsonResponse<?> setPaymentAccountBank(SetPaymentAccountBankParameter p) throws JsonProcessingException {
