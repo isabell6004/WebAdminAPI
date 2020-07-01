@@ -614,7 +614,7 @@ public class CouponManagementServiceImpl implements CouponManagementService {
     }
 
     private void checkCouponActionDueDate(LocalDateTime targetDate, String action, Long couponId) {
-        if (LocalDateTime.now().isAfter(targetDate)) {
+        if (targetDate != null && LocalDateTime.now().isAfter(targetDate)) {
             throw new NotAllowedCouponException("cannot " + action + " coupon due to past due date. " + couponId);
         }
     }
