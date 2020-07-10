@@ -7,5 +7,5 @@ import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import java.util.List;
 
 public interface DisplayService {
-    CollectionObject<DisplayLocationResponse> getDisplayLocation();
+    CollectionObject<DisplayLocationResponse> getDisplayLocations();
 }

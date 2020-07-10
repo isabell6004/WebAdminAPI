@@ -45,7 +45,7 @@ public class DisplayServiceImpl implements DisplayService {
     }
 
     @Override
-    public CollectionObject<DisplayLocationResponse> getDisplayLocation() {
+    public CollectionObject<DisplayLocationResponse> getDisplayLocations() {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/location";
 
         FashionGoApiResponse<CollectionObject<DisplayLocationResponse>> response = httpCaller.get(endpoint, getHeader(),

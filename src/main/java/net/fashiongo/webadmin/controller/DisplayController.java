@@ -20,10 +20,10 @@ public class DisplayController {
         this.displayService = displayService;
     }
 
-    @GetMapping(value = "getLocation")
-    public JsonResponse<CollectionObject<DisplayLocationResponse>> getDisplayLocation() {
+    @GetMapping(value = "getLocations")
+    public JsonResponse<CollectionObject<DisplayLocationResponse>> getDisplayLocations() {
 
-        CollectionObject<DisplayLocationResponse> data = displayService.getDisplayLocation();
+        CollectionObject<DisplayLocationResponse> data = displayService.getDisplayLocations();
         return new JsonResponse<>(true, null, data);
     }
 }
