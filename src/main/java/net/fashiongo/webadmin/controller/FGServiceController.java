@@ -46,13 +46,26 @@ public class FGServiceController {
 		logger.debug("called service url: " + url);
 		return jsonClient.get(url);
 	}
+	@RequestMapping(value = "/v2/pdf/photostudio/order/{orderID}", method = RequestMethod.GET)
+	public JsonResponse<String> getV2OrderDetailPDF(HttpServletRequest request) {
+		String url = extractUri(request.getRequestURL().toString() + "?" + request.getQueryString(), "webAdminGuid");
+		logger.debug("called service url: " + url);
+		return jsonClient.get(url);
+	}
 	
 	@RequestMapping(value = "/pdf/photostudio/order/dailysummary/{photoshootDate}", method = RequestMethod.GET)
 	public JsonResponse<String> getOrderSummaryPDF(HttpServletRequest request) {
 		String url = extractUri(request.getRequestURL().toString() + "?" + request.getQueryString());
+		logger.info("called service url: " + url);
+		return jsonClient.get(url);
+	}
+	@RequestMapping(value = "/v2/pdf/photostudio/order/dailysummary/{photoshootDate}", method = RequestMethod.GET)
+	public JsonResponse<String> getV2OrderSummaryPDF(HttpServletRequest request) {
+		String url = extractUri(request.getRequestURL().toString() + "?" + request.getQueryString());
 		logger.debug("called service url: " + url);
 		return jsonClient.get(url);
 	}
+
 	
 	private String extractUri(String url) {
 		return extractUri(url, null);
