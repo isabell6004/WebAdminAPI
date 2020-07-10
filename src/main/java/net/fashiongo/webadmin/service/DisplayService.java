@@ -1,13 +1,11 @@
 package net.fashiongo.webadmin.service;
 
-import net.fashiongo.webadmin.model.pojo.request.GnbCollectionSaveRequest;
-import net.fashiongo.webadmin.model.pojo.request.GnbVendorGroupSaveRequest;
-import net.fashiongo.webadmin.model.pojo.response.GnbCollectionInfoResponse;
-import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupDetailResponse;
-import net.fashiongo.webadmin.model.pojo.response.GnbVendorGroupInfoResponse;
+
+import net.fashiongo.webadmin.data.model.display.response.DisplayLocationResponse;
+import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 
 import java.util.List;
 
 public interface DisplayService {
-
+    CollectionObject<DisplayLocationResponse> getDisplayLocation();
 }
