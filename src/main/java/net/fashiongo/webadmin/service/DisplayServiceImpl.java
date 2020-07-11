@@ -1,7 +1,13 @@
 package net.fashiongo.webadmin.service;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.display.response.DisplayCalendarResponse;
 import net.fashiongo.webadmin.data.model.display.response.DisplayLocationResponse;
+import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansResponse;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
@@ -11,8 +17,11 @@ import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +59,21 @@ public class DisplayServiceImpl implements DisplayService {
 
         FashionGoApiResponse<CollectionObject<DisplayLocationResponse>> response = httpCaller.get(endpoint, getHeader(),
                 new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<DisplayLocationResponse>>>() {});
+
+        return resolveResponse(response);
+    }
+
+    @Override
+    public CollectionObject<DisplayCalendarResponse> getDisplayCalendar(LocalDateTime startDate, LocalDateTime endDate) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/calendar";
+
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
+                .queryParam("startDate", startDate)
+                .queryParam("endDate", endDate)
+                .build(false);
+
+        FashionGoApiResponse<CollectionObject<DisplayCalendarResponse>> response = httpCaller.get(builder.toUriString(), getHeader(),
+                new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<DisplayCalendarResponse>>>() {});
 
         return resolveResponse(response);
     }
