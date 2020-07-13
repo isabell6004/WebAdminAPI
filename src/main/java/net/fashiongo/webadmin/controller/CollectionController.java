@@ -74,6 +74,12 @@ public class CollectionController {
         return new JsonResponse<>(true, null, data);
     }
 
+    @GetMapping("/vendorpromotions")
+    public JsonResponse<CollectionObject<CollectionVendorLatestPromotionResponse>> getVendorLatestPromotion(@RequestParam("ids") List<Integer> vendorIds) {
+        CollectionObject<CollectionVendorLatestPromotionResponse> data = collectionService.getVendorLatestPromotion(vendorIds);
+        return new JsonResponse<>(true, null, data);
+    }
+
     @GetMapping("/searchproducts")
     public JsonResponse<CollectionObject<CollectionProductResponse>> searchProducts(@RequestParam("query") String query,
                                                                                     @RequestParam("start") int start,

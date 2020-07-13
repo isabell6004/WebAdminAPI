@@ -38,6 +38,8 @@ public class CollectionProductQuickShopResponse {
 
     private int minOrderQty;
 
+    private String latestPromotion;
+
     @Getter
     public static class Inventory {
         private String colorName;
