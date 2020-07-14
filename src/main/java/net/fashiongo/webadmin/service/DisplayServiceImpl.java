@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.model.display.DisplaySettingRequest;
 import net.fashiongo.webadmin.data.model.display.response.DisplayCalendarResponse;
 import net.fashiongo.webadmin.data.model.display.response.DisplayLocationResponse;
+import net.fashiongo.webadmin.data.model.display.response.DisplaySettingResponse;
 import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansResponse;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
@@ -14,6 +16,7 @@ import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
 import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse;
+import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
 import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -76,6 +79,39 @@ public class DisplayServiceImpl implements DisplayService {
                 new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<DisplayCalendarResponse>>>() {});
 
         return resolveResponse(response);
+    }
+
+    @Override
+    public SingleObject<DisplaySettingResponse> getDisplaySetting(int displaySettingId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/" + displaySettingId;
+
+        FashionGoApiResponse<SingleObject<DisplaySettingResponse>> response = httpCaller.get(endpoint, getHeader(),
+                new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<DisplaySettingResponse>>>() {});
+
+        return resolveResponse(response);
+    }
+
+    @Override
+    public int createDisplaySetting(DisplaySettingRequest displaySettingRequest){
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/";
+
+        FashionGoApiResponse<SingleObject<Integer>> response = httpCaller.post(endpoint, getHeader(),displaySettingRequest,
+                new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<Integer>>>() {});
+        return resolveResponse(response).getContent();
+    }
+
+    @Override
+    public void updateDisplaySetting(int displaySettingId,DisplaySettingRequest displaySettingRequest){
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/" + displaySettingId;
+
+        String response = httpCaller.put(endpoint,displaySettingRequest, getHeader());
+
+    }
+
+    @Override
+    public void deleteDisplaySetting(int displaySettingId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/" + displaySettingId;
+        String response = httpCaller.delete(endpoint, getHeader());
     }
 	
 }

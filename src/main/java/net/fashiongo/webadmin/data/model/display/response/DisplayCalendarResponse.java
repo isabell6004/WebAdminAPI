@@ -13,4 +13,6 @@ public class DisplayCalendarResponse {
     private int displayLocationId;
     private int displaySettingId;
     private String title;
+    private int deviceType;
+    private int pageId;
 }
