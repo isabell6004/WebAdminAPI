@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.controller;
 
 import net.fashiongo.webadmin.data.model.display.DisplaySettingRequest;
 import net.fashiongo.webadmin.data.model.display.response.DisplayCalendarResponse;
+import net.fashiongo.webadmin.data.model.display.response.DisplayCollectionResponse;
 import net.fashiongo.webadmin.data.model.display.response.DisplayLocationResponse;
 import net.fashiongo.webadmin.data.model.display.response.DisplaySettingResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -34,6 +35,14 @@ public class DisplayController {
         CollectionObject<DisplayLocationResponse> data = displayService.getDisplayLocations();
         return new JsonResponse<>(true, null, data);
     }
+
+    @GetMapping(value = "getCollections")
+    public JsonResponse<CollectionObject<DisplayCollectionResponse>> getCollections() {
+
+        CollectionObject<DisplayCollectionResponse> data = displayService.getDisplayCollections();
+        return new JsonResponse<>(true, null, data);
+    }
+
 
     @GetMapping(value = "getCalendar")
     public JsonResponse<CollectionObject<DisplayCalendarResponse>> getDisplayCalendar(@RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,

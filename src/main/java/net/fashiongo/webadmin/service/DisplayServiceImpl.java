@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.display.DisplaySettingRequest;
 import net.fashiongo.webadmin.data.model.display.response.DisplayCalendarResponse;
+import net.fashiongo.webadmin.data.model.display.response.DisplayCollectionResponse;
 import net.fashiongo.webadmin.data.model.display.response.DisplayLocationResponse;
 import net.fashiongo.webadmin.data.model.display.response.DisplaySettingResponse;
 import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
@@ -62,6 +63,16 @@ public class DisplayServiceImpl implements DisplayService {
 
         FashionGoApiResponse<CollectionObject<DisplayLocationResponse>> response = httpCaller.get(endpoint, getHeader(),
                 new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<DisplayLocationResponse>>>() {});
+
+        return resolveResponse(response);
+    }
+
+    @Override
+    public CollectionObject<DisplayCollectionResponse> getDisplayCollections() {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/collection";
+
+        FashionGoApiResponse<CollectionObject<DisplayCollectionResponse>> response = httpCaller.get(endpoint, getHeader(),
+                new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<DisplayCollectionResponse>>>() {});
 
         return resolveResponse(response);
     }
