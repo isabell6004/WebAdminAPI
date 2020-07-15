@@ -9,6 +9,7 @@ import net.fashiongo.webadmin.data.model.display.response.DisplaySettingResponse
 import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface DisplayService {
     CollectionObject<DisplayCollectionResponse> getDisplayCollections();
     CollectionObject<DisplayCalendarResponse> getDisplayCalendar(LocalDateTime startDate, LocalDateTime endDate);
     SingleObject<DisplaySettingResponse> getDisplaySetting(int displaySettingId);
-    int createDisplaySetting(DisplaySettingRequest displaySettingRequest);
-    void updateDisplaySetting(int displaySettingId,DisplaySettingRequest displaySettingRequest);
+    SingleObject<Integer> createDisplaySetting(DisplaySettingRequest displaySettingRequest);
+    void updateDisplaySetting(int displaySettingId,DisplaySettingRequest displaySettingRequest) throws IOException;
     void deleteDisplaySetting(int displaySettingId);
 }

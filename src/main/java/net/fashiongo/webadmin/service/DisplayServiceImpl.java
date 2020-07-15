@@ -11,6 +11,7 @@ import net.fashiongo.webadmin.data.model.display.response.DisplayLocationRespons
 import net.fashiongo.webadmin.data.model.display.response.DisplaySettingResponse;
 import net.fashiongo.webadmin.data.model.vendor.ContractPlansResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetContractPlansResponse;
+import net.fashiongo.webadmin.exception.vendor.VendorContractOperationException;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
@@ -103,26 +104,39 @@ public class DisplayServiceImpl implements DisplayService {
     }
 
     @Override
-    public int createDisplaySetting(DisplaySettingRequest displaySettingRequest){
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/";
+    public SingleObject<Integer> createDisplaySetting(DisplaySettingRequest displaySettingRequest){
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting";
 
-        FashionGoApiResponse<SingleObject<Integer>> response = httpCaller.post(endpoint, getHeader(),displaySettingRequest,
-                new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<Integer>>>() {});
-        return resolveResponse(response).getContent();
+        FashionGoApiResponse<SingleObject<Integer>> response = httpCaller.post(endpoint, getHeader(),displaySettingRequest,new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<Integer>>>() {});
+        return resolveResponse(response);
     }
 
     @Override
-    public void updateDisplaySetting(int displaySettingId,DisplaySettingRequest displaySettingRequest){
+    public void updateDisplaySetting(int displaySettingId,DisplaySettingRequest displaySettingRequest) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/" + displaySettingId;
 
-        String response = httpCaller.put(endpoint,displaySettingRequest, getHeader());
+        String responseBody =  httpCaller.put(endpoint,displaySettingRequest, getHeader());
+        try {
+        FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
+        resolveResponse(response);
+
+        } catch (IOException e) {
+            throw new RuntimeException("fail to update display setting. " + e.getMessage());
+        }
 
     }
 
     @Override
     public void deleteDisplaySetting(int displaySettingId) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/" + displaySettingId;
-        String response = httpCaller.delete(endpoint, getHeader());
+        String responseBody = httpCaller.delete(endpoint, getHeader());
+        try {
+            FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
+            resolveResponse(response);
+
+        } catch (IOException e) {
+            throw new RuntimeException("fail to delete display setting. " + e.getMessage());
+        }
     }
 	
 }

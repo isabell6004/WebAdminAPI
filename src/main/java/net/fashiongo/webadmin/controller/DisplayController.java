@@ -60,14 +60,14 @@ public class DisplayController {
     }
 
     @PostMapping(value = "createSetting")
-    public JsonResponse<Integer> createDisplaySetting(@RequestBody @Valid DisplaySettingRequest displaySettingRequest) {
+    public JsonResponse<SingleObject<Integer>> createDisplaySetting(@RequestBody DisplaySettingRequest displaySettingRequest) {
 
-        int displaySettingId = displayService.createDisplaySetting(displaySettingRequest);
-        return new JsonResponse<>(true, null, displaySettingId);
+        SingleObject<Integer> data = displayService.createDisplaySetting(displaySettingRequest);
+        return new JsonResponse<>(true, null, data);
     }
 
     @PutMapping(value = "updateSetting")
-    public ResultCode updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody @Valid DisplaySettingRequest displaySettingRequest) {
+    public ResultCode updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody DisplaySettingRequest displaySettingRequest) {
         try {
             displayService.updateDisplaySetting(displaySettingId, displaySettingRequest);
             return new ResultCode(true, 1, "success");
