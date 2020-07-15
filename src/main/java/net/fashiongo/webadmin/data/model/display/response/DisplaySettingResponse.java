@@ -23,4 +23,6 @@ public class DisplaySettingResponse {
     private LocalDateTime modifiedOn;
     private String modifiedBy;
     private Integer displaySettingStatus;
+    private int deviceType;
+    private int pageId;
 }
