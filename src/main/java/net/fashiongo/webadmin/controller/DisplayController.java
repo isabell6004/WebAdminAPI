@@ -63,22 +63,14 @@ public class DisplayController {
     }
 
     @PutMapping(value = "updateSetting")
-    public ResultCode updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody DisplaySettingParameter displaySettingParameter) {
-        try {
-            displayService.updateDisplaySetting(displaySettingId, displaySettingParameter);
-            return new ResultCode(true, 1, "success");
-        } catch (Exception e) {
-            return new ResultCode(false, -1, "failure");
-        }
+    public JsonResponse<Void> updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody DisplaySettingParameter displaySettingParameter) {
+        displayService.updateDisplaySetting(displaySettingId, displaySettingParameter);
+        return new JsonResponse<>(true, null, null);
     }
 
     @DeleteMapping(value = "deleteSetting")
-    public ResultCode deleteDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId) {
-        try {
-            displayService.deleteDisplaySetting(displaySettingId);
-            return new ResultCode(true, 1, "success");
-        } catch (Exception e) {
-            return new ResultCode(false, -1, "failure");
-        }
+    public JsonResponse<Void> deleteDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId) {
+          displayService.deleteDisplaySetting(displaySettingId);
+          return new JsonResponse<>(true, null, null);
     }
 }
