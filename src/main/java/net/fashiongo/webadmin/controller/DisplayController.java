@@ -1,6 +1,6 @@
 package net.fashiongo.webadmin.controller;
 
-import net.fashiongo.webadmin.data.model.display.DisplaySettingRequest;
+import net.fashiongo.webadmin.data.model.display.DisplaySettingParameter;
 import net.fashiongo.webadmin.data.model.display.response.DisplayCalendarResponse;
 import net.fashiongo.webadmin.data.model.display.response.DisplayCollectionResponse;
 import net.fashiongo.webadmin.data.model.display.response.DisplayLocationResponse;
@@ -13,14 +13,10 @@ import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @RestController
-@RequestMapping("/display")
+@RequestMapping(value = "/display", produces = "application/json")
 public class DisplayController {
 
     private final DisplayService displayService;
@@ -60,16 +56,16 @@ public class DisplayController {
     }
 
     @PostMapping(value = "createSetting")
-    public JsonResponse<SingleObject<Integer>> createDisplaySetting(@RequestBody DisplaySettingRequest displaySettingRequest) {
+    public JsonResponse<SingleObject<Integer>> createDisplaySetting(@RequestBody DisplaySettingParameter displaySettingParameter) {
 
-        SingleObject<Integer> data = displayService.createDisplaySetting(displaySettingRequest);
+        SingleObject<Integer> data = displayService.createDisplaySetting(displaySettingParameter);
         return new JsonResponse<>(true, null, data);
     }
 
     @PutMapping(value = "updateSetting")
-    public ResultCode updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody DisplaySettingRequest displaySettingRequest) {
+    public ResultCode updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody DisplaySettingParameter displaySettingParameter) {
         try {
-            displayService.updateDisplaySetting(displaySettingId, displaySettingRequest);
+            displayService.updateDisplaySetting(displaySettingId, displaySettingParameter);
             return new ResultCode(true, 1, "success");
         } catch (Exception e) {
             return new ResultCode(false, -1, "failure");
