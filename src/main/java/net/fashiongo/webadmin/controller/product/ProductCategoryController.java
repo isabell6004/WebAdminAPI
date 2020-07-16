@@ -4,14 +4,13 @@ import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.CategoryListOrder;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCategoryListOrderParameter;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCategoryParameter;
+import net.fashiongo.webadmin.model.product.command.category.ProductCategoryResponse;
 import net.fashiongo.webadmin.service.CacheService;
+import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import net.fashiongo.webadmin.service.product.category.ProductCategoryService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,5 +41,11 @@ public class ProductCategoryController {
 		cacheService.GetRedisCacheEvict("Category", null); // When FashionGo categories is changed (delete, add, modify)
 
 		return new JsonResponse<>(result.getSuccess(), result.getMessage(), result.getCode(), result.getData());
+	}
+
+	@GetMapping("/sitemgmt/getcategories")
+	public net.fashiongo.common.JsonResponse<CollectionObject<ProductCategoryResponse>> getCategories() {
+		CollectionObject<ProductCategoryResponse> data = productCategoryService.getCategories();
+		return new net.fashiongo.common.JsonResponse<>(true, null, data);
 	}
 }

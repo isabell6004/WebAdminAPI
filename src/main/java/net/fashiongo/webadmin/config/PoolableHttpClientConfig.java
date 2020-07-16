@@ -24,7 +24,7 @@ public class PoolableHttpClientConfig {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setConnectionRequestTimeout(2000);
         factory.setConnectTimeout(3000);  // 3 seconds
-        factory.setReadTimeout(10000); // 10 seconds
+        factory.setReadTimeout(15000); // 15 seconds
         org.apache.http.client.HttpClient httpClient = HttpClientBuilder.create()
                 .evictIdleConnections(5000L, TimeUnit.MILLISECONDS)
                 .setMaxConnTotal(200)
