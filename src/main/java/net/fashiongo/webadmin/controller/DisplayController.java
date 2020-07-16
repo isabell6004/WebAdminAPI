@@ -1,11 +1,7 @@
 package net.fashiongo.webadmin.controller;
 
-import net.fashiongo.webadmin.data.model.display.DisplaySettingParameter;
-import net.fashiongo.webadmin.data.model.display.response.DisplayCalendarResponse;
-import net.fashiongo.webadmin.data.model.display.response.DisplayCollectionResponse;
-import net.fashiongo.webadmin.data.model.display.response.DisplayLocationResponse;
-import net.fashiongo.webadmin.data.model.display.response.DisplaySettingResponse;
-import net.fashiongo.webadmin.model.pojo.common.ResultCode;
+import net.fashiongo.webadmin.data.model.display.DisplaySettingRequest;
+import net.fashiongo.webadmin.data.model.display.response.*;
 import net.fashiongo.webadmin.service.DisplayService;
 import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
@@ -56,15 +52,15 @@ public class DisplayController {
     }
 
     @PostMapping(value = "createSetting")
-    public JsonResponse<SingleObject<Integer>> createDisplaySetting(@RequestBody DisplaySettingParameter displaySettingParameter) {
+    public JsonResponse<SingleObject<Integer>> createDisplaySetting(@RequestBody DisplaySettingRequest displaySettingRequest) {
 
-        SingleObject<Integer> data = displayService.createDisplaySetting(displaySettingParameter);
+        SingleObject<Integer> data = displayService.createDisplaySetting(displaySettingRequest);
         return new JsonResponse<>(true, null, data);
     }
 
     @PutMapping(value = "updateSetting")
-    public JsonResponse<Void> updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody DisplaySettingParameter displaySettingParameter) {
-        displayService.updateDisplaySetting(displaySettingId, displaySettingParameter);
+    public JsonResponse<Void> updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody DisplaySettingRequest displaySettingRequest) {
+        displayService.updateDisplaySetting(displaySettingId, displaySettingRequest);
         return new JsonResponse<>(true, null, null);
     }
 
@@ -72,5 +68,22 @@ public class DisplayController {
     public JsonResponse<Void> deleteDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId) {
           displayService.deleteDisplaySetting(displaySettingId);
           return new JsonResponse<>(true, null, null);
+    }
+
+    @GetMapping("/getSettingList")
+    public net.fashiongo.common.JsonResponse<CollectionObject<DisplaySettingListResponse>> getDisplaySettingList(@RequestParam(value = "pn") int pageNum,
+                                                                                                                 @RequestParam(value = "ps") int pageSize,
+                                                                                                                 @RequestParam(value = "deviceType",required = false) Integer deviceType,
+                                                                                                                 @RequestParam(value = "pageId",required = false) Integer pageId,
+                                                                                                                 @RequestParam(value = "displayLocationId",required = false) Integer displayLocationId,
+                                                                                                                 @RequestParam(value = "linkType",required = false) Integer linkType,
+                                                                                                                 @RequestParam(value = "dateType",required = false) Integer dateType,
+                                                                                                                 @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+                                                                                                                 @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate,
+                                                                                                                 @RequestParam(value = "displaySettingStatus", required = false) Integer displaySettingStatus,
+                                                                                                                 @RequestParam(value = "title", required = false) String title,
+                                                                                                                 @RequestParam(value = "linkCollectionId", required = false) Integer linkCollectionId) {
+        CollectionObject<DisplaySettingListResponse> data = displayService.getDisplaySettingList(pageNum, pageSize, deviceType,pageId, displayLocationId,linkType,dateType, fromDate, toDate,displaySettingStatus,title, linkCollectionId);
+        return new net.fashiongo.common.JsonResponse<>(true, null, data);
     }
 }
