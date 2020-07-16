@@ -8,7 +8,9 @@ import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @RestController
@@ -52,15 +54,21 @@ public class DisplayController {
     }
 
     @PostMapping(value = "createSetting")
-    public JsonResponse<SingleObject<Integer>> createDisplaySetting(@RequestBody DisplaySettingRequest displaySettingRequest) {
-
-        SingleObject<Integer> data = displayService.createDisplaySetting(displaySettingRequest);
+    public JsonResponse<SingleObject<Integer>> createDisplaySetting(
+            @RequestPart(value = "displaySettingRequest") DisplaySettingRequest displaySettingRequest,
+            @RequestPart(value = "imageLinkFile", required = false) MultipartFile imageLinkFile)
+            throws IOException {
+        SingleObject<Integer> data = displayService.createDisplaySetting(displaySettingRequest, imageLinkFile);
         return new JsonResponse<>(true, null, data);
     }
 
     @PutMapping(value = "updateSetting")
-    public JsonResponse<Void> updateDisplaySetting(@RequestParam(value = "displaySettingId") int displaySettingId, @RequestBody DisplaySettingRequest displaySettingRequest) {
-        displayService.updateDisplaySetting(displaySettingId, displaySettingRequest);
+    public JsonResponse<Void> updateDisplaySetting(
+            @RequestParam(value = "displaySettingId") int displaySettingId,
+            @RequestPart(value = "displaySettingRequest") DisplaySettingRequest displaySettingRequest,
+            @RequestPart(value = "imageLinkFile", required = false) MultipartFile imageLinkFile)
+            throws IOException {
+        displayService.updateDisplaySetting(displaySettingId, displaySettingRequest, imageLinkFile);
         return new JsonResponse<>(true, null, null);
     }
 
