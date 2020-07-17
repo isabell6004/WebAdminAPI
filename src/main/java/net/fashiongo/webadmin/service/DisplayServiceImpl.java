@@ -120,7 +120,7 @@ public class DisplayServiceImpl implements DisplayService {
     @Override
     public SingleObject<Integer> createDisplaySetting(DisplaySettingRequest displaySettingRequest, MultipartFile imageLinkFile) throws IOException {
 
-        if (displaySettingRequest.linkFileName() != null) {
+        if (displaySettingRequest.linkFileName() != null && displaySettingRequest.linkType() == 3) {
             uploadBannerImageFile(displaySettingRequest.linkFileName(), imageLinkFile);
         }
 
@@ -132,7 +132,7 @@ public class DisplayServiceImpl implements DisplayService {
     @Override
     public void updateDisplaySetting(int displaySettingId, DisplaySettingRequest displaySettingRequest, MultipartFile imageLinkFile) throws IOException {
 
-        if (displaySettingRequest.linkFileName() != null) {
+        if (displaySettingRequest.linkFileName() != null  && displaySettingRequest.linkType() == 3) {
             SingleObject<DisplaySettingResponse> setting = getDisplaySetting(displaySettingId);
             changeBannerImage(setting.getContent().getLinkFileName(), displaySettingRequest.linkFileName(), imageLinkFile);
         }
