@@ -1,0 +1,41 @@
+package net.fashiongo.webadmin.data.model.collection.response;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
+import lombok.Getter;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Getter
+public class CollectionVendorResponse {
+    private int vendorId;
+
+    private String vendorName;
+
+    private String dirName;
+
+    private String vendorType;
+
+    private BigDecimal salesAmt;
+
+    private BigDecimal adAmt;
+
+    @Getter(AccessLevel.NONE)
+    @JsonProperty("isConsolidation")
+    private boolean isConsolidation;
+
+    @Getter(AccessLevel.NONE)
+    @JsonProperty("isRewardVendor")
+    private boolean isRewardVendor;
+
+    private BigDecimal buyerRate;
+
+    private LocalDateTime memberSince;
+
+    private String specialVendorType;
+
+    private BigDecimal minAmt;
+
+    private String bannerFileName;
+}
