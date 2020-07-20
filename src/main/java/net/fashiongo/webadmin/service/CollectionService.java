@@ -132,7 +132,7 @@ public class CollectionService {
         return resolveResponse(response).getContent();
     }
 
-    public void setCollection(int collectionId, CollectionSaveParameter collectionSaveParameter,
+    public CollectionPatchResponse setCollection(int collectionId, CollectionSaveParameter collectionSaveParameter,
                               MultipartFile desktopImageBannerFile, MultipartFile mobileImageBannerFile) throws IOException {
         if (collectionSaveParameter.getDesktopImageBannerFilename() != null || collectionSaveParameter.getMobileImageBannerFilename() != null) {
             CollectionResponse collection = getCollection(collectionId);
@@ -143,9 +143,9 @@ public class CollectionService {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/" + collectionId;
 
-        FashionGoApiResponse<Void> response = httpCaller.patch(endpoint, getFashionGoApiHeader(), collectionSaveParameter, new ParameterizedTypeReference<FashionGoApiResponse<Void>>() {});
+        FashionGoApiResponse<SingleObject<CollectionPatchResponse>> response = httpCaller.patch(endpoint, getFashionGoApiHeader(), collectionSaveParameter, new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<CollectionPatchResponse>>>() {});
 
-        resolveResponse(response);
+        return resolveResponse(response).getContent();
     }
 
     public CollectionObject<CollectionListResponse> getCollections(int pageNum,

@@ -33,6 +33,9 @@ public class CollectionResponse {
     @JsonProperty(value = "isDisplayPromotion")
     private boolean isDisplayPromotion;
 
+    @JsonProperty(value = "collectionUrl")
+    private String collectionUrl;
+
     @JsonProperty(value = "vendorList")
     private List<VendorCollectionResponse> vendorList;
 
