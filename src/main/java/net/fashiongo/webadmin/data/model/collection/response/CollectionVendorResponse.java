@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.data.model.collection.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class CollectionVendorResponse {
 
     private BigDecimal salesAmt;
 
+    @Setter
     private BigDecimal adAmt;
 
     @Getter(AccessLevel.NONE)
@@ -35,7 +37,13 @@ public class CollectionVendorResponse {
 
     private String specialVendorType;
 
+    @Getter(AccessLevel.NONE)
+    @JsonProperty("isFreeShipping")
+    private boolean isFreeShipping;
+
+    private BigDecimal minOrderDiscount;
+
     private BigDecimal minAmt;
 
-    private String bannerFileName;
+    private String bannerImageUrl;
 }

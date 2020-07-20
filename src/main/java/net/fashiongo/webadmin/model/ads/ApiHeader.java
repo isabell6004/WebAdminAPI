@@ -11,6 +11,10 @@ public class ApiHeader {
     private int resultCode;
     private String resultMessage;
 
+    private ApiHeader() {
+        // create private default constructor because object mapper needs the default constructor to deserialize.
+    }
+
     public ApiHeader(ErrorCode errorCode, String resultMessage) {
         this.success = errorCode.isSuccess();
         this.resultCode = errorCode.getCode();

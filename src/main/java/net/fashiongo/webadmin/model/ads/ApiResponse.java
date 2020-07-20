@@ -18,6 +18,10 @@ public class ApiResponse<T> {
     private ApiHeader header;
     private T data;
 
+    private ApiResponse() {
+        // create private default constructor because object mapper needs the default constructor to deserialize.
+    }
+
     public ApiResponse(ErrorCode errorcode, String message) {
         this(errorcode, message, null);
     }
@@ -60,7 +64,7 @@ public class ApiResponse<T> {
     }
 
     @Getter
-    private static class Contents<T> {
+    public static class Contents<T> {
         @JsonSerialize(using = ToStringSerializer.class)
         @JsonInclude(JsonInclude.Include.NON_DEFAULT)
         private Long totalCount;
@@ -92,6 +96,10 @@ public class ApiResponse<T> {
             this.contents = contents;
             this.references = null;
             this.totalCount = null;
+        }
+
+        private Contents() {
+            // create private default constructor because object mapper needs the default constructor to deserialize.
         }
     }
 }

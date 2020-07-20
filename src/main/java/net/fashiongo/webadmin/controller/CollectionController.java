@@ -40,12 +40,12 @@ public class CollectionController {
     }
 
     @PatchMapping("/setcollection/{collectionId}")
-    public JsonResponse<Void> setCollection(@PathVariable int collectionId,
+    public JsonResponse<CollectionPatchResponse> setCollection(@PathVariable int collectionId,
                                             @RequestPart("collection") CollectionSaveParameter collectionSaveParameter,
                                             @RequestPart(value = "desktopImageBannerFile", required = false) MultipartFile desktopImageBannerFile,
                                             @RequestPart(value = "mobileImageBannerFile", required = false) MultipartFile mobileImageBannerFile) throws IOException {
-        collectionService.setCollection(collectionId, collectionSaveParameter, desktopImageBannerFile, mobileImageBannerFile);
-        return new JsonResponse<>(true, null, null);
+        CollectionPatchResponse data = collectionService.setCollection(collectionId, collectionSaveParameter, desktopImageBannerFile, mobileImageBannerFile);
+        return new JsonResponse<>(true, null, data);
     }
 
     @GetMapping("/getcollections")
@@ -71,6 +71,12 @@ public class CollectionController {
     public JsonResponse<CollectionObject<CollectionVendorResponse>> searchVendors(@RequestParam("q") List<String> query,
                                                                                   @RequestParam(name = "order", required = false) String order) {
         CollectionObject<CollectionVendorResponse> data = collectionService.searchVendors(query, order);
+        return new JsonResponse<>(true, null, data);
+    }
+
+    @GetMapping("/vendorpromotions")
+    public JsonResponse<CollectionObject<CollectionVendorLatestPromotionResponse>> getVendorLatestPromotion(@RequestParam("ids") List<Integer> vendorIds) {
+        CollectionObject<CollectionVendorLatestPromotionResponse> data = collectionService.getVendorLatestPromotion(vendorIds);
         return new JsonResponse<>(true, null, data);
     }
 
