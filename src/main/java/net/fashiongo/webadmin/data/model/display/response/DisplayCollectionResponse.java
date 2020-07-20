@@ -7,5 +7,6 @@ public class DisplayCollectionResponse {
     private int collectionId;
     private String title;
     private int collectionType;
+    private String collectionUrl;
 
 }
