@@ -45,5 +45,5 @@ public class CollectionVendorResponse {
 
     private BigDecimal minAmt;
 
-    private String bannerFileName;
+    private String bannerImageUrl;
 }

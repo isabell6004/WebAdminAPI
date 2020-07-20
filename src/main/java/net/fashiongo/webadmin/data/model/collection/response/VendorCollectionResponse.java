@@ -13,5 +13,5 @@ public class VendorCollectionResponse {
     @JsonProperty("isAvailable")
     private boolean isAvailable;
 
-    private String bannerFileName;
+    private String bannerImageUrl;
 }
