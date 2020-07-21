@@ -8,11 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author Kenny/Kyungwoo
  * @since 2019-04-15
  */
+@Getter
 @Data
 @Entity
 @Table(name = "Vendor_Content_File")

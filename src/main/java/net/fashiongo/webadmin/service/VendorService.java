@@ -556,8 +556,8 @@ public class VendorService extends ApiService {
      * @author Kenny/Kyungwoo
      * @since 2019-04-15
      */
-    public PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company, LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer status) {
-        return vendorContentRepository.getVendorContents(pagenum, pagesize, company, datefrom, dateto, type, status);
+    public PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company,Integer contentfileid, LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer status) {
+        return vendorContentRepository.getVendorContents(pagenum, pagesize, company,contentfileid, datefrom, dateto, type, status);
     }
 
     /**
