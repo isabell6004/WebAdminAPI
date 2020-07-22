@@ -70,7 +70,7 @@ public class OrderController {
 
 	@RequestMapping(value="getprintmergepourl", method=RequestMethod.POST)
 	public JsonResponse getPrintMergePOUrl(@RequestBody GetPrintPoUrlParameter2 parameters) throws JsonProcessingException {
-		JsonResponse results = renewalOrderService.getPrintMergePOUrl(parameters);
+		JsonResponse results = renewalOrderService.getPrintMergePOUrl2(parameters);
 
 		return results;
 	}

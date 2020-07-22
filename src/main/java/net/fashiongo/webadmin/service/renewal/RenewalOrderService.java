@@ -121,6 +121,17 @@ public class RenewalOrderService {
 		return result;
 	}
 
+	public JsonResponse getPrintMergePOUrl2(GetPrintPoUrlParameter2 parameters) {
+		int orderId = parameters.getOrderid();
+
+		String orderSessionGUID = mergeOrdersEntityRepository.getMergeOrderWholesalerGuid(orderId).orElse(null);
+
+		String url = "/v2/" + parameters.getResulttype() + "/merged-po/" + orderSessionGUID + "/" + orderId + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForpdf() + "&withImage=" + parameters.getWithimage() + "&withVendorStyleNo=" + parameters.getWithvendorstyleno();
+		JsonResponse<?> result = httpClient.get(url);
+
+		return result;
+	}
+
 	public JsonResponse setConsolidationDetailDroppedBy(Integer orderId, Integer consolidationId, String droppedBy, String receivedBy, LocalDateTime receivedOn, String sessionUserName) {
 		boolean bSuccess = false;
 		int retCode = 1;
