@@ -588,7 +588,7 @@ public class VendorService extends ApiService {
         vendorContent.get().setStatusId(3);
         vendorContent.get().setRejectedOn(LocalDateTime.now());
         vendorContent.get().setRejectedBy(Utility.getUsername());
-
+        vendorContent.get().setIsActive(false);
         vendorContent.get().setRejectedReason(reason);
         vendorContentRepository.save(vendorContent.get());
     }
