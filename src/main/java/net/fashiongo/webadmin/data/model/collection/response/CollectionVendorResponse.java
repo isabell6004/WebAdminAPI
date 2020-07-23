@@ -31,6 +31,8 @@ public class CollectionVendorResponse {
     @JsonProperty("isRewardVendor")
     private boolean isRewardVendor;
 
+    private BigDecimal onTimeShippingRate;
+
     private BigDecimal buyerRate;
 
     private LocalDateTime memberSince;
