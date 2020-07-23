@@ -237,7 +237,8 @@ public class MessageService extends ApiService {
 		vendorNews.setShowBanner(news.getShowBanner());
 		vendorNews.setFromDate(fromdate);
 		vendorNews.setToDate(todate);
-		vendorNews.setLastUser(news.getLastUser());
+		//vendorNews.setLastUser(news.getLastUser());
+		vendorNews.setLastUser(Utility.getUserInfo().getUsername());
 		vendorNews.setLastModifiedDateTime(LocalDateTime.now());
 		
 		return vendorNews;

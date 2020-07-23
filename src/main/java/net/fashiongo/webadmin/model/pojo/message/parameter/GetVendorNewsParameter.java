@@ -22,7 +22,7 @@ import javax.validation.constraints.Pattern;
 @SuppressWarnings("serial")
 public class GetVendorNewsParameter implements Serializable {
 
-	private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s /:!&,-.?_\']+$";
+	private static final String ALLOW_PATTERN = "^$|[a-zA-Z0-9\\s /:!&,-.?_+\']+$";
 	private static final String ALLOW_PATTERN_MESSAGE = "Special character not allowed";
 
 	@ApiModelProperty(required = false, example = "1")
