@@ -193,11 +193,20 @@ public class ConsolidationController {
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
-	
+
 	@GetMapping(value = "/consolidation/detail/{consolidationId}")
 	public JsonResponse getConsolidationDetail(@PathVariable("consolidationId") Integer consolidationId) {
 		try {
 			return consolidationService.getConsolidationDetail(consolidationId);
+		} catch (Exception e) {
+			log.error("ConsolidationController.getConsolidationDetail() consolidationId={}", consolidationId, e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+	@GetMapping(value = "/v2/consolidation/detail/{consolidationId}")
+	public JsonResponse getV2ConsolidationDetail(@PathVariable("consolidationId") Integer consolidationId) {
+		try {
+			return consolidationService.getV2ConsolidationDetail(consolidationId);
 		} catch (Exception e) {
 			log.error("ConsolidationController.getConsolidationDetail() consolidationId={}", consolidationId, e);
 			return new JsonResponse<>(false, e.getMessage(), null);
