@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.model.vendor.DelVendorContractParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
+import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorException;
 import net.fashiongo.webadmin.model.vendor.ClassType;
@@ -59,6 +60,15 @@ public class VendorContractServiceImpl implements VendorContractService {
     public void delVendorContract(DelVendorContractParameter request) {
 
         vendorContractNewService.deleteContract(request.getWholeSalerID(), request.getVendorContractID().longValue());
+        VendorContractResponse vendorContract = vendorContractNewService.inquiryVendorContract(request.getWholeSalerID());
+
+        if (vendorContract != null)
+        {
+            WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
+            ClassType vendorClassType = (vendorContract.getTypeCode() != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
+            vendorInfo.setVendorType(vendorClassType.getValue());
+            vendorWholeSalerEntityRepository.save(vendorInfo);
+        }
     }
 
     private void updateVendorType(SetVendorContractParameter request, WholeSalerEntity wholeSaler) {
