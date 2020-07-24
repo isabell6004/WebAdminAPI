@@ -13,5 +13,6 @@ import net.fashiongo.webadmin.model.primary.VendorContent;
  */
 @NoRepositoryBean
 public interface VendorContentRepositoryCustom {
-	PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company,Integer contentfileid, LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer status);
+	PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company,Integer contentfileid,
+												 LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer filetype, Integer status);
 }

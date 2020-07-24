@@ -326,7 +326,7 @@ public class VendorServiceTest {
 	 */
 	@Test
 	public void testGetVendorContents() {
-		PagedResult<VendorContent> page = vendorService.getVendorContents(1, 10, null, null,null, null, null, null);
+		PagedResult<VendorContent> page = vendorService.getVendorContents(1, 10, null, null,null, null, null, null,null);
 		assertTrue(page.getTotal().getTotalCount()>=0);
 		assertTrue(page.getRecords().size()>=0);
 	}

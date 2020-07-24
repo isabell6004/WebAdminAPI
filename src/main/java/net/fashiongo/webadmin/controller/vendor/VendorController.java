@@ -256,6 +256,7 @@ public class VendorController {
             @RequestParam(value = "datefrom", required = false) String datefrom,
             @RequestParam(value = "dateto", required = false) String dateto,
             @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "filetype", required = false) String filetype,
             @RequestParam(value = "status", required = false) String status) {
         JsonResponse<PagedResult<VendorContent>> response = new JsonResponse<>(false, null, null);
         try {
@@ -268,6 +269,7 @@ public class VendorController {
                     StringUtil.isNullOrEmpty(datefrom) ? null : LocalDateTime.parse(datefrom + " 00:00:00", formatter),
                     StringUtil.isNullOrEmpty(dateto) ? null : LocalDateTime.parse(dateto + " 23:59:59", formatter),
                     StringUtil.isNullOrEmpty(type) ? null : Integer.parseInt(type),
+                    StringUtil.isNullOrEmpty(filetype) ? null : Integer.parseInt(filetype),
                     StringUtil.isNullOrEmpty(status) ? null : Integer.parseInt(status));
 
             response.setSuccess(true);
