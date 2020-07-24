@@ -25,7 +25,7 @@ public class VendorControllerTest {
 	
 	@Test
 	public void getMediaRequests() {
-		 JsonResponse<PagedResult<VendorContent>> response = vendorController.getMediaRequests("1", "10", null, null, null, null, null);
+		 JsonResponse<PagedResult<VendorContent>> response = vendorController.getMediaRequests("1", "10", null, null,null, null, null, null);
 		 log.debug(response.toString());
 	}
 	
