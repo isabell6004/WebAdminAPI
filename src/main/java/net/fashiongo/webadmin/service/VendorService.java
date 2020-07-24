@@ -584,11 +584,10 @@ public class VendorService extends ApiService {
         Optional<VendorContent> vendorContent = vendorContentRepository.findById(id);
         if (!vendorContent.isPresent()) throw new Exception("It does not exist.");
         if (vendorContent.get().getStatusId() == 3) throw new Exception("It is already denied.");
-
         vendorContent.get().setStatusId(3);
         vendorContent.get().setRejectedOn(LocalDateTime.now());
         vendorContent.get().setRejectedBy(Utility.getUsername());
-
+        vendorContent.get().setIsActive(false);
         vendorContent.get().setRejectedReason(reason);
         vendorContentRepository.save(vendorContent.get());
     }
