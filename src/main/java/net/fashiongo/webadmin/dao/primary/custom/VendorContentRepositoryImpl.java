@@ -4,10 +4,13 @@ import static net.fashiongo.webadmin.model.primary.QVendorContent.vendorContent;
 import static net.fashiongo.webadmin.model.primary.QVendorContentFile.vendorContentFile;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.model.primary.VendorContentFile;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -40,29 +43,33 @@ public class VendorContentRepositoryImpl extends QuerydslRepositorySupport imple
 
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-	public PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company,Integer contentfileid, LocalDateTime datefrom, LocalDateTime dateto, Integer type, Integer status) {
+	public PagedResult<VendorContent> getVendorContents(Integer pagenum, Integer pagesize, String company,Integer contentfileid, LocalDateTime datefrom,
+                                                        LocalDateTime dateto, Integer type, Integer filetype, Integer status) {
 
-        Integer vendorcontentid = null;
-        if (contentfileid!=null) {
-            VendorContentFile contentfile = null;
-            contentfile =
-                    from(vendorContentFile)
-                    .where(vendorContentFile.vendorContentFileId.eq(contentfileid))
-                    .fetchOne();
-            if (contentfile != null) {
-                vendorcontentid = contentfile.getVendorContentId();
-            }
-        }
+
+        BooleanBuilder where = new BooleanBuilder(vendorContent.isDeleted.eq(false));
+        Optional.ofNullable(company)
+                .ifPresent(d -> where.and(vendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(d).concat("%"))));
+        Optional.ofNullable(datefrom)
+                .ifPresent(d -> where.and(vendorContent.requestedOn.goe(d)));
+        Optional.ofNullable(dateto)
+                .ifPresent(d -> where.and(vendorContent.requestedOn.loe(d)));
+        Optional.ofNullable(type)
+                .ifPresent(d -> where.and(vendorContent.targetTypeId.eq(d)));
+        Optional.ofNullable(status)
+                .ifPresent(d -> where.and(vendorContent.statusId.eq(d)));
+        Optional.ofNullable(filetype)
+                .ifPresent(d -> where.and(vendorContent.vendorContentId.in(
+                        JPAExpressions.select(vendorContentFile.vendorContentId).from(vendorContentFile).where(vendorContentFile.fileType.eq(d))
+                )));
+        Optional.ofNullable(contentfileid)
+                .ifPresent(d -> where.and(vendorContent.vendorContentId.in(
+                        JPAExpressions.select(vendorContentFile.vendorContentId).from(vendorContentFile).where(vendorContentFile.vendorContentFileId.eq(d))
+                )));
 
         QueryResults<VendorContent> results =
 				from(vendorContent)
-				.where(vendorContent.isDeleted.eq(false),
-						company!=null ? vendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(company).concat("%")) : null,
-                        vendorcontentid!=null ? vendorContent.vendorContentId.eq(vendorcontentid) : null,
-						datefrom!=null ? vendorContent.requestedOn.goe(datefrom) : null,
-						dateto!=null ? vendorContent.requestedOn.loe(dateto) : null,
-						type!=null ? vendorContent.targetTypeId.eq(type) : null,
-						status!=null ? vendorContent.statusId.eq(status) : null)
+				.where(where)
 				.offset(pagesize!=null && pagenum!=null ? pagesize*((long)pagenum-1) : 0)
 				.limit(pagesize!=null ? pagesize : 100)
 				.fetchResults();
