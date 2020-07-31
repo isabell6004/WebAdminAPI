@@ -1141,8 +1141,10 @@ public class RenewalBuyerService {
 		String lastname = Optional.ofNullable(parameter.getLastname()).filter(s -> StringUtils.hasLength(s)).orElse(null);
 		Boolean lastnamepartialmatch = parameter.getLastnamepartialmatch();
 		String state = Optional.ofNullable(parameter.getState()).filter(s -> StringUtils.hasLength(s)).orElse(null);
-		if (state.equals("oregon")) {
-			state = "OR";
+		if (state != null ) {
+			if (state.equals("oregon")) {
+				state = "OR";
+			}
 		}
 		Integer showid = Optional.ofNullable(parameter.getShowid()).filter(s -> StringUtils.hasLength(s)).map(s -> Integer.valueOf(s)).orElse(null);
 		BigDecimal orderamountfrom = Optional.ofNullable(parameter.getOrderamountfrom()).filter(s -> StringUtils.hasLength(s)).map(s -> new BigDecimal(s)).orElse(null);
