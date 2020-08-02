@@ -132,9 +132,8 @@ public class DisplayServiceImpl implements DisplayService {
     @Override
     public void updateDisplaySetting(int displaySettingId, DisplaySettingRequest displaySettingRequest, MultipartFile imageLinkFile) throws IOException {
 
-        if (displaySettingRequest.linkFileName() != null  && displaySettingRequest.linkType() == 3) {
-            SingleObject<DisplaySettingResponse> setting = getDisplaySetting(displaySettingId);
-            changeBannerImage(setting.getContent().getLinkFileName(), displaySettingRequest.linkFileName(), imageLinkFile);
+        if (displaySettingRequest.linkFileName() != null && displaySettingRequest.linkType() == 3) {
+            uploadBannerImageFile(displaySettingRequest.linkFileName(), imageLinkFile);
         }
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/display/setting/" + displaySettingId;
@@ -238,30 +237,4 @@ public class DisplayServiceImpl implements DisplayService {
         Matcher matcher = validFileNamePattern.matcher(fileName);
         return matcher.matches();
     }
-
-    private void changeBannerImage(String oldBannerImageFilename, String newBannerImageFilename, MultipartFile bannerImageFile) throws IOException {
-        if (newBannerImageFilename == null) return;
-
-        if (oldBannerImageFilename == null && bannerImageFile != null) { //  first file upload
-            uploadBannerImageFile(newBannerImageFilename, bannerImageFile);
-        } else if (oldBannerImageFilename != null && !oldBannerImageFilename.equals(newBannerImageFilename)) {    // old file exists
-            deleteBannerImageFile(oldBannerImageFilename);  // old file delete
-            if (bannerImageFile != null) {   // old file delete and upload new file
-                uploadBannerImageFile(newBannerImageFilename, bannerImageFile);
-            }
-        }
-    }
-
-    private void deleteBannerImageFile(String filename) {
-        if (filename == null) {
-            throw new RuntimeException("filename cannot be null when file is not null");
-        }
-
-        CloseableHttpResponse deleteResponse = swiftApiCallFactory.create()
-                .files()
-                .delete(displayStorageRootContainer, displayStorageDirectory + "/" + filename)
-                .executeWithoutHandler();
-        HttpClientUtils.closeQuietly(deleteResponse);
-    }
-	
 }
