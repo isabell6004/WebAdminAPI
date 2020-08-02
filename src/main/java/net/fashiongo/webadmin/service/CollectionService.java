@@ -135,10 +135,8 @@ public class CollectionService {
     public CollectionPatchResponse setCollection(int collectionId, CollectionSaveParameter collectionSaveParameter,
                               MultipartFile desktopImageBannerFile, MultipartFile mobileImageBannerFile) throws IOException {
         if (collectionSaveParameter.getDesktopImageBannerFilename() != null || collectionSaveParameter.getMobileImageBannerFilename() != null) {
-            CollectionResponse collection = getCollection(collectionId);
-
-            changeBannerImage(collection.getDesktopImageBannerFilename(), collectionSaveParameter.getDesktopImageBannerFilename(), desktopImageBannerFile);
-            changeBannerImage(collection.getMobileImageBannerFilename(), collectionSaveParameter.getMobileImageBannerFilename(), mobileImageBannerFile);
+            uploadBannerImageFile(collectionSaveParameter.getDesktopImageBannerFilename(), desktopImageBannerFile);
+            uploadBannerImageFile(collectionSaveParameter.getMobileImageBannerFilename(), mobileImageBannerFile);
         }
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/" + collectionId;
@@ -337,30 +335,5 @@ public class CollectionService {
         Pattern validFileNamePattern = Pattern.compile("[a-zA-Z0-9\\-_.]+");
         Matcher matcher = validFileNamePattern.matcher(fileName);
         return matcher.matches();
-    }
-
-    private void changeBannerImage(String oldBannerImageFilename, String newBannerImageFilename, MultipartFile bannerImageFile) throws IOException {
-        if (newBannerImageFilename == null) return;
-
-        if (oldBannerImageFilename == null && bannerImageFile != null) { //  first file upload
-            uploadBannerImageFile(newBannerImageFilename, bannerImageFile);
-        } else if (oldBannerImageFilename != null && !oldBannerImageFilename.equals(newBannerImageFilename)) {    // old file exists
-            deleteBannerImageFile(oldBannerImageFilename);  // old file delete
-            if (bannerImageFile != null) {   // old file delete and upload new file
-                uploadBannerImageFile(newBannerImageFilename, bannerImageFile);
-            }
-        }
-    }
-
-    private void deleteBannerImageFile(String filename) {
-        if (filename == null) {
-            throw new RuntimeException("filename cannot be null when file is not null");
-        }
-
-        CloseableHttpResponse deleteResponse = swiftApiCallFactory.create()
-                .files()
-                .delete(collectionStorageRootContainer, collectionStorageDirectory + "/" + filename)
-                .executeWithoutHandler();
-        HttpClientUtils.closeQuietly(deleteResponse);
     }
 }
