@@ -132,7 +132,7 @@ public class DisplayServiceImpl implements DisplayService {
     @Override
     public void updateDisplaySetting(int displaySettingId, DisplaySettingRequest displaySettingRequest, MultipartFile imageLinkFile) throws IOException {
 
-        if (displaySettingRequest.linkFileName() != null && displaySettingRequest.linkType() == 3) {
+        if (displaySettingRequest.linkFileName() != null && displaySettingRequest.linkType() == 3 && imageLinkFile != null) {
             uploadBannerImageFile(displaySettingRequest.linkFileName(), imageLinkFile);
         }
 
