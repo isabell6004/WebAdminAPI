@@ -134,8 +134,11 @@ public class CollectionService {
 
     public CollectionPatchResponse setCollection(int collectionId, CollectionSaveParameter collectionSaveParameter,
                               MultipartFile desktopImageBannerFile, MultipartFile mobileImageBannerFile) throws IOException {
-        if (collectionSaveParameter.getDesktopImageBannerFilename() != null || collectionSaveParameter.getMobileImageBannerFilename() != null) {
+        if (collectionSaveParameter.getDesktopImageBannerFilename() != null && desktopImageBannerFile != null) {
             uploadBannerImageFile(collectionSaveParameter.getDesktopImageBannerFilename(), desktopImageBannerFile);
+        }
+
+        if (collectionSaveParameter.getMobileImageBannerFilename() != null && mobileImageBannerFile != null) {
             uploadBannerImageFile(collectionSaveParameter.getMobileImageBannerFilename(), mobileImageBannerFile);
         }
 
