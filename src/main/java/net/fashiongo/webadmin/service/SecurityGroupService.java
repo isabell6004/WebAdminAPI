@@ -94,29 +94,7 @@ public class SecurityGroupService extends ApiService {
 		
 		return securityGroupList;
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 8.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-	public GetSecurityGroupPermissionsResponse GetSecurityGroupPermissions(GetSecurityGroupPermissionsParameter parameters) {
-		GetSecurityGroupPermissionsResponse result = new GetSecurityGroupPermissionsResponse();
-		String spName = "up_wa_Security_GetPermissionGroup";
-        List<Object> params = new ArrayList<Object>();
-        
-        params.add(parameters.getAppid());
-        params.add(parameters.getGroupid());
-        List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityGroupPermissions.class);
-        
-        result.setSecurityGroupsPermissions((List<SecurityGroupPermissions>) _result.get(0));
-		
-		return result;
-	}
-	
+
 	/**
 	 * 
 	 * Description Example
@@ -139,28 +117,6 @@ public class SecurityGroupService extends ApiService {
         
         result.setSecurityUserList((List<SecurityUsers>) _result.get(0));
         
-		return result;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 8.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-	public GetSecurityGroupPermissionsResponse getSecurityUserPermissions(GetSecurityUserPermissionsParameter parameters) {
-		GetSecurityGroupPermissionsResponse result = new GetSecurityGroupPermissionsResponse();
-		String spName = "up_wa_Security_GetPermission";
-        List<Object> params = new ArrayList<Object>();
-        params.add(parameters.getAppid());
-        params.add(parameters.getUserid());
-        params.add(parameters.getGroupid());
-        
-        List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityGroupPermissions.class);
-        result.setSecurityGroupsPermissions((List<SecurityGroupPermissions>) _result.get(0));
-		
 		return result;
 	}
 	
@@ -402,33 +358,6 @@ public class SecurityGroupService extends ApiService {
 	 * @param parameters
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public GetUserMappingVendorResponse getUserMappingVendor(GetUserMappingVendorParameter parameters) {
-		GetUserMappingVendorResponse result = new GetUserMappingVendorResponse();
-		String spName = "up_wa_GetUserMappingVendor";
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getUserID());
-		params.add(parameters.getAlphabet());
-		params.add(parameters.getCompanyType());
-		params.add(parameters.getCategorys());
-		params.add(parameters.getVendorType());
-		params.add(parameters.getVendorKeyword());
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, UserMappingVendor.class, UserMappingVendorAssigned.class);
-		result.setUserMappingVendorList((List<UserMappingVendor>) _result.get(0));
-		result.setUserMappingVendorAssigned((List<UserMappingVendorAssigned>) _result.get(1));
-		
-		return result;
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 10.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
 	public Integer getUserMappingVendorCount(GetUserMappingVendorParameter parameters) {
 		Integer userMappginVendorCount = mapWaUserVendorRepository.countByUserID(parameters.getUserID());
 		
@@ -458,30 +387,7 @@ public class SecurityGroupService extends ApiService {
 		
 		return result;
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 10.
-	 * @author Reo
-	 * @param parameters
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public GetSecurityUserGroupAccesstimeResponse getSecurityUserGroupAccessTimes(GetSecurityUserGroupParameter parameters) {
-		GetSecurityUserGroupAccesstimeResponse result = new GetSecurityUserGroupAccesstimeResponse();
-		String spName = "up_wa_GetSecurityUserGroupAccesstimes";
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getUsrId());
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, MapUserGroup.class, LoginControl.class);
-		result.setMapUserGroupList((List<MapUserGroup>) _result.get(0));
-		result.setLoginControlList((List<LoginControl>) _result.get(1));
-		result.setSuccess(true);
-		
-		return result;
-	}
-	
+
 	/**
 	 * 
 	 * Description Example

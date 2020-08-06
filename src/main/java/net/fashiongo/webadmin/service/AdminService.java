@@ -70,30 +70,6 @@ public class AdminService extends ApiService {
 	
 	@Autowired
 	private MapUserGroupRepository mapUserGroupRepository;
-	/**
-	 * Get Security Access Code
-	 * 
-	 * @since 2018. 10. 01.
-	 * @author Junghwan Lee
-	 * @param parameters
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public GetSecurityAccessCodesResponse getSecurityAccessCodes(GetSecurityAccessCodesParameters parameters) {
-		GetSecurityAccessCodesResponse result = new GetSecurityAccessCodesResponse();
-		String spName = "up_Security_GetAccessCode";
-		List<Object> params = new ArrayList<Object>();
-
-		params.add(parameters.getAccessCode());
-		params.add(parameters.getsDate());
-		params.add(parameters.geteDate());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityAccessCodes.class);
-
-		result.setSecurityAccessCodes((List<SecurityAccessCodes>) _result.get(0));
-
-		return result;
-	}
 
 	/**
 	 * Set Security Access Code
@@ -148,76 +124,6 @@ public class AdminService extends ApiService {
 			securityAccessCodeRepository.deleteById(id);
 		}
 
-		return result;
-	}
-	/**
-	 * 
-	 * Get Security Log
-	 * 
-	 * @since 2018. 10. 02.
-	 * @author Nayeon Kim
-	 * @param GetSecurityLogsParameter
-	 * @return GetSecurityLogsResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetSecurityLogsResponse getSecuritylogs(GetSecurityLogsParameter parameters) {
-		GetSecurityLogsResponse result = new GetSecurityLogsResponse();
-		String spName = "up_Security_GetLoginLog";
-		List<Object> params = new ArrayList<Object>();
-
-		params.add(parameters.getPagenum());
-		params.add(parameters.getPagesize());
-		params.add(parameters.getUsrid());
-		params.add(parameters.getIp());
-		params.add(parameters.getStartDate());
-		params.add(parameters.getEndDate());
-			
-		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityLogs.class, SecurityLogsColumn.class);
-		result.setSecurityLogs((List<SecurityLogs>) _result.get(0));
-		result.setSecurityLogsColumn((List<SecurityLogsColumn>) _result.get(1));
-		return result;
-	}
-	
-	/**
-	 * 
-	 * Get security resources
-	 * @since 2018. 10. 2.
-	 * @author Dahye Jeong
-	 * @param GetSecurityResourcesParameter
-	 * @return GetSecurityResourcesResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetSecurityResourcesResponse getSecurityResources (GetSecurityResourcesParameter parameters) {
-		GetSecurityResourcesResponse result = new GetSecurityResourcesResponse();
-		String spName = "up_wa_Security_GetResource";
-        List<Object> params = new ArrayList<Object>();
-
-        params.add(parameters.getApplication());
-        params.add(parameters.getResourceName());
-        params.add(parameters.getResourceParent());
-        params.add(parameters.getResourceType());
-        
-        List<Object> _result = jdbcHelper.executeSP(spName, params, Resource.class);
-        result.setResource((List<Resource>)_result.get(0));
-		return result;
-	}
-
-	/**
-	 * 
-	 * Get Security Access Ips
-	 * @since 2018. 10. 10.
-	 * @author Dahye Jeong
-	 * @param null
-	 * @return GetSecurityAccessIpsResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetSecurityAccessIpsResponse getSecurityAccessIps() {
-		GetSecurityAccessIpsResponse result = new GetSecurityAccessIpsResponse();
-		String spName = "up_wa_Security_GetListIP";
-		
-		List<Object> params = new ArrayList<Object>();
-		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityAccessIp.class);
-		result.setIps((List<SecurityAccessIp>) _result.get(0));
 		return result;
 	}
 	
@@ -330,33 +236,6 @@ public class AdminService extends ApiService {
 		results.setSecurityMenu(result);
 		return results;
 	}
-	
-	/**
-	 * 
-	 * Get Security Menus2
-	 * @since 2018. 10. 16.
-	 * @author Jiwon Kim
-	 * @return GetSecurityMenus2
-	 */
-	@SuppressWarnings("unchecked")
-	public GetSecurityMenus2Response GetSecurityMenus2(GetSecurityMenus2Parameter parameters) {
-
-		GetSecurityMenus2Response result = new GetSecurityMenus2Response();
-		String spName = "up_wa_GetSecurityMenus2";
-		
-		List<Object> params = new ArrayList<Object>();
-		
-
-        params.add(parameters.getMenuname());
-        params.add(parameters.getParentmenuid());
-        params.add(parameters.getApplicationid());
-        params.add(parameters.getActive());
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, SecurityMenus2.class);
-		result.setSecurityMenu((List<SecurityMenus2>) _result.get(0));
-		return result;
-	}
-	
 
 	@Transactional("primaryTransactionManager")
 	public ResultCode setSecurityMenu(SetSecurityMenuParameter parameters) {

@@ -132,35 +132,6 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 * Get Category List
-	 *
-	 * @since 2018. 9. 28.
-	 * @author Sanghyup Kim
-	 * @param GetCategoryListParameters
-	 * @return GetCategoryListResponse
-	 */
-	@SuppressWarnings("unchecked")
-//	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED, transactionManager = "primaryTransactionManager")
-//	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS, transactionManager = "primaryTransactionManager")
-	public GetCategoryListResponse getCategoryList(GetCategoryListParameters parameters) {
-
-		List<Object> params = new ArrayList<Object>();
-
-		params.add(parameters.getCategoryId());
-		params.add(parameters.getExpandAll());
-		final String spName = "up_wa_GetCategoryList";
-
-		final List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class);
-		final List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
-
-		GetCategoryListResponse resultSet = new GetCategoryListResponse();
-		resultSet.setCategoryLst(collectionCategoryList);
-
-		return resultSet;
-	}
-
-	/**
-	 *
 	 * Get Paid Campaign
 	 *
 	 * @since 2018. 10. 08.
@@ -285,44 +256,6 @@ public class SitemgmtService extends ApiService {
 
 	/**
 	 *
-	 * getPolicyDetail
-	 *
-	 * @since 2018. 10. 30.
-	 * @author Dahye
-	 * @param GetPolicyDetailParameter
-	 * @return GetPolicyDetailResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetPolicyDetailResponse getPolicyDetail (GetPolicyDetailParameter parameters) {
-		GetPolicyDetailResponse result = new GetPolicyDetailResponse();
-		String spName = "up_GetPage";
-		String filter = " 1=1";
-		
-		if(StringUtils.isNotEmpty(parameters.getSearchItem()) && StringUtils.isNotEmpty(parameters.getSearchTxt())) {
-			filter += " And " + parameters.getSearchItem() + " like '%" + parameters.getSearchTxt() + "%'";
-		}
-		if(parameters.getPolicyID() > 0) {
-			filter += " And PolicyID="+parameters.getPolicyID();
-		}
-		
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getPageNum());
-		params.add(parameters.getPageSize());
-		params.add("PolicyAgreement");
-		params.add("PolicyAgreementID, PolicyID, WholeSalerID, CompanyName, RetailerID, AgreedOn, AgreedByName, AgreedByID, IPAddress, Agreed");
-		params.add(filter);
-		params.add("PolicyAgreementID desc");
-		params.add(true);
-		params.add(null);
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, PolicyAgreement.class);
-		result.setTotal((List<Total>) _result.get(0));
-		result.setPolicyDetail((List<PolicyAgreement>)_result.get(1));
-				
-		return result;
-	}
-
-	/**
-	 *
 	 *getPolicyManagementDetail
 	 *
 	 * @since 2018. 10. 31.
@@ -409,66 +342,6 @@ public class SitemgmtService extends ApiService {
 	}
 
 	/**
-	 *
-	 * Get VendorList
-	 *
-	 * @since 2018. 10. 22.
-	 * @author Incheol Jung
-	 * @return
-	 */
-	public GetVendorListResponse getVendorList() {
-		GetVendorListResponse resultSet = new GetVendorListResponse();
-		String spName = "up_GetVendorList";
-
-		List<Object> params = new ArrayList<Object>();
-		params.add(null);
-		params.add(null);
-		params.add(null);
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryCount.class, VendorSummary.class);
-
-		resultSet.setCategoryCountlist((List<CategoryCount>) _result.get(0));
-		resultSet.setVendorSummarylist((List<VendorSummary>) _result.get(1));
-
-		return resultSet;
-	}
-
-	/**
-	 *
-	 * Description Example
-	 *
-	 * @since 2018. 10. 23.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 * @throws ParseException
-	 */
-	public GetTodaydealResponse getTodaydeal(GetTodaydealParameter parameters) throws ParseException {
-		GetTodaydealResponse resultSet = new GetTodaydealResponse();
-		String spName = "up_wa_GetAdminTodayDeal";
-
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getPagenum());
-		params.add(parameters.getPagesize());
-		params.add(parameters.getWholesalerid());
-		params.add(parameters.getCheckedCompanyNo());
-		params.add(parameters.getCategoryid());
-		params.add(null);
-		params.add(null);
-		params.add(parameters.getFromdate());
-		params.add(parameters.getTodate());
-		params.add(parameters.getActive());
-		params.add(parameters.getOrderby());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TodayDealDetail.class);
-
-		resultSet.setTotal(((List<Total>) _result.get(0)).get(0));
-		resultSet.setTodayDealDetail((List<TodayDealDetail>) _result.get(1));
-
-		return resultSet;
-	}
-
-	/**
 	 * 
 	 * Get TrendReportCategory
 	 * 
@@ -489,180 +362,7 @@ public class SitemgmtService extends ApiService {
 		
 		return result;
 	}
-	
-	/**
-	 * 
-	 * Get TodayDealCalendar
-	 * 
-	 * @since 2018. 10. 26.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-	public GetTodayDealCalendarResponse getTodayDealCalendar(GetTodayDealCanlendarParameter parameters) {
-		GetTodayDealCalendarResponse resultSet = new GetTodayDealCalendarResponse();
-		String spName = "up_wa_GetAdminTodayDealCalendar";
 
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getFromdate());
-		params.add(parameters.getTodate());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, TodayDealCalendarDetail.class, VendorSummaryDetail.class);
-		
-		resultSet.setCalendarDetails((List<TodayDealCalendarDetail>) _result.get(0));
-		resultSet.setVendors((List<VendorSummaryDetail>) _result.get(1));
-
-		return resultSet;
-	}
-
-	/**
-    *
-    * Get Category Vendor List
-    *
-    * @since 2018. 10. 25.
-    * @author Nayeon Kim
-    * @param GetCategoryVendorListParameter
-    * @return GetCategoryVendorListResponse
-    */
-	@SuppressWarnings("unchecked")
-	public GetCategoryVendorListResponse getCategoryVendorList(GetCategoryVendorListParameter parameters) {
-		GetCategoryVendorListResponse result = new GetCategoryVendorListResponse();
-		String spName = "up_wa_GetCategoryVendorList";
-		List<Object> params = new ArrayList<Object>();
-		
-		params.add(parameters.getCategoryid());
-		params.add(parameters.getVendorname());
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryCount.class, CategoryVendor.class, CategoryVendorInfo.class);
-		result.setCategoryCountlist((List<CategoryCount>) _result.get(0));
-		result.setCategoryVendorList((List<CategoryVendor>) _result.get(1));
-		result.setCategoryVendorInfoList((List<CategoryVendorInfo>) _result.get(2));
-		return result;
-	}
-	
-
-	/**
-	 *
-	 * Get Product Attributes Total
-	 *
-	 * @since 2018. 10. 25.
-	 * @author Nayeon Kim
-	 * @return GetProductAttributesTotalResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetProductAttributesTotalResponse getProductAttributesTotal() {
-		GetProductAttributesTotalResponse result = new GetProductAttributesTotalResponse();
-		String spName = "up_wa_GetItemFilter";
-
-		List<Object> params = new ArrayList<Object>();
-		List<Object> _result = jdbcHelper.executeSP(spName, params, PatternInfo.class, LengthInfo.class, StyleInfo.class, FabricInfo.class, BodySizeInfo.class, ColorListInfo.class);
-		result.setPatternInfolist((List<PatternInfo>) _result.get(0));
-		result.setLengthInfolist((List<LengthInfo>) _result.get(1));
-		result.setStyleInfolist((List<StyleInfo>) _result.get(2));
-		result.setFabricInfolist((List<FabricInfo>) _result.get(3));
-		result.setBodySizeInfolist((List<BodySizeInfo>) _result.get(4));
-		result.setColorListInfolist((List<ColorListInfo>) _result.get(5));
-		return result;
-	}
-
-	/**
-	 *
-	 * Get Featured Item Count
-	 *
-	 * @since 2018. 10. 25.
-	 * @author Nayeon Kim
-	 * @param StartDateParameter
-	 * @return GetFeaturedItemCountResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetFeaturedItemCountResponse getFeaturedItemCount(String sDate) {
-		GetFeaturedItemCountResponse result = new GetFeaturedItemCountResponse();
-		String spName = "up_wa_GetFeaturedItemCount";
-		List<Object> params = new ArrayList<Object>();
-		
-		params.add(sDate);
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemCount.class, FeaturedItemList.class);
-		result.setFeaturedItemCount((List<FeaturedItemCount>) _result.get(0));
-		result.setFeaturedItemList((List<FeaturedItemList>) _result.get(1));
-		return result;
-	}
-	
-	/**
-	 *
-	 * Get Featured Item List Day
-	 *
-	 * @since 2018. 10. 30.
-	 * @author Nayeon Kim
-	 * @param StartDateParameter
-	 * @return GetFeaturedItemListDayResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetFeaturedItemListDayResponse getFeaturedItemListDay(String sDate) {
-		GetFeaturedItemListDayResponse result = new GetFeaturedItemListDayResponse();
-		String spName = "up_wa_GetFeaturedItemListDay";
-		List<Object> params = new ArrayList<Object>();
-		
-		params.add(sDate);
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, FeaturedItemList.class);
-		result.setFeaturedItemList((List<FeaturedItemList>) _result.get(0));
-		return result;
-	}
-	
-	/**
-	 *
-	 * Get Product Detail
-	 *
-	 * @since 2018. 10. 31.
-	 * @author Nayeon Kim
-	 * @param GetProductDetailParameter
-	 * @return GetProductDetailResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetProductDetailResponse getProductDetail(GetProductDetailParameter prameters) {
-		GetProductDetailResponse result = new GetProductDetailResponse();
-		String spName = "up_wa_GetProductDetail";
-		List<Object> params = new ArrayList<Object>();
-
-		params.add(prameters.getProductID());
-		params.add(prameters.getTrendReportID());
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, ProductInfo.class, ProductImage.class, ProductColors.class, ProductSize.class, ProductSelectCheck.class);
-		result.setProductInfolist((List<ProductInfo>) _result.get(0));
-		result.setProductImagelist((List<ProductImage>) _result.get(1));
-		result.setProductColorslist((List<ProductColors>) _result.get(2));
-		result.setProductSizelist((List<ProductSize>) _result.get(3));
-		result.setProductSelectChecklist((List<ProductSelectCheck>) _result.get(4));
-		return result;
-	}
-   
-	/**
-	 *
-	 * Get TrendReport Default
-	 *
-	 * @since 2018. 10. 31.
-	 * @author Nayeon Kim
-	 * @param GetTrendReportDefaultParameter
-	 * @return GetTrendReportDefaultResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetTrendReportDefaultResponse getTrendReportDefault(GetTrendReportDefaultParameter prameters) {
-		GetTrendReportDefaultResponse result = new GetTrendReportDefaultResponse();
-		String spName = "up_wa_GetAdminTrendReportDefault";
-		List<Object> params = new ArrayList<Object>();
-
-		params.add(prameters.getPagenum());
-		params.add(prameters.getPagesize());
-		params.add(prameters.getOrderby());
-		params.add(prameters.getOrderbygubn());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, TrendReportDefault.class);
-        result.setTotal((List<Total>) _result.get(0));
-        result.setTrendReportDefault((List<TrendReportDefault>) _result.get(1));
-        return result;
-	}
-	
 	/**
 	 *
 	 * Get TrendReport V2
@@ -830,32 +530,7 @@ public class SitemgmtService extends ApiService {
 		
 		return result;
 	}
-	
-	/**
-	 * 
-	 * Get TodayDealCalendarList
-	 * 
-	 * @since 2018. 10. 26.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public GetTodayDealCalendarListResponse getTodayDealCalendarList(GetTodayDealCalendarListParameter parameters) {
-		GetTodayDealCalendarListResponse result = new GetTodayDealCalendarListResponse();
-		String spName = "up_wa_GetAdminTodayDealCalendarList";
 
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getSelectdate());
-		params.add(parameters.getWholesalerid());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, ActiveTodayDealDetail.class, InactiveTodayDealDetail.class);
-		result.setActiveTodayDeals((List<ActiveTodayDealDetail>) _result.get(0));
-		result.setInactiveTodayDeals((List<InactiveTodayDealDetail>) _result.get(1));
-		
-		return result;
-	}
-	
 	/**
 	 * 
 	 * Description Example
@@ -1258,36 +933,6 @@ public class SitemgmtService extends ApiService {
 		
 		return result;
 	}
-	
-	/**
-	 * 
-	 * Get DMRequest
-	 * 
-	 * @since 2018. 10. 29.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-	public GetDMRequestResponse getDMRequest(GetDMRequestParameter parameters) {
-		GetDMRequestResponse result = new GetDMRequestResponse();
-		String spName = "up_wa_GetFGCatalog";
-
-		List<Object> params = new ArrayList<Object>();
-		params.add(parameters.getPagenum());
-		params.add(parameters.getPagesize());
-		params.add(parameters.getStatus());
-		params.add(parameters.getVendorstatus());
-		params.add(parameters.getWholesalerid());
-		params.add(parameters.getCompanytypecd());
-		params.add(parameters.getDatefrom());
-		params.add(parameters.getDateto());
-		params.add(parameters.getOrderby());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequest.class);
-		result.setDmList((List<DMRequest>) _result.get(0));
-		
-		return result;
-	}
 
     /**
 	 * Get DMRequestSendListOrigin
@@ -1306,34 +951,7 @@ public class SitemgmtService extends ApiService {
 		}
 		return result;
 	}
-	
-	/**
-	 * Get DMRequestSendList
-	 * 
-	 * @since 2018. 10. 29.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-	public JSONObject getDMRequestSendList(GetDMRequestSendListParameter parameters) {
-		JSONObject result = new JSONObject();
-		String spName = "up_wa_DMSendList_Migration";
-		List<Object> params = new ArrayList<Object>();
-		params.add(StringUtils.join(parameters.getDmIds(), ","));
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
-		List<DMRequestDetail> subList = (List<DMRequestDetail>) _result.get(0);
-		
-		Map<Integer, List<DMRequestDetail>> HashMapDmList = subList.stream()
-				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
 
-		for (Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
-			result.put(entry.getKey(), entry.getValue());
-		}
-		
-		return result;
-	}
-	
 	/**
 	 * 
 	 * Get DMDetail
@@ -1476,31 +1094,6 @@ public class SitemgmtService extends ApiService {
 		result.setResultWrapper(true, 1, id, MSG_DELETE_SUCCESS, id);
 		return result;		
 	}
-
-
-	/**
-	 *
-	 * Set Trend Report Map
-	 *
-	 * @since 2018. 11. 05.
-	 * @author Sanghyup Kim
-	 * @param SetTrendReportMapParameter
-	 * @return ResultCode
-	 */
-	public ResultCode setTrendReportMap(SetTrendReportMapParameter parameters) {
-		String spName = "up_wa_AddDelTrendReportItem";
-		List<Object> params = new ArrayList<>();
-
-		params.add(parameters.getSetType());
-		params.add(parameters.getMapId());
-		params.add(parameters.getTrendreportId());
-		params.add(parameters.getProductId());
-		params.add(parameters.getModifiedBy());
-
-		jdbcHelper.executeSP(spName, params);
-		return new ResultCode(true, 1, MSG_UPDATE_SUCCESS);
-	}
-	
 	
 	/**
 	 * @author Kenny/Kyungwoo

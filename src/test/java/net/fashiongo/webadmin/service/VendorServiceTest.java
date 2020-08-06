@@ -88,22 +88,7 @@ public class VendorServiceTest {
 			assertNotNull(result.getProducts().get(0).getProductID());
 		}
 	}
-	
-	/**
-	 * 
-	 * Test GetProductColor
-	 * 
-	 * @since 2018. 11. 5.
-	 * @author Incheol Jung
-	 */
-	@Test
-	public void testGetProductColor() {
-		List<ProductColor> result = vendorService.getProductColor(8487416);
-		if(!CollectionUtils.isEmpty(result)) {
-			assertNotNull(result.get(0).getColorID());
-		}
-	}
-	
+
 	/**
 	 * 
 	 * Description Example
@@ -306,20 +291,7 @@ public class VendorServiceTest {
 			assertNotNull(result.get(0));
 		}
 	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 12. 17.
-	 * @author Reo
-	 */
-	@Test
-	public void testGetVendorDetailInfoData() {
-		Integer wholeSalerID = 6849;
-		GetVendorDetailInfoDataResponse result = vendorService.getVendorDetailInfoData(wholeSalerID);
-		assertTrue(result.getVendorDetailDateList().size() > 0);
-	}
-	
+
 	/**
 	 * @author Kenny/Kyungwoo
 	 * @since 2019-04-16

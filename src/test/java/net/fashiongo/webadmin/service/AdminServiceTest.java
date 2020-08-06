@@ -47,38 +47,6 @@ public class AdminServiceTest {
 	
 	@Autowired
 	SecurityGroupService securityGroupService;
-	
-	/**
-     * 
-     * testGetSecurityResources
-     * 
-     * @since 2018. 10. 18.
-     * @author Dahye
-     */
-	@Test
-	public void testGetSecurityResources() {
-		GetSecurityResourcesParameter parameters = new GetSecurityResourcesParameter();
-		parameters.setApplication("Web Admin");
-		parameters.setResourceName(null);
-		parameters.setResourceParent("All");
-		parameters.setResourceType("All");
-		
-		GetSecurityResourcesResponse result = adminService.getSecurityResources(parameters);
-		assertNotNull(result.getResource());
-	}
-
-	/**
-     * 
-     * testGetSecurityAccessIps
-     * 
-     * @since 2018. 10. 18.
-     * @author Dahye
-     */
-	@Test
-	public void testGetSecurityAccessIps() {
-		GetSecurityAccessIpsResponse result = adminService.getSecurityAccessIps();
-		assertNotNull(result.getIps());
-	}
 
 	/**
      * 
@@ -175,25 +143,6 @@ public class AdminServiceTest {
 
 	/**
 	 * 
-	 * Get Security Access Code
-	 * 
-	 * @since 2018. 10. 22.
-	 * @author Junghwan Lee
-	 */
-	@Test
-	public void testGetSecurityAccessCodes() {
-		GetSecurityAccessCodesParameters parameters = new GetSecurityAccessCodesParameters();
-		parameters.setAccessCode(" ");
-		parameters.setsDate("2015-01-01");
-		parameters.seteDate("2020-01-01");
-		
-		GetSecurityAccessCodesResponse _result = adminService.getSecurityAccessCodes(parameters);
-		
-		assertNotNull(_result.getSecurityAccessCodes());
-	}
-	
-	/**
-	 * 
 	 * Set Security Access Code
 	 * 
 	 * @since 2018. 10. 22.
@@ -230,29 +179,6 @@ public class AdminServiceTest {
 		//ResultCode _result = adminService.SetDeleteSecurityAccessCodes(parameters.getIdList());
 		//assertTrue(_result.getSuccess());
 	}
-
-	/**
-	 * 
-	 * testGetSecurityLogs
-	 * 
-	 * @since 2018. 10. 19.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testGetSecurityLogs() {
-		GetSecurityLogsParameter parameters = new GetSecurityLogsParameter();
-		parameters.setPagenum(1);
-		parameters.setPagesize(30);
-		parameters.setUsrid(1);
-		parameters.setIp(null);
-		parameters.setSdate("10/01/2018");
-		parameters.setEdate("10/31/2018");
-
-		GetSecurityLogsResponse result = adminService.getSecuritylogs(parameters);
-		assertNotNull(result.getSecurityLogs());
-		assertNotNull(result.getSecurityLogsColumn());
-	}
-	
 	
 	/**
      * 
@@ -266,26 +192,7 @@ public class AdminServiceTest {
     	GetSecurityParentMenusResponse result = adminService.GetSecurityParentMenus();
     	assertNotNull(result);
 	}
-    
-    /**
-     * 
-     * testGetSecurityMenus2
-     * 
-     * @since 2018. 10. 22.
-     * @author Jiwon
-     */
-    @Test
-	public void testGetSecurityMenus2() {
-    	GetSecurityMenus2Parameter parameters = new GetSecurityMenus2Parameter();
-        parameters.setMenuname("");
-        parameters.setParentmenuid("0");
-        parameters.setApplicationid("0");
-        parameters.setActive(1);
-        
-    	GetSecurityMenus2Response result = adminService.GetSecurityMenus2(parameters);
-    	assertNotNull(result);
-	}
-    
+
     /**
      * 
      * testSetSecurityMenu

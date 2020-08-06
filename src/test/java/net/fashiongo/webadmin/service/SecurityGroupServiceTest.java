@@ -57,29 +57,7 @@ import net.fashiongo.webadmin.model.primary.SecurityUser;
 public class SecurityGroupServiceTest {
 	@Autowired
     SecurityGroupService securityGroupService;
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 22.
-	 * @author Reo
-	 */
-	@Test
-	public void testGetSecurityUserGroupAccessTimes() {
-		GetSecurityUserGroupParameter parameters = new GetSecurityUserGroupParameter();
-		parameters.setUsrId(11);
-		
-		GetSecurityUserGroupAccesstimeResponse result = securityGroupService.getSecurityUserGroupAccessTimes(parameters);
-		if (result != null) {
-			for(MapUserGroup mug : result.getMapUserGroupList()) {
-				assertNotNull(mug.getGroupID());
-				assertNotNull(mug.getGroupName());
-				assertNotNull(mug.getUserID());
-				assertNotNull(mug.getMapID());
-			}
-		}
-	}
-	
+
 	/**
 	 * 
 	 * Description Example
@@ -105,38 +83,6 @@ public class SecurityGroupServiceTest {
 				assertNotNull(su.getCreatedBy());
 				assertNotNull(su.getCreatedOn());
 			}
-		}
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 10. 22.
-	 * @author Reo
-	 */
-	@Test
-	public void testGetUserMappingVendor() {
-		GetUserMappingVendorParameter parameters = new GetUserMappingVendorParameter();
-		parameters.setUserID(11);
-		parameters.setAlphabet(null);
-		parameters.setCategorys(null);
-		parameters.setCompanyType(null);
-		parameters.setVendorType(null);
-		parameters.setVendorKeyword(null);
-		
-		GetUserMappingVendorResponse result = securityGroupService.getUserMappingVendor(parameters);
-		if (result != null) {
-			for(UserMappingVendor umv: result.getUserMappingVendorList()) {
-				assertNotNull(umv.getWholeSalerID());
-				assertNotNull(umv.getMapID());
-				assertNotNull(umv.getCompanyName());
-			}
-			
-			for(UserMappingVendorAssigned umva: result.getUserMappingVendorAssigned())
-			{
-			    assertNotNull(umva.getAssigned());
-			}
-			
 		}
 	}
 	
@@ -216,28 +162,6 @@ public class SecurityGroupServiceTest {
 			assertTrue(result.getSuccess());
 		}
 	}
-	
-	/**
-     * 
-     * Test GetSecurityGroupPermissions
-     * 
-     * @since 2018. 10. 22.
-     * @author Incheol Jung
-     */
-	@Test
-    public void testGetSecurityGroupPermissions() {
-    	GetSecurityGroupPermissionsParameter param = new GetSecurityGroupPermissionsParameter();
-    	param.setAppid(1);
-    	param.setGroupid(1);
-    	
-    	GetSecurityGroupPermissionsResponse result = securityGroupService.GetSecurityGroupPermissions(param);
-    	if(result != null) {
-    		List<SecurityGroupPermissions> permissions = result.getSecurityGroupsPermissions();
-    		if(!CollectionUtils.isEmpty(permissions)) {
-    			assertNotNull(permissions.get(0).getMenuID());
-    		}
-    	}
-    }
     
 	/**
 	 * 

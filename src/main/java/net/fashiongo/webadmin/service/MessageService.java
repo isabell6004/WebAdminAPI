@@ -587,62 +587,6 @@ public class MessageService extends ApiService {
 		
 		return result;
 	}
-	
-	/**
-	 * getVendorRating
-	 * 
-	 * @since 2018. 11. 27.
-	 * @author dahye
-	 * @param GetVendorRatingParameter
-	 * @return GetVendorRatingResponse
-	 */
-	public GetVendorRatingResponse getVendorRating(GetVendorRatingParameter param) {
-		GetVendorRatingResponse result = new GetVendorRatingResponse();
-		String spName = "up_wa_GetVendorInfoRating";
-		List<Object> params = new ArrayList<Object>();
-		params.add(param.getWholeSalerID());
-		params.add(param.getRetailerID());
-		params.add(param.getPageNum());
-		params.add(param.getPageSize());
-		params.add(param.getActive());
-		params.add(param.getAdditional());
-		params.add(param.getFromDate());
-		params.add(param.getToDate());
-		params.add(param.getOrderby());
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, VendorRating.class);
-		result.setRecCnt((List<Total>) _result.get(0));
-		result.setVendorRatingList((List<VendorRating>) _result.get(1));
-		return result;
-	}
-	
-
-	
-	/**
-	 * getRetailerRating
-	 * 
-	 * @since 2018. 11. 27.
-	 * @author dahye
-	 * @param GetVendorRatingParameter
-	 * @return 
-	 */
-	public GetRetailerRatingResponse getRetailerRating(GetVendorRatingParameter param) {
-		GetRetailerRatingResponse result = new GetRetailerRatingResponse();
-		String spName = "up_wa_GetRetailerRating";
-		List<Object> params = new ArrayList<Object>();
-		params.add(param.getRetailerID());
-		params.add(param.getWholeSalerID());
-		params.add(param.getPageNum());
-		params.add(param.getPageSize());
-		params.add(param.getActive());
-		params.add(param.getAdditional());
-		params.add(param.getFromDate());
-		params.add(param.getToDate());
-		params.add(param.getOrderby());
-		List<Object> _result = jdbcHelper.executeSP(spName, params, Total.class, RetailerRating.class);
-		result.setRecCnt((List<Total>) _result.get(0));
-		result.setRetailerRatingList((List<RetailerRating>) _result.get(1));
-		return result;
-	}
 
 	private String validateFileName(String fileName) {
 		if(fileName == null) {

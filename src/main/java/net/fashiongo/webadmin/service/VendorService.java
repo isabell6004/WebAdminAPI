@@ -4,17 +4,12 @@ import net.fashiongo.webadmin.dao.primary.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
-import net.fashiongo.webadmin.model.pojo.message.Total;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
-import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
-import net.fashiongo.webadmin.model.pojo.response.GetVendorFormsListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.*;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetProductListResponse;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.*;
 import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
 import net.fashiongo.webadmin.utility.Utility;
@@ -111,43 +106,6 @@ public class VendorService extends ApiService {
      */
     public List<VendorAutocomplete> getVendorsAutoomplete(String prefix) {
         return vendorAutocompleteRepository.findByCompanyNameStartingWithOrEmailStartingWithAllIgnoreCase(prefix, prefix);
-    }
-
-    /**
-     * Get ProductList
-     *
-     * @param parameters
-     * @return
-     * @author Incheol Jung
-     * @since 2018. 10. 29.
-     * @deprecated remove SP
-     */
-    @Deprecated
-    public GetProductListResponse getProductList(GetProductListParameter parameters) {
-        GetProductListResponse result = new GetProductListResponse();
-        String spName = "up_wa_GetProductsList";
-        List<Object> params = new ArrayList<Object>();
-
-        params.add(parameters.getWholesalerid());
-        params.add(parameters.getVendorcategoryid());
-        params.add(parameters.getProductname());
-
-        List<Object> _result = jdbcHelper.executeSP(spName, params, ProductSummary.class);
-        result.setProductList((List<ProductSummary>) _result.get(0));
-
-        return result;
-    }
-
-    @Deprecated
-    public List<ProductColor> getProductColor(Integer productId) {
-        String spName = "up_wa_GetProductColors";
-        List<Object> params = new ArrayList<Object>();
-
-        params.add(productId);
-
-        List<Object> _result = jdbcHelper.executeSP(spName, params, ProductColor.class);
-
-        return (List<ProductColor>) _result.get(0);
     }
 
     /**
@@ -292,27 +250,6 @@ public class VendorService extends ApiService {
         rating.setActive(parameters.getActive());
         wholeSalerRatingRepository.save(rating);
         return 1;
-    }
-
-    /**
-     * Description Example
-     *
-     * @param parameters
-     * @return
-     * @author Reo
-     * @since 2018. 11. 13.
-     * @deprecated remove SP
-     */
-    @Deprecated
-    public GetVendorFormsListResponse getVendorFormsList(GetVendorFormsListParameter parameters) {
-        GetVendorFormsListResponse result = new GetVendorFormsListResponse();
-        String spName = "up_wa_GetVendorFormList";
-        List<Object> params = new ArrayList<Object>();
-
-
-        List<Object> _result = jdbcHelper.executeSP(spName, params, FashiongoForm.class, Total.class);
-        result.setFashiongoFormList((List<FashiongoForm>) _result.get(0));
-        return result;
     }
 
     /**
@@ -524,28 +461,28 @@ public class VendorService extends ApiService {
         return result;
     }
 
-    /**
-     * Description Example
-     *
-     * @param wholeSalerID
-     * @return
-     * @author Reo
-     * @since 2018. 12. 14.
-     */
-    public GetVendorDetailInfoDataResponse getVendorDetailInfoData(Integer wholeSalerID) {
-        GetVendorDetailInfoDataResponse result = new GetVendorDetailInfoDataResponse();
-        String spName = "up_wa_GetVendorDetailInfoData";
-        List<Object> params = new ArrayList<Object>();
-        params.add(wholeSalerID);
+    private String validateFileName(String fileName) {
+        if(fileName == null) {
+            return null;
+        }
+        Set<String> extensionSet = Stream.of(".jpg", ".gif", ".png", ".pdf", ".xls", ".xlsx", ".doc", ".docx")
+                .collect(Collectors.toCollection(HashSet::new));
 
-        List<Object> _result = jdbcHelper.executeSP(spName, params, VendorDetailDate.class, SecurityUserName.class, VendorCompanyType.class, Country.class);
-        result.setSessionUsrID(Utility.getUsername());
-        result.setVendorDetailDateList((List<VendorDetailDate>) _result.get(0));
-        result.setUserName((List<SecurityUserName>) _result.get(1));
-        result.setVendorCompanyTypeList((List<VendorCompanyType>) _result.get(2));
-        result.setCountryList((List<Country>) _result.get(3));
-        return result;
+        String fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+        if(!extensionSet.contains(fileExtension)) {
+            return null;
+        }
+
+        String[] fileNameBlackList = {"/", "\\", "%0", ";"};
+        for(String wrongName : fileNameBlackList) {
+            if(fileName.indexOf(wrongName) != -1) {
+                return null;
+            }
+        }
+
+        return fileName;
     }
+
 
     public Vendor getVendorInfo(Integer wholeSalerID) {
         Optional<Vendor> vendor = vendorRepository.findById(wholeSalerID);

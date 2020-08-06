@@ -109,26 +109,7 @@ public class CommonService extends ApiService {
 		List<TopCategories> result = (List<TopCategories>) topCategoriesRepository.findByActiveAndLvlOrderByListOrder(true, 1);
 		return result;
 	}
-	
-	/**
-	 * Get Bid AdPage
-	 * 
-	 * @since 2018. 10. 11.
-	 * @author Junghwan Lee
-	 * @return GetBidAdPagesResponse
-	 */
-	@SuppressWarnings("unchecked")
-	public GetBidAdPagesResponse getBidAdPages() {
-		GetBidAdPagesResponse result = new GetBidAdPagesResponse();
-		String spName = "up_wa_GetBidAdPages";
-		List<Object> params = new ArrayList<Object>();
 
-		List<Object> _result = jdbcHelper.executeSP(spName, params, AdPage.class);
-		result.setAdPage(((List<AdPage>) _result.get(0)));
-		
-		return result;
-	}
-	
 	/**
 	 * Get Bid AdPage Spots
 	 * 

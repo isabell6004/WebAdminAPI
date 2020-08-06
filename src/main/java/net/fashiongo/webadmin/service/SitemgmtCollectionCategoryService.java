@@ -45,51 +45,6 @@ public class SitemgmtCollectionCategoryService extends ApiService {
 
 	/**
 	 * 
-	 * Get Collection Category List
-	 * 
-	 * @since 2018. 9. 28.
-	 * @author Sanghyup Kim
-	 * @param GetCollectionCategoryListParameters
-	 * @return GetCollectionCategoryListResponse
-	 */
-	@SuppressWarnings("unchecked")
-//	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED, transactionManager = "primaryTransactionManager")
-//	@Transactional(readOnly = true, propagation = Propagation.SUPPORTS, transactionManager = "primaryTransactionManager")
-	public GetCollectionCategoryListResponse getCollectionCategoryList(GetCollectionCategoryListParameters parameters) {
-
-		List<Object> params = new ArrayList<Object>();
-
-		// add parameters
-		final Integer categoryID = parameters.getCategoryId();
-		params.add(categoryID);
-		params.add(parameters.getExpandAll());
-		final String spName = "up_wa_GetCollectionCategory";
-
-		GetCollectionCategoryListResponse resultSet = new GetCollectionCategoryListResponse();
-		if (categoryID == 0) { // list
-			List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class);
-			List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
-			resultSet.setCollectionCategoryList(collectionCategoryList);
-		} else { // detail by categoryId
-			final List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class,
-					MapCollectionCategory.class, AdPageSpot.class, Category.class);
-
-			final List<CollectionCategory> collectionCategoryList = (List<CollectionCategory>) _result.get(0);
-			final List<MapCollectionCategory> mapCollectionCategoryList = (List<MapCollectionCategory>) _result.get(1);
-			final List<AdPageSpot> adPageSpotist = (List<AdPageSpot>) _result.get(2);
-			final List<Category> categoryList = (List<Category>) _result.get(3);
-
-			resultSet.setCollectionCategoryList(collectionCategoryList);
-			resultSet.setMapCollectionCategoryList(mapCollectionCategoryList);
-			resultSet.setAdPageSpotList(adPageSpotist);
-			resultSet.setCategoryList(categoryList);
-		}
-
-		return resultSet;
-	}
-
-	/**
-	 * 
 	 * set Collection Category Listorder
 	 * 
 	 * @since 2018. 10. 01.

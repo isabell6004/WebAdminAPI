@@ -27,20 +27,6 @@ public class AdServiceTest {
 
 	@Autowired
 	AdService adService;
-
-	/**
-	 * 
-	 * testGetAdsetting
-	 * 
-	 * @since 2018. 10. 19.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testGetAdsetting() {
-		GetADSettingResponse result = adService.getAdsetting(true);
-		assertNotNull(result.getAdSettingSubList());
-		assertNotNull(result.getAdSettingList());
-	}
 	
 	/**
 	 * 

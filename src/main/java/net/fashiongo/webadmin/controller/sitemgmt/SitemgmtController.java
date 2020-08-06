@@ -6,9 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtGetItemsParameter;
-import net.fashiongo.webadmin.data.model.buyer.ShippingInfo;
 import net.fashiongo.webadmin.data.model.sitemgmt.GetTrendReportParameter;
-import net.fashiongo.webadmin.data.model.sitemgmt.SEO;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetSEOResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportResponse;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
@@ -80,7 +78,6 @@ public class SitemgmtController {
 
 		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse>();
 
-//		GetCategoryListResponse result = sitemgmtService.getCategoryList(parameters);
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryListResponse result = renewalSitemgmtService.getCategoryList(parameters);
 		results.setData(result);
 		results.setSuccess(true);
@@ -253,7 +250,6 @@ public class SitemgmtController {
 	@RequestMapping(value = "getvendorlist", method = RequestMethod.POST)
 	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse> getVendorList(@RequestBody GetVendorListParameter parameters) {
 		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse>(true, null, null);
-//		GetVendorListResponse result = sitemgmtService.getVendorList();
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetVendorListResponse result = renewalSitemgmtService.getVendorList();
 		results.setData(result);
 
@@ -326,7 +322,6 @@ public class SitemgmtController {
 	@RequestMapping(value = "gettodaydealcalendarlist", method = RequestMethod.POST)
 	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarListResponse> getTodayDealCalendarList(@RequestBody GetTodayDealCalendarListParameter parameters) {
 		JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarListResponse> results = new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarListResponse>(true, null, null);
-//		GetTodayDealCalendarListResponse result = sitemgmtService.getTodayDealCalendarList(parameters);
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetTodayDealCalendarListResponse result = renewalSitemgmtService.getTodayDealCalendarList(parameters);
 
 		results.setData(result);
@@ -345,9 +340,7 @@ public class SitemgmtController {
     */
 	@RequestMapping(value = "getcategoryvendorlist", method = RequestMethod.POST)
 	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryVendorListResponse> getCategoryVendorList(@RequestBody GetCategoryVendorListParameter parameters) {
-//		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryVendorListResponse result = renewalSitemgmtService.getCategoryVendorList(parameters.getCategoryid(), parameters.getVendorname());
-//		result.setCategoryVendorInfoList(renewalSitemgmtService.getTest(parameters.getCategoryid(), parameters.getVendorname()).getCategoryVendorInfoList());
 		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetCategoryVendorListResponse>(true, null, result);
 	}
 	
@@ -361,7 +354,6 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getproductattributestotal", method = RequestMethod.POST)
 	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesTotalResponse> getProductAttributesTotal() {
-//		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesTotalResponse result = renewalSitemgmtService.getProductAttributesTotal();
 		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductAttributesTotalResponse>(true, null, result);
 	}
@@ -377,7 +369,6 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getfeatureditemcount", method = RequestMethod.POST)
 	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemCountResponse> getFeaturedItemCount(@RequestBody StartDateParameter parameters) {
-//		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount(parameters.getsDate());
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemCountResponse result = renewalSitemgmtService.getFeaturedItemCount(parameters.getsDate());
 		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemCountResponse>(true, null, result);
 	}
@@ -557,7 +548,6 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "getfeatureditemlistday", method = RequestMethod.POST)
     public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse> getFeaturedItemListDay(@RequestBody StartDateParameter parameters) {
-//		GetFeaturedItemListDayResponse result = sitemgmtService.getFeaturedItemListDay(parameters.getsDate());
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse result = renewalSitemgmtService.getFeaturedItemListDay(parameters.getsDate());
 
 		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetFeaturedItemListDayResponse>(true, null, result);
@@ -589,7 +579,6 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "gettrendreportdefault", method = RequestMethod.POST)
 	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse> getTrendReportDefault(@RequestBody GetTrendReportDefaultParameter parameters) {
-//		GetTrendReportDefaultResponse result = sitemgmtService.getTrendReportDefault(parameters);
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse result = renewalSitemgmtService.getTrendReportDefault(parameters);
 		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportDefaultResponse>(true, null, result);
 	}
@@ -756,7 +745,6 @@ public class SitemgmtController {
 	 */
 	@RequestMapping(value = "settrendreportmap", method = RequestMethod.POST)
 	public JsonResponse<Integer> setTrendreportMap(@RequestBody SetTrendReportMapParameter parameters) {
-//		ResultCode result = sitemgmtService.setTrendReportMap(parameters);
 		ResultCode result = renewalSitemgmtService.setTrendReportMap(parameters);
 
 		return new JsonResponse<Integer>(result.getSuccess(), result.getResultMsg(), result.getResultCode(), null);

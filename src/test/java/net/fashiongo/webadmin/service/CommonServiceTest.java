@@ -90,20 +90,7 @@ public class CommonServiceTest {
 		List<TopCategories> result = commonService.getTopCategories();
 		assertNotNull(result);	
 	}
-	
-	/**
-	 * 
-	 * Get Bid AdPage
-	 * 
-	 * @since 2018. 10. 22.
-	 * @author Junghwan Lee
-	 */
-	@Test
-	public void testGetBidAdPages() {
-		GetBidAdPagesResponse result = commonService.getBidAdPages();
-		assertNotNull(result.getAdPage());
-	}
-	
+
 	/**
 	 * 
 	 * Get Bid AdPage Spots
@@ -143,17 +130,6 @@ public class CommonServiceTest {
 	@Test
 	public void testGetSecurityUser() {
 		List<SecurityUser> result = commonService.getSecurityUser();
-		assertNotNull(result);	
-	}
-
-	@Test
-	public void testGetSecurityResources() {
-		GetSecurityResourcesParameter parameters = new GetSecurityResourcesParameter();
-		parameters.setApplication("Web Admin");
-		parameters.setResourceName("");
-		parameters.setResourceParent("All");
-		parameters.setResourceType("All");
-		GetSecurityResourcesResponse result = adminService.getSecurityResources(parameters);
 		assertNotNull(result);	
 	}
 }

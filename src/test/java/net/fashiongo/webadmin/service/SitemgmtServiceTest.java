@@ -147,48 +147,6 @@ public class SitemgmtServiceTest {
 	}
 
 	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtService#getCollectionCategoryList(net.fashiongo.webadmin.model.pojo.parameter.GetCollectionCategoryListParameters)}.
-	 */
-	@Test
-	public void testGetCollectionCategoryList() {
-//		fail("Not yet implemented");
-		System.out.println("SitemgmtServiceTest.testGetCollectionCategoryList");
-
-		// check collection category list
-		GetCollectionCategoryListParameters parameters = new GetCollectionCategoryListParameters();
-		parameters.setCategoryId(0);
-		parameters.setExpandAll(1);
-		GetCollectionCategoryListResponse result = collectionCategorService.getCollectionCategoryList(parameters);
-
-		assertNotNull(result.getCollectionCategoryList());
-
-		// check collection category detail
-		parameters = new GetCollectionCategoryListParameters();
-		parameters.setCategoryId(8);
-		result = collectionCategorService.getCollectionCategoryList(parameters);
-
-		assertNotNull(result.getAdPageSpotList());
-}
-
-	/**
-	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtService#getCategoryList(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.GetCategoryListParameters)}.
-	 */
-	@Test
-//	@Ignore
-	public void testGetCategoryList() {
-//		fail("Not yet implemented");
-		System.out.println("SitemgmtServiceTest.testGetCategoryList");
-
-		// check category list
-		GetCategoryListParameters parameters = new GetCategoryListParameters();
-		parameters.setCategoryId(0);
-		parameters.setExpandAll(0);
-		GetCategoryListResponse result = sitemgmtService.getCategoryList(parameters);
-
-		assertNotNull(result.getCategoryLst());
-	}
-
-	/**
 	 * Test method for {@link net.fashiongo.webadmin.service.SitemgmtService#setCollectionCategoryListorder(net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.SetCollectionCategoryListorderParameters)}.
 	 */
 	@Test
@@ -346,68 +304,7 @@ public class SitemgmtServiceTest {
 			}
 		}
 	}
-	
-	/**
-	 * Test GetVendorList
-	 * 
-	 * @since 2018. 11. 5.
-	 * @author Incheol Jung
-	 */
-	@Test
-	public void testGetVendorList() {
-		GetVendorListResponse result = sitemgmtService.getVendorList();
-		assertTrue(result.getVendorSummarylist().size() > 0);
-	}
 
-	/**
-	 * Test GetTodaydeal
-	 * 
-	 * @since 2018. 11. 5.
-	 * @author Incheol Jung
-	 * @throws ParseException
-	 */
-	@Test
-	public void testGetTodaydeal() throws ParseException {
-		GetTodaydealParameter parameters = new GetTodaydealParameter();
-		parameters.setPagenum("1");
-		parameters.setPagesize("30");
-		parameters.setCompanytypeid1("true");
-		parameters.setCompanytypeid2("true");
-		parameters.setCompanytypeid3("true");
-		parameters.setCategoryid("");
-		parameters.setFromdate("11/1/2018, 12:00:00 AM");
-		parameters.setTodate("11/30/2018, 11:59:59 PM");
-		parameters.setActive("true");
-		parameters.setOrderby("");
-		
-		GetTodaydealResponse result = sitemgmtService.getTodaydeal(parameters);
-		if(result.getTotal()!= null) {
-			if(result.getTotal().getRecCnt() > 0) {
-				assertTrue(result.getTodayDealDetail().size() > 0);
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * Test GetTodayDealCalendarList
-	 * 
-	 * @since 2018. 11. 5.
-	 * @author Incheol Jung
-	 */
-	@Test
-	public void testGetTodayDealCalendarList() {
-		GetTodayDealCalendarListParameter parameters = new GetTodayDealCalendarListParameter();
-		parameters.setWholesalerid(0);
-		parameters.setSelectdate("11/5/2018");
-		
-		GetTodayDealCalendarListResponse result = sitemgmtService.getTodayDealCalendarList(parameters);
-		if(!CollectionUtils.isEmpty(result.getInactiveTodayDeals())) {
-			assertNotNull(result.getInactiveTodayDeals().get(0).getTodayDealID());
-		}
-	}
-	
-	
 	/**
 	 * 
 	 * Test GetTrendReportCategory
@@ -419,25 +316,6 @@ public class SitemgmtServiceTest {
 	public void testGetTrendReportCategory() {
 		GetTrendReportCategoryResponse result = sitemgmtService.getTrendReportCategory();
 		assertTrue(result.getCategoryList().size() > 0);
-	}
-	
-	/**
-	 * 
-	 * Test GetTodayDealCalendar
-	 * 
-	 * @since 2018. 11. 5.
-	 * @author Incheol Jung
-	 */
-	@Test
-	public void testGetTodayDealCalendar() {
-		GetTodayDealCanlendarParameter parameters = new GetTodayDealCanlendarParameter();
-		parameters.setFromdate("2018-11-1");
-		parameters.setTodate("2018-11-30");
-		
-		GetTodayDealCalendarResponse result = sitemgmtService.getTodayDealCalendar(parameters);
-		if(!CollectionUtils.isEmpty(result.getCalendarDetails())) {
-			assertNotNull(result.getCalendarDetails().get(0).getTodayDealID());
-		}
 	}
 	
 	/**
@@ -493,47 +371,7 @@ public class SitemgmtServiceTest {
 		Integer _result = sitemgmtService.setNewTodayDeal(parameters);
 		assertNotNull(_result);
 	}
-	
-	/**
-	 * 
-	 * Test GetDMRequest
-	 * 
-	 * @since 2018. 11. 5.
-	 * @author Incheol Jung
-	 */
-	@Test
-	public void testGetDMRequest() {
-		GetDMRequestParameter parameters = new GetDMRequestParameter();
-		parameters.setPagenum("1");
-		parameters.setPagesize("20");
-		parameters.setVendorstatus("0");
-		parameters.setCompanytypecd("2,1,3");
-		parameters.setStatus("Requested");
 
-		GetDMRequestResponse result = sitemgmtService.getDMRequest(parameters);
-		if(!CollectionUtils.isEmpty(result.getDmList())) {
-			assertNotNull(result.getDmList().get(0).getCatalogID());
-		}
-	}
-	
-	/**
-	 * 
-	 * Test GetDMRequestSendList
-	 * 
-	 * @since 2018. 11. 5.
-	 * @author Incheol Jung
-	 */
-	@Test
-	public void testGetDMRequestSendList() {
-		GetDMRequestSendListParameter parameters = new GetDMRequestSendListParameter();
-		parameters.setDmIds(Arrays.asList(92181,92178));
-		
-		JSONObject result = sitemgmtService.getDMRequestSendList(parameters);
-		if(!CollectionUtils.isEmpty(result)) {
-			assertTrue(result.get(92181) != null || result.get(92178) != null);
-		}
-	}
-	
 	/**
 	 * 
 	 * Test SetFGCatalog
@@ -592,28 +430,6 @@ public class SitemgmtServiceTest {
 		objPolicy.setActive(false);
 		ResultCode result = new ResultCode();
 		assertTrue(result.getSuccess());
-	}
-
-	/**
-     * 
-     * testGetPolicyDetail
-     * 
-     * @since 2018. 11. 6.
-     * @author Dahye
-     */
-	@Test
-	public void testGetPolicyDetail() {
-		GetPolicyDetailParameter param = new GetPolicyDetailParameter();
-		param.setPageNum(1);
-		param.setPageSize(10);
-		param.setSearchItem("CompanyName");
-		param.setPolicyID(6);
-		
-		GetPolicyDetailResponse result = sitemgmtService.getPolicyDetail(param);
-		assertTrue(result.getPolicyDetail().size() > 0);
-		param.setSearchTxt("love");
-		result = sitemgmtService.getPolicyDetail(param);
-		assertTrue(result.getPolicyDetail().size() > 0);
 	}
 
 	/**
@@ -694,86 +510,6 @@ public class SitemgmtServiceTest {
 		param.setActive(true);
 		Integer result = sitemgmtService.setCommunicationReason(param);
 		assertSame(result, 1);
-	}
-	
-	/**
-	 *
-	 * Test GetCategoryVendorList
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testGetCategoryVendorList() {
-		GetCategoryVendorListParameter parameters = new GetCategoryVendorListParameter();
-		parameters.setCategoryid("");
-		parameters.setVendorname("entro");
-		GetCategoryVendorListResponse result = sitemgmtService.getCategoryVendorList(parameters);
-		assertTrue(result.getCategoryVendorList().size() > 0);
-	}
-
-	/**
-	 *
-	 * Test GetProductAttributesTotal
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testGetProductAttributesTotal() {
-		GetProductAttributesTotalResponse result = sitemgmtService.getProductAttributesTotal();
-		assertTrue(result.getPatternInfolist().size() > 0);
-		assertTrue(result.getLengthInfolist().size() > 0);
-		assertTrue(result.getStyleInfolist().size() > 0);
-		assertTrue(result.getFabricInfolist().size() > 0);
-		assertTrue(result.getBodySizeInfolist().size() > 0);
-		assertTrue(result.getColorListInfolist().size() > 0);
-	}
-
-	/**
-	 *
-	 * Test GetFeaturedItemCount
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testGetFeaturedItemCount() {
-		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
-		if (!CollectionUtils.isEmpty(result.getFeaturedItemList())) {
-			assertNotNull(result.getFeaturedItemList().get(0).getFeaturedItemID());
-		}
-	}
-
-	/**
-	 *
-	 * Test GetFeaturedItemListDay
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testGetFeaturedItemListDay() {
-		GetFeaturedItemCountResponse result = sitemgmtService.getFeaturedItemCount("2018-11");
-		assertNotNull(result.getFeaturedItemList());
-	}
-
-	/**
-	 *
-	 * Test GetProductDetail
-	 *
-	 * @since 2018. 11. 6.
-	 * @author Nayeon Kim
-	 */
-	@Test
-	public void testGetProductDetail() {
-		GetProductDetailParameter parameters = new GetProductDetailParameter();
-		parameters.setProductID("9213809");
-		parameters.setTrendReportID("0");
-		GetProductDetailResponse result = sitemgmtService.getProductDetail(parameters);
-		if (!CollectionUtils.isEmpty(result.getProductInfolist())) {
-			assertNotNull(result.getProductInfolist().get(0).getProductID());
-		}
 	}
 
 	/**

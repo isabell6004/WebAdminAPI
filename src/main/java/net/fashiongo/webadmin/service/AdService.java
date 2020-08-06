@@ -48,27 +48,6 @@ public class AdService extends ApiService {
 	@Autowired
 	private ProductsEntityRepository productsEntityRepository;
 
-
-	/**
-	 * Get AD Setting
-	 *
-	 * @return GetADSettingResponse
-	 * @author Nayeon Kim
-	 * @since 2018. 10. 02.
-	 */
-	@SuppressWarnings("unchecked")
-	public GetADSettingResponse getAdsetting(boolean showAll) {
-		GetADSettingResponse result = new GetADSettingResponse();
-		String spName = "up_wa_GetAdSetting";
-		
-		List<Object> params = new ArrayList<Object>();
-		params.add(showAll);
-		List<Object> _result = jdbcHelper.executeSP(spName, params, AdSettingSubList.class, AdSettingList.class);
-		result.setAdSettingSubList((List<AdSettingSubList>) _result.get(0));
-		result.setAdSettingList((List<AdSettingList>) _result.get(1));
-		return result;
-	}
-
 	/**
 	 * 
 	 * Set Add Page
@@ -199,36 +178,6 @@ public class AdService extends ApiService {
 		adPageSpot.setBidEffectiveOn(parameters.getBidEffectiveOn());
 	}
 	
-	
-	
-	/**
-	 * 
-	 * Get Category Ad Calendar
-	 * 
-	 * @since 2018. 10. 23.
-	 * @author Jiwon Kim
-	 * @param categoryDate
-	 * @return GetCategoryAdCalendar
-	 */
-	public GetCategoryAdCalendarResponse GetCategoryAdCalendar(GetCategoryAdCalendarParameter parameters) {
-		GetCategoryAdCalendarResponse result = new GetCategoryAdCalendarResponse();
-		String spName = "up_wa_GetCategoryAdCalendar2";
-		List<Object> params = new ArrayList<Object>();
-
-        params.add(parameters.getCategoryDate());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, CollectionCategory.class, BiddingList.class, CuratedList.class);
-		List<CollectionCategory> collectionCategory = (List<CollectionCategory>) _result.get(0);
-		List<BiddingList> biddingList = (List<BiddingList>) _result.get(1);
-		List<CuratedList> curatedList = (List<CuratedList>) _result.get(2);
-		
-		result.setCollectionCategory(collectionCategory);
-		result.setBiddingList(biddingList);
-		result.setCuratedList(curatedList);
-
-		return result;
-	}
-	
 	/**
 	 * 
 	 * Get FG Category List Ad Info
@@ -267,55 +216,6 @@ public class AdService extends ApiService {
 	public ResultCode DelCategoryAdItem(Integer CcItemID) {
 		ResultCode result = new ResultCode(true, 1, MSG_DELETE_SUCCESS);
 		collectionCategoryItemRepository.deleteById(CcItemID);
-		return result;
-	}
-	
-	
-	/**
-	 * 
-	 * Get Category Ad Detail
-	 * 
-	 * @since 2018. 10. 24.
-	 * @author Jiwon Kim
-	 * @param spotid,categorydate
-	 * @return GetCategoryAdDetail
-	 */
-	public GetCategoryAdDetailResponse GetCategoryAdDetail(GetCategoryAdDetailParameter parameters) {
-		GetCategoryAdDetailResponse result = new GetCategoryAdDetailResponse();
-		String spName = "up_wa_GetCategoryAdDetail";
-		List<Object> params = new ArrayList<Object>();
-        params.add(parameters.getCategorydate());
-        params.add(parameters.getSpotID());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, BiddingList2.class, CuratedBestList.class);
-		List<BiddingList2> biddingList = (List<BiddingList2>) _result.get(0);
-		List<CuratedBestList> curatedBestList = (List<CuratedBestList>) _result.get(1);
-		
-		result.setBiddingList(biddingList);
-		result.setCuratedBestList(curatedBestList);
-
-		return result;
-	}
-	
-	/**
-	 * 
-	 * Get Category Ad Item For Bid Vendor
-	 * 
-	 * @since 2018. 10. 25.
-	 * @author Jiwon Kim
-	 * @param AdID
-	 * @return GetCategoryAdItemForBidVendor
-	 */
-	public GetCategoryAdItemForBidVendorResponse GetCategoryAdItemForBidVendor(GetCategoryAdItemForBidVendorParameter parameters) {
-		GetCategoryAdItemForBidVendorResponse result = new GetCategoryAdItemForBidVendorResponse();
-		String spName = "up_wa_GetCategoryAdItemForBidVendor";
-		List<Object> params = new ArrayList<Object>();
-        params.add(parameters.getAdID());
-
-		List<Object> _result = jdbcHelper.executeSP(spName, params, BidList.class);
-		List<BidList> bidList = (List<BidList>) _result.get(0);
-		result.setBidList(bidList);
-		
 		return result;
 	}
 	
@@ -432,34 +332,6 @@ public class AdService extends ApiService {
 
 		result.setCount(count);
 		result.setSelectData(selectData);
-		
-		return result;
-	}
-	
-	
-	/**
-	 * 
-	 * Get Category Ad List
-	 * 
-	 * @since 2018. 10. 30.
-	 * @author Jiwon Kim
-	 * @param GetCategoryAdListParameter
-	 * @return GetCategoryAdList
-	 */
-	public GetCategoryAdListResponse GetCategoryAdList(GetCategoryAdListParameter parameters) {
-		GetCategoryAdListResponse result = new GetCategoryAdListResponse();
-		String spName = "up_wa_GetCategoryAdList";
-		List<Object> params = new ArrayList<Object>();
-        params.add(parameters.getCategoryDate());
-
-        List<Object> _result = jdbcHelper.executeSP(spName, params, CategoryList.class, BiddingList2.class, CuratedBestList.class);
-		List<CategoryList> categoryList = (List<CategoryList>) _result.get(0);
-		List<BiddingList2> biddingList = (List<BiddingList2>) _result.get(1);
-		List<CuratedBestList> curatedBestList = (List<CuratedBestList>) _result.get(2);
-		
-		result.setCategoryList(categoryList);
-		result.setBiddingList(biddingList);
-		result.setCuratedBestList(curatedBestList);
 		
 		return result;
 	}

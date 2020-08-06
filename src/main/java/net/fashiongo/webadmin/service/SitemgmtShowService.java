@@ -68,58 +68,6 @@ public class SitemgmtShowService extends ApiService {
 
 	/**
 	 * 
-	 * Get Show List
-	 * 
-	 * @since 2018. 10. 15.
-	 * @author Sanghyup Kim
-	 * @param
-	 * @return
-	 * @deprecated remove SP (up_wa_GetAdminShowList) (see Dooray task #FG-WEBADMIN-API-RENEWAL/29)
-	 */
-	@SuppressWarnings("unchecked")
-	@Deprecated()
-	public GetShowListResponse getShowList(GetShowListParameters parameters) {
-
-		// add parameters
-		final Integer pageNum = parameters.getPageNum();
-		final Integer pageSize = parameters.getPageSize();
-		final Integer active = parameters.getActive();
-		final String location = parameters.getLocation();
-		final String orderBy = parameters.getOrderBy();
-//		if (orderBy == "")
-//			orderBy = null;
-		final String showName = parameters.getShowName();
-
-		final LocalDateTime fromDate = parameters.getFromDate();
-		final LocalDateTime toDate = parameters.getToDate();
-
-		List<Object> params = new ArrayList<Object>();
-		Collections.addAll(params,
-				new Object[] { pageNum, pageSize, showName, location, active, orderBy, fromDate, toDate });
-		/*
-		 * params.add(pageNum); params.add(pageSize); params.add(showName);
-		 * params.add(location); params.add(active); params.add(orderBy);
-		 * params.add(fromDate); params.add(toDate);
-		 */
-
-		final String spName = "up_wa_GetAdminShowList";
-
-		GetShowListResponse resultSet = new GetShowListResponse();
-
-		// -----------------------------------------------------------
-		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class, ListShow.class);
-
-		final List<SingleValueResult> singleValueResultList = (List<SingleValueResult>) _result.get(0);
-		final List<ListShow> showList = (List<ListShow>) _result.get(1);
-
-		resultSet.setSingleValueResultList(singleValueResultList);
-		resultSet.setShowList(showList);
-
-		return resultSet;
-	}
-
-	/**
-	 * 
 	 * set ShowInfo
 	 * 
 	 * @since 2018. 10. 15.
@@ -304,77 +252,6 @@ public class SitemgmtShowService extends ApiService {
 		ListShow listShow = listShowRepository.findOneByShowID(showID);
 		result.setData(listShow);
 		return result;
-	}
-
-	/**
-	 * 
-	 * Get Show List
-	 * 
-	 * @since 2018. 10. 16.
-	 * @author Sanghyup Kim
-	 * @param
-	 * @return
-	 * @deprecated remove SP (up_wa_GetAdminShowSchedule2) (see Dooray task #FG-WEBADMIN-API-RENEWAL/33)
-	 */
-	@SuppressWarnings("unchecked")
-	@Deprecated
-	public GetShowScheduleListResponse getShowScheduleList(GetShowScheduleListParameters parameters) {
-
-		// add parameters
-		final Integer showId = parameters.getShowId();
-		final Integer pageNum = parameters.getPageNum();
-		final Integer pageSize = parameters.getPageSize();
-		final Integer active = parameters.getActive();
-
-		final String showName = parameters.getShowName();
-//		if (showName == "")
-//			showName = null;
-		final String location = parameters.getLocation();
-//		if (location == "")
-//			location = null;
-		final String orderBy = parameters.getOrderBy();
-//		if (orderBy == "")
-//			orderBy = null;
-
-		LocalDateTime dateFrom = null;
-		LocalDateTime dateTo = null;
-
-		String df = parameters.getDateFrom();
-		String dt = parameters.getDateTo();
-
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
-		if (StringUtils.isNotEmpty(df)) {
-			dateFrom = LocalDateTime.parse(parameters.getDateFrom(), dtFormatter);
-		}
-		if (StringUtils.isNotEmpty(dt)) {
-			dateTo = LocalDateTime.parse(parameters.getDateTo(), dtFormatter);
-		}
-
-		List<Object> params = new ArrayList<Object>();
-		Collections.addAll(params,
-				new Object[] { pageNum, pageSize, showId, showName, location, active, orderBy, dateFrom, dateTo });
-
-		/*
-		 * params.add(pageNum); params.add(pageSize); params.add(showId);
-		 * params.add(showName); params.add(location); params.add(active);
-		 * params.add(orderBy); params.add(dateFrom); params.add(dateTo);
-		 */
-		final String spName = "up_wa_GetAdminShowSchedule2";
-
-		GetShowScheduleListResponse resultSet = new GetShowScheduleListResponse();
-
-		// -----------------------------------------------------------
-		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class, ShowSchedule.class);
-
-		final List<SingleValueResult> singleValueResultList = (List<SingleValueResult>) _result.get(0);
-//		final List<SingleValueResult> rs1 = (List<SingleValueResult>) _results.get(0);
-		final List<ShowSchedule> showScheduleList = (List<ShowSchedule>) _result.get(1);
-
-		resultSet.setSingleValueResultList(singleValueResultList);
-		resultSet.setShowScheduleList(showScheduleList);
-		;
-
-		return resultSet;
 	}
 
 	/**
@@ -671,50 +548,6 @@ public class SitemgmtShowService extends ApiService {
 //			}
 		}
 		return showSchedulePromotionPlanList;
-	}
-
-	/**
-	 * 
-	 * get ShowParticipating Vendors
-	 * 
-	 * @since 2018. 10. 18.
-	 * @author Sanghyup Kim
-	 * @param
-	 * @return
-	 * @deprecated
-	 */
-	@SuppressWarnings("unchecked")
-	@Deprecated
-	public GetShowParticipatingVendorsResponse getShowParticipatingVendors(GetShowParameter parameters) {
-
-		// add parameters
-		final Integer pageNum = parameters.getPageNum();
-		final Integer pageSize = parameters.getPageSize();
-		final Integer showScheduleID = parameters.getShowScheduleID();
-		final Integer planID = parameters.getPlanID();
-
-		List<Object> params = new ArrayList<Object>();
-		Collections.addAll(params, new Object[] { pageNum, pageSize, showScheduleID, planID });
-		/*
-		 * params.add(pageNum); params.add(pageSize); params.add(showScheduleID);
-		 * params.add(planID);
-		 */
-		final String spName = "up_wa_GetShowVendor";
-
-		GetShowParticipatingVendorsResponse resultSet = new GetShowParticipatingVendorsResponse();
-
-		// -----------------------------------------------------------
-		final List<Object> _result = jdbcHelper.executeSP(spName, params, SingleValueResult.class,
-				MapShowSchedulePromotionPlanVendor.class);
-
-		final List<SingleValueResult> singleValueResultList = (List<SingleValueResult>) _result.get(0);
-		final List<MapShowSchedulePromotionPlanVendor> showSchedulePromotionPlanVendorList = (List<MapShowSchedulePromotionPlanVendor>) _result
-				.get(1);
-
-		resultSet.setSingleValueResultList(singleValueResultList);
-		resultSet.setShowSchedulePromotionPlanVendorList(showSchedulePromotionPlanVendorList);
-
-		return resultSet;
 	}
 
 	/**
