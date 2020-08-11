@@ -305,28 +305,6 @@ public class VendorService extends ApiService {
 		return result;
 	}
 	
-	private String validateFileName(String fileName) {
-		if(fileName == null) {
-			return null;
-		}
-		Set<String> extensionSet = Stream.of(".jpg", ".gif", ".png", ".pdf", ".xls", ".xlsx", ".doc", ".docx")
-				.collect(Collectors.toCollection(HashSet::new));
-
-		String fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
-		if(!extensionSet.contains(fileExtension)) {
-			return null;
-		}
-
-		String[] fileNameBlackList = {"/", "\\", "%0", ";"};
-		for(String wrongName : fileNameBlackList) {
-			if(fileName.indexOf(wrongName) != -1) {
-				return null;
-			}
-		}
-
-		return fileName;
-	} 	
-
     /**
      * SetBuyerRatingActive
      *
