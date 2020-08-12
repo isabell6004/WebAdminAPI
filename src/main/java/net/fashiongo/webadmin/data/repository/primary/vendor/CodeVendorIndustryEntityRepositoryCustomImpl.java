@@ -20,7 +20,7 @@ public class CodeVendorIndustryEntityRepositoryCustomImpl implements CodeVendorI
 
         QCodeVendorIndustryEntity CVI = QCodeVendorIndustryEntity.codeVendorIndustryEntity;
 
-        List<CodeVendorIndustryEntity> result = query.select(CVI).from(CVI).orderBy(CVI.vendorIndustryID.asc()).fetch();
+        List<CodeVendorIndustryEntity> result = query.select(CVI).from(CVI).where(CVI.active.eq(true)).orderBy(CVI.vendorIndustryID.asc()).fetch();
 
         return result;
     }
