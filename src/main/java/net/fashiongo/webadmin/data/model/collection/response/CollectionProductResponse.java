@@ -39,4 +39,6 @@ public class CollectionProductResponse {
     private float unitPrice1;
 
     private int vendorClassCode;
+
+    private long wholeSalerId;
 }
