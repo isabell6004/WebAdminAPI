@@ -41,4 +41,6 @@ public class CollectionProductResponse {
     private int vendorClassCode;
 
     private long wholeSalerId;
+
+    private int typeCode;
 }
