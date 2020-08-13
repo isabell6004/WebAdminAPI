@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Slf4j
@@ -104,5 +106,14 @@ public class HelpCenterController {
     public JsonResponse<Void> saveCategoriesAndTopicsOrder(@RequestBody BoardBulkSaveParameter boardBulkSaveParameter) {
         helpCenterService.saveCategoriesAndTopicsOrder(boardBulkSaveParameter);
         return new JsonResponse<>(true, null, null);
+    }
+
+    @PostMapping("/uploadImage")
+    public JsonResponse<String> uploadImage(@RequestPart(value = "file") MultipartFile file) throws IOException {
+        long timestamp = LocalDateTime.now().atOffset(ZoneOffset.UTC).toInstant().toEpochMilli();
+        String fileName = timestamp + "_" + file.getOriginalFilename();
+
+        helpCenterService.uploadImageFile(fileName, file);
+        return new JsonResponse<>(true, null, fileName);
     }
 }

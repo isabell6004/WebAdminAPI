@@ -95,8 +95,8 @@ public class HelpCenterService {
     public Integer saveCategory(BoardCategoryParameter boardCategoryParameter,
                                 MultipartFile colorIconImageFile,
                                 MultipartFile greyIconImageFile) throws IOException {
-        uploadIconImageFile(boardCategoryParameter.getColorIconImageFilename(), colorIconImageFile);
-        uploadIconImageFile(boardCategoryParameter.getGreyIconImageFilename(), greyIconImageFile);
+        uploadImageFile(boardCategoryParameter.getColorIconImageFilename(), colorIconImageFile);
+        uploadImageFile(boardCategoryParameter.getGreyIconImageFilename(), greyIconImageFile);
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/board/categories";
 
@@ -109,8 +109,8 @@ public class HelpCenterService {
                             BoardCategoryParameter boardCategoryParameter,
                             MultipartFile colorIconImageFile,
                             MultipartFile greyIconImageFile) throws IOException {
-        uploadIconImageFile(boardCategoryParameter.getColorIconImageFilename(), colorIconImageFile);
-        uploadIconImageFile(boardCategoryParameter.getGreyIconImageFilename(), greyIconImageFile);
+        uploadImageFile(boardCategoryParameter.getColorIconImageFilename(), colorIconImageFile);
+        uploadImageFile(boardCategoryParameter.getGreyIconImageFilename(), greyIconImageFile);
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/board/categories/" + categoryId;
 
@@ -184,7 +184,7 @@ public class HelpCenterService {
         }
     }
 
-    private void uploadIconImageFile(String filename, MultipartFile file) throws IOException {
+    public void uploadImageFile(String filename, MultipartFile file) throws IOException {
         if (filename != null || file != null) {
             if (filename == null) {
                 throw new RuntimeException("filename cannot be null when file is not null");
