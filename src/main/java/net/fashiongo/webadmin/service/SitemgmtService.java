@@ -222,7 +222,7 @@ public class SitemgmtService extends ApiService {
 				pc = policyRepository.findOneByPolicyID(objPolicy.getPolicyID());
 				pc.setPolicyID(objPolicy.getPolicyID());
 				pc.setPolicyTitle(objPolicy.getPolicyTitle());
-				if(StringUtils.isEmpty(objPolicy.getPolicyContents())) {
+				if(!StringUtils.isEmpty(objPolicy.getPolicyContents())) {
 				    pc.setPolicyContents(objPolicy.getPolicyContents());
 				}
 				pc.setForVendor(objPolicy.getForVendor());
