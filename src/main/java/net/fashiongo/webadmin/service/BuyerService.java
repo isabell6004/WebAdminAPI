@@ -131,6 +131,9 @@ public class BuyerService extends ApiService {
 
         String statusBefore = tblRetailer.getActive().toUpperCase() + tblRetailer.getCurrentStatus();
         String statusAfter = retailerDetail.getActive().toUpperCase() + retailerDetail.getCurrentStatus();
+        if (retailerDetail.getCurrentStatus() == 5) {
+            retailerDetail.setActive("N");
+        }
 
         if (setAdminRetailerDetailParam.isChangeId()) {
             Optional<AspnetUsers> duplicateUserOptional = aspnetUsersRepository.findByLoweredUserName(retailerDetail.getUserId().toLowerCase());
@@ -164,15 +167,12 @@ public class BuyerService extends ApiService {
 
                 // save buyer user ID change history
                 buyerEmailHistoryEntityRepository.save(BuyerEmailHistoryEntity.create(retailerDetail.getRetailerId(), retailerDetail.getUserId(), Utility.getUsername()));
+                // save tblRetailer
+                tblRetailer.setUserID(retailerDetail.getUserId());
             });
         }
 
-        if (retailerDetail.getCurrentStatus() == 5) {
-            retailerDetail.setActive("N");
-        }
-
         // save tblRetailer
-        tblRetailer.setUserID(retailerDetail.getUserId());
         tblRetailer.setCompanyName(retailerDetail.getCompanyName());
         tblRetailer.setRetailerPermitNo(retailerDetail.getRetailerPermitNo());
         tblRetailer.setFirstName(retailerDetail.getFirstName());
