@@ -148,8 +148,12 @@ spring:
     host: 10.210.16.201
     port: 6379
     database: 2
-    
-    
+  servlet:
+    multipart:
+      resolve-lazily: true
+      max-request-size: 50MB
+      max-file-size: 10MB
+
 server:
   port: 29901
   servlet:

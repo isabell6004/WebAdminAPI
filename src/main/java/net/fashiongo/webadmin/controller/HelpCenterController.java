@@ -10,6 +10,7 @@ import net.fashiongo.webadmin.service.HelpCenterService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -115,5 +116,10 @@ public class HelpCenterController {
 
         helpCenterService.uploadImageFile(fileName, file);
         return new JsonResponse<>(true, null, fileName);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public JsonResponse<String> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        return JsonResponse.fail("Max Upload Size Exceeded (10MB)");
     }
 }
