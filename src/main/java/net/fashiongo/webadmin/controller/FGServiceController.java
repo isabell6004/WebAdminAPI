@@ -3,6 +3,7 @@
  */
 package net.fashiongo.webadmin.controller;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 
+import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * @author kcha
@@ -48,7 +51,12 @@ public class FGServiceController {
 	}
 	@RequestMapping(value = "/v2/pdf/photostudio/order/{orderID}", method = RequestMethod.GET)
 	public JsonResponse<String> getV2OrderDetailPDF(HttpServletRequest request) {
-		String url = extractUri(request.getRequestURL().toString() + "?" + request.getQueryString(), "webAdminGuid");
+		String url = extractUri(request.getRequestURL().toString(), "webAdminGuid");
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url)
+				.query(request.getQueryString());
+		Optional.ofNullable(Utility.getUsername())
+				.ifPresent(s -> uriComponentsBuilder.queryParam("requestor",s));
+		url = uriComponentsBuilder.build().toUriString();
 		logger.debug("called service url: " + url);
 		return jsonClient.get(url);
 	}
@@ -61,7 +69,12 @@ public class FGServiceController {
 	}
 	@RequestMapping(value = "/v2/pdf/photostudio/order/dailysummary/{photoshootDate}", method = RequestMethod.GET)
 	public JsonResponse<String> getV2OrderSummaryPDF(HttpServletRequest request) {
-		String url = extractUri(request.getRequestURL().toString() + "?" + request.getQueryString());
+		String url = extractUri(request.getRequestURL().toString());
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url)
+				.query(request.getQueryString());
+		Optional.ofNullable(Utility.getUsername())
+				.ifPresent(s -> uriComponentsBuilder.queryParam("requestor",s));
+		url = uriComponentsBuilder.build().toUriString();
 		logger.debug("called service url: " + url);
 		return jsonClient.get(url);
 	}
