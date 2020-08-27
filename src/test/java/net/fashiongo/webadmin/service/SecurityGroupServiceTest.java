@@ -68,7 +68,7 @@ public class SecurityGroupServiceTest {
 	public void testGetSecurityUsers() {
 		GetSecurityUserParameter parameters = new GetSecurityUserParameter();
 		parameters.setUserName("niki");
-		parameters.setGroup("Design");
+		parameters.setGroup(35);
 		parameters.setRole("G");
 		parameters.setVendorID(3064);
 		
