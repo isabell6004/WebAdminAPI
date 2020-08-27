@@ -20,11 +20,9 @@ public class GetSecurityUserParameter {
     @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
     private String userName;
 
-    @ApiModelProperty(required = false, example = "Call Center")
+    @ApiModelProperty(required = false, example = "0")
     @JsonProperty("group")
-    @SQLInjectionSafeWithKeywordsFilter
-    @Pattern(regexp = ALLOW_PATTERN, message = ALLOW_PATTERN_MESSAGE)
-    private String group;
+    private Integer group;
 
     @ApiModelProperty(required = false, example = "S")
     @JsonProperty("role")
@@ -59,11 +57,11 @@ public class GetSecurityUserParameter {
         this.userName = userName;
     }
 
-    public String getGroup() {
+    public Integer getGroup() {
         return group;
     }
 
-    public void setGroup(String group) {
+    public void setGroup(Integer group) {
         this.group = group;
     }
 
