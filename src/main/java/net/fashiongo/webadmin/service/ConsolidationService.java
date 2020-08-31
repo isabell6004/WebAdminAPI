@@ -565,9 +565,13 @@ public class ConsolidationService extends ApiService {
 	}
 	public JsonResponse<?> getV2ConsolidationDetail(Integer consolidationId) {
 		String url = "/v2/pdf/consolidation/detail/" + consolidationId;
+		String finalUrl = url;
+		url = Optional.ofNullable(Utility.getUsername())
+				.map(s -> finalUrl.concat("?requestor=").concat(s))
+				.orElse(url);
 		return (JsonResponse<?>) httpClient.get(url);
 	}
-	
+
 	public DropOffConsolidationOrderDto getConsolidationReceipt(Integer orderId) throws Exception {
 		List<ConsolidatedOrder> consolidationOrders = consolidationDropoffRepository.getDropOffConsolidationReceipt(orderId);
 		List<DropOffConsolidationOrderDto> orders = DropOffConsolidationOrderDto.build(consolidationOrders);

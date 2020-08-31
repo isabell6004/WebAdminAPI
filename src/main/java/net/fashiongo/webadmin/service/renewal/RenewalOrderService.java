@@ -104,6 +104,24 @@ public class RenewalOrderService {
 		String orderSessionGUID = ordersEntityRepository.findById(parameters.getOrderid()).map(ordersEntity -> ordersEntity.getOrderSessionGUID()).orElse("");
 
 		String url = "/v2/" + parameters.getResulttype() + "/po/" + orderSessionGUID + "/" + orderId + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForpdf() + "&withImage=" + parameters.getWithimage() + "&withVendorStyleNo=" + parameters.getWithvendorstyleno();
+		String finalUrl = url;
+		url = Optional.ofNullable(Utility.getUsername())
+				.map(s -> finalUrl.concat("&requestor=").concat(s))
+				.orElse(url);
+
+		JsonResponse<?> result = httpClient.get(url);
+
+		return result;
+	}
+
+	public JsonResponse getWebRequestV2(GetPrintPoUrlParameter parameters) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		String url = "/v2/" + parameters.getResultType() + "/po/" + parameters.getOrderSessionGUID() + "/" + parameters.getOids() + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForPdf() + "&withImage=" + parameters.getWithImage() + "&withVendorStyleNo=" + parameters.getWithVendorStyleNo();
+		String finalUrl = url;
+		url = Optional.ofNullable(Utility.getUsername())
+				.map(s -> finalUrl.concat("&requestor=").concat(s))
+				.orElse(url);
+		JSONObject jsonObj = new JSONObject();
 		JsonResponse<?> result = httpClient.get(url);
 
 		return result;
@@ -127,6 +145,10 @@ public class RenewalOrderService {
 		String orderSessionGUID = mergeOrdersEntityRepository.getMergeOrderWholesalerGuid(orderId).orElse(null);
 
 		String url = "/v2/" + parameters.getResulttype() + "/merged-po/" + orderSessionGUID + "/" + orderId + "?t=" + parameters.getT() + "&forPdf=" + parameters.getForpdf() + "&withImage=" + parameters.getWithimage() + "&withVendorStyleNo=" + parameters.getWithvendorstyleno();
+		String finalUrl = url;
+		url = Optional.ofNullable(Utility.getUsername())
+				.map(s -> finalUrl.concat("&requestor=").concat(s))
+				.orElse(url);
 		JsonResponse<?> result = httpClient.get(url);
 
 		return result;

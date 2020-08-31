@@ -49,7 +49,7 @@ public class OrderController {
 	 */
 	@RequestMapping(value="getprintpourl", method=RequestMethod.POST)
 	public JsonResponse getWebRequest(@RequestBody GetPrintPoUrlParameter parameters) throws JsonProcessingException {
-		JsonResponse results = orderService.getWebRequest(parameters);
+		JsonResponse results = renewalOrderService.getWebRequestV2(parameters);
 		
 		return results;
 	}
