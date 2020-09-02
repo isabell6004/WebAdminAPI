@@ -245,8 +245,6 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
         private String name;
         private String dbaName;
-        private String codename;
-        private String dirname;
         private String description;
         private String website;
         private String businessCategoryInfo;
@@ -264,8 +262,6 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         private VendorInfoCommand(VendorDetailInfo request, T setting) {
             this.name = request.getCompanyName();
             this.dbaName = request.getRegCompanyName();
-            this.codename = request.getCodeName();
-            this.dirname = request.getDirName();
             this.description = request.getDescription();
             this.website = request.getWebSite();
             this.businessCategoryInfo = request.getBusinessCategory();
