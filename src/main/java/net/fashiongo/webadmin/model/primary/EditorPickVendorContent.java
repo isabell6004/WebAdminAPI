@@ -85,7 +85,7 @@ public class EditorPickVendorContent {
     	else if(!vendor.getActive()) return false;
     	else if(!vendor.getShopActive()) return false;
     	else if(!vendor.getOrderActive()) return false;
-    	else if(vendor.getVendorType()!=2) return false;
+//    	else if(vendor.getVendorType()!=2) return false;
     	else if(vendorContent==null) return false;
     	else if(vendorContent.getStatusId()!=2) return false;
     	else if(!vendorContent.getIsActive()) return false;
@@ -102,7 +102,7 @@ public class EditorPickVendorContent {
     	if(!vendor.getActive()) descs.add("vendor is not active");
     	if(!vendor.getShopActive()) descs.add("vendor is not shopActive");
     	if(!vendor.getOrderActive()) descs.add("vendor is not orderActive");
-    	if(vendor.getVendorType()!=2) descs.add("vendor is not Premium");
+//    	if(vendor.getVendorType()!=2) descs.add("vendor is not Premium");
     	if(vendorContent==null) descs.add("media does not exist");
     	else {
     		if(vendorContent.getStatusId()!=2) descs.add("media is not approved");
