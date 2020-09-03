@@ -13,6 +13,7 @@ import java.util.List;
  * The type Product.
  */
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Product {
 
     private int productId;
@@ -33,11 +34,9 @@ public class Product {
 
     private int parentParentCategoryId;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private BigDecimal unitPrice; // 단가
 
-    @JsonProperty("unitPrice2")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("unitPrice1")
     private BigDecimal listingPrice; // 권장 소비자 가격
 
     private String itemName;
@@ -78,10 +77,8 @@ public class Product {
 
     private String productMasterColors;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Vendor vendor;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Category category;
 
     private VendorCategory vendorCategory;
