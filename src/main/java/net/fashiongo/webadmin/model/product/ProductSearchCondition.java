@@ -79,7 +79,7 @@ public class ProductSearchCondition {
 
         String qs = sb.toString();
 
-        if (qs.length() == 1) {
+        if ("?".equals(qs)) {
             return "";
         }
 
@@ -99,12 +99,4 @@ public class ProductSearchCondition {
         }).collect(Collectors.joining(","));
 
     }
-
-//    private String listToDelimiter(List<Integer> collection) {
-//        return collection.stream().map(String::valueOf).collect(Collectors.joining(","));
-//    }
-//
-//    private String listToDelimiter(List<Include> collection) {
-//        return collection.stream().map(Include::name).collect(Collectors.joining(","));
-//    }
 }
