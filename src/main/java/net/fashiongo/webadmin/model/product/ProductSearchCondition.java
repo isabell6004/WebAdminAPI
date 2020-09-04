@@ -36,8 +36,10 @@ public class ProductSearchCondition {
 
     private Integer masterColorId;
 
+    private Boolean active;
+
     public enum Include {
-        VENDOR, CATEGORY, VENDOR_CATEGORY, SIZE, PACK, FABRIC, MADE_IN, LABEL, STYLE, PATTERN, LENGTH, BODY_SIZE, IMAGE, CROSS_SELLING, MEMO, INVENTORY;
+        VENDOR, CATEGORY, VENDOR_CATEGORY, SIZE, PACK, FABRIC, LABEL, STYLE, PATTERN, LENGTH, BODY_SIZE, IMAGE, CROSS_SELLING, MEMO, INVENTORY;
     }
 
     public String toQueryString() {
@@ -75,6 +77,9 @@ public class ProductSearchCondition {
         }
         if (Objects.nonNull(masterColorId)) {
             sb.append("masterColorId=").append(masterColorId).append("&");
+        }
+        if (Objects.nonNull(active)) {
+            sb.append("isActive=").append(active).append("&");
         }
 
         String qs = sb.toString();

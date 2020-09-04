@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public class Product {
 
     private String itemName;
 
-    private String imageFileName;
+    private String imageUrl;
 
     private int sizeId;
 
@@ -54,6 +55,10 @@ public class Product {
     private boolean eventColor;
 
     private String description;
+
+    private String madeIn;
+
+    private String fabricDescription;
 
     private String howToUse;
 
@@ -77,6 +82,9 @@ public class Product {
 
     private String productMasterColors;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    private LocalDateTime activatedOn;
+
     private Vendor vendor;
 
     private Category category;
@@ -88,8 +96,6 @@ public class Product {
     private Pack pack;
 
     private Fabric fabric;
-
-    private MadeIn madeIn;
 
     private Label label;
 
@@ -159,17 +165,7 @@ public class Product {
      */
     @Getter
     public static class Fabric {
-        private String fabricDescription;
-        private int masterFabricId;
-        private String masterFabricName;
-    }
-
-    /**
-     * The type Made in.
-     */
-    @Getter
-    public static class MadeIn {
-        private String madeInCountry;
+        private String fabricName;;
     }
 
     /**
