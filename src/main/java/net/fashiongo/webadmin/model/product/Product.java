@@ -42,7 +42,7 @@ public class Product {
 
     private String itemName;
 
-    private String imageUrl;
+    private String imageUrl;    // not yet implemented
 
     private int sizeId;
 
@@ -82,8 +82,27 @@ public class Product {
 
     private String productMasterColors;
 
+    private int colorCount;
+
+    private boolean fashionGoExclusive;
+
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime activatedOn;
+
+    private String activatedBy;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    private LocalDateTime createdOn;
+
+    private String createdBy;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    private LocalDateTime modifiedOn;
+
+    private String modifiedBy;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    private LocalDateTime availableOn;
 
     private Vendor vendor;
 
@@ -107,15 +126,12 @@ public class Product {
 
     private BodySize bodySize;
 
-    @JsonProperty("image")
     private List<Image> images;
 
-    @JsonProperty("crossSelling")
-    private List<CrossSelling> crossSellingProducts;
+    private List<CrossSelling> crossSells;
 
     private Memo memo;
 
-    @JsonProperty("inventory")
     private List<Inventory> inventories;
 
     /**
@@ -141,7 +157,7 @@ public class Product {
      */
     @Getter
     public static class VendorCategory {
-        private String vendorCategory;
+        private String vendorCategoryName;
     }
 
     /**
@@ -165,7 +181,7 @@ public class Product {
      */
     @Getter
     public static class Fabric {
-        private String fabricName;;
+        private String fabricName;
     }
 
     /**
@@ -173,7 +189,7 @@ public class Product {
      */
     @Getter
     public static class Label {
-        private String label;
+        private String labelTypeName;
     }
 
     /**
@@ -181,7 +197,7 @@ public class Product {
      */
     @Getter
     public static class Style {
-        private String style;
+        private String styleName;
     }
 
     /**
@@ -189,7 +205,7 @@ public class Product {
      */
     @Getter
     public static class Pattern {
-        private String pattern;
+        private String patternName;
     }
 
     /**
@@ -197,7 +213,7 @@ public class Product {
      */
     @Getter
     public static class Length {
-        private String length;
+        private String lengthName;
     }
 
     /**
@@ -205,7 +221,7 @@ public class Product {
      */
     @Getter
     public static class BodySize {
-        private String bodySize;
+        private String bodySizeName;
     }
 
     /**
@@ -213,7 +229,7 @@ public class Product {
      */
     @Getter
     public static class Image {
-        private String imageFileName;
+        private String imageUrl;
         private int sortNo;
         private int colorId;
     }
@@ -242,13 +258,12 @@ public class Product {
     public static class Inventory {
         private int colorId;
         private String sizeName;
-        private int qty;
         private boolean active;
         private boolean available;
         private int availableQty;
         private int statusCode; // change enum?
         private int threshold;
-        @JsonFormat(pattern = "yyyy/MM/dd")
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDate availableOn;
 
     }

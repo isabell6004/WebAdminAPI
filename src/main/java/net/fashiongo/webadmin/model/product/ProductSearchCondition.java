@@ -39,7 +39,7 @@ public class ProductSearchCondition {
     private Boolean active;
 
     public enum Include {
-        VENDOR, CATEGORY, VENDOR_CATEGORY, SIZE, PACK, FABRIC, LABEL, STYLE, PATTERN, LENGTH, BODY_SIZE, IMAGE, CROSS_SELLING, MEMO, INVENTORY;
+        VENDOR, CATEGORY, VENDOR_CATEGORY, SIZE, PACK, FABRIC, LABEL, STYLE, PATTERN, LENGTH, BODY_SIZE, IMAGE, CROSS_SELL, MEMO, INVENTORY;
     }
 
     public String toQueryString() {
