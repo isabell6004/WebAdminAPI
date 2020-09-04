@@ -1,5 +1,6 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import lombok.RequiredArgsConstructor;
 import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.data.model.statistics.*;
 import net.fashiongo.webadmin.data.model.statistics.response.GetBestItemsResponse;
@@ -12,6 +13,10 @@ import net.fashiongo.webadmin.data.repository.primary.StatisticsWaBestItemPerDay
 import net.fashiongo.webadmin.data.repository.primary.SystemImageServersEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.SystemVendorAdminWebServerEntityRepository;
 import net.fashiongo.webadmin.data.repository.stats.SearchEntityRepository;
+import net.fashiongo.webadmin.model.product.Product;
+import net.fashiongo.webadmin.model.product.ProductSearchCondition;
+import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
+import net.fashiongo.webadmin.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -22,36 +27,29 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class RenewalStaticService {
 
-	@Autowired
-	protected JdbcHelper jdbcHelper;
+	protected final JdbcHelper jdbcHelper;
 
 	private final JdbcTemplate jdbcTemplate;
 
-	@Autowired
-	private SystemImageServersEntityRepository systemImageServersEntityRepository;
+	private final SystemImageServersEntityRepository systemImageServersEntityRepository;
 
-	@Autowired
-	private SystemVendorAdminWebServerEntityRepository systemVendorAdminWebServerEntityRepository;
+	private final SystemVendorAdminWebServerEntityRepository systemVendorAdminWebServerEntityRepository;
 
-	@Autowired
-	private ProductsEntityRepository productsEntityRepository;
+	private final ProductsEntityRepository productsEntityRepository;
 
-	@Autowired
-	private StatisticsWaBestItemPerDayEntityRepository statisticsWaBestItemPerDayEntityRepository;
+	private final StatisticsWaBestItemPerDayEntityRepository statisticsWaBestItemPerDayEntityRepository;
 
-	@Autowired
-	private QuerySearchRepository querySearchRepository;
+	private final QuerySearchRepository querySearchRepository;
 
-	@Autowired
-	private SearchEntityRepository searchEntityRepository;
+	private final SearchEntityRepository searchEntityRepository;
 
-	public RenewalStaticService(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
+	private final ProductService productService;
 
 	public GetHotSearchResponse getHotSearch(Integer top, LocalDateTime fromDate, LocalDateTime toDate, String orderBy, String searchfield, String searchkeyword) {
 		List<HotSearch> hotSearches = querySearchRepository.getHotSearch(top, fromDate, toDate, orderBy, searchfield, searchkeyword);
@@ -178,9 +176,97 @@ public class RenewalStaticService {
 		});
 	}
 
+	/**
+	 *
+	 * @deprecated using {@link RenewalStaticService#selectBestItems selectBestItems}
+	 *
+	 */
+	@Deprecated
 	public GetBestItemsResponse getBestItems(Integer pageNo, Integer pageSize, LocalDateTime fromDate, LocalDateTime toDate,
-											 Integer statisticsType, Integer lastCategoryID, Integer wholeSalerId, String orderBy) {
-		List<BestItems> bestItems = statisticsWaBestItemPerDayEntityRepository.getBestItems(pageNo, pageSize, fromDate, toDate, statisticsType, lastCategoryID, wholeSalerId, orderBy);
+											 Integer statisticsType, Integer lastCategoryID, Integer wholeSalerId, String sortBy) {
+
+		List<BestItems> bestItems = statisticsWaBestItemPerDayEntityRepository.getBestItems(pageNo, pageSize, fromDate, toDate, statisticsType, lastCategoryID, wholeSalerId, sortBy);
+
+		return GetBestItemsResponse.builder().bestItems(bestItems).build();
+	}
+
+	/**
+	 * 기존 BestItem 쿼리에서 Product 관련 부분을 api로 대체함.
+	 * @param pageNo page no
+	 * @param pageSize page size
+	 * @param fromDate Period
+	 * @param toDate Period
+	 * @param statisticsType default sorting condition. 1 = totalAmount Desc, 2 = Total qty Desc.
+	 * @param lastCategoryID Category
+	 * @param wholeSalerId vendor
+	 * @param sortBy Sorting condition
+	 * @return BestItems List
+	 */
+	public GetBestItemsResponse selectBestItems(Integer pageNo, Integer pageSize, LocalDateTime fromDate, LocalDateTime toDate,
+											 Integer statisticsType, Integer lastCategoryID, Integer wholeSalerId, String sortBy) {
+
+		// get best item
+		List<BestItems> bestItems = statisticsWaBestItemPerDayEntityRepository.selectBestItems(pageNo, pageSize, fromDate, toDate, statisticsType, lastCategoryID, wholeSalerId);
+
+		List<Integer> productIds = bestItems.stream().map(BestItems::getProductID).collect(Collectors.toList());
+
+		// get Product
+		CollectionObject<Product> collectionObject = productService.find(ProductSearchCondition.builder()
+				.productIds(productIds)
+				.include(Collections.singletonList(ProductSearchCondition.Include.VENDOR))
+				.build());
+		List<Product> products = collectionObject.getContents();
+
+		Map<Integer, Product> productMap = products.stream().collect(Collectors.toMap(Product::getProductId, p -> p));
+
+		// merge
+		bestItems.forEach(b -> {
+			Product product = productMap.get(b.getProductID());
+			if (Objects.nonNull(product)) {
+				b.setUnitPrice(product.getUnitPrice().doubleValue());
+				b.setCompanyName(product.getVendor().getName());
+				b.setProductName(product.getStyleNo());
+				b.setImage(product.getImageUrl());
+				b.setActivatedOn(product.getActivatedOn());
+			}
+		});
+
+		// sorting
+		Comparator<BestItems> comparator = null;
+
+		switch (sortBy) {
+			case "Oldest" :
+				//ActivatedOn ASC null first
+				comparator = Comparator.comparing(BestItems::getActivatedOn, Comparator.nullsFirst(Comparator.naturalOrder()));
+				comparator = comparator.thenComparing(BestItems::getRowNo);
+				break;
+			case "Newest" :
+				//ActivatedOn DESC null last
+				comparator = Comparator.comparing(BestItems::getActivatedOn, Comparator.nullsLast(Comparator.reverseOrder()));
+				comparator = comparator.thenComparing(BestItems::getRowNo);
+				break;
+			case "UnitPriceAsc":
+				//UnitPrice ASC null first
+				comparator = Comparator.comparing(BestItems::getUnitPrice, Comparator.nullsFirst(Comparator.naturalOrder()));
+				comparator = comparator.thenComparing(BestItems::getRowNo);
+				break;
+			case "UnitPriceDesc":
+				//UnitPrice DESC null last
+				comparator = Comparator.comparing(BestItems::getUnitPrice, Comparator.nullsLast(Comparator.reverseOrder()));
+				comparator = comparator.thenComparing(BestItems::getRowNo);
+				break;
+			default:
+				comparator = Comparator.comparing(BestItems::getRowNo);
+		}
+
+		bestItems.sort(comparator);
+
+		// Redefined rowNo.
+		long index = 1;
+		for (BestItems b : bestItems) {
+			b.setRowNo(index);
+			index++;
+		}
 
 		return GetBestItemsResponse.builder().bestItems(bestItems).build();
 	}

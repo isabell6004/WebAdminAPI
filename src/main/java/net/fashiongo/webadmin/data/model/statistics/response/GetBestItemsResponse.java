@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 @Builder
 public class GetBestItemsResponse {
-    @JsonProperty(value = "Table")
+    @JsonProperty(value = "items")
     List<BestItems> bestItems;
 }

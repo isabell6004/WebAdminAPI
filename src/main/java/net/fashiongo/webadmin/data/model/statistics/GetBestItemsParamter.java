@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class GetBestItemsParamter {
     @JsonProperty(value = "pageno")
-    private Integer pageno;
+    private int pageno;
 
     @JsonProperty(value = "pagesize")
-    private Integer pagesize;
+    private int pagesize;
 
     @JsonProperty(value = "top")
     private String top;
@@ -21,20 +21,20 @@ public class GetBestItemsParamter {
     private String toDate;
 
     @JsonProperty(value = "statisticstype")
-    private Integer statisticsType;
+    private int statisticsType;
 
     @JsonProperty(value = "cateid")
-    private Integer cateId;
+    private int cateId;
 
     @JsonProperty(value = "subcateid")
-    private Integer subCateId;
+    private int subCateId;
 
     @JsonProperty(value = "subsubcateid")
-    private Integer subSubCateId;
+    private int subSubCateId;
 
     @JsonProperty(value = "wholesalerid")
-    private Integer wholesalerId;
+    private int wholesalerId;
 
     @JsonProperty(value = "orderby")
-    private String orderBy;
+    private String sortBy;
 }

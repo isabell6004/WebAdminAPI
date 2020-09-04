@@ -15,11 +15,14 @@ import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -204,34 +207,60 @@ public class StaticController {
         return new JsonResponse<>(true, "", statReport);
     }
 
+    /**
+     * Get Best Items
+     * @deprecated using {@link StaticController#getBestItems(GetBestItemsParamter)}
+     * @param param GetBestItemsParamter
+     * @return JsonResponse
+     */
+    @Deprecated
     @PostMapping(value = "getbestitems2")
-    public JsonResponse<GetBestItemsResponse> getBestItems2(@RequestBody GetBestItemsParamter parameter) {
+    public ResponseEntity getBestItems2(@RequestBody GetBestItemsParamter param) {
 
-        Integer pageNo = Optional.ofNullable(parameter.getPageno()).orElse(0);
-        Integer pageSize = Optional.ofNullable(parameter.getPagesize()).orElse(0);
+//        LocalDateTime fromDate = DateUtils.convertToLocalDateTime(param.getFromDate(), "F");
+//        LocalDateTime toDate = DateUtils.convertToLocalDateTime(param.getToDate(), "T");
+//
+//        int lastCategoryID = 0;
+//
+//        if (param.getSubSubCateId() > 0) {
+//            lastCategoryID = param.getSubSubCateId();
+//        } else if (param.getSubCateId() > 0) {
+//            lastCategoryID = param.getSubCateId();
+//        } else {
+//            lastCategoryID = param.getCateId();
+//        }
+//
+//        GetBestItemsResponse data = renewalStaticService.getBestItems(param.getPageno(), param.getPagesize(), fromDate, toDate,
+//                param.getStatisticsType(), lastCategoryID, param.getWholesalerId(), param.getSortBy());
+//
+//        return new JsonResponse<>(true, "success", data);
 
-        LocalDateTime fromDate = DateUtils.convertToLocalDateTime(parameter.getFromDate(), "F");
-        LocalDateTime toDate = DateUtils.convertToLocalDateTime(parameter.getToDate(), "T");
+        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).location(URI.create("/api/stat/getbestitems")).build();
+    }
 
-        Integer statisticsType = Optional.ofNullable(parameter.getStatisticsType()).orElse(0);
-        Integer cateId = Optional.ofNullable(parameter.getCateId()).orElse(0);
-        Integer subCateId = Optional.ofNullable(parameter.getSubCateId()).orElse(0);
-        Integer subSubCateId = Optional.ofNullable(parameter.getSubSubCateId()).orElse(0);
+    /**
+     * Get Best Items
+     * @param param GetBestItemsParamter
+     * @return JsonResponse
+     */
+    @PostMapping(value = "getbestitems")
+    public JsonResponse<GetBestItemsResponse> getBestItems(@RequestBody GetBestItemsParamter param) {
 
-        Integer wholeSalerId = Optional.ofNullable(parameter.getWholesalerId()).orElse(0);
-        String orderBy = parameter.getOrderBy();
+        LocalDateTime fromDate = DateUtils.convertToLocalDateTime(param.getFromDate(), "F");
+        LocalDateTime toDate = DateUtils.convertToLocalDateTime(param.getToDate(), "T");
 
-        Integer lastCategoryID = 0;
+        int lastCategoryID = 0;
 
-        if (subSubCateId > 0) {
-            lastCategoryID = subSubCateId;
-        } else if (subCateId > 0) {
-            lastCategoryID = subCateId;
+        if (param.getSubSubCateId() > 0) {
+            lastCategoryID = param.getSubSubCateId();
+        } else if (param.getSubCateId() > 0) {
+            lastCategoryID = param.getSubCateId();
         } else {
-            lastCategoryID = cateId;
+            lastCategoryID = param.getCateId();
         }
 
-        GetBestItemsResponse data = renewalStaticService.getBestItems(pageNo, pageSize, fromDate, toDate, statisticsType, lastCategoryID, wholeSalerId, orderBy);
+        GetBestItemsResponse data = renewalStaticService.selectBestItems(param.getPageno(), param.getPagesize(), fromDate, toDate,
+                param.getStatisticsType(), lastCategoryID, param.getWholesalerId(), param.getSortBy());
 
         return new JsonResponse<>(true, "success", data);
     }
