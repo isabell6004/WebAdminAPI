@@ -1215,7 +1215,7 @@ public class SitemgmtService extends ApiService {
 			//1. Validate
 			if(editorsPick==null) throw new Exception("No information to save!");
 			if(editorsPick.getTitle()==null) throw new Exception("Empty title!");
-			if(editorsPick.getDescription()==null) throw new Exception("Empty description!");
+//			if(editorsPick.getDescription()==null) throw new Exception("Empty description!");
 			if(editorsPick.getVendorId()==null) throw new Exception("Empty vendor!");
 			if(editorsPick.getStartDate()==null)  throw new Exception("Empty starting period!");
 			if(editorsPick.getEndDate()==null)  throw new Exception("Empty Ending period!");

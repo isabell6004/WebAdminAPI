@@ -40,7 +40,7 @@ public class VendorRepositoryImpl extends QuerydslRepositorySupport implements V
 				.where(vendor.active.eq(true),
 						vendor.shopActive.eq(true),
 //						vendor.orderActive.eq(true), //WebAdmins should see orderActive=false vendors too
-						vendor.vendorType.eq(2), //Premium vendor
+//						vendor.vendorType.eq(2), //Premium vendor
 						vendor.wholeSalerId.in(
 								from(vendorContent)
 								.select(vendorContent.wholeSalerId)
@@ -55,6 +55,7 @@ public class VendorRepositoryImpl extends QuerydslRepositorySupport implements V
 										vendorImageRequest.active.eq(true),
 										vendorImageRequest.vendorImageTypeID.in(Arrays.asList(8,9)/*8=Image,9=Video*/))
 								.fetch())))
+				.orderBy(vendor.companyName.asc())
 				.fetch();
     }
 
