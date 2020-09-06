@@ -213,6 +213,8 @@ public class RenewalStaticService {
 		// get Product
 		CollectionObject<Product> collectionObject = productService.find(ProductSearchCondition.builder()
 				.productIds(productIds)
+				.pageNumber(pageNo)
+				.pageSize(pageSize)
 				.include(Collections.singletonList(ProductSearchCondition.Include.VENDOR))
 				.build());
 		List<Product> products = collectionObject.getContents();
