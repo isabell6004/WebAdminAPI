@@ -5,10 +5,11 @@ import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtGetItemsParameter;
 import net.fashiongo.webadmin.data.model.sitemgmt.GetTrendReportParameter;
+import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtGetItemsParameter;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetSEOResponse;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetTrendReportResponse;
+import net.fashiongo.webadmin.data.model.sitemgmt.response.mapper.GetProductDetailResponseMapper;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
@@ -19,13 +20,15 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
 import net.fashiongo.webadmin.model.primary.Vendor;
+import net.fashiongo.webadmin.model.product.Product;
+import net.fashiongo.webadmin.model.product.ProductSearchCondition;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.SitemgmtService;
 import net.fashiongo.webadmin.service.VendorService;
+import net.fashiongo.webadmin.service.product.ProductService;
 import net.fashiongo.webadmin.service.renewal.RenewalSitemgmtService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
-
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,7 @@ import javax.ws.rs.core.MediaType;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -59,6 +63,9 @@ public class SitemgmtController {
 
 	@Autowired
 	private RenewalSitemgmtService renewalSitemgmtService;
+
+	@Autowired
+	private ProductService productService;
 
 	// ----------------------------------------------------
 	// collection category setting
@@ -557,15 +564,20 @@ public class SitemgmtController {
 	 *
 	 * Get Product Detail
 	 *
-	 * @since 2018. 10. 31.
-	 * @author Nayeon Kim
-	 * @param GetProductDetailParameter
+	 * @since 2020. 09. 03
+	 * @author Moonseo Kim
+	 * @param productId
 	 * @return GetProductDetailResponse
 	 */
-	@RequestMapping(value = "getproductdetail", method = RequestMethod.POST)
-	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse> getProductDetail(@RequestBody GetProductDetailParameter parameters) {
-		net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse result = renewalSitemgmtService.getProductDetail(parameters);
-		return new JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse>(true, null, result);
+	@GetMapping(value = "getproductdetail")
+	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse> getProductDetail(@RequestParam int productId) {
+		Product product = productService.find(ProductSearchCondition.builder()
+				.include(Arrays.asList(ProductSearchCondition.Include.IMAGE, ProductSearchCondition.Include.SIZE, ProductSearchCondition.Include.LABEL))
+				.build(), productId).getContent();
+
+		net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse result = GetProductDetailResponseMapper.convert(product);
+
+		return new JsonResponse<>(true, null, result);
 	}
 	
 	/**
