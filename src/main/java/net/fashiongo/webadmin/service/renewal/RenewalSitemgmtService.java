@@ -1,15 +1,10 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.common.dal.JdbcHelper;
-import net.fashiongo.webadmin.data.entity.primary.CodeFabricEntity;
-import net.fashiongo.webadmin.data.entity.primary.CodeLengthEntity;
-import net.fashiongo.webadmin.data.entity.primary.CodePatternEntity;
-import net.fashiongo.webadmin.data.entity.primary.CodeStyleEntity;
-import net.fashiongo.webadmin.data.entity.primary.SEOEntity;
-import net.fashiongo.webadmin.data.entity.primary.XShipAddressEntity;
+import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.TotalCount;
-import net.fashiongo.webadmin.data.model.buyer.ShippingInfo;
 import net.fashiongo.webadmin.data.model.kmm.GetKmmListParameter;
 import net.fashiongo.webadmin.data.model.kmm.GetKmmListResponse;
 import net.fashiongo.webadmin.data.model.kmm.KmmListDetail;
@@ -28,8 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -63,12 +56,6 @@ public class RenewalSitemgmtService {
 
 	private final FeaturedItemEntityRepository featuredItemEntityRepository;
 
-	private final ProductsEntityRepository productsEntityRepository;
-
-	private final ProductImageEntityRepository productImageEntityRepository;
-
-	private final TrendReportMapEntityRepository trendReportMapEntityRepository;
-
 	private final TrendReportEntityRepository trendReportEntityRepository;
 
 	private final DMSendListMigrationProcedure dmSendListMigrationProcedure;
@@ -80,7 +67,7 @@ public class RenewalSitemgmtService {
 	private final JdbcHelper jdbcHelper;
 
 	@Autowired
-	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, ProductsEntityRepository productsEntityRepository, ProductImageEntityRepository productImageEntityRepository, TrendReportMapEntityRepository trendReportMapEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure, JdbcHelper jdbcHelper,SEOEntiryRepository seoEntiryRepository) {
+	public RenewalSitemgmtService(PolicyAgreementEntityRepository policyAgreementEntityRepository, CodeLengthEntityRepository codeLengthEntityRepository, CodeStyleEntityRepository codeStyleEntityRepository, CodeFabricEntityRepository codeFabricEntityRepository, CategoryViewRepository categoryViewRepository, CodePatternEntityRepository codePatternEntityRepository, PrimaryProcedureRepository primaryProcedureRepository, CodeBodySizeEntityRepository codeBodySizeEntityRepository, XColorMasterEntityRepository xColorMasterEntityRepository, FeaturedItemEntityRepository featuredItemEntityRepository, TrendReportEntityRepository trendReportEntityRepository, DMSendListMigrationProcedure dmSendListMigrationProcedure, JdbcHelper jdbcHelper,SEOEntiryRepository seoEntiryRepository) {
 		this.policyAgreementEntityRepository = policyAgreementEntityRepository;
 		this.codeLengthEntityRepository = codeLengthEntityRepository;
 		this.codeStyleEntityRepository = codeStyleEntityRepository;
@@ -91,9 +78,6 @@ public class RenewalSitemgmtService {
 		this.codeBodySizeEntityRepository = codeBodySizeEntityRepository;
 		this.xColorMasterEntityRepository = xColorMasterEntityRepository;
 		this.featuredItemEntityRepository = featuredItemEntityRepository;
-		this.productsEntityRepository = productsEntityRepository;
-		this.productImageEntityRepository = productImageEntityRepository;
-		this.trendReportMapEntityRepository = trendReportMapEntityRepository;
 		this.trendReportEntityRepository = trendReportEntityRepository;
 		this.dmSendListMigrationProcedure = dmSendListMigrationProcedure;
 		this.jdbcHelper = jdbcHelper;
