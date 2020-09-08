@@ -1,17 +1,15 @@
 package net.fashiongo.webadmin.model.pojo.consolidation.Dto;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import net.fashiongo.webadmin.model.primary.consolidation.ConsolidatedOrder;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Setter
 @Getter
