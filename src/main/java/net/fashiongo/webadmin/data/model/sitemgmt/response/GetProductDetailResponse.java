@@ -34,9 +34,9 @@ public class GetProductDetailResponse {
 
     private final List<Product.Image> images;
 
-    private final String productMasterColors;
-
     private final String sizes;
+
+    private final List<String> colors;
 
     @Builder
     public GetProductDetailResponse(int productId,
@@ -51,8 +51,8 @@ public class GetProductDetailResponse {
                                     LocalDateTime availableOn,
                                     String imageUrl,
                                     List<Product.Image> images,
-                                    String productMasterColors,
-                                    String sizes) {
+                                    String sizes,
+                                    List<String> colors) {
         this.productId = productId;
         this.styleNo = styleNo;
         this.itemName = itemName;
@@ -65,7 +65,7 @@ public class GetProductDetailResponse {
         this.availableOn = availableOn;
         this.imageUrl = imageUrl;
         this.images = images;
-        this.productMasterColors = productMasterColors;
         this.sizes = sizes;
+        this.colors = colors;
     }
 }

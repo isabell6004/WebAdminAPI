@@ -253,6 +253,7 @@ public class Product {
     @Getter
     public static class Inventory {
         private int colorId;
+        private String colorName;
         private String sizeName;
         private boolean active;
         private boolean available;

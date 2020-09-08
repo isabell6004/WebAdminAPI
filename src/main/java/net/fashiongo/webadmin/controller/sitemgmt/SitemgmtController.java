@@ -572,7 +572,7 @@ public class SitemgmtController {
 	@GetMapping(value = "getproductdetail")
 	public JsonResponse<net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse> getProductDetail(@RequestParam int productId) {
 		Product product = productService.find(ProductSearchCondition.builder()
-				.include(Arrays.asList(ProductSearchCondition.Include.IMAGE, ProductSearchCondition.Include.SIZE, ProductSearchCondition.Include.LABEL))
+				.include(Arrays.asList(ProductSearchCondition.Include.IMAGE, ProductSearchCondition.Include.SIZE, ProductSearchCondition.Include.LABEL, ProductSearchCondition.Include.INVENTORY))
 				.build(), productId).getContent();
 
 		net.fashiongo.webadmin.data.model.sitemgmt.response.GetProductDetailResponse result = GetProductDetailResponseMapper.convert(product);
