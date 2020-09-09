@@ -27,7 +27,7 @@ webAdminapi:
   statsAPI_EndPoint: http://10.210.8.154
   fgPaymentAPI_EndPoint: http://10.210.8.155
   adapi:
-    endpoint: http://ad-api.fashiongo.net
+    endpoint: http://10.210.8.171:18000
   productApi:
     endpoint: http://api.fashiongo.net
   rewardApi:
