@@ -15,7 +15,9 @@ public class GnbVendorGroupInfoResponse {
 	private int gnbVendorGroupId;
 	
 	private String title;
-	
+
+	private int vendorGroupType;
+
 	private int numberOfVendors;
 	
 	private String createdBy;
@@ -31,6 +33,7 @@ public class GnbVendorGroupInfoResponse {
 		return GnbVendorGroupInfoResponse.builder()
 				.gnbVendorGroupId(gnbVendorGroupEntity.getVendorGroupId())
 				.title(gnbVendorGroupEntity.getVendorGroupTitle())
+				.vendorGroupType(gnbVendorGroupEntity.getVendorGroupType())
 				.numberOfVendors(Optional.ofNullable(gnbVendorGroupEntity.getVendorGroupMaps())
 						.map(List::size)
 						.orElse(0))

@@ -28,6 +28,8 @@ public class GnbVendorGroupSaveRequest {
 
 	private String targetUrl;
 
+	private int vendorGroupType;
+
 	@JsonProperty("isAlphabeticalOrder")
 	private boolean isAlphabeticalOrder;
 
