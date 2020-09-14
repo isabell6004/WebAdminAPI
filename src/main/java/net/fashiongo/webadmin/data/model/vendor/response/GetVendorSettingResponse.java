@@ -6,9 +6,7 @@ import lombok.Getter;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorCapTypeEntity;
 import net.fashiongo.webadmin.data.entity.primary.ListVendorBlockReasonEntity;
 import net.fashiongo.webadmin.data.entity.primary.LogVendorHoldEntity;
-import net.fashiongo.webadmin.data.entity.primary.VendorBlockedEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorCapEntity;
-import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
 import net.fashiongo.webadmin.data.model.vendor.VendorBlock;
 import net.fashiongo.webadmin.data.model.vendor.VendorHistory;
 import net.fashiongo.webadmin.data.model.vendor.VendorSister;
@@ -31,7 +29,7 @@ public class GetVendorSettingResponse {
     List<ListVendorBlockReasonEntity> vendorBlockReason;
 
     @JsonProperty(value = "VendorSelect")
-    List<WholesalerCompanyEntity> vendor;
+    List<ActiveVendorResponse>vendor;
 
     @JsonProperty(value = "VendorSister")
     List<VendorSister> vendorSister;

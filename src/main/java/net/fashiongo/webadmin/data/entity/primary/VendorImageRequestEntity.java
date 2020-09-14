@@ -3,7 +3,6 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -56,6 +55,6 @@ public class VendorImageRequestEntity {
 	private String originalFileName;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "WholeSalerID", referencedColumnName = "WholeSalerID", insertable = false, updatable = false)
-	private WholesalerCompanyEntity wholesaler;
+	@JoinColumn(name = "WholeSalerID", referencedColumnName = "vendor_id", insertable = false, updatable = false)
+    private VendorEntity wholesaler;
 }

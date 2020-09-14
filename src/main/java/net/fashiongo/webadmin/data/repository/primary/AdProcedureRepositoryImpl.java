@@ -72,7 +72,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		QAdVendorEntity SUB_AV = new QAdVendorEntity("AV");
 		QProductsEntity SUB_P = new QProductsEntity("SUB_P");
 		QMapAdVendorItemEntity SUB_MAVI = new QMapAdVendorItemEntity("SUB_MAVI");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QVendorEntity W = new QVendorEntity("W");
 		Timestamp timestampFd = Timestamp.valueOf(startFromDate);
 		Timestamp timestampEd = Timestamp.valueOf(endFromDate);
 		JPASQLQuery<Bidding> jpasqlQuery = new JPASQLQuery<Bidding>(entityManager,new MSSQLServer2012Templates());
@@ -129,7 +129,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 				.leftJoin(P)
 					.on(MAVI.productID.eq(P.productID).and(P.active.eq(true)))
 				.leftJoin(W)
-					.on(P.wholeSalerID.eq(W.wholeSalerId))
+					.on(P.wholeSalerID.eq(W.vendor_id.intValue()))
 				.where(
 						AV.active.eq(true).and(AV.fromDate.goe(timestampFd).and(AV.fromDate.loe(timestampEd)))
 				)
@@ -187,7 +187,8 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 //		ORDER BY cc.SpotID DESC, DateDay DESC, cc.CollectionCategoryItemID DESC
 		QCollectionCategoryItemEntity CCI = QCollectionCategoryItemEntity.collectionCategoryItemEntity;
 		QProductsEntity P = QProductsEntity.productsEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
+		QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
 
 		JPAQuery<CollectionCategoryItemEntity> jpaQuery = new JPAQuery<>(entityManager);
 
@@ -198,9 +199,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 
 		NumberExpression<Integer> active = Expressions.cases()
 				.when(P.active.eq(true)
-						.and(W.active.eq(true))
-						.and(W.shopActive.eq(true))
-						.and(W.orderActive.eq(true))
+						.and(VS.statusCode.eq(3))
 				).then(1)
 				.otherwise(0);
 
@@ -222,6 +221,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 				.from(CCI)
 				.leftJoin(CCI.products,P)
 				.leftJoin(CCI.wholeSaler,W)
+				.leftJoin(W.vendorSetting, VS)
 				.where(
 						CCI.fromDate.goe(startFromDate).and(
 								CCI.fromDate.loe(endFromDate)
@@ -310,7 +310,8 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		QAdVendorEntity SUB_AV = new QAdVendorEntity("SUB_AV");
 		QMapAdVendorItemEntity SUB_MAVI = new QMapAdVendorItemEntity("SUB_MAVI");
 		QProductsEntity SUB_P = new QProductsEntity("SUB_P");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QVendorEntity W = new QVendorEntity("W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 
 		Path<Object> temp_product = ExpressionUtils.path(Object.class, "TEMP_PRODUCT");
 		Path<Object> temp_count = ExpressionUtils.path(Object.class, "TEMP_COUNT");
@@ -323,9 +324,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 
 		NumberExpression<Integer> active = Expressions.cases()
 				.when(P.active.eq(true)
-						.and(W.active.eq(true))
-						.and(W.shopActive.eq(true))
-						.and(W.orderActive.eq(true))
+						.and(VS.statusCode.eq(3))
 				).then(1)
 				.otherwise(0);
 
@@ -342,9 +341,9 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 								, P.productID
 								, Expressions.cases().when(temp_count_map_count.isNull()).then(0).otherwise(temp_count_map_count).as("ItemCount")
 								, P.productName
-								, W.companyName
+								, W.name
 								, I.urlPath
-								, W.dirName
+								, W.dirname
 								, PI.imageName
 								, active
 						)
@@ -367,8 +366,9 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 						,temp_count).on(AV.adID.eq(temp_count_adid))
 				.leftJoin(MAVI).on(AV.adID.eq(MAVI.adID).and(MAVI.mapID.eq(temp_product_mapid)))
 				.leftJoin(P).on(MAVI.productID.eq(P.productID))
-				.leftJoin(W).on(AV.wholeSalerID.eq(W.wholeSalerId))
-				.leftJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.leftJoin(W).on(AV.wholeSalerID.eq(W.vendor_id.intValue()))
+				.leftJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				.leftJoin(I).on(I.imageServerID.eq(7))
 				.leftJoin(PI).on(P.productID.eq(PI.productID).and(PI.listOrder.eq(1)))
 				.where(AV.active.eq(true).and(AV.fromDate.goe(timestampFd)).and(AV.fromDate.lt(timestampEd)).and(AV.spotID.eq(spotID)))
 				.orderBy(AV.actualPrice.asc(),AV.adID.desc());
@@ -394,14 +394,13 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		QCollectionCategoryItemEntity CC = new QCollectionCategoryItemEntity("CC");
 		QProductsEntity P = new QProductsEntity("P");
 		QProductImageEntity PI = new QProductImageEntity("PI");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QVendorEntity W = new QVendorEntity("W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
 
 		NumberExpression<Integer> active = Expressions.cases()
 				.when(P.active.eq(true)
-						.and(W.active.eq(true))
-						.and(W.shopActive.eq(true))
-						.and(W.orderActive.eq(true))
+						.and(VS.statusCode.eq(3))
 				).then(1)
 				.otherwise(0);
 
@@ -410,21 +409,22 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 							CuratedBest.class
 							, CC.collectionCategoryItemID
 							, CC.spotID
-							, W.wholeSalerId
-							, W.companyName
+							, W.vendor_id.intValue()
+							, W.name
 							, CC.collectionCategoryID
 							, CC.collectionCategoryType
 							, P.productID
 							, P.productName
 							, I.urlPath
-							, W.dirName
+							, W.dirname
 							, PI.imageName
 							, active
 					)
 				).from(CC)
 				.leftJoin(P).on(CC.productID.eq(P.productID))
-				.leftJoin(W).on(CC.wholeSalerID.eq(W.wholeSalerId))
-				.leftJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.leftJoin(W).on(CC.wholeSalerID.eq(W.vendor_id.intValue()))
+				.leftJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				.leftJoin(I).on(I.imageServerID.eq(7))
 				.leftJoin(PI).on(P.productID.eq(PI.productID).and(PI.listOrder.eq(1)))
 				.where(CC.fromDate.eq(dateTime).and(CC.spotID.eq(spotId)))
 				.orderBy(active.asc(),CC.collectionCategoryItemID.desc());
@@ -508,7 +508,8 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		QAdVendorEntity SUB_AV = new QAdVendorEntity("SUB_AV");
 		QMapAdVendorItemEntity SUB_MAVI = new QMapAdVendorItemEntity("SUB_MAVI");
 		QProductsEntity SUB_P = new QProductsEntity("SUB_P");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QVendorEntity W = new QVendorEntity("W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 		QCollectionCategoryEntity CC = new QCollectionCategoryEntity("CC");
 
 		Path<Object> temp_product = ExpressionUtils.path(Object.class, "TEMP_PRODUCT");
@@ -525,9 +526,7 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 
 		NumberExpression<Integer> active = Expressions.cases()
 				.when(P.active.eq(true)
-						.and(W.active.eq(true))
-						.and(W.shopActive.eq(true))
-						.and(W.orderActive.eq(true))
+						.and(VS.statusCode.eq(3))
 				).then(1)
 				.otherwise(0);
 
@@ -544,9 +543,9 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 								, P.productID
 								, Expressions.cases().when(temp_count_map_count.isNull()).then(0).otherwise(temp_count_map_count).as("ItemCount")
 								, P.productName
-								, W.companyName
+								, W.name
 								, I.urlPath
-								, W.dirName
+								, W.dirname
 								, PI.imageName
 								, active
 						)
@@ -574,8 +573,9 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 						,temp_spot).on(AV.spotID.eq(temp_spotid))
 				.leftJoin(MAVI).on(AV.adID.eq(MAVI.adID).and(MAVI.listOrder.eq(temp_product_listorder)))
 				.leftJoin(P).on(MAVI.productID.eq(P.productID))
-				.leftJoin(W).on(AV.wholeSalerID.eq(W.wholeSalerId))
-				.leftJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.leftJoin(W).on(AV.wholeSalerID.eq(W.vendor_id.intValue()))
+				.leftJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				.leftJoin(I).on(I.imageServerID.eq(7))
 				.leftJoin(PI).on(P.productID.eq(PI.productID).and(PI.listOrder.eq(1)))
 				.where(AV.active.eq(true).and(AV.fromDate.goe(timestampFd)).and(AV.fromDate.lt(timestampEd)))
 				.orderBy(AV.actualPrice.asc(),AV.adID.desc());
@@ -591,14 +591,13 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 		QCollectionCategoryItemEntity CC = new QCollectionCategoryItemEntity("CC");
 		QProductsEntity P = new QProductsEntity("P");
 		QProductImageEntity PI = new QProductImageEntity("PI");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QVendorEntity W = new QVendorEntity("W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
 
 		NumberExpression<Integer> active = Expressions.cases()
 				.when(P.active.eq(true)
-						.and(W.active.eq(true))
-						.and(W.shopActive.eq(true))
-						.and(W.orderActive.eq(true))
+						.and(VS.statusCode.eq(3))
 				).then(1)
 				.otherwise(0);
 
@@ -607,21 +606,22 @@ public class AdProcedureRepositoryImpl implements AdProcedureRepository {
 						CuratedBest.class
 						, CC.collectionCategoryItemID
 						, CC.spotID
-						, W.wholeSalerId
-						, W.companyName
+						, W.vendor_id.intValue()
+						, W.name
 						, CC.collectionCategoryID
 						, CC.collectionCategoryType
 						, P.productID
 						, P.productName
 						, I.urlPath
-						, W.dirName
+						, W.dirname
 						, PI.imageName
 						, active
 				)
 		).from(CC)
 				.leftJoin(P).on(CC.productID.eq(P.productID))
-				.leftJoin(W).on(CC.wholeSalerID.eq(W.wholeSalerId))
-				.leftJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.leftJoin(W).on(CC.wholeSalerID.eq(W.vendor_id.intValue()))
+				.leftJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				.leftJoin(I).on(I.imageServerID.eq(7))
 				.leftJoin(PI).on(P.productID.eq(PI.productID).and(PI.listOrder.eq(1)))
 				.where(CC.fromDate.eq(dateTime))
 				.orderBy(CC.spotID.desc(), active.asc(),CC.collectionCategoryItemID.desc());

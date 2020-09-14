@@ -2,9 +2,9 @@ package net.fashiongo.webadmin.dao.primary.custom;
 
 import java.util.List;
 
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import net.fashiongo.webadmin.model.primary.Vendor;
 
 /**
  * @author Kenny/Kyungwoo
@@ -12,6 +12,6 @@ import net.fashiongo.webadmin.model.primary.Vendor;
  */
 @NoRepositoryBean
 public interface VendorRepositoryCustom {
-	List<Vendor> getEditorPickVendors();
+	List<VendorEntity> getEditorPickVendors();
 	String getCompanyNameByWholeSalerId(Integer wholeSalerId);
 }

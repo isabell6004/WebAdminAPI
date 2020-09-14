@@ -21,7 +21,8 @@ public class MapAdVendorItemEntityRepositoryCustomImpl implements MapAdVendorIte
     public List<CategoryAdItem> findCategoryAdItemOrderByListOrder(Integer adID) {
         QMapAdVendorItemEntity mapAdVendorItem = QMapAdVendorItemEntity.mapAdVendorItemEntity;
         QProductsEntity products = QProductsEntity.productsEntity;
-        QSimpleWholeSalerEntity wholeSaler = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+        QVendorEntity wholeSaler = QVendorEntity.vendorEntity;
+        QVendorSettingEntity vendorSetting = QVendorSettingEntity.vendorSettingEntity;
         QProductImageEntity pri = QProductImageEntity.productImageEntity;
         QSystemImageServersEntity sis = QSystemImageServersEntity.systemImageServersEntity;
         QCategoryEntity category = QCategoryEntity.categoryEntity;
@@ -34,23 +35,22 @@ public class MapAdVendorItemEntityRepositoryCustomImpl implements MapAdVendorIte
                         mapAdVendorItem.productID,
                         mapAdVendorItem.listOrder,
                         products.wholeSalerID,
-                        wholeSaler.companyName,
+                        wholeSaler.name,
                         pri.imageName,
-                        wholeSaler.dirName,
+                        wholeSaler.dirname,
                         products.productName,
                         sis.urlPath))
                 .from(mapAdVendorItem)
                 .leftJoin(mapAdVendorItem.products, products)
                 .innerJoin(products.category, category)
                 .innerJoin(products.wholeSaler, wholeSaler)
-                .innerJoin(wholeSaler.systemImageServersEntity, sis)
+                .leftJoin(wholeSaler.vendorSetting, vendorSetting)
+                .innerJoin(sis).on(sis.imageServerID.eq(7))
                 .leftJoin(products.productImageEntity, pri).on(pri.listOrder.eq(1))
                 .innerJoin(products.vendorCategoryEntity, vc)
                 .leftJoin(products.productVideoEntity, prv).on(prv.active.eq(true))
                 .where(products.active.eq(true)
-                        .and(wholeSaler.active.eq(true))
-                        .and(wholeSaler.shopActive.eq(true))
-                        .and(wholeSaler.orderActive.eq(true))
+                        .and(vendorSetting.statusCode.eq(3))
                         .and(mapAdVendorItem.adID.eq(adID)))
                 .orderBy(mapAdVendorItem.listOrder.asc())
                 .fetch();

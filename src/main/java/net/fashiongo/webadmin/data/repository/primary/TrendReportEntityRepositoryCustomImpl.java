@@ -15,7 +15,6 @@ import net.fashiongo.webadmin.data.model.kmm.KmmListDetail;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReport;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportDefault;
 import net.fashiongo.webadmin.data.model.sitemgmt.TrendReportTotal;
-import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportItem;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -273,14 +272,11 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
 
     @Override
     public List<KmmCandidateItems> up_wa_GetTrendReportProductType1(Integer trendReportId) {
-        //		select p.ProductID,p.ProductName,p.DirName,p.ImageUrlRoot,p.PictureGeneral,p.CompanyName
-        //		  from TrendReport_Map tm
-        //		  inner join vw_wa_CatalogProduct p on p.ProductID = tm.ProductID
-        //		 where TrendReportID = @TrendReportID
         QTrendReportMapEntity TRM = QTrendReportMapEntity.trendReportMapEntity;
         QProductsEntity P = QProductsEntity.productsEntity;
         QCategoryEntity C = QCategoryEntity.categoryEntity;
-        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QVendorEntity W = QVendorEntity.vendorEntity;
+        QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
         QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
         QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
 
@@ -288,15 +284,16 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
         query.select(Projections.constructor(KmmCandidateItems.class,
                 P.productID,
                 P.productName,
-                I.urlPath.concat("/Vendors/").concat(W.dirName).concat("/ProductImage/list/").concat(PRDI.imageName),
-                W.companyName))
+                I.urlPath.concat("/Vendors/").concat(W.dirname).concat("/ProductImage/list/").concat(PRDI.imageName),
+                W.name))
                 .from(TRM)
                 .innerJoin(P).on(TRM.productID.eq(P.productID))
                 .innerJoin(C).on(P.categoryID.eq(C.categoryId))
-                .innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerID))
-                .innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+                .innerJoin(W).on(P.wholeSalerID.eq(W.vendor_id.intValue()))
+                .innerJoin(I).on(I.imageServerID.eq(7))
                 .leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
-                .where(P.active.eq(true).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true)).and(TRM.trendReportID.eq(trendReportId)));
+                .leftJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+                .where(P.active.eq(true).and(VS.statusCode.eq(3)).and(TRM.trendReportID.eq(trendReportId)));
 
         return query.fetch();
     }
@@ -306,7 +303,8 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
         QTrendReportMapCandidateEntity TRMC = QTrendReportMapCandidateEntity.trendReportMapCandidateEntity;
         QProductsEntity P = QProductsEntity.productsEntity;
         QCategoryEntity C = QCategoryEntity.categoryEntity;
-        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QVendorEntity W = QVendorEntity.vendorEntity;
+        QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
         QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
         QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
 
@@ -314,15 +312,16 @@ public class TrendReportEntityRepositoryCustomImpl implements TrendReportEntityR
         query.select(Projections.constructor(KmmCandidateItems.class,
                 P.productID,
                 P.productName,
-                I.urlPath.concat("/Vendors/").concat(W.dirName).concat("/ProductImage/list/").concat(PRDI.imageName),
-                W.companyName))
+                I.urlPath.concat("/Vendors/").concat(W.dirname).concat("/ProductImage/list/").concat(PRDI.imageName),
+                W.name))
                 .from(TRMC)
                 .innerJoin(P).on(TRMC.productID.eq(P.productID))
                 .innerJoin(C).on(P.categoryID.eq(C.categoryId))
-                .innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerID))
-                .innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+                .innerJoin(W).on(P.wholeSalerID.eq(W.vendor_id.intValue()))
+                .innerJoin(I).on(I.imageServerID.eq(7))
                 .leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
-                .where(P.active.eq(true).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true)).and(TRMC.trendReportID.eq(trendReportId)));
+                .leftJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+                .where(P.active.eq(true).and(VS.statusCode.eq(3)).and(TRMC.trendReportID.eq(trendReportId)));
 
         return query.fetch();
     }

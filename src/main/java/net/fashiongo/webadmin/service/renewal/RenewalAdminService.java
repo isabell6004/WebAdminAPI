@@ -121,23 +121,6 @@ public class RenewalAdminService {
     }
 
     public GetUserLoginTrackingResponse getUserLoginTracking(int pageNum, int pageSize, String sortField, String sortDir, String userType, String userName, String companyName, String ip, LocalDateTime sDate, LocalDateTime eDate) {
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        List<Object> param = new ArrayList<>();
-//        param.add(pageNum);
-//        param.add(pageSize);
-//        param.add(sortField);
-//        param.add(sortDir);
-//        param.add(userType);
-//        param.add(userName);
-//        param.add(companyName);
-//        param.add(ip);
-//        param.add(Optional.ofNullable(sDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
-//        param.add(Optional.ofNullable(eDate).map(dateTime -> dateTime.format(dateTimeFormatter)).orElse(null));
-//
-//        List<Object> up_wa_getUserLoginTracking = jdbcHelper.executeSP("up_wa_GetUserLoginTracking", param, UserLogin.class, ColumnCount.class);
-//        List<UserLogin> userLogins = (List<UserLogin>) up_wa_getUserLoginTracking.get(0);
-//        List<ColumnCount> columnCounts = (List<ColumnCount>) up_wa_getUserLoginTracking.get(1);
-
         return userLoginTrackingProcedure.up_wa_GetUserLoginTracking(pageNum,pageSize,sortField,sortDir,userType,userName,companyName,ip,sDate,eDate);
     }
 }

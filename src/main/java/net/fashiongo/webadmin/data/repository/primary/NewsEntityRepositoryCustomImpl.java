@@ -14,20 +14,6 @@ public class NewsEntityRepositoryCustomImpl implements NewsEntityRepositoryCusto
     @PersistenceContext(unitName = "primaryEntityManager")
     private EntityManager newsEntityManger;
 
-    @Override
-    @Transactional
-    public NewsEntity findOneByNewsID(Integer newsID) {
-        QNewsEntity newsEntity = QNewsEntity.newsEntity;
-        QReadOnlyWholeSalerNameEntity readOnlyWholeSalerNameEntity = QReadOnlyWholeSalerNameEntity.readOnlyWholeSalerNameEntity;
-
-        return new JPAQuery<>(newsEntityManger)
-                .select(newsEntity)
-                .from(newsEntity)
-                .leftJoin(newsEntity.readOnlyWholeSalerNameEntity, readOnlyWholeSalerNameEntity).fetchJoin()
-                .where(newsEntity.newsId.eq(newsID))
-                .fetchOne();
-    }
-
     public NewsEntity getActiveNews(Integer consolidationId, Integer orderId) {
         QConsolidationOrdersEntity qco = QConsolidationOrdersEntity.consolidationOrdersEntity;
         ConsolidationOrdersEntity co = new JPAQuery<ConsolidationOrdersEntity>(newsEntityManger)

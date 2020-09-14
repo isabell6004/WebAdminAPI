@@ -308,8 +308,8 @@ public class ProductsEntity {
 	private CategoryEntity category;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "WholeSalerID", insertable = false, updatable = false)
-	private SimpleWholeSalerEntity wholeSaler;
+	@JoinColumn(name = "WholeSalerID",referencedColumnName = "vendor_id", insertable = false,updatable = false)
+	private VendorEntity wholeSaler;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "products")
 	private List<ProductImageEntity> productImageEntity;

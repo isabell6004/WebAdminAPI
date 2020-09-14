@@ -8,8 +8,8 @@ import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.QFeaturedItemEntity;
 import net.fashiongo.webadmin.data.entity.primary.QProductImageEntity;
 import net.fashiongo.webadmin.data.entity.primary.QProductsEntity;
-import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.QSystemImageServersEntity;
+import net.fashiongo.webadmin.data.entity.primary.QVendorEntity;
 import net.fashiongo.webadmin.data.model.sitemgmt.FeaturedItemCount;
 import net.fashiongo.webadmin.data.model.sitemgmt.FeaturedItemList;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
@@ -58,7 +58,7 @@ public class FeaturedItemEntityRepositoryCustomImpl implements FeaturedItemEntit
         QFeaturedItemEntity FI = QFeaturedItemEntity.featuredItemEntity;
         QProductsEntity PRD = QProductsEntity.productsEntity;
         QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
-        QSimpleWholeSalerEntity VDR = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+        QVendorEntity VDR = QVendorEntity.vendorEntity;
         QSystemImageServersEntity IMGSVR = QSystemImageServersEntity.systemImageServersEntity;
 
         JPAQuery<FeaturedItemList> query = new JPAQuery<>(entityManager);
@@ -81,7 +81,7 @@ public class FeaturedItemEntityRepositoryCustomImpl implements FeaturedItemEntit
                 PRD.unitPrice,
                 PRDI.imageName.as("PictureGeneral"),
                 IMGSVR.urlPath,
-                VDR.dirName,
+                VDR.dirname,
                 queryDSLSQLFunctions.isnull(Boolean.class, PRD.active, 0).as("Active"),
                 PRD.activatedOn,
                 PRD.createdOn,
@@ -92,7 +92,7 @@ public class FeaturedItemEntityRepositoryCustomImpl implements FeaturedItemEntit
                 .leftJoin(FI.productsEntity, PRD)
                 .leftJoin(PRDI).on(PRD.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
                 .leftJoin(PRD.wholeSaler, VDR)
-                .leftJoin(VDR.systemImageServersEntity, IMGSVR)
+                .leftJoin(IMGSVR).on(IMGSVR.imageServerID.eq(7))
                 .where(this.isMatchYearMonth(FI, period))
                 .orderBy(FI.featuredItemDate.asc(), FI.featuredItemID.asc());
 
@@ -117,7 +117,7 @@ public class FeaturedItemEntityRepositoryCustomImpl implements FeaturedItemEntit
         QFeaturedItemEntity FI = QFeaturedItemEntity.featuredItemEntity;
         QProductsEntity PRD = QProductsEntity.productsEntity;
         QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
-        QSimpleWholeSalerEntity VDR = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+        QVendorEntity VDR = QVendorEntity.vendorEntity;
         QSystemImageServersEntity IMGSVR = QSystemImageServersEntity.systemImageServersEntity;
 
         JPAQuery<FeaturedItemList> query = new JPAQuery<>(entityManager);
@@ -140,7 +140,7 @@ public class FeaturedItemEntityRepositoryCustomImpl implements FeaturedItemEntit
                 PRD.unitPrice,
                 PRDI.imageName.as("PictureGeneral"),
                 IMGSVR.urlPath,
-                VDR.dirName,
+                VDR.dirname,
                 queryDSLSQLFunctions.isnull(Boolean.class, PRD.active, 0).as("Active"),
                 PRD.activatedOn,
                 PRD.createdOn,
@@ -151,7 +151,7 @@ public class FeaturedItemEntityRepositoryCustomImpl implements FeaturedItemEntit
                 .leftJoin(FI.productsEntity, PRD)
                 .leftJoin(PRDI).on(PRD.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
                 .leftJoin(PRD.wholeSaler, VDR)
-                .leftJoin(VDR.systemImageServersEntity, IMGSVR)
+                .leftJoin(IMGSVR).on(IMGSVR.imageServerID.eq(7))
                 .where(this.isMatchYearMonthDay(FI, period))
                 .orderBy(FI.featuredItemDate.asc(), FI.featuredItemID.asc());
 

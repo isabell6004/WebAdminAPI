@@ -5,6 +5,7 @@ import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 import net.fashiongo.webadmin.data.model.sitemgmt.GetTrendReportParameter;
 import net.fashiongo.webadmin.data.model.sitemgmt.SitemgmtGetItemsParameter;
 import net.fashiongo.webadmin.data.model.sitemgmt.response.GetSEOResponse;
@@ -15,11 +16,11 @@ import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.common.ResultResponse;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.BannerOrMedia;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPick;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPickVendor;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.TrendReportKmmImage;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
 import net.fashiongo.webadmin.model.primary.CommunicationReason;
-import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.model.product.Product;
 import net.fashiongo.webadmin.model.product.ProductSearchCondition;
 import net.fashiongo.webadmin.service.CacheService;
@@ -796,10 +797,10 @@ public class SitemgmtController {
     }
     
     @GetMapping(value = "editorsPick/vendors")
-    public JsonResponse<List<Vendor>> getEditorsPickVendors(){
-    	JsonResponse<List<Vendor>> response = new JsonResponse<>(false, null, null);
+    public JsonResponse<List<EditorsPickVendor>> getEditorsPickVendors(){
+    	JsonResponse<List<EditorsPickVendor>> response = new JsonResponse<>(false, null, null);
     	try {
-    		List<Vendor> result = vendorService.getEditorsPickVendors();
+    		List<EditorsPickVendor> result = vendorService.getEditorsPickVendors();
     		response.setSuccess(true);
             response.setData(result);
         } catch (Exception ex) {

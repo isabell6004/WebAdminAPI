@@ -8,9 +8,9 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
 import com.querydsl.sql.Union;
-import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
 import net.fashiongo.webadmin.data.entity.primary.QStoreCreditEntity;
 import net.fashiongo.webadmin.data.entity.primary.QStoreCreditUseEntity;
+import net.fashiongo.webadmin.data.entity.primary.QVendorEntity;
 import net.fashiongo.webadmin.data.entity.primary.StoreCreditEntity;
 import net.fashiongo.webadmin.data.model.buyer.StoreCardDetail;
 import net.fashiongo.webadmin.data.model.buyer.StoreCardSummary;
@@ -77,7 +77,7 @@ public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityR
 		JPASQLQuery<StoreCardSummary> jpasqlQuery = new JPASQLQuery<StoreCardSummary>(entityManager,new MSSQLServer2012Templates());
 		QStoreCreditEntity C = QStoreCreditEntity.storeCreditEntity;
 		QStoreCreditUseEntity CU = QStoreCreditUseEntity.storeCreditUseEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
 
 		SimpleTemplate<Object> nullTemplate = Expressions.simpleTemplate(Object.class, "NULL");
 
@@ -118,7 +118,7 @@ public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityR
 		BooleanExpression booleanExpression = Expressions.ONE.eq(1);
 
 		if(vendorName != null) {
-			booleanExpression = booleanExpression.and(W.companyName.contains(vendorName));
+			booleanExpression = booleanExpression.and(W.name.contains(vendorName));
 		}
 
 		if(poNumber != null) {
@@ -139,16 +139,16 @@ public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityR
 								StoreCardSummary.class
 								,wholeSalerID
 								,creditedAmount.sum()
-								,W.companyName
+								,W.name
 								,createdOn.max()
 								,usedAmount.sum()
 								,Expressions.cases().when(isDeleted.eq(true)).then(creditedAmount).otherwise(BigDecimal.ZERO).sum()
 						)
 				)
 				.from(subQuery,fromA)
-				.innerJoin(W).on(W.wholeSalerId.eq(wholeSalerID))
+				.innerJoin(W).on(W.vendor_id.intValue().eq(wholeSalerID))
 				.where(booleanExpression)
-				.groupBy(wholeSalerID,W.companyName)
+				.groupBy(wholeSalerID,W.name)
 				.orderBy(createdOn.max().desc());
 
 		return jpasqlQuery.fetch();
@@ -197,7 +197,7 @@ public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityR
 		JPASQLQuery<StoreCardDetail> jpasqlQuery = new JPASQLQuery<StoreCardDetail>(entityManager,new MSSQLServer2012Templates());
 		QStoreCreditEntity C = QStoreCreditEntity.storeCreditEntity;
 		QStoreCreditUseEntity CU = QStoreCreditUseEntity.storeCreditUseEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
 
 		SimpleTemplate<Object> nullTemplate = Expressions.simpleTemplate(Object.class, "NULL");
 
@@ -245,7 +245,7 @@ public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityR
 		BooleanExpression booleanExpression = Expressions.ONE.eq(1);
 
 		if(vendorName != null) {
-			booleanExpression = booleanExpression.and(W.companyName.contains(vendorName));
+			booleanExpression = booleanExpression.and(W.name.contains(vendorName));
 		}
 
 		if(poNumber != null) {
@@ -266,7 +266,7 @@ public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityR
 								StoreCardDetail.class
 								,creditID
 								,wholeSalerID
-								,W.companyName
+								,W.name
 								,retailerID
 								,creditedAmount
 								,creditReason
@@ -278,7 +278,7 @@ public class StoreCreditEntityRepositoryCustomImpl implements StoreCreditEntityR
 						)
 				)
 				.from(subQuery,fromA)
-				.innerJoin(W).on(W.wholeSalerId.eq(wholeSalerID))
+				.innerJoin(W).on(W.vendor_id.intValue().eq(wholeSalerID))
 				.where(booleanExpression)
 				.orderBy(createdOn.desc());
 

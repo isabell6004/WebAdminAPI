@@ -35,10 +35,6 @@ public class VendorBlockedEntity implements Serializable {
     private String blockedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "WholeSalerID", updatable = false, insertable = false)
-    private ReadOnlyWholeSalerNameEntity readOnlyWholeSalerNameEntity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BlockReasonID", updatable = false, insertable = false)
     private ListVendorBlockReasonEntity listVendorBlockReasonEntity;
 

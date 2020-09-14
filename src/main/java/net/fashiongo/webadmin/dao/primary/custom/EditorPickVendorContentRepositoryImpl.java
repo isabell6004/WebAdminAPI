@@ -1,7 +1,8 @@
 package net.fashiongo.webadmin.dao.primary.custom;
 
 import static net.fashiongo.webadmin.model.primary.QEditorPickVendorContent.editorPickVendorContent;
-import static net.fashiongo.webadmin.model.primary.QVendor.vendor;
+import static net.fashiongo.webadmin.data.entity.primary.QVendorEntity.vendorEntity;
+import static net.fashiongo.webadmin.data.entity.primary.QVendorSettingEntity.vendorSettingEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,9 +44,10 @@ public class EditorPickVendorContentRepositoryImpl extends QuerydslRepositorySup
 	public PagedResult<EditorPickVendorContent> getEditorPickVendorContents(Integer pagenum, Integer pagesize,
 			String title, String vendorName, LocalDateTime startDate, LocalDateTime endDate, String orderBy) {
 		QueryResults<EditorPickVendorContent> list = from(editorPickVendorContent)
-				.innerJoin(editorPickVendorContent.vendor, vendor).fetchJoin()
+				.innerJoin(editorPickVendorContent.vendor, vendorEntity).fetchJoin()
+				.leftJoin(vendorEntity.vendorSetting, vendorSettingEntity).fetchJoin()
 				.where(!StringUtil.isNullOrEmpty(title) ? editorPickVendorContent.editorTitle.likeIgnoreCase(Expressions.asString("%").concat(title).concat("%")) : null,
-						!StringUtil.isNullOrEmpty(vendorName) ? editorPickVendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(vendorName).concat("%")) : null,
+						!StringUtil.isNullOrEmpty(vendorName) ? editorPickVendorContent.vendor.name.likeIgnoreCase(Expressions.asString("%").concat(vendorName).concat("%")) : null,
 						startDate!=null ? editorPickVendorContent.startDate.goe(startDate) : null,
 						endDate!=null ? editorPickVendorContent.startDate.loe(endDate) : null)
 				.orderBy(getOrderBy(orderBy))
@@ -63,8 +65,8 @@ public class EditorPickVendorContentRepositoryImpl extends QuerydslRepositorySup
     
     private OrderSpecifier<?> getOrderBy(String orderBy) {
         if(orderBy!=null) {
-        	if(orderBy.equals("vendorasc")) return editorPickVendorContent.vendor.companyName.asc();
-        	else if(orderBy.equals("vendordesc")) return editorPickVendorContent.vendor.companyName.desc();
+        	if(orderBy.equals("vendorasc")) return editorPickVendorContent.vendor.name.asc();
+        	else if(orderBy.equals("vendordesc")) return editorPickVendorContent.vendor.name.desc();
         	else if(orderBy.equals("titleasc")) return editorPickVendorContent.editorTitle.asc();
         	else if(orderBy.equals("titledesc")) return editorPickVendorContent.editorTitle.desc();
         	else if(orderBy.equals("startDateasc")) return editorPickVendorContent.startDate.asc();
@@ -74,6 +76,6 @@ public class EditorPickVendorContentRepositoryImpl extends QuerydslRepositorySup
         	else if(orderBy.equals("createdByasc")) return editorPickVendorContent.createdBy.asc();
         	else if(orderBy.equals("createdBydesc")) return editorPickVendorContent.createdBy.desc();
         }
-        return editorPickVendorContent.vendor.companyName.asc(); //default
+        return editorPickVendorContent.vendor.name.asc(); //default
     }
 }

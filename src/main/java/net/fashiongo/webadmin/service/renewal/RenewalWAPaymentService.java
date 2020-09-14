@@ -1,7 +1,9 @@
 package net.fashiongo.webadmin.service.renewal;
 
+import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.common.dal.JdbcHelper;
 import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
+import net.fashiongo.webadmin.dao.primary.VendorEntityRepository;
 import net.fashiongo.webadmin.data.model.Total;
 import net.fashiongo.webadmin.data.model.TotalCount;
 import net.fashiongo.webadmin.data.model.payment.CodeCreditCardType;
@@ -21,24 +23,20 @@ import net.fashiongo.webadmin.data.repository.primary.ListPaymentStatusEntityRep
 import net.fashiongo.webadmin.data.repository.primary.OrderPaymentStatusEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.PaymentCreditCardEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.PaymentRecoveryRepository;
-import net.fashiongo.webadmin.data.repository.primary.WholeSalerEntityRepository;
 import net.fashiongo.webadmin.model.pojo.payment.PaymentStatusList;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetAllSavedCreditCardInfoParameter;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPaymentStatusListParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRecovery;
 import net.fashiongo.webadmin.model.pojo.payment.response.GetPaymentStatusListResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentRecoveryResponse;
 import net.fashiongo.webadmin.utility.Utility;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.GetPendingPaymentTransactionParameter;
-import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRecovery;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,9 +47,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class RenewalWAPaymentService {
-
-	@Autowired
-	private WholeSalerEntityRepository wholeSalerEntityRepository;
 
 	@Autowired
 	private ListPaymentStatusEntityRepository listPaymentStatusEntityRepository;
@@ -72,7 +67,10 @@ public class RenewalWAPaymentService {
 	private PaymentRecoveryRepository paymentRecoveryRepository;		
 	
 	@Autowired
-	private JdbcHelper jdbcHelper;	
+	private JdbcHelper jdbcHelper;
+
+	@Autowired
+	private VendorEntityRepository vendorEntityRepository;
 	
 	@Transactional(transactionManager = "primaryTransactionManager")
 	public GetPaymentStatusSearchOptionResponse getPaymentStatusSearchOption() {
@@ -81,7 +79,7 @@ public class RenewalWAPaymentService {
 				.map(listPaymentStatusEntity -> new PaymentStatus(listPaymentStatusEntity.getPaymentStatusID(), listPaymentStatusEntity.getPaymentStatus(), listPaymentStatusEntity.getPaymentStatusDescription()))
 				.collect(Collectors.toList());
 
-		List<Vendor> vendorList = wholeSalerEntityRepository.findAllByOrderActiveOrderByCompanyNameAsc(true);
+		List<Vendor> vendorList = vendorEntityRepository.findAllByOrderActiveOrderByCompanyNameAsc(true);
 		return GetPaymentStatusSearchOptionResponse.builder()
 				.vendorList(vendorList)
 				.paymentStatusList(paymentStatusList)

@@ -129,7 +129,9 @@ public class DMSendListMigrationProcedure {
 
 		QProductsEntity P = new QProductsEntity("P");
 		QCategoryEntity C = new QCategoryEntity("C");
-		QSimpleWholeSalerEntity TWS = new QSimpleWholeSalerEntity("TWS");
+		QVendorEntity TWS = new QVendorEntity("TWS");
+		QVendorBannerEntity VB = new QVendorBannerEntity("VB");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 		QVendorCategoryEntity VC = new QVendorCategoryEntity("VC");
 		QVendorCatalogEntity VENDOR_CATALOG = new QVendorCatalogEntity("VENDOR_CATALOG");
 		QProductImageEntity PRDI = new QProductImageEntity("PRDI");
@@ -139,23 +141,25 @@ public class DMSendListMigrationProcedure {
 				P.productID
 				, VENDOR_CATALOG.catalogID
 				, I.urlPath
-				, TWS.dirName
-				, TWS.pictureLogo
+				, TWS.dirname.as("DirName")
+				, VB.fileName.as("PictureLogo")
 				, PRDI.imageName
 				, P.productName
-				, TWS.companyName
+				, TWS.name.as("CompanyName")
 				, SQLExpressions.rowNumber().over().partitionBy(VENDOR_CATALOG.catalogID).orderBy(vcpSortNo.asc(),vcpCatalogProductID.asc()).as("row")
 		)
 				.from(VCP(catalogIdList),VCP)
 				.innerJoin(P).on(vcpProductID.eq(P.productID))
 				.innerJoin(C).on(C.categoryId.eq(P.categoryID))
-				.innerJoin(TWS).on(P.wholeSalerID.eq(TWS.wholeSalerId))
+				.innerJoin(TWS).on(P.wholeSalerID.eq(TWS.vendor_id.intValue()))
+				.innerJoin(VB).on(TWS.vendor_id.eq(VB.vendorId).and(VB.bannerTypeId.intValue().eq(1)))
+				.innerJoin(VS).on(TWS.vendor_id.eq(VS.vendorId))
 				.innerJoin(VC).on(P.vendorCategoryID.eq(VC.vendorCategoryID))
-				.innerJoin(VENDOR_CATALOG).on(VENDOR_CATALOG.vendorID.eq(TWS.wholeSalerId).and(VENDOR_CATALOG.catalogID.in(catalogIdList)))
+				.innerJoin(VENDOR_CATALOG).on(VENDOR_CATALOG.vendorID.eq(TWS.vendor_id.intValue()).and(VENDOR_CATALOG.catalogID.in(catalogIdList)))
 				.leftJoin(PRDI).on(PRDI.productID.eq(P.productID).and(PRDI.listOrder.eq(1)))
-				.innerJoin(I).on(I.imageServerID.eq(TWS.imageServerID))
+				.innerJoin(I).on(I.imageServerID.eq(7))
 				.where(
-						P.active.eq(true).and(TWS.active.eq(true)).and(TWS.shopActive.eq(true)).and(TWS.orderActive.eq(true))
+						P.active.eq(true).and(VS.statusCode.eq(3))
 				);
 
 
@@ -204,7 +208,8 @@ public class DMSendListMigrationProcedure {
 		JPASQLQuery jpasqlQuery = new JPASQLQuery(entityManager,new MSSQLServer2012Templates());
 		QProductsEntity SUB_P = new QProductsEntity("SUB_P");
 		QCategoryEntity SUB_C = new QCategoryEntity("SUB_C");
-		QSimpleWholeSalerEntity SUB_TWS = new QSimpleWholeSalerEntity("SUB_TWS");
+		QVendorEntity SUB_TWS = new QVendorEntity("SUB_TWS");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 		QVendorCategoryEntity SUB_VC = new QVendorCategoryEntity("SUB_VC");
 		QVendorCatalogEntity SUB_VENDOR_CATALOG = new QVendorCatalogEntity("SUB_VENDOR_CATALOG");
 		QSystemImageServersEntity SUB_I = new QSystemImageServersEntity("SUB_I");
@@ -216,12 +221,13 @@ public class DMSendListMigrationProcedure {
 				, SUB_VENDOR_CATALOG.catalogID
 		).from(SUB_P)
 				.innerJoin(SUB_C).on(SUB_P.categoryID.eq(SUB_C.categoryId))
-				.innerJoin(SUB_TWS).on(SUB_P.wholeSalerID.eq(SUB_TWS.wholeSalerId))
-				.innerJoin(SUB_I).on(SUB_TWS.imageServerID.eq(SUB_I.imageServerID))
+				.innerJoin(SUB_TWS).on(SUB_P.wholeSalerID.eq(SUB_TWS.vendor_id.intValue()))
+				.innerJoin(VS).on(SUB_TWS.vendor_id.eq(VS.vendorId))
+				.innerJoin(SUB_I).on(SUB_I.imageServerID.eq(7))
 				.innerJoin(SUB_VC).on(SUB_P.vendorCategoryID.eq(SUB_VC.vendorCategoryID))
 				.innerJoin(SUB_VENDOR_CATALOG).on(SUB_VENDOR_CATALOG.vendorID.eq(SUB_P.wholeSalerID).and(SUB_VENDOR_CATALOG.catalogID.in(catalogIdList)))
 				.where(
-						SUB_P.active.eq(true).and(SUB_TWS.active.eq(true)).and(SUB_TWS.shopActive.eq(true)).and(SUB_TWS.orderActive.eq(true))
+						SUB_P.active.eq(true).and(VS.statusCode.eq(3))
 				);
 
 		return jpasqlQuery;

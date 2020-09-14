@@ -25,7 +25,7 @@ public class VendorProductRepositoryImpl implements VendorProductRepository {
 	public List<VendorProductRow> getVendorProducts(int wholesalerId, Integer vendorCategoryId, String productName) {
 		QProductsEntity qProducts = QProductsEntity.productsEntity;
 		QProductImageEntity qProductImage = QProductImageEntity.productImageEntity;
-		QSimpleWholeSalerEntity qWholesaler = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity qWholesaler = QVendorEntity.vendorEntity;
 		QSystemImageServersEntity qImageServers = QSystemImageServersEntity.systemImageServersEntity;
 
 		JPASQLQuery<VendorProductRow> query = new JPASQLQuery<>(entityManager, new SQLServer2012Templates());
@@ -38,19 +38,19 @@ public class VendorProductRepositoryImpl implements VendorProductRepository {
 										qProducts.productID,
 										qProducts.productName,
 										qProducts.unitPrice,
-										qWholesaler.dirName,
+										qWholesaler.dirname,
 										qImageServers.urlPath,
 										qProductImage.productImageID,
 										qProductImage.imageName
 								)
 				)
 				.from(qProducts)
-				.innerJoin(qWholesaler).on(qWholesaler.wholeSalerId.eq(qProducts.wholeSalerID))
+				.innerJoin(qWholesaler).on(qWholesaler.vendor_id.intValue().eq(qProducts.wholeSalerID))
 				.leftJoin(qProductImage).on(qProductImage.productID.eq(qProducts.productID).and(qProductImage.listOrder.eq(1)))
-				.leftJoin(qImageServers).on(qImageServers.imageServerID.eq(qWholesaler.imageServerID))
+				.leftJoin(qImageServers).on(qImageServers.imageServerID.eq(7))
 				.where(
 						qProducts.active.isTrue()
-								.and(qWholesaler.wholeSalerId.eq(wholesalerId))
+								.and(qWholesaler.vendor_id.intValue().eq(wholesalerId))
 								.and(vendorCategoryId != null && vendorCategoryId > 0 ? qProducts.vendorCategoryID.eq(vendorCategoryId) : null)
 								.and(StringUtils.isNotEmpty(productName) ? qProducts.productName.startsWith(productName) : null)
 				)

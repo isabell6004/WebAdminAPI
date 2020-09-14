@@ -1,12 +1,14 @@
 package net.fashiongo.webadmin.service;
 
 import net.fashiongo.webadmin.dao.primary.*;
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.Result;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
+import net.fashiongo.webadmin.model.pojo.sitemgmt.EditorsPickVendor;
 import net.fashiongo.webadmin.model.pojo.vendor.*;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
 import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorCreditCardListResponse;
@@ -34,12 +36,6 @@ import java.util.stream.Stream;
  */
 @Service
 public class VendorService extends ApiService {
-	@Autowired
-	private VendorRepository vendorRepository;
-
-    @Autowired
-    private VendorAutocompleteRepository vendorAutocompleteRepository;
-
 	@Autowired
 	private CreditCardTypeRepository creditCardTypeRepository;
 
@@ -88,25 +84,8 @@ public class VendorService extends ApiService {
 	@Autowired
 	private HttpClientWrapper httpCaller;
 
-	/**
-	 * Get vendor list
-	 * @since 2018. 10. 15.
-	 * @author roy
-	 * @return vendor list
-	 */
-	public List<Vendor> getVendorList() {
-		return vendorRepository.findAllByActiveTrueAndShopActiveTrueOrderByCompanyName();
-	}
-
-    /**
-     * Get autocomplete search results in company name prefix
-     * created by Andy Min on 11/01/2018
-     * @param prefix
-     * @return
-     */
-    public List<VendorAutocomplete> getVendorsAutoomplete(String prefix) {
-        return vendorAutocompleteRepository.findByCompanyNameStartingWithOrEmailStartingWithAllIgnoreCase(prefix, prefix);
-    }
+	@Autowired
+    private VendorEntityRepository vendorEntityRepository;
 
     /**
      * Description Example
@@ -461,12 +440,6 @@ public class VendorService extends ApiService {
         return fileName;
     }
 
-
-    public Vendor getVendorInfo(Integer wholeSalerID) {
-        Optional<Vendor> vendor = vendorRepository.findById(wholeSalerID);
-        return vendor.get();
-    }
-
     /**
      * @author Kenny/Kyungwoo
      * @since 2019-04-15
@@ -520,15 +493,16 @@ public class VendorService extends ApiService {
      * @author Kenny/Kyungwoo
      * @since 2019-05-02
      */
-    public List<Vendor> getEditorsPickVendors() {
-        return vendorRepository.getEditorPickVendors();
+    public List<EditorsPickVendor> getEditorsPickVendors() {
+        List<VendorEntity> vendors = vendorEntityRepository.getEditorPickVendors();
+        return EditorsPickVendor.create(vendors);
     }
     /**
      * Get vendor by wholeSalerId and Active
      *
      * 05/11/2020 LeeDongSeung
      */
-    public Optional<Vendor> getVendorByWholeSalerIdAndActive(int wid) {
-        return vendorRepository.findByWholeSalerIdAndActive(wid, true);
+    public VendorEntity getVendorByWholeSalerIdAndActive(int wid) {
+        return vendorEntityRepository.findByWholeSalerIdAndActive((long) wid, true);
     }
 }

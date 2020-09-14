@@ -44,7 +44,7 @@ public class RetailerRatingEntityRepositoryCustomImpl implements RetailerRatingE
 		JPASQLQuery<RetailerRating> jpasqlQuery = new JPASQLQuery<RetailerRating>(entityManager,mssqlServer2012Templates);
 		JPASQLQuery subQuery = new JPASQLQuery(entityManager,mssqlServer2012Templates);
 		QRetailerRatingEntity RR = QRetailerRatingEntity.retailerRatingEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
 		QOrdersEntity ORDER = QOrdersEntity.ordersEntity;
 		QRetailerEntity R = QRetailerEntity.retailerEntity;
 		QRatingCommentEntity RC = QRatingCommentEntity.ratingCommentEntity;
@@ -121,7 +121,7 @@ public class RetailerRatingEntityRepositoryCustomImpl implements RetailerRatingE
 						, queryDSLSQLFunctions.isnull(Integer.class, RR.score, 4).as("Score")
 						, RR.active.as("Active")
 						, RR.createdOn.as("CreatedOn")
-						, W.companyName.as("WholeSalerCompanyName")
+						, W.name.as("WholeSalerCompanyName")
 						, R.companyName.as("RetailerCompanyName")
 						, R.firstName.concat(" ").concat(R.lastName).as("RetailerFullName")
 						, ORDER.poNumber.as("PONumber")
@@ -130,7 +130,7 @@ public class RetailerRatingEntityRepositoryCustomImpl implements RetailerRatingE
 						, RC.ratingCommentID.as("RatingCommentID")
 				)
 				.from(RR)
-				.leftJoin(W).on(RR.wholeSalerID.eq(W.wholeSalerId))
+				.leftJoin(W).on(RR.wholeSalerID.eq(W.vendor_id.intValue()))
 				.leftJoin(ORDER).addJoinFlag(" WITH(NOLOCK) ", JoinFlag.Position.BEFORE_CONDITION).on(RR.orderID.eq(ORDER.orderID))
 				.leftJoin(R).on(RR.retailerID.eq(R.retailerID))
 				.leftJoin(RC).on(RR.retailerRatingID.eq(RC.referenceID).and(RC.isVendorRating.eq(false)));

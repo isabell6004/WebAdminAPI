@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 
 /**
  * @author Kenny/Kyungwoo
@@ -89,7 +90,8 @@ public class VendorContent {
 	
     @JoinColumn(name = "WholeSalerID", insertable = false, updatable = false)
     @ManyToOne
-    private Vendor vendor;
+	private VendorEntity vendor;
+//    private Vendor vendor;
 	
     @JoinColumn(name = "VendorContentID")
     @OneToMany

@@ -3,7 +3,8 @@ package net.fashiongo.webadmin.service;
 import com.querydsl.core.QueryResults;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.photostudio.*;
-import net.fashiongo.webadmin.dao.primary.VendorRepository;
+import net.fashiongo.webadmin.dao.primary.VendorEntityRepository;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorResponse;
 import net.fashiongo.webadmin.exception.NotEnoughPhotostudioAvailableUnit;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioDiscount;
 import net.fashiongo.webadmin.exception.NotFoundPhotostudioPhotoModel;
@@ -13,8 +14,8 @@ import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
-import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.service.photostudio.ReportTypeChecker;
+import net.fashiongo.webadmin.service.vendor.VendorNewService;
 import net.fashiongo.webadmin.utility.DateUtils;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.collections4.CollectionUtils;
@@ -110,7 +111,10 @@ public class PhotoStudioService extends ApiService {
     private PhotoDropperRepository photoDropperRepository;
 
     @Autowired
-    private VendorRepository vendorRepository;
+    private VendorEntityRepository vendorEntityRepository;
+
+    @Autowired
+    private VendorNewService vendorNewService;
 
     @Autowired
     @Qualifier("photostudioTransactionManager")
@@ -897,13 +901,14 @@ public class PhotoStudioService extends ApiService {
     public Map<String, Object> getPhotoOrder(String poNumber) {
 
         PhotoOrder photoOrder = photoOrderRepository.getPhotoOrderInfoWithAdditionalInfo(poNumber);
-        Vendor vendor = vendorService.getVendorInfo(photoOrder.getWholeSalerID());
+        VendorResponse vendor = vendorNewService.getVendorById(photoOrder.getWholeSalerID().longValue());
+        PhotoVendorInfo photoVendor = PhotoVendorInfo.create(vendor);
         List<LogPhotoAction> logPhotoActions = logPhotoActionRepository.getLogPhotoActions(photoOrder.getOrderID());
         List<PhotoOrderDetail> photoOrderDetails = photoOrderDetailRepository.findByOrderID(photoOrder.getOrderID());
         List<SecurityUser> securityUsers = securityGroupService.getSecurityUsersByGroupId(PHOTOSTUDIO_GROUP_NUMBER);
 
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("photoOrder", DetailPhotoOrder.build(photoOrder, vendor));
+        result.put("photoOrder", DetailPhotoOrder.build(photoOrder, photoVendor));
         result.put("actionLogs", LogPhotoActionDto.build(logPhotoActions));
         result.put("items", DetailOrderQuantity.build(photoOrderDetails));
         result.put("photoStudioUsers", PhotoActionUser.build(securityUsers));
@@ -1446,7 +1451,7 @@ public class PhotoStudioService extends ApiService {
     }
 
     public Integer saveCredit(PhotoCreditRequest request) {
-        String wholeSalerCompanyName = vendorRepository.getCompanyNameByWholeSalerId(request.getWholeSalerID());
+        String wholeSalerCompanyName = vendorEntityRepository.getCompanyNameByWholeSalerId(request.getWholeSalerID());
         if(wholeSalerCompanyName == null) {
             throw new NotFoundVendorException("can not find companyName. The id is " + request.getWholeSalerID());
         }

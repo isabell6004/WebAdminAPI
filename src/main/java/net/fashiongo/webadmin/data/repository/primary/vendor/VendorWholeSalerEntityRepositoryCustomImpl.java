@@ -10,8 +10,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.sql.JPASQLQuery;
 import com.querydsl.sql.SQLExpressions;
 import net.fashiongo.webadmin.data.entity.primary.*;
-import net.fashiongo.webadmin.data.entity.primary.vendor.QWholesalerCompanyEntity;
-import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
 import net.fashiongo.webadmin.data.model.common.VendorsCompanyName;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.repository.QueryDSLSQLFunctions;
@@ -104,16 +102,6 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         query.select(W).from(W).where(W.wholeSalerID.eq(wholeSalerID));
 
         return query.fetchFirst();
-    }
-
-    @Override
-    public List<WholesalerCompanyEntity> findAllActive() {
-        QWholesalerCompanyEntity W = QWholesalerCompanyEntity.wholesalerCompanyEntity;
-        JPAQuery<WholesalerCompanyEntity> query = new JPAQuery<>(entityManager);
-
-        query.select(W).from(W).where(W.active.eq(true));
-
-        return query.fetch();
     }
 
     @Override
@@ -796,7 +784,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 subFilter = subFilter.and(AD.toDate.loe(adToTimestamp));
             }
 
-            queryAD.select(AD.wholeSaler, AD.actualPrice.sum().divide(AD.adID.count()).as("totaladamount")).from(AD).where(subFilter).groupBy(AD.wholeSalerID);
+            queryAD.select(AD.wholesaler, AD.actualPrice.sum().divide(AD.adID.count()).as("totaladamount")).from(AD).where(subFilter).groupBy(AD.wholeSalerID);
             jpasqlQuery.innerJoin(queryAD, pathAD).on(T.wholeSalerID.eq(AD.wholeSalerID));
 
             if (adSpentAmountFrom != null) {

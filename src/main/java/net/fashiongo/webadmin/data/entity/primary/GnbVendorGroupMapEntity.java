@@ -2,7 +2,6 @@ package net.fashiongo.webadmin.data.entity.primary;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.fashiongo.webadmin.data.entity.primary.vendor.WholesalerCompanyEntity;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
@@ -32,8 +31,8 @@ public class GnbVendorGroupMapEntity implements Persistable<GnbVendorGroupMapId>
 	private String modifiedBy;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "vendor_id", referencedColumnName = "WholeSalerID", insertable = false, updatable = false)
-	private WholesalerCompanyEntity vendor;
+	@JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false)
+	private VendorEntity vendor;
 
 	@Transient
 	private boolean isNew = true;

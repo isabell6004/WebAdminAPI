@@ -8,6 +8,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
+import net.fashiongo.webadmin.data.entity.primary.QVendorEntity;
 import net.fashiongo.webadmin.data.entity.primary.show.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -160,13 +161,13 @@ public class ShowScheduleWithPromotionEntityRepositoryCustomImpl implements Show
 
 	private JPAQuery<ShowPromotionWholesalerJoinRow> getBaseQuery(Integer scheduleId, Integer planId) {
 		QShowScheduleWithPromotionEntity qSchedule = QShowScheduleWithPromotionEntity.showScheduleWithPromotionEntity;
-		QWholesalerWithPromotionEntity qWholesaler = QWholesalerWithPromotionEntity.wholesalerWithPromotionEntity;
+		QVendorEntity qVendorEntity = QVendorEntity.vendorEntity;
 		QMapShowSchedulePromotionPlanVendorEntity qPromotionVendorMap = QMapShowSchedulePromotionPlanVendorEntity.mapShowSchedulePromotionPlanVendorEntity;
 		QShowSchedulePromotionPlanWithVendorEntity qPromotion = QShowSchedulePromotionPlanWithVendorEntity.showSchedulePromotionPlanWithVendorEntity;
 		QMapShowScheduleWholesalerEntity qScheduleWholesalerMap = QMapShowScheduleWholesalerEntity.mapShowScheduleWholesalerEntity;
 
 		Expression[] expressions = new Expression[]{
-				qWholesaler.wholesalerId, qWholesaler.companyName,
+				qVendorEntity.vendor_id, qVendorEntity.name,
 				qPromotionVendorMap.mapId, qPromotionVendorMap.rackCount, qPromotionVendorMap.fee, qPromotionVendorMap.commissionRate,
 				qPromotion.planId, qPromotion.planName, qPromotion.showScheduleId, qPromotion.commissionEffectiveFrom
 		};
@@ -176,7 +177,7 @@ public class ShowScheduleWithPromotionEntityRepositoryCustomImpl implements Show
 				.from(qSchedule)
 				.join(qSchedule.showSchedulePromotionPlans, qPromotion)
 				.join(qPromotion.mapShowSchedulePromotionPlanVendors, qPromotionVendorMap)
-				.join(qPromotionVendorMap.wholesaler, qWholesaler)
+				.join(qPromotionVendorMap.wholesaler, qVendorEntity)
 				.join(qSchedule.mapShowScheduleWholesalers, qScheduleWholesalerMap)
 				.where(
 						qPromotionVendorMap.wholesalerId.eq(qScheduleWholesalerMap.wholesalerId)

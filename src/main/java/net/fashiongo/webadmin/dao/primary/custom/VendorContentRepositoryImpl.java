@@ -11,8 +11,6 @@ import javax.persistence.PersistenceContext;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
-import net.fashiongo.webadmin.model.primary.VendorContentFile;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +20,6 @@ import com.querydsl.core.types.dsl.Expressions;
 
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
-import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.model.primary.VendorContent;
 
 /**
@@ -32,7 +29,7 @@ import net.fashiongo.webadmin.model.primary.VendorContent;
 public class VendorContentRepositoryImpl extends QuerydslRepositorySupport implements VendorContentRepositoryCustom {
 
     public VendorContentRepositoryImpl() {
-        super(Vendor.class);
+        super(VendorContent.class);
     }
 	
     @Override
@@ -49,7 +46,7 @@ public class VendorContentRepositoryImpl extends QuerydslRepositorySupport imple
 
         BooleanBuilder where = new BooleanBuilder(vendorContent.isDeleted.eq(false));
         Optional.ofNullable(company)
-                .ifPresent(d -> where.and(vendorContent.vendor.companyName.likeIgnoreCase(Expressions.asString("%").concat(d).concat("%"))));
+                .ifPresent(d -> where.and(vendorContent.vendor.name.likeIgnoreCase(Expressions.asString("%").concat(d).concat("%"))));
         Optional.ofNullable(datefrom)
                 .ifPresent(d -> where.and(vendorContent.requestedOn.goe(d)));
         Optional.ofNullable(dateto)

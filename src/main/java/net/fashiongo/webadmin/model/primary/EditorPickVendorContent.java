@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorSettingEntity;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -63,11 +65,11 @@ public class EditorPickVendorContent {
 	
 	@Column(name = "image_request_id")
 	private Integer imageRequestId;
-	
-    @JoinColumn(name = "vendor_id", insertable = false, updatable = false, nullable = false)
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Vendor vendor;
-	
+
+	@JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	private VendorEntity vendor;
+
     @JoinColumn(name = "vendor_content_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
@@ -79,12 +81,13 @@ public class EditorPickVendorContent {
     private VendorImageRequest vendorImageRequest;
     
     public boolean getStatus() {
+    	VendorSettingEntity vendorSetting = vendor.getVendorSetting().stream().findFirst().orElse(null);
     	LocalDateTime now = LocalDateTime.now();
     	if(startDate!=null && startDate.isAfter(now)) return false;
     	else if(endDate!=null && endDate.isBefore(now)) return false;
-    	else if(!vendor.getActive()) return false;
-    	else if(!vendor.getShopActive()) return false;
-    	else if(!vendor.getOrderActive()) return false;
+    	else if(!(vendorSetting.getStatusCode() == 1 || vendorSetting.getStatusCode() == 2 || vendorSetting.getStatusCode() == 3)) return false;
+    	else if(!(vendorSetting.getStatusCode() == 2 || vendorSetting.getStatusCode() == 3)) return false;
+    	else if(!(vendorSetting.getStatusCode() == 3)) return false;
 //    	else if(vendor.getVendorType()!=2) return false;
     	else if(vendorContent==null) return false;
     	else if(vendorContent.getStatusId()!=2) return false;
@@ -94,14 +97,15 @@ public class EditorPickVendorContent {
     }
     
     public String getStatusDescription() {
-    	ArrayList<String> descs = new ArrayList<>();
+		VendorSettingEntity vendorSetting = vendor.getVendorSetting().stream().findFirst().orElse(null);
+		ArrayList<String> descs = new ArrayList<>();
     	
     	LocalDateTime now = LocalDateTime.now();
     	if(startDate!=null && startDate.isAfter(now)) descs.add("period is not started");
     	if(endDate!=null && endDate.isBefore(now)) descs.add("period is ended");
-    	if(!vendor.getActive()) descs.add("vendor is not active");
-    	if(!vendor.getShopActive()) descs.add("vendor is not shopActive");
-    	if(!vendor.getOrderActive()) descs.add("vendor is not orderActive");
+    	if(!(vendorSetting.getStatusCode() == 1 || vendorSetting.getStatusCode() == 2 || vendorSetting.getStatusCode() == 3)) descs.add("vendor is not active");
+    	if(!(vendorSetting.getStatusCode() == 2 || vendorSetting.getStatusCode() == 3)) descs.add("vendor is not shopActive");
+    	if(!(vendorSetting.getStatusCode() == 3)) descs.add("vendor is not orderActive");
 //    	if(vendor.getVendorType()!=2) descs.add("vendor is not Premium");
     	if(vendorContent==null) descs.add("media does not exist");
     	else {

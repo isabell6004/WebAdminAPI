@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -92,14 +93,15 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 //		' WHERE w.Active = 1 AND w.ShopActive = 1' + @Filter + ' ORDER BY m.UserID DESC, w.CompanyName'
 
 		JPAQuery<UserMappingVendor> jpaQuery = new JPAQuery(entityManager);
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QVendorEntity W = new QVendorEntity("W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 		QMapWaUserVendorEntity M = new QMapWaUserVendorEntity("M");
 		QCountEntity C = new QCountEntity("C");
 
-		BooleanExpression predicate = W.active.eq(true).and(W.shopActive.eq(true));
+		BooleanExpression predicate = VS.statusCode.in(2,3);
 
 		if(StringUtils.isEmpty(alphabet) == false) {
-			predicate = predicate.and(W.companyName.startsWith(alphabet));
+			predicate = predicate.and(W.name.startsWith(alphabet));
 		}
 
 //		if(StringUtils.isEmpty(companyType) == false) {
@@ -117,7 +119,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 					.map(Integer::valueOf)
 					.collect(Collectors.toList());
 
-			predicate = predicate.and(W.wholeSalerId.in(
+			predicate = predicate.and(W.vendor_id.intValue().in(
 					JPAExpressions.select(C.entityID)
 					.from(C)
 					.where(C.countTypeID.eq(2).and(C.referenceID.in(categoryList)))
@@ -128,14 +130,14 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		jpaQuery.select(
 				Projections.constructor(
 						UserMappingVendor.class
-						, W.wholeSalerId
-						, W.companyName
+						, W.vendor_id.intValue()
+						, W.name
 						, queryDSLSQLFunctions.isnull(Integer.class,M.mapID,0)
 				)
 		).from(W)
 				.leftJoin(W.mapWaUserVendorEntities,M).on(M.userID.eq(userId)) // simplewhol0_.WholeSalerID=mapwauserv1_.VendorID and ( mapwauserv1_.UserID=?)
-				.where(predicate)
-				.orderBy(M.userID.desc(),W.companyName.asc());
+				.leftJoin(VS).on(W.vendor_id.eq(VS.vendorId)).where(predicate)
+				.orderBy(M.userID.desc(),W.name.asc());
 
 		return jpaQuery.fetch()
 				.stream()
@@ -148,14 +150,16 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 //		SELECT COUNT(MapID) AS Assigned FROM Map_Wa_User_Vendor AS m
 //		WHERE m.UserID='+CONVERT(NVARCHAR,@UserID)
 		QMapWaUserVendorEntity M = new QMapWaUserVendorEntity("M");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");	
+		QVendorEntity W = new QVendorEntity("W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 			
 		JPAQuery jpaQuery = new JPAQuery(entityManager);
 
 		jpaQuery.select(M)		
 				.from(M)	
-					.innerJoin(W).on(W.wholeSalerId.eq(M.vendorID).and(M.userID.eq(userId)))
-				    .where(W.active.eq(true).and(W.shopActive.eq(true)));
+					.innerJoin(W).on(W.vendor_id.intValue().eq(M.vendorID).and(M.userID.eq(userId)))
+					.innerJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				    .where(VS.statusCode.in(2,3));
 
 		return jpaQuery.fetchCount();
 	}
@@ -592,11 +596,14 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 //		-- left outer join dbo.Product_SearchableItem as ps on p.ProductID = ps.ProductID
 //go
 		QProductsEntity P = QProductsEntity.productsEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
+		QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
 		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
 		QCodeWholeSalerCompanyTypeEntity CW = QCodeWholeSalerCompanyTypeEntity.codeWholeSalerCompanyTypeEntity;
 		QCategoryEntity C = QCategoryEntity.categoryEntity;
 		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
+
+		NumberExpression serverID = Expressions.asNumber(7);
 
 		return JPAExpressions.select(
 				P.productID
@@ -622,23 +629,24 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				, P.minTQYNStyle
 				, P.minTQStyle
 				, P.discountYN
-				, W.companyName
-				, W.dirName
+				, W.name.as("CompanyName")
+				, W.dirname
 				, I.urlPath.as("ImageUrlRoot")
 				, P.active
-				, W.active.as("WholeSalerActive")
-				, W.shopActive.as("WholeSalerShopActive")
+				, Expressions.cases().when(VS.statusCode.in(1,2,3)).then(true).otherwise(false).as("WholeSalerActive")
+				, Expressions.cases().when(VS.statusCode.in(2,3)).then(true).otherwise(false).as("WholeSalerShopActive")
 				, P.activatedOn
 				, P.packQtyTotal
-				, W.orderNotice
+				, VS.orderNotice
 				, CW.companyTypeID
 				, CW.companyTypeName
-				, W.imageServerID
+				, I.imageServerID.as("ImageServerID")
 		)
 				.from(P)
-				.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
-				.innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
-				.innerJoin(CW).on(CW.companyTypeID.eq(W.companyTypeID))
+				.innerJoin(W).on(P.wholeSalerID.eq(W.vendor_id.intValue()))
+				.innerJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				.innerJoin(I).on(I.imageServerID.eq(7))
+				.innerJoin(CW).on(CW.companyTypeID.eq(W.typeCode))
 				.leftJoin(C).on(P.parentParentCategoryID.eq(C.categoryId).and(C.active.eq(true)))
 				.leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)));
 	}
@@ -681,12 +689,8 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 	private JPAQuery<VendorSummary> getVendorSummaryQuery() {
 		QProductsEntity P = new QProductsEntity("P");
-		QCategoryEntity C = new QCategoryEntity("C");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
-		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
-		QProductImageEntity PRI = new QProductImageEntity("PRI");
-		QVendorCategoryEntity VC = new QVendorCategoryEntity("VC");
-		QProductVideoEntity PRV = new QProductVideoEntity("PRV");
+		QVendorEntity W = new QVendorEntity("W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 
 		NumberExpression accessStatus = Expressions.asNumber(2);
 
@@ -694,20 +698,16 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 		query.select(Projections.constructor(VendorSummary.class,
 				P.wholeSalerID,
-				W.companyName,
-				W.dirName,
+				W.name,
+				W.dirname,
 				P.productID.countDistinct(),
 				accessStatus))
 				.from(P)
-						.innerJoin(C).on(P.categoryID.eq(C.categoryId))
-						.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
-						.innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
-						.leftJoin(PRI).on(P.productID.eq(PRI.productID).and(PRI.listOrder.eq(1)))
-						.innerJoin(VC).on(P.vendorCategoryID.eq(VC.vendorCategoryID))
-						.leftJoin(PRV).on(P.productID.eq(PRV.productID).and(PRV.active.eq(true)))
-				.where(P.active.eq(true).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true)))
-				.groupBy(P.wholeSalerID, W.companyName, W.dirName)
-				.orderBy(W.companyName.asc());
+						.innerJoin(W).on(P.wholeSalerID.eq(W.vendor_id.intValue()))
+						.innerJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				.where(P.active.eq(true).and(VS.statusCode.eq(3)))
+				.groupBy(P.wholeSalerID, W.name, W.dirname)
+				.orderBy(W.name.asc());
 
 		return query;
 	}
@@ -726,9 +726,12 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 	private JPQLQuery vwProductDetail() {
 		QProductsEntity P = QProductsEntity.productsEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
+		QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
 		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
 		QProductImageEntity PRI = QProductImageEntity.productImageEntity;
+
+		NumberExpression serverID = Expressions.asNumber(7);
 
 		return JPAExpressions.select(
 				P.productID
@@ -752,28 +755,27 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				, P.minTQYNStyle
 				, P.minTQStyle
 				, P.discountYN
-				, W.companyName
-				, W.dirName
+				, W.name.as("CompanyName")
+				, W.dirname
 				, I.urlPath.as("ImageUrlRoot")
 				, P.active
-				, W.active.as("WholeSalerActive")
-				, W.shopActive.as("WholeSalerShopActive")
-				, W.orderActive.as("WholeSalerOrderActive")
+				, Expressions.cases().when(VS.statusCode.in(1,2,3)).then(true).otherwise(false).as("WholeSalerActive")
+				, Expressions.cases().when(VS.statusCode.in(2,3)).then(true).otherwise(false).as("WholeSalerShopActive")
+				, Expressions.cases().when(VS.statusCode.in(3)).then(true).otherwise(false).as("WholeSalerOrderActive")
 				, P.activatedOn
 				, P.packQtyTotal
-				, W.orderNotice
-				, W.imageServerID
+				, VS.orderNotice
+				, serverID
 		)
 				.from(P)
-				.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
-				.innerJoin(I).on(W.imageServerID.eq(I.imageServerID));
+				.innerJoin(W).on(P.wholeSalerID.eq(W.vendor_id.intValue()))
+				.innerJoin(I).on(serverID.eq(I.imageServerID))
+				.innerJoin(VS).on(W.vendor_id.eq(VS.vendorId));
 	}
 	
 	private List<?> getTodayDealDetail(Date sDate, Integer wholeSalerID, Boolean active) {
 		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
-		QProductsEntity PR = QProductsEntity.productsEntity;
 		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
 
 		JPASQLQuery<?> jpasqlQuery = new JPASQLQuery(entityManager, new MSSQLServer2012Templates());
 		JPQLQuery vwProductDetail = this.vwProductDetail();
@@ -791,7 +793,6 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 		wholeSalerID = wholeSalerID == null ? 0 : wholeSalerID;
 		BooleanExpression wholeSalerIDZero = Expressions.asNumber(wholeSalerID).eq(constantZERO);
-		BooleanExpression temp = Expressions.asBoolean(pathWholeSalerID.eq(wholeSalerID));
 
 		Timestamp sDateTimestamp = new Timestamp(sDate.getTime());
 		
@@ -941,7 +942,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 	}
 
 	private List<CategoryCount> getCategory1WholeSalerCount() {
-		QProductsEntity P = QProductsEntity.productsEntity;
+		QProductsEntity P = new QProductsEntity("P");
 		QCategoryEntity C = new QCategoryEntity("C");
 		QCategoryEntity C1 = new QCategoryEntity("C1");
 		QCategoryEntity C2 = new QCategoryEntity("C2");
@@ -963,52 +964,55 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 	}
 
 	private JPQLQuery vwWholeSalerItemCount() {
-		QProductsEntity P = QProductsEntity.productsEntity;
-		QCategoryEntity C = QCategoryEntity.categoryEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
-		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
-		QProductImageEntity PRI = QProductImageEntity.productImageEntity;
-		QVendorCategoryEntity VC = QVendorCategoryEntity.vendorCategoryEntity;
-		QProductVideoEntity PRV = QProductVideoEntity.productVideoEntity;
+		QProductsEntity P = new QProductsEntity("P");
+		QCategoryEntity C = new QCategoryEntity("C");
+		QVendorEntity W = new QVendorEntity("W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
+		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
+		QProductImageEntity PRI = new QProductImageEntity("PRI");
+		QVendorCategoryEntity VC = new QVendorCategoryEntity("VC");
+		QProductVideoEntity PRV = new QProductVideoEntity("PRV");
 
 
 		return JPAExpressions.select(
 				P.wholeSalerID,
-				W.companyName,
-				W.dirName,
+				W.name.as("CompanyName"),
+				W.dirname,
 				P.productID.count())
 				.from(P)
 				.innerJoin(C).on(P.categoryID.eq(C.categoryId))
-				.innerJoin(W).on(P.wholeSalerID.eq(W.wholeSalerId))
-				.innerJoin(I).on(W.imageServerID.eq(I.imageServerID))
+				.innerJoin(W).on(P.wholeSalerID.eq(W.vendor_id.intValue()))
+				.innerJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				.innerJoin(I).on(I.imageServerID.eq(7))
 				.leftJoin(PRI).on(P.productID.eq(PRI.productID).and(PRI.listOrder.eq(1)))
 				.innerJoin(VC).on(P.vendorCategoryID.eq(VC.vendorCategoryID))
 				.leftJoin(PRV).on(P.productID.eq(PRV.productID).and(PRV.active.eq(true)))
-				.where(P.active.eq(true).and(W.active.eq(true).and(W.shopActive.eq(true).and(W.orderActive.eq(true)))))
-				.groupBy(P.wholeSalerID, W.companyName, W.dirName);
+				.where(P.active.eq(true).and(VS.statusCode.eq(3)))
+				.groupBy(P.wholeSalerID, W.name, W.dirname);
 	}
 
 
 
 	private List<CategoryVendorInfo> getCategoryVendorInfo(String vendorName) {
-		QSimpleWholeSalerEntity tw = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
-		QFeaturedWholeSalerInfoEntity sw = QFeaturedWholeSalerInfoEntity.featuredWholeSalerInfoEntity;
+		QVendorEntity tw = QVendorEntity.vendorEntity;
+		QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
+		QFeaturedWholeSalerInfoEntity sw = new QFeaturedWholeSalerInfoEntity("sw");
 
 		NumberExpression<Integer> selectChk = Expressions.asNumber(0).as("SelectChk");
 		NumberExpression<Integer> viewChk = Expressions.asNumber(0).as("ViewChk");
 
-		BooleanExpression expression = tw.active.eq(true).and(tw.shopActive.eq(true));
+		BooleanExpression expression = VS.statusCode.in(2,3);
 
 		if(vendorName != null) {
-			expression = expression.and(tw.companyName.like('%'+vendorName+'%'));
+			expression = expression.and(tw.name.like('%'+vendorName+'%'));
 		}
 
 		JPAQuery<FeaturedWholeSalerInfoEntity> query = new JPAQuery<>(entityManager);
 		return query.select(Projections.constructor(CategoryVendorInfo.class,
-				tw.companyName,
-				tw.wholeSalerId,
-				tw.companyTypeID,
-				tw.vendorType,
+				tw.name,
+				tw.vendor_id.intValue(),
+				tw.typeCode,
+				tw.classCode,
 				selectChk,
 				viewChk,
 				sw.buyerRate,
@@ -1018,9 +1022,10 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				queryDSLSQLFunctions.isnull(Boolean.class, sw.isPG, 0),
 				queryDSLSQLFunctions.isnull(Boolean.class, sw.isCS, 0)))
 			.from(tw)
-			.leftJoin(sw).on(tw.wholeSalerId.eq(sw.wholeSalerID))
+			.leftJoin(sw).on(tw.vendor_id.intValue().eq(sw.wholeSalerID))
+			.leftJoin(VS).on(tw.vendor_id.eq(VS.vendorId))
 			.where(expression)
-			.orderBy(tw.companyName.asc()).fetch();
+			.orderBy(tw.name.asc()).fetch();
 	}
 
 	@Override
@@ -1112,7 +1117,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 		QTodayDealEntity T = QTodayDealEntity.todayDealEntity;
 		QProductsEntity P = QProductsEntity.productsEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
 		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
 
 		jpaQuery1
@@ -1121,19 +1126,19 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 								TodayDealCalendarDetail.class
 								, T.todayDealId
 								, Expressions.asDateTime(T.fromDate).dayOfMonth()
-								, W.companyName
+								, W.name
 								, T.fromDate
 								, T.active
-								, W.wholeSalerId
+								, W.vendor_id.intValue()
 								, T.createdByVendor
 								)
 				)
 				.from(T)
 				.leftJoin(T.products,P)
 				.innerJoin(P.wholeSaler,W)
-				.innerJoin(W.systemImageServersEntity,I)
+				.innerJoin(I).on(I.imageServerID.eq(7))
 				.where(
-						W.companyName.isNotNull()
+						W.name.isNotNull()
 								.and(
 										T.fromDate.between(
 											new Timestamp(dateFrom.getTime())
@@ -1148,15 +1153,15 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				.select(
 						Projections.constructor(
 								VendorSummaryDetail.class
-								, W.wholeSalerId,W.companyName
+								, W.vendor_id.intValue(),W.name
 						)
 				)
 				.from(T)
 				.leftJoin(T.products,P)
 				.innerJoin(P.wholeSaler,W)
-				.innerJoin(W.systemImageServersEntity,I)
+				.innerJoin(I).on(I.imageServerID.eq(7))
 				.where(
-						W.companyName.isNotNull()
+						W.name.isNotNull()
 								.and(
 										T.fromDate.between(
 												new Timestamp(dateFrom.getTime())
@@ -1164,8 +1169,8 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 										)
 								).and(T.active.eq(true))
 				)
-				.groupBy(W.wholeSalerId,W.companyName)
-				.orderBy(W.companyName.asc());
+				.groupBy(W.vendor_id,W.name)
+				.orderBy(W.name.asc());
 
 		List<TodayDealCalendarDetail> todayDealCalendarDetails = jpaQuery1.fetch();
 		List<VendorSummaryDetail> vendorSummaryDetails = jpaQuery2.fetch();
@@ -1197,14 +1202,15 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		JPASQLQuery<DMRequest> query = new JPASQLQuery(entityManager,server2012Templates);
 		QVendorCatalogSendRequestEntity R = new QVendorCatalogSendRequestEntity("R");
 		QVendorCatalogEntity C = new QVendorCatalogEntity("C");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QVendorEntity W = new QVendorEntity("W");
 		QSystemImageServersEntity I = new QSystemImageServersEntity("I");
 		QVendorCatalogSendQueueEntity Q = new QVendorCatalogSendQueueEntity("Q");
 
 		QVendorCatalogSendRequestEntity SUB_R = new QVendorCatalogSendRequestEntity("SUB_R");
 		QVendorCatalogProductEntity SUB_A = new QVendorCatalogProductEntity("SUB_A");
 		QProductsEntity SUB_P = new QProductsEntity("SUB_P");
-		QSimpleWholeSalerEntity SUB_W = new QSimpleWholeSalerEntity("SUB_W");
+		QVendorEntity SUB_W = new QVendorEntity("SUB_W");
+		QVendorSettingEntity VS = new QVendorSettingEntity("VS");
 		QProductImageEntity SUB_I = new QProductImageEntity("SUB_I");
 
 		Path<Object> sub_r = ExpressionUtils.path(Object.class, "SUB_R_TEMP");
@@ -1234,16 +1240,16 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				orderSpecifiers.add(R.catalogSendRequestID.asc());
 				break;
 			case "CompanyName desc":
-				orderSpecifiers.add(W.companyName.desc());
+				orderSpecifiers.add(W.name.desc());
 				break;
 			case "CompanyName asc":
-				orderSpecifiers.add(W.companyName.asc());
+				orderSpecifiers.add(W.name.asc());
 				break;
 			case "CompanyTypeCD desc":
-				orderSpecifiers.add(W.companyTypeID.desc());
+				orderSpecifiers.add(W.typeCode.desc());
 				break;
 			case "CompanyTypeCD asc":
-				orderSpecifiers.add(W.companyTypeID.asc());
+				orderSpecifiers.add(W.typeCode.asc());
 				break;
 			case "CreatedOn desc":
 				orderSpecifiers.add(R.createdOn.desc());
@@ -1270,9 +1276,10 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 								.groupBy(SUB_R.requestedCatalogID), sub_r)
 				.innerJoin(SUB_A).on(SUB_A.catalogID.eq(sub_rRequestedCatalogID))
 				.innerJoin(SUB_P).on(SUB_A.productID.eq(SUB_P.productID))
-				.innerJoin(SUB_W).on(SUB_P.wholeSalerID.eq(SUB_W.wholeSalerId))
+				.innerJoin(SUB_W).on(SUB_P.wholeSalerID.eq(SUB_W.vendor_id.intValue()))
 				.innerJoin(SUB_I).on(SUB_P.productID.eq(SUB_I.productID).and(SUB_I.listOrder.eq(1)))
-				.where(SUB_P.active.eq(true).and(SUB_W.active.eq(true)).and(SUB_W.shopActive.eq(true)).and(SUB_W.orderActive.eq(true)));
+				.innerJoin(VS).on(SUB_W.vendor_id.eq(VS.vendorId))
+				.where(SUB_P.active.eq(true).and(VS.statusCode.eq(3)));
 
 		subQuery2
 				.select(Z_CatalogID,C1.as("C1"),C2.as("C2"),C3.as("C3"),C4.as("C4"))
@@ -1292,15 +1299,15 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 						,R.createdOn
 						,R.modifiedOn
 						,R.active
-						,W.wholeSalerId
-						, Expressions.cases().when(W.companyTypeID.eq(1)).then("M")
-								.when(W.companyTypeID.eq(2)).then("W")
+						,W.vendor_id.intValue()
+						, Expressions.cases().when(W.typeCode.eq(1)).then("M")
+								.when(W.typeCode.eq(2)).then("W")
 								.otherwise("D")
-						,W.companyName
+						,W.name
 						,Q.sentOn
 						,R.requestedCatalogID
 						,I.urlPath
-						,W.dirName
+						,W.dirname
 						,CP_C1
 						,CP_C2
 						,CP_C3
@@ -1310,8 +1317,9 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				)
 				.from(R)
 				.innerJoin(C).on(R.requestedCatalogID.eq(C.catalogID))
-				.innerJoin(W).on(W.wholeSalerId.eq(C.vendorID))
-				.innerJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.innerJoin(W).on(W.vendor_id.intValue().eq(C.vendorID))
+				.innerJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+				.innerJoin(I).on(I.imageServerID.eq(7))
 				.leftJoin(Q).on(Q.catalogSendQueueID.eq(R.catalogSendQueueID))
 				.leftJoin(subQuery2,CP).on(R.requestedCatalogID.eq(cp_catalogID));
 
@@ -1319,11 +1327,11 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		BooleanExpression predicate = Expressions.asNumber(1).eq(ONE);
 
 		if(wholeSalerID != null && wholeSalerID > 0) {
-			predicate = predicate.and(W.wholeSalerId.eq(wholeSalerID));
+			predicate = predicate.and(W.vendor_id.intValue().eq(wholeSalerID));
 		}
 
 		if(companyTypeIds.size() > 0) {
-			predicate = predicate.and(W.companyTypeID.in(companyTypeIds));
+			predicate = predicate.and(W.typeCode.in(companyTypeIds));
 		}
 
 		if(dateFrom != null) {
@@ -1337,6 +1345,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		}
 
 		Timestamp now = new Timestamp(new Date().getTime());
+		LocalDateTime nowTime = LocalDateTime.now();
 		JPASQLQuery blockedVendorQuery = new JPASQLQuery(entityManager,server2012Templates);
 		blockedVendorQuery.select(QVendorBlockedEntity.vendorBlockedEntity.wholeSalerId)
 				.from(QVendorBlockedEntity.vendorBlockedEntity);
@@ -1351,41 +1360,40 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 
 		switch (vendorStatus) {
 			case 1:
-				predicate = predicate.and(W.orderActive.eq(true));
+				predicate = predicate.and(VS.statusCode.eq(3));
 				break;
 			case 2:
 				predicate = predicate.and(
-						W.shopActive.eq(true)
-								.and(W.orderActive.eq(false))
-								.and(W.wholeSalerId.notIn(blockedVendorQuery))
-								.and(W.wholeSalerId.notIn(logVendorHoldQuery))
-								.and(W.contractExpireDate.isNull().or(W.contractExpireDate.gt(now)))
+						VS.statusCode.eq(2)
+								.and(W.vendor_id.intValue().notIn(blockedVendorQuery))
+								.and(W.vendor_id.intValue().notIn(logVendorHoldQuery))
+								.and(VS.closedDate.isNull().or(VS.closedDate.gt(nowTime)))
 
 				);
 				break;
 			case 3:
-				predicate = predicate.and(W.active.eq(true).and(W.shopActive.eq(false)).and(W.orderActive.eq(false)));
+				predicate = predicate.and(VS.statusCode.eq(1));
 				break;
 			case 4:
 				predicate = predicate.and(
-						W.wholeSalerId.in(blockedVendorQuery).and(W.contractExpireDate.isNull().or(W.contractExpireDate.gt(now)))
+						W.vendor_id.intValue().in(blockedVendorQuery).and(VS.closedDate.isNull().or(VS.closedDate.gt(nowTime)))
 				);
 				break;
 			case 5:
 				predicate = predicate.and(
-						W.wholeSalerId.in(logVendorHoldQuery)
+						W.vendor_id.intValue().in(logVendorHoldQuery)
 				);
 				break;
 			case 6:
 				predicate = predicate.and(
-						W.contractExpireDate.isNotNull().and(W.contractExpireDate.lt(now))
+						VS.closedDate.isNotNull().and(VS.closedDate.lt(nowTime))
 				);
 				break;
 			case 7:
-				predicate = predicate.and(W.active.eq(false));
+				predicate = predicate.and(VS.statusCode.notIn(1,2,3));
 				break;
 			case 8:
-				predicate = predicate.and(W.actualOpen.eq("Y"));
+				predicate = predicate.and(VS.openDate.isNotNull());
 				break;
 		}
 

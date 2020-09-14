@@ -68,7 +68,9 @@ public class CartItemEntityRepositoryCustomImpl implements CartItemEntityReposit
 	public List<ShoppingBag> findAllShoppingBag(int retailerId) {
 		JPASQLQuery<ShoppingBag> jpaQuery = new JPASQLQuery<>(entityManager,new MSSQLServer2012Templates());
 		QCartItemEntity CT = QCartItemEntity.cartItemEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
+		QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
+		QVendorBannerEntity VB = QVendorBannerEntity.vendorBannerEntity;
 		QProductsEntity P = QProductsEntity.productsEntity;
 		QProductImageEntity PRDI = QProductImageEntity.productImageEntity;
 		QSystemImageServersEntity I = QSystemImageServersEntity.systemImageServersEntity;
@@ -92,11 +94,11 @@ public class CartItemEntityRepositoryCustomImpl implements CartItemEntityReposit
 							,CT.bQ11
 							,CT.cartID
 							,CT.colorName
-							,W.companyName
-							,W.dirName
+							,W.name
+							,W.dirname
 							,P.evenColorYN
-							,W.extraCharge
-							,W.extraChargeAmountTo
+							,VS.extraCharge
+							,VS.extraChargeAmountTo
 							,I.urlPath
 							,CT.noOfPack
 							,XP.packQty1
@@ -112,7 +114,7 @@ public class CartItemEntityRepositoryCustomImpl implements CartItemEntityReposit
 							,XP.packQty11
 							,XP.packQtyTotal
 							,PRDI.imageName
-							,W.pictureLogo
+							,VB.fileName//W.pictureLogo
 							,P.prePackYN
 							,CT.productID
 							,CT.productName
@@ -135,12 +137,14 @@ public class CartItemEntityRepositoryCustomImpl implements CartItemEntityReposit
 					)
 				)
 				.from(CT)
-				.innerJoin(W).on(CT.wholeSalerID.eq(W.wholeSalerId))
+				.innerJoin(W).on(CT.wholeSalerID.eq(W.vendor_id.intValue()))
+				.innerJoin(VS).on(W.vendor_id.eq(VS.vendorId))
+                .leftJoin(VB).on(W.vendor_id.eq(VB.vendorId).and(VB.bannerTypeId.intValue().eq(1)))
 				.leftJoin(P).on(CT.productID.eq(P.productID))
 				.leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
 				.leftJoin(XS).on(CT.sizeID.eq(XS.sizeID))
 				.leftJoin(XP).on(CT.packID.eq(XP.packID))
-				.leftJoin(I).on(I.imageServerID.eq(W.imageServerID))
+				.leftJoin(I).on(I.imageServerID.eq(7))
 				.where(
 						CT.retailerID.eq(retailerId).and(CT.statusID.eq(0)).and(CT.available.eq(true).and(CT.savedOn.isNull()))
 				)

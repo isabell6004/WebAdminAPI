@@ -4,7 +4,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.FraudNoticeEntity;
 import net.fashiongo.webadmin.data.entity.primary.QFraudNoticeEntity;
 import net.fashiongo.webadmin.data.entity.primary.QRetailerEntity;
-import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.QVendorEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -21,7 +21,7 @@ public class FraudNoticeEntityRepositoryCustomImpl implements FraudNoticeEntityR
 	public List<FraudNoticeEntity> findAllByRetailerIdOrderByCreatedOnDesc(Integer retailerId) {
 		QFraudNoticeEntity FN = new QFraudNoticeEntity("FN");
 		QRetailerEntity R = new QRetailerEntity("R");
-		QSimpleWholeSalerEntity W = new QSimpleWholeSalerEntity("W");
+		QVendorEntity W = new QVendorEntity("W");
 		JPAQuery<FraudNoticeEntity> jpaQuery = new JPAQuery<>(entityManager);
 
 		jpaQuery.select(FN)

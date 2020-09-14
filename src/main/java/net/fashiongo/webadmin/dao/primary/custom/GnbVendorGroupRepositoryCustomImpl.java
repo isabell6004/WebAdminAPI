@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.GnbVendorGroupEntity;
 import net.fashiongo.webadmin.data.entity.primary.QGnbVendorGroupEntity;
 import net.fashiongo.webadmin.data.entity.primary.QGnbVendorGroupMapEntity;
-import net.fashiongo.webadmin.data.entity.primary.vendor.QWholesalerCompanyEntity;
+import net.fashiongo.webadmin.data.entity.primary.QVendorEntity;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -20,7 +20,7 @@ public class GnbVendorGroupRepositoryCustomImpl implements GnbVendorGroupReposit
 
 	private QGnbVendorGroupEntity vendorGroup = QGnbVendorGroupEntity.gnbVendorGroupEntity;
 	private QGnbVendorGroupMapEntity vendorGroupMap = QGnbVendorGroupMapEntity.gnbVendorGroupMapEntity;
-	private QWholesalerCompanyEntity vendor = QWholesalerCompanyEntity.wholesalerCompanyEntity;
+	private QVendorEntity vendor = QVendorEntity.vendorEntity;
 
 	@Override
 	public List<Integer> findIdListByWholeSalerIdAndTitle(Integer wholeSalerId, String title) {

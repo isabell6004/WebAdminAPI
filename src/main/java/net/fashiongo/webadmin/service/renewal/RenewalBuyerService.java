@@ -263,13 +263,13 @@ public class RenewalBuyerService {
 		return fraudNoticeEntityList.stream()
 				.map(entity -> {
 
-					SimpleWholeSalerEntity wholeSaler = entity.getWholeSaler();
+					VendorEntity wholeSaler = entity.getWholeSaler();
 
 					return FraudNoticeResponse.builder()
 							.active(entity.isActive())
 							.commentByFG(entity.getCommentByFG())
 							.commentByWholeSaler(entity.getCommentByWholeSaler())
-							.wholeSalerCompanyName(wholeSaler != null ? wholeSaler.getCompanyName() : null)
+							.wholeSalerCompanyName(wholeSaler != null ? wholeSaler.getName() : null)
 							.fraudDetail(entity.getFraudDetail())
 							.fraudNoticeID(entity.getFraudNoticeID())
 							.createdOn(entity.getCreatedOn())

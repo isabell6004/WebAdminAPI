@@ -59,8 +59,4 @@ public class NewsEntity implements Serializable {
 
     @Column(name = "ShowBanner")
     private boolean showBanner;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "WholeSalerID", updatable = false, insertable = false)
-    private ReadOnlyWholeSalerNameEntity readOnlyWholeSalerNameEntity;
 }

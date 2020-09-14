@@ -11,8 +11,6 @@ public interface BannerRequestService {
 
     List<ListVendorImageType> getVendorImageType();
 
-    BannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters);
-
     void setDenyBanner(SetDenyBannerParameter parameters);
 
     void setApproveBanner(SetDenyBannerParameter parameters);

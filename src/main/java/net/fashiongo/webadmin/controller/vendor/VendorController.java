@@ -4,6 +4,7 @@ import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.CodeVendorIndustryEntity;
 import net.fashiongo.webadmin.data.entity.primary.SecurityUserEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
@@ -11,6 +12,7 @@ import net.fashiongo.webadmin.data.model.vendor.response.GetAssignedUserListResp
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLogListResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorAutocompleteResponse;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -18,13 +20,13 @@ import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.SetVendorFormsParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.*;
 import net.fashiongo.webadmin.model.primary.SecurityUser;
-import net.fashiongo.webadmin.model.primary.VendorAutocomplete;
 import net.fashiongo.webadmin.model.primary.VendorContent;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.UserService;
 import net.fashiongo.webadmin.service.VendorService;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
+import net.fashiongo.webadmin.service.vendor.VendorNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -49,17 +51,19 @@ public class VendorController {
     private final CacheService cacheService;
     private final UserService userService;
     private final VendorInfoService vendorInfoService;
+    private final VendorNewService vendorNewService;
 
     public VendorController(VendorService vendorService,
                             RenewalVendorService renewalVendorService,
                             CacheService cacheService,
                             UserService userService,
-                            VendorInfoService vendorInfoService) {
+                            VendorInfoService vendorInfoService, VendorNewService vendorNewService) {
         this.vendorService = vendorService;
         this.renewalVendorService = renewalVendorService;
         this.cacheService = cacheService;
         this.userService = userService;
         this.vendorInfoService = vendorInfoService;
+        this.vendorNewService = vendorNewService;
     }
 
 
@@ -69,9 +73,11 @@ public class VendorController {
     @GetMapping(value = "/getvendorcompanyname/{wid}")
     public JsonResponse<String> getVendorName(@PathVariable("wid") int wid) {
 
-        Optional<net.fashiongo.webadmin.model.primary.Vendor> vendor = vendorService.getVendorByWholeSalerIdAndActive(wid);
-        JsonResponse<String> response = vendor.map(v -> new JsonResponse<>(true, null, v.getCompanyName()))
-                .orElseGet(() -> new JsonResponse<>(false, "cannot find companyname", null));
+        VendorEntity vendor = vendorService.getVendorByWholeSalerIdAndActive(wid);
+        JsonResponse<String> response = new JsonResponse<>(true, null, vendor.getName());
+        if (vendor == null) {
+            new JsonResponse<>(false, "cannot find companyname", null);
+        }
         return response;
     }
 
@@ -228,11 +234,11 @@ public class VendorController {
     }
 
     @GetMapping(value = "/autocomplete/{prefix:.+}")
-    public JsonResponse<List<VendorAutocomplete>> getVendorsAutoomplete(@PathVariable("prefix") String prefix) {
-        JsonResponse<List<VendorAutocomplete>> response = new JsonResponse<>(false, null, null);
+    public JsonResponse<List<VendorAutocompleteResponse>> getVendorsAutoomplete(@PathVariable("prefix") String prefix) {
+        JsonResponse<List<VendorAutocompleteResponse>> response = new JsonResponse<>(false, null, null);
 
         try {
-            List<VendorAutocomplete> vendors = vendorService.getVendorsAutoomplete(prefix);
+            List<VendorAutocompleteResponse> vendors = vendorNewService.getShopActiveVendors(prefix);
             response.setSuccess(true);
             response.setData(vendors);
         } catch (Exception ex) {

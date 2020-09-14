@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import lombok.Builder;
 import lombok.Data;
-import net.fashiongo.webadmin.model.primary.Vendor;
 
 /**
  * @author Kenny/Kyungwoo
@@ -29,7 +28,7 @@ public class EditorsPick {
 	private String statusDescription;
 	
 	private Integer vendorId;
-	private Vendor vendor;
+	private EditorsPickVendor vendor;
 	
 	private Integer bannerOrMediaId;
 	private Integer bannerOrMediaTypeId; //1=Banner, 2=Media

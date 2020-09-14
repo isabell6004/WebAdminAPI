@@ -177,20 +177,6 @@ public class RenewalStaticService {
 	}
 
 	/**
-	 *
-	 * @deprecated using {@link RenewalStaticService#selectBestItems selectBestItems}
-	 *
-	 */
-	@Deprecated
-	public GetBestItemsResponse getBestItems(Integer pageNo, Integer pageSize, LocalDateTime fromDate, LocalDateTime toDate,
-											 Integer statisticsType, Integer lastCategoryID, Integer wholeSalerId, String sortBy) {
-
-		List<BestItems> bestItems = statisticsWaBestItemPerDayEntityRepository.getBestItems(pageNo, pageSize, fromDate, toDate, statisticsType, lastCategoryID, wholeSalerId, sortBy);
-
-		return GetBestItemsResponse.builder().bestItems(bestItems).build();
-	}
-
-	/**
 	 * 기존 BestItem 쿼리에서 Product 관련 부분을 api로 대체함.
 	 * @param pageNo page no
 	 * @param pageSize page size

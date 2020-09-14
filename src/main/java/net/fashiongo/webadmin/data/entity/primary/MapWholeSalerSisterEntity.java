@@ -31,8 +31,9 @@ public class MapWholeSalerSisterEntity {
     private String createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SisterWholeSalerID", referencedColumnName = "WholeSalerID", updatable = false, insertable = false)
-    private WholeSalerEntity wholeSaler;
+    @JoinColumn(name = "SisterWholeSalerID", referencedColumnName = "vendor_id", updatable = false, insertable = false)
+    private VendorEntity wholeSaler;
+//    private WholeSalerEntity wholeSaler;
 
     public static MapWholeSalerSisterEntity create(Integer vendorId, Integer sisterVendorId, String username) {
         return builder()

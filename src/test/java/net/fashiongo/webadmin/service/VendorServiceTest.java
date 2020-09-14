@@ -9,12 +9,9 @@ import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.*;
-import net.fashiongo.webadmin.model.pojo.vendor.ProductColor;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.DelVendorFormParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
-import net.fashiongo.webadmin.model.pojo.vendor.response.GetVendorDetailInfoDataResponse;
 import net.fashiongo.webadmin.model.primary.*;
-import net.fashiongo.webadmin.model.primary.Vendor;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.BannerRequestService;
 import org.junit.Ignore;
@@ -48,26 +45,6 @@ public class VendorServiceTest {
 
 	@Autowired
 	private RenewalVendorService renewalVendorService;
-
-	/**
-	 * 
-	 * Test GetVendorList
-	 * 
-	 * @since 2018. 11. 5.
-	 * @author roy
-	 */
-	@Test
-	public void testGetVendorList() {
-		List<Vendor> vendorList = vendorService.getVendorList();
-		
-		assertTrue(vendorList.size() > 0);
-		
-		Vendor vendorCompany = vendorList.get(0);
-		
-		assertNotNull(vendorCompany);
-		assertTrue(vendorCompany.getWholeSalerId() > 0);
-		assertTrue(vendorCompany.getCompanyName().length() > 0);
-	}
 	
 	/**
 	 * 
@@ -147,30 +124,6 @@ public class VendorServiceTest {
 		List<ListVendorImageType> result = bannerRequestService.getVendorImageType();
 		if(!CollectionUtils.isEmpty(result)) {
 			assertNotNull(result.get(0));
-		}
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 26.
-	 * @author Reo
-	 */
-	@Test
-	//@WithCustomMockUser
-	public void testGetBannerRequest() {
-		GetBannerRequestParameter parameters = new GetBannerRequestParameter();
-		parameters.setPageNum(1);
-		parameters.setPageSize(15);
-		parameters.setFromDate(null);
-		parameters.setToDate(null);
-		parameters.setSearchStatus("Pending");
-		parameters.setSearchType(null);
-		parameters.setOrderby(null);
-		BannerRequestResponse response = bannerRequestService.getBannerRequest(parameters);
-		if(!CollectionUtils.isEmpty(response.getBannerImageList())) {
-			assertNotNull(response.getBannerImageList());
-			assertEquals(response.getTotal(), Long.valueOf(8));
 		}
 	}
 	

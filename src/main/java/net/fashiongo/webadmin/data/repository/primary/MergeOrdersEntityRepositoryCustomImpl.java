@@ -3,7 +3,7 @@ package net.fashiongo.webadmin.data.repository.primary;
 import com.querydsl.jpa.impl.JPAQuery;
 import net.fashiongo.webadmin.data.entity.primary.MergeOrdersEntity;
 import net.fashiongo.webadmin.data.entity.primary.QMergeOrdersEntity;
-import net.fashiongo.webadmin.data.entity.primary.QSimpleWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.QVendorEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,13 +18,13 @@ public class MergeOrdersEntityRepositoryCustomImpl implements MergeOrdersEntityR
 	public Optional<String> getMergeOrderWholesalerGuid(int orderId) {
 		JPAQuery<MergeOrdersEntity> jpaQuery = new JPAQuery<>(entityManager);
 		QMergeOrdersEntity MO = QMergeOrdersEntity.mergeOrdersEntity;
-		QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
 
 		jpaQuery.select(MO)
 				.from(MO)
 				.innerJoin(MO.wholeSaler,W).fetchJoin()
 				.where(MO.mergeID.eq(orderId));
 
-		return Optional.ofNullable(jpaQuery.fetchOne()).map(mergeOrdersEntity -> mergeOrdersEntity.getWholeSaler().getWholeSalerGUID());
+		return Optional.ofNullable(jpaQuery.fetchOne()).map(mergeOrdersEntity -> mergeOrdersEntity.getWholeSaler().getGuid());
 	}
 }

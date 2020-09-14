@@ -20,7 +20,6 @@ import com.querydsl.sql.SQLExpressions;
 
 import net.fashiongo.webadmin.data.entity.primary.QSEOEntity;
 import net.fashiongo.webadmin.data.entity.primary.SEOEntity;
-import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
 import net.fashiongo.webadmin.data.model.kmm.KmmListDetail;
 import net.fashiongo.webadmin.data.model.sitemgmt.SEO;
 import net.fashiongo.webadmin.utility.MSSQLServer2012Templates;

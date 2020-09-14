@@ -60,7 +60,7 @@ public class ShowPromotionVendorResponse {
 		return ShowPromotionVendorResponse.builder()
 				.mapId(row.getMapId())
 				.planId(row.getPlanId())
-				.wholesalerId(row.getWholesalerId())
+				.wholesalerId(row.getWholesalerId().intValue())
 				.commissionRate(row.getCommissionRate().doubleValue())
 				.rackCount(row.getRackCount())
 				.fee(row.getFee())

@@ -6,7 +6,6 @@ package net.fashiongo.webadmin.model.photostudio;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import net.fashiongo.webadmin.model.primary.Vendor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -148,7 +147,7 @@ public class DetailPhotoOrder {
         return pickupDate != null ? pickupDate.format(DateTimeFormatter.ofPattern(DATE_PATTERN_YYYYMMDD)) : null;
     }
 
-    public static DetailPhotoOrder build(PhotoOrder photoOrder, Vendor vendor) {
+    public static DetailPhotoOrder build(PhotoOrder photoOrder, PhotoVendorInfo vendor) {
 
         return builder().orderID(photoOrder.getOrderID())
                 .checkOutDate(photoOrder.get_checkOutDate())

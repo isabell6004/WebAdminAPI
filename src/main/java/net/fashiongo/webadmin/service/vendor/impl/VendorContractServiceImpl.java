@@ -1,11 +1,11 @@
 package net.fashiongo.webadmin.service.vendor.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import net.fashiongo.webadmin.data.entity.primary.WholeSalerEntity;
+import net.fashiongo.webadmin.dao.primary.VendorEntityRepository;
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 import net.fashiongo.webadmin.data.model.vendor.DelVendorContractParameter;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorContractResponse;
-import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.exception.vendor.NotFoundVendorException;
 import net.fashiongo.webadmin.model.vendor.ClassType;
 import net.fashiongo.webadmin.service.CacheService;
@@ -15,12 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 
 @Service
 @Slf4j
@@ -28,38 +22,41 @@ public class VendorContractServiceImpl implements VendorContractService {
 
     private VendorContractNewService vendorContractNewService;
 
-    private VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
+//    private VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository;
+
+    private VendorEntityRepository vendorEntityRepository;
 
     private CacheService cacheService;
 
     public VendorContractServiceImpl(
             VendorContractNewService vendorContractNewService,
-            VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
-            CacheService cacheService) {
+//            VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
+            VendorEntityRepository vendorEntityRepository, CacheService cacheService) {
         this.vendorContractNewService = vendorContractNewService;
-        this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
+        this.vendorEntityRepository = vendorEntityRepository;
+//        this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.cacheService = cacheService;
     }
 
     @Transactional(value = "primaryTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public void setVendorContract(SetVendorContractParameter request) {
-        WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
-        updateVendorType(request.getContractTypeID(), request.getVendorContractFrom(), null, vendorInfo);
+        VendorEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
+        updateVendorType(request, vendorInfo);
 
         vendorContractNewService.setVendorContract(request);
 
-        cacheService.cacheEvictVendor(vendorInfo.getWholeSalerID());
+        cacheService.cacheEvictVendor(vendorInfo.getVendor_id().intValue());
      }
 
-    private WholeSalerEntity checkAndGetVendor(Integer vendorId) {
+    private VendorEntity checkAndGetVendor(Integer vendorId) {
         if(vendorId == null || vendorId == 0)
             throw new NotFoundVendorException("can not find a vendor info. The id is " + vendorId);
 
-        WholeSalerEntity vendorInfo = vendorWholeSalerEntityRepository.findOneByID(vendorId);
-        if(vendorInfo == null) {
+        VendorEntity vendor = vendorEntityRepository.findByVendorId(vendorId.longValue());
+        if(vendor == null) {
             throw new NotFoundVendorException("can not find a vendor info. The id is " + vendorId);
         }
-        return vendorInfo;
+        return vendor;
     }
 
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_COMMITTED)
@@ -68,33 +65,19 @@ public class VendorContractServiceImpl implements VendorContractService {
         vendorContractNewService.deleteContract(request.getWholeSalerID(), request.getVendorContractID().longValue());
         VendorContractResponse vendorContract = vendorContractNewService.inquiryVendorContract(request.getWholeSalerID());
 
-        if (vendorContract != null) {
-            WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
-            updateVendorType(vendorContract.getTypeCode(), vendorContract.getDateFrom(), vendorContract.getDateTo(), vendorInfo);
+        if (vendorContract != null)
+        {
+            VendorEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
+            ClassType vendorClassType = (vendorContract.getTypeCode() != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
+            vendorInfo.setClassCode(vendorClassType.getValue());
+            vendorEntityRepository.save(vendorInfo);
         }
     }
 
-    private void updateVendorType(Integer contractTypeId, String strDateFrom, LocalDateTime dateTo, WholeSalerEntity wholeSaler) {
-        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                .appendPattern("MM/d/yyyy")
-                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                .toFormatter();
-        LocalDateTime dateFrom = !ObjectUtils.isEmpty(strDateFrom) ? LocalDateTime.parse(strDateFrom, formatter) : null;
-
-        updateVendorType(contractTypeId, dateFrom, dateTo, wholeSaler);
-    }
-
-    private void updateVendorType(Integer contractTypeId, LocalDateTime dateFrom, LocalDateTime dateTo, WholeSalerEntity wholeSaler) {
-        if (ObjectUtils.isEmpty(dateFrom) || dateFrom.isAfter(LocalDateTime.now()) || (!ObjectUtils.isEmpty(dateTo) && dateTo.isBefore(LocalDateTime.now()))) {
-            return;
-        }
-
+    private void updateVendorType(SetVendorContractParameter request, VendorEntity wholeSaler) {
         // contractTypeId == 5 ? premium vendor
-        ClassType vendorClassType = (contractTypeId != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
-        if (!wholeSaler.getVendorType().equals(vendorClassType.getValue())) {
-            wholeSaler.setVendorType(vendorClassType.getValue());
-            vendorWholeSalerEntityRepository.save(wholeSaler);
-        }
+        ClassType vendorClassType = (request.getContractTypeID() != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
+        wholeSaler.setClassCode(vendorClassType.getValue());
+        vendorEntityRepository.save(wholeSaler);
     }
 }

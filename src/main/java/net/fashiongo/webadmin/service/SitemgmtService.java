@@ -20,7 +20,6 @@ import net.fashiongo.webadmin.model.pojo.sitemgmt.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.parameter.*;
 import net.fashiongo.webadmin.model.pojo.sitemgmt.response.*;
 import net.fashiongo.webadmin.model.primary.*;
-import net.fashiongo.webadmin.utility.HtmlUtility;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -1097,7 +1095,7 @@ public class SitemgmtService extends ApiService {
 				.modifiedBy(epvc.getModifiedBy())
 				.status(epvc.getStatus())
 				.statusDescription(epvc.getStatusDescription())
-				.vendor(epvc.getVendor())
+				.vendor(EditorsPickVendor.create(epvc.getVendor()))
 				.bannerOrMedia(parseBannerOrMedia(epvc.getVendorImageRequest(), epvc.getVendorContent()))
 				.build();
 	}

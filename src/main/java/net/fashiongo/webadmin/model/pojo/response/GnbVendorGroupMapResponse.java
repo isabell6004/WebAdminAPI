@@ -14,7 +14,7 @@ public class GnbVendorGroupMapResponse {
 	public static GnbVendorGroupMapResponse of(GnbVendorGroupMapEntity gnbVendorGroupMapEntity) {
 		return GnbVendorGroupMapResponse.builder()
 				.wholeSalerId(gnbVendorGroupMapEntity.getId().getVendorId())
-				.companyName(gnbVendorGroupMapEntity.getVendor().getCompanyName())
+				.companyName(gnbVendorGroupMapEntity.getVendor().getName())
 				.build();
 	}
 }

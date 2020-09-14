@@ -40,7 +40,7 @@ public class WholeSalerRatingEntityRepositoryCustomImpl implements WholeSalerRat
         JPASQLQuery<VendorRating> jpasqlQuery = new JPASQLQuery<>(entityManager, mssqlServer2012Templates);
         JPASQLQuery subQuery = new JPASQLQuery(entityManager, mssqlServer2012Templates);
         QWholeSalerRatingEntity RR = QWholeSalerRatingEntity.wholeSalerRatingEntity;
-        QSimpleWholeSalerEntity W = QSimpleWholeSalerEntity.simpleWholeSalerEntity;
+        QVendorEntity W = QVendorEntity.vendorEntity;
         QOrdersEntity ORDER = QOrdersEntity.ordersEntity;
         QRetailerEntity R = QRetailerEntity.retailerEntity;
         QRatingCommentEntity RC = QRatingCommentEntity.ratingCommentEntity;
@@ -118,14 +118,14 @@ public class WholeSalerRatingEntityRepositoryCustomImpl implements WholeSalerRat
                 , RR.active.as("Active")
                 , RR.createdOn.as("CreatedOn")
                 , RR.score.as("Score")
-                , W.companyName.as("WholeSalerCompanyName")
+                , W.name.as("WholeSalerCompanyName")
                 , R.companyName.as("RetailerCompanyName")
                 , R.firstName.concat(" ").concat(R.lastName).as("RetailerFullName")
                 , ORDER.poNumber.as("PONumber")
                 , RC.comment.as("Response")
         )
                 .from(RR)
-                .leftJoin(W).on(RR.wholeSalerID.eq(W.wholeSalerId))
+                .leftJoin(W).on(RR.wholeSalerID.eq(W.vendor_id.intValue()))
                 .leftJoin(ORDER).on(RR.orderID.eq(ORDER.orderID))
                 .leftJoin(R).on(RR.retailerID.eq(R.retailerID))
                 .leftJoin(RC).on(RR.wholeSalerID.eq(RC.referenceID).and(RC.isVendorRating.eq(true)));

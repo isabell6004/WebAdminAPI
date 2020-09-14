@@ -59,34 +59,6 @@ public class BannerRequestServiceImpl implements BannerRequestService {
         return listVendorImageTypeRepository.findAllByOrderByVendorImageTypeID();
     }
 
-    @Deprecated
-    @Override
-    @Transactional(value = "primaryTransactionManager", readOnly = true, isolation = Isolation.READ_UNCOMMITTED)
-    public BannerRequestResponse getBannerRequest(GetBannerRequestParameter parameters) {
-        VendorImageRequestSelectParameter parameter = VendorImageRequestSelectParameter.builder()
-                .pageNumber(parameters.getPageNum())
-                .pageSize(parameters.getPageSize())
-                .wholesalerId(null)
-                .wholesalerName(parameters.getSearchKeyword())
-                .vendorImageTypeId(parameters.getSearchType())
-                .approvalType(VendorImageRequestApprovalType.getType(parameters.getSearchStatus()))
-                .active(null)
-                .searchFrom(parameters.getFromDate() != null ? LocalDateTime.parse(parameters.getFromDate(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")) : null)
-                .searchTo(parameters.getToDate() != null ? LocalDateTime.parse(parameters.getToDate(), DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")) : null)
-                .orderingType(VendorImageRequestOrderingType.getType(parameters.getOrderby()))
-                .showDeleted(null)
-                .build();
-
-        Page<VendorImageRequestEntity> result = vendorImageRequestEntityRepository.getVendorImageRequests(parameter);
-
-//        return BannerRequestResponse.builder()
-//                .bannerImageList(result.getContent().stream().map(VendorImageRequestResponse::convert).collect(Collectors.toList()))
-//                .total(Collections.singletonList(BannerRequestCount.builder().count(result.getTotalElements()).build()))
-//                .build();
-
-        return null;
-    }
-
     /**
      *
      * Description Example

@@ -93,8 +93,8 @@ public class AdVendorEntity {
 	private Set<CollectionCategoryEntity> collectionCategoryEntities;
 
 	@OneToOne
-	@JoinColumn(name = "WholeSalerID",insertable = false,updatable = false)
-	private SimpleWholeSalerEntity wholeSaler;
+	@JoinColumn(name = "WholeSalerID",referencedColumnName = "vendor_id", insertable = false,updatable = false)
+	private VendorEntity wholesaler;
 
 	@OneToOne
 	@JoinColumn(name = "SpotID", insertable = false, updatable = false)

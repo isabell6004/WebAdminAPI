@@ -54,8 +54,8 @@ public class FraudNoticeEntity {
 	private Integer originalStatus;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "WholeSalerID", referencedColumnName = "WholeSalerID", insertable = false, updatable = false)
-	private SimpleWholeSalerEntity wholeSaler;
+	@JoinColumn(name = "WholeSalerID",referencedColumnName = "vendor_id", insertable = false,updatable = false)
+	private VendorEntity wholeSaler;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "RetailerID", referencedColumnName = "RetailerID", insertable = false, updatable = false)

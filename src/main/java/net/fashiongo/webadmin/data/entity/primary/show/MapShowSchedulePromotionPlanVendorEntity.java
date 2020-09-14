@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.data.entity.primary.show;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -58,6 +59,6 @@ public class MapShowSchedulePromotionPlanVendorEntity {
 	private Boolean isRegularCommission;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "WholeSalerID", referencedColumnName = "WholeSalerID", updatable = false, insertable = false)
-	private WholesalerWithPromotionEntity wholesaler;
+	@JoinColumn(name = "WholeSalerID", referencedColumnName = "vendor_id", updatable = false, insertable = false)
+	private VendorEntity wholesaler;
 }

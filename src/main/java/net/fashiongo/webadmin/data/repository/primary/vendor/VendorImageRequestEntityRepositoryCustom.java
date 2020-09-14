@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface VendorImageRequestEntityRepositoryCustom {
-	Page<VendorImageRequestEntity> getVendorImageRequests(VendorImageRequestSelectParameter parameter);
-
 	List<VendorImage> findByWholeSalerID(Integer wid);
 
 	VendorImageRequestEntity findOneByWholeSalerIDAndVendorImageTypeID(Integer wid, Integer type);

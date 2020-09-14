@@ -55,7 +55,7 @@ public class VendorImageRequestResponse {
 	public static VendorImageRequestResponse convert(VendorImageRequestEntity entity) {
 		String companyName = null;
 		if (entity.getWholesaler() != null) {
-			companyName = entity.getWholesaler().getCompanyName();
+			companyName = entity.getWholesaler().getName();
 		}
 		return VendorImageRequestResponse.builder()
 				.imageRequestId(entity.getImageRequestId())

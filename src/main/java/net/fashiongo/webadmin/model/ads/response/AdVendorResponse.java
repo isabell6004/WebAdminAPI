@@ -1,7 +1,7 @@
 package net.fashiongo.webadmin.model.ads.response;
 
 import lombok.Getter;
-import net.fashiongo.webadmin.data.entity.primary.SimpleWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 
 @Getter
 public class AdVendorResponse {
@@ -10,12 +10,12 @@ public class AdVendorResponse {
 
     private String vendorName;
 
-    public static AdVendorResponse from(SimpleWholeSalerEntity wholeSalerEntity) {
+    public static AdVendorResponse from(VendorEntity wholeSalerEntity) {
 
         AdVendorResponse response = new AdVendorResponse();
 
-        response.vendorId = wholeSalerEntity.getWholeSalerId();
-        response.vendorName = wholeSalerEntity.getCompanyName();
+        response.vendorId = wholeSalerEntity.getVendor_id().intValue();
+        response.vendorName = wholeSalerEntity.getName();
 
         return response;
     }

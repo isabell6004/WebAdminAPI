@@ -47,6 +47,6 @@ public class CollectionCategoryItemEntity {
 	private ProductsEntity products;
 
 	@OneToOne
-	@JoinColumn(name = "WholeSalerID",insertable = false,updatable = false)
-	private SimpleWholeSalerEntity wholeSaler;
+	@JoinColumn(name = "WholeSalerID",referencedColumnName = "vendor_id", insertable = false,updatable = false)
+	private VendorEntity wholeSaler;
 }

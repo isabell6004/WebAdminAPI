@@ -10,7 +10,7 @@ import com.querydsl.sql.SQLTemplates;
 import net.fashiongo.webadmin.data.entity.primary.QLogLoginEntity;
 import net.fashiongo.webadmin.data.entity.primary.QRetailerEntity;
 import net.fashiongo.webadmin.data.entity.primary.QVendorAdminLoginLogEntity;
-import net.fashiongo.webadmin.data.entity.primary.QWholeSalerEntity;
+import net.fashiongo.webadmin.data.entity.primary.QVendorEntity;
 import net.fashiongo.webadmin.data.model.admin.ColumnCount;
 import net.fashiongo.webadmin.data.model.admin.UserLogin;
 import net.fashiongo.webadmin.data.model.admin.response.GetUserLoginTrackingResponse;
@@ -157,12 +157,12 @@ public class GetUserLoginTrackingProcedure {
 	public JPASQLQuery vendorAdminLogLoginCountQuery(SQLTemplates sqlTemplates,String companyName,String ipAddress,String userName,String userType,LocalDateTime sDate,LocalDateTime eDate) {
 		JPASQLQuery vendorAdminLogLoginCountQuery = new JPASQLQuery(entityManager,sqlTemplates);
 		QVendorAdminLoginLogEntity LOG = QVendorAdminLoginLogEntity.vendorAdminLoginLogEntity;
-		QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
 		StringExpression userTypeExpression = Expressions.asString(userType);
 
 		vendorAdminLogLoginCountQuery.select(LOG.vendorAdminLoginID.count().as("cnt"))
 				.from(LOG)
-				.innerJoin(W).on(LOG.wholeSalerID.eq(W.wholeSalerID).and(W.companyName.contains(companyName)))
+				.innerJoin(W).on(LOG.wholeSalerID.eq(W.vendor_id.intValue()).and(W.name.contains(companyName)))
 				.where(
 						LOG.loginedOn.between(sDate,eDate)
 								.and(LOG.ipAddress.contains(ipAddress))
@@ -199,13 +199,13 @@ public class GetUserLoginTrackingProcedure {
 	public JPASQLQuery vendorAdminLogLoginQuery(SQLTemplates sqlTemplates,String companyName,String ipAddress,String userName,String userType,LocalDateTime sDate,LocalDateTime eDate) {
 		JPASQLQuery vendorAdminLogLoginQuery = new JPASQLQuery(entityManager,sqlTemplates);
 		QVendorAdminLoginLogEntity LOG = QVendorAdminLoginLogEntity.vendorAdminLoginLogEntity;
-		QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+		QVendorEntity W = QVendorEntity.vendorEntity;
 		StringExpression userTypeExpression = Expressions.asString(userType);
 		StringExpression vaExpression = Expressions.asString("VA");
 
-		vendorAdminLogLoginQuery.select(LOG.vendorAdminLoginID.as("LoginID"),vaExpression.as("UserType"),LOG.wholeSalerID.as("UserID"),LOG.userName,LOG.ipAddress,LOG.loginedOn.as("LoginedOn"),W.companyName,W.firstName.concat(" ").concat(W.lastName).as("FullName"))
+		vendorAdminLogLoginQuery.select(LOG.vendorAdminLoginID.as("LoginID"),vaExpression.as("UserType"),LOG.wholeSalerID.as("UserID"),LOG.userName,LOG.ipAddress,LOG.loginedOn.as("LoginedOn"),W.name,W.firstName.concat(" ").concat(W.lastName).as("FullName"))
 				.from(LOG)
-				.innerJoin(W).on(LOG.wholeSalerID.eq(W.wholeSalerID).and(W.companyName.contains(companyName)))
+				.innerJoin(W).on(LOG.wholeSalerID.eq(W.vendor_id.intValue()).and(W.name.contains(companyName)))
 				.where(
 						LOG.loginedOn.between(sDate,eDate)
 								.and(LOG.ipAddress.contains(ipAddress))
