@@ -18,6 +18,8 @@ public class GnbVendorGroupDetailResponse {
 
 	private String targetUrl;
 
+	private int vendorGroupType;
+
 	@JsonProperty("isAlphabeticalOrder")
 	private boolean isAlphabeticalOrder;
 
@@ -28,6 +30,7 @@ public class GnbVendorGroupDetailResponse {
 				.gnbVendorGroupId(gnbVendorGroupEntity.getVendorGroupId())
 				.title(gnbVendorGroupEntity.getVendorGroupTitle())
 				.targetUrl(gnbVendorGroupEntity.getTargetUrl())
+				.vendorGroupType(gnbVendorGroupEntity.getVendorGroupType())
 				.isAlphabeticalOrder(gnbVendorGroupEntity.isAlphabeticalOrder())
 				.vendorGroupMapList(Optional.ofNullable(gnbVendorGroupEntity.getVendorGroupMaps())
 						.map(entity -> entity.stream()

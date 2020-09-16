@@ -41,6 +41,9 @@ public class GnbVendorGroupEntity {
 	@Column(name = "modified_by")
 	private String modifiedBy;
 
+	@Column(name = "vendor_group_type")
+	private Integer vendorGroupType;
+
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vendor_group_id", referencedColumnName = "vendor_group_id", insertable = false, updatable = false)
 	private List<GnbVendorGroupMapEntity> vendorGroupMaps;

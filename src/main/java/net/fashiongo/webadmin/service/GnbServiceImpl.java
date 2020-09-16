@@ -101,6 +101,7 @@ public class GnbServiceImpl implements GnbService {
 		GnbVendorGroupEntity gnbVendorGroupEntity = new GnbVendorGroupEntity();
 		gnbVendorGroupEntity.setVendorGroupTitle(request.getTitle());
 		gnbVendorGroupEntity.setTargetUrl(request.getTargetUrl());
+		gnbVendorGroupEntity.setVendorGroupType(request.getVendorGroupType());
 		gnbVendorGroupEntity.setAlphabeticalOrder(request.isAlphabeticalOrder());
 		gnbVendorGroupEntity.setCreatedBy(username);
 		gnbVendorGroupEntity.setCreatedOn(now);
@@ -183,6 +184,7 @@ public class GnbServiceImpl implements GnbService {
 
 		gnbVendorGroupEntity.setVendorGroupTitle(request.getTitle());
 		gnbVendorGroupEntity.setTargetUrl(request.getTargetUrl());
+		gnbVendorGroupEntity.setVendorGroupType(request.getVendorGroupType());
 		gnbVendorGroupEntity.setAlphabeticalOrder(request.isAlphabeticalOrder());
 
 		return gnbVendorGroupEntity;
