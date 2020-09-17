@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.NewsEntityRepository;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.fashiongo.webadmin.dao.primary.ConsolidationDropoffRepository;
@@ -570,6 +570,15 @@ public class ConsolidationService extends ApiService {
 				.map(s -> finalUrl.concat("?requestor=").concat(s))
 				.orElse(url);
 		return (JsonResponse<?>) httpClient.get(url);
+	}
+
+	public JsonResponse<?> getV2ConsolidationDetails(JSONObject jsonObject) {
+		String url = "/v2/pdf/consolidation/details";
+		String finalUrl = url;
+		url = Optional.ofNullable(Utility.getUsername())
+				.map(s -> finalUrl.concat("?requestor=").concat(s))
+				.orElse(url);
+			return (JsonResponse<?>) httpClient.post(url, jsonObject.toString());
 	}
 
 	public DropOffConsolidationOrderDto getConsolidationReceipt(Integer orderId) throws Exception {
