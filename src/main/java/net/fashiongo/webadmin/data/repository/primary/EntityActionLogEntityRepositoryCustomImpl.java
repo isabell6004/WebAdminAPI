@@ -113,7 +113,7 @@ public class EntityActionLogEntityRepositoryCustomImpl implements EntityActionLo
                 .leftJoin(bQuery,PATH_B).on(PATH_A_EntityID.eq(PATH_B_EntityID))
                 .innerJoin(R).on(
                         PATH_A_EntityID.eq(R.retailerID).and(R.currentStatus.eq(3)).and(
-                                        R.sellerPermitFileName.isNotNull().or(R.invoiceFileName1.isNotNull()).or(R.invoiceFileName2.isNotNull())
+                                        R.sellerPermitFileName.isNotNull().or(R.invoiceFileName1.isNotNull()).or(R.invoiceFileName2.isNotNull().or(R.additionalDocumentFileName.isNotNull()))
                         )
                 ).where(
                     PATH_A_ActedOn.goe(
@@ -171,7 +171,7 @@ public class EntityActionLogEntityRepositoryCustomImpl implements EntityActionLo
                 .leftJoin(bQuery,PATH_B).on(PATH_A_EntityID.eq(PATH_B_EntityID))
                 .innerJoin(R).on(
                         PATH_A_EntityID.eq(R.retailerID).and(R.currentStatus.eq(3)).and(
-                                        R.sellerPermitFileName.isNotNull().or(R.invoiceFileName1.isNotNull()).or(R.invoiceFileName2.isNotNull())
+                                        R.sellerPermitFileName.isNotNull().or(R.invoiceFileName1.isNotNull()).or(R.invoiceFileName2.isNotNull().or(R.additionalDocumentFileName.isNotNull()))
                         )
                 ).where(
                     PATH_A_ActedOn.goe(
