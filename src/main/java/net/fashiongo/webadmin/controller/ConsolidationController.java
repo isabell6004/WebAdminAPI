@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller;
 import java.util.List;
 
 import net.fashiongo.webadmin.model.pojo.consolidation.parameter.*;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -209,6 +210,17 @@ public class ConsolidationController {
 			return consolidationService.getV2ConsolidationDetail(consolidationId);
 		} catch (Exception e) {
 			log.error("ConsolidationController.getConsolidationDetail() consolidationId={}", consolidationId, e);
+			return new JsonResponse<>(false, e.getMessage(), null);
+		}
+	}
+
+	@PostMapping(value = "/v2/consolidation/details")
+	public JsonResponse getV2ConsolidationDetails(@RequestBody JSONObject jsonObject) {
+		try {
+			List<Integer> consolidationIds = (List<Integer>) jsonObject.get("consolidationIds");
+			return consolidationService.getV2ConsolidationDetails(jsonObject);
+		} catch (Exception e) {
+			log.error("ConsolidationController.getV2ConsolidationDetails() consolidationIds={}",jsonObject, e);
 			return new JsonResponse<>(false, e.getMessage(), null);
 		}
 	}
