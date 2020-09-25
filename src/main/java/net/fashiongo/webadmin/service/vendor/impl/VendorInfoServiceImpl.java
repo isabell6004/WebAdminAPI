@@ -2,6 +2,7 @@ package net.fashiongo.webadmin.service.vendor.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import net.fashiongo.webadmin.dao.primary.AspnetMembershipRepository;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
@@ -9,6 +10,7 @@ import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
+import net.fashiongo.webadmin.model.primary.AspnetMembership;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.billing.BillingAccountService;
 import net.fashiongo.webadmin.service.vendor.*;
@@ -69,6 +71,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private VendorSeoNewService vendorSeoNewService;
 
+    private AspnetMembershipRepository aspnetMembershipRepository;
+
     private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
 
     public VendorInfoServiceImpl(VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
@@ -87,7 +91,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  BillingAccountService billingAccountService,
                                  CacheService cacheService,
                                  ConfigurableEnvironment env, VendorContractNewService vendorContractNewService,
-                                 VendorSeoNewService vendorSeoNewService) {
+                                 VendorSeoNewService vendorSeoNewService,
+                                 AspnetMembershipRepository aspnetMembershipRepository) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
@@ -106,6 +111,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.env = env;
         this.vendorContractNewService = vendorContractNewService;
         this.vendorSeoNewService = vendorSeoNewService;
+        this.aspnetMembershipRepository = aspnetMembershipRepository;
     }
 
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -260,6 +266,17 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                 vendorSeoNewService.modifyVendorSeo((long)requestVendorDetailInfo.getWholeSalerID(), setVendorSeoParameter);
             }
         }
+
+        // Membership email update
+        Optional<AspnetMembership> aspnetMembershipOptional = aspnetMembershipRepository.findById(requestVendorDetailInfo.getWholeSalerGUID());
+        aspnetMembershipOptional.ifPresent(aspnetMembership -> {
+            if (!Objects.equals(requestVendorDetailInfo.getEmail(), aspnetMembership.getEmail())){
+                aspnetMembership.setEmail(requestVendorDetailInfo.getEmail());
+                aspnetMembership.setLoweredEmail(requestVendorDetailInfo.getEmail().toLowerCase());
+                aspnetMembershipRepository.save(aspnetMembership);
+            }
+        });
+
         return 1;
     }
 
