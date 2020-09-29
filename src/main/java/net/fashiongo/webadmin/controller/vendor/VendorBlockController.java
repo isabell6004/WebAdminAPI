@@ -2,12 +2,16 @@ package net.fashiongo.webadmin.controller.vendor;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorBlockListParameter;
 import net.fashiongo.webadmin.model.primary.EntityActionLog;
+import net.fashiongo.webadmin.model.primary.VendorBlocked;
 import net.fashiongo.webadmin.model.primary.VwVendorBlocked;
 import net.fashiongo.webadmin.service.VendorService;
+import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
+import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import net.fashiongo.webadmin.service.vendor.VendorBlockService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +30,16 @@ public class VendorBlockController {
 
     private VendorBlockService vendorBlockService;
 
+    private VendorBlockNewService vendorBlockNewService;
+
     public VendorBlockController(
             VendorService vendorService,
-            VendorBlockService vendorBlockService
+            VendorBlockService vendorBlockService,
+            VendorBlockNewService vendorBlockNewService
     ) {
         this.vendorService = vendorService;
         this.vendorBlockService = vendorBlockService;
+        this.vendorBlockNewService = vendorBlockNewService;
     }
 
     /**
@@ -43,11 +51,11 @@ public class VendorBlockController {
      * @author Reo
      * @since 2018. 11. 12.
      */
-    @RequestMapping(value = "vendor/getvendorblockList", method = RequestMethod.POST, produces = "application/json")
-    public JsonResponse<List<VwVendorBlocked>> getVendorBlockList(@RequestBody GetVendorBlockListParameter parameters) throws ParseException {
-        JsonResponse<List<VwVendorBlocked>> results = new JsonResponse<List<VwVendorBlocked>>(false, null, 0, null);
-        List<VwVendorBlocked> result = vendorService.getVendorBlockList(parameters);
-
+    @RequestMapping(value = "vendor/getvendorblockList", method = RequestMethod.GET, produces = "application/json")
+    public JsonResponse<CollectionObject<VendorBlockResponse>> getVendorBlockList(@RequestBody GetVendorBlockListParameter parameters) throws ParseException {
+        JsonResponse<CollectionObject<VendorBlockResponse>> results = new JsonResponse<CollectionObject<VendorBlockResponse>>(false, null, 0, null);
+        //List<VwVendorBlocked> result = vendorService.getVendorBlockList(parameters);
+        CollectionObject<VendorBlockResponse> result = vendorBlockNewService.getVendorBlockList(parameters);
         results.setData(result);
         results.setSuccess(true);
         return results;
