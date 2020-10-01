@@ -92,7 +92,7 @@ public class VendorContractServiceImpl implements VendorContractService {
 
         // contractTypeId == 5 ? premium vendor
         ClassType vendorClassType = (contractTypeId != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
-        if (!wholeSaler.getVendorType().equals(vendorClassType)) {
+        if (!wholeSaler.getVendorType().equals(vendorClassType.getValue())) {
             wholeSaler.setVendorType(vendorClassType.getValue());
             vendorWholeSalerEntityRepository.save(wholeSaler);
         }
