@@ -15,6 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 
 @Service
 @Slf4j
@@ -38,7 +44,7 @@ public class VendorContractServiceImpl implements VendorContractService {
     @Transactional(value = "primaryTransactionManager", propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public void setVendorContract(SetVendorContractParameter request) {
         WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
-        updateVendorType(request, vendorInfo);
+        updateVendorType(request.getContractTypeID(), request.getVendorContractFrom(), null, vendorInfo);
 
         vendorContractNewService.setVendorContract(request);
 
@@ -62,19 +68,33 @@ public class VendorContractServiceImpl implements VendorContractService {
         vendorContractNewService.deleteContract(request.getWholeSalerID(), request.getVendorContractID().longValue());
         VendorContractResponse vendorContract = vendorContractNewService.inquiryVendorContract(request.getWholeSalerID());
 
-        if (vendorContract != null)
-        {
+        if (vendorContract != null) {
             WholeSalerEntity vendorInfo = checkAndGetVendor(request.getWholeSalerID());
-            ClassType vendorClassType = (vendorContract.getTypeCode() != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
-            vendorInfo.setVendorType(vendorClassType.getValue());
-            vendorWholeSalerEntityRepository.save(vendorInfo);
+            updateVendorType(vendorContract.getTypeCode(), vendorContract.getDateFrom(), vendorContract.getDateTo(), vendorInfo);
         }
     }
 
-    private void updateVendorType(SetVendorContractParameter request, WholeSalerEntity wholeSaler) {
+    private void updateVendorType(Integer contractTypeId, String strDateFrom, LocalDateTime dateTo, WholeSalerEntity wholeSaler) {
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                .appendPattern("MM/d/yyyy")
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .toFormatter();
+        LocalDateTime dateFrom = !ObjectUtils.isEmpty(strDateFrom) ? LocalDateTime.parse(strDateFrom, formatter) : null;
+
+        updateVendorType(contractTypeId, dateFrom, dateTo, wholeSaler);
+    }
+
+    private void updateVendorType(Integer contractTypeId, LocalDateTime dateFrom, LocalDateTime dateTo, WholeSalerEntity wholeSaler) {
+        if (ObjectUtils.isEmpty(dateFrom) || dateFrom.isAfter(LocalDateTime.now()) || (!ObjectUtils.isEmpty(dateTo) && dateTo.isBefore(LocalDateTime.now()))) {
+            return;
+        }
+
         // contractTypeId == 5 ? premium vendor
-        ClassType vendorClassType = (request.getContractTypeID() != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
-        wholeSaler.setVendorType(vendorClassType.getValue());
-        vendorWholeSalerEntityRepository.save(wholeSaler);
+        ClassType vendorClassType = (contractTypeId != 5) ? ClassType.GENERAL : ClassType.PREMIUM;
+        if (!wholeSaler.getVendorType().equals(vendorClassType)) {
+            wholeSaler.setVendorType(vendorClassType.getValue());
+            vendorWholeSalerEntityRepository.save(wholeSaler);
+        }
     }
 }
