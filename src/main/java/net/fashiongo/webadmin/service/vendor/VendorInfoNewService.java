@@ -2,6 +2,9 @@ package net.fashiongo.webadmin.service.vendor;
 
 import net.fashiongo.webadmin.data.model.vendor.SetVendorSettingParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
+import net.fashiongo.webadmin.data.model.vendor.response.CodeVendorBlockReasonResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockInfoResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorSettingDetailResponse;
 import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDateTime;
@@ -18,5 +21,9 @@ public interface VendorInfoNewService {
 
     @Async("fashionGoApiThreadPoolTaskExecutor")
     void updateStatus(Integer wholeSalerID, Integer newStatusTypeValue, Integer requestUserId, String requestUserName);
+
+    VendorBlockInfoResponse getVendorBlockInfo(Long vendorId);
+    VendorSettingDetailResponse getVendorSettingDetail(Long vendorId);
+    CodeVendorBlockReasonResponse getCodeVendorBlockReason(Long vendorId);
 
 }
