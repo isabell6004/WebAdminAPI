@@ -43,5 +43,5 @@ public class GetVendorSettingResponse {
     private VendorBlockInfoResponse vendorBlockInfoResponse;
 
     @JsonProperty("VendorBlockReason")
-    private CodeVendorBlockReasonResponse codeVendorBlockReasonResponse;
+    private List<CodeVendorBlockReasonResponse> codeVendorBlockReasonList;
 }

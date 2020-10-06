@@ -392,7 +392,7 @@ public class RenewalVendorService extends ApiService {
 				.vendorHistory(entityActionLogEntityRepository.findByEntityIDAndEntityTypeID(wid))
                 .vendorSettingDetailResponse(vendorInfoNewService.getVendorSettingDetail((long)wid))
                 .vendorBlockInfoResponse(vendorInfoNewService.getVendorBlockInfo((long)wid))
-                .codeVendorBlockReasonResponse(vendorInfoNewService.getCodeVendorBlockReason((long)wid))
+                .codeVendorBlockReasonList(vendorInfoNewService.getCodeVendorBlockReason((long)wid))
 			.build();
 
         return result;

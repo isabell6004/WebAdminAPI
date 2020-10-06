@@ -1,5 +1,7 @@
 package net.fashiongo.webadmin.service.vendor.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.reactivex.Single;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.response.CodeVendorBlockReasonResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockInfoResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockPayoutScheduleInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorSettingDetailResponse;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.model.vendor.AddressType;
@@ -16,6 +19,7 @@ import net.fashiongo.webadmin.model.vendor.StatusType;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiConfig;
 import net.fashiongo.webadmin.service.externalutil.FashionGoApiHeader;
 import net.fashiongo.webadmin.service.externalutil.HttpClientWrapper;
+import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse;
 import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
@@ -26,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,6 +40,7 @@ import java.util.*;
 public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
     private HttpClientWrapper httpCaller;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public VendorInfoNewServiceImpl(HttpClientWrapper httpCaller) {
         this.httpCaller = httpCaller;
@@ -87,16 +93,16 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     }
 
     @Override
-    public CodeVendorBlockReasonResponse getCodeVendorBlockReason(Long vendorId) {
+    public List<CodeVendorBlockReasonResponse> getCodeVendorBlockReason(Long vendorId) {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/block-reasons";
-
+        boolean isActive = true;
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
-                .queryParam("isActive", "true")
+                .queryParam("isActive", isActive)
                 .build(false);
 
-        FashionGoApiResponse<SingleObject<CodeVendorBlockReasonResponse>> response = httpCaller.get(builder.toUriString(), getHeader(),
-                new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<CodeVendorBlockReasonResponse>>>() {});
-        return resolveResponse(response).getContent();
+        FashionGoApiResponse<CollectionObject<CodeVendorBlockReasonResponse>> response = httpCaller.get(builder.toUriString(), getHeader(),
+                new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<CodeVendorBlockReasonResponse>>>() {});
+        return resolveResponse(response).getContents();
     }
 
     @Override
@@ -124,6 +130,65 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerID;
         VendorInfoDetailCommand<VendorStatusInfoCommand> vendorInfoCommand = new VendorInfoDetailCommand<>(new VendorStatusInfoCommand(newStatusTypeValue));
         httpCaller.put(endpoint, vendorInfoCommand, FashionGoApiHeader.getHeader(requestUserId, requestUserName));
+    }
+
+    @Override
+    public void updatePayoutScheduleLock(Long vendorId, Boolean isPayoutScheduleLock) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId;
+        VendorInfoSettingCommand<VendorSettingPayoutScheduleLockCommand> vendorInfoCommand = new VendorInfoSettingCommand<>(new VendorSettingPayoutScheduleLockCommand(isPayoutScheduleLock));
+        httpCaller.put(endpoint, vendorInfoCommand, getHeader());
+    }
+
+    @Override
+    public Boolean updatePayoutBlock(Long vendorId, Boolean isPayoutBlock, Long payoutBlockReasonId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId;
+        VendorInfoSettingCommand<VendorSettingPayoutBlockCommand> vendorInfoCommand = new VendorInfoSettingCommand<>(new VendorSettingPayoutBlockCommand(isPayoutBlock,payoutBlockReasonId));
+        String responseBody = httpCaller.put(endpoint, vendorInfoCommand, getHeader());
+
+        try {
+            FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
+            if (response == null) {
+                throw new RuntimeException("unknown exception occurred while calling fashiongo api.");
+            }
+            return response.getHeader().isSuccessful();
+        } catch (IOException e) {
+            throw new RuntimeException("fail to update vendor setting. " + e.getMessage());
+        }
+    }
+
+    @Override
+    public VendorBlockPayoutScheduleInfoResponse getVendorPreviousPayoutScheduleInfo(Long vendorId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/previous-payout-schedule-info";
+
+        FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>> response = httpCaller.get(endpoint, getHeader(),
+                new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>>>() {});
+        return resolveResponse(response).getContent();
+    }
+
+    @Getter
+    private class VendorInfoSettingCommand<T> {
+        private T setting;
+        private VendorInfoSettingCommand(T setting) {
+            this.setting = setting;
+        }
+    }
+
+    @Getter
+    private class VendorSettingPayoutBlockCommand {
+        private Boolean isPayoutBlock;
+        private Long payoutBlockReasonId;
+        private VendorSettingPayoutBlockCommand(Boolean isPayoutBlock, Long payoutBlockReasonId) {
+            this.isPayoutBlock = isPayoutBlock;
+            this.payoutBlockReasonId = payoutBlockReasonId;
+        }
+    }
+
+    @Getter
+    private class VendorSettingPayoutScheduleLockCommand {
+        private Boolean isPayoutScheduleLock;
+        private VendorSettingPayoutScheduleLockCommand(Boolean isPayoutScheduleLock) {
+            this.isPayoutScheduleLock = isPayoutScheduleLock;
+        }
     }
 
     @Getter
@@ -240,8 +305,8 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         private Long blockReasonId;
         private Boolean isAdBlock;
         private Long adBlockReasonId;
-        private Boolean isPayoutBlock;
-        private Long payoutBlockReasonId;
+//        private Boolean isPayoutBlock;
+//        private Long payoutBlockReasonId;
         private Boolean isPayoutScheduleLock;
 
         private Boolean isUsePgService;
@@ -270,8 +335,8 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             this.blockReasonId = request.getBlockReasonId();
             this.isAdBlock = request.getIsAdBlock();
             this.adBlockReasonId = request.getAdBlockReasonId();
-            this.isPayoutBlock = request.getIsPayoutBlock();
-            this.payoutBlockReasonId = request.getPayoutBlockReasonId();
+//            this.isPayoutBlock = request.getIsPayoutBlock();
+//            this.payoutBlockReasonId = request.getPayoutBlockReasonId();
             this.isPayoutScheduleLock = request.getIsPayoutScheduleLock();
 
             this.isUsePgService = vendorDetailInfo.getUseCreditCardPaymentService();

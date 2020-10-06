@@ -69,8 +69,11 @@ public class SetVendorSettingParameter {
     private Boolean isPayoutBlock;
 
     @JsonProperty(value = "PayoutBlockReasonId")
-    private Long PayoutBlockReasonId;
+    private Long payoutBlockReasonId;
 
     @JsonProperty(value = "IsPayoutScheduleLock")
     private Boolean isPayoutScheduleLock;
+
+    @JsonProperty(value = "PayoutBlockChanged")
+    private Boolean payoutBlockChanged;
 }
