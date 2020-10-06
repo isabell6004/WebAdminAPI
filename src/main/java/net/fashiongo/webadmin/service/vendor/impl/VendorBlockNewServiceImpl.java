@@ -37,7 +37,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,17 +118,17 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
 
         Long vendorId = null;
         String companyName = null;
-        LocalDateTime blockDate = null;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDate blockDate = null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        if (parameter.getSearchType() == "VendorID" ) {
+        if (parameter.getSearchType().equals("VendorID") ) {
             vendorId = Long.parseLong(parameter.getSearchKeyword());
         }
-        if (parameter.getSearchType() == "Company" ) {
+        if (parameter.getSearchType().equals("Company") ) {
             companyName = parameter.getSearchKeyword();
         }
-        if (parameter.getSearchType() == "Date" ) {
-            blockDate = LocalDateTime.parse(parameter.getSearchKeyword(), formatter);
+        if (parameter.getSearchType().equals("Date") ) {
+            blockDate = LocalDate.parse(parameter.getSearchKeyword(), formatter);
         }
 
         UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
@@ -136,7 +136,7 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
                 .queryParam("companyName", companyName)
                 .queryParam("blockDate", blockDate)
                 .queryParam("reasonId", null)
-                .queryParam("typeCode", parameter.getSearchType())
+                .queryParam("typeCode", parameter.getSearchTypeCode())
                 .queryParam("pn", parameter.getPageNum())
                 .queryParam("ps", parameter.getPageSize())
                 .build(false);
