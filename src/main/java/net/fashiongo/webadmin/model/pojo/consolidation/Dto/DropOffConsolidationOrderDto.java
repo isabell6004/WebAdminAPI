@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import net.fashiongo.webadmin.model.primary.consolidation.ConsolidatedOrder;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
