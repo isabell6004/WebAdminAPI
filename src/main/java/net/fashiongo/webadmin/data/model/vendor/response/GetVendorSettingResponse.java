@@ -19,29 +19,29 @@ import java.util.List;
 @Builder
 public class GetVendorSettingResponse {
     @JsonProperty(value = "VendorCap")
-    List<VendorCapEntity> vendorCap;
+    private List<VendorCapEntity> vendorCap;
 
     @JsonProperty(value = "VendorCapDefault")
-    List<CodeVendorCapTypeEntity> vendorCapDefault;
-
-    @JsonProperty(value = "VendorBlock")
-    List<VendorBlock> vendorBlock;
-
-    @JsonProperty(value = "VendorBlockReason")
-    List<ListVendorBlockReasonEntity> vendorBlockReason;
+    private List<CodeVendorCapTypeEntity> vendorCapDefault;
 
     @JsonProperty(value = "VendorSelect")
-    List<WholesalerCompanyEntity> vendor;
+    private List<WholesalerCompanyEntity> vendor;
 
     @JsonProperty(value = "VendorSister")
-    List<VendorSister> vendorSister;
+    private List<VendorSister> vendorSister;
 
-    //@JsonProperty(value = "HoldVendor")
-    //List<LogVendorHoldEntity> holdVendor;
     @JsonProperty(value = "HoldVendor")
-    LogVendorHoldEntity holdVendor;
+    private LogVendorHoldEntity holdVendor;
 
-    
     @JsonProperty(value = "VendorHistory")
-    List<VendorHistory> vendorHistory;
+    private List<VendorHistory> vendorHistory;
+
+    @JsonProperty("VendorSettingDetail")
+    private VendorSettingDetailResponse vendorSettingDetailResponse;
+
+    @JsonProperty("VendorBlockInfo")
+    private VendorBlockInfoResponse vendorBlockInfoResponse;
+
+    @JsonProperty("VendorBlockReason")
+    private List<CodeVendorBlockReasonResponse> codeVendorBlockReasonList;
 }

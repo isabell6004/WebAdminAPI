@@ -26,6 +26,8 @@ import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
 import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -44,6 +46,8 @@ import java.util.Map;
 @Slf4j
 public class VendorBlockNewServiceImpl implements VendorBlockNewService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    
     private final static String Vendor_Request_Command_Key_Name = "setting";
 
     private HttpClientWrapper httpCaller;
@@ -167,22 +171,11 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
         Boolean result = false;
         Boolean result_payout = true;
         Boolean result_unblock = false;
-        Boolean result_block = true;
-        Boolean isblock_payment = true;
-
-        FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>> response_payout = new FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>> ();
 
         if (param.getTypeCode() == 3) {
-            // call fashiongo api : Vendor Previous Payout Schedule Info Inquiry
-            final String endpoint_payout = FashionGoApiConfig.fashionGoApi + " /v1.0/vendors/"+ vendorId+"/previous-payout-schedule-info";
+            result_payout = paymentService.updatePaymentPayoutUnblock(param.getWholeSalerID());
 
-            response_payout = httpCaller.get(endpoint_payout, getHeader(),
-                    new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>>>() {});
-
-            if (response_payout.getHeader().isSuccessful() == false || response_payout.getData() == null) {
-                result_payout = false;
-                result = false;
-            }
+            result = result_payout;
         }
 
         if (result_payout) {
@@ -205,13 +198,13 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
             Map<String, Object> payloadMap = new HashMap<>();
             payloadMap.put("setting", settingMap);
 
-            String body;
+            String body = null;
 
             try {
                 body = new ObjectMapper().writeValueAsString(payloadMap);
-            } catch (JsonProcessingException e) {
+            } catch (IOException e) {
+                logger.error("setPaymentAccountIsLocked()", e);
                 result = false;
-                throw new RuntimeException("Invalid body value", e);
             }
 
             String responseBody = httpCaller.put(endpoint_setting, body, getHeader());
@@ -223,70 +216,8 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
                 result = result_unblock;
 
             } catch (IOException e) {
+                logger.error("fail to update vendor unblock setting", e);
                 result = false;
-                throw new RuntimeException("fail to update vendor unblock setting. " + e.getMessage());
-            }
-        }
-
-        // Vendor_PayoutInfo : payment api
-        if (result_unblock && param.getTypeCode() == 3) {
-
-            PaymentScheduleInfo paymentScheduleInfo = new PaymentScheduleInfo();
-
-            paymentScheduleInfo.setWholesalerId(response_payout.getData().getContent().getVendorId().intValue());
-            paymentScheduleInfo.setIsLocked(false);
-            paymentScheduleInfo.setPayoutScheduleId(response_payout.getData().getContent().getPayoutSchedule());
-            paymentScheduleInfo.setWeekday(response_payout.getData().getContent().getWeekday());
-            paymentScheduleInfo.setDayOfMonth(response_payout.getData().getContent().getDayOfMonth());
-
-            try {
-                JsonResponse<?> result_payment = paymentService.setPaymentAccountIsLocked(paymentScheduleInfo);
-
-                if (result_payment.isSuccess()) {
-                    isblock_payment = true;
-                    result = true;
-                } else {
-                    isblock_payment = false;
-                    result = false;
-                }
-            } catch (Exception e) {
-                isblock_payment = false;
-                result = false;
-            }
-
-        }
-
-        // roll back : call fashiongo api : Vendor unblock
-        if (!isblock_payment && param.getTypeCode() == 3) {
-            final String endpoint_setting = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId;
-
-            ObjectMapper mapper = new ObjectMapper();
-
-            Map<String, Object> settingMap = new HashMap<>();
-
-            settingMap.put("isPayoutBlock", true);
-            settingMap.put("isPayoutScheduleLock", true);
-
-            Map<String, Object> payloadMap = new HashMap<>();
-            payloadMap.put("setting", settingMap);
-
-            String body;
-
-            try {
-                body = new ObjectMapper().writeValueAsString(payloadMap);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Invalid body value", e);
-            }
-
-            String responseBody = httpCaller.put(endpoint_setting, body, getHeader());
-            try {
-                FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {
-                });
-
-                result = response.getHeader().isSuccessful();
-
-            } catch (IOException e) {
-                throw new RuntimeException("fail to update vendor block setting. " + e.getMessage());
             }
         }
 

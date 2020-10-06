@@ -15,6 +15,7 @@ import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.parameter.GetVendorFormsListParameter;
 import net.fashiongo.webadmin.model.pojo.vendor.parameter.GetProductListParameter;
 import net.fashiongo.webadmin.service.ApiService;
+import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.VendorSeoNewService;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import net.fashiongo.webadmin.utility.Utility;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 @Service
 public class RenewalVendorService extends ApiService {
 
+    private final VendorInfoNewService vendorInfoNewService;
     private final VendorSeoNewService vendorSeoNewService;
 	private final VendorProductRepository vendorProductRepository;
     private final VendorImageRequestEntityRepository vendorImageRequestEntityRepository;
@@ -65,7 +67,8 @@ public class RenewalVendorService extends ApiService {
     private final RetailerRatingEntityRepository retailerRatingEntityRepository;
 
     @Autowired
-    public RenewalVendorService(VendorSeoNewService vendorSeoNewService,
+    public RenewalVendorService(VendorInfoNewService vendorInfoNewService,
+                                VendorSeoNewService vendorSeoNewService,
     		                    VendorProductRepository vendorProductRepository,
                                 VendorImageRequestEntityRepository vendorImageRequestEntityRepository,
                                 FashionGoFormEntityRepository fashionGoFormEntityRepository,
@@ -94,6 +97,7 @@ public class RenewalVendorService extends ApiService {
                                 LogVendorHoldEntityRepository logVendorHoldEntityRepository,
                                 VendorAdminLoginLogEntityRepository vendorAdminLoginLogEntityRepository,
                                 RetailerRatingEntityRepository retailerRatingEntityRepository) {
+        this.vendorInfoNewService = vendorInfoNewService;
         this.vendorSeoNewService = vendorSeoNewService;
 		this.vendorProductRepository = vendorProductRepository;
         this.vendorImageRequestEntityRepository = vendorImageRequestEntityRepository;
@@ -382,12 +386,13 @@ public class RenewalVendorService extends ApiService {
 		GetVendorSettingResponse result = GetVendorSettingResponse.builder()
 				.vendorCap(vendorCapEntityRepository.findByWholeSalerID(wid))
 				.vendorCapDefault(codeVendorCapTypeEntityRepository.findVendorCapDefault())
-				.vendorBlock(vendorBlockedEntityRepository.findByWholeSalerID(wid))
-				.vendorBlockReason(listVendorBlockReasonEntityRepository.findVendorBlockReason())
 				.vendor(vendorWholeSalerEntityRepository.findAllActive())
 				.vendorSister(mapWholeSalerSisterEntityRepository.findVendorSister(wid))
 				.holdVendor(logVendorHoldEntityRepository.findByWholeSalerIDAndActive(wid))
 				.vendorHistory(entityActionLogEntityRepository.findByEntityIDAndEntityTypeID(wid))
+                .vendorSettingDetailResponse(vendorInfoNewService.getVendorSettingDetail((long)wid))
+                .vendorBlockInfoResponse(vendorInfoNewService.getVendorBlockInfo((long)wid))
+                .codeVendorBlockReasonList(vendorInfoNewService.getCodeVendorBlockReason((long)wid))
 			.build();
 
         return result;

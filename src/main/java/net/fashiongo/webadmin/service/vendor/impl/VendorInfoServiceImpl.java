@@ -4,14 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.primary.AspnetMembershipRepository;
 import net.fashiongo.webadmin.data.entity.primary.*;
+import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockPayoutScheduleInfoResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
 import net.fashiongo.webadmin.model.primary.AspnetMembership;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentScheduleInfo;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.mapper.PaymentScheduleInfoMapper;
 import net.fashiongo.webadmin.service.CacheService;
+import net.fashiongo.webadmin.service.PaymentService;
 import net.fashiongo.webadmin.service.billing.BillingAccountService;
 import net.fashiongo.webadmin.service.vendor.*;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -73,6 +78,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private AspnetMembershipRepository aspnetMembershipRepository;
 
+    private PaymentService paymentService;
+
     private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
 
     public VendorInfoServiceImpl(VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
@@ -92,7 +99,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  CacheService cacheService,
                                  ConfigurableEnvironment env, VendorContractNewService vendorContractNewService,
                                  VendorSeoNewService vendorSeoNewService,
-                                 AspnetMembershipRepository aspnetMembershipRepository) {
+                                 AspnetMembershipRepository aspnetMembershipRepository,
+                                 PaymentService paymentService) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
@@ -112,6 +120,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.vendorContractNewService = vendorContractNewService;
         this.vendorSeoNewService = vendorSeoNewService;
         this.aspnetMembershipRepository = aspnetMembershipRepository;
+        this.paymentService = paymentService;
     }
 
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -144,6 +153,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             VendorDetailInfo vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
             Integer result = updateVendorSettingInfo(request, vendorDetailInfo);
             if(result == 1) {
+                updateVendorPayout(request);
                 cacheService.cacheEvictVendor(request.getWid());
                 try {
                     billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
@@ -157,6 +167,41 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             return null;
         }
     }
+
+    private void updateVendorPayout(SetVendorSettingParameter request){
+
+        if (request.getPayoutBlockChanged()) {
+            if (request.getIsPayoutBlock()) {
+                this.updateVendorPayoutBlock(request);
+            } else {
+                this.updateVendorPayoutUnblock(request);
+            }
+        } else {
+            //change payout block reason only
+            Boolean resultSetting = vendorInfoNewService.updatePayoutBlock((long)request.getWid(),request.getIsPayoutBlock(),request.getPayoutBlockReasonId());
+        }
+    }
+
+    private void updateVendorPayoutBlock(SetVendorSettingParameter request) {
+            //block process
+            Boolean resultSetting = vendorInfoNewService.updatePayoutBlock((long)request.getWid(),request.getIsPayoutBlock(),request.getPayoutBlockReasonId());
+            if (resultSetting) {
+                Boolean resultPayment = paymentService.updatePaymentPayoutBlock(request.getWid());
+                if (!resultPayment) {
+                    // rollback : unblock
+                    resultSetting = vendorInfoNewService.updatePayoutBlock((long)request.getWid(),!request.getIsPayoutBlock(),null);
+                }
+            }
+    }
+
+    private void updateVendorPayoutUnblock(SetVendorSettingParameter request) {
+            //unblock process
+            Boolean resultPayment = paymentService.updatePaymentPayoutUnblock(request.getWid());
+            if (resultPayment) {
+                Boolean resultSetting = vendorInfoNewService.updatePayoutBlock((long)request.getWid(),request.getIsPayoutBlock(),request.getPayoutBlockReasonId());
+            }
+    }
+
 
     private void setDirCompanyNameChangeHistory(VendorDetailInfo vendorDetailInfo, WholeSalerEntity wholeSalerEntity) {
 
