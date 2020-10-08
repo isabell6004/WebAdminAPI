@@ -933,42 +933,6 @@ public class SitemgmtService extends ApiService {
 		
 		return result;
 	}
-
-    /**
-	 * Get DMRequestSendListOrigin
-	 * 
-	 * @since 2018. 10. 29.
-	 * @author Incheol Jung
-	 * @param parameters
-	 * @return
-	 */
-	public JSONObject getDMRequestSendListOrigin(GetDMRequestSendListParameter parameters) {
-		JSONObject result = new JSONObject();
-		List<DMRequestDetail> subList = null;
-		
-		for(Integer catalogId : parameters.getDmIds()) {
-			result.put(catalogId.toString(), getDMDetail(catalogId));
-		}
-		return result;
-	}
-
-	/**
-	 * 
-	 * Get DMDetail
-	 * 
-	 * @since 2018. 10. 29.
-	 * @author Incheol Jung
-	 * @param catalogId
-	 * @return
-	 */
-	private List<DMRequestDetail> getDMDetail(Integer catalogId) {
-		String spName = "up_wa_DMSendList";
-		List<Object> params = new ArrayList<Object>();
-		params.add(catalogId);
-		
-		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
-		return CollectionUtils.isEmpty(_result) ? null : (List<DMRequestDetail>) _result.get(0);
-	}
 	
 	/**
 	 * 
