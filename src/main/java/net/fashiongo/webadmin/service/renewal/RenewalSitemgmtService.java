@@ -348,19 +348,7 @@ public class RenewalSitemgmtService {
 
 	public JSONObject getDMRequestSendList(GetDMRequestSendListParameter parameters) {
 		JSONObject result = new JSONObject();
-//		String spName = "up_wa_DMSendList_Migration";
-//		List<Object> params = new ArrayList<Object>();
-//		params.add(StringUtils.join(parameters.getDmIds(), ","));
-//
-//		List<Object> _result = jdbcHelper.executeSP(spName, params, DMRequestDetail.class);
-//		List<DMRequestDetail> subList = (List<DMRequestDetail>) _result.get(0);
-//
-//		Map<Integer, List<DMRequestDetail>> HashMapDmList = subList.stream()
-//				.collect(Collectors.groupingBy(DMRequestDetail::getCatalogID));
-//
-//		for (Map.Entry<Integer, List<DMRequestDetail>> entry : HashMapDmList.entrySet()) {
-//			result.put(entry.getKey(), entry.getValue());
-//		}
+
 		List<DMRequestDetail> dmRequestDetails = dmSendListMigrationProcedure.up_wa_DMSendList_Migration(parameters.getDmIds());
 
 		Map<Integer, List<DMRequestDetail>> HashMapDmList = dmRequestDetails.stream()
