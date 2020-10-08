@@ -1,8 +1,8 @@
 package net.fashiongo.webadmin.data.model.vendor.response;
 
+import lombok.Getter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 
