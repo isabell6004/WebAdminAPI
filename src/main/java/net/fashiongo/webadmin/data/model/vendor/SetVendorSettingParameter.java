@@ -76,4 +76,7 @@ public class SetVendorSettingParameter {
 
     @JsonProperty(value = "PayoutBlockChanged")
     private Boolean payoutBlockChanged;
+
+    @JsonProperty(value = "BlockChanged")
+    private Boolean blockChanged;
 }

@@ -2,6 +2,9 @@ package net.fashiongo.webadmin.controller.vendor;
 
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.mapper.VendorBlockAdParameterMapper;
+import net.fashiongo.webadmin.data.model.vendor.mapper.VendorBlockAdminLoginParameterMapper;
+import net.fashiongo.webadmin.data.model.vendor.mapper.VendorBlockPayoutParameterMapper;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockHistoryResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -78,47 +81,6 @@ public class VendorBlockController {
         return results;
     }
 
-    @PostMapping(value = "vendor/setvendorblock", produces = "application/json")
-    public ResultCode setvendorblock(@RequestBody SetVendorBlockParameter param) {
-
-        if(param.getWholeSalerID() == null || param.getWholeSalerID() == 0)
-            return new ResultCode(false, -1, "invalid a parameter[WholeSalerID]");
-
-        if(param.getBlockReasonID() == null || param.getBlockReasonID() == 0)
-            return new ResultCode(false, -1, "invalid a parameter[BlockReasonID]");
-
-        if(vendorBlockService.block(param))
-            return new ResultCode(true, 1, "success");
-        else
-            return new ResultCode(false, -1, "failure");
-    }
-
-    @PostMapping(value = "vendor/setvendorblockupdate")
-    public Integer setvendorblockupdate(@RequestBody SetVendorBlockUpdate param) {
-
-        if(param.getWholeSalerID() == null || param.getWholeSalerID() == 0)
-            return -99;
-
-        if(param.getBlockReasonID() == null || param.getBlockReasonID() == 0)
-            return -99;
-
-        return vendorBlockService.modifyBlockReason(param);
-    }
-/*
-    @PostMapping(value = "vendor/delvendorblock", produces = "application/json")
-    public ResultCode delvendorblock(@RequestBody DelVendorBlockParameter param) {
-        if(param.getWholeSalerID() == null || param.getWholeSalerID() == 0)
-            return new ResultCode(false, -1, "deletefailure");
-
-        if(param.getBlockID() == null || param.getBlockID() == 0)
-            return new ResultCode(false, -1, "deletefailure");
-
-        if(vendorBlockService.unblock(param))
-            return new ResultCode(true, 1, "deletesucecss");
-        else
-            return new ResultCode(false, -1, "deletefailure");
-    }
-*/
     @PostMapping(value = "vendor/vendorunblock", produces = "application/json")
     public ResultCode setvendorunblock(@RequestBody SetVendorUnBlockParameter param) {
 
@@ -128,7 +90,19 @@ public class VendorBlockController {
         if(param.getTypeCode() == null || param.getTypeCode() == 0)
             return new ResultCode(false, -1, "unblockfailure");
 
-        if(vendorBlockNewService.modifyBlock(param))
+        Boolean result = Boolean.FALSE;
+        switch (param.getTypeCode()) {
+            case 1: result = vendorBlockService.updateVendorAdminLogin(VendorBlockAdminLoginParameterMapper.convertUnblock(param));
+                break;
+            case 2: result = vendorBlockService.updateVendorAd(VendorBlockAdParameterMapper.convertUnblock(param));
+                break;
+            case 3: result = vendorBlockService.updateVendorPayout(VendorBlockPayoutParameterMapper.convertUnblock(param));
+                break;
+            default:
+                break;
+        }
+
+        if(result)
             return new ResultCode(true, 1, "unblocksucecss");
         else
             return new ResultCode(false, -1, "unblockfailure");

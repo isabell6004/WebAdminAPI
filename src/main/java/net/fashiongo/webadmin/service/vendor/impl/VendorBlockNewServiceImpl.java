@@ -8,6 +8,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.display.response.DisplaySettingResponse;
 import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockParameter;
+import net.fashiongo.webadmin.data.model.vendor.VendorBlockAdParameter;
+import net.fashiongo.webadmin.data.model.vendor.VendorBlockAdminLoginParameter;
+import net.fashiongo.webadmin.data.model.vendor.VendorBlockPayoutParameter;
+import net.fashiongo.webadmin.data.model.vendor.response.CodeVendorBlockReasonResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockHistoryResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockPayoutScheduleInfoResponse;
 import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockResponse;
@@ -40,6 +44,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -51,6 +56,7 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     private final static String Vendor_Request_Command_Key_Name = "setting";
 
     private HttpClientWrapper httpCaller;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private PaymentService paymentService;
@@ -76,41 +82,6 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
         }
     }
 
-    @Override
-    public void modifyBlockStatus(Integer wholeSalerId, Boolean isBlock, Long blockReasonId, Integer requestedUserId, String requestUserName) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + wholeSalerId;
-        VendorInfoCommand command = new VendorInfoCommand(new VendorBlockStatusCommand(isBlock, blockReasonId));
-        httpCaller.put(endpoint, command, FashionGoApiHeader.getHeader(requestedUserId, requestUserName));
-    }
-
-    @Override
-    public void blockVendor(SetVendorBlockParameter request, Integer requestedUserId, String requestUserName) {
-        modifyBlockStatus(request.getWholeSalerID(), true, Long.valueOf(request.getBlockReasonID()), requestedUserId, requestUserName);
-    }
-
-    @Override
-    public void unblockVendor(DelVendorBlockParameter request, Integer requestedUserId, String requestUserName) {
-        modifyBlockStatus(request.getWholeSalerID(), false, null, requestedUserId, requestUserName);
-    }
-
-    @Getter
-    private class VendorInfoCommand<T> {
-        private VendorBlockStatusCommand setting;
-        private VendorInfoCommand(VendorBlockStatusCommand setting) {
-            this.setting = setting;
-        }
-    }
-
-    @Getter
-    private class VendorBlockStatusCommand {
-        private Boolean isBlock;
-        private Long blockReasonId;
-
-        private VendorBlockStatusCommand(Boolean isBlock, Long blockReasonId) {
-            this.isBlock = isBlock;
-            this.blockReasonId = blockReasonId;
-        }
-    }
 
     @Override
     public CollectionObject<VendorBlockResponse> getVendorBlockList(GetVendorBlockListParameter parameter) {
@@ -165,62 +136,114 @@ public class VendorBlockNewServiceImpl implements VendorBlockNewService {
     }
 
     @Override
-    public Boolean modifyBlock(SetVendorUnBlockParameter param) {
+    public List<CodeVendorBlockReasonResponse> getCodeVendorBlockReason(Long vendorId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/block-reasons";
+        boolean isActive = true;
+        UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
+                .queryParam("isActive", isActive)
+                .build(false);
 
-        Long vendorId = (long)param.getWholeSalerID();
-        Boolean result = false;
-        Boolean result_payout = true;
-        Boolean result_unblock = false;
+        FashionGoApiResponse<CollectionObject<CodeVendorBlockReasonResponse>> response = httpCaller.get(builder.toUriString(), getHeader(),
+                new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<CodeVendorBlockReasonResponse>>>() {});
+        return resolveResponse(response).getContents();
+    }
 
-        if (param.getTypeCode() == 3) {
-            result_payout = paymentService.updatePaymentPayoutUnblock(param.getWholeSalerID());
 
-            result = result_payout;
+    @Override
+    public Boolean updatePayoutBlock(VendorBlockPayoutParameter param) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + param.getVendorId();
+        VendorSettingCommand<VendorSettingPayoutBlockCommand> vendorSettingCommand = new VendorSettingCommand<>(new VendorSettingPayoutBlockCommand(param.getIsPayoutBlock(),param.getPayoutBlockReasonId()));
+        String responseBody = httpCaller.put(endpoint, vendorSettingCommand, getHeader());
+
+        try {
+            FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
+            if (response == null) {
+                throw new RuntimeException("unknown exception occurred while calling fashiongo api.");
+            }
+            return response.getHeader().isSuccessful();
+        } catch (IOException e) {
+            throw new RuntimeException("fail to update vendor payout block. " + e.getMessage());
         }
+    }
 
-        if (result_payout) {
-            // call fashiongo api : Vendor unblock
-            final String endpoint_setting = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId;
+    @Override
+    public Boolean updateBlock(VendorBlockAdminLoginParameter param) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + param.getVendorId();
+        VendorSettingCommand<VendorSettingBlockCommand> vendorInfoCommand = new VendorSettingCommand<>(new VendorSettingBlockCommand(param.getIsBlock(),param.getBlockReasonId()));
+        String responseBody = httpCaller.put(endpoint, vendorInfoCommand, getHeader());
 
-            ObjectMapper mapper = new ObjectMapper();
-
-            Map<String, Object> settingMap = new HashMap<>();
-            if (param.getTypeCode() == 2) {
-                settingMap.put("isAdBlock", false);
+        try {
+            FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
+            if (response == null) {
+                throw new RuntimeException("unknown exception occurred while calling fashiongo api.");
             }
-            if (param.getTypeCode() == 3) {
-                settingMap.put("isPayoutBlock", false);
-                settingMap.put("isPayoutScheduleLock", false);
-            }
-            if (param.getTypeCode() == 1) {
-                settingMap.put("isBlock", false);
-            }
-            Map<String, Object> payloadMap = new HashMap<>();
-            payloadMap.put("setting", settingMap);
-
-            String body = null;
-
-            try {
-                body = new ObjectMapper().writeValueAsString(payloadMap);
-            } catch (IOException e) {
-                logger.error("setPaymentAccountIsLocked()", e);
-                result = false;
-            }
-
-            String responseBody = httpCaller.put(endpoint_setting, body, getHeader());
-            try {
-                FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {
-                });
-
-                result_unblock = response.getHeader().isSuccessful();
-                result = result_unblock;
-
-            } catch (IOException e) {
-                logger.error("fail to update vendor unblock setting", e);
-                result = false;
-            }
+            return response.getHeader().isSuccessful();
+        } catch (IOException e) {
+            throw new RuntimeException("fail to update vendor admin login block. " + e.getMessage());
         }
+    }
 
-        return result;
+    @Override
+    public Boolean updateAdBlock(VendorBlockAdParameter param) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + param.getVendorId();
+        VendorSettingCommand<VendorSettingAdBlockCommand> vendorInfoCommand = new VendorSettingCommand<>(new VendorSettingAdBlockCommand(param.getIsAdBlock(),param.getAdBlockReasonId()));
+        String responseBody = httpCaller.put(endpoint, vendorInfoCommand, getHeader());
+
+        try {
+            FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
+            if (response == null) {
+                throw new RuntimeException("unknown exception occurred while calling fashiongo api.");
+            }
+            return response.getHeader().isSuccessful();
+        } catch (IOException e) {
+            throw new RuntimeException("fail to update vendor Ad block. " + e.getMessage());
+        }
+    }
+
+    @Override
+    public VendorBlockPayoutScheduleInfoResponse getVendorPreviousPayoutScheduleInfo(Long vendorId) {
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/previous-payout-schedule-info";
+
+        FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>> response = httpCaller.get(endpoint, getHeader(),
+                new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>>>() {});
+        return resolveResponse(response).getContent();
+    }
+
+    @Getter
+    private class VendorSettingCommand<T> {
+        private T setting;
+        private VendorSettingCommand(T setting) {
+            this.setting = setting;
+        }
+    }
+
+    @Getter
+    private class VendorSettingBlockCommand {
+        private Boolean isBlock;
+        private Long blockReasonId;
+        private VendorSettingBlockCommand(Boolean isBlock, Long blockReasonId) {
+            this.isBlock = isBlock;
+            this.blockReasonId = blockReasonId;
+        }
+    }
+
+    @Getter
+    private class VendorSettingAdBlockCommand {
+        private Boolean isAdBlock;
+        private Long adBlockReasonId;
+        private VendorSettingAdBlockCommand(Boolean isAdBlock, Long adBlockReasonId) {
+            this.isAdBlock = isAdBlock;
+            this.adBlockReasonId = adBlockReasonId;
+        }
+    }
+
+    @Getter
+    private class VendorSettingPayoutBlockCommand {
+        private Boolean isPayoutBlock;
+        private Long payoutBlockReasonId;
+        private VendorSettingPayoutBlockCommand(Boolean isPayoutBlock, Long payoutBlockReasonId) {
+            this.isPayoutBlock = isPayoutBlock;
+            this.payoutBlockReasonId = payoutBlockReasonId;
+        }
     }
 }

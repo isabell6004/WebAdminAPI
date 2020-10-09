@@ -27,8 +27,5 @@ public interface VendorInfoNewService {
 
     VendorBlockInfoResponse getVendorBlockInfo(Long vendorId);
     VendorSettingDetailResponse getVendorSettingDetail(Long vendorId);
-    List<CodeVendorBlockReasonResponse> getCodeVendorBlockReason(Long vendorId);
     void updatePayoutScheduleLock(Long vendorId, Boolean isPayoutScheduleLock);
-    Boolean updatePayoutBlock(Long vendorId, Boolean isPayoutBlock, Long payoutBlockReasonId);
-    public VendorBlockPayoutScheduleInfoResponse getVendorPreviousPayoutScheduleInfo(Long vendorId);
 }

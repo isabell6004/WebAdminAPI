@@ -25,6 +25,7 @@ import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
 import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
 import net.fashiongo.webadmin.model.primary.PaymentStatus;
 import net.fashiongo.webadmin.service.billing.BillingAccountService;
+import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
@@ -74,6 +75,9 @@ public class PaymentService extends ApiService {
 
 	@Autowired
 	private VendorInfoNewService vendorInfoNewService;
+
+	@Autowired
+	private VendorBlockNewService vendorBlockNewService;
 
 	@Autowired
 	@Qualifier("paymentApiJsonClient")
@@ -290,7 +294,7 @@ public class PaymentService extends ApiService {
 
 	public Boolean updatePaymentPayoutUnblock(Integer vendorId) {
 		//get previous schedule info
-		VendorBlockPayoutScheduleInfoResponse previousPayoutSchedule = vendorInfoNewService.getVendorPreviousPayoutScheduleInfo((long)vendorId);
+		VendorBlockPayoutScheduleInfoResponse previousPayoutSchedule = vendorBlockNewService.getVendorPreviousPayoutScheduleInfo((long)vendorId);
 		try {
 			JsonResponse<?> response = setPaymentAccountIsLocked(PaymentScheduleInfoMapper.convert(vendorId,previousPayoutSchedule));
 			return response.isSuccess();

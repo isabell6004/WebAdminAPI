@@ -93,19 +93,6 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
     }
 
     @Override
-    public List<CodeVendorBlockReasonResponse> getCodeVendorBlockReason(Long vendorId) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/block-reasons";
-        boolean isActive = true;
-        UriComponents builder = UriComponentsBuilder.fromHttpUrl(endpoint)
-                .queryParam("isActive", isActive)
-                .build(false);
-
-        FashionGoApiResponse<CollectionObject<CodeVendorBlockReasonResponse>> response = httpCaller.get(builder.toUriString(), getHeader(),
-                new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<CodeVendorBlockReasonResponse>>>() {});
-        return resolveResponse(response).getContents();
-    }
-
-    @Override
     public void update(VendorDetailInfo request, String originalUserId, Integer requestUserId, String requestUserName) {
         updateAccount(request.getWholeSalerID(), originalUserId, request.getUserId(), request.getFirstName(), request.getLastName(), requestUserId, requestUserName);
         updateVendorBasicInfo(request, requestUserId, requestUserName);
@@ -139,47 +126,11 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         httpCaller.put(endpoint, vendorInfoCommand, getHeader());
     }
 
-    @Override
-    public Boolean updatePayoutBlock(Long vendorId, Boolean isPayoutBlock, Long payoutBlockReasonId) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId;
-        VendorInfoSettingCommand<VendorSettingPayoutBlockCommand> vendorInfoCommand = new VendorInfoSettingCommand<>(new VendorSettingPayoutBlockCommand(isPayoutBlock,payoutBlockReasonId));
-        String responseBody = httpCaller.put(endpoint, vendorInfoCommand, getHeader());
-
-        try {
-            FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
-            if (response == null) {
-                throw new RuntimeException("unknown exception occurred while calling fashiongo api.");
-            }
-            return response.getHeader().isSuccessful();
-        } catch (IOException e) {
-            throw new RuntimeException("fail to update vendor setting. " + e.getMessage());
-        }
-    }
-
-    @Override
-    public VendorBlockPayoutScheduleInfoResponse getVendorPreviousPayoutScheduleInfo(Long vendorId) {
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/" + vendorId + "/previous-payout-schedule-info";
-
-        FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>> response = httpCaller.get(endpoint, getHeader(),
-                new ParameterizedTypeReference<FashionGoApiResponse<SingleObject<VendorBlockPayoutScheduleInfoResponse>>>() {});
-        return resolveResponse(response).getContent();
-    }
-
     @Getter
     private class VendorInfoSettingCommand<T> {
         private T setting;
         private VendorInfoSettingCommand(T setting) {
             this.setting = setting;
-        }
-    }
-
-    @Getter
-    private class VendorSettingPayoutBlockCommand {
-        private Boolean isPayoutBlock;
-        private Long payoutBlockReasonId;
-        private VendorSettingPayoutBlockCommand(Boolean isPayoutBlock, Long payoutBlockReasonId) {
-            this.isPayoutBlock = isPayoutBlock;
-            this.payoutBlockReasonId = payoutBlockReasonId;
         }
     }
 
@@ -301,8 +252,8 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
         private String openDate;
         private String closedDate;
 
-        private Boolean isBlock;
-        private Long blockReasonId;
+//        private Boolean isBlock;
+//        private Long blockReasonId;
         private Boolean isAdBlock;
         private Long adBlockReasonId;
 //        private Boolean isPayoutBlock;
@@ -331,8 +282,8 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
             this.openDate = (vendorDetailInfo.getActualOpenDate() != null) ? vendorDetailInfo.getActualOpenDate().toString() : null;
             this.closedDate = (vendorDetailInfo.getContractExpireDate() != null) ? vendorDetailInfo.getContractExpireDate().toString() : null;
 
-            this.isBlock = request.getIsBlock();
-            this.blockReasonId = request.getBlockReasonId();
+//            this.isBlock = request.getIsBlock();
+//            this.blockReasonId = request.getBlockReasonId();
             this.isAdBlock = request.getIsAdBlock();
             this.adBlockReasonId = request.getAdBlockReasonId();
 //            this.isPayoutBlock = request.getIsPayoutBlock();
