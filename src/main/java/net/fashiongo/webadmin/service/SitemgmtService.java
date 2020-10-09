@@ -452,7 +452,10 @@ public class SitemgmtService extends ApiService {
 			result.setCode(1);
 			result.setMessage("Deleted successfully!");
 		} else if (parameters.getType().equals("Act")) {
+			logger.info("SitemgmtService: setTrendReport(): active: " + param.getActive() + ", userName: " + Utility.getUsername());
 			tr.setActive(param.getActive());
+			tr.setModifiedOn(LocalDateTime.now());
+			tr.setModifiedBy(Utility.getUsername());
 			trendReportRepository.save(tr);
 			result.setSuccess(true);
 			result.setCode(1);
