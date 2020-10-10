@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller.vendor;
 import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.model.vendor.response.*;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.service.renewal.RenewalVendorService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.service.vendor.VendorInfoService;
@@ -66,7 +67,7 @@ public class VendorInfoController {
     }
 
     @PostMapping(value = "vendor/setvendorsetting")
-    public Integer setvendorsetting(@RequestBody SetVendorSettingParameter request) {
+    public ResultCode setvendorsetting(@RequestBody SetVendorSettingParameter request) {
 
         if (request.getWid() == null || request.getWid() == 0)
             return null;

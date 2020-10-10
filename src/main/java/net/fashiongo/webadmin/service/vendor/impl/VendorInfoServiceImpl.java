@@ -12,6 +12,7 @@ import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.AspnetMembership;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.billing.BillingAccountService;
@@ -145,25 +146,37 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     @Override
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
-    public Integer setVendorSettingInfo(SetVendorSettingParameter request) {
+    public ResultCode setVendorSettingInfo(SetVendorSettingParameter request) {
+
         try {
             VendorDetailInfo vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
-            Integer result = updateVendorSettingInfo(request, vendorDetailInfo);
-            if(result == 1) {
-                Boolean resultVendorPayout = vendorBlockService.updateVendorPayout(VendorBlockPayoutParameterMapper.convert(request));
-                Boolean resultVendorAdminLogin = vendorBlockService.updateVendorAdminLogin(VendorBlockAdminLoginParameterMapper.convert(request));
-                cacheService.cacheEvictVendor(request.getWid());
-                try {
-                    billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
-                } catch (Exception ex) {
-                    log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
-                }
+            if(updateVendorSettingInfo(request, vendorDetailInfo) != 1) {
+                return new ResultCode(false, -1, "Fail to save vendor setting info");
             }
-            return result;
+
+            try {
+                billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
+            } catch (Exception ex) {
+                log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
+                return new ResultCode(false, -1, "Fail to update a account info of billing system");
+            }
+
         } catch (IOException e) {
             log.error("object mapper parse error", e);
-            return null;
+            return new ResultCode(false, -1, "Fail to save vendor setting info");
         }
+
+        if (!vendorBlockService.updateVendorPayout(VendorBlockPayoutParameterMapper.convert(request))) {
+            return new ResultCode(false, -1, "Fail to update payout block");
+        }
+
+        if (!vendorBlockService.updateVendorAdminLogin(VendorBlockAdminLoginParameterMapper.convert(request))) {
+            return new ResultCode(false, -1, "Fail to update vendor admin login block");
+        }
+
+        cacheService.cacheEvictVendor(request.getWid());
+
+        return new ResultCode(true, 1, "");
     }
 
 
