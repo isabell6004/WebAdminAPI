@@ -63,7 +63,6 @@ public class RenewalVendorService extends ApiService {
     private final LogCommunicationEntityRepository logCommunicationEntityRepository;
     private final VendorCapEntityRepository vendorCapEntityRepository;
     private final CodeVendorCapTypeEntityRepository codeVendorCapTypeEntityRepository;
-    private final VendorBlockedEntityRepository vendorBlockedEntityRepository;
     private final ListVendorBlockReasonEntityRepository listVendorBlockReasonEntityRepository;
     private final MapWholeSalerSisterEntityRepository mapWholeSalerSisterEntityRepository;
     private final LogVendorHoldEntityRepository logVendorHoldEntityRepository;
@@ -97,7 +96,6 @@ public class RenewalVendorService extends ApiService {
                                 LogCommunicationEntityRepository logCommunicationEntityRepository,
                                 VendorCapEntityRepository vendorCapEntityRepository,
                                 CodeVendorCapTypeEntityRepository codeVendorCapTypeEntityRepository,
-                                VendorBlockedEntityRepository vendorBlockedEntityRepository,
                                 ListVendorBlockReasonEntityRepository listVendorBlockReasonEntityRepository,
                                 MapWholeSalerSisterEntityRepository mapWholeSalerSisterEntityRepository,
                                 LogVendorHoldEntityRepository logVendorHoldEntityRepository,
@@ -129,7 +127,6 @@ public class RenewalVendorService extends ApiService {
         this.logCommunicationEntityRepository = logCommunicationEntityRepository;
         this.vendorCapEntityRepository = vendorCapEntityRepository;
         this.codeVendorCapTypeEntityRepository = codeVendorCapTypeEntityRepository;
-        this.vendorBlockedEntityRepository = vendorBlockedEntityRepository;
         this.listVendorBlockReasonEntityRepository = listVendorBlockReasonEntityRepository;
         this.mapWholeSalerSisterEntityRepository = mapWholeSalerSisterEntityRepository;
         this.logVendorHoldEntityRepository = logVendorHoldEntityRepository;

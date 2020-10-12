@@ -65,53 +65,6 @@ public class VendorServiceTest {
 			assertNotNull(result.getProducts().get(0).getProductID());
 		}
 	}
-
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 26.
-	 * @author Reo
-	 * @throws ParseException 
-	 */
-	@Test
-	public void testGetVendorBlockList() throws ParseException {
-		GetVendorBlockListParameter parameters = new GetVendorBlockListParameter();
-		parameters.setSearchType("");
-		parameters.setSearchKeyword("");
-		List<VwVendorBlocked> result = vendorService.getVendorBlockList(parameters);
-		if(!CollectionUtils.isEmpty(result)) {
-			assertNotNull(result.get(0));
-		}
-	}
-
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 26.
-	 * @author Reo
-	 */
-	@Test
-	public void testGetVendorBlockHistoryList() {
-		Integer wholeSalerID = 2858;
-		List<EntityActionLog> result = vendorService.getVendorBlockHistoryList(wholeSalerID);
-		if(!CollectionUtils.isEmpty(result)) {
-			assertNotNull(result.get(0));
-		}
-	}
-	
-	/**
-	 * 
-	 * Description Example
-	 * @since 2018. 11. 26.
-	 * @author Reo
-	 */
-	@Ignore
-	@Test
-	public void testDelVendorBlock() {
-		DelVendorBlockParameter parameters = new DelVendorBlockParameter();
-		ResultCode result = vendorService.delVendorBlock(parameters);
-		assertTrue(result.getResultCode() > 0);
-	}
 	
 	/**
 	 * 

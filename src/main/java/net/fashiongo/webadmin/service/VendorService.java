@@ -38,21 +38,6 @@ import java.util.stream.Stream;
 public class VendorService extends ApiService {
 	@Autowired
 	private CreditCardTypeRepository creditCardTypeRepository;
-
-	@Autowired
-	private VwVendorBlockedRepository vwVendorBlockedRepository;
-	
-	@Autowired
-	private EntityActionLogRepository entityActionLogRepository;
-	
-	@Autowired
-	private VendorBlockedRepository vendorBlockedRepository;
-	
-	@Autowired
-	private VendorAdminAccountRepository vendorAdminAccountRepository;
-	
-	@Autowired
-	private AspnetMembershipRepository aspnetMembershipRepository;
 	
 	@Autowired
 	private FashiongoFormRepository fashiongoFormRepository;
@@ -77,58 +62,10 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private SecurityUserRepository securityUserRepository;
-	
-	@Autowired
-	private ContractPlanRepository contractPlanRepository;
-
-	@Autowired
-	private HttpClientWrapper httpCaller;
 
 	@Autowired
     private VendorEntityRepository vendorEntityRepository;
 
-    /**
-     * Description Example
-     *
-     * @param parameters
-     * @return
-     * @throws ParseException
-     * @author Reo
-     * @since 2018. 11. 12.
-     */
-    public List<VwVendorBlocked> getVendorBlockList(GetVendorBlockListParameter parameters) throws ParseException {
-        List<VwVendorBlocked> result = null;
-        if (parameters.getSearchType().equals("ID")) {
-            result = vwVendorBlockedRepository.findByBlockID(Integer.parseInt(parameters.getSearchKeyword()));
-        } else if (parameters.getSearchType().equals("Company")) {
-            result = vwVendorBlockedRepository.findByCompanyNameContainingIgnoreCase(parameters.getSearchKeyword());
-        } else if (parameters.getSearchType().equals("Date")) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime fromDate = LocalDateTime.parse(parameters.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME);
-            LocalDateTime toDate = LocalDateTime.parse(parameters.getSearchKeyword(), DateTimeFormatter.ISO_DATE_TIME).plusDays(1).minusSeconds(1);
-            result = vwVendorBlockedRepository.findByBlockedOnBetween(fromDate, toDate);
-        } else if (parameters.getSearchType().equals("Reason")) {
-            result = vwVendorBlockedRepository.findByBlockReasonTitle(parameters.getSearchKeyword());
-        } else {
-            result = (List<VwVendorBlocked>) vwVendorBlockedRepository.findAll();
-        }
-
-        return result;
-    }
-
-    /**
-     * Description Example
-     *
-     * @param wholeSalerID
-     * @return
-     * @author Reo
-     * @since 2018. 11. 12.
-     */
-    public List<EntityActionLog> getVendorBlockHistoryList(Integer wholeSalerID) {
-        List<EntityActionLog> result = entityActionLogRepository.findByEntityTypeIDAndEntityIDOrderByLogIDDesc(9, wholeSalerID);
-
-        return result;
-    }
 
     /**
      * getVendorCreditCardList
@@ -148,43 +85,6 @@ public class VendorService extends ApiService {
         List<Object> _result = jdbcHelper.executeSP(spName, params, VendorCreditCardList.class);
 
         result.setVendorCreditCardList((List<VendorCreditCardList>) _result.get(0));
-        return result;
-    }
-
-    /**
-     * Description Example
-     *
-     * @param parameters
-     * @return
-     * @author Reo
-     * @since 2018. 11. 12.
-     */
-    @Transactional(value = "primaryTransactionManager")
-    public ResultCode delVendorBlock(DelVendorBlockParameter parameters) {
-        ResultCode result = new ResultCode(false, 0, null);
-
-        vendorBlockedRepository.deleteByBlockID(parameters.getBlockID());
-        EntityActionLog eal = new EntityActionLog();
-        eal.setEntityTypeID(9);
-        eal.setEntityID(parameters.getWholeSalerID());
-        eal.setActionID(9002);
-        eal.setActedOn(LocalDateTime.now());
-        eal.setActedBy(Utility.getUsername());
-        entityActionLogRepository.save(eal);
-
-        List<VendorAdminAccount> vendorAdminAccountList = vendorAdminAccountRepository.findByWholeSalerIDIn(parameters.getWholeSalerID());
-        List<AspnetMembership> aspnetMembershipList = new ArrayList<AspnetMembership>();
-        for (VendorAdminAccount vaa : vendorAdminAccountList) {
-            AspnetMembership ams = aspnetMembershipRepository.findOneByUserId(vaa.getUserGUID());
-            ams.setIsApproved(true);
-            ams.setIsLockedOut(false);
-            aspnetMembershipList.add(ams);
-        }
-        aspnetMembershipRepository.saveAll(aspnetMembershipList);
-
-        result.setResultCode(1);
-        result.setSuccess(true);
-        result.setResultMsg(MSG_DELETE_SUCCESS);
         return result;
     }
 

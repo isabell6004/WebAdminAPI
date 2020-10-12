@@ -1347,8 +1347,10 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 		Timestamp now = new Timestamp(new Date().getTime());
 		LocalDateTime nowTime = LocalDateTime.now();
 		JPASQLQuery blockedVendorQuery = new JPASQLQuery(entityManager,server2012Templates);
-		blockedVendorQuery.select(QVendorBlockedEntity.vendorBlockedEntity.wholeSalerId)
-				.from(QVendorBlockedEntity.vendorBlockedEntity);
+		QVendorSettingEntity VSE = new QVendorSettingEntity("VSE");
+		blockedVendorQuery.select(VSE.vendorId)
+				.from(VSE)
+				.where(VSE.isBlock.isTrue());
 		JPASQLQuery logVendorHoldQuery = new JPASQLQuery(entityManager,server2012Templates);
 		logVendorHoldQuery.select(QLogVendorHoldEntity.logVendorHoldEntity.wholeSalerID)
 				.from(QLogVendorHoldEntity.logVendorHoldEntity)
@@ -1365,7 +1367,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 			case 2:
 				predicate = predicate.and(
 						VS.statusCode.eq(2)
-								.and(W.vendor_id.intValue().notIn(blockedVendorQuery))
+								.and(W.vendor_id.notIn(blockedVendorQuery))
 								.and(W.vendor_id.intValue().notIn(logVendorHoldQuery))
 								.and(VS.closedDate.isNull().or(VS.closedDate.gt(nowTime)))
 
@@ -1376,7 +1378,7 @@ public class PrimaryProcedureRepositoryImpl implements PrimaryProcedureRepositor
 				break;
 			case 4:
 				predicate = predicate.and(
-						W.vendor_id.intValue().in(blockedVendorQuery).and(VS.closedDate.isNull().or(VS.closedDate.gt(nowTime)))
+						W.vendor_id.in(blockedVendorQuery).and(VS.closedDate.isNull().or(VS.closedDate.gt(nowTime)))
 				);
 				break;
 			case 5:

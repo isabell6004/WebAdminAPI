@@ -4,19 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.entity.primary.AspnetMembershipEntity;
 import net.fashiongo.webadmin.data.entity.primary.EntityActionLogEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorAdminAccountEntity;
-import net.fashiongo.webadmin.data.entity.primary.VendorBlockedEntity;
 import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.data.repository.primary.AspnetMembershipEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.EntityActionLogEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.VendorAdminAccountEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.VendorBlockedEntityRepository;
-import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
-import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.PaymentService;
 import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
 import net.fashiongo.webadmin.service.vendor.VendorBlockService;
-import net.fashiongo.webadmin.utility.Utility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +26,6 @@ import java.util.List;
 @Slf4j
 public class VendorBlockServiceImpl implements VendorBlockService {
 
-    private VendorBlockedEntityRepository vendorBlockedEntityRepository;
-
     private EntityActionLogEntityRepository entityActionLogEntityRepository;
 
     private VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository;
@@ -44,14 +37,14 @@ public class VendorBlockServiceImpl implements VendorBlockService {
     private CacheService cacheService;
     private PaymentService paymentService;
 
-    public VendorBlockServiceImpl(VendorBlockedEntityRepository vendorBlockedEntityRepository,
+    public VendorBlockServiceImpl(
                                   EntityActionLogEntityRepository entityActionLogEntityRepository,
                                   VendorAdminAccountEntityRepository vendorAdminAccountEntityRepository,
                                   AspnetMembershipEntityRepository aspnetMembershipEntityRepository,
                                   VendorBlockNewService vendorBlockNewService,
                                   CacheService cacheService,
                                   PaymentService paymentService) {
-        this.vendorBlockedEntityRepository = vendorBlockedEntityRepository;
+
         this.entityActionLogEntityRepository = entityActionLogEntityRepository;
         this.vendorAdminAccountEntityRepository = vendorAdminAccountEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
@@ -150,9 +143,4 @@ public class VendorBlockServiceImpl implements VendorBlockService {
         Boolean result = vendorBlockNewService.updateAdBlock(request);
         return result;
     }
-
-
-
-
-
 }
