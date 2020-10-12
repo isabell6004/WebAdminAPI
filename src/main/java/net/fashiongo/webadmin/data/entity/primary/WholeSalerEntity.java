@@ -559,9 +559,6 @@ public class WholeSalerEntity {
     @Column(name = "BillingEmail3")
     private String billingEmail3;
 
-    @Column(name = "IsADBlock")
-    private Boolean isADBlock;
-
     @Column(name = "ShowRoomStreetNo")
     private String showRoomStreetNo;
 

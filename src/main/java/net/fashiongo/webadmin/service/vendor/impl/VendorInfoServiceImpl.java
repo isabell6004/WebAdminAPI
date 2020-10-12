@@ -382,7 +382,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             wholeSaler.setLastUser(sessionUserId);
 
             wholeSaler.setNewCustYN(requestVendorDetailInfo.getNewCustYN());
-            wholeSaler.setIsADBlock(requestVendorDetailInfo.getIsADBlock());
 
             if (requestVendorDetailInfo.getOrderActive()) {
                 Timestamp now = Timestamp.valueOf(LocalDateTime.now());

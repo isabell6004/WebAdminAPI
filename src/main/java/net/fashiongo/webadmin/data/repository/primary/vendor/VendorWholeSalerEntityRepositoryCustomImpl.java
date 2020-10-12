@@ -85,7 +85,6 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 T.commissionRate, T.billingEmail1, T.billingEmail2, T.billingEmail3, T.showRoomStreetNo, T.showRoomCity, T.showRoomCountry, T.showRoomState,
                 T.showRoomZipcode, T.showRoomPhone, T.showRoomFax,
                 ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser"),
-                T.isADBlock.as("IsADBlock"),
                 T.sourceType//,vendorseoId,metaKeyword,metaDescription
                 )).from(T)
                 .where(T.wholeSalerID.eq(wholeSalerID));
@@ -337,7 +336,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         Expression<Integer> constant = Expressions.constant(1);
         BooleanExpression filter = Expressions.asNumber(1).eq(constant);
 
-        QVendorBlockedEntity VB = QVendorBlockedEntity.vendorBlockedEntity;
+        QVendorSettingEntity VS = new QVendorSettingEntity("VS");
         QLogVendorHoldEntity LVH = QLogVendorHoldEntity.logVendorHoldEntity;
         QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
         QMapWholeSalerGroupEntity MWG = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
@@ -370,7 +369,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 W.businessCategory,
                 Expressions.asNumber(0).as("CheckBox"),
                 Expressions.asString("").as("LinkCheck"),
-                ExpressionUtils.as(SQLExpressions.select(VB.blockId.count()).from(VB).where(VB.wholeSalerId.eq(W.wholeSalerID)), "BlockedCheck"),
+                ExpressionUtils.as(SQLExpressions.select(VS.id.count()).from(VS).where(VS.vendorId.eq(W.wholeSalerID.longValue()).and(VS.isBlock.isTrue())), "BlockedCheck"),
                 ExpressionUtils.as(SQLExpressions.select(LVH.logID.count()).from(LVH).where(
                         LVH.active.eq(true).and(
                                 LVH.holdFrom.loe(nowTimestamp).and(LVH.holdTo.goe(nowTimestamp)))
@@ -542,7 +541,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 filter = filter.and(W.active.eq(true).and(W.shopActive.eq(false).and(W.orderActive.eq(false))));
                 break;
             case 4:
-                filter = filter.and(W.wholeSalerID.in(SQLExpressions.select(VB.wholeSalerId).from(VB)));
+                filter = filter.and(W.wholeSalerID.in(SQLExpressions.select(VS.vendorId.intValue()).from(VS).where(VS.isBlock.isTrue())));
                 break;
             case 5:
                 filter = filter.and(W.wholeSalerID.in(SQLExpressions.select(LVH.wholeSalerID).from(LVH).where(LVH.active.eq(true).and(LVH.holdFrom.loe(nowTimestamp).and(LVH.holdTo.goe(nowTimestamp))))));
@@ -679,7 +678,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         Timestamp nowTimestamp = Timestamp.valueOf(LocalDateTime.now());
 
         QWholeSalerEntity T = QWholeSalerEntity.wholeSalerEntity;
-        QVendorBlockedEntity VB = QVendorBlockedEntity.vendorBlockedEntity;
+        QVendorSettingEntity VS = new QVendorSettingEntity("VS");
         QLogVendorHoldEntity LVH = QLogVendorHoldEntity.logVendorHoldEntity;
         QMapWholeSalerGroupEntity MWG = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
         QVendorNameHistoryEntity V = QVendorNameHistoryEntity.vendorNameHistoryEntity;
@@ -719,7 +718,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 VC.typeCode,
                 VC.commissionRate,
                 T.fashionGoExclusive,
-                SQLExpressions.select(VB.wholeSalerId.count()).from(VB).where(VB.wholeSalerId.eq(T.wholeSalerID)).as("BlockedCheck"),
+                SQLExpressions.select(VS.vendorId.count()).from(VS).where(VS.vendorId.eq(T.wholeSalerID.longValue())).as("BlockedCheck"),
                 SQLExpressions.select(LVH.logID.count()).from(LVH).where(LVH.active.eq(true).and(LVH.holdFrom.loe(nowTimestamp).and(LVH.holdTo.goe(nowTimestamp)).and(LVH.wholeSalerID.eq(T.wholeSalerID)))).as("HoldCheck")
                 ))
                 .from(T)
@@ -884,7 +883,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 filter = filter.and(T.active.eq(true).and(T.shopActive.eq(false)).and(T.orderActive.eq(false)));
                 break;
             case 4:
-                filter = filter.and(T.wholeSalerID.in(SQLExpressions.select(VB.wholeSalerId).from(VB)));
+                filter = filter.and(T.wholeSalerID.in(SQLExpressions.select(VS.vendorId.intValue()).from(VS).where(VS.isBlock.isTrue())));
                 break;
             case 5:
                 filter = filter.and(T.wholeSalerID.in(SQLExpressions.select(LVH.wholeSalerID).from(LVH).where(LVH.active.eq(true).and(LVH.holdFrom.loe(nowTimestamp).and(LVH.holdTo.goe(nowTimestamp))))));
