@@ -487,10 +487,10 @@ public class RenewalVendorService extends ApiService {
 		return GetVendorListResponse.builder().recCnt(count).vendorList(result.getContent()).build();
 	}
 
-	public GetVendorListCSVResponse getvendorlistcsv(GetVendorListParameter vendorListParam) {
-		List<VendorListCSV> result = vendorWholeSalerEntityRepository.getVendorListCSVWithCount(vendorListParam);
+    public GetVendorListCSVResponse getvendorlistcsv(GetVendorListParameter vendorListParam) {
+        List<VendorListCSVResponse> result = vendorWholeSalerEntityRepository.getVendorListCSVWithCount(vendorListParam);
 
-        return GetVendorListCSVResponse.builder().vendorListCSV(result).build();
+        return GetVendorListCSVResponse.builder().vendorListCSVResponse(result).build();
     }
 
     public Integer setRetailerRatingActive(SetRetailerRatingActiveParameter param) {

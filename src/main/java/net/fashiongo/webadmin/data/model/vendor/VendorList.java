@@ -1,11 +1,9 @@
 package net.fashiongo.webadmin.data.model.vendor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,7 +15,7 @@ public class VendorList {
     private LocalDateTime contractExpireDate;
 
     @JsonProperty(value = "WholeSalerID")
-    private Integer wholeSalerID;
+    private Long wholeSalerID;
 
     @JsonProperty(value = "CompanyName")
     private String companyName;
@@ -73,12 +71,6 @@ public class VendorList {
     @JsonProperty(value = "HoldCheck")
     private Long holdCheck;
 
-    @JsonProperty(value = "BillCountryID")
-    private Integer billCountryID;
-
-    @JsonProperty(value = "BillState")
-    private String billState;
-
     @JsonProperty(value = "ContractTypeID")
     private Integer contractTypeID;
 
@@ -91,9 +83,13 @@ public class VendorList {
     @JsonProperty(value = "Source_Type")
     private Integer sourceType;
 
-    public VendorList(Long rowno, Timestamp contractExpireDate, Integer wholeSalerID, String companyName, Integer companyTypeID, String firstName, String lastName, String email, String userID, Boolean active, Boolean shopActive, Boolean orderActive, Timestamp startingDate, Timestamp lastModifiedDateTime, String nameHistory, Long grouped, String businessCategory, Integer checkBox, String linkCheck, Long blockedCheck, Long holdCheck, Integer billCountryID, String billState, Integer contractTypeID, BigDecimal commissionRate, Boolean fashionGoExclusive, Integer sourceType) {
+    public VendorList(Long rowno, String contractExpireDate, Long wholeSalerID, String companyName,
+                      Integer companyTypeID, String firstName, String lastName, String email, String userID,
+                      Boolean active, Boolean shopActive, Boolean orderActive, String startingDate, String lastModifiedDateTime,
+                      String nameHistory, Long grouped, String businessCategory, Integer checkBox, String linkCheck, Long blockedCheck, Long holdCheck,
+                      Integer contractTypeID, BigDecimal commissionRate, Boolean fashionGoExclusive, Integer sourceType) {
         this.rowno = rowno;
-        this.contractExpireDate = contractExpireDate == null ? null : contractExpireDate.toLocalDateTime();
+        this.contractExpireDate = contractExpireDate == null ? null : LocalDateTime.parse(contractExpireDate);
         this.wholeSalerID = wholeSalerID;
         this.companyName = companyName;
         this.companyTypeID = companyTypeID;
@@ -104,8 +100,8 @@ public class VendorList {
         this.active = active;
         this.shopActive = shopActive;
         this.orderActive = orderActive;
-        this.startingDate = startingDate == null ? null : startingDate.toLocalDateTime();
-        this.lastModifiedDateTime = lastModifiedDateTime == null ? null : lastModifiedDateTime.toLocalDateTime();
+        this.startingDate = startingDate == null ? null : LocalDateTime.parse(startingDate);
+        this.lastModifiedDateTime = lastModifiedDateTime == null ? null : LocalDateTime.parse(lastModifiedDateTime);
         this.nameHistory = nameHistory;
         this.grouped = grouped;
         this.businessCategory = businessCategory;
@@ -113,8 +109,6 @@ public class VendorList {
         this.linkCheck = linkCheck;
         this.blockedCheck = blockedCheck;
         this.holdCheck = holdCheck;
-        this.billCountryID = billCountryID;
-        this.billState = billState;
         this.contractTypeID = contractTypeID;
         this.commissionRate = commissionRate == null ? null : commissionRate.doubleValue();
         this.fashionGoExclusive = fashionGoExclusive;

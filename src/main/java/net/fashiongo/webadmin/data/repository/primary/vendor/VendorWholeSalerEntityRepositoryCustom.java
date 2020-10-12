@@ -23,5 +23,5 @@ public interface VendorWholeSalerEntityRepositoryCustom {
 
     Page<VendorList> getVendorListWithCount(GetVendorListParameter param);
 
-    List<VendorListCSV> getVendorListCSVWithCount(GetVendorListParameter param);
+    List<VendorListCSVResponse> getVendorListCSVWithCount(GetVendorListParameter param);
 }
