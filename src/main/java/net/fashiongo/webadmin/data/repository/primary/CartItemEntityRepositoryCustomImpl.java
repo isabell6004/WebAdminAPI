@@ -139,7 +139,7 @@ public class CartItemEntityRepositoryCustomImpl implements CartItemEntityReposit
 				.from(CT)
 				.innerJoin(W).on(CT.wholeSalerID.eq(W.vendor_id.intValue()))
 				.innerJoin(VS).on(W.vendor_id.eq(VS.vendorId))
-                .leftJoin(VB).on(W.vendor_id.eq(VB.vendorId).and(VB.bannerTypeId.intValue().eq(1)))
+                .innerJoin(VB).on(W.vendor_id.eq(VB.vendorId).and(VB.bannerTypeId.intValue().eq(1).and(VB.isActive.isTrue())))
 				.leftJoin(P).on(CT.productID.eq(P.productID))
 				.leftJoin(PRDI).on(P.productID.eq(PRDI.productID).and(PRDI.listOrder.eq(1)))
 				.leftJoin(XS).on(CT.sizeID.eq(XS.sizeID))
