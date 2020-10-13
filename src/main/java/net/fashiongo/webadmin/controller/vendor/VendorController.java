@@ -8,11 +8,8 @@ import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 import net.fashiongo.webadmin.data.entity.primary.vendor.ProductColorRow;
 import net.fashiongo.webadmin.data.model.buyer.SetAccountLockOutParameter;
 import net.fashiongo.webadmin.data.model.vendor.*;
-import net.fashiongo.webadmin.data.model.vendor.response.GetAssignedUserListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorAdminAccountLogListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCodeNameCheckResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.GetVendorCommunicationListResponse;
-import net.fashiongo.webadmin.data.model.vendor.response.VendorAutocompleteResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.*;
+import net.fashiongo.webadmin.data.model.vendor.response.mapper.VendorContentResponseMapper;
 import net.fashiongo.webadmin.model.pojo.buyer.parameter.SetModifyPasswordParameter;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
@@ -36,7 +33,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author roy
@@ -254,7 +250,7 @@ public class VendorController {
      * @since 2019-04-15
      */
     @GetMapping(value = "mediarequests")
-    public JsonResponse<PagedResult<VendorContent>> getMediaRequests(
+    public JsonResponse<PagedResult<VendorContentResponse>> getMediaRequests(
             @RequestParam(value = "pagenum", required = false) String pagenum,
             @RequestParam(value = "pagesize", required = false) String pagesize,
             @RequestParam(value = "company", required = false) String company,
@@ -264,7 +260,7 @@ public class VendorController {
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "filetype", required = false) String filetype,
             @RequestParam(value = "status", required = false) String status) {
-        JsonResponse<PagedResult<VendorContent>> response = new JsonResponse<>(false, null, null);
+        JsonResponse<PagedResult<VendorContentResponse>> response = new JsonResponse<>(false, null, null);
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
             PagedResult<VendorContent> result = vendorService.getVendorContents(
@@ -278,8 +274,14 @@ public class VendorController {
                     StringUtil.isNullOrEmpty(filetype) ? null : Integer.parseInt(filetype),
                     StringUtil.isNullOrEmpty(status) ? null : Integer.parseInt(status));
 
+            PagedResult<VendorContentResponse> finalResult = new PagedResult<>();
+            finalResult.setTotal(result.getTotal());
+            finalResult.setPageNumber(result.getPageNumber());
+            finalResult.setRecords(VendorContentResponseMapper.create(result.getRecords()));
+            finalResult.setListKey(result.getListKey());
+
             response.setSuccess(true);
-            response.setData(result);
+            response.setData(finalResult);
         } catch (Exception ex) {
             log.error("Exception Error: ", ex);
             response.setMessage(ex.getMessage());
