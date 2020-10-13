@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class VendorContentVendorResponse {
-    @JsonProperty("WholeSalerId")
+    @JsonProperty("WholeSalerID")
     private Integer wholeSalerId;
     @JsonProperty("CompanyName")
     private String companyName;
