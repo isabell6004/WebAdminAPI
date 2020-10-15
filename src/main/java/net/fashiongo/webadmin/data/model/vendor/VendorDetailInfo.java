@@ -1057,6 +1057,7 @@ public class VendorDetailInfo {
 
 		this.companyName = vendor.getName();
 		this.regCompanyName = vendor.getDbaName();
+		this.codeName = vendor.getCodename();
 		this.dirName = vendor.getDirname();
 		this.firstName = vendor.getFirstName();
 		this.lastName = vendor.getLastName();
