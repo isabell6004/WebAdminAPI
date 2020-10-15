@@ -1055,6 +1055,7 @@ public class VendorDetailInfo {
 			industryString = industryString.substring(0, industryString.length() - 1);
 		}
 
+		this.wholeSalerID = vendor.getVendor_id().intValue();
 		this.companyName = vendor.getName();
 		this.regCompanyName = vendor.getDbaName();
 		this.codeName = vendor.getCodename();
