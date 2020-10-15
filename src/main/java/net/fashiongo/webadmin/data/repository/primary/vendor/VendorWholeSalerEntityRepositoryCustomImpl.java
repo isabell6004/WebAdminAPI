@@ -18,6 +18,7 @@ import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.common.VendorsCompanyName;
 import net.fashiongo.webadmin.data.model.vendor.GetVendorListParameter;
 import net.fashiongo.webadmin.data.model.vendor.VendorAddressSimpleDto;
+import net.fashiongo.webadmin.data.model.vendor.VendorBasicInfo;
 import net.fashiongo.webadmin.data.model.vendor.VendorDetailInfo;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingSelected;
 import net.fashiongo.webadmin.data.model.vendor.VendorGroupingUnselect;
@@ -42,6 +43,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,54 +61,34 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 
     @Override
     public List<VendorDetailInfo> findAllByID(Integer wholeSalerID) {
-        JPAQuery<VendorDetailInfo> query = new JPAQuery<>(entityManager);
-        JPAQuery<String> subQuery = new JPAQuery<>(entityManager);
-        JPAQuery<Integer> subsubQuery = new JPAQuery<>(entityManager);
+        JPAQuery<VendorBasicInfo> query = new JPAQuery<>(entityManager);
 
-        QWholeSalerEntity T = QWholeSalerEntity.wholeSalerEntity;
-        QCategoryEntity C = QCategoryEntity.categoryEntity;
+        QVendorEntity vendor = QVendorEntity.vendorEntity;
+        QVendorAddressEntity VA = QVendorAddressEntity.vendorAddressEntity;
+        QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
+        QVendorContractHistoryEntity VCH = QVendorContractHistoryEntity.vendorContractHistoryEntity;
+        QVendorIndustryEntity VI = QVendorIndustryEntity.vendorIndustryEntity;
+
         QAspnetMembershipEntity ASPM = QAspnetMembershipEntity.aspnetMembershipEntity;
-        QCountEntity COUNT = QCountEntity.countEntity;
         QVendorAdminAccountEntity VAA = QVendorAdminAccountEntity.vendorAdminAccountEntity;
         QVendorLambsKeyEntity VLK = QVendorLambsKeyEntity.vendorLambsKeyEntity;
-        //QVendorSeoEntity VS = QVendorSeoEntity.vendorSeoEntity;
 
-        Integer referenceID = subsubQuery.select(COUNT.referenceID).from(COUNT).where(COUNT.countTypeID.eq(2).and(COUNT.entityID.eq(wholeSalerID))).orderBy(COUNT.count.desc()).fetchFirst();
-        String categoryName = subQuery.select(C.categoryName).from(C).where(eqReferenceID(referenceID, C)).fetchFirst();
-        StringExpression cateName = Expressions.asString(categoryName);
-        //Integer vendorseoId;
-        //String metaKeyword;
-        //String metaDescription;
+        query.select(Projections.constructor(VendorBasicInfo.class,
+                    vendor,
+                ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut).from(ASPM).where(ASPM.userId.eq(vendor.guid)),"IsLockedOut"),
+                ExpressionUtils.as(JPAExpressions.select(ASPM.lastLockoutDate).from(ASPM).where(ASPM.userId.eq(vendor.guid)),"LastLockoutDate"),
+                ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut.count()).from(ASPM).where(ASPM.userId.in(JPAExpressions.select(VAA.userGUID).from(VAA).where(VAA.wholeSalerID.eq(wholeSalerID).and(ASPM.isLockedOut.eq(true))))),"IsLockedOut2"),
+                ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)),"elambsuser")
+                )).from(vendor)
+                .innerJoin(VA).on(vendor.vendor_id.eq(VA.vendorId).and(VA.typeCode.eq(1)))
+                .innerJoin(VS).on(vendor.vendor_id.eq(VS.vendorId))
+                .innerJoin(VCH).on(vendor.vendor_id.eq(VCH.vendorId))
+                .innerJoin(VI).on(vendor.vendor_id.eq(VI.vendorId))
+                .where(vendor.vendor_id.eq(wholeSalerID.longValue())).distinct();
 
-        query.select(Projections.constructor(VendorDetailInfo.class,
-                T.wholeSalerID, T.sortNo, T.companyName, T.regCompanyName, T.dirName, T.codeName, T.firstName, T.lastName, T.description,
-                T.billStreetNo, T.billCity, T.billState, T.billZipcode, T.billCountry, T.billPhone, T.billFax, T.streetNo, T.city, T.state, T.zipcode, T.country, T.phone, T.email, T.fax, T.memo,
-                T.webSite, T.userId, T.pwd, T.webSiteActive, T.slActive, T.reportActive, T.catalogActive, T.lambsActive, T.group1, T.group2, T.dm, T.posUse, T.mainPage, T.titlePageMemo, T.wsaPolicy,
-                T.wholeSalerTitlePage, T.onSale, T.newCustYN, T.goodUpYN, T.minTQYN, T.minTQ, T.minDollarYN, T.minDollar, T.minECQYN, T.minECQ, T.qtySeqYN, T.minPolicyUseYN, T.orderNotice,
-                T.compCharge, T.ratio, T.autoRActive, T.minCharge, T.minAmount, T.isMonthly, T.isYearly, T.yearlyAmount, T.noticeToAll, T.asKnownAs, T.honote1, T.honote2, T.honote3, T.honote4,
-                T.actualOpenDate, T.billingNote2, T.specialNote1, T.specialNote2, T.adv1, T.adv2, T.advertiseYN, T.actualOpen, T.ownerCountry, T.contractExpireDate, T.billReviewHoLee,
-                T.compsolutionNo, T.retailerYes, T.retailerBlockList, T.retailerOpenList, T.prePackYN, T.salesItem, T.hotItems, T.promotionalItems, T.billStreetNo2, T.streetNo2,
-                T.itemLocation, T.lastUser, T.minTQYNStyle, T.minTQStyle, T.billingNote1, T.billingYN, T.inHouseMemo, T.sizeID, T.packID, T.districtID, T.fgPlan,
-                T.webSiteLinkCount, T.howKnownType, T.howKnownOther, T.discountYN, T.insertedWhichApp, T.allowImage2Anony, T.maxPictureQty, T.allowImmediateShopping, T.businessCategory,
-                T.imageServerID, T.contactPerson, T.companyTypeID, T.establishedYear, T.pictureMain, T.pictureLogo, T.sizeChart, T.madeIn, T.productSortByLastUpdate, T.active, T.shopActive,
-                T.orderActive, T.billCountryID, T.countryID, T.billPhone2, T.phone2, T.creditCardAccessPassword, T.adminAccountCap, T.defaultSizeID, T.defaultPackID, T.defaultFabricDescriptionID,
-                T.manageInventory, T.allowAccess2Y3, T.sm_Facebook, T.sm_Twitter, T.sm_Youtube, T.blog, T.minOrderByAmount, T.minOrderByQty, T.extraCharge, T.extraChargeAmountFrom, T.extraChargeAmountTo,
-                T.industryType, T.orderActiveLock, T.activeOld, T.shopActiveOld, T.minOrderAmount, T.minOrderAmountYN, T.minTQAllYN, T.minTQAll, T.itemUploadCap, T.defaultMadeInCountryID, T.defaultLabelID,
-                T.defaultInventoryStatusID, T.pictureMain2, T.showFeedback, T.consolidationYN, T.defaultVendorID, T.adminWebServerID, T.wholeSalerGUID, T.fashionGoExclusive, T.sizeChartImage,
-                T.blockPolicy, T.sm_Instagram, T.chargedByCreditCard,
-                cateName,
-                ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut).from(ASPM).where(ASPM.userId.eq(T.wholeSalerGUID)), "IsLockedOut"),
-                ExpressionUtils.as(JPAExpressions.select(ASPM.lastLockoutDate).from(ASPM).where(ASPM.userId.eq(T.wholeSalerGUID)), "LstLockoutDate"),
-                ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut.count()).from(ASPM).where(ASPM.userId.in(JPAExpressions.select(VAA.userGUID).from(VAA).where(VAA.wholeSalerID.eq(wholeSalerID).and(ASPM.isLockedOut.eq(true))))), "IsLockedOut2"),
-                T.useCreditCardPaymentService, T.transactionFeeRate1, T.transactionFeeRate2, T.transactionFeeRate1Intl, T.transactionFeeRate2Intl, T.transactionFeeFixed,
-                T.commissionRate, T.billingEmail1, T.billingEmail2, T.billingEmail3, T.showRoomStreetNo, T.showRoomCity, T.showRoomCountry, T.showRoomState,
-                T.showRoomZipcode, T.showRoomPhone, T.showRoomFax,
-                ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser"),
-                T.sourceType//,vendorseoId,metaKeyword,metaDescription
-        )).from(T)
-                .where(T.wholeSalerID.eq(wholeSalerID));
-
-        return query.fetch();
+        List<VendorBasicInfo> queryResult = query.fetch();
+        List<VendorDetailInfo> result = Collections.singletonList(new VendorDetailInfo(queryResult.get(0)));
+        return result;
     }
 
     @Override

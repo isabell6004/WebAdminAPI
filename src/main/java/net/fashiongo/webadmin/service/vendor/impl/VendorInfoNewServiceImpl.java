@@ -24,6 +24,7 @@ import net.fashiongo.webadmin.service.externalutil.response.FashionGoApiResponse
 import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
 import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.utility.Utility;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -94,7 +95,7 @@ public class VendorInfoNewServiceImpl implements VendorInfoNewService {
 
     @Override
     public void update(VendorDetailInfo request, String originalUserId, Integer requestUserId, String requestUserName) {
-        updateAccount(request.getWholeSalerID(), originalUserId, request.getUserId(), request.getFirstName(), request.getLastName(), requestUserId, requestUserName);
+        updateAccount(request.getWholeSalerID().intValue(), originalUserId, request.getUserId(), request.getFirstName(), request.getLastName(), requestUserId, requestUserName);
         updateVendorBasicInfo(request, requestUserId, requestUserName);
     }
 

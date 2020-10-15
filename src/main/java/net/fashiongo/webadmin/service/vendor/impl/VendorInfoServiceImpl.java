@@ -132,7 +132,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             if (result == 1) {
                 cacheService.cacheEvictVendor(request.getWid());
                 try {
-                    billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
+                    billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID().intValue());
                 } catch (Exception ex) {
                     log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
                 }
@@ -155,7 +155,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             }
 
             try {
-                billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
+                billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID().intValue());
             } catch (Exception ex) {
                 log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
                 return new ResultCode(false, -1, "Fail to update a account info of billing system");
@@ -207,7 +207,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private Integer updateVendorBasicInfo(VendorDetailInfo requestVendorDetailInfo) {
 
-        WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(requestVendorDetailInfo.getWholeSalerID());
+        WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(requestVendorDetailInfo.getWholeSalerID().intValue());
         try {
             if (!wholeSaler.getUserId().equals(requestVendorDetailInfo.getUserId())) {
                 if (checkDupAndCreateUserInfo(wholeSaler, requestVendorDetailInfo)) return 97;
@@ -326,7 +326,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             String logDetail = "TransactionFeeRate1 = " + requestVendorDetailInfo.getTransactionFeeRate1() + ",TransactionFeeRate2 = " + requestVendorDetailInfo.getTransactionFeeRate2() +
                     ",TransactionFeeRate1Intl = " + requestVendorDetailInfo.getTransactionFeeRate1Intl() + ",TransactionFeeRate2Intl = " + requestVendorDetailInfo.getTransactionFeeRate2Intl() +
                     ",TransactionFeeFixed = " + requestVendorDetailInfo.getTransactionFeeFixed() + ",CommissionRate = " + requestVendorDetailInfo.getCommissionRate();
-            setEntityActionLogDetail(1, requestVendorDetailInfo.getWholeSalerID(), 3004, logDetail);
+            setEntityActionLogDetail(1, requestVendorDetailInfo.getWholeSalerID().intValue(), 3004, logDetail);
         }
     }
 
@@ -355,7 +355,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         try {
             setVendorCapInfo(request);
 
-            WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(requestVendorDetailInfo.getWholeSalerID());
+            WholeSalerEntity wholeSaler = vendorWholeSalerEntityRepository.findOneByID(requestVendorDetailInfo.getWholeSalerID().intValue());
 
             if (!checkAndRecordDirCompanyNameChangeHistory(wholeSaler, requestVendorDetailInfo)) return -1;
 
@@ -385,11 +385,11 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
             if (requestVendorDetailInfo.getOrderActive()) {
                 Timestamp now = Timestamp.valueOf(LocalDateTime.now());
-                setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUserId);
+                setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID().intValue(), sessionUserId);
                 if (wholeSaler.getActualOpenDate() == null) {  // first open
                     wholeSaler.setActualOpenDate(now);
                     requestVendorDetailInfo.setActualOpenDate(now.toLocalDateTime());
-                    setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
+                    setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID().intValue(), 3001);
                     wholeSaler.setContractExpireDate(null);
                 } else {
                     String actualOpenDate = wholeSaler.getActualOpenDate() != null ? wholeSaler.getActualOpenDate().toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd")) : "0";
@@ -400,7 +400,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                     if (actualOpenDateInt > dateTimeNowInt) {
                         wholeSaler.setActualOpenDate(now);
                         requestVendorDetailInfo.setActualOpenDate(now.toLocalDateTime());
-                        setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
+                        setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID().intValue(), 3001);
                         wholeSaler.setContractExpireDate(null);
                     }
                 }
@@ -411,7 +411,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
                 if(!requestActualOpenDate.equals(vendorActualOpenDate)) {
                     if (requestActualOpenDate.equals(dateTimeNow)) {
-                        setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID(), sessionUserId);
+                        setVendorNewVendorAdVendorItemAdd(requestVendorDetailInfo.getWholeSalerID().intValue(), sessionUserId);
 
                         wholeSaler.setActualOpenDate(Timestamp.valueOf(LocalDateTime.now()));
                         wholeSaler.setOrderActive(true);
@@ -423,7 +423,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                         requestVendorDetailInfo.setShopActive(true);
                         requestVendorDetailInfo.setActive(true);
 
-                        setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID(), 3001);
+                        setEntityActionLog(1, requestVendorDetailInfo.getWholeSalerID().intValue(), 3001);
                         wholeSaler.setContractExpireDate(null);
                     } else if (StringUtils.compare(requestActualOpenDate, dateTimeNow) < 0) {
                         throw new RuntimeException("the scheduled time is not valid. " + requestActualOpenDate);
@@ -436,12 +436,12 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                 requestVendorDetailInfo.setActualOpenDate(null);
             }
 
-            wholeSaler.setTransactionFeeRate1(requestVendorDetailInfo.getTransactionFeeRate1());
-            wholeSaler.setTransactionFeeRate2(requestVendorDetailInfo.getTransactionFeeRate2());
-            wholeSaler.setTransactionFeeRate1Intl(requestVendorDetailInfo.getTransactionFeeRate1Intl());
-            wholeSaler.setTransactionFeeRate2Intl(requestVendorDetailInfo.getTransactionFeeRate2Intl());
-            wholeSaler.setTransactionFeeFixed(requestVendorDetailInfo.getTransactionFeeFixed());
-            wholeSaler.setCommissionRate(requestVendorDetailInfo.getCommissionRate());
+            wholeSaler.setTransactionFeeRate1(requestVendorDetailInfo.getTransactionFeeRate1().doubleValue());
+            wholeSaler.setTransactionFeeRate2(requestVendorDetailInfo.getTransactionFeeRate2().doubleValue());
+            wholeSaler.setTransactionFeeRate1Intl(requestVendorDetailInfo.getTransactionFeeRate1Intl().doubleValue());
+            wholeSaler.setTransactionFeeRate2Intl(requestVendorDetailInfo.getTransactionFeeRate2Intl().doubleValue());
+            wholeSaler.setTransactionFeeFixed(requestVendorDetailInfo.getTransactionFeeFixed().doubleValue());
+            wholeSaler.setCommissionRate(requestVendorDetailInfo.getCommissionRate().doubleValue());
 
             try {
                 int oldPaymentMethodId, newPaymentMethodId;
@@ -452,7 +452,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                     oldPaymentMethodId = 6;
                     newPaymentMethodId = 100;
                 }
-                switchPaymentMethodId(requestVendorDetailInfo.getWholeSalerID(), oldPaymentMethodId, newPaymentMethodId);
+                switchPaymentMethodId(requestVendorDetailInfo.getWholeSalerID().intValue(), oldPaymentMethodId, newPaymentMethodId);
 
                 wholeSaler.setUseCreditCardPaymentService(requestVendorDetailInfo.getUseCreditCardPaymentService());
                 if (request.getPayoutCount() > 0) {
@@ -474,7 +474,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     }
 
     private void updateVendorPayoutInfo(VendorDetailInfo requestVendorDetailInfo, Integer payoutSchedule, Integer payoutScheduleWM, Integer maxPayoutPerDay, String sessionUsrId) {
-        VendorPayoutInfoEntity vp = vendorPayoutInfoEntityRepository.findOneByWholeSalerID(requestVendorDetailInfo.getWholeSalerID());
+        VendorPayoutInfoEntity vp = vendorPayoutInfoEntityRepository.findOneByWholeSalerID(requestVendorDetailInfo.getWholeSalerID().intValue());
         vp.setPayoutSchedule(payoutSchedule);
         vp.setMaxPayoutPerDay(maxPayoutPerDay);
         vp.setModifiedBy(sessionUsrId);
@@ -503,7 +503,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     }
 
     private void updateAdminAccountStatus(VendorDetailInfo requestVendorDetailInfo) {
-        List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(requestVendorDetailInfo.getWholeSalerID());
+        List<VendorAdminAccountEntity> vendorAdminAccountList = vendorAdminAccountEntityRepository.findAllByWholeSalerID(requestVendorDetailInfo.getWholeSalerID().intValue());
         for (VendorAdminAccountEntity va : vendorAdminAccountList) {
             AspnetMembershipEntity subAccount = aspnetMembershipEntityRepository.findOneByWholeSalerGUID(va.getUserGUID());
             subAccount.setApproved(false);
@@ -517,7 +517,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
     }
 
     private void inactiveTodayDealInfo(VendorDetailInfo requestVendorDetailInfo, String sessionUsrId) {
-        List<TodayDealEntity> todayDealList = todayDealEntityRepository.findAllByWholeSalerID(requestVendorDetailInfo.getWholeSalerID());
+        List<TodayDealEntity> todayDealList = todayDealEntityRepository.findAllByWholeSalerID(requestVendorDetailInfo.getWholeSalerID().intValue());
         List<TodayDealEntity> todayDealListUpdate = new ArrayList<>();
         for (TodayDealEntity todayDeal : todayDealList) {
             todayDeal.setActive(false);
@@ -546,7 +546,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                 || requestVendorDetailInfo.getActive() != wholeSaler.getActive()) {
 
             String logDetail = "Active = " + requestVendorDetailInfo.getActive() + ",ShopActive = " + requestVendorDetailInfo.getShopActive() + ",OrderActive = " + requestVendorDetailInfo.getOrderActive();
-            setEntityActionLogDetail(1, requestVendorDetailInfo.getWholeSalerID(), 3003, logDetail);
+            setEntityActionLogDetail(1, requestVendorDetailInfo.getWholeSalerID().intValue(), 3003, logDetail);
         }
 
         try {

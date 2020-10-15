@@ -98,6 +98,18 @@ public class VendorEntity {
     @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
     private Set<VendorSettingEntity> vendorSetting;
 
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
+    private Set<VendorContractHistoryEntity> vendorContractHistory;
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
+    private Set<VendorIndustryEntity> vendorIndustry;
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
+    private Set<VendorEmailEntity> vendorEmail;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<VendorAddressEntity> vendorAddresses;
 
