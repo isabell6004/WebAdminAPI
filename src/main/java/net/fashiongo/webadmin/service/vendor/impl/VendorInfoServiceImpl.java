@@ -5,11 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.dao.primary.AspnetMembershipRepository;
 import net.fashiongo.webadmin.data.entity.primary.*;
 import net.fashiongo.webadmin.data.model.vendor.*;
+import net.fashiongo.webadmin.data.model.vendor.mapper.VendorBlockAdminLoginParameterMapper;
+import net.fashiongo.webadmin.data.model.vendor.mapper.VendorBlockPayoutParameterMapper;
 import net.fashiongo.webadmin.data.model.vendor.response.GetVendorContractResponse;
 import net.fashiongo.webadmin.data.repository.primary.*;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorCapEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorPayoutInfoEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.vendor.VendorWholeSalerEntityRepository;
+import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.primary.AspnetMembership;
 import net.fashiongo.webadmin.service.CacheService;
 import net.fashiongo.webadmin.service.billing.BillingAccountService;
@@ -73,6 +76,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     private AspnetMembershipRepository aspnetMembershipRepository;
 
+    private VendorBlockService vendorBlockService;
+
     private final static Logger logger = LoggerFactory.getLogger("vendorContractCheckLogger");
 
     public VendorInfoServiceImpl(VendorWholeSalerEntityRepository vendorWholeSalerEntityRepository,
@@ -92,7 +97,8 @@ public class VendorInfoServiceImpl implements VendorInfoService {
                                  CacheService cacheService,
                                  ConfigurableEnvironment env, VendorContractNewService vendorContractNewService,
                                  VendorSeoNewService vendorSeoNewService,
-                                 AspnetMembershipRepository aspnetMembershipRepository) {
+                                 AspnetMembershipRepository aspnetMembershipRepository,
+                                 VendorBlockService vendorBlockService) {
         this.vendorWholeSalerEntityRepository = vendorWholeSalerEntityRepository;
         this.aspnetUsersEntityRepository = aspnetUsersEntityRepository;
         this.aspnetMembershipEntityRepository = aspnetMembershipEntityRepository;
@@ -112,6 +118,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         this.vendorContractNewService = vendorContractNewService;
         this.vendorSeoNewService = vendorSeoNewService;
         this.aspnetMembershipRepository = aspnetMembershipRepository;
+        this.vendorBlockService = vendorBlockService;
     }
 
     private final static ObjectMapper mapper = new ObjectMapper();
@@ -139,24 +146,39 @@ public class VendorInfoServiceImpl implements VendorInfoService {
 
     @Override
     @Transactional(value = "primaryTransactionManager", isolation = Isolation.READ_UNCOMMITTED)
-    public Integer setVendorSettingInfo(SetVendorSettingParameter request) {
+    public ResultCode setVendorSettingInfo(SetVendorSettingParameter request) {
+
         try {
             VendorDetailInfo vendorDetailInfo = mapper.readValue(request.getVendorBasicInfo(), VendorDetailInfo.class);
-            Integer result = updateVendorSettingInfo(request, vendorDetailInfo);
-            if(result == 1) {
-                cacheService.cacheEvictVendor(request.getWid());
-                try {
-                    billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
-                } catch (Exception ex) {
-                    log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
-                }
+            if(updateVendorSettingInfo(request, vendorDetailInfo) != 1) {
+                return new ResultCode(false, -1, "Fail to save vendor setting info");
             }
-            return result;
+
+            try {
+                billingAccountService.updateAccount(vendorDetailInfo.getWholeSalerID());
+            } catch (Exception ex) {
+                log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
+                return new ResultCode(false, -1, "Fail to update a account info of billing system");
+            }
+
         } catch (IOException e) {
             log.error("object mapper parse error", e);
-            return null;
+            return new ResultCode(false, -1, "Fail to save vendor setting info");
         }
+
+        if (!vendorBlockService.updateVendorPayout(VendorBlockPayoutParameterMapper.convert(request))) {
+            return new ResultCode(false, -1, "Fail to update payout block");
+        }
+
+        if (!vendorBlockService.updateVendorAdminLogin(VendorBlockAdminLoginParameterMapper.convert(request))) {
+            return new ResultCode(false, -1, "Fail to update vendor admin login block");
+        }
+
+        cacheService.cacheEvictVendor(request.getWid());
+
+        return new ResultCode(true, 1, "");
     }
+
 
     private void setDirCompanyNameChangeHistory(VendorDetailInfo vendorDetailInfo, WholeSalerEntity wholeSalerEntity) {
 

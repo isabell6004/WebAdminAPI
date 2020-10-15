@@ -53,6 +53,30 @@ public class SetVendorSettingParameter {
     @JsonProperty(value = "PayoutCount")
     private Integer payoutCount;
 
-    @JsonProperty(value = "IsADBlock")
-    private Boolean isADBlock;
+    @JsonProperty(value = "IsBlock")
+    private Boolean isBlock;
+
+    @JsonProperty(value = "BlockReasonId")
+    private Long blockReasonId;
+
+    @JsonProperty(value = "IsAdBlock")
+    private Boolean isAdBlock;
+
+    @JsonProperty(value = "AdBlockReasonId")
+    private Long adBlockReasonId;
+
+    @JsonProperty(value = "IsPayoutBlock")
+    private Boolean isPayoutBlock;
+
+    @JsonProperty(value = "PayoutBlockReasonId")
+    private Long payoutBlockReasonId;
+
+    @JsonProperty(value = "IsPayoutScheduleLock")
+    private Boolean isPayoutScheduleLock;
+
+    @JsonProperty(value = "PayoutBlockChanged")
+    private Boolean payoutBlockChanged;
+
+    @JsonProperty(value = "BlockChanged")
+    private Boolean blockChanged;
 }

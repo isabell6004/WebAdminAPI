@@ -1,7 +1,6 @@
 package net.fashiongo.webadmin.service.vendor;
 
-import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockParameter;
-import net.fashiongo.webadmin.data.model.vendor.SetVendorBlockUpdate;
+import net.fashiongo.webadmin.data.model.vendor.*;
 import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
 
 /**
@@ -9,9 +8,7 @@ import net.fashiongo.webadmin.model.pojo.parameter.DelVendorBlockParameter;
  */
 public interface VendorBlockService {
 
-    Boolean block(SetVendorBlockParameter param);
-
-    Integer modifyBlockReason(SetVendorBlockUpdate param);
-
-    Boolean unblock(DelVendorBlockParameter param);
+    Boolean updateVendorAdminLogin(VendorBlockAdminLoginParameter param);
+    Boolean updateVendorAd(VendorBlockAdParameter param);
+    Boolean updateVendorPayout(VendorBlockPayoutParameter param);
 }

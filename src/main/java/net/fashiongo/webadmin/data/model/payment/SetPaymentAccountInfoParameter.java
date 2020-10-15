@@ -68,4 +68,10 @@ public class SetPaymentAccountInfoParameter {
     
     @JsonProperty(value="deleteOwnerIds")
     private List<Integer> deleteOwnerIds;
+
+    @JsonProperty(value = "isPayoutScheduleLock")
+    private Boolean isPayoutScheduleLock;
+
+    @JsonProperty(value = "isPayoutScheduleLockChanged")
+    private Boolean isPayoutScheduleLockChanged;
 }

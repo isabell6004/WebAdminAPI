@@ -10,12 +10,14 @@ import net.fashiongo.webadmin.dao.primary.PaymentTransactionEntityRepository;
 import net.fashiongo.webadmin.data.entity.primary.PaymentTransactionEntity;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountBankParameter;
 import net.fashiongo.webadmin.data.model.payment.SetPaymentAccountInfoParameter;
+import net.fashiongo.webadmin.data.model.vendor.response.VendorBlockPayoutScheduleInfoResponse;
 import net.fashiongo.webadmin.model.fgpay.*;
 import net.fashiongo.webadmin.model.pojo.common.PagedResult;
 import net.fashiongo.webadmin.model.pojo.common.SingleValueResult;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentRequest;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.PaymentScheduleInfo;
 import net.fashiongo.webadmin.model.pojo.payment.parameter.QueryParam;
+import net.fashiongo.webadmin.model.pojo.payment.parameter.mapper.PaymentScheduleInfoMapper;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentStatusResponse;
 import net.fashiongo.webadmin.model.pojo.payment.response.PaymentTransactionResponse;
 import net.fashiongo.webadmin.model.primary.CardStatus;
@@ -23,6 +25,8 @@ import net.fashiongo.webadmin.model.primary.OrderPaymentStatus;
 import net.fashiongo.webadmin.model.primary.PaymentCreditCard;
 import net.fashiongo.webadmin.model.primary.PaymentStatus;
 import net.fashiongo.webadmin.service.billing.BillingAccountService;
+import net.fashiongo.webadmin.service.vendor.VendorBlockNewService;
+import net.fashiongo.webadmin.service.vendor.VendorInfoNewService;
 import net.fashiongo.webadmin.utility.HttpClient;
 import net.fashiongo.webadmin.utility.JsonResponse;
 import org.slf4j.Logger;
@@ -68,6 +72,12 @@ public class PaymentService extends ApiService {
 
 	@Autowired
     private BillingAccountService billingAccountService;
+
+	@Autowired
+	private VendorInfoNewService vendorInfoNewService;
+
+	@Autowired
+	private VendorBlockNewService vendorBlockNewService;
 
 	@Autowired
 	@Qualifier("paymentApiJsonClient")
@@ -244,11 +254,17 @@ public class PaymentService extends ApiService {
 		p.setWholeSalerId(p.getWholeSalerId() == null ? 0 : p.getWholeSalerId());
 
         JsonResponse response = (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
-        try {
-            billingAccountService.updateAccount(p.getWholeSalerId());
-        } catch (Exception ex) {
-            log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
-        }
+
+        if (response.isSuccess()) {
+			//update vendor_setting
+			if (p.getIsPayoutScheduleLockChanged()) vendorInfoNewService.updatePayoutScheduleLock((long)p.getWholeSalerId(), p.getIsPayoutScheduleLock());
+			try {
+				billingAccountService.updateAccount(p.getWholeSalerId());
+			} catch (Exception ex) {
+				log.warn("fail to update a account info of billing system. {}", ex.getMessage(), ex);
+			}
+		}
+
 		return response;
 	}
 
@@ -265,4 +281,27 @@ public class PaymentService extends ApiService {
 
 		return (JsonResponse<?>) httpClient.post(url, new ObjectMapper().writeValueAsString(p));
 	}
+
+	public Boolean updatePaymentPayoutBlock(Integer vendorId) {
+		try {
+			JsonResponse<?> response = setPaymentAccountIsLocked(PaymentScheduleInfoMapper.convertLock(vendorId));
+			return response.isSuccess();
+		} catch (Exception e) {
+			logger.error("setPaymentAccountIsLocked()", e);
+			return false;
+		}
+	}
+
+	public Boolean updatePaymentPayoutUnblock(Integer vendorId) {
+		//get previous schedule info
+		VendorBlockPayoutScheduleInfoResponse previousPayoutSchedule = vendorBlockNewService.getVendorPreviousPayoutScheduleInfo((long)vendorId);
+		try {
+			JsonResponse<?> response = setPaymentAccountIsLocked(PaymentScheduleInfoMapper.convert(vendorId,previousPayoutSchedule));
+			return response.isSuccess();
+		} catch (Exception e) {
+			logger.error("setPaymentAccountIsLocked()", e);
+			return false;
+		}
+	}
+
 }
