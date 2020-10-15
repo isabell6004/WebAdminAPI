@@ -530,14 +530,16 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         }
 
         if (location != null) {
+            QCodeCountryEntity CCE = new QCodeCountryEntity("CCE");
+            String countryName = "";
             if (location.equals("229") || location.equals("38")) {
-                filter = filter.and(VA.countryName.eq("United States").or(VA.countryName.eq("Canada")));
+                countryName = Integer.valueOf(location) == 229 ? "United States" : "Canada";
+                filter = filter.and(VA.countryName.eq(countryName));
             } else {
                 filter = filter.and(queryDSLSQLFunctions.isnull(String.class, VA.countryName, "").ne("United States").and(queryDSLSQLFunctions.isnull(String.class, VA.countryName, "").ne("Canada")));
 
                 if (!country.equals("ALL")) {
-                    QCodeCountryEntity CCE = new QCodeCountryEntity("CCE");
-                    String countryName = new JPAQuery<>(entityManager).select(CCE.countryName).from(CCE).where(CCE.countryID.eq(Integer.valueOf(country))).fetchFirst();
+                    countryName = new JPAQuery<>(entityManager).select(CCE.countryName).from(CCE).where(CCE.countryID.eq(Integer.valueOf(country))).fetchFirst();
                     filter = filter.and(queryDSLSQLFunctions.isnull(String.class, VA.countryName, "").eq(countryName));
                 }
             }
@@ -924,12 +926,13 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         }).collect(Collectors.toList());
 
         if (location != null) {
+            QCodeCountryEntity CCE = new QCodeCountryEntity("CCE");
             if (location.equals("229") || location.equals("38")) {
-                ret = ret.stream().filter(entity -> "United States".equals(entity.getShowRoomCountry()) || "Canada".equals(entity.getShowRoomCountry())).collect(Collectors.toList());
+                String countryName = Integer.valueOf(location) == 229 ? "United States" : "Canada";
+                ret = ret.stream().filter(entity -> countryName.equals(entity.getShowRoomCountry())).collect(Collectors.toList());
             } else {
                 ret = ret.stream().filter(entity -> !"United States".equals(entity.getShowRoomCountry()) && !"Canada".equals(entity.getShowRoomCountry())).collect(Collectors.toList());
                 if (!country.equals("ALL")) {
-                    QCodeCountryEntity CCE = new QCodeCountryEntity("CCE");
                     String countryName = new JPAQuery<>(entityManager).select(CCE.countryName).from(CCE).where(CCE.countryID.eq(Integer.valueOf(country))).fetchFirst();
                     ret = ret.stream().filter(entity -> countryName.equals(entity.getShowRoomCountry())).collect(Collectors.toList());
                 }
