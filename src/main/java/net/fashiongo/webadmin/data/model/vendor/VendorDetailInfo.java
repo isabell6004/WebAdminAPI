@@ -1091,6 +1091,7 @@ public class VendorDetailInfo {
 		this.inHouseMemo = setting.getInHouseMemo();
 		this.businessCategory = vendor.getBusinessCategoryInfo();
 		this.imageServerID = 7;
+		this.adminWebServerID = 0;
 		this.companyTypeID = vendor.getTypeCode();
 		this.establishedYear = vendor.getEstablishedYear();
 		this.active = setting.getStatusCode() == 1;
