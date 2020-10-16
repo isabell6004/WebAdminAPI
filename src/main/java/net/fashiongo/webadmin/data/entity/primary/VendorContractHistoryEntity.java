@@ -7,13 +7,7 @@ import net.fashiongo.webadmin.data.model.vendor.SetVendorContractParameter;
 import net.fashiongo.webadmin.utility.Utility;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -91,6 +85,19 @@ public class VendorContractHistoryEntity {
     @Column(name = "account_executive_by")
     private String accountExecutiveBy;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id", updatable = false, insertable = false)
+    private VendorEntity vendorEntity;
+
+    public VendorEntity getVendorEntity() {
+        try {
+            vendorEntity.getVendor_id();
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
+        return vendorEntity;
+    }
+
     public static VendorContractHistoryEntity create(SetVendorContractParameter request) {
         return builder()
                 .vendorId(Long.valueOf(request.getWholeSalerID()))
@@ -103,7 +110,7 @@ public class VendorContractHistoryEntity {
                 .memo(StringUtils.isEmpty(request.getMemo()) ? "" : request.getMemo())
                 .createdBy(Utility.getUsername())
                 .createdOn(LocalDateTime.now())
-                .dateFrom(LocalDate.parse(request.getVendorContractFrom(), DateTimeFormatter.ofPattern("M/d/yyyy")).atTime(0,0,0,0))
+                .dateFrom(LocalDate.parse(request.getVendorContractFrom(), DateTimeFormatter.ofPattern("M/d/yyyy")).atTime(0, 0, 0, 0))
                 .isSetupFeeWaived(Optional.ofNullable(request.getIsSetupFeeWaived()).orElse("").equalsIgnoreCase("1"))
                 .isLastMonthServiceFeeWaived(Optional.ofNullable(request.getIsLastMonthServiceFeeWaived()).orElse("").equalsIgnoreCase("1"))
                 .planId((long) (request.getVendorContractPlanID() == null ? 0 : request.getVendorContractPlanID()))

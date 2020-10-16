@@ -4,14 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -166,6 +159,18 @@ public class VendorSettingEntity {
     public VendorSettingEntity() {
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id", updatable = false, insertable = false)
+    private VendorEntity vendorEntity;
+
+    public VendorEntity getVendorEntity() {
+        try {
+            vendorEntity.getVendor_id();
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
+        return vendorEntity;
+    }
     @Builder
     public VendorSettingEntity(Long vendorId, Integer statusCode, Boolean isBlock, Boolean isAdBlock, LocalDateTime openDate, LocalDateTime closedDate, String orderNotice, String buyerNotice, String sizeChart, String sizeChartImageFileName, Boolean isAllowVendorMainAnony, Boolean isAllowImmediateShopping, Boolean isAllowAccessUnverifiedBuyer, Boolean isProductSortByLastUpdate, BigDecimal minOrderByAmount, Integer minOrderByQty, BigDecimal extraCharge, BigDecimal extraChargeAmountFrom, BigDecimal extraChargeAmountTo, Boolean isShowFeedback, Boolean isShowEstimateShippingCharge, Boolean isPaperless, Boolean isConsolidation, Boolean isNew, Boolean isExclusive, Integer capAccount, Integer capCategory, Integer capFraudReport, Integer capItem, String inHouseMemo, String memo, Boolean isUsePgService, BigDecimal transactionFeeRate1, BigDecimal transactionFeeRate2, BigDecimal transactionFeeRate1Intl, BigDecimal transactionFeeRate2Intl, BigDecimal transactionFeeFixed, LocalDateTime createdOn, String createdBy, LocalDateTime modifiedOn, String modifiedBy, Boolean isStatusCodeUpdated, boolean isOpenNow, Boolean isIsBlockUpdated, Boolean isIsAdBlockUpdated/*, VendorEntity vendorEntity*/) {
         this.vendorId = vendorId;

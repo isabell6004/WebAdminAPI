@@ -42,10 +42,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -61,8 +62,8 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 
     @Override
     public List<VendorDetailInfo> findAllByID(Integer wholeSalerID) {
-        JPAQuery<VendorBasicInfo> query = new JPAQuery<>(entityManager);
-
+        JPAQuery<VendorEntity> query = new JPAQuery<>(entityManager);
+        JPAQuery<VendorBasicInfo> subquery = new JPAQuery<>(entityManager);
         QVendorEntity vendor = QVendorEntity.vendorEntity;
         QVendorAddressEntity VA = QVendorAddressEntity.vendorAddressEntity;
         QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
@@ -72,23 +73,25 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QAspnetMembershipEntity ASPM = QAspnetMembershipEntity.aspnetMembershipEntity;
         QVendorAdminAccountEntity VAA = QVendorAdminAccountEntity.vendorAdminAccountEntity;
         QVendorLambsKeyEntity VLK = QVendorLambsKeyEntity.vendorLambsKeyEntity;
-
-        query.select(Projections.constructor(VendorBasicInfo.class,
-                    vendor,
-                ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut).from(ASPM).where(ASPM.userId.eq(vendor.guid)),"IsLockedOut"),
-                ExpressionUtils.as(JPAExpressions.select(ASPM.lastLockoutDate).from(ASPM).where(ASPM.userId.eq(vendor.guid)),"LastLockoutDate"),
-                ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut.count()).from(ASPM).where(ASPM.userId.in(JPAExpressions.select(VAA.userGUID).from(VAA).where(VAA.wholeSalerID.eq(wholeSalerID).and(ASPM.isLockedOut.eq(true))))),"IsLockedOut2"),
-                ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)),"elambsuser")
-                )).from(vendor)
-                .innerJoin(VA).on(vendor.vendor_id.eq(VA.vendorId))
-                .innerJoin(VS).on(vendor.vendor_id.eq(VS.vendorId))
-                .innerJoin(VCH).on(vendor.vendor_id.eq(VCH.vendorId))
-                .leftJoin(VI).on(vendor.vendor_id.eq(VI.vendorId))
-                .where(vendor.vendor_id.eq(wholeSalerID.longValue())).distinct();
-
-        List<VendorBasicInfo> queryResult = query.fetch();
-        List<VendorDetailInfo> result = queryResult.size() > 0 ? Collections.singletonList(new VendorDetailInfo(queryResult.get(0))) : null;
-        return result;
+        QVendorEmailEntity VE = new QVendorEmailEntity("VE");
+        VendorEntity vendorEntity = query.select(vendor).from(vendor)
+                .innerJoin(vendor.vendorAddresses, VA).fetchJoin()
+                .innerJoin(vendor.vendorSetting, VS).fetchJoin()
+                .leftJoin(vendor.vendorContractHistory, VCH).fetchJoin()
+                .leftJoin(vendor.vendorIndustry, VI).fetchJoin()
+                .leftJoin(vendor.vendorEmail, VE).fetchJoin()
+                .where(vendor.vendor_id.eq(wholeSalerID.longValue())).distinct().fetchOne();
+        VendorBasicInfo vendorBasicInfo = subquery.select(Projections.constructor(VendorBasicInfo.class,
+                ASPM.isLockedOut,
+                ASPM.lastLockoutDate,
+                ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut.count()).from(ASPM).where(ASPM.userId.in(JPAExpressions.select(VAA.userGUID).from(VAA).where(VAA.wholeSalerID.eq(wholeSalerID).and(ASPM.isLockedOut.eq(true))))), "IsLockedOut2"),
+                ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser")
+        )).from(ASPM)
+                .where(ASPM.userId.eq(vendorEntity.getGuid())).fetchOne();
+        return Optional.ofNullable(vendorBasicInfo).map(entity -> {
+            entity.setVendor(vendorEntity);
+            return Collections.singletonList(new VendorDetailInfo(entity));
+        }).orElseGet(() -> null);
     }
 
     @Override

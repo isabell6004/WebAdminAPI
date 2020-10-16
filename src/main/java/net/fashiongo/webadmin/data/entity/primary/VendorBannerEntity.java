@@ -84,15 +84,15 @@ public class VendorBannerEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", updatable = false, insertable = false)
-    private VendorEntity vendor;
+    private VendorEntity vendorEntity;
 
     public VendorEntity getVendorEntity(){
         try{
-            vendor.getVendor_id();
+            vendorEntity.getVendor_id();
         }
         catch(EntityNotFoundException e){
             return null;
         }
-        return vendor;
+        return vendorEntity;
     }
 }

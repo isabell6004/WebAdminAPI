@@ -3,13 +3,7 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.Getter;
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -40,4 +34,18 @@ public class VendorIndustryEntity {
 
     @Column(name = "modified_by")
     private String modifiedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id", updatable = false, insertable = false)
+    private VendorEntity vendorEntity;
+
+    public VendorEntity getVendorEntity() {
+        try {
+            vendorEntity.getVendor_id();
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
+        return vendorEntity;
+    }
+
 }

@@ -2,11 +2,13 @@ package net.fashiongo.webadmin.data.model.vendor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.Setter;
 import net.fashiongo.webadmin.data.entity.primary.VendorEntity;
 
 import java.sql.Timestamp;
 
 @Getter
+@Setter
 public class VendorBasicInfo {
     private VendorEntity vendor;
 
@@ -25,8 +27,7 @@ public class VendorBasicInfo {
     public VendorBasicInfo() {
     }
 
-    public VendorBasicInfo(VendorEntity vendor, Boolean isLockedOut, Timestamp lastLockoutDate, Long isLockedOut2, Long elambsuser) {
-        this.vendor = vendor;
+    public VendorBasicInfo(Boolean isLockedOut, Timestamp lastLockoutDate, Long isLockedOut2, Long elambsuser) {
         this.isLockedOut = isLockedOut;
         this.lastLockoutDate = lastLockoutDate;
         this.isLockedOut2 = isLockedOut2;

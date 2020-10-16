@@ -3,16 +3,22 @@ package net.fashiongo.webadmin.data.entity.primary;
 import lombok.Getter;
 import lombok.Setter;
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
-import net.fashiongo.webadmin.data.entity.primary.show.MapShowSchedulePromotionPlanVendorEntity;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Getter
 @Entity
-@Table(name="vendor")
+@Table(name = "vendor")
 public class VendorEntity {
     @Id
     @Column(name = "vendor_id")
@@ -94,30 +100,25 @@ public class VendorEntity {
     @Column(name = "modified_by")
     private String modifiedBy;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
     private Set<VendorSettingEntity> vendorSetting;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
     private Set<VendorContractHistoryEntity> vendorContractHistory;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
     private Set<VendorIndustryEntity> vendorIndustry;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id", insertable = false, updatable = false, nullable = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
     private Set<VendorEmailEntity> vendorEmail;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
     private Set<VendorAddressEntity> vendorAddresses;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendor", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
     private Set<VendorBannerEntity> vendorBanner;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "WholeSalerID",referencedColumnName = "vendor_id", insertable = false, updatable = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
     private Set<MapWaUserVendorEntity> mapWaUserVendorEntities;
 }
 

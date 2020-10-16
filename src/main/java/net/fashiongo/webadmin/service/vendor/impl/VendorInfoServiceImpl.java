@@ -461,7 +461,6 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             } catch (Exception ex) {
                 log.warn(ex.getMessage(), ex);
             }
-//            wholeSaler.setChargedByCreditCard(requestVendorDetailInfo.getChargedByCreditCard());
 
             vendorWholeSalerEntityRepository.save(wholeSaler);
             vendorInfoNewService.updateDetailInfo(request, requestVendorDetailInfo, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());
