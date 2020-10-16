@@ -80,14 +80,14 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut.count()).from(ASPM).where(ASPM.userId.in(JPAExpressions.select(VAA.userGUID).from(VAA).where(VAA.wholeSalerID.eq(wholeSalerID).and(ASPM.isLockedOut.eq(true))))),"IsLockedOut2"),
                 ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)),"elambsuser")
                 )).from(vendor)
-                .innerJoin(VA).on(vendor.vendor_id.eq(VA.vendorId).and(VA.typeCode.eq(1)))
+                .innerJoin(VA).on(vendor.vendor_id.eq(VA.vendorId))
                 .innerJoin(VS).on(vendor.vendor_id.eq(VS.vendorId))
                 .innerJoin(VCH).on(vendor.vendor_id.eq(VCH.vendorId))
-                .innerJoin(VI).on(vendor.vendor_id.eq(VI.vendorId))
+                .leftJoin(VI).on(vendor.vendor_id.eq(VI.vendorId))
                 .where(vendor.vendor_id.eq(wholeSalerID.longValue())).distinct();
 
         List<VendorBasicInfo> queryResult = query.fetch();
-        List<VendorDetailInfo> result = Collections.singletonList(new VendorDetailInfo(queryResult.get(0)));
+        List<VendorDetailInfo> result = queryResult.size() > 0 ? Collections.singletonList(new VendorDetailInfo(queryResult.get(0))) : null;
         return result;
     }
 

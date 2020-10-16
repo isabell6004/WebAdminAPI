@@ -1051,7 +1051,7 @@ public class VendorDetailInfo {
 			industryTypeString.append(getIndustryType(industry.getTypeCode())).append(',');
 		}
 		String industryString = industryTypeString.toString();
-		if (industryString.substring(industryString.length() - 1).equals(',')) {
+		if (industryString.length() > 0 && industryString.substring(industryString.length() - 1).equals(',')) {
 			industryString = industryString.substring(0, industryString.length() - 1);
 		}
 
