@@ -244,7 +244,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         wholeSaler.setBillCity(requestVendorDetailInfo.getBillCity());
         wholeSaler.setBillState(requestVendorDetailInfo.getBillState());
         wholeSaler.setBillZipcode(requestVendorDetailInfo.getBillZipcode());
-        wholeSaler.setBillCountryID(requestVendorDetailInfo.getBillCountryID());
+//        wholeSaler.setBillCountryID(requestVendorDetailInfo.getBillCountryID());
 
         wholeSaler.setBillCountry(requestVendorDetailInfo.getBillCountry());
         wholeSaler.setBillPhone(requestVendorDetailInfo.getBillPhone());
@@ -255,7 +255,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
         wholeSaler.setState(requestVendorDetailInfo.getState());
         wholeSaler.setZipcode(requestVendorDetailInfo.getZipcode());
         wholeSaler.setCountry(requestVendorDetailInfo.getCountry());
-        wholeSaler.setCountryID(requestVendorDetailInfo.getCountryID());
+//        wholeSaler.setCountryID(requestVendorDetailInfo.getCountryID());
         wholeSaler.setPhone(requestVendorDetailInfo.getPhone());
         wholeSaler.setFax(requestVendorDetailInfo.getFax());
 
@@ -461,7 +461,7 @@ public class VendorInfoServiceImpl implements VendorInfoService {
             } catch (Exception ex) {
                 log.warn(ex.getMessage(), ex);
             }
-            wholeSaler.setChargedByCreditCard(requestVendorDetailInfo.getChargedByCreditCard());
+//            wholeSaler.setChargedByCreditCard(requestVendorDetailInfo.getChargedByCreditCard());
 
             vendorWholeSalerEntityRepository.save(wholeSaler);
             vendorInfoNewService.updateDetailInfo(request, requestVendorDetailInfo, Utility.getUserInfo().getUserId(), Utility.getUserInfo().getUsername());

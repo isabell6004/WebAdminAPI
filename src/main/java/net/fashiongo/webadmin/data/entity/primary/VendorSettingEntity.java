@@ -163,11 +163,6 @@ public class VendorSettingEntity {
     @Transient
     private Boolean isIsAdBlockUpdated = false;
 
-//    @NotFound(action = NotFoundAction.IGNORE)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "vendor_id", updatable = false, insertable = false)
-//    private VendorEntity vendorEntity;
-
     public VendorSettingEntity() {
     }
 
@@ -218,6 +213,5 @@ public class VendorSettingEntity {
         this.isOpenNow = isOpenNow;
         this.isIsBlockUpdated = isIsBlockUpdated;
         this.isIsAdBlockUpdated = isIsAdBlockUpdated;
-//        this.vendorEntity = vendorEntity;
     }
 }

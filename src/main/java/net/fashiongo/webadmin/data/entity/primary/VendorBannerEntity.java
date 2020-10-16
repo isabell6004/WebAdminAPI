@@ -2,12 +2,11 @@ package net.fashiongo.webadmin.data.entity.primary;
 
 import lombok.Getter;
 import net.fashiongo.common.conversion.LocalDateTimeConverter;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -83,8 +82,17 @@ public class VendorBannerEntity {
     @Column(name = "modified_by")
     private String modifiedBy;
 
-    @NotFound(action = NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", updatable = false, insertable = false)
     private VendorEntity vendor;
+
+    public VendorEntity getVendorEntity(){
+        try{
+            vendor.getVendor_id();
+        }
+        catch(EntityNotFoundException e){
+            return null;
+        }
+        return vendor;
+    }
 }
