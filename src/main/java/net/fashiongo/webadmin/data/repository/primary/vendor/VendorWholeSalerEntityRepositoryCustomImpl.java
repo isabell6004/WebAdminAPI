@@ -107,23 +107,23 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 
     @Override
     public Long countByCodeNameAndNotWholeSalerID(Integer wholeSalerID, String codeName) {
-        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QVendorEntity V = QVendorEntity.vendorEntity;
         JPAQuery<Long> query = new JPAQuery<>(entityManager);
 
-        query.select(W.wholeSalerID.count()).from(W).where(W.codeName.eq(codeName).and(W.wholeSalerID.ne(wholeSalerID)));
+        query.select(V.vendor_id.count()).from(V).where(V.codename.eq(codeName).and(V.vendor_id.ne(wholeSalerID.longValue())));
 
         return query.fetchFirst();
     }
 
     @Override
     public List<VendorGroupingSelected> findListVendorGroupingSelect(Integer wholeSalerID, Integer[] companyType, String keyword, ArrayList<Integer> categorys, String alphabet, String vendorType) {
-        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QVendorEntity V = QVendorEntity.vendorEntity;
         QMapWholeSalerGroupEntity M = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
         QCountEntity count = QCountEntity.countEntity;
 
         StringExpression selectChk = Expressions.asString("1").as("SelectChk");
 
-        StringPath pathVendorType = Expressions.stringPath(W, vendorType);
+        StringPath pathVendorType = Expressions.stringPath(V, vendorType);
 
         MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
         JPASQLQuery<VendorGroupingSelected> jpasqlQuery = new JPASQLQuery<VendorGroupingSelected>(entityManager, mssqlServer2012Templates);
@@ -133,14 +133,14 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 
         expression = expression.and(M.wholeSalerID.eq(wholeSalerID));
         if (companyType != null && companyType.length != 0) {
-            expression = expression.and(W.companyTypeID.in(companyType));
+            expression = expression.and(V.typeCode.in(companyType));
         }
         if (categorys != null && categorys.size() != 0) {
             expression = expression.and(M.wholeSalerID2.in(
                     JPAExpressions.select(count.entityID).from(count).where(count.countTypeID.eq(2).and(count.referenceID.in(categorys)))));
         }
         if (StringUtils.isNotEmpty(alphabet)) {
-            expression = expression.and(W.companyName.startsWith(alphabet));
+            expression = expression.and(V.name.startsWith(alphabet));
         }
         if (StringUtils.isNotEmpty(keyword) && !keyword.equals(" ")) {
             expression = expression.and(pathVendorType.startsWith(keyword));
@@ -149,25 +149,26 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         jpasqlQuery.select(Projections.constructor(VendorGroupingSelected.class,
                 M.mapID,
                 M.wholeSalerID2.as("WholeSalerID"),
-                W.companyName,
-                W.companyTypeID,
+                V.name,
+                V.typeCode,
                 selectChk))
-                .from(W)
-                .innerJoin(M).on(W.wholeSalerID.eq(M.wholeSalerID2))
+                .from(V)
+                .innerJoin(M).on(V.vendor_id.eq(M.wholeSalerID2.longValue()))
                 .where(expression)
-                .orderBy(W.companyName.asc());
+                .orderBy(V.name.asc());
 
         return jpasqlQuery.fetch();
     }
 
     @Override
     public List<VendorGroupingUnselect> findListVendorGroupingUnSelect(Integer wholeSalerID, Integer[] companyType, String keyword, ArrayList<Integer> categorys, String alphabet, String vendorType) {
-        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QVendorEntity V = QVendorEntity.vendorEntity;
+        QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
         QMapWholeSalerGroupEntity M = QMapWholeSalerGroupEntity.mapWholeSalerGroupEntity;
         QCountEntity count = QCountEntity.countEntity;
 
         StringExpression selectChk = Expressions.asString("0").as("SelectChk");
-        StringPath pathVendorType = Expressions.stringPath(W, vendorType);
+        StringPath pathVendorType = Expressions.stringPath(V, vendorType);
 
         MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
         JPASQLQuery<VendorGroupingUnselect> jpasqlQuery = new JPASQLQuery<VendorGroupingUnselect>(entityManager, mssqlServer2012Templates);
@@ -175,9 +176,9 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         Expression<Integer> constant = Expressions.constant(1);
         BooleanExpression expression = Expressions.asNumber(1).eq(constant);
 
-        expression = expression.and(W.wholeSalerID.ne(wholeSalerID));
+        expression = expression.and(V.vendor_id.ne(wholeSalerID.longValue()));
         if (companyType != null && companyType.length != 0) {
-            expression = expression.and(W.companyTypeID.in(companyType));
+            expression = expression.and(V.typeCode.in(companyType));
         }
         if (categorys != null && categorys.size() != 0) {
             expression = expression.and(M.wholeSalerID2.in(
@@ -185,7 +186,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
             ));
         }
         if (StringUtils.isNotEmpty(alphabet)) {
-            expression = expression.and(W.companyName.startsWith(alphabet));
+            expression = expression.and(V.name.startsWith(alphabet));
         }
         if (StringUtils.isNotEmpty(keyword) && !keyword.equals(" ")) {
             expression = expression.and(pathVendorType.startsWith(keyword));
@@ -197,30 +198,33 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         companyTypes.add(3);
 
         jpasqlQuery.select(Projections.constructor(VendorGroupingUnselect.class,
-                W.wholeSalerID.as("WholeSalerID"),
-                W.companyName,
-                W.companyTypeID,
+                V.vendor_id.intValue().as("WholeSalerID"),
+                V.name.as("CompanyName"),
+                V.typeCode.as("CompanyTypeID"),
                 selectChk))
-                .from(W)
-                .leftJoin(M).on(M.wholeSalerID.eq(wholeSalerID).and(W.wholeSalerID.eq(M.wholeSalerID2)))
-                .where(M.wholeSalerID.isNull().and(W.companyTypeID.in(companyTypes)).and(W.active.eq(true)).and(W.shopActive.eq(true)).and(W.orderActive.eq(true))
+                .from(V)
+                .leftJoin(M).on(M.wholeSalerID.eq(wholeSalerID).and(V.vendor_id.eq(M.wholeSalerID2.longValue())))
+                .leftJoin(VS).on(VS.vendorId.eq(V.vendor_id))
+                .where(M.wholeSalerID.isNull().and(V.typeCode.in(companyTypes)).and(VS.statusCode.eq(3))
                         .and(expression))
-                .orderBy(W.companyName.asc());
+                .orderBy(V.name.asc());
 
         return jpasqlQuery.fetch();
     }
 
     @Override
     public List<VendorsCompanyName> findVendors() {
-        QWholeSalerEntity W = QWholeSalerEntity.wholeSalerEntity;
+        QVendorEntity V = QVendorEntity.vendorEntity;
+        QVendorSettingEntity VS = QVendorSettingEntity.vendorSettingEntity;
         JPAQuery<VendorsCompanyName> query = new JPAQuery<>(entityManager);
 
         query.select(Projections.constructor(VendorsCompanyName.class,
-                W.wholeSalerID,
-                W.companyName))
-                .from(W)
-                .where(W.active.eq(true))
-                .orderBy(W.companyName.asc());
+                V.vendor_id.intValue(),
+                V.name))
+                .from(V)
+                .leftJoin(VS).on(VS.vendorId.eq(V.vendor_id))
+                .where(VS.statusCode.in(1,2,3))
+                .orderBy(V.name.asc());
 
         return query.fetch();
     }
