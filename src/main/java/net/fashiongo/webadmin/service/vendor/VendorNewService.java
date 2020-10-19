@@ -13,6 +13,4 @@ public interface VendorNewService {
     List<VendorAutocompleteResponse> getShopActiveVendors(String prefix);
 
     VendorResponse getVendorById(Long vendorId);
-
-    void setVendorHold(Long vendorId, Integer active, LocalDateTime holdDate);
 }

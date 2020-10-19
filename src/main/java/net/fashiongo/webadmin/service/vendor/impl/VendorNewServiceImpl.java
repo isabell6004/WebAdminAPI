@@ -86,9 +86,4 @@ public class VendorNewServiceImpl implements VendorNewService {
             throw new RuntimeException("fail to call fashiongo api: " + response.getHeader().getResultMessage());
         }
     }
-
-    @Override
-    public void setVendorHold(Long vendorId, Integer active, LocalDateTime holdDate) {
-
-    }
 }
