@@ -75,8 +75,8 @@ public class VendorEntityRepositoryCustomImpl extends QuerydslRepositorySupport 
         return from(vendorEntity)
                 .innerJoin(vendorEntity.vendorSetting, vendorSettingEntity).fetchJoin()
                 .innerJoin(vendorEntity.vendorAddresses, vendorAddressEntity).fetchJoin()
-                .where(vendorSettingEntity.statusCode.in(Arrays.asList(2,3)),
-                        vendorEntity.classCode.eq(2),
+                .where(vendorSettingEntity.statusCode.eq(3),  //.in(Arrays.asList(2,3)),
+                        //vendorEntity.classCode.eq(2),
                         vendorEntity.vendor_id.intValue().in(
                                 from(vendorContent)
                                         .select(vendorContent.wholeSalerId)
