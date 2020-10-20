@@ -81,17 +81,22 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 .leftJoin(vendor.vendorIndustry, VI).fetchJoin()
                 .leftJoin(vendor.vendorEmail, VE).fetchJoin()
                 .where(vendor.vendor_id.eq(wholeSalerID.longValue())).distinct().fetchOne();
-        VendorBasicInfo vendorBasicInfo = subquery.select(Projections.constructor(VendorBasicInfo.class,
-                ASPM.isLockedOut,
-                ASPM.lastLockoutDate,
-                ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut.count()).from(ASPM).where(ASPM.userId.in(JPAExpressions.select(VAA.userGUID).from(VAA).where(VAA.wholeSalerID.eq(wholeSalerID).and(ASPM.isLockedOut.eq(true))))), "IsLockedOut2"),
-                ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser")
-        )).from(ASPM)
-                .where(ASPM.userId.eq(vendorEntity.getGuid())).fetchOne();
-        return Optional.ofNullable(vendorBasicInfo).map(entity -> {
-            entity.setVendor(vendorEntity);
-            return Collections.singletonList(new VendorDetailInfo(entity));
-        }).orElseGet(() -> null);
+
+        if (vendorEntity == null) {
+            return Collections.emptyList();
+        } else {
+            VendorBasicInfo vendorBasicInfo = subquery.select(Projections.constructor(VendorBasicInfo.class,
+                    ASPM.isLockedOut,
+                    ASPM.lastLockoutDate,
+                    ExpressionUtils.as(JPAExpressions.select(ASPM.isLockedOut.count()).from(ASPM).where(ASPM.userId.in(JPAExpressions.select(VAA.userGUID).from(VAA).where(VAA.wholeSalerID.eq(wholeSalerID).and(ASPM.isLockedOut.eq(true))))), "IsLockedOut2"),
+                    ExpressionUtils.as(JPAExpressions.select(VLK.wholeSalerID.count()).from(VLK).where(VLK.wholeSalerID.eq(wholeSalerID)), "elambsuser")
+            )).from(ASPM)
+                    .where(ASPM.userId.eq(vendorEntity.getGuid())).fetchOne();
+            return Optional.ofNullable(vendorBasicInfo).map(entity -> {
+                entity.setVendor(vendorEntity);
+                return Collections.singletonList(new VendorDetailInfo(entity));
+            }).orElseGet(() -> null);
+        }
     }
 
     @Override
