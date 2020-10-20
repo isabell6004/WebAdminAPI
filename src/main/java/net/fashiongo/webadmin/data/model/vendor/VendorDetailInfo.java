@@ -298,8 +298,8 @@ public class VendorDetailInfo {
 		this.adminWebServerID = 0;
 		this.companyTypeID = vendor.getTypeCode();
 		this.establishedYear = vendor.getEstablishedYear();
-		this.active = setting.getStatusCode() == 1;
-		this.shopActive = setting.getStatusCode() == 2;
+		this.active = setting.getStatusCode() == 1 || setting.getStatusCode() == 2 || setting.getStatusCode() == 3;
+		this.shopActive = setting.getStatusCode() == 2 || setting.getStatusCode() == 3;
 		this.orderActive = setting.getStatusCode() == 3;
 		this.industryType = industryString;
 		this.consolidationYN = setting.getIsConsolidation();
