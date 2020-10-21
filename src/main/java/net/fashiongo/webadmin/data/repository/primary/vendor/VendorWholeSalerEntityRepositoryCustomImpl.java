@@ -680,7 +680,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         Integer status = param.getStatus() == null ? 0 : param.getStatus();
         Integer assignedUser = param.getAssignedUser() == null ? 0 : param.getAssignedUser();
         Integer fgExclusiveType = param.getFgExclusiveType();
-
+        Integer sourcetype = param.getSourcetype() == null ? 0 : param.getSourcetype();
         if (wholeSalerID == 0) wholeSalerID = null;
 
         Expression<Integer> constant = Expressions.constant(1);
@@ -902,6 +902,9 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 
         if (fgExclusiveType != null) {
             filter = filter.and(VS.isExclusive.eq(true));
+        }
+        if (sourcetype > 0) {
+            filter = filter.and(V.sourceCode.eq(sourcetype));
         }
         List<VendorListCSVDto> list = jpasqlQuery.where(filter).orderBy(V.vendor_id.desc(), V.startingDate.desc()).fetch();
         Map<Long, List<VendorListCSVDto>> vendorListMap = list.stream().collect(Collectors.groupingBy(VendorListCSVDto::getId));
