@@ -59,6 +59,6 @@ public class VendorCreditCardList implements Serializable {
 	private String attachment;
 
 	@JsonProperty("IsRecurring")
-	private Boolean recurring;
+	private Boolean IsRecurring;
 	
 }

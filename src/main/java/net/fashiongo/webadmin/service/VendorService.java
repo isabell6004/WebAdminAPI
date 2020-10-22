@@ -47,12 +47,9 @@ public class VendorService extends ApiService {
 	
 	@Autowired
 	private BuyerRatingActiveRepository buyerRatingActiveRepository;
-	
+
 	@Autowired
 	private VendorCreditCardRepository vendorCreditCardRepository;
-	
-	@Autowired
-	private VendorCompanyCardRepository vendorCompanyCardRepository;
 	
 	@Autowired
 	private LogCommunicationRepository logCommunicationRepository;
@@ -232,74 +229,43 @@ public class VendorService extends ApiService {
     public ResultCode setVendorCreditCard(SetVendorCreditCardParameter parameters) {
         ResultCode result = new ResultCode(false, 0, null);
 
-        VendorCreditCard vcc = new VendorCreditCard();
-        VendorCompanyCard vccard = new VendorCompanyCard();
+        VendorCreditCard vcc = null;
+        VendorEntity vendor = vendorEntityRepository.findByVendorId(parameters.getVendorID().longValue());
         String guid = null;
 
         switch (parameters.getType()) {
             case "Add":
-                vcc.setWholeSalerID(parameters.getVendorID());
-                vcc.setCardTypeID(parameters.getVendorCreditCardID());
-                vcc.setLast4Digit(parameters.getCreditCard());
-                vcc.setAttachment(parameters.getAttachment());
-                vcc.setIsRecurring(parameters.getRecurring());
-                vcc.setZipcode(parameters.getZipcode());
-                vcc.setState(parameters.getState());
-                vcc.setCity(parameters.getCity());
-                vcc.setStreetNo(parameters.getStreet());
+                vcc = new VendorCreditCard();
                 vcc.setCreatedOn(LocalDateTime.now());
                 vcc.setCreatedBy(Utility.getUsername());
-                vcc.setModifiedOn(LocalDateTime.now());
-                vcc.setModifiedBy(Utility.getUsername());
-                vendorCreditCardRepository.save(vcc);
-
-                vccard = vendorCompanyCardRepository.findOneBywholeSalerId(parameters.getVendorID());
-                if (vccard != null) {
-                    guid = vccard.getWholeSalerGUID();
-                }
-
-                vccard.setChargedByCreditCard(true);
-                vendorCompanyCardRepository.save(vccard);
-
-                if (!StringUtils.isEmpty(guid)) {
-                    result.setResultCode(1);
-                    result.setResultMsg(guid);
-                } else {
-                    result.setResultCode(0);
-                    result.setResultMsg(null);
-                }
                 break;
             default:
-                vcc = vendorCreditCardRepository.findOneByVendorCreditCardID(parameters.getVendorCreditCardID());
-                vcc.setWholeSalerID(parameters.getVendorID());
-                vcc.setCardTypeID(parameters.getVendorCreditCardID());
-                vcc.setLast4Digit(parameters.getCreditCard());
-                vcc.setAttachment(parameters.getAttachment());
-                vcc.setIsRecurring(parameters.getRecurring());
-                vcc.setZipcode(parameters.getZipcode());
-                vcc.setState(parameters.getState());
-                vcc.setCity(parameters.getCity());
-                vcc.setStreetNo(parameters.getStreet());
-                vcc.setModifiedOn(LocalDateTime.now());
-                vcc.setModifiedBy(Utility.getUsername());
-                vendorCreditCardRepository.save(vcc);
-
-                vccard = vendorCompanyCardRepository.findOneBywholeSalerId(parameters.getVendorID());
-                if (vccard != null) {
-                    guid = vccard.getWholeSalerGUID();
-                }
-
-                vccard.setChargedByCreditCard(true);
-                vendorCompanyCardRepository.save(vccard);
-
-                if (!StringUtils.isEmpty(guid)) {
-                    result.setResultCode(1);
-                    result.setResultMsg(guid);
-                } else {
-                    result.setResultCode(0);
-                    result.setResultMsg(null);
-                }
+                vcc = Optional.ofNullable(vendorCreditCardRepository.findOneByVendorCreditCardID(parameters.getVendorCreditCardID()))
+                    .orElseThrow(()->new IllegalArgumentException("No vendor credit card exists id : "+parameters.getVendorID()));
                 break;
+        }
+        vcc.setWholeSalerID(parameters.getVendorID());
+        vcc.setCardTypeID(parameters.getCreditCardType());
+        vcc.setLast4Digit(parameters.getCreditCard());
+        vcc.setAttachment(parameters.getAttachment());
+        vcc.setIsRecurring(parameters.getRecurring());
+        vcc.setZipcode(parameters.getZipcode());
+        vcc.setState(parameters.getState());
+        vcc.setCity(parameters.getCity());
+        vcc.setStreetNo(parameters.getStreet());
+        vcc.setModifiedOn(LocalDateTime.now());
+        vcc.setModifiedBy(Utility.getUsername());
+        vendorCreditCardRepository.save(vcc);
+        if (vendor != null) {
+            guid = vendor.getGuid();
+        }
+
+        if (!StringUtils.isEmpty(guid)) {
+            result.setResultCode(1);
+            result.setResultMsg(guid);
+        } else {
+            result.setResultCode(0);
+            result.setResultMsg(null);
         }
         return result;
     }
