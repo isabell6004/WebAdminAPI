@@ -57,6 +57,9 @@ public class SisterVendorController {
 
     @PostMapping(value = "vendor/setvendorsister", produces = "application/json")
     public ResultCode setVendorSister(@RequestBody SetVendorSisterParamer param) {
+        if(param.getWid().equals(param.getSisterid())){
+            return new ResultCode(false, -1, "failure");
+        }
         if (sisterVendorService.setSisterVendor(param.getWid(), param.getSisterid())) {
             return new ResultCode(true, 1, "success");
         } else {
