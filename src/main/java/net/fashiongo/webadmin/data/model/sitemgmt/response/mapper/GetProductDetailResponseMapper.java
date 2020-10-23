@@ -21,7 +21,7 @@ public class GetProductDetailResponseMapper {
                 .imageUrl(product.getImageUrl())
                 .images(product.getImages())
                 .sizes(product.getSize().getSizes())
-                .colors(product.getInventories().stream().map(Product.Inventory::getColorName).collect(Collectors.toList()))
+                .colors(product.getInventories().stream().map(Product.Inventory::getColorName).distinct().collect(Collectors.toList()))
                 .build();
     }
 }
