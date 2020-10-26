@@ -2,22 +2,19 @@ package net.fashiongo.webadmin.service.renewal;
 
 import lombok.RequiredArgsConstructor;
 import net.fashiongo.common.dal.JdbcHelper;
-import net.fashiongo.webadmin.data.model.statistics.*;
+import net.fashiongo.webadmin.data.model.statistics.BestItems;
+import net.fashiongo.webadmin.data.model.statistics.HotSearch;
+import net.fashiongo.webadmin.data.model.statistics.HotSearchKeyword;
 import net.fashiongo.webadmin.data.model.statistics.response.GetBestItemsResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchKeywordResponse;
 import net.fashiongo.webadmin.data.model.statistics.response.GetHotSearchResponse;
-import net.fashiongo.webadmin.data.model.statistics.response.GetStatWholeSalerItemResponse;
-import net.fashiongo.webadmin.data.repository.primary.ProductsEntityRepository;
 import net.fashiongo.webadmin.data.repository.primary.QuerySearchRepository;
 import net.fashiongo.webadmin.data.repository.primary.StatisticsWaBestItemPerDayEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.SystemImageServersEntityRepository;
-import net.fashiongo.webadmin.data.repository.primary.SystemVendorAdminWebServerEntityRepository;
 import net.fashiongo.webadmin.data.repository.stats.SearchEntityRepository;
 import net.fashiongo.webadmin.model.product.Product;
 import net.fashiongo.webadmin.model.product.ProductSearchCondition;
 import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import net.fashiongo.webadmin.service.product.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,12 +33,6 @@ public class RenewalStaticService {
 	protected final JdbcHelper jdbcHelper;
 
 	private final JdbcTemplate jdbcTemplate;
-
-	private final SystemImageServersEntityRepository systemImageServersEntityRepository;
-
-	private final SystemVendorAdminWebServerEntityRepository systemVendorAdminWebServerEntityRepository;
-
-	private final ProductsEntityRepository productsEntityRepository;
 
 	private final StatisticsWaBestItemPerDayEntityRepository statisticsWaBestItemPerDayEntityRepository;
 
@@ -89,22 +80,6 @@ public class RenewalStaticService {
 		List<Map<String, Object>> up_wa_GetVendorStatistics = this.jdbcTemplate.queryForList("exec up_wa_GetVendorStatistics ?, ?, ?, ?", param.get(0), param.get(1), param.get(2), param.get(3));
 
 		return up_wa_GetVendorStatistics;
-	}
-
-	public GetStatWholeSalerItemResponse getStatWholeSalerItem(Integer adminWebServerID, Integer imageServerID, String vendorName, LocalDateTime df, LocalDateTime dt) {
-
-		List<VendorAdminWebServerUrl> table = systemVendorAdminWebServerEntityRepository.findURLGroupByWebServerIDAndAdminWebServerID();
-		List<ImageServerUrl> table1 = systemImageServersEntityRepository.findImageServerURlGroupByImageServerID();
-		List<AdminServerProducts> table2 = productsEntityRepository.getAdminServerProducts(adminWebServerID, imageServerID, vendorName);
-		List<Long> table3 = Collections.singletonList(productsEntityRepository.getTotalItemCount(adminWebServerID, imageServerID));
-
-
-		return GetStatWholeSalerItemResponse.builder()
-				.vendorAdminWebServerUrl(table)
-				.imageServerUrl(table1)
-				.adminServerProducts(table2)
-				.totalItemCount(table3)
-				.build();
 	}
 
 	public Map<String, Object> getStatReport(Integer intervalType, Boolean samepoint, Integer reporttype, LocalDateTime dtStart, LocalDateTime dtEnd) {

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Collection;
 import java.util.List;
 
-public interface ProductsEntityRepository extends JpaRepository<ProductsEntity, Integer>, ProductsEntityRepositoryCustom {
+public interface ProductsEntityRepository extends JpaRepository<ProductsEntity, Integer> {
 
     List<ProductsEntity> findByVendorCategoryEntityInAndActive(Collection<VendorCategoryEntity> vendorCategoryEntities, Boolean active);
 }
