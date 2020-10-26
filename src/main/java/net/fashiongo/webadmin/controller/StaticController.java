@@ -178,21 +178,6 @@ public class StaticController {
         return new JsonResponse<>(true, "", result);
     }
 
-    @PostMapping(value = "getstatwholesaleritem")
-    public JsonResponse<GetStatWholeSalerItemResponse> getstatwholesaleritem(@RequestBody GetStatWholeSalerItemParamter parameter) {
-
-        Integer adminWebServerID = Optional.ofNullable(parameter.getAdminWebServerID()).orElse(0);
-        Integer imageServerID = Optional.ofNullable(parameter.getImageServerID()).orElse(0);
-        String vendorName = parameter.getVendorname();
-
-//		LocalDateTime df = DateUtils.convertToLocalDateTime(parameter.getFromDate(),"F").toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy");
-//		LocalDateTime dt = DateUtils.convertToLocalDateTime(parameter.getToDate(),"T").toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy");
-
-        GetStatWholeSalerItemResponse data = renewalStaticService.getStatWholeSalerItem(adminWebServerID, imageServerID, vendorName, null, null);
-
-        return new JsonResponse<>(true, "", data);
-    }
-
     @PostMapping(value = "getstatreport")
     public JsonResponse<Map<String, Object>> getStatReport(@RequestBody GetStatReportParameter parameter) {
 
