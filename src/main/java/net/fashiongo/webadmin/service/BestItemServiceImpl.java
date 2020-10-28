@@ -93,10 +93,10 @@ public class BestItemServiceImpl implements BestItemService {
                 .ifPresent(t -> builder.queryParam("status", t));
 
         if (listStatus != null) {
-            builder.queryParam("listStatus",false);
+            builder.queryParam("listStatus",listStatus);
         }
         else {
-            builder.queryParam("listStatus",listStatus);
+            builder.queryParam("listStatus",false);
         }
 
         UriComponents uri = builder.build(false);
