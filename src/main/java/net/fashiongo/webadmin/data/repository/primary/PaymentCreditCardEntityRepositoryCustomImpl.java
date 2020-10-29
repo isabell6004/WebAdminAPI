@@ -78,9 +78,9 @@ public class PaymentCreditCardEntityRepositoryCustomImpl implements PaymentCredi
         JPASQLQuery<CreditCardInfo> query = new JPASQLQuery<CreditCardInfo>(entityManager, new MSSQLServer2012Templates());
 
         query.select(Projections.constructor(CreditCardInfo.class,
-                PCC.creditCardID, PCC.retailerID, PCC.referenceID, PCC.last4Digit, PCC.cvv,
-                PCC.email, PCC.nameOnCard, PCC.street, PCC.city, PCC.state, PCC.zipcode, PCC.country, PCC.countryID,
-                PCC.isDefaultCard, PCC.cardStatusID, PCC.isDeleted, PCC.createdOn, PCC.createdBy, PCC.modifiedOn, PCC.modifiedBy,
+                PCC.creditCardID, PCC.retailerID, PCC.referenceID, PCC.last4Digit,
+                PCC.nameOnCard, PCC.countryID,
+                PCC.isDefaultCard, PCC.cardStatusID, PCC.isDeleted, PCC.createdOn, PCC.modifiedOn,
                 PCC.cardTypeID, CCT.creditCardType,
                 TR.companyName.concat("(").concat(TR.lastName).concat(TR.firstName).concat(")").as("Buyer"),
                 CCT.creditCardType.concat(" ending in ").concat(PCC.last4Digit).as("CreditCardInfo"),
@@ -91,9 +91,9 @@ public class PaymentCreditCardEntityRepositoryCustomImpl implements PaymentCredi
                 queryDSLSQLFunctions.isnull(Long.class,ufnGetPendingPaymentCountByCreditCardID(PCC.creditCardID), 0).as("PendingCount"),
                 queryDSLSQLFunctions.isnull(String.class, ufnGetLastPendingPaymentReasonByCreditCardID(PCC.creditCardID), "").as("Reason")
         )).from(PCC)
-        .innerJoin(TR).on(PCC.retailerID.eq(TR.retailerID))
-        .leftJoin(CCT).on(PCC.cardTypeID.eq(CCT.creditCardTypeID))
-        .leftJoin(LCS).on(PCC.cardStatusID.eq(LCS.cardStatusID));
+                .innerJoin(TR).on(PCC.retailerID.eq(TR.retailerID))
+                .leftJoin(CCT).on(PCC.cardTypeID.eq(CCT.creditCardTypeID))
+                .leftJoin(LCS).on(PCC.cardStatusID.eq(LCS.cardStatusID));
 
         if (cardID != null) {
             sqlWhere = sqlWhere.and(PCC.creditCardID.like("%"+cardID+"%"));
