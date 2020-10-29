@@ -33,7 +33,7 @@ public class TokenAuthenticationService {
 	static final String SECRET = "fgwav2^^9070";
 	static final String TOKEN_PREFIX = "Bearer";
 	static final String HEADER_STRING = "Authorization";
-	static final long EXPIRATIONTIME = 86400000; // default, 24 hours
+	static final long EXPIRATIONTIME = 43200000;// default 12 hours
 	
 	public static void addAuthentication(HttpServletRequest request, HttpServletResponse response,
 			WebAdminUserAuthenticationToken authInfo) throws IOException {
