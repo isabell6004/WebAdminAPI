@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.controller;
 import net.fashiongo.webadmin.data.model.bestofbest.response.BestItemCategoryResponse;
 import net.fashiongo.webadmin.data.model.bestofbest.response.BestItemProductListResponse;
 import net.fashiongo.webadmin.data.model.bestofbest.response.VendorListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.OrderActiveVendorResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.service.BestItemService;
 import net.fashiongo.webadmin.service.CacheService;
@@ -24,6 +25,12 @@ public class  BestItemController {
 
     @Autowired
     private CacheService cacheService;
+
+    @GetMapping("/getOrderActiveVendors")
+    public JsonResponse<List<OrderActiveVendorResponse>> getVendorList() {
+        List<OrderActiveVendorResponse> data = bestItemService.getOrderActiveVendors();
+        return new JsonResponse<>(true, null, data);
+    }
 
     @GetMapping("/getVendorList")
     public JsonResponse<CollectionObject<VendorListResponse>> getVendorList(@RequestParam(value = "pn") int pageNum,

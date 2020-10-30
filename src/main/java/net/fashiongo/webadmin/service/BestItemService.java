@@ -3,6 +3,7 @@ package net.fashiongo.webadmin.service;
 import net.fashiongo.webadmin.data.model.bestofbest.response.BestItemCategoryResponse;
 import net.fashiongo.webadmin.data.model.bestofbest.response.BestItemProductListResponse;
 import net.fashiongo.webadmin.data.model.bestofbest.response.VendorListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.OrderActiveVendorResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.service.externalutil.response.CollectionObject;
 import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
@@ -10,6 +11,7 @@ import net.fashiongo.webadmin.service.externalutil.response.SingleObject;
 import java.util.List;
 
 public interface BestItemService {
+    public List<OrderActiveVendorResponse> getOrderActiveVendors();
     CollectionObject<VendorListResponse> getVendorList(int pageNum,
                                                        int pageSize,
                                                        Long vendorId,

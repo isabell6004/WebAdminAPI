@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.fashiongo.webadmin.data.model.bestofbest.response.BestItemCategoryResponse;
 import net.fashiongo.webadmin.data.model.bestofbest.response.BestItemProductListResponse;
 import net.fashiongo.webadmin.data.model.bestofbest.response.VendorListResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.ActiveVendorResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.GetVendorsResponse;
+import net.fashiongo.webadmin.data.model.vendor.response.OrderActiveVendorResponse;
 import net.fashiongo.webadmin.model.pojo.common.ResultCode;
 import net.fashiongo.webadmin.model.pojo.login.WebAdminLoginUser;
 import net.fashiongo.webadmin.service.BestItemService;
@@ -69,6 +72,26 @@ public class BestItemServiceImpl implements BestItemService {
         ResultCode result = new ResultCode(response.getHeader().isSuccessful(), response.getHeader().getResultCode(), response.getHeader().getResultMessage());
 
         return result;
+    }
+
+    @Override
+    public List<OrderActiveVendorResponse> getOrderActiveVendors() {
+
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/active";
+
+        FashionGoApiResponse<GetVendorsResponse> response = httpCaller.get(endpoint, getHeader(),
+                new ParameterizedTypeReference<FashionGoApiResponse<GetVendorsResponse>>() {});
+
+        if (response == null) {
+            throw new RuntimeException("unknown exception occurred while calling fashiongo api.");
+        }
+
+        if (response.getHeader().isSuccessful()) {
+            return OrderActiveVendorResponse.createResponse(response.getData().getVendor());
+        } else {
+            throw new RuntimeException("fail to call fashiongo api: " + response.getHeader().getResultMessage());
+        }
+
     }
 
     @Override
