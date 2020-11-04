@@ -28,6 +28,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 @Service
@@ -112,7 +113,7 @@ public class BestItemServiceImpl implements BestItemService {
         Optional.ofNullable(vendorId)
                 .ifPresent(t -> builder.queryParam("vendorId", t));
         Optional.ofNullable(vendorName)
-                .ifPresent(t -> builder.queryParam("vendorName", t));
+                .ifPresent(t -> builder.queryParam("vendorName", URLEncoder.encode(t) ));
         Optional.ofNullable(status)
                 .ifPresent(t -> builder.queryParam("status", t));
 
