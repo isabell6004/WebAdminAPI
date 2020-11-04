@@ -28,9 +28,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -79,6 +77,7 @@ public class BestItemServiceImpl implements BestItemService {
 
         final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/vendors/active";
 
+
         FashionGoApiResponse<GetVendorsResponse> response = httpCaller.get(endpoint, getHeader(),
                 new ParameterizedTypeReference<FashionGoApiResponse<GetVendorsResponse>>() {});
 
@@ -87,7 +86,9 @@ public class BestItemServiceImpl implements BestItemService {
         }
 
         if (response.getHeader().isSuccessful()) {
-            return OrderActiveVendorResponse.createResponse(response.getData().getVendor());
+            List<OrderActiveVendorResponse> result = OrderActiveVendorResponse.createResponse(response.getData().getVendor());
+            result.sort(Comparator.comparing(OrderActiveVendorResponse::getCompanyName));
+            return result;
         } else {
             throw new RuntimeException("fail to call fashiongo api: " + response.getHeader().getResultMessage());
         }
@@ -102,7 +103,7 @@ public class BestItemServiceImpl implements BestItemService {
                                                               Integer status,
                                                               Boolean listStatus) {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collection/best-item-block/vendors";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item-block/vendors";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .queryParam("pn", pageNum)
@@ -133,7 +134,7 @@ public class BestItemServiceImpl implements BestItemService {
     @Override
     public ResultCode addUnlistedVendor(Long vendorId) {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collection/best-item-block/vendor/" + vendorId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item-block/vendors/" + vendorId;
         String responseBody =  httpCaller.post(endpoint, null, getHeader());
         try {
             FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
@@ -148,7 +149,7 @@ public class BestItemServiceImpl implements BestItemService {
     @Override
     public ResultCode removeUnlistedVendor(Long vendorId) {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collection/best-item-block/vendor/" + vendorId;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item-block/vendors/" + vendorId;
         String responseBody = httpCaller.delete(endpoint, getHeader());
         try {
             FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
@@ -197,7 +198,7 @@ public class BestItemServiceImpl implements BestItemService {
                                                                              String productDescription,
                                                                              String orderBy){
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collection/best-item-block/best-products";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item-block/best-products";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoint);
 
@@ -234,7 +235,7 @@ public class BestItemServiceImpl implements BestItemService {
     @Override
     public ResultCode addUnlistedItem(String productIdList) {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collection/best-item-block/product/" + productIdList;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item-block/products/" + productIdList;
         String responseBody =  httpCaller.post(endpoint, null, getHeader());
         try {
             FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
@@ -258,7 +259,7 @@ public class BestItemServiceImpl implements BestItemService {
                                                                                String productDescription,
                                                                                String orderBy) {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collection/best-item-block/products";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item-block/products";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(endpoint);
 
@@ -294,7 +295,7 @@ public class BestItemServiceImpl implements BestItemService {
     @Override
     public ResultCode removeUnlistedItem(String productIdList) {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collection/best-item-block/product/" + productIdList;
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item-block/products/" + productIdList;
         String responseBody = httpCaller.delete(endpoint, getHeader());
         try {
             FashionGoApiResponse<Void> response = mapper.readValue(responseBody, new TypeReference<FashionGoApiResponse<Void>>() {});
@@ -309,7 +310,7 @@ public class BestItemServiceImpl implements BestItemService {
     @Override
     public CollectionObject<BestItemCategoryResponse> getBestItemCategories() {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collection/best-item/categories";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item/categories";
 
         FashionGoApiResponse<CollectionObject<BestItemCategoryResponse>> response = httpCaller.get(endpoint, getHeader(),
                 new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<BestItemCategoryResponse>>>() {});
