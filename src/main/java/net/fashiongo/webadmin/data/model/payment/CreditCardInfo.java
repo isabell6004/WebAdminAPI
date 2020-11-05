@@ -20,29 +20,29 @@ public class CreditCardInfo {
     @JsonProperty("Last4Digit")
     private String last4Digit;
 
-    @JsonProperty("CVV")
-    private String cvv;
+    //@JsonProperty("CVV")
+    //private String cvv;
 
-    @JsonProperty("Email")
-    private String email;
+    //@JsonProperty("Email")
+    //private String email;
 
     @JsonProperty("NameOnCard")
     private String nameOnCard;
 
-    @JsonProperty("Street")
-    private String street;
+    //@JsonProperty("Street")
+    //private String street;
 
-    @JsonProperty("City")
-    private String city;
+    //@JsonProperty("City")
+    //private String city;
 
-    @JsonProperty("State")
-    private String state;
+    //@JsonProperty("State")
+    //private String state;
 
-    @JsonProperty("Zipcode")
-    private String zipcode;
+    //@JsonProperty("Zipcode")
+    //private String zipcode;
 
-    @JsonProperty("Country")
-    private String country;
+    //@JsonProperty("Country")
+    //private String country;
 
     @JsonProperty("CountryID")
     private Integer countryID;
@@ -59,14 +59,14 @@ public class CreditCardInfo {
     @JsonProperty("CreatedOn")
     private LocalDateTime createdOn;
 
-    @JsonProperty("CreatedBy")
-    private String createdBy;
+    //@JsonProperty("CreatedBy")
+    //private String createdBy;
 
     @JsonProperty("ModifiedOn")
     private LocalDateTime modifiedOn;
 
-    @JsonProperty("ModifiedBy")
-    private String modifiedBy;
+    //@JsonProperty("ModifiedBy")
+    //private String modifiedBy;
 
     @JsonProperty("CardTypeID")
     private Integer cardTypeID;
@@ -104,27 +104,18 @@ public class CreditCardInfo {
     public CreditCardInfo() {
     }
 
-    public CreditCardInfo(Integer creditCardID, Integer retailerID, String referenceID, String last4Digit, String cvv, String email, String nameOnCard, String street, String city, String state, String zipcode, String country, Integer countryID, Boolean defaultCard, Integer cardStatusID, Boolean deleted, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, Integer cardTypeID, String creditCardType, String buyer, String creditCardInfo, String cardStatusName, String billingAddress, Integer expirationMonth, Integer expirationYear, String expDate, Long pendingCount, String reason) {
+    public CreditCardInfo(Integer creditCardID, Integer retailerID, String referenceID, String last4Digit, String nameOnCard, Integer countryID, Boolean defaultCard, Integer cardStatusID, Boolean deleted, Timestamp createdOn, Timestamp modifiedOn, Integer cardTypeID, String creditCardType, String buyer, String creditCardInfo, String cardStatusName, String billingAddress, Integer expirationMonth, Integer expirationYear, String expDate, Long pendingCount, String reason) {
         this.creditCardID = creditCardID;
         this.retailerID = retailerID;
         this.referenceID = referenceID;
         this.last4Digit = last4Digit;
-        this.cvv = cvv;
-        this.email = email;
         this.nameOnCard = nameOnCard;
-        this.street = street;
-        this.city = city;
-        this.state = state;
-        this.zipcode = zipcode;
-        this.country = country;
         this.countryID = countryID;
         this.defaultCard = defaultCard;
         this.cardStatusID = cardStatusID;
         this.deleted = deleted;
         this.createdOn = createdOn == null ? null : createdOn.toLocalDateTime();
-        this.createdBy = createdBy;
         this.modifiedOn = modifiedOn == null ? null : modifiedOn.toLocalDateTime();
-        this.modifiedBy = modifiedBy;
         this.cardTypeID = cardTypeID;
         this.creditCardType = creditCardType;
         this.buyer = buyer;
