@@ -74,13 +74,15 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QVendorAdminAccountEntity VAA = QVendorAdminAccountEntity.vendorAdminAccountEntity;
         QVendorLambsKeyEntity VLK = QVendorLambsKeyEntity.vendorLambsKeyEntity;
         QVendorEmailEntity VE = new QVendorEmailEntity("VE");
+        QVendorAccountEntity VAC = new QVendorAccountEntity("VAC");
         VendorEntity vendorEntity = query.select(vendor).from(vendor)
                 .innerJoin(vendor.vendorAddresses, VA).fetchJoin()
                 .innerJoin(vendor.vendorSetting, VS).fetchJoin()
+                .leftJoin(vendor.vendorAccount, VAC).fetchJoin()
                 .leftJoin(vendor.vendorContractHistory, VCH).fetchJoin()
                 .leftJoin(vendor.vendorIndustry, VI).fetchJoin()
                 .leftJoin(vendor.vendorEmail, VE).fetchJoin()
-                .where(vendor.vendor_id.eq(wholeSalerID.longValue())).distinct().fetchOne();
+                .where(vendor.vendor_id.eq(wholeSalerID.longValue()).and(VAC.typeCode.eq(1))).distinct().fetchOne();
 
         if (vendorEntity == null) {
             return Collections.emptyList();

@@ -119,6 +119,9 @@ public class VendorEntity {
     private Set<VendorBannerEntity> vendorBanner;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
+    private Set<VendorAccountEntity> vendorAccount;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendorEntity")
     private Set<MapWaUserVendorEntity> mapWaUserVendorEntities;
 }
 

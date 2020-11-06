@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.fashiongo.webadmin.data.entity.primary.VendorAccountEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorAddressEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorContractHistoryEntity;
 import net.fashiongo.webadmin.data.entity.primary.VendorEmailEntity;
@@ -251,12 +252,19 @@ public class VendorDetailInfo {
 		this.lastName = vendor.getLastName();
 		this.description = vendor.getDescription();
 		this.webSite = vendor.getWebsite();
-		this.userId = vendor.getCreatedBy();
 		this.businessCategory = vendor.getBusinessCategoryInfo();
 		this.companyTypeID = vendor.getTypeCode();
 		this.establishedYear = vendor.getEstablishedYear();
 		this.wholeSalerGUID = vendor.getGuid();
 		this.sourceType = vendor.getSourceCode();
+
+		/* Vendor Account */
+		VendorAccountEntity vendorAccounts = vendor.getVendorAccount().stream().findAny().orElse(null);
+
+		this.userId = null;
+		if (vendorAccounts != null) {
+			this.userId = vendorAccounts.getUserId();
+		}
 
 		/* Vendor Address */
 		List<VendorAddressEntity> vendorAddress = new ArrayList<>(vendor.getVendorAddresses());
