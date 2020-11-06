@@ -348,6 +348,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QCountEntity C = QCountEntity.countEntity;
         QVendorNameHistoryEntity VNH = new QVendorNameHistoryEntity("VNH");
         QVendorAddressEntity VA = new QVendorAddressEntity("VA");
+        QVendorAccountEntity VAC = new QVendorAccountEntity("VAC");
         MSSQLServer2012Templates mssqlServer2012Templates = new MSSQLServer2012Templates();
         JPASQLQuery<VendorList> jpasqlQuery = new JPASQLQuery<VendorList>(entityManager, mssqlServer2012Templates);
 
@@ -362,7 +363,7 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 V.firstName,
                 V.lastName,
                 V.email,
-                V.createdBy.as("userID"),
+                VAC.userId.as("userID"),
                 Expressions.cases().when(VS.statusCode.in(1, 2, 3)).then(true).otherwise(false),
                 Expressions.cases().when(VS.statusCode.in(2, 3)).then(true).otherwise(false),
                 Expressions.cases().when(VS.statusCode.in(3)).then(true).otherwise(false),
@@ -388,7 +389,8 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 .leftJoin(VA).on(V.vendor_id.eq(VA.vendorId).and(VA.typeCode.eq(1)))
                 .innerJoin(VS).on(V.vendor_id.eq(VS.vendorId))
                 .leftJoin(VNH).on(V.vendor_id.eq(VNH.wholeSalerID.longValue()))
-                .leftJoin(VC).on(V.vendor_id.eq(VC.vendorId).and(VC.id.in(SQLExpressions.select(VC.id.max()).from(VC).groupBy(VC.vendorId))));
+                .leftJoin(VC).on(V.vendor_id.eq(VC.vendorId).and(VC.id.in(SQLExpressions.select(VC.id.max()).from(VC).groupBy(VC.vendorId))))
+                .leftJoin(VAC).on(V.vendor_id.eq(VAC.vendorId).and(VAC.typeCode.eq(1)));
 
         if (avgOrderAmountFrom != null || avgOrderAmountTo != null || checkoutFrom != null || checkoutTo != null) {
             SimplePath<Object> pathO = Expressions.path(Object.class, "O");
@@ -458,9 +460,9 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 
         if (userID != null) {
             if (userIDPartialMatch) {
-                filter = filter.and(V.createdBy.contains(userID));
+                filter = filter.and(VAC.userId.contains(userID));
             } else {
-                filter = filter.and(V.createdBy.eq(userID));
+                filter = filter.and(VAC.userId.eq(userID));
             }
         }
 
@@ -699,13 +701,14 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
         QLogVendorHoldEntity LVH = QLogVendorHoldEntity.logVendorHoldEntity;
         QVendorNameHistoryEntity VNH = new QVendorNameHistoryEntity("VNH");
         QVendorContractHistoryEntity VC = QVendorContractHistoryEntity.vendorContractHistoryEntity;
+        QVendorAccountEntity VAC = new QVendorAccountEntity("VAC");
         jpasqlQuery.select(Projections.constructor(VendorListCSVDto.class,
                 V.vendor_id,
                 Expressions.cases().when(V.typeCode.eq(1)).then("M").when(V.typeCode.eq(2)).then("W").when(V.typeCode.eq(3)).then("D").otherwise("").as("Type"),
                 V.name,
                 queryDSLSQLFunctions.isnull(String.class, VNH.nameHistory, ""),
                 queryDSLSQLFunctions.isnull(String.class, V.businessCategoryInfo, ""),
-                V.createdBy,
+                VAC.userId,
                 V.firstName,
                 V.lastName,
                 V.email,
@@ -730,7 +733,8 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
                 .innerJoin(VS).on(V.vendor_id.eq(VS.vendorId))
                 .leftJoin(VA).on(V.vendor_id.eq(VA.vendorId).and(VA.typeCode.in(1, 3)))
                 .leftJoin(VNH).on(V.vendor_id.eq(VNH.wholeSalerID.longValue()))
-                .leftJoin(VC).on(V.vendor_id.eq(VC.vendorId).and(VC.id.in(SQLExpressions.select(VC.id.max()).from(VC).groupBy(VC.vendorId))));
+                .leftJoin(VC).on(V.vendor_id.eq(VC.vendorId).and(VC.id.in(SQLExpressions.select(VC.id.max()).from(VC).groupBy(VC.vendorId))))
+                .leftJoin(VAC).on(V.vendor_id.eq(VAC.vendorId).and(VAC.typeCode.eq(1)));
 
         if (assignedUser > 0) {
             QMapWaUserVendorEntity MWUV = QMapWaUserVendorEntity.mapWaUserVendorEntity;
@@ -804,9 +808,9 @@ public class VendorWholeSalerEntityRepositoryCustomImpl implements VendorWholeSa
 
         if (userID != null) {
             if (userIDPartialMatch) {
-                filter = filter.and(V.createdBy.contains(userID));
+                filter = filter.and(VAC.userId.contains(userID));
             } else {
-                filter = filter.and(V.createdBy.eq(userID));
+                filter = filter.and(VAC.userId.eq(userID));
             }
         }
 
