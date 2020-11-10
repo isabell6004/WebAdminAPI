@@ -165,7 +165,9 @@ public class VendorSettingEntity {
 
     public VendorEntity getVendorEntity() {
         try {
-            vendorEntity.getVendor_id();
+            if (this.vendorEntity != null) {
+                this.vendorEntity.getName();
+            }
         } catch (EntityNotFoundException e) {
             return null;
         }
