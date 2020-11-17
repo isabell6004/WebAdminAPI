@@ -311,7 +311,7 @@ public class BestItemServiceImpl implements BestItemService {
     @Override
     public CollectionObject<BestItemCategoryResponse> getBestItemCategories() {
 
-        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-item/categories";
+        final String endpoint = FashionGoApiConfig.fashionGoApi + "/v1.0/collections/best-items/categories";
 
         FashionGoApiResponse<CollectionObject<BestItemCategoryResponse>> response = httpCaller.get(endpoint, getHeader(),
                 new ParameterizedTypeReference<FashionGoApiResponse<CollectionObject<BestItemCategoryResponse>>>() {});
